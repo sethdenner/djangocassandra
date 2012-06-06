@@ -1,0 +1,40 @@
+All data in the database needs to have some sense of "authority" given as a avg, stdev for our belief in the accuracy of some information.
+
+All forms need to have auto complete logic - in fact anything that can be submitted should have the ability to be autofilled. (we need to be concerned about data leakage here).
+
+Tags are better than categories - we can use tags to auto-create categories. We will have to have some notion of official categories though.
+
+----
+We need to have QR codes for nearly every bit of content, and transaction.  It looks like some form of "merch scans QR code" -- "Auto-redeam" could be a feature that causes the redemption to go through automatically.
+
+Redemption needs to have "undo"
+----
+
+How do we calculate a user's reputation? EV(all actions performed for which they have earned rewards). -- Reputation = rewards points.
+
+-----
+
+Storing data for approximations - essentially we need to store totals vs divisions (averages.) and then also the sum of absolut_value(values - (average at that time)) vs total points.  This gives us all our paramiters for averaging values.
+
+While we're at it I want to store a base 2 time average (actually, I think the base can be changed later as long as the information isn't lost. I'll need to check the algebra on this.)
+
+I also want to store the derivatives. If we store the derivatives as we go (just like the first 10 of them), we can plot all sorts of rad shit.
+
+Lastly, can we go right ahead and calculate running FFT's? 
+
+-----
+
+Redemption and processing - how do we make this work so that we can track the intermediate states of processing happening as it goes through?
+
+
+It might be smart to separate Purchases into 3 separate objects -> purchase (for knotis w/ anonymous id's), user_purchase and merch_purchase. That way either the merchant or the user's purchase data can actually be expunged effectively (though heart breakingly)
+
+----
+
+How do we use KISS? We're reimplementing a lot of other peoples features.
+
+Babysitting?
+Hotel's Amenities?
+Nearest Happy Hour?
+Cheapest Haircut?
+

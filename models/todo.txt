@@ -1,0 +1,39 @@
+
+Analytics - what gets tracked, how do we track it.
+
+Cashing - what needs to be known about views to determine their caching?
+
+Interfaces - we want to make interfaces be true html, js, css files on the hard disk - AB testing goes in routes.
+Themes?
+
+Shopping Cart - Transactions have a 1:many relationship with purchase.
+
+QR Codes - think about this.
+
+Challenge/response - think about this - specifically the time aspect.
+
+Internationalization? This can be handled if "content types" are handled intelligently.
+  -- I still feel like we're being too clevar with the way we're putting everything in one cassandra ring currently - this does give us common tools for handling all content.
+
+Statistics Jobs -
+
+Map Reduce on Cassandra Cluster - 
+
+Security
+  Firewalls
+  Separate subnets for disconnected tasks
+  SSL Liscensing
+
+Statistics jobs, firewalls, separated cassandra rings on separate subnets for financial tasks (along with corresponding web front ends). SSL liscensing, shopping cart...
+
+Business Logic
+  messages
+  images
+  reviews
+  customer services threads
+  internationalization
+  themes
+  comments
+  warnings
+  FAQ/tos
+  etc.

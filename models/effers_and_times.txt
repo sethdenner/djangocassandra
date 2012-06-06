@@ -1,0 +1,9 @@
+Offers that are available from start to $dissabled.
+
+Offers that are available in N quantity all at 8pm Friday.
+
+Offers that are available 1/hr from 9-5pm everyday unless otherwise scheduled.
+
+----
+
+When an account transfer starts, we need to have the ability to pursue custom logic. Not too customized, but customized in a logical fashion. If your personal account settings require that we get a confirmation from you, then we have to push you communications and you have to OK them.  [Ok this transaction for the next 3 times - "A maximum of 14.99/mo for 3 months"

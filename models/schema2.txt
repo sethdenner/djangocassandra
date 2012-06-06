@@ -1,0 +1,53 @@
+
+
+Major Sections
+
+1) Sessions
+
+2) Permissions, Roles, Users
+  i) we should have this automatically with django - just need to create the various roles.
+  ii) how are we handling aging of personal information? passwords, emails, addresses, etc.?
+
+3) Content, uploads, (text, values, ranges), hours, reviews, likes, comments, forum posts, anything.
+  i) figure out how break this section down further.
+    a) all content has an owner and a parent. 
+    b) some of the math will probably be overly intensive early on, don't wory about the scaling of the math routines.
+  ii) any specific info that can be posted.
+    site text
+    qr code
+    ...
+    rating
+    review
+    cust support ticket
+    forum/faq posting
+    category
+    address
+    email
+  iii)
+    cid = content id.
+    parent_id(indexed)
+    owner_id(indexed)
+    type_id
+    content=(text or value)
+    created_time
+    certainty=(mu,sigma)
+  iv)
+
+4) Products -- A product is a concept that can be purchased from a business by a consumer.
+  i) description, tags, 
+  ii) methods: getAverageValue(by location?)
+
+5) Businesses -- An entity who is offering a sale. This entity has some legal liability. 
+  i) businesses - how/what are their properties? (addresses, hours, tags, qualifications / liscenses?)
+
+6) Offer - any business may offer any product for sale. If the product doesn't exist, it must be created first.
+
+7) Purchases - when an offer is accepted, a transaction occurres and we must ensure payment and track it so we can report the status of the payment.
+
+8) Search - list products, businesses, and offers by location, time, price and other criterion.
+
+9) Subscriptions -> subscription code makes it so we can easily look up any and all subscriptions when any content node is updated and trigger some sort of subscription action.
+
+10) Analytics - we need to track everything that users are doing.
+  i) users - how many, what
+  ii) business reporting
