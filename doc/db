@@ -1,0 +1,27 @@
+Database Schema - Cassandra.
+
+Let's write all this stuff down here in a "JSONish" style.
+
+{
+  "keyspace name": {
+    "replication-factor": "1",
+    "replication-strategy": "simple",
+    "column-families": {
+      "column-family-name": {
+        "key": "keydesc",
+	"columns": {
+          "column-name": "valuedesc",
+          "column-name": "valuedesc",
+	  ...
+     	  ...
+	  ...etc
+        }
+      }
+    }
+  },
+  "keyspace-name": {
+    ....etc
+  },
+  ...
+  ...etc
+}
