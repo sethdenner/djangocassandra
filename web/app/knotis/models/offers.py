@@ -1,13 +1,11 @@
 from django.db import models
-from contents.models import Content
-from product.models import Products
-from businesses.models import Business
+from contents import Content
+from products import Product
+from businesses import Business
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 
-from accounts.models import Currency
-from accounts.models import AccountType
-from accounts.models import Account
+from accounts import Currency, AccountType, Account
 
 class OfferType(models.Model):
     name = models.CharField(max_length=140)

@@ -1,5 +1,5 @@
 from django.db import models
-from contents.models import Content
+from contents import Content
 #from django.contrib.auth.models import User
 
 # this isn't ready at all..
@@ -12,10 +12,3 @@ class Product(models.Model):
 #    content = Base64Field()
     pub_date = models.DateTimeField('date published')
     
-class ProductTag(models.Model):
-
-# class ProductTag(models.Model):
-#    deal = models.ForeignKey(Deal)
-#    choice = models.CharField(max_length=200)
-#    clicks = models.IntegerField()
-#    bounces = models.IntegerField()# Create your models here.

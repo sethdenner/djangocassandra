@@ -1,5 +1,6 @@
 from django.db import models
-from contents.models import Content
+from django.contrib.auth.models import User
+from contents import Content
 #from django.contrib.auth.models import User
 
 # this isn't ready at all..

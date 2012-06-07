@@ -1,7 +1,7 @@
 from django.db import models
-from contents.models import Content
-from product.models import Products
-from businesses.models import Business
+from contents import Content
+from products import Product
+from businesses import Business
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 
@@ -14,7 +14,7 @@ class AccountType(models.Model):
 class Account(models.Model):
 #    parent_id = model.IntField()
 #    parent_type = models.CharField(max_length=200) # probably a stupid way to do this.
-# There defidinetyl needs to be a lot more logic going on in here...
+# There definitely needs to be a lot more logic going on in here...
     user = models.ForeignKey(User)
     accounttype = models.ForeignKey(AccountType)
     currency = models.ForeignKey(Currency)
@@ -25,4 +25,4 @@ class Account(models.Model):
     value_yesterday = models.FloatField() #FIXME: this is just one way we can check to see if the data is consistent?
     pub_date = models.DateTimeField('date published') # date created.
     updated_date = models.DateTimeField('date published') # last updated
-    state = models.BoolField() # later an enum for (disabled etc.)
+    state = models.BooleanField() # later an enum for (disabled etc.)
