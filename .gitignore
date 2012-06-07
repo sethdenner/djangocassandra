@@ -11,3 +11,5 @@ lib64
 .svn
 *~
 *.pyc
+.project
+.pydevproject
