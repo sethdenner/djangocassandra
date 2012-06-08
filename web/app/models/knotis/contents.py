@@ -1,4 +1,6 @@
 from django.db import models
+from web.app.knotis.db import KnotisModel
+
 #from django.db.models import User
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
@@ -25,7 +27,7 @@ class Base64Field(models.TextField):
 
 # ------ End Base64Field
 
-class ContentType(models.Model):
+class ContentType(KnotisModel):
     name  = models.CharField(max_length=200)
     user    = models.ForeignKey(User)
     group    = models.ForeignKey(Group)
@@ -34,7 +36,7 @@ class ContentType(models.Model):
     def __unicode__(self):
         return self.name
 
-class Content(models.Model):
+class Content(KnotisModel):
 #    FIXME: how do we make this auto version so that save actually just increments a version to the list but we always have old versions?
 #    cid = content id.
 #    parent_id(indexed)

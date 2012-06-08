@@ -1,17 +1,22 @@
 from django.db import models
+from web.app.knotis.db import KnotisModel
+
 from contents import Content
 from products import Product
 from businesses import Business
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 
-class Currency(models.Model):
+class Currency(KnotisModel):
+    class Meta:
+        app_label = "app"
+        
     name = models.CharField(max_length=140)
 
-class AccountType(models.Model):
+class AccountType(KnotisModel):
     name = models.CharField(max_length=140)
 
-class Account(models.Model):
+class Account(KnotisModel):
 #    parent_id = model.IntField()
 #    parent_type = models.CharField(max_length=200) # probably a stupid way to do this.
 # There definitely needs to be a lot more logic going on in here...

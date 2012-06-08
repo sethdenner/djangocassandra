@@ -1,4 +1,5 @@
 from django.db import models
+from web.app.knotis.db import KnotisModel
 
 from contents import Content
 from products import Product
@@ -12,10 +13,10 @@ This class registers subscriptions.
 Anytime that any content is updated, logic can be executed or queued for execution to knotify anyone who is subscribed.
 
 """
-class SubscriptionType(models.Model):
+class SubscriptionType(KnotisModel):
     name = models.CharField(max_length=140)
 
-class Subscription(models.Model):
+class Subscription(KnotisModel):
 #    parent_id = model.IntField()
 #    parent_type = models.CharField(max_length=200) # probably a stupid way to do this.
 # There defidinetyl needs to be a lot more logic going on in here...
