@@ -115,6 +115,10 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+AUTHENTICATION_BACKENDS = (
+    'permission_backend_nonrel.backends.NonrelPermissionBackend',
+)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -122,6 +126,8 @@ INSTALLED_APPS = (
     # 'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djangotoolbox',
+    'permission_backend_nonrel',
     'web.app',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',

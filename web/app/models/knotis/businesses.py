@@ -7,6 +7,10 @@ from contents import Content
 
 # this isn't ready at all..
 class Business(KnotisModel):
+    class Meta(KnotisModel.Meta):
+        verbose_name = "Business"
+        verbose_name_plural = 'Businesses'
+        
 #    parent_id = model.IntField()
 #    parent_type = models.CharField(max_length=200) # probably a stupid way to do this.
     user = models.ForeignKey(User)

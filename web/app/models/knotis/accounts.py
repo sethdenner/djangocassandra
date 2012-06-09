@@ -8,12 +8,17 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 
 class Currency(KnotisModel):
-    class Meta:
-        app_label = "app"
+    class Meta(KnotisModel.Meta):
+        verbose_name = 'Currency'
+        verbose_name_plural = 'Currencies'
         
     name = models.CharField(max_length=140)
 
 class AccountType(KnotisModel):
+    class Meta(KnotisModel.Meta):
+        verbose_name = 'Account Type'
+        verbose_name_plural = 'Account Types'
+        
     name = models.CharField(max_length=140)
 
 class Account(KnotisModel):
