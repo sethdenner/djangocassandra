@@ -8,3 +8,6 @@ import knotis.user_data
 import knotis.purchases
 import knotis.deals
 import knotis.offers
+
+import knotis.user
+import knotis.endpoints

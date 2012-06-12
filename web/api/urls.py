@@ -1,11 +1,13 @@
 from django.conf.urls.defaults import *
 from piston.resource import Resource
 # from piston.authentication import HttpBasicAuthentication
-from web.api.handlers import AccountHandler
+from web.api.handlers import UserHandler, EndpointHandler
 
 # auth = HttpBasicAuthentication(realm="Django Piston Example")
-account_handler = Resource(AccountHandler) # , authentication=auth)
+user_handler = Resource(UserHandler) # , authentication=auth)
+endpoint_handler = Resource(EndpointHandler)
 urlpatterns = patterns('',
-   url(r'^account/(?P<post_slug>[^/]+)/', account_handler),
-   url(r'^accounts/', account_handler),
+   url(r'^user/(?P<user_id>[^/]+)/', user_handler),
+   url(r'^users/', user_handler),
+   url(r'^endpoints/(?P<user_id>[^/]+)/', endpoint_handler)
 )
