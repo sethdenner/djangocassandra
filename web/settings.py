@@ -40,7 +40,7 @@ TIME_ZONE = 'America/Chicago'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
-SITE_ID = 1
+SITE_ID = '0c7d8d59-318e-4d22-bd5d-6e146644339f'
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -100,6 +100,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'autoload.middleware.AutoloadMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -119,11 +120,16 @@ AUTHENTICATION_BACKENDS = (
     'permission_backend_nonrel.backends.NonrelPermissionBackend',
 )
 
+AUTOLOAD_SITECONF = 'dbindexer'
+
 INSTALLED_APPS = (
+    'autoload',
+    'dbindexer',
+    'piston',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    # 'django.contrib.sites',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'djangotoolbox',

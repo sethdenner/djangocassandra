@@ -24,3 +24,8 @@ from models.knotis.types import EndpointType
 from models.knotis.endpoints import Endpoint
 admin.site.register(EndpointType, EndpointAdmin)
 admin.site.register(Endpoint, EndpointAdmin)
+
+class OAuthAdmin(admin.ModelAdmin):
+    pass
+from piston.models import Consumer
+admin.site.register(Consumer, OAuthAdmin)
