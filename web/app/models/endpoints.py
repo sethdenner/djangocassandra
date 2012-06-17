@@ -1,9 +1,9 @@
-from django.db import models
+from django.db.models import ForeignKey, CharField
 from django.contrib.auth.models import User
-from web.app.knotis.db import KnotisModel
-from types import EndpointType
+from app.models.knotis import KnotisModel
+from app.models.types import EndpointType
 
 class Endpoint(KnotisModel):
-    user = models.ForeignKey(User, primary_key=True)
-    type = models.ForeignKey(EndpointType)
-    value = models.CharField(max_length=1024)
+    user = ForeignKey(User)
+    type = ForeignKey(EndpointType)
+    value = CharField(max_length=1024)

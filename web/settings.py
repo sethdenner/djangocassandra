@@ -123,22 +123,23 @@ AUTHENTICATION_BACKENDS = (
 AUTOLOAD_SITECONF = 'dbindexer'
 
 INSTALLED_APPS = (
+    # Third party Django apps.
     'autoload',
     'dbindexer',
     'piston',
+    'djangotoolbox',
+    'permission_backend_nonrel',
+    # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'djangotoolbox',
-    'permission_backend_nonrel',
-    'web.app',
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
+    # Our apps.
+    'web.app',
 )
 
 # A sample logging configuration. The only tangible logging

@@ -1,27 +1,16 @@
 from django.contrib import admin
 
-class AccountsAdmin(admin.ModelAdmin):
-    pass
-from models.knotis.accounts import Currency, AccountType, Account 
-admin.site.register(Currency, AccountsAdmin);
-admin.site.register(AccountType, AccountsAdmin);
-admin.site.register(Account, AccountsAdmin);
-
-class BusinessesAdmin(admin.ModelAdmin):
-    pass
-from models.knotis.businesses import Business
-admin.site.register(Business, BusinessesAdmin)
-
-
 class UserAdmin(admin.ModelAdmin):
     pass
-from models.knotis.user import UserProfile
+from models.user import UserProfile
+from models.notifications import NotificationPreferences
 admin.site.register(UserProfile, UserAdmin)
+admin.site.register(NotificationPreferences, UserAdmin)
 
 class EndpointAdmin(admin.ModelAdmin):
     pass
-from models.knotis.types import EndpointType
-from models.knotis.endpoints import Endpoint
+from models.types import EndpointType
+from models.endpoints import Endpoint
 admin.site.register(EndpointType, EndpointAdmin)
 admin.site.register(Endpoint, EndpointAdmin)
 

@@ -1,7 +1,6 @@
 from piston.handler import BaseHandler
-from django.contrib.auth.models import User
-from app.models.knotis.user import UserProfile
-from app.models.knotis.endpoints import Endpoint
+from app.models.user import UserProfile
+from app.models.endpoints import Endpoint
 
 class UserHandler(BaseHandler):
     allowed_methods = ('GET',)

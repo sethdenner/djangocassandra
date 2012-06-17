@@ -1,7 +1,13 @@
-from django.db import models
-from web.app.knotis.db import KnotisModel
+from django.db.models import BooleanField, OneToOneField
+from django.contrib.auth.models import User
+from app.models.knotis import KnotisModel
 
 class NotificationPreferences(KnotisModel):
-  service_announcements = models.BooleanField()
-  new_deals = models.BooleanField()
-  new_events = models.BooleanField()
+  class Meta(KnotisModel.Meta):
+    verbose_name = "Notification Preferences"
+    verbose_name_plural = "Notification Preferences"
+    
+  user = OneToOneField(User, primary_key=True)
+  service_announcements = BooleanField()
+  new_deals = BooleanField()
+  new_events = BooleanField()
