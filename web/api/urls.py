@@ -1,7 +1,8 @@
 from django.conf.urls.defaults import *
 from piston.resource import Resource
 from piston.authentication import OAuthAuthentication
-from web.api.handlers import UserHandler, EndpointHandler
+from handlers.user import UserHandler
+from handlers.endpoint import EndpointHandler
 
 oauth = OAuthAuthentication(realm="Knotis")
 AUTHENTICATORS = [oauth,]
