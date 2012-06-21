@@ -23,3 +23,19 @@ urlpatterns += patterns(
   url(r'^oauth/authorize/$','oauth_user_auth'),
   url(r'^oauth/access_token/$','oauth_access_token'),
 )
+  
+class CsrfExemptResource( Resource ):
+    def __init__( self, handler, authentication = None ):
+        super( CsrfExemptResource, self ).__init__( handler, authentication )
+        self.csrf_exempt = getattr( self.handler, 'csrf_exempt', True )
+
+from web.api.handlers.content import ContentHandler
+content_handler = CsrfExemptResource(ContentHandler)
+
+#content
+urlpatterns += patterns(
+   url(r'^content/write$', content_handler, { 'emitter_format': 'json' }),
+   url(r'^content/(?P<content_id>[^/]+)/', content_handler),
+   url(r'^content/', content_handler),
+)
+

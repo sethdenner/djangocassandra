@@ -1,5 +1,5 @@
 from piston.handler import BaseHandler
-from app.models.user import UserProfile
+from app.models.users import UserProfile
 
 class UserHandler(BaseHandler):
     allowed_methods = ('GET',)
