@@ -1,5 +1,5 @@
 .installed.cfg
-bin
+#bin
 develop-eggs
 dist
 downloads
