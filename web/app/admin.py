@@ -31,5 +31,3 @@ admin.site.register(Content, ContentAdmin)
 class ContentTypeAdmin(admin.ModelAdmin):
     pass
 admin.site.register(ContentType, ContentTypeAdmin)
-
-

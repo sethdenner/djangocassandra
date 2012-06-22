@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Authorize Token</title>
+  </head>
+  <body>
+    <h1>Authorize Token</h1>
+
+    <form action="{% url piston.authentication.oauth_user_auth %}" method="POST">
+      {{ form.as_table }}
+      <button type="submit">Confirm</button>
+    </form>
+
+  </body>
+</html>

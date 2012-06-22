@@ -16,14 +16,6 @@ urlpatterns = patterns('',
   url(r'^endpoints/(?P<user_id>[^/]+)/', endpoint_handler),
 )
 
-# Django Piston OAuth
-urlpatterns += patterns(
-  'piston.authentication.oauth.views',
-  url(r'^oauth/request_token/$','get_request_token'),
-  url(r'^oauth/authorize/$','authorize_request_token'),
-  url(r'^oauth/access_token/$','get_access_token'),
-)
-
 class CsrfExemptResource( Resource ):
     def __init__( self, handler, authentication = None ):
         super( CsrfExemptResource, self ).__init__( handler, authentication )
@@ -31,6 +23,11 @@ class CsrfExemptResource( Resource ):
 
 from web.api.handlers.content import ContentHandler
 content_handler = CsrfExemptResource(ContentHandler)
+
+urlpatterns += patterns('',
+    url(r'^oauth/callback', 'web.app.views.authentication.oauth_callback'),
+    url(r'^oauth/', include('piston.authentication.oauth.urls')),
+)
 
 #content
 urlpatterns += patterns(
