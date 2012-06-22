@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 from piston.resource import Resource
-from piston.authentication import OAuthAuthentication
+from piston.authentication.oauth import OAuthAuthentication
 from handlers.user import UserHandler
 from handlers.endpoint import EndpointHandler
 
@@ -18,12 +18,12 @@ urlpatterns = patterns('',
 
 # Django Piston OAuth
 urlpatterns += patterns(
-  'piston.authentication',
-  url(r'^oauth/request_token/$','oauth_request_token'),
-  url(r'^oauth/authorize/$','oauth_user_auth'),
-  url(r'^oauth/access_token/$','oauth_access_token'),
+  'piston.authentication.oauth.views',
+  url(r'^oauth/request_token/$','get_request_token'),
+  url(r'^oauth/authorize/$','authorize_request_token'),
+  url(r'^oauth/access_token/$','get_access_token'),
 )
-  
+
 class CsrfExemptResource( Resource ):
     def __init__( self, handler, authentication = None ):
         super( CsrfExemptResource, self ).__init__( handler, authentication )
@@ -38,4 +38,3 @@ urlpatterns += patterns(
    url(r'^content/(?P<content_id>[^/]+)/', content_handler),
    url(r'^content/', content_handler),
 )
-
