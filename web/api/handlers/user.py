@@ -2,7 +2,7 @@ from piston.handler import BaseHandler
 from app.models.users import UserProfile
 
 class UserHandler(BaseHandler):
-    allowed_methods = ('GET',)
+    allowed_methods = ('GET','PUT','POST')
     model =  UserProfile
     
     def read(self, request, user_id=None):

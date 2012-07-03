@@ -5,6 +5,10 @@ from django.contrib.auth.models import User
 from contents import Content
 #from django.contrib.auth.models import User
 
+class BusinessEndpoinst(KnotisModel):
+    business = models.ForeignKey(Business)
+    endpoint = models.ForeignKey(Endpoint)
+
 # this isn't ready at all..
 class Business(KnotisModel):
     class Meta(KnotisModel.Meta):
@@ -13,9 +17,12 @@ class Business(KnotisModel):
         
 #    parent_id = model.IntField()
 #    parent_type = models.CharField(max_length=200) # probably a stupid way to do this.
-    user = models.ForeignKey(User)
-    c_parent = models.ForeignKey(Content)
-    b_name = models.CharField(max_length=140)
+    content_parent = models.ForeignKey(Content)
+    name = models.CharField(max_length=140)
+
+    # can be a url or maybe an id for gravatar.
+    avatar = models.CharField(max_length=140, null=true)
+
 #    content = Base64Field()
     pub_date = models.DateTimeField('date published')
 

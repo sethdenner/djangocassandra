@@ -9,13 +9,23 @@ from django.contrib.auth.models import Group
 from accounts import Currency, AccountType, Account
 
 class OfferType(KnotisModel):
-    name = models.CharField(max_length=140)
+    OFFER_TYPES = (
+        ('0', '____'),
+        ('1', '____'),
+        ('2', '____')
+    )
+
+    value = CharField(max_length=30, choices=ENDPOINT_PERMISSION_TYPES)
+    #created_by = CharField(max_length=1024)
+    pub_date = models.DateTimeField('date published')
+    def __unicode__(self):
+        return self.name
 
 class Offer(KnotisModel):
 #    parent_id = model.IntField()
 #    parent_type = models.CharField(max_length=200) # probably a stupid way to do this.
-    user = models.ForeignKey(User)
-    offertype = models.ForeignKey(OfferType)
+    establishment = models.ForeignKey(Establishment)
+    offer_type = models.ForeignKey(OfferType)
     currency = models.ForeignKey(Currency)
     b_parent = models.ForeignKey(Business)
     c_parent = models.ForeignKey(Content)

@@ -35,3 +35,14 @@ urlpatterns += patterns(
    url(r'^content/(?P<content_id>[^/]+)/', content_handler),
    url(r'^content/', content_handler),
 )
+
+from web.api.handlers.testmodel import TestModelHandler
+testmodel_handler = CsrfExemptResource(TestModelHandler)
+
+#content
+urlpatterns += patterns(
+   url(r'^testmodel/write$', testmodel_handler, { 'emitter_format': 'json' }),
+   url(r'^testmodel/(?P<testmodel_id>[^/]+)/', testmodel_handler),
+   url(r'^testmodel/', testmodel_handler),
+)
+

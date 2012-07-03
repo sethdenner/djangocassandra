@@ -9,8 +9,7 @@ admin.site.register(NotificationPreferences, UserAdmin)
 
 class EndpointAdmin(admin.ModelAdmin):
     pass
-from models.types import EndpointType
-from models.endpoints import Endpoint
+from models.endpoints import Endpoint, EndpointType
 admin.site.register(EndpointType, EndpointAdmin)
 admin.site.register(Endpoint, EndpointAdmin)
 
@@ -31,3 +30,9 @@ admin.site.register(Content, ContentAdmin)
 class ContentTypeAdmin(admin.ModelAdmin):
     pass
 admin.site.register(ContentType, ContentTypeAdmin)
+
+
+class TestModelAdmin(admin.ModelAdmin):
+    pass
+from models.testmodel import TestModel
+admin.site.register(TestModel, TestModelAdmin)

@@ -1,40 +1,26 @@
-from django.db import models
+from django.contrib.auth.models import User, Group
+from django.db.models import CharField, ForeignKey, DateTimeField, FloatField
+
 from web.app.models.knotis import KnotisModel
+from web.app.models.fields.binary import Base64Field
+from app.models.fields.permissions import PermissionsField
 
-#from django.db.models import User
-from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
-
-#---------- Move to separate file.
-import base64
-#from django.db import models
-
-
-class Base64Field(models.TextField):
-
-    def contribute_to_class(self, cls, name):
-        if self.db_column is None:
-            self.db_column = name
-        self.field_name = name + '_base64'
-        super(Base64Field, self).contribute_to_class(cls, self.field_name)
-        setattr(cls, name, property(self.get_data, self.set_data))
-
-    def get_data(self, obj):
-        return base64.decodestring(getattr(obj, self.field_name))
-
-    def set_data(self, obj, data):
-        setattr(obj, self.field_name, base64.encodestring(data))
-
-# ------ End Base64Field
 
 class ContentType(KnotisModel):
-    name  = models.CharField(max_length=200)
-    user    = models.ForeignKey(User)
-    group    = models.ForeignKey(Group)
-    instances  = models.IntegerField()
-    pub_date = models.DateTimeField('date published')
+    CONTENT_TYPES = (
+        ('0', 'root'),
+        ('1', 'site text'),
+        ('2', 'user submitted')
+        # terms of service
+        # hours, address, business name, all endpoints, anything that a user can say about a business.
+    )
+
+    value       = CharField(max_length=30, choices=CONTENT_TYPES)
+    permissions = PermissionsField()
+
+    pub_date = DateTimeField('date published')
     def __unicode__(self):
-        return self.name
+        return self.value
 
 class Content(KnotisModel):
 #    FIXME: how do we make this auto version so that save actually just increments a version to the list but we always have old versions?
@@ -45,14 +31,22 @@ class Content(KnotisModel):
 #    content=(text or value)
 #    created_time
 #    certainty=(mu,sigma)
-    user = models.ForeignKey(User)
-    group    = models.ForeignKey(Group)
-    c_parent = models.ForeignKey('self')
-    c_type = models.ForeignKey(ContentType)
-    value = models.CharField(max_length=2000) #Base64Field()
-    certanty_mu = models.FloatField() # average - expected value
-    certanty_sigma = models.FloatField() # stdev - expected error
-    pub_date = models.DateTimeField('date published')
+
+    user = ForeignKey(User)
+    group = ForeignKey(Group, null=True)
+    permissions = PermissionsField()
+
+    c_parent = ForeignKey('self')
+    #content_parent = ForeignKey('self')
+    #content_previous = ForeignKey('self')
+
+    c_type = ForeignKey(ContentType)
+    value = CharField(max_length=2000) #Base64Field()
+
+    certanty_mu = FloatField() # average - expected value
+    certanty_sigma = FloatField() # stdev - expected error
+
+    pub_date = DateTimeField('date published')
     
     def __unicode__(self):
         return self.value
@@ -63,3 +57,4 @@ class Content(KnotisModel):
     was_published_recently.admin_order_field = 'pub_date'
     was_published_recently.boolean = True
     was_published_recently.short_description = 'Published recently?'
+

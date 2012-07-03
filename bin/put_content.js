@@ -5,7 +5,7 @@
 
 var http = require('http');
 
-var data = JSON.stringify({ 'id':'24f285fd-847e-4f95-8efe-9ca510d9a64f', 'value': 'Welcome to Knotis.com. Have a nice day!', 'nonNormalColumn':'test value' });
+var data = JSON.stringify({ 'id':'24f285fd-847e-4f95-8efe-9ca510d9a64f', 'value': 'Welcome to Knotis.com. Have an extra nice day!'});
 var cookie = 'something=anything'
 
 //http://mbp-ubuntu.local:8888/api/content/
@@ -34,7 +34,6 @@ request.on('response', function(response) {
   });
 });
 // you'd also want to listen for errors in production
-
 
 request.write(data);
 

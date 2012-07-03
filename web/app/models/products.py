@@ -12,5 +12,4 @@ class Product(KnotisModel):
 #    c_parent = models.ForeignKey('self')
 #    c_type = models.CharField(max_length=140)
 #    content = Base64Field()
-    pub_date = models.DateTimeField('date published')
-    
+     pub_date = models.DateTimeField('date published')
