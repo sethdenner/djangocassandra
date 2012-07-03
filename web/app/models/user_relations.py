@@ -1,14 +1,11 @@
-from django.db import models
+from django.contrib.auth.models import Group, User
+from django.db.models import CharField, ForeignKey, DateTimeField, FloatField, BooleanField
 
-from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
-
-from web.app.knotis.db import KnotisModel
+from app.models.knotis import KnotisModel
 from app.models.fields.permissions import PermissionsField
 
 from contents import Content
-#from products import Product
-#from businesses import Business
+from endpoints import Endpoint
 
 """
 
@@ -38,25 +35,26 @@ class UserRelationType(KnotisModel):
     )
 
     value       = CharField(max_length=30, choices=USER_RELATION_TYPES)
-    permissions = PermissionsField(Permissions)
+    permissions = PermissionsField()
 
-    pub_date = models.DateTimeField('date published')
+    pub_date = DateTimeField('date published')
     def __unicode__(self):
         return self.name
-    #type = models.ForeginKey(KnotisModel)
-
-class UserRelationEndpoint(KnotisModel):
-    user_relation = models.ForeignKey(UserRelation)
-    endpoint = models.ForeignKey(Endpoint)
-    permissions = models.ForeignKey(Permissions)
-    pub_date = models.DateTimeField('date published')
+    #type = ForeginKey(KnotisModel)
 
 class UserRelation(KnotisModel):
-    user = models.ForeignKey(User)
-    user_relation_name = models.CharField(max_length=140) # text the user gives this user_relation? I don't know....
-    user_relation_type = models.ForeignKey(UserRelationType)
-    user_relation_foreign_id = models.CharField(max_length=100) # the id of the foreign relation.
+    user = ForeignKey(User)
+    user_relation_name = CharField(max_length=140) # text the user gives this user_relation? I don't know....
+    user_relation_type = ForeignKey(UserRelationType)
+    user_relation_foreign_id = CharField(max_length=100) # the id of the foreign relation.
 
-    pub_date = models.DateTimeField('date published') # date created.
-    updated_date = models.DateTimeField('date published') # last updated
-    state = models.BooleanField() # later an enum for (disabled etc.)
+    pub_date = DateTimeField('date published') # date created.
+    updated_date = DateTimeField('date published') # last updated
+    state = BooleanField() # later an enum for (disabled etc.)
+
+class UserRelationEndpoint(KnotisModel):
+    user_relation = ForeignKey(UserRelation)
+    endpoint = ForeignKey(Endpoint)
+    permissions = PermissionsField()
+    pub_date = DateTimeField('date published')
+

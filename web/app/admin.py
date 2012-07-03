@@ -7,16 +7,19 @@ from models.notifications import NotificationPreferences
 admin.site.register(UserProfile, UserAdmin)
 admin.site.register(NotificationPreferences, UserAdmin)
 
+
 class EndpointAdmin(admin.ModelAdmin):
     pass
 from models.endpoints import Endpoint, EndpointType
 admin.site.register(EndpointType, EndpointAdmin)
 admin.site.register(Endpoint, EndpointAdmin)
 
+
 class OAuthAdmin(admin.ModelAdmin):
     pass
 from piston.models import Consumer
 admin.site.register(Consumer, OAuthAdmin)
+
 
 class ContentAdmin(admin.ModelAdmin):
     list_display = ('value', 'c_type', 'pub_date')
@@ -27,12 +30,13 @@ class ContentAdmin(admin.ModelAdmin):
 from models.contents import Content, ContentType
 admin.site.register(Content, ContentAdmin)
 
+
 class ContentTypeAdmin(admin.ModelAdmin):
     pass
 admin.site.register(ContentType, ContentTypeAdmin)
 
 
-class TestModelAdmin(admin.ModelAdmin):
-    pass
-from models.testmodel import TestModel
-admin.site.register(TestModel, TestModelAdmin)
+#class TestModelAdmin(admin.ModelAdmin):
+#    pass
+#from models.testmodel import TestModel
+#admin.site.register(TestModel, TestModelAdmin)

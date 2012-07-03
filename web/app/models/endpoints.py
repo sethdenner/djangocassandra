@@ -1,5 +1,6 @@
-from django.db.models import ForeignKey, CharField, DateTimeField, BooleanField
 from django.contrib.auth.models import User, Group
+from django.db.models import ForeignKey, CharField, DateTimeField, BooleanField
+
 from app.models.knotis import KnotisModel
 from app.models.contents import Content
 from app.models.fields.permissions import PermissionsField
@@ -32,7 +33,6 @@ class EndpointPermissionsType(KnotisModel):
     value = CharField(max_length=30, choices=ENDPOINT_PERMISSION_TYPES)
     created_by = CharField(max_length=1024)
     pub_date = DateTimeField('date published')
-
 
 class Endpoint(KnotisModel):
     type = ForeignKey(EndpointType)

@@ -1,15 +1,22 @@
-from django.db import models
-from web.app.knotis.db import KnotisModel
+from django.db.models import CharField, ForeignKey, DateTimeField, FloatField
+
+from app.models.knotis import KnotisModel
 
 from contents import Content
-#from django.contrib.auth.models import User
+
+"""
+What is a product?  It's something that people engauge in economic activity to trade.  Sometimes it's a physical good, sometimes a service, sometimes an idea and sometimes it's a collection of other products grouped together.
+
+This might be a bit too general.
+
+Can these be ContentTypes?
+    Description
+    Reviews
+    SKU
+    tags
+"""
 
 # this isn't ready at all..
 class Product(KnotisModel):
-#    parent_id = model.IntField()
-#    parent_type = models.CharField(max_length=200) # probably a stupid way to do this.
-#    user = models.ForeignKey(User)
-#    c_parent = models.ForeignKey('self')
-#    c_type = models.CharField(max_length=140)
-#    content = Base64Field()
-     pub_date = models.DateTimeField('date published')
+     content = ForeignKey('self')
+     pub_date = DateTimeField('date published')

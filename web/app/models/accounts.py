@@ -1,38 +1,41 @@
-from django.db import models
-from web.app.knotis.db import KnotisModel
+from django.contrib.auth.models import Group, User
+from django.db.models import CharField, ForeignKey, DateTimeField, FloatField, BooleanField
+
+from app.models.knotis import KnotisModel
+from app.models.fields.permissions import PermissionsField
 
 from contents import Content
 from products import Product
 from businesses import Business
-from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
+
 
 class Currency(KnotisModel):
     class Meta(KnotisModel.Meta):
         verbose_name = 'Currency'
         verbose_name_plural = 'Currencies'
         
-    name = models.CharField(max_length=140)
+    name = CharField(max_length=140)
 
 class AccountType(KnotisModel):
     class Meta(KnotisModel.Meta):
         verbose_name = 'Account Type'
         verbose_name_plural = 'Account Types'
         
-    name = models.CharField(max_length=140)
+    name = CharField(max_length=140)
 
+"""
+There needs to be quite a bit more thought put into this and it definitely needs to be unit tested.
+
+This is pretty much where the accounting system leaves off.
+"""
 class Account(KnotisModel):
-#    parent_id = model.IntField()
-#    parent_type = models.CharField(max_length=200) # probably a stupid way to do this.
-# There definitely needs to be a lot more logic going on in here...
-    user = models.ForeignKey(User)
-    accounttype = models.ForeignKey(AccountType)
-    currency = models.ForeignKey(Currency)
-    b_parent = models.ForeignKey(Business)
-    c_parent = models.ForeignKey(Content)
-    name = models.CharField(max_length=140)
-    value = models.FloatField() #FIXME: think about this? How do we want to handle these types of values?
-    value_yesterday = models.FloatField() #FIXME: this is just one way we can check to see if the data is consistent?
-    pub_date = models.DateTimeField('date published') # date created.
-    updated_date = models.DateTimeField('date published') # last updated
-    state = models.BooleanField() # later an enum for (disabled etc.)
+    user = ForeignKey(User)
+    account_type = ForeignKey(AccountType)
+    currency = ForeignKey(Currency)
+    business = ForeignKey(Business, null=True)
+    content = ForeignKey(Content)
+    name = CharField(max_length=140)
+    funds_available = FloatField()
+    pub_date = DateTimeField('date published')     # date created.
+    updated_date = DateTimeField('date published') # last updated
+    state = BooleanField()                         # later add an enum for (disabled etc.)
