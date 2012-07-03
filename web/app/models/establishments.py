@@ -18,9 +18,17 @@ class Establishment(KnotisModel):
     # this content node, has children for: Hours, Address, etc. about the business.
     # the piston api will need to be modified to return the correct content for each of these attributes.
 
-    pub_date = DateTimeField('date published')
+    pub_date = DateTimeField('date published', auto_now_add=True)
 
-class EstablishmentEndpoinst(KnotisModel):
+    def __unicode__(self):
+        output_array = [
+            ' (',
+            self.id,
+            ')'
+        ]
+        return ''.join([s for s in output_array])
+
+class EstablishmentEndpoint(KnotisModel):
     establishment = ForeignKey(Establishment)
     endpoint = ForeignKey(Endpoint)
 
@@ -28,6 +36,13 @@ class EstablishmentHours(KnotisModel):
     establishment = ForeignKey(Establishment)
     hours = HoursField()
     order = IntegerField()
+    def __unicode__(self):
+        output_array = [
+            ' (',
+            self.id,
+            ')'
+        ]
+        return ''.join([s for s in output_array])
         
 #class EstablishmentHoursDaily(EstablishmentHours):
 #    class Meta:

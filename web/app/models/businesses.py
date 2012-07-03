@@ -22,6 +22,15 @@ class Business(KnotisModel):
 #    content = Base64Field()
     pub_date = DateTimeField('date published')
 
+    def __unicode__(self):
+        output_array = [
+            self.name,
+            ' (',
+            self.id,
+            ')'
+        ]
+        return ''.join([s for s in output_array])
+
 # FIXME: Implement tag's as content node types submitted by users.  The core tennant of 
 #class BusinessTag(KnotisModel):
 #    business = ForeignKey(Business)
@@ -31,7 +40,7 @@ class Business(KnotisModel):
 #    clicks = IntegerField()
 #    bounces = IntegerField()# Create your models here. Create your models here.
 
-class BusinessEndpoinst(KnotisModel):
+class BusinessEndpoint(KnotisModel):
     business = ForeignKey(Business)
     endpoint = ForeignKey(Endpoint)
 

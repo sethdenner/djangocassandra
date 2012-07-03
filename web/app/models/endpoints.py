@@ -35,7 +35,7 @@ class EndpointPermissionsType(KnotisModel):
     pub_date = DateTimeField('date published')
 
 class Endpoint(KnotisModel):
-    type = ForeignKey(EndpointType)
+    endpoint_type = ForeignKey(EndpointType)
 
     user = ForeignKey(User)
     group = ForeignKey(Group, null=True)

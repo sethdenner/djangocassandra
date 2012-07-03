@@ -8,7 +8,7 @@ import accounts
 import purchases
 
 import businesses
-import establishment
+import establishments
 
 import offers
 
