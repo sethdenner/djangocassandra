@@ -1,5 +1,6 @@
 from django.db import models
 from web.app.models.knotis import KnotisModel
+from djangotoolbox.fields import EmbeddedModelField
 
 class TestModel(KnotisModel):
     name  = models.CharField(max_length=200)
@@ -7,6 +8,10 @@ class TestModel(KnotisModel):
 
     def __unicode__(self):
         return self.name
+    
+class EmbeddedModelFieldTest(KnotisModel):
+    embedded = EmbeddedModelField(TestModel)
+    other = models.CharField(max_length=200)
 
 #    -----
 #create column family app_testmodel

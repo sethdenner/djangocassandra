@@ -3,10 +3,7 @@ from django.contrib import admin
 class UserAdmin(admin.ModelAdmin):
     pass
 from models.users import UserProfile
-from models.notifications import NotificationPreferences
 admin.site.register(UserProfile, UserAdmin)
-admin.site.register(NotificationPreferences, UserAdmin)
-
 
 class EndpointAdmin(admin.ModelAdmin):
     pass
@@ -66,8 +63,23 @@ admin.site.register(Establishment, GeneralAdmin)
 admin.site.register(EstablishmentEndpoint, GeneralAdmin)
 admin.site.register(EstablishmentHours, GeneralAdmin)
 
+from djangotoolbox.fields import EmbeddedModelField
+from django.forms import ModelChoiceField, ModelForm
+from models.testmodel import TestModel, EmbeddedModelFieldTest
+class EmbeddedModelFieldTestAdminForm(ModelForm, object):
+    class Meta:
+        model = EmbeddedModelFieldTest
+    
+    embedded = ModelChoiceField(queryset=TestModel.objects)
+    def __init__(self, *args, **kwargs):
+        super(EmbeddedModelFieldTestAdminForm, self).__init__(*args, **kwargs)
+        
+        # self.fields['embedded'] = ModelChoiceField(queryset=TestModel.objects)
 
-#class TestModelAdmin(admin.ModelAdmin):
-#    pass
-#from models.testmodel import TestModel
-#admin.site.register(TestModel, TestModelAdmin)
+class EmbeddedModelFieldTestAdmin(admin.ModelAdmin):
+    form = EmbeddedModelFieldTestAdminForm
+admin.site.register(EmbeddedModelFieldTest, EmbeddedModelFieldTestAdmin)
+    
+class TestModelAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(TestModel, TestModelAdmin)

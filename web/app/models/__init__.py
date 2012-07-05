@@ -16,7 +16,7 @@ import actions
 import products
 
 # delete these from git.
-#import testmodel
+import testmodel
 #
 #import math
 #import deals

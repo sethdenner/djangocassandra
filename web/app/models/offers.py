@@ -6,7 +6,7 @@ from app.models.knotis import KnotisModel
 from app.models.contents import Content
 from app.models.products import Product
 from app.models.businesses import Business
-from app.models.establishment import Establishment
+from app.models.establishments import Establishment
 from app.models.accounts import Currency, AccountType, Account
 from app.models.fields.permissions import PermissionsField
 from app.models.fields.hours import HoursField
