@@ -83,7 +83,8 @@
             
             var $template = this;
             $.each(data, function(key, value){
-                var $elements = $template.find('.' + key);
+                var $instance = $template.clone();
+                var $elements = $instance.find('.' + key);
                 $elements.each(function(){
                     var $this = $(this);
                     if ($this.is('input')) {
@@ -95,7 +96,9 @@
                         $this.text(value);
                     }
                 });
+                $template.after($instance);
             });
+            $template.remove();
         });
     };
 })(jQuery);
