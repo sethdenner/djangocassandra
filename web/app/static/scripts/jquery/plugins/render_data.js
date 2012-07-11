@@ -12,7 +12,7 @@
  * 
  * DOM elements look something like this:
  * 
- * <div id="user_template" data-resourceuri="RESOURCE_URI">
+ * <div id="user_template" data-resourceuri="RESOURCE_URI" data-data="[]">
  *     <span class="name"></span>
  *     <span class="birthday"></span>
  *     <span class="status"></span>
@@ -31,19 +31,21 @@
     var _options = null; //key/value collection of settings parsed from dom.
     
     var _get_data = function($template, attributes) {
-        if (!attributes || !attributes.resource_uri) { return; } //ERROR.
+        setTimeout(function(){
+            if (!attributes || !attributes.resourceuri) { return; } //ERROR.
         
-        $.ajax({
-            url: attributes.resource_uri,
-            dataType: 'json',
-            success: function(data, status, jq_xhr) {
-                var data_name = DATA_PREFIX + 'data';
-                $template.attr({
-                  data_name: data      
-                });
-                $template.render_data();
-            }
-        });
+            $.ajax({
+                url: attributes.resourceuri,
+                dataType: 'json',
+                success: function(data, status, jq_xhr) {
+                    var options = {
+                        data: data
+                    };
+                    $template.render_data(options);
+                }
+            });
+                
+        }, 0);
     };
     
     var _get_attributes = function(element) {
@@ -58,9 +60,7 @@
             if (attribute_node_name.indexOf(DATA_PREFIX) !== 0) { continue; }
             
             var name = attribute_node_name.substr(DATA_PREFIX.length);
-            attributes = $.extend({
-                name: attribute.nodeValue
-            }, attributes);
+            attributes[name] = attribute.nodeValue;
         }
         
         return attributes;
@@ -68,35 +68,35 @@
     
     jQuery.fn.render_data = function(options) {
         _options = $.extend({
-            'force_api': false //Forces data to be pulled from the API
+            'data': null
         }, options);
         
         return this.each(function (){
             var attributes = _get_attributes(this);
 
-            if (null === attributes.data || true === _options.force_api) {
-                _get_data(this, attributes);
+            if (null === _options.data) {
+                _get_data($(this), attributes);
                 return true;
             }
-            
-            var data = JSON.parse(attributes.data);
-            
-            var $template = this;
-            $.each(data, function(key, value){
+                        
+            var $template = $(this);
+            $.each(_options.data, function(index, value){
                 var $instance = $template.clone();
-                var $elements = $instance.find('.' + key);
-                $elements.each(function(){
-                    var $this = $(this);
-                    if ($this.is('input')) {
-                        $this.attr({
-                            'name': key,
-                            'value': value
-                        });
-                    } else {
-                        $this.text(value);
-                    }
-                });
-                $template.after($instance);
+                for (var key in value){
+                    var $elements = $instance.find('.' + key);
+                    $elements.each(function(){
+                        var $this = $(this);
+                        if ($this.is('input')) {
+                            $this.attr({
+                             'name': key,
+                             'value': value[key]
+                            });
+                        } else {
+                            $this.text(value[key]);
+                        }
+                    });
+                    $template.after($instance);
+                }
             });
             $template.remove();
         });
