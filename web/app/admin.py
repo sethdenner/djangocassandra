@@ -37,6 +37,7 @@ from models.user_relations import UserRelation, UserRelationType, UserRelationEn
 from models.accounts import Account, AccountType, Currency
 from models.purchases import Purchase, PurchaseType
 from models.products import Product
+from models.offers import Offer, OfferType, OfferProducts, OfferInventory
 from models.actions import Action, ActionType
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -55,6 +56,11 @@ admin.site.register(Currency, GeneralAdmin)
 admin.site.register(Purchase, GeneralAdmin)
 admin.site.register(PurchaseType, GeneralAdmin)
 admin.site.register(Product, GeneralAdmin)
+
+admin.site.register(Offer, GeneralAdmin)
+admin.site.register(OfferType, GeneralAdmin)
+admin.site.register(OfferProducts, GeneralAdmin)
+admin.site.register(OfferInventory, GeneralAdmin)
 
 admin.site.register(Action, GeneralAdmin)
 admin.site.register(ActionType, GeneralAdmin)
@@ -83,3 +89,8 @@ admin.site.register(EmbeddedModelFieldTest, EmbeddedModelFieldTestAdmin)
 class TestModelAdmin(admin.ModelAdmin):
     pass
 admin.site.register(TestModel, TestModelAdmin)
+
+#class TestModelAdmin(admin.ModelAdmin):
+#    pass
+#from models.testmodel import TestModel
+#admin.site.register(TestModel, TestModelAdmin)

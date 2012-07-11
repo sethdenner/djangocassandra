@@ -37,6 +37,11 @@ class Offer(KnotisModel):
 
     pub_date = DateTimeField('date published')
 
+class OfferProducts(KnotisModel):
+    offer = ForeignKey(Offer)
+    product = ForeignKey(Product)
+    #How do we account for offers that are combined between businesse?
+
 """ This is essentially the inventory. It has an associated hours field for allowing scheduled offers. """
 class OfferInventory(KnotisModel):
     offer = ForeignKey(Offer)
@@ -45,3 +50,5 @@ class OfferInventory(KnotisModel):
     available = IntegerField()
     total = IntegerField()
     sold = IntegerField()
+
+

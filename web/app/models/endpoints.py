@@ -79,19 +79,19 @@ class EndpointEmail(Endpoint):
     def send_message(self):
         pass
 
-class EndpointAddress(Endpoint):
-    #class Meta:
-    #    proxy = True
-    street = CharField(max_length=1024)
-    street_2 = CharField(max_length=1024)
-    street_3 = CharField(max_length=1024)
-    city = CharField(max_length=1024)
-    state = CharField(max_length=1024)
-    zipcode = CharField(max_length=1024)
-    country = CharField(max_length=1024)
-
-    def send_message(self):
-        pass
+#class EndpointAddress(Endpoint):
+#    #class Meta:
+#    #    proxy = True
+#    street = CharField(max_length=1024)
+#    street_2 = CharField(max_length=1024)
+#    street_3 = CharField(max_length=1024)
+#    city = CharField(max_length=1024)
+#    state = CharField(max_length=1024)
+#    zipcode = CharField(max_length=1024)
+#    country = CharField(max_length=1024)
+#
+#    def send_message(self):
+#        pass
 
 #class EndpointInternationalAddress(Endpoint):
 
