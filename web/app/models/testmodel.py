@@ -1,5 +1,5 @@
 from django.db import models
-from web.app.models.knotis import KnotisModel
+from app.models.knotis import KnotisModel
 from djangotoolbox.fields import EmbeddedModelField
 
 class TestModel(KnotisModel):

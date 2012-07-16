@@ -1,4 +1,4 @@
-from .utils import object_list_to_table
+from .utils import object_list_to_table, equal_lists
 from django.test import TestCase
 from django.test.simple import DjangoTestSuiteRunner
 from django.utils.unittest import TextTestRunner
