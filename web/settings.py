@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'piston',
     'djangotoolbox',
     'permission_backend_nonrel',
+    'background_task',
     # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',
