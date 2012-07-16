@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User, Group
 from django.db.models import CharField, ForeignKey, DateTimeField, FloatField
 
-from web.app.models.knotis import KnotisModel
-from web.app.models.fields.binary import Base64Field
+from app.models.knotis import KnotisModel
+from app.models.fields.binary import Base64Field
 from app.models.fields.permissions import PermissionsField
 
 
