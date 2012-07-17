@@ -1,5 +1,5 @@
-from django.contrib.auth.models import User, Group, Permission
-from django.db.models import CharField, ForeignKey, DateTimeField, FloatField, ManyToManyField
+from django.contrib.auth.models import User, Group
+from django.db.models import CharField, ForeignKey, DateTimeField, FloatField
 from django.utils.datetime_safe import datetime
 
 from app.models.knotis import KnotisModel
@@ -19,7 +19,7 @@ class ContentType(KnotisModel):
     value       = CharField(max_length=30, choices=CONTENT_TYPES)
     #permissions = CharField(max_length=30)#PickledObjectField()#PermissionsField()
     #permission = ForeignKey(Permission, null=True, blank=True)
-    permissions = ManyToManyField(Permission, null=True, blank=True)
+    #permissions = ManyToManyField(Permission, null=True, blank=True)
 
     pub_date = DateTimeField('date published', auto_now_add=True)
 
@@ -40,7 +40,7 @@ class Content(KnotisModel):
 
     user = ForeignKey(User)
     group = ForeignKey(Group, null=True, blank=True)
-    permissions = ManyToManyField(Permission, null=True, blank=True)
+    #permissions = ManyToManyField(Permission, null=True, blank=True)
     #permission = ForeignKey(Permission, null=True, blank=True)
     #permissions = PermissionsField()
 

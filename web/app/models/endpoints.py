@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User, Group
-from django.db.models import ForeignKey, CharField, DateTimeField, BooleanField
+from django.db.models import ForeignKey, CharField, DateTimeField, BooleanField, ManyToManyField
 
 from app.models.knotis import KnotisModel
 from app.models.contents import Content

@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group, User, Permission
 from django.db.models import CharField, ForeignKey, DateTimeField, FloatField, BooleanField
 
 from app.models.knotis import KnotisModel
@@ -35,7 +35,7 @@ class UserRelationType(KnotisModel):
     )
 
     value       = CharField(max_length=30, choices=USER_RELATION_TYPES)
-    permissions = ManyToManyField(Permission, null=True, blank=True)
+    #permissions = ManyToManyField(Permission, null=True, blank=True)
     #permissions = PermissionsField()
 
     pub_date = DateTimeField('date published')
@@ -56,6 +56,8 @@ class UserRelation(KnotisModel):
 class UserRelationEndpoint(KnotisModel):
     user_relation = ForeignKey(UserRelation)
     endpoint = ForeignKey(Endpoint)
-    permissions = PermissionsField()
+    #permissions = ManyToManyField(Permission, null=True, blank=True)
+    #permissions = PermissionsField()
+    #permissions = PermissionsField()
     pub_date = DateTimeField('date published')
 

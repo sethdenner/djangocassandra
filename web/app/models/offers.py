@@ -30,7 +30,7 @@ class Offer(KnotisModel):
     price_regular = FloatField()
 
     """ Some things may only be purchased by people with certain user_relationships. """
-    permissions = ManyToManyField(Permission, null=True, blank=True)
+    #permissions = ManyToManyField(Permission, null=True, blank=True)
     #permissions = PermissionsField() 
 
     """ When can this deal be purchased? """
