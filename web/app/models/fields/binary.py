@@ -1,17 +1,20 @@
-from django.db import models
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 import base64
 
-class Base64Field(models.TextField):
-    def contribute_to_class(self, cls, name):
-        if self.db_column is None:
-            self.db_column = name
-        self.field_name = name + '_base64'
-        super(Base64Field, self).contribute_to_class(cls, self.field_name)
-        setattr(cls, name, property(self.get_data, self.set_data))
+from django.db import models
 
-    def get_data(self, obj):
-        return base64.decodestring(getattr(obj, self.field_name))
-
-    def set_data(self, obj, data):
-        setattr(obj, self.field_name, base64.encodestring(data))
-
+class PickledObjectField(models.TextField):
+    __metaclass__ = models.SubfieldBase
+ 
+    def to_python(self, value):
+        if value is None: return None
+        if not isinstance(value, basestring): return value
+        return pickle.loads(base64.b64decode(value))
+ 
+    def get_db_prep_save(self, value):
+        if value is None: return
+        return base64.b64encode(pickle.dumps(value))

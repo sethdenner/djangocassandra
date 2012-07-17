@@ -1,9 +1,10 @@
-from app.models.fields.permissions import PermissionsField
-from app.models.knotis import KnotisModel
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 from django.db.models import CharField, ForeignKey, DateTimeField, FloatField
 from django.utils.datetime_safe import datetime
 
+from web.app.models.knotis import KnotisModel
+from web.app.models.fields.binary import PickledObjectField
+from web.app.models.fields.permissions import PermissionsField
 
 class ContentType(KnotisModel):
     CONTENT_TYPES = (
@@ -15,10 +16,11 @@ class ContentType(KnotisModel):
         # can say about a business.
     )
 
-    value = CharField(max_length=30, choices=CONTENT_TYPES)
-    permissions = PermissionsField()
+    value       = CharField(max_length=30, choices=CONTENT_TYPES)
+    #permissions = CharField(max_length=30)#PickledObjectField()#PermissionsField()
+    permission = ForeignKey(Permission, null=True, blank=True)
 
-    pub_date = DateTimeField('date published')
+    pub_date = DateTimeField('date published', auto_now_add=True)
 
     def __unicode__(self):
         return self.value
@@ -36,10 +38,11 @@ class Content(KnotisModel):
 #    certainty=(mu,sigma)
 
     user = ForeignKey(User)
-    group = ForeignKey(Group, null=True)
-    permissions = PermissionsField()
+    group = ForeignKey(Group, null=True, blank=True)
+    permission = ForeignKey(Permission, null=True, blank=True)
+    #permissions = PermissionsField()
 
-    c_parent = ForeignKey('self')
+    c_parent = ForeignKey('self', blank=True, null=True)
     #content_parent = ForeignKey('self')
     #content_previous = ForeignKey('self')
 
@@ -49,8 +52,8 @@ class Content(KnotisModel):
     certanty_mu = FloatField()  # average - expected value
     certanty_sigma = FloatField()  # stdev - expected error
 
-    pub_date = DateTimeField('date published')
-
+    pub_date = DateTimeField('date published', auto_now_add=True)
+    
     def __unicode__(self):
         return self.value
 
