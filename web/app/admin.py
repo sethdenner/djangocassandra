@@ -28,7 +28,7 @@ class ContentAdmin(admin.ModelAdmin):
 admin.site.register(Content, ContentAdmin)
 
 class ContentTypeAdmin(admin.ModelAdmin):
-    list_display = ('value', 'permission', 'pub_date')
+    list_display = ('value', 'pub_date')
     list_filter = ['pub_date']
     search_fields = ['value']
     pass

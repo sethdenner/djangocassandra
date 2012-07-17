@@ -8,7 +8,7 @@ from app.models.products import Product
 from app.models.businesses import Business
 from app.models.establishments import Establishment
 from app.models.accounts import Currency, AccountType, Account
-from app.models.fields.permissions import PermissionsField
+#from app.models.fields.permissions import PermissionsField
 from app.models.fields.hours import HoursField
 
 class OfferType(KnotisModel):
@@ -30,7 +30,8 @@ class Offer(KnotisModel):
     price_regular = FloatField()
 
     """ Some things may only be purchased by people with certain user_relationships. """
-    permissions = PermissionsField() 
+    permissions = ManyToManyField(Permission, null=True, blank=True)
+    #permissions = PermissionsField() 
 
     """ When can this deal be purchased? """
     hours = HoursField()
@@ -50,5 +51,3 @@ class OfferInventory(KnotisModel):
     available = IntegerField()
     total = IntegerField()
     sold = IntegerField()
-
-

@@ -2,7 +2,7 @@ from django.contrib.auth.models import Group, User
 from django.db.models import CharField, ForeignKey, DateTimeField, FloatField, BooleanField
 
 from app.models.knotis import KnotisModel
-from app.models.fields.permissions import PermissionsField
+#from app.models.fields.permissions import PermissionsField
 
 from contents import Content
 from products import Product

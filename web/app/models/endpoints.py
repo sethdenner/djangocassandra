@@ -39,7 +39,7 @@ class Endpoint(KnotisModel):
 
     user = ForeignKey(User)
     group = ForeignKey(Group, null=True)
-    permissions = PermissionsField()
+    #permissions = PermissionsField()
     content = ForeignKey(Content)
 
     value = CharField(max_length=1024)
@@ -52,9 +52,7 @@ class EndpointPermissions(KnotisModel):
     endpoint = ForeignKey(Endpoint)
     endpoint_permission_type = ForeignKey(EndpointPermissionsType)
 
-
 """ Endpoint Proxy Classes """
-
 class EndpointEmail(Endpoint): #-- the data for all these is the same, we want different actual
     class Meta:
         proxy = True
