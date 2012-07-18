@@ -20,6 +20,8 @@ from thrift.protocol import TBinaryProtocol
 from cassandra import Cassandra
 #from cassandra.ttypes import *
 from django.db.utils import DatabaseError
+from ast import literal_eval
+from string import replace
 
 def _cmp_to_key(comparison_function):
     """
@@ -170,7 +172,11 @@ def convert_string_to_list(s):
     # the client machine. Should have code that parses the list string
     # to construct the list or else validate the string before calling eval.
     # But for now, during development, we'll just use the quick & dirty eval.
-    return eval(s)
+    # FIXED by Seth Denner: Literal eval only evals literals and not arbitrary
+    # python.
+    s = replace(s, '<', '"')
+    s = replace(s, '>', '"')
+    return literal_eval(s)
 
 def convert_list_to_string(l):
     return unicode(l)

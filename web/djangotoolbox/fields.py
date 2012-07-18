@@ -3,6 +3,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.importlib import import_module
+from django.forms import CharField, ModelMultipleChoiceField
 
 __all__ = ('RawField', 'ListField', 'DictField', 'SetField',
            'BlobField', 'EmbeddedModelField')
@@ -117,7 +118,10 @@ class AbstractIterableField(models.Field):
             raise ValidationError('Value of type %r is not iterable' % type(values))
 
     def formfield(self, **kwargs):
-        raise NotImplementedError('No form field implemented for %r' % type(self))
+        defaults = {'form_class': CharField}
+        defaults.update(kwargs)
+        return super(AbstractIterableField, self).formfield(**defaults)
+
 
 class ListField(AbstractIterableField):
     """
@@ -131,11 +135,16 @@ class ListField(AbstractIterableField):
     _type = list
     db_type_prefix = 'ListField'
 
+    _queryset = None
+
     def __init__(self, *args, **kwargs):
         self.ordering = kwargs.pop('ordering', None)
         if self.ordering is not None and not callable(self.ordering):
             raise TypeError("'ordering' has to be a callable or None, "
-                            "not of type %r" %  type(self.ordering))
+                            "not of type %r" % type(self.ordering))
+
+        self._queryset = kwargs.pop('queryset', None)
+
         super(ListField, self).__init__(*args, **kwargs)
 
     def pre_save(self, model_instance, add):
@@ -145,6 +154,14 @@ class ListField(AbstractIterableField):
         if values and self.ordering:
             values.sort(key=self.ordering)
         return super(ListField, self).pre_save(model_instance, add)
+
+    def formfield(self, **kwargs):
+        defaults = {
+            'form_class': ModelMultipleChoiceField,
+            'queryset': self._queryset
+        }
+        defaults.update(kwargs)
+        return super(ListField, self).formfield(**defaults)
 
 class SetField(AbstractIterableField):
     """
