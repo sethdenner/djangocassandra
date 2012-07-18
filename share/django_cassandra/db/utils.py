@@ -13,7 +13,6 @@
 #   limitations under the License.
 
 import time
-from thrift import Thrift
 from thrift.transport import TTransport
 from thrift.transport import TSocket
 from thrift.protocol import TBinaryProtocol
@@ -21,7 +20,7 @@ from cassandra import Cassandra
 #from cassandra.ttypes import *
 from django.db.utils import DatabaseError
 from ast import literal_eval
-from string import replace
+
 
 def _cmp_to_key(comparison_function):
     """
@@ -156,17 +155,18 @@ def get_next_timestamp():
     # greater than the previous timestamp
     global _last_time, _last_counter
     current_time = int(time.time() * 1000)
-    
+
     if (_last_time == None) or (current_time > _last_time):
         _last_time = current_time
         _last_counter = 0
     else:
         _last_counter += 1
-    
+
     return _last_time * 0x100000 + _last_counter
 
+
 def convert_string_to_list(s):
-    # FIXME: Shouldn't use eval here, because of security considerations
+    # FIXED: Shouldn't use eval here, because of security considerations
     # (i.e. if someone could modify the data in Cassandra they could
     # insert arbitrary Python code that would then get evaluated on
     # the client machine. Should have code that parses the list string
@@ -174,9 +174,9 @@ def convert_string_to_list(s):
     # But for now, during development, we'll just use the quick & dirty eval.
     # FIXED by Seth Denner: Literal eval only evals literals and not arbitrary
     # python.
-    s = replace(s, '<', '"')
-    s = replace(s, '>', '"')
+    s = s.replace('<', '"').replace('>', '"')
     return literal_eval(s)
+
 
 def convert_list_to_string(l):
     return unicode(l)

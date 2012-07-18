@@ -83,6 +83,7 @@ class AbstractIterableField(models.Field):
         class fake_instance(object):
             pass
         fake_instance = fake_instance()
+
         def wrapper(value):
             assert not hasattr(self.item_field, 'attname')
             fake_instance.value = value
@@ -115,7 +116,17 @@ class AbstractIterableField(models.Field):
         try:
             iter(values)
         except TypeError:
-            raise ValidationError('Value of type %r is not iterable' % type(values))
+            raise ValidationError('Value of type %r is not iterable' % \
+                type(values))
+
+        super(
+            AbstractIterableField,
+            self
+        ).validate(
+            self,
+            values,
+            model_instance
+        )
 
     def formfield(self, **kwargs):
         defaults = {'form_class': CharField}
@@ -163,12 +174,14 @@ class ListField(AbstractIterableField):
         defaults.update(kwargs)
         return super(ListField, self).formfield(**defaults)
 
+
 class SetField(AbstractIterableField):
     """
     Field representing a Python ``set``.
     """
     _type = set
     db_type_prefix = 'SetField'
+
 
 class DictField(AbstractIterableField):
     """
@@ -190,7 +203,11 @@ class DictField(AbstractIterableField):
 
     def validate(self, values, model_instance):
         if not isinstance(values, dict):
-            raise ValidationError('Value is of type %r. Should be a dict.' % type(values))
+            raise ValidationError('Value is of type %r. Should be a dict.' % \
+                type(values))
+
+        super(DictField, self).validate(self, values, model_instance)
+
 
 class BlobField(models.Field):
     """

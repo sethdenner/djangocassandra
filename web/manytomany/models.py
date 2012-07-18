@@ -102,9 +102,9 @@ class RelatedManagerFactory(object):
             return RelatedManager
 
 
-class ManyToManyField(object):
+class ManyToManyField(models.Field):
     
-    def __init__(self, othermodel, **kwargs):
+    def __init__(self, othermodel, *args, **kwargs):
         is_symetrical = False
         lazy_eval = False
 
@@ -123,7 +123,7 @@ class ManyToManyField(object):
         base_manager_class = self.othermodel._base_manager.__class__
         self.RelatedManager = RelatedManagerFactory.get(base_manager_class)
 
-        super(ManyToManyField, self).__init__(**kwargs)
+        super(ManyToManyField, self).__init__(*args, **kwargs)
 
     def contribute_to_class(self, cls, name):
         self.name = name
