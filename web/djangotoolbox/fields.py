@@ -123,7 +123,6 @@ class AbstractIterableField(models.Field):
             AbstractIterableField,
             self
         ).validate(
-            self,
             values,
             model_instance
         )
