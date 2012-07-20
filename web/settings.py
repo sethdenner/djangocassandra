@@ -130,7 +130,7 @@ INSTALLED_APPS = (
     'permission_backend_nonrel',
     'background_task',
     'timezones',
-    'manytomany',
+    'manytomanynonrel',
     # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',
