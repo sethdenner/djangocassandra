@@ -6,17 +6,19 @@ from app.models.knotis import KnotisModel
 from app.models.contents import Content
 from app.models.endpoints import Endpoint
 
-from manytomany.models import ManyToManyField
+# from manytomany.models import ManyToManyField
+from manytomanynonrel.models import ManyToManyModelField
+
 
 class Business(KnotisModel):
     class Meta(KnotisModel.Meta):
         verbose_name = "Business"
         verbose_name_plural = 'Businesses'
-        
+
 #    parent_id = model.IntField()
 #    parent_type = CharField(max_length=200) # probably a stupid way to do this.
 #    content = ForeignKey(Content)
-    content = ManyToManyField(Content)
+    content = ManyToManyModelField(ForeignKey(Content))
     name = CharField(max_length=140)
 
     # can be a url or maybe an id for gravatar.
