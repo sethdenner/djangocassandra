@@ -1,10 +1,27 @@
 from django.db import models
+from ast import literal_eval
+from numpy import matrix
 
-class MatrixField(models.Field):
+
+class MatrixField(models.CharField):
     """A field type for storing matrixes."""
+    #__metaclass__ = models.SubfieldBase
 
-    def get_data(self, obj):
-        return getattr(obj, self.field_name)
+"""
+    def to_python(self, value):
+        if value is None: return None
+        if not isinstance(value, basestring):
+            return value
 
-    def set_data(self, obj, data):
-        setattr(obj, self.field_name, 'pickle the matrix')
+        # return this once fixed
+        m = matrix(literal_eval(value))
+
+        return value
+
+    def get_db_prep_save(self, value):
+        if value is None:
+            return value
+
+        return value
+"""
+

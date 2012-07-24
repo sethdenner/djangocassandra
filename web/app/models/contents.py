@@ -1,30 +1,9 @@
 from django.contrib.auth.models import User, Group
-from django.db.models import CharField, ForeignKey, DateTimeField, FloatField
+from django.db.models import CharField, DateTimeField, FloatField
+from foreignkeynonrel.models import ForeignKeyNonRel
 from django.utils.datetime_safe import datetime
 
 from app.models.knotis import KnotisModel
-from app.models.fields.binary import PickledObjectField
-from app.models.fields.permissions import PermissionsField
-
-class ContentType(KnotisModel):
-    CONTENT_TYPES = (
-        ('0', 'root'),
-        ('1', 'site text'),
-        ('2', 'user submitted')
-        # terms of service
-        # hours, address, business name, all endpoints, anything that a user
-        # can say about a business.
-    )
-
-    value       = CharField(max_length=30, choices=CONTENT_TYPES)
-    #permissions = CharField(max_length=30)#PickledObjectField()#PermissionsField()
-    #permission = ForeignKey(Permission, null=True, blank=True)
-    #permissions = ManyToManyField(Permission, null=True, blank=True)
-
-    pub_date = DateTimeField('date published', auto_now_add=True)
-
-    def __unicode__(self):
-        return self.value
 
 
 class Content(KnotisModel):
@@ -37,25 +16,52 @@ class Content(KnotisModel):
 #    content=(text or value)
 #    created_time
 #    certainty=(mu,sigma)
+    CONTENT_TYPES = (
+        ('0', 'Root'),
+        ('1', 'Site Text'),
+        ('2', 'User Submitted'),
+        ('3.0', 'Business Root'),
+        ('3.1', 'Business Name'),
+        ('3.2', 'Business Hours'),
+        ('3.3', 'Business Avatar'),
+        ('3.4', 'Business Summary'),
+        ('3.5', 'Business Description'),
+        ('3.6', 'Business Short Name'),
+        ('4', 'Endpoint'),
+        ('4.1', 'Endpoint Email'),
+        ('4.2', 'Endpoint Phone'),
+        ('4.3', 'Endpoint Address'),
+        ('4.4', 'Endpoint Twitter')
 
-    user = ForeignKey(User)
-    group = ForeignKey(Group, null=True, blank=True)
+        # terms of service
+        # hours, address, business name, all endpoints, anything that a user
+        # can say about a business.
+    )
+
+    LOCALES = (
+        ('en_us', 'en_us'),
+        ('jp', 'jp')
+    )
+
+    content_type = CharField(max_length=30, choices=CONTENT_TYPES, null=True)
+    locale = CharField(max_length='10', choices=LOCALES, null=True, default=LOCALES[0])
+
+    user = ForeignKeyNonRel(User,)
+    group = ForeignKeyNonRel(Group, null=True, blank=True)
     #permissions = ManyToManyField(Permission, null=True, blank=True)
-    #permission = ForeignKey(Permission, null=True, blank=True)
+    #permission = ForeignKeyNonRel(Permission, null=True, blank=True)
     #permissions = PermissionsField()
 
-    c_parent = ForeignKey('self', blank=True, null=True)
-    #content_parent = ForeignKey('self')
-    #content_previous = ForeignKey('self')
+    parent = ForeignKeyNonRel('self', blank=True, null=True, related_name='content_parent')
+    previous = ForeignKeyNonRel('self', related_name='content_previous', blank=True, null=True)
 
-    c_type = ForeignKey(ContentType)
     value = CharField(max_length=2000)  # Base64Field()
 
     certanty_mu = FloatField()  # average - expected value
     certanty_sigma = FloatField()  # stdev - expected error
 
     pub_date = DateTimeField('date published', auto_now_add=True)
-    
+
     def __unicode__(self):
         return self.value
 

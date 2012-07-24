@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
-from django.db.models import CharField, ForeignKey, DateTimeField, FloatField, IntegerField
+from django.db.models import CharField, DateTimeField, FloatField, IntegerField
+from foreignkeynonrel.models import ForeignKeyNonRel
 
 from app.models.knotis import KnotisModel
 from app.models.businesses import Business
@@ -12,9 +13,9 @@ class Establishment(KnotisModel):
         verbose_name = "Establishment"
         verbose_name_plural = 'Establishments'
     
-    business = ForeignKey(Business)
+    business = ForeignKeyNonRel(Business)
 
-    content = ForeignKey(Content)
+    content = ForeignKeyNonRel(Content)
     # this content node, has children for: Hours, Address, etc. about the business.
     # the piston api will need to be modified to return the correct content for each of these attributes.
 
@@ -29,11 +30,11 @@ class Establishment(KnotisModel):
         return ''.join([s for s in output_array])
 
 class EstablishmentEndpoint(KnotisModel):
-    establishment = ForeignKey(Establishment)
-    endpoint = ForeignKey(Endpoint)
+    establishment = ForeignKeyNonRel(Establishment)
+    endpoint = ForeignKeyNonRel(Endpoint)
 
 class EstablishmentHours(KnotisModel):
-    establishment = ForeignKey(Establishment)
+    establishment = ForeignKeyNonRel(Establishment)
     hours = HoursField()
     order = IntegerField()
     def __unicode__(self):

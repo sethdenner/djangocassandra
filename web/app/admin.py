@@ -3,7 +3,7 @@ from django.forms import ModelChoiceField, ModelForm
 from models.accounts import Account, AccountType, Currency
 from models.actions import Action, ActionType
 from models.businesses import Business, BusinessEndpoint
-from models.contents import Content, ContentType
+from models.contents import Content
 from models.endpoints import Endpoint, EndpointType
 from models.establishments import Establishment, EstablishmentEndpoint, \
     EstablishmentHours
@@ -34,19 +34,19 @@ admin.site.register(Consumer, OAuthAdmin)
 
 
 class ContentAdmin(admin.ModelAdmin):
-    list_display = ('value', 'c_type', 'pub_date')
+    list_display = ('value', 'content_type', 'pub_date')
     list_filter = ['pub_date']
     search_fields = ['value']
-    pass
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'user':
+            kwargs['initial'] = request.user.id
+            return db_field.formfield(**kwargs)
+        return super(ContentAdmin, self).formfield_for_foreignkey(
+            db_field, request, **kwargs
+        )
+
 admin.site.register(Content, ContentAdmin)
-
-
-class ContentTypeAdmin(admin.ModelAdmin):
-    list_display = ('value', 'pub_date')
-    list_filter = ['pub_date']
-    search_fields = ['value']
-    pass
-admin.site.register(ContentType, ContentTypeAdmin)
 
 
 class BusinessForm(ModelForm):
@@ -56,12 +56,13 @@ class BusinessForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(BusinessForm, self).__init__(*args, **kwargs)
 
-        self.fields['content'].widget.choices = \
+        """
+        self.fields['root_content'].widget.choices = \
             [(i.pk, i) for i in Content.objects.all()]
 
         if self.instance.pk:
-            self.fields['content'].initial = self.instance.content
-
+            self.fields['root_content'].initial = self.instance.content
+        """
 
 class BusinessAdmin(admin.ModelAdmin):
     form = BusinessForm

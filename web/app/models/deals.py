@@ -7,7 +7,7 @@ class Deal(KnotisModel):
     pub_date = models.DateTimeField('date published')
 
 class Upsell(KnotisModel):
-    deal = models.ForeignKey(Deal)
+    deal = models.ForeignKeyNonRel(Deal)
     choice = models.CharField(max_length=200)
     clicks = models.IntegerField()
     bounces = models.IntegerField()

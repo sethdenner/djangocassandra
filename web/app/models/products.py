@@ -1,4 +1,5 @@
-from django.db.models import CharField, ForeignKey, DateTimeField, FloatField
+from django.db.models import CharField, DateTimeField, FloatField
+from foreignkeynonrel.models import ForeignKeyNonRel
 
 from app.models.knotis import KnotisModel
 
@@ -18,5 +19,5 @@ Can these be ContentTypes?
 
 # this isn't ready at all..
 class Product(KnotisModel):
-     content = ForeignKey('self')
+     content = ForeignKeyNonRel('self')
      pub_date = DateTimeField('date published')

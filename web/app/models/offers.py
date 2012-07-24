@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
-from django.db.models import CharField, ForeignKey, DateTimeField, FloatField, IntegerField
+from django.db.models import CharField, DateTimeField, FloatField, IntegerField
+from foreignkeynonrel.models import ForeignKeyNonRel
 
 from app.models.knotis import KnotisModel
 
@@ -22,10 +23,10 @@ class OfferType(KnotisModel):
         return self.name
 
 class Offer(KnotisModel):
-    establishment = ForeignKey(Establishment)
-    offer_type = ForeignKey(OfferType)
-    currency = ForeignKey(Currency)
-    content = ForeignKey(Content)
+    establishment = ForeignKeyNonRel(Establishment)
+    offer_type = ForeignKeyNonRel(OfferType)
+    currency = ForeignKeyNonRel(Currency)
+    content = ForeignKeyNonRel(Content)
     
     price_regular = FloatField()
 
@@ -39,13 +40,13 @@ class Offer(KnotisModel):
     pub_date = DateTimeField('date published')
 
 class OfferProducts(KnotisModel):
-    offer = ForeignKey(Offer)
-    product = ForeignKey(Product)
+    offer = ForeignKeyNonRel(Offer)
+    product = ForeignKeyNonRel(Product)
     #How do we account for offers that are combined between businesse?
 
 """ This is essentially the inventory. It has an associated hours field for allowing scheduled offers. """
 class OfferInventory(KnotisModel):
-    offer = ForeignKey(Offer)
+    offer = ForeignKeyNonRel(Offer)
     hours = HoursField()
     price = FloatField()
     available = IntegerField()

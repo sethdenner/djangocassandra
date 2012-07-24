@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Group, User
-from django.db.models import CharField, ForeignKey, DateTimeField, FloatField, BooleanField
+from django.db.models import CharField, DateTimeField, FloatField, BooleanField
+from foreignkeynonrel.models import ForeignKeyNonRel
 
 from app.models.knotis import KnotisModel
 #from app.models.fields.permissions import PermissionsField
@@ -8,6 +9,7 @@ from app.models.endpoints import Endpoint
 
 # from manytomany.models import ManyToManyField
 from manytomanynonrel.models import ManyToManyModelField
+from django.utils.termcolors import foreground
 
 
 class Business(KnotisModel):
@@ -15,17 +17,18 @@ class Business(KnotisModel):
         verbose_name = "Business"
         verbose_name_plural = 'Businesses'
 
-#    parent_id = model.IntField()
-#    parent_type = CharField(max_length=200) # probably a stupid way to do this.
-#    content = ForeignKey(Content)
-    content = ManyToManyModelField(ForeignKey(Content))
+    content_root = ForeignKeyNonRel(Content, related_name='business_content_root', null=True)
+    # content = ManyToManyModelField(ForeignKeyNonRel(Content))
     name = CharField(max_length=140)
 
     # can be a url or maybe an id for gravatar.
+    avatar = ForeignKeyNonRel(Content, related_name='business_avatar', null=True)
+    hours = ForeignKeyNonRel(Content, related_name='business_hours', null=True)
+    business_name = ForeignKeyNonRel(Content, related_name='business_name', null=True)
+
     avatar = CharField(max_length=140, null=True)
 
-#    content = Base64Field()
-    pub_date = DateTimeField('date published')
+    pub_date = DateTimeField('date published', auto_now_add=True)
 
     def __unicode__(self):
         output_array = [
@@ -38,14 +41,14 @@ class Business(KnotisModel):
 
 # FIXME: Implement tag's as content node types submitted by users.  The core tennant of 
 #class BusinessTag(KnotisModel):
-#    business = ForeignKey(Business)
-#    bt_parent = ForeignKey(Content)
-    
+#    business = ForeignKeyNonRel(Business)
+#    bt_parent = ForeignKeyNonRel(Content)
+
 #    choice = CharField(max_length=200)
 #    clicks = IntegerField()
 #    bounces = IntegerField()# Create your models here. Create your models here.
 
 class BusinessEndpoint(KnotisModel):
-    business = ForeignKey(Business)
-    endpoint = ForeignKey(Endpoint)
+    business = ForeignKeyNonRel(Business)
+    endpoint = ForeignKeyNonRel(Endpoint)
 

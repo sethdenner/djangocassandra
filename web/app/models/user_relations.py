@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Group, User, Permission
-from django.db.models import CharField, ForeignKey, DateTimeField, FloatField, BooleanField
+from django.db.models import CharField, DateTimeField, FloatField, BooleanField
+from foreignkeynonrel.models import ForeignKeyNonRel
 
 from app.models.knotis import KnotisModel
 #from app.models.fields.permissions import PermissionsField
@@ -44,9 +45,9 @@ class UserRelationType(KnotisModel):
     #type = ForeginKey(KnotisModel)
 
 class UserRelation(KnotisModel):
-    user = ForeignKey(User)
+    user = ForeignKeyNonRel(User)
     user_relation_name = CharField(max_length=140) # text the user gives this user_relation? I don't know....
-    user_relation_type = ForeignKey(UserRelationType)
+    user_relation_type = ForeignKeyNonRel(UserRelationType)
     user_relation_foreign_id = CharField(max_length=100) # the id of the foreign relation.
 
     pub_date = DateTimeField('date published') # date created.
@@ -54,8 +55,8 @@ class UserRelation(KnotisModel):
     state = BooleanField() # later an enum for (disabled etc.)
 
 class UserRelationEndpoint(KnotisModel):
-    user_relation = ForeignKey(UserRelation)
-    endpoint = ForeignKey(Endpoint)
+    user_relation = ForeignKeyNonRel(UserRelation)
+    endpoint = ForeignKeyNonRel(Endpoint)
     #permissions = ManyToManyField(Permission, null=True, blank=True)
     #permissions = PermissionsField()
     #permissions = PermissionsField()
