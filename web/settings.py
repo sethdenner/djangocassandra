@@ -131,6 +131,7 @@ INSTALLED_APPS = (
     'background_task',
     'timezones',
     'manytomanynonrel',
+    'foreignkeynonrel',
     # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Group, User
-from django.db.models import CharField, ForeignKey, DateTimeField, FloatField, BooleanField
+from django.db.models import CharField, DateTimeField, FloatField, BooleanField
+from foreignkeynonrel.models import ForeignKeyNonRel
 
 from app.models.knotis import KnotisModel
 #from app.models.fields.permissions import PermissionsField
@@ -15,16 +16,16 @@ class PurchaseType(KnotisModel):
 class Purchase(KnotisModel):
 #    parent_id = model.IntField()
 #    parent_type = CharField(max_length=200) # probably a stupid way to do this.
-    user = ForeignKey(User)
-    offer = ForeignKey(Offer)
-    source_account = ForeignKey(Account)
+    user = ForeignKeyNonRel(User)
+    offer = ForeignKeyNonRel(Offer)
+    source_account = ForeignKeyNonRel(Account)
     # FIXME: why can't we have multiple references to the same table?
-    # dest_account = ForeignKey(Account)
-    offer = ForeignKey(Offer)
-    purchasetype = ForeignKey(PurchaseType)
-    currency = ForeignKey(Currency)
-    b_parent = ForeignKey(Business)
-    c_parent = ForeignKey(Content)
+    # dest_account = ForeignKeyNonRel(Account)
+    offer = ForeignKeyNonRel(Offer)
+    purchasetype = ForeignKeyNonRel(PurchaseType)
+    currency = ForeignKeyNonRel(Currency)
+    b_parent = ForeignKeyNonRel(Business)
+    c_parent = ForeignKeyNonRel(Content)
     o_name = CharField(max_length=140)
     value = FloatField()
     pub_date = DateTimeField('date published')

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Group, User
-from django.db.models import CharField, ForeignKey, DateTimeField, FloatField, BooleanField
+from django.db.models import CharField, DateTimeField, FloatField, BooleanField
+from foreignkeynonrel.models import ForeignKeyNonRel
 
 from app.models.knotis import KnotisModel
 #from app.models.fields.permissions import PermissionsField
@@ -29,11 +30,11 @@ There needs to be quite a bit more thought put into this and it definitely needs
 This is pretty much where the accounting system leaves off.
 """
 class Account(KnotisModel):
-    user = ForeignKey(User)
-    account_type = ForeignKey(AccountType)
-    currency = ForeignKey(Currency)
-    business = ForeignKey(Business, null=True)
-    content = ForeignKey(Content)
+    user = ForeignKeyNonRel(User)
+    account_type = ForeignKeyNonRel(AccountType)
+    currency = ForeignKeyNonRel(Currency)
+    business = ForeignKeyNonRel(Business, null=True)
+    content = ForeignKeyNonRel(Content)
     name = CharField(max_length=140)
     funds_available = FloatField()
     pub_date = DateTimeField('date published')     # date created.

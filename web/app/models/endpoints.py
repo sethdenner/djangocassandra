@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
-from django.db.models import ForeignKey, CharField, DateTimeField, BooleanField, ManyToManyField
-
+from django.db.models import CharField, DateTimeField, BooleanField, ManyToManyField
+from foreignkeynonrel.models import ForeignKeyNonRel
 from app.models.knotis import KnotisModel
 from app.models.contents import Content
 from app.models.fields.permissions import PermissionsField
@@ -14,7 +14,7 @@ class EndpointType(KnotisModel):
     value = CharField(max_length=30, choices=ENDPOINT_TYPES)
     created_by = CharField(max_length=1024)
     pub_date = DateTimeField('date published')
-    
+
     def __unicode__(self):
         output_array = [
             self.value,
@@ -35,22 +35,22 @@ class EndpointPermissionsType(KnotisModel):
     pub_date = DateTimeField('date published')
 
 class Endpoint(KnotisModel):
-    endpoint_type = ForeignKey(EndpointType)
+    endpoint_type = ForeignKeyNonRel(EndpointType)
 
-    user = ForeignKey(User)
-    group = ForeignKey(Group, null=True)
+    user = ForeignKeyNonRel(User)
+    group = ForeignKeyNonRel(Group, null=True)
     #permissions = PermissionsField()
-    content = ForeignKey(Content)
+    content = ForeignKeyNonRel(Content)
 
     value = CharField(max_length=1024)
     validated = BooleanField(default=False)
     disabled = BooleanField(default=False)
-    
+
     pub_date = DateTimeField('date published')
 
 class EndpointPermissions(KnotisModel):
-    endpoint = ForeignKey(Endpoint)
-    endpoint_permission_type = ForeignKey(EndpointPermissionsType)
+    endpoint = ForeignKeyNonRel(Endpoint)
+    endpoint_permission_type = ForeignKeyNonRel(EndpointPermissionsType)
 
 """ Endpoint Proxy Classes """
 class EndpointEmail(Endpoint): #-- the data for all these is the same, we want different actual

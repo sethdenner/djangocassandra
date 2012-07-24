@@ -4,15 +4,15 @@ from piston.doc import generate_doc
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.shortcuts import render_to_response, get_object_or_404
-from app.models.contents import Content, ContentType
+from app.models.contents import Content
 
 class ContentHandler(BaseHandler):
-    allowed_methods = ('GET','PUT','POST','DELETE')
+    allowed_methods = ('GET', 'PUT', 'POST', 'DELETE')
     model = Content
-    exclude = ('c_parent_id','c_parent','title')
+    exclude = ('c_parent_id', 'c_parent', 'title')
     #fields = ('user','group','c_type','value')
-    fields = ('id',('user',('username','id','email')),'value',('group',('id','name')),('c_type',('id','name')),'value')
-    
+    fields = ('id', ('user', ('username', 'id', 'email')), 'value', ('group', ('id', 'name')), ('type', ('id', 'name')), 'value')
+
     def read(self, request, content_id=None):
         base = Content.objects
         #latest_content_list = Content.objects.all().order_by('-pub_date')[:5]
