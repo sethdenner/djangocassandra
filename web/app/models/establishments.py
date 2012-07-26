@@ -12,7 +12,7 @@ class Establishment(KnotisModel):
     class Meta(KnotisModel.Meta):
         verbose_name = "Establishment"
         verbose_name_plural = 'Establishments'
-    
+
     business = ForeignKeyNonRel(Business)
 
     content = ForeignKeyNonRel(Content)
@@ -44,7 +44,7 @@ class EstablishmentHours(KnotisModel):
             ')'
         ]
         return ''.join([s for s in output_array])
-        
+
 #class EstablishmentHoursDaily(EstablishmentHours):
 #    class Meta:
 #        proxy = True

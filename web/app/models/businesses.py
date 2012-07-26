@@ -26,7 +26,7 @@ class Business(KnotisModel):
     hours = ForeignKeyNonRel(Content, related_name='business_hours', null=True)
     business_name = ForeignKeyNonRel(Content, related_name='business_name', null=True)
 
-    avatar = CharField(max_length=140, null=True)
+    # avatar = CharField(max_length=140, null=True)
 
     pub_date = DateTimeField('date published', auto_now_add=True)
 

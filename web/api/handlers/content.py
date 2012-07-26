@@ -9,10 +9,11 @@ from app.models.contents import Content
 class ContentHandler(BaseHandler):
     allowed_methods = ('GET', 'PUT', 'POST', 'DELETE')
     model = Content
-    exclude = ('c_parent_id', 'c_parent', 'title')
-    #fields = ('user','group','c_type','value')
-    fields = ('id', ('user', ('username', 'id', 'email')), 'value', ('group', ('id', 'name')), ('type', ('id', 'name')), 'value')
+    # exclude = ('c_parent_id', 'c_parent', 'title')
+    # fields = ('user','group','c_type','value')
+    # fields = ('id', ('user', ('username', 'id', 'email')), 'value', ('group', ('id', 'name')), ('type', ('id', 'name')), 'value')
 
+    """
     def read(self, request, content_id=None):
         base = Content.objects
         #latest_content_list = Content.objects.all().order_by('-pub_date')[:5]
@@ -21,6 +22,7 @@ class ContentHandler(BaseHandler):
             return base.get(pk=content_id)
         else:
             return base.all()
+    """
 
 #    def create(self, request):
 #        #if request.content_type:
