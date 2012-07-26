@@ -46,7 +46,7 @@ class Content(KnotisModel):
     content_type = CharField(max_length=30, choices=CONTENT_TYPES, null=True)
     locale = CharField(max_length='10', choices=LOCALES, null=True, default=LOCALES[0])
 
-    user = ForeignKeyNonRel(User,)
+    user = ForeignKeyNonRel(User)
     group = ForeignKeyNonRel(Group, null=True, blank=True)
     #permissions = ManyToManyField(Permission, null=True, blank=True)
     #permission = ForeignKeyNonRel(Permission, null=True, blank=True)
@@ -55,15 +55,18 @@ class Content(KnotisModel):
     parent = ForeignKeyNonRel('self', blank=True, null=True, related_name='content_parent')
     previous = ForeignKeyNonRel('self', related_name='content_previous', blank=True, null=True)
 
-    value = CharField(max_length=2000)  # Base64Field()
+    value = CharField(max_length=2000, null=True, blank=True)  # Base64Field()
 
-    certanty_mu = FloatField()  # average - expected value
-    certanty_sigma = FloatField()  # stdev - expected error
+    certainty_mu = FloatField(null=True)  # average - expected value
+    certainty_sigma = FloatField(null=True)  # stdev - expected error
 
     pub_date = DateTimeField('date published', auto_now_add=True)
 
     def __unicode__(self):
-        return self.value
+        if None == self.value:
+            return '(None)'
+        else:
+            return self.value
 
     def was_published_recently(self):
         return self.pub_date >= datetime.now() - datetime.timedelta(days=1)

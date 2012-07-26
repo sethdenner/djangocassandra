@@ -20,7 +20,9 @@ urlpatterns = patterns('',
   url(r'^users/', user_handler),
   url(r'^endpoints/(?P<user_id>[^/]+)/', endpoint_handler),
   url(r'^establishments', establishment_handler),
-  url(r'^businesses', business_handler)
+  url(r'^businesses', business_handler),
+  url(r'^business/(?P<id>[^/]+)/', business_handler),
+  url(r'^business/create/', business_handler)
 )
 
 
