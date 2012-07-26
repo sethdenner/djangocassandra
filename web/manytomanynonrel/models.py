@@ -3,8 +3,8 @@ from django.db.models.manager import Manager
 from django.db.models.query import QuerySet
 from djangotoolbox.fields import ListField
 from string import Template
-from utils.functional import curry
 from views import ManyToManyFormField
+from django.utils.functional import curry
 
 
 class ManyRelatedManagerFactory:
@@ -244,7 +244,9 @@ class ManyToManyFieldNonRel(ListField):
             raise NotImplementedError
 
         base_manager_class = self.othermodel._base_manager.__class__
-        self.many_related_manager = ManyRelatedManagerFactory.get(base_manager_class)
+        self.many_related_manager = ManyRelatedManagerFactory.get(
+            base_manager_class
+        )
 
         super(ManyToManyFieldNonRel, self).__init__(**kwargs)
 
