@@ -52,34 +52,47 @@ class EndpointPermissions(KnotisModel):
     endpoint = ForeignKeyNonRel(Endpoint)
     endpoint_permission_type = ForeignKeyNonRel(EndpointPermissionsType)
 
+
 """ Endpoint Proxy Classes """
+class EndpointPhone(Endpoint):
+    class Meta:
+        proxy = True
+
+    def send_message(self):
+        pass
+
+
 class EndpointEmail(Endpoint): #-- the data for all these is the same, we want different actual
     class Meta:
         proxy = True
+
     def send_message(self):
         pass
+
 
 class EndpointTwitter(Endpoint):
     class Meta:
         proxy = True
+
     def send_message(self):
         pass
+
 
 class EndpointSMS(Endpoint):
     class Meta:
         proxy = True
+
     def send_message(self):
         pass
 
-class EndpointEmail(Endpoint):
+
+class EndpointAddress(Endpoint):
     class Meta:
         proxy = True
+
     def send_message(self):
         pass
 
-#class EndpointAddress(Endpoint):
-#    #class Meta:
-#    #    proxy = True
 #    street = CharField(max_length=1024)
 #    street_2 = CharField(max_length=1024)
 #    street_3 = CharField(max_length=1024)

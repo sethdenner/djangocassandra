@@ -21,8 +21,8 @@ class Business(KnotisModel):
     name = CharField(max_length=140)
 
     # can be a url or maybe an id for gravatar.
-    avatar = ForeignKeyNonRel(Content, related_name='business_avatar', null=True)
-    hours = ForeignKeyNonRel(Content, related_name='business_hours', null=True)
+    avatar = ForeignKeyNonRel(Content, related_name='business_avatar', null=True, blank=True)
+    hours = ForeignKeyNonRel(Content, related_name='business_hours', null=True, blank=True)
     business_name = ForeignKeyNonRel(Content, related_name='business_name', null=True)
 
     # avatar = CharField(max_length=140, null=True)
