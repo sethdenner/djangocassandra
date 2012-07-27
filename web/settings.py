@@ -130,8 +130,6 @@ INSTALLED_APPS = (
     'permission_backend_nonrel',
     'background_task',
     'timezones',
-    'manytomanynonrel',
-    'foreignkeynonrel',
     # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -141,8 +139,11 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    # Our apps.
-    'web.app',
+    #Knotis apps.
+    'manytomanynonrel',
+    'foreignkeynonrel',
+    'auth',
+    'app',
 )
 
 # A sample logging configuration. The only tangible logging
