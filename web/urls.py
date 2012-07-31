@@ -6,13 +6,13 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-  url(r'^$', 'web.app.views.home.index', name='home'),
-  url(r'^business/create', 'web.app.views.business.create_business', name="business"),
-  url(r'^business/list', 'web.app.views.business.list_businesses', name="business"),
-  url(r'^login/$', 'django.contrib.auth.views.login', name="login"),
+  url(r'^$', 'app.views.home.index', name='home'),
+  url(r'^business/create', 'app.views.business.create_business', name="business"),
+  url(r'^business/list', 'app.views.business.list_businesses', name="business"),
+  url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
   url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
   url(r'^admin/', include(admin.site.urls)),
-  url(r'^api/', include('web.api.urls')),
+  url(r'^api/', include('api.urls')),
 )
 
 urlpatterns += staticfiles_urlpatterns()

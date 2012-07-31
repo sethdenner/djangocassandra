@@ -34,7 +34,7 @@ class CsrfExemptResource(Resource):
 content_handler = CsrfExemptResource(ContentHandler)
 
 urlpatterns += patterns('',
-    url(r'^oauth/callback', 'web.app.views.authentication.oauth_callback'),
+    url(r'^oauth/callback', 'app.views.authentication.oauth_callback'),
     url(r'^oauth/', include('piston.authentication.oauth.urls')),
 )
 
