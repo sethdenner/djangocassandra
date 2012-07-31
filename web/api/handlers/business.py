@@ -98,4 +98,4 @@ class BusinessModelHandler(BaseHandler):
         )
         new_business.save()
 
-        return rc.CREATED
+        return new_business

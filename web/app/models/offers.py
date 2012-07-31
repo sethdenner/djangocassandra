@@ -5,6 +5,8 @@ from app.models.contents import Content
 from app.models.products import Product
 from app.models.establishments import Establishment
 from app.models.accounts import Currency
+
+
 #from app.models.fields.permissions import PermissionsField
 from app.models.fields.hours import HoursField
 
@@ -47,7 +49,7 @@ class OfferProducts(KnotisModel):
 
 class OfferInventory(KnotisModel):
     """
-    This is essentially the inventory. It has an associated hours field for allowing scheduled offers. 
+    This is essentially the inventory. It has an associated hours field for allowing scheduled offers.
     """
     offer = ForeignKeyNonRel(Offer)
     hours = HoursField()

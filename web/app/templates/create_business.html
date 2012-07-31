@@ -38,9 +38,9 @@
                 url: '/api/business/create/',
                 type: 'POST',
                 data: data,
-                // dataType: 'json',
+                dataType: 'json',
                 success: function(data, status, jq_xhr) {
-                    $('#feedback').html('<h3>Business Created</h3>');
+                    $('#feedback').html(JSON.stringify(data));
                 },
                 error: function(jq_xhr, status, error) {
                     $('#feedback').html(jq_xhr.responseText);

@@ -3,7 +3,7 @@ from django.db.models import CharField, DateTimeField, FloatField, BooleanField
 from foreignkeynonrel.models import ForeignKeyNonRel
 
 from app.models.knotis import KnotisModel
-from app.models.offers import Offer
+
 #from app.models.fields.permissions import PermissionsField
 
 from contents import Content
@@ -43,13 +43,3 @@ class Account(KnotisModel):
     updated_date = DateTimeField('date published') # last updated
     state = BooleanField()                         # later add an enum for (disabled etc.)
 
-
-class Transaction(KnotisModel):
-    class Meta(KnotisModel.Meta):
-        verbose_name = 'Transaction'
-        verbose_name_plural = 'Transactions'
-
-    source_account = ForeignKeyNonRel(Account, related_name='account_source_account')
-    dest_account = ForeignKeyNonRel(Account, related_name='account_destination_account')
-    offer = ForeignKeyNonRel(Offer)
-    currency = ForeignKeyNonRel(Currency)

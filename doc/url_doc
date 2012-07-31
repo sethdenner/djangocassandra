@@ -1,0 +1,47 @@
+;; This buffer is for notes you don't want to save, and for Lisp evaluation.
+;; If you want to create a file, visit that file with C-x C-f,
+;; then enter the text in that file's own buffer.
+
+knotis.com/business/__knotis business name__
+knotis.com/business/__knotis_business_name__/promotion_name?
+knotis.com/user/__user_name__
+knotis.com/search/?zip=98105&q='hamburger'&date='...'
+
+---------------------------------------------
+
+knotis.com/api/user/pk
+knotis.com/api/endpoint/pk
+knotis.com/api/user_relation/pk
+
+knotis.com/api/business/pk
+  GET 
+    businesses can be read by almost anyone, but some may require only users with a certian user relation to be able to see their page.
+  POST
+    who can create a business? anyone, it's the ownership aspect that gets tricky.
+  PUT
+    
+  DELETE
+knotis.com/api/establisthment/pk
+knotis.com/api/offer/pk
+knotis.com/api/product/pk
+knotis.com/api/accepted_offers/pk
+knotis.com/api/purchase/pk  
+  a group of accepted offers
+knotis.com/api/account/pk
+   -- could this be built so that 
+knotis.com/api/transfer/pk
+
+
+knotis.com/api/tags/pk
+knotis.com/api/actions/pk
+
+knotis.com/api/search/
+
+
+-----
+
+we've decided to implement analytics through user relations.
+  on page serve insert user_relation ==>  (user_id, page_served, page_id)
+
+----
+How does search work?

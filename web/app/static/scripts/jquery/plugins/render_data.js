@@ -68,7 +68,8 @@
     
     jQuery.fn.render_data = function(options) {
         _options = $.extend({
-            'data': null
+            'data': null,
+            'attribute_operator': '-'
         }, options);
         
         return this.each(function (){

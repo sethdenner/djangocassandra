@@ -33,3 +33,6 @@ def create_business(request):
         {},
         context_instance=RequestContext(request))
     """
+
+def list_businesses(request):
+    return render(request, 'list_businesses.html')
