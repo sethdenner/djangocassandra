@@ -139,7 +139,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    #Knotis apps.
+    # Knotis apps.
     'manytomanynonrel',
     'foreignkeynonrel',
     'auth',
