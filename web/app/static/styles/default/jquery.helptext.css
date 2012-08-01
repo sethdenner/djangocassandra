@@ -1,0 +1,65 @@
+.help-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  width: 200px;
+  background: url("../images/layouts/knotis-transparence.png") repeat scroll 0 0 transparent;
+  border-radius: 5px 5px 5px 5px;
+}
+
+.help-text .help-text-internal {
+  margin: 2px;
+  padding: 5px;
+  background-color: #fff;
+  border-radius: 5px 5px 5px 5px;
+}
+
+.help-text .help-text-internal h5 {
+  
+}
+
+.help-text .help-text-internal p {
+  
+}
+
+.help-icon {
+  height: 14px;
+  width: 16px;
+  background: url(../images/helpicon.png) no-repeat scroll top left transparent;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+.help-icon.margin-sides {
+    margin: 0 5px;
+}
+
+.help-icon.margin-right {
+  margin: 0 25px 0 0;
+}
+
+.help-icon.float-right {
+  float: right;
+}
+
+.help-icon.vertical-align-bottom {
+  vertical-align: bottom;
+}
+
+.help-icon.vertical-align-sub {
+  vertical-align: sub;
+}
+
+.help-icon.vertical-align-super {
+  vertical-align: super;
+}
+
+.help-icon.vertical-align-top {
+  vertical-align: top;
+}
+
+.help-icon.vertical-align-baseline {
+  vertical-align: baseline;
+}

@@ -1,3 +1,166 @@
 <div id="header">
-	<a href="/login/" >Login</a> | <a href="#">Sign Up</a>
+    <div class="header-top">
+        <div class="wrapper solution clearfix  header-content">
+            {% if logged_in %}
+            	<!-- $this->load->view('general/login_sig'); ?> -->
+        	{% endif %}
+        	{% if merchant_login %}
+            	<!--<?php if (isset($merchantlogin)) $this->load->view('sign_up'); ?>-->
+            {% endif %}
+            <div class="logo absolute">
+                <h1>
+                    <a href="/"><span>knotis</span></a>
+                </h1>
+            </div>
+            <div class="location radius-general left relative">
+                <div class="content-popup-list radius-general content-popup-header">
+                    <div class="arrow-popup"></div>
+                    <div class="content-popup-inset-list radius-general">
+                        <h3 class="txt-center margin-general"><strong>Browse Deals by City and Neighborhood</strong></h3>
+                        <p class="txt-size margin-general">knotis is launching in the Greater Seattle Area.
+                            We’re building out to surrounding cities to offer you deals from your favorite places.
+                            <a href="/contact/"
+                               title="Let us know if you want to add your city to the list"> Let us know if you want to add your city to the list.</a>
+                        </p>
+                        <div class="clear-fix">
+                            <h4 class="circle left"><strong>All Deals</strong></h4>
+                            <hr class="right">
+                        </div>
+                        <div class="clear-fix">
+                            <ul class="first ">
+                                <li class="txt-size margin-general">
+                                    <a class="all-cities gradient-gray radius-general"
+                                       href="/deals/">All in WA</a>
+                                </li>
+                            </ul>
+                        </div>
+	                    <div class="clear-fix">
+	                    	{% for c in cities %}
+							{% if active_deals_city %}
+	                        <h4 class="circle left"><strong>{{ c.name }}</strong></h4>
+	                        <hr class="right">
+	               		</div>
+	               		<div class="clear-fix">
+		                    <ul class="left first {margin-general">
+		                    	<li class="txt-size">
+		                    		<a class="all-cities gradient-gray radius-general" 
+		                    			href="/deals/city/{{ c.id }}/">All of {{ c.name }}</a>
+		                    	</li>
+		                    	{% if neighbourhoods %}
+		                    	{% for n in neighbourhoods %}
+		                        {% if active_deals_neighbourhood %}
+								<li class="txt-size">
+									<a href="/deals/city/{{ c.id }}/{{ n.id }}/">{{ n.name }}</a>
+								</li>
+		                        {% endif %}
+		                    	{% endfor %}
+		                    	{% endif %}
+		                   	</ul>
+		               	</div>
+		                <div class="clear-fix">
+		                </div>
+		    			<div class="clear-fix">
+							{% endif %}
+	                    	{% endfor %}
+                    	</div>
+                    </div>
+                </div>
+                <h4 class="circle shadow-white left clear-fix">
+                    <strong>
+                    	{% if session.user.city_name %}
+                    	{% if session.user.city_name %}
+                    	{{ session.user.neighbourhood_name }}
+                    	{% else %}
+                    	{{ session.user.city_name }}
+                    	{% endif %}
+                    	{% else %}
+                    	All Deals
+                    	{% endif %}
+                    </strong>
+               	</h4>
+                <div class="option-button button radius-general right">
+                	<img class="btn-header-location" alt="" src="{{ STATIC_URL }}images/layouts/knotis-arrow.png">
+                </div>
+            </div>
+            <ul class="nav clear-fix right">
+                <li>
+                	<a href="/deals/" >Deals</a>
+                </li>
+                <li>
+                	<a href="/events/" >Events</a>
+                </li>
+                <li>
+                	<a href="/happyhours/" >Happy Hour</a>
+				</li>
+                <li>
+                	<a href="/contact/" >Contact</a>
+				</li>
+            </ul>
+            {% if not logged_in %}
+            <ul class="login-signup absolute">
+                <li><a class="login txt-white log_in" href="/login/">Log In</a></li>
+                <li><a class="sig_in signup txt-white" href="/signup/">Sign up</a></li>
+            </ul>
+			{% else %}
+            <div class="name-user absolute radius-general clear-fix">
+                <div class="image left ">
+                	<img src=""/>
+                </div>
+                <p class="txt-size-12 txt-white left clear-fix">
+                    <strong>{{ request.session.user.name }}</strong>
+                </p>
+                <div class="arrow-user right"></div>
+                <div class="option-user absolute radius-general">
+                    <div class="option-user-inset radius-general">
+                        <div class="arrow-popup arrow-popup02 arrow-popup-user"></div>
+                        <h3><strong>My stuff</strong></h3>
+						{% if not is_admin %}
+                        <ul class="menu-user">
+                            {% if is_business_owner %}
+                            <li><a href="/dashboard/" >Dashboard</a></li>
+                            {% endif %}
+                            <li><a href="/deals/">Deals</a></li>
+                        </ul>
+                        <ul class="menu-user">
+                            <li><a href="<?php echo site_url("backend/user"); ?>">My profile</a></li>
+                            <li><a href="<?php echo site_url("backend/mysubcriptions"); ?>">My Subscriptions</a></li>
+                            {% if is_business_owner %}
+                            <li><a href="/businessprofile/" >Business profile</a></li>
+                            {% endif %}
+                        </ul>
+                        <ul class="face">
+                        	{% if logged_in_facebook %}
+                            <li>
+                               <fb:login-button autologoutlink="true"></fb:login-button>
+                            </li>
+							{% endif %}
+                            <li>
+                            	<a href="/logout/" >Sign out</a>
+                            </li>
+                        </ul>
+						{% else %}						
+                        <ul class="menu-user">
+                            <li><a href="<?php echo site_url("backend/dinamicPages"); ?>">Dynamic Pages</a>
+                            </li>
+                            <li><a href="<?php echo site_url("backend/premiumDeals"); ?>">All Deals</a></li>
+                            <li><a href="<?php echo site_url("backend/locations"); ?>">Cities</a></li>
+                        </ul>
+                        <ul>
+                            {% if logged_in_facebook %}
+                            <li>
+                                <fb:login-button autologoutlink="true"></fb:login-button>
+                            </li>
+                            {% else %}
+                            <li>
+                            	<a href="/logout/" >Sign out</a>
+                            </li>
+							{% endif %}
+                        </ul>
+						{% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
