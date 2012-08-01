@@ -125,13 +125,13 @@ body {
    }
 
 /*.back-curve {
-    background: url("../images/layouts/knotis-curve.png") no-repeat center top; } */
+    background: url("../../images/layouts/knotis-curve.png") no-repeat center top; } */
 
 .hide {display:none;}
 
 
 .back-curve-content {
-    background: url("../images/layouts/knotis-curve-content.png") no-repeat center top;
+    background: url("../../images/layouts/knotis-curve-content.png") no-repeat center top;
 }
 
 .box-border {
@@ -296,7 +296,7 @@ ul.list-backend li a.search-deals:hover {
 }
 
 .curve {
-    /*background: url("../images/layouts/curve.png") no-repeat center top;*/
+    /*background: url("../../images/layouts/curve.png") no-repeat center top;*/
 }
 
 .box-shadow {
@@ -445,81 +445,81 @@ input[type='text'],input[type='password'] {
 }
 
 .image-back {
-    background: url("../images/layouts/image-back.png") no-repeat center top;
+    background: url("../../images/layouts/image-back.png") no-repeat center top;
 }
 
 /* Start Category Rounded */
 
 .cat-all {
-    background: url("../images/layouts/cat-all.png") no-repeat;
+    background: url("../../images/layouts/cat-all.png") no-repeat;
 }
 
 .cat-Art {
-    background: url("../images/layouts/cat-art.png") no-repeat;
+    background: url("../../images/layouts/cat-art.png") no-repeat;
 }
 
 .cat-Aut {
-    background: url("../images/layouts/cat-aut.png") no-repeat;
+    background: url("../../images/layouts/cat-aut.png") no-repeat;
 }
 
 .cat-Bea {
-    background: url("../images/layouts/cat-bea.png") no-repeat;
+    background: url("../../images/layouts/cat-bea.png") no-repeat;
 }
 
 .cat-Edu {
-    background: url("../images/layouts/cat-edu.png") no-repeat;
+    background: url("../../images/layouts/cat-edu.png") no-repeat;
 }
 
 .cat-Fin {
-    background: url("../images/layouts/cat-fin.png") no-repeat;
+    background: url("../../images/layouts/cat-fin.png") no-repeat;
 }
 
 .cat-Foo {
-    background: url("../images/layouts/cat-foo.png") no-repeat;
+    background: url("../../images/layouts/cat-foo.png") no-repeat;
 }
 
 .cat-Hea {
-    background: url("../images/layouts/cat-hea.png") no-repeat;
+    background: url("../../images/layouts/cat-hea.png") no-repeat;
 }
 
 .cat-Hom {
-    background: url("../images/layouts/cat-hom.png") no-repeat;
+    background: url("../../images/layouts/cat-hom.png") no-repeat;
 }
 
 .cat-Leg {
-    background: url("../images/layouts/cat-leg.png") no-repeat;
+    background: url("../../images/layouts/cat-leg.png") no-repeat;
 }
 
 .cat-Nig {
-    background: url("../images/layouts/cat-nig.png") no-repeat;
+    background: url("../../images/layouts/cat-nig.png") no-repeat;
 }
 
 .cat-Pet {
-    background: url("../images/layouts/cat-pet.png") no-repeat;
+    background: url("../../images/layouts/cat-pet.png") no-repeat;
 }
 
 .cat-Pro {
-    background: url("../images/layouts/cat-pro.png") no-repeat;
+    background: url("../../images/layouts/cat-pro.png") no-repeat;
 }
 
 .cat-Pub {
-    background: url("../images/layouts/cat-pub.png") no-repeat;
+    background: url("../../images/layouts/cat-pub.png") no-repeat;
 }
 
 .cat-Rea {
-    background: url("../images/layouts/cat-rea.png") no-repeat;
+    background: url("../../images/layouts/cat-rea.png") no-repeat;
 }
 
 .cat-Res {
-    background: url("../images/layouts/cat-res.png") no-repeat;
+    background: url("../../images/layouts/cat-res.png") no-repeat;
 }
 
 .cat-Sho {
-    background: url("../images/layouts/cat-sho.png") no-repeat;
+    background: url("../../images/layouts/cat-sho.png") no-repeat;
 }
 
 .cat-Tra {
-    background: url("../images/layouts/cat-tra.png") no-repeat;
+    background: url("../../images/layouts/cat-tra.png") no-repeat;
 }
 
 /* Finish Category Rounded */
@@ -538,7 +538,7 @@ STRUCTURE
 /* header */
 
 #header {
-    background:  url("../images/layouts/circle-prin.png") no-repeat center -220px #2ca2b8;
+    background:  url("../../images/layouts/circle-prin.png") no-repeat center -220px #2ca2b8;
     padding-top:40px;
 
 }
@@ -546,7 +546,7 @@ STRUCTURE
 .header-top {
     height: 81px;
 
-    background:  url("../images/layouts/header-top-b.png") repeat-x;
+    background:  url("../../images/layouts/header-top-b.png") repeat-x;
 }
 
 .logo {
@@ -562,12 +562,12 @@ STRUCTURE
     cursor: pointer;
     height: 157px;
     text-indent: -999px;
-    background: url("../images/layouts/knotis-logo.png") no-repeat;
+    background: url("../../images/layouts/knotis-logo.png") no-repeat;
 }
 
 .header-bottom {
     /*height: 390px;*/
-    background: url("../images/layouts/knotis-back-header-bottom.png") repeat-x;
+    background: url("../../images/layouts/knotis-back-header-bottom.png") repeat-x;
 
 }
 
@@ -637,7 +637,7 @@ STRUCTURE
 .content-popup-list{
     width: 515px;
     padding: 5px;
-    background: url("../images/layouts/knotis-transparence.png") repeat;
+    background: url("../../images/layouts/knotis-transparence.png") repeat;
 
 }
 
@@ -664,7 +664,7 @@ STRUCTURE
 .arrow-popup {
     width:18px;
     height:14px;
-    background: url("../images/layouts/knotis-arrow-popup.png") no-repeat;
+    background: url("../../images/layouts/knotis-arrow-popup.png") no-repeat;
     position:absolute;
     right: 68px;
     top: -8px;
@@ -672,7 +672,7 @@ STRUCTURE
 }
 
 .arrow-popup02 {
-    background: url("../images/layouts/knotis-arrow-popup02.png") no-repeat;
+    background: url("../../images/layouts/knotis-arrow-popup02.png") no-repeat;
 }
 
 .arrow-popup-user {
@@ -693,15 +693,15 @@ STRUCTURE
 
 .content-popup-inset,
 .content-popup-inset-list{
-    background: url("../images/layouts/knotis-curve-popup.png") no-repeat bottom center #fff;
+    background: url("../../images/layouts/knotis-curve-popup.png") no-repeat bottom center #fff;
 }
 
 .content-popup .back-login {
-      background: url("../images/layouts/knotis-curve-login.png") no-repeat bottom center #fff;
+      background: url("../../images/layouts/knotis-curve-login.png") no-repeat bottom center #fff;
 }
 
 .content-popup-inset {
-    background: url("../images/layouts/knotis-curve-popup.png") no-repeat bottom center #fff;
+    background: url("../../images/layouts/knotis-curve-popup.png") no-repeat bottom center #fff;
 
 }
 
@@ -738,7 +738,7 @@ STRUCTURE
     width: 36px;
     height: 36px;
     float: right;
-    background: url("../images/layouts/knotis-close.png") no-repeat;
+    background: url("../../images/layouts/knotis-close.png") no-repeat;
     position: absolute;
     right: -5px;
     top: -15px;
@@ -812,17 +812,17 @@ STRUCTURE
     width:16px;
     height:16px;
     margin-top:2px;
-    background: url("../images/layouts/knotis-arrow-user.png") no-repeat;
+    background: url("../../images/layouts/knotis-arrow-user.png") no-repeat;
     cursor:pointer;
 }
 
 .name-user .arrow-user:hover {
 
-    background: url("../images/layouts/knotis-arrow-user_hover.png") no-repeat;
+    background: url("../../images/layouts/knotis-arrow-user_hover.png") no-repeat;
 }
 
 .option-user {
-    background: url("../images/layouts/knotis-transparence.png") repeat scroll 0 0 transparent;
+    background: url("../../images/layouts/knotis-transparence.png") repeat scroll 0 0 transparent;
     z-index:999;
     left:0;
     top:35px;
@@ -839,7 +839,7 @@ STRUCTURE
 .ribbon-price {
     width:94px;
     height:37px;
-    background: url("../images/layouts/ribbon-price.png") no-repeat;
+    background: url("../../images/layouts/ribbon-price.png") no-repeat;
     position:absolute;
     left:-5px;
     top:65px;
@@ -867,12 +867,12 @@ STRUCTURE
 }
 
 .content-home {
-    background: url("../images/layouts/knotis-back-content_home.png") repeat;
+    background: url("../../images/layouts/knotis-back-content_home.png") repeat;
     padding-top: 20px;
 }
 
 .back-deals {
-    /*background: url("../images/layouts/knotis-back.png") repeat;*/
+    /*background: url("../../images/layouts/knotis-back.png") repeat;*/
     background:#2ca2b8;
     /*padding-top: 70px;*/
 }
@@ -884,7 +884,7 @@ STRUCTURE
 }
 
 h3.divider span {
-    background: url("../images/layouts/knotis-back-content_home.png") repeat;
+    background: url("../../images/layouts/knotis-back-content_home.png") repeat;
     padding: 0 20px;
 }
 
@@ -913,13 +913,13 @@ h3.divider span {
 }
 
 .curve {
-    background: url("../images/layouts/circle-prin.png") no-repeat center -340px;
+    background: url("../../images/layouts/circle-prin.png") no-repeat center -340px;
     padding-top:65px;
     min-height:310px;
 }
 
 .curve01 {
-    background: url("../images/layouts/circle-home.png") no-repeat center -340px;
+    background: url("../../images/layouts/circle-home.png") no-repeat center -340px;
 }
 
 .curve02 {
@@ -970,7 +970,7 @@ h3.divider span {
 }
 
 .slider .ribbon {
-    background: url("../images/layouts/knotis-ribbon.png") no-repeat center center;
+    background: url("../../images/layouts/knotis-ribbon.png") no-repeat center center;
     width: 74px;
     height: 73px;
     left: -6px;
@@ -1048,7 +1048,7 @@ h3.divider span {
     width: 100%;
     left: 0;
     bottom: -7px;
-    background: url("../images/layouts/knotis-arrow-deals.png") no-repeat center center;
+    background: url("../../images/layouts/knotis-arrow-deals.png") no-repeat center center;
 }
 
 .deals-action-top em {
@@ -1057,18 +1057,18 @@ h3.divider span {
 }
 
 a.button-receive span {
-    background: url("../images/layouts/knotis-mail-icon.png") no-repeat;
+    background: url("../../images/layouts/knotis-mail-icon.png") no-repeat;
     padding-left: 35px;
 }
 
 p.button-lead span {
-    background: url("../images/layouts/knotis-icon-lead.png") no-repeat;
+    background: url("../../images/layouts/knotis-icon-lead.png") no-repeat;
     padding: 1px 0 1px 20px;
 }
 
 .content-business {
     border-top: 1px solid #fff;
-    background: url("../images/layouts/knotis-back-grey.png") repeat;
+    background: url("../../images/layouts/knotis-back-grey.png") repeat;
     padding-top: 30px;
 }
 
@@ -1088,16 +1088,16 @@ p.button-lead span {
 .icon {
     width: 50px;
     height: 50px;
-    background: url("../images/layouts/knotis-info-icon.png") no-repeat;
+    background: url("../../images/layouts/knotis-info-icon.png") no-repeat;
     float: left;
 }
 
 .icon-photo {
-    background: url("../images/layouts/knotis-photo-icon.png") no-repeat;
+    background: url("../../images/layouts/knotis-photo-icon.png") no-repeat;
 }
 
 .icon-conversation {
-    background: url("../images/layouts/knotis-info-conversation.png") no-repeat;
+    background: url("../../images/layouts/knotis-info-conversation.png") no-repeat;
 }
 
 .info-business,
@@ -1149,7 +1149,7 @@ p.button-lead span {
 .ribbon-free {
     width:133px;
     height:46px;
-    background: url("../images/layouts/ribbon-free.png") no-repeat;
+    background: url("../../images/layouts/ribbon-free.png") no-repeat;
     position:absolute;
     z-index:700;
     left:10px;
@@ -1213,7 +1213,7 @@ label.left-side {
 }
 
 .line-none {
-    background: url("../images/layouts/line-none.png") no-repeat;
+    background: url("../../images/layouts/line-none.png") no-repeat;
     width:148px;
     height:7px;
     position:absolute;
@@ -1227,7 +1227,7 @@ label.left-side {
     position: absolute;
     left: 20px;
     bottom: -16px;
-    background: url("../images/layouts/knotis-arrow-twitter.png") no-repeat;
+    background: url("../../images/layouts/knotis-arrow-twitter.png") no-repeat;
 }
 
 .image-follow {
@@ -1341,11 +1341,11 @@ label.left-side {
     width: 35px;
     height: 35px;
     margin-left: 5px;
-    background: url("../images/layouts/knotis-facebook-business.png") no-repeat center center;
+    background: url("../../images/layouts/knotis-facebook-business.png") no-repeat center center;
 }
 
 .tell-twitter {
-    background: url("../images/layouts/knotis-twitter-business.png") no-repeat center center;
+    background: url("../../images/layouts/knotis-twitter-business.png") no-repeat center center;
 }
 
 .tooltip {
@@ -1355,7 +1355,7 @@ label.left-side {
     z-index:888;
     left:-25px;
     top:-24px;
-    background: url("../images/layouts/knotis-toltip.png") no-repeat;
+    background: url("../../images/layouts/knotis-toltip.png") no-repeat;
     display:none;
 }
 
@@ -1387,7 +1387,7 @@ label.left-side {
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-    background: url("../images/layouts/knotis-icon-zoom.png") no-repeat center center #7ab453;
+    background: url("../../images/layouts/knotis-icon-zoom.png") no-repeat center center #7ab453;
 }
 
  .image .zoom-inactive {
@@ -1400,7 +1400,7 @@ label.left-side {
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-    background: url("../images/layouts/knotis-icon-zoom.png") no-repeat center center #e86c00;
+    background: url("../../images/layouts/knotis-icon-zoom.png") no-repeat center center #e86c00;
 }
 
 
@@ -1418,7 +1418,7 @@ label.left-side {
 .deal-profile-left .map{
     width: 190px;
     height:122px;
-    background: url("../images/layouts/knotis-deal-map.jpg") no-repeat center center #7ab453;
+    background: url("../../images/layouts/knotis-deal-map.jpg") no-repeat center center #7ab453;
     margin:4px 0 0 4px;
 }
 
@@ -1470,7 +1470,7 @@ label.left-side {
 .close-message {
     width: 17px;
     height: 17px;
-    background: url("../images/layouts/knotis-message-close.png") no-repeat center center;
+    background: url("../../images/layouts/knotis-message-close.png") no-repeat center center;
     right:10px;
     top:10px;
     cursor:pointer;
@@ -1577,7 +1577,7 @@ ul.deal-buy li span.padd {
 .upgrade {
     width:113px;
     height:51px;
-    background: url("../images/layouts/upgrade.png") no-repeat;
+    background: url("../../images/layouts/upgrade.png") no-repeat;
     position:absolute;
     right:0px;
     top:-65px;
@@ -1606,7 +1606,7 @@ ul.deal-buy li span.padd {
     height:64px;
     left:-4px;
     top:-4px;
-    background: url("../images/layouts/expired.png") no-repeat;
+    background: url("../../images/layouts/expired.png") no-repeat;
 }
 
 .deals-image .active {
@@ -1614,7 +1614,7 @@ ul.deal-buy li span.padd {
     height:67px;
     left:-6px;
     top:-4px;
-    background: url("../images/layouts/ribbon-active.png") no-repeat;
+    background: url("../../images/layouts/ribbon-active.png") no-repeat;
 }
 
 .deals-image .expired {
@@ -1622,7 +1622,7 @@ ul.deal-buy li span.padd {
     height:64px;
     left:-6px;
     top:-4px;
-    background: url("../images/layouts/ribbon-expired.png") no-repeat;
+    background: url("../../images/layouts/ribbon-expired.png") no-repeat;
 }
 
 .deals-image .exhausted {
@@ -1630,7 +1630,7 @@ ul.deal-buy li span.padd {
     height:64px;
     left:-6px;
     top:-4px;
-    background: url("../images/layouts/ribbon-exhausted.png") no-repeat;
+    background: url("../../images/layouts/ribbon-exhausted.png") no-repeat;
 }
 
 
@@ -1649,7 +1649,7 @@ ul.deal-buy li span.padd {
     height:74px;
     z-index:999;
     position:absolute;
-    background: url("../images/layouts/push.png") no-repeat;
+    background: url("../../images/layouts/push.png") no-repeat;
     left:200px;
     top:200px;
     cursor: pointer;
@@ -1669,55 +1669,55 @@ img.thumb {
 }
 
 .push-Tra {
-    background: url("../images/layouts/push-Tra.png") no-repeat;
+    background: url("../../images/layouts/push-Tra.png") no-repeat;
 }
 .push-Sho {
-    background: url("../images/layouts/push-Sho.png") no-repeat;
+    background: url("../../images/layouts/push-Sho.png") no-repeat;
 }
 .push-Res {
-    background: url("../images/layouts/push-Res.png") no-repeat;
+    background: url("../../images/layouts/push-Res.png") no-repeat;
 }
 .push-Rea {
-    background: url("../images/layouts/push-Rea.png") no-repeat;
+    background: url("../../images/layouts/push-Rea.png") no-repeat;
 }
 .push-Pub {
-    background: url("../images/layouts/push-Pub.png") no-repeat;
+    background: url("../../images/layouts/push-Pub.png") no-repeat;
 }
 .push-Pro {
-    background: url("../images/layouts/push-Pro.png") no-repeat;
+    background: url("../../images/layouts/push-Pro.png") no-repeat;
 }
 .push-Pet {
-    background: url("../images/layouts/push-Pet.png") no-repeat;
+    background: url("../../images/layouts/push-Pet.png") no-repeat;
 }
 .push-Nig {
-    background: url("../images/layouts/push-Nig.png") no-repeat;
+    background: url("../../images/layouts/push-Nig.png") no-repeat;
 }
 .push-Leg {
-    background: url("../images/layouts/push-Leg.png") no-repeat;
+    background: url("../../images/layouts/push-Leg.png") no-repeat;
 }
 .push-Hom {
-    background: url("../images/layouts/push-Hom.png") no-repeat;
+    background: url("../../images/layouts/push-Hom.png") no-repeat;
 }
 .push-Hea {
-    background: url("../images/layouts/push-Hea.png") no-repeat;
+    background: url("../../images/layouts/push-Hea.png") no-repeat;
 }
 .push-Foo {
-   background: url("../images/layouts/push-Foo.png") no-repeat;
+   background: url("../../images/layouts/push-Foo.png") no-repeat;
 }
 .push-Fin {
-    background: url("../images/layouts/push-Fin.png") no-repeat;
+    background: url("../../images/layouts/push-Fin.png") no-repeat;
 }
 .push-Edu {
-    background: url("../images/layouts/push-Edu.png") no-repeat;
+    background: url("../../images/layouts/push-Edu.png") no-repeat;
 }
 .push-Bea {
-    background: url("../images/layouts/push-Bea.png") no-repeat;
+    background: url("../../images/layouts/push-Bea.png") no-repeat;
 }
 .push-Aut {
-    background: url("../images/layouts/push-Aut.png") no-repeat;
+    background: url("../../images/layouts/push-Aut.png") no-repeat;
 }
 .push-Art {
-    background: url("../images/layouts/push-Art.png") no-repeat;
+    background: url("../../images/layouts/push-Art.png") no-repeat;
 }
 
 .push-info {
@@ -1748,14 +1748,14 @@ img.thumb {
  .push-general {
     height:34px;
     width:34px;
-    background: url("../images/layouts/push-general.png") no-repeat;
+    background: url("../../images/layouts/push-general.png") no-repeat;
     position:absolute;
     top:30px;
     right:40px;
 }
 
 p.address {
-    background: url("../images/layouts/push-small.png") no-repeat 9px 9px #E8F5B1;
+    background: url("../../images/layouts/push-small.png") no-repeat 9px 9px #E8F5B1;
     padding:10px 10px 10px 35px;
     font-size:12px;
     line-height:1.4em;
@@ -1764,7 +1764,7 @@ p.address {
 }
 
 p.conditions {
-    /*background: url("../images/layouts/push-small.png") no-repeat 9px 9px #E8F5B1;*/
+    /*background: url("../../images/layouts/push-small.png") no-repeat 9px 9px #E8F5B1;*/
     padding:10px 10px 10px 35px;
     font-size:12px;
     line-height:1.4em;
@@ -1880,7 +1880,7 @@ p.conditions a {
     height:50px;
     position:absolute;
     z-index:100;
-    background: url("../images/layouts/ribbon-active-backend.png") no-repeat;
+    background: url("../../images/layouts/ribbon-active-backend.png") no-repeat;
     left:-3px;
     top:-3px;
 }
@@ -1890,7 +1890,7 @@ p.conditions a {
     height:50px;
     position:absolute;
     z-index:100;
-    background: url("../images/layouts/ribbon-inactive-backend.png") no-repeat;
+    background: url("../../images/layouts/ribbon-inactive-backend.png") no-repeat;
     left:-3px;
     top:-3px;
 }
@@ -1900,7 +1900,7 @@ p.conditions a {
     height:50px;
     position:absolute;
     z-index:100;
-    background: url("../images/layouts/ribbon-exhausted-backend.png") no-repeat;
+    background: url("../../images/layouts/ribbon-exhausted-backend.png") no-repeat;
     left:-3px;
     top:-3px;
 }
@@ -1910,7 +1910,7 @@ p.conditions a {
     height:50px;
     position:absolute;
     z-index:100;
-    background: url("../images/layouts/ribbon-expired-backend.png") no-repeat;
+    background: url("../../images/layouts/ribbon-expired-backend.png") no-repeat;
     left:-3px;
     top:-3px;
 }
@@ -1993,12 +1993,12 @@ HEADERS AND PARAGRAPHS
 }
 /* content */
 h3.divider {
-    background: url("../images/layouts/knotis-divider.png") repeat-x left center;
+    background: url("../../images/layouts/knotis-divider.png") repeat-x left center;
     margin-bottom: 25px;
 }
 
 h4.circle {
-    background: url("../images/layouts/knotis-circle.png") no-repeat left top;
+    background: url("../../images/layouts/knotis-circle.png") no-repeat left top;
     padding: 2px 0 5px 28px;
     margin-bottom: 7px;
 }
@@ -2040,13 +2040,13 @@ h2.backend a {
 }
 
 h2.ok {
-    background: url("../images/layouts/ok.png") no-repeat left 2px;
+    background: url("../../images/layouts/ok.png") no-repeat left 2px;
     padding-left:45px;
   
 }
 
 h2.ko {
-    background: url("../images/layouts/ko.png") no-repeat left 3px;
+    background: url("../../images/layouts/ko.png") no-repeat left 3px;
     padding-left:45px;
 
 }
@@ -2110,7 +2110,7 @@ h2.ko {
 
 p.powered {
     font-size:1.4em;
-    background: url("../images/layouts/knotis-logo-small.png") no-repeat 105px 0;
+    background: url("../../images/layouts/knotis-logo-small.png") no-repeat 105px 0;
     padding: 20px 0 40px 40px;
     margin-top:30px;
 
@@ -2136,36 +2136,36 @@ p.powered {
 }
 
 h3.send {
-    background: url("../images/layouts/knotis-icon-envelope.png") no-repeat left 2px;
+    background: url("../../images/layouts/knotis-icon-envelope.png") no-repeat left 2px;
     padding-left:28px;
     margin-bottom:6px;
 }
 
 h3.info {
-    background: url("../images/layouts/knotis-info.png") no-repeat left 2px;
+    background: url("../../images/layouts/knotis-info.png") no-repeat left 2px;
     padding:2px 0 3px 27px;
 }
 
 p.card-pay {
     margin:5px 0;
     font-weight:bold;
-    background: url("../images/layouts/knotis-card.png") no-repeat 60px 0;
+    background: url("../../images/layouts/knotis-card.png") no-repeat 60px 0;
     padding:5px 0 10px 0;
 }
 
 .view-map {
-    background: url("../images/layouts/knotis-view-map.png") no-repeat left center;
+    background: url("../../images/layouts/knotis-view-map.png") no-repeat left center;
     padding-left:18px;
 }
 
 .view-map:hover {
-    background: url("../images/layouts/knotis-view-map-hover.png") no-repeat left center;
+    background: url("../../images/layouts/knotis-view-map-hover.png") no-repeat left center;
 
 }
 
 h3.title-backend {
     padding:8px 0 8px 40px;
-    background: url("../images/layouts/knotis-title-circle.png") no-repeat 10px center;
+    background: url("../../images/layouts/knotis-title-circle.png") no-repeat 10px center;
     border-left: 1px solid #bbb;
     border-right: 1px solid #bbb;
     border-top: 1px solid #bbb;
@@ -2188,7 +2188,7 @@ p.privacy a {
 
 
 p.deals-business {
-    background: url("../images/layouts/knotis-icon-deals-back.png") no-repeat left center;
+    background: url("../../images/layouts/knotis-icon-deals-back.png") no-repeat left center;
     padding-left:27px;
 }
 
@@ -2232,7 +2232,7 @@ p.txt-premium {
 }
 
 p.paypal {
-    background: url("../images/layouts/icon-paypal.png") no-repeat 50px center;
+    background: url("../../images/layouts/icon-paypal.png") no-repeat 50px center;
     padding:5px 0 7px 0;
     font-size:12px;
 font-style: italic;}
@@ -2386,7 +2386,7 @@ a.signup {
 .deals-action a.play {
     height:15px;
     display:block;
-    background: url("../images/layouts/knotis-play.png") no-repeat center center #B5D334;
+    background: url("../../images/layouts/knotis-play.png") no-repeat center center #B5D334;
     border:1px solid #96af2b;
     color:#fff;
     box-shadow: 1px 1px 0 #eef8c5 inset;
@@ -2407,17 +2407,17 @@ a.link-search {
 }
 
 .deals-action a.play:hover {
-    background: url("../images/layouts/knotis-play.png") no-repeat center center #cae829;
+    background: url("../../images/layouts/knotis-play.png") no-repeat center center #cae829;
     cursor:pointer;
 }
 
 .deals-action a.pause:hover {
-    background: url("../images/layouts/knotis-pause.png") no-repeat center center #c92f2f;
+    background: url("../../images/layouts/knotis-pause.png") no-repeat center center #c92f2f;
     cursor:pointer;
 }
 
 .deals-action a.pause {
-    background: url("../images/layouts/knotis-pause.png") no-repeat center center #b62929;
+    background: url("../../images/layouts/knotis-pause.png") no-repeat center center #b62929;
     height:15px;
     display:block;
     border:1px solid #882323;
@@ -2461,7 +2461,7 @@ a.button-lead:active,
 
 .deals-txt a,
 .business-buy{
-    background: url("../images/layouts/knotis-icon-location.png") no-repeat scroll left 2px;
+    background: url("../../images/layouts/knotis-icon-location.png") no-repeat scroll left 2px;
     margin-top: 5px;
     padding-left: 23px;
 }
@@ -2476,7 +2476,7 @@ a.button-lead:active,
 }
 
 .deals-txt a.business {
-    background: url("../images/layouts/knotis-icon-business-back.png") no-repeat scroll left 0;
+    background: url("../../images/layouts/knotis-icon-business-back.png") no-repeat scroll left 0;
     padding-left:21px;
     text-decoration:none;
 }
@@ -2649,55 +2649,55 @@ ul.list-backend li a.active {
 /* Menu left backend  */
 
 ul.list-backend li a.dash {
-    background: url("../images/layouts/knotis-icon-dashboard.png") no-repeat 11px center;
+    background: url("../../images/layouts/knotis-icon-dashboard.png") no-repeat 11px center;
 }
 
 ul.list-backend li a.dash-active {
-    background: url("../images/layouts/knotis-icon-dashboard-active.png") no-repeat 11px center #acca2c;
+    background: url("../../images/layouts/knotis-icon-dashboard-active.png") no-repeat 11px center #acca2c;
 }
 
 ul.list-backend li a.profile {
-    background: url("../images/layouts/knotis-icon-profile.png") no-repeat 11px 7px;
+    background: url("../../images/layouts/knotis-icon-profile.png") no-repeat 11px 7px;
 }
 
 ul.list-backend li a.profile-active {
-    background: url("../images/layouts/knotis-icon-profile-active.png") no-repeat 11px 7px #acca2c;
+    background: url("../../images/layouts/knotis-icon-profile-active.png") no-repeat 11px 7px #acca2c;
 }
 
 ul.list-backend li a.business {
-    background: url("../images/layouts/knotis-icon-business.png") no-repeat 11px 7px;
+    background: url("../../images/layouts/knotis-icon-business.png") no-repeat 11px 7px;
 }
 
 ul.list-backend li a.business-active {
-    background: url("../images/layouts/knotis-icon-business-active.png") no-repeat 11px 7px #acca2c;
+    background: url("../../images/layouts/knotis-icon-business-active.png") no-repeat 11px 7px #acca2c;
 }
 
 ul.list-backend li a.subscription {
-    background: url("../images/layouts/knotis-icon-subscription.png") no-repeat 11px 9px;
+    background: url("../../images/layouts/knotis-icon-subscription.png") no-repeat 11px 9px;
 }
 
 ul.list-backend li a.subscription-active {
-    background: url("../images/layouts/knotis-icon-subscription-active.png") no-repeat 11px 9px #acca2c;
+    background: url("../../images/layouts/knotis-icon-subscription-active.png") no-repeat 11px 9px #acca2c;
 }
 
 ul.list-backend li a.premium {
-    background: url("../images/layouts/knotis-icon-premium.png") no-repeat 11px 7px;
+    background: url("../../images/layouts/knotis-icon-premium.png") no-repeat 11px 7px;
 }
 
 ul.list-backend li a.premium-active {
-    background: url("../images/layouts/knotis-icon-premium-active.png") no-repeat 11px 7px #acca2c;
+    background: url("../../images/layouts/knotis-icon-premium-active.png") no-repeat 11px 7px #acca2c;
 }
 
 ul.list-backend li a.cities {
-    background: url("../images/layouts/knotis-icon-cities.png") no-repeat 12px 7px;
+    background: url("../../images/layouts/knotis-icon-cities.png") no-repeat 12px 7px;
 }
 
 ul.list-backend li a.cities-active {
-    background: url("../images/layouts/knotis-icon-cities-active.png") no-repeat 12px 7px #acca2c;
+    background: url("../../images/layouts/knotis-icon-cities-active.png") no-repeat 12px 7px #acca2c;
 }
 
 ul.list-backend li a.deals {
-    background: url("../images/layouts/knotis-icon-deals.png") no-repeat 11px 11px;
+    background: url("../../images/layouts/knotis-icon-deals.png") no-repeat 11px 11px;
 }
 
 ul.list-backend li a.add {
@@ -2709,7 +2709,7 @@ ul.list-backend li a.add {
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #ebbe84 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/knotis-icon-add-active.png") no-repeat 13px 10px #df9638;
+    background: url("../../images/layouts/knotis-icon-add-active.png") no-repeat 13px 10px #df9638;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -2723,7 +2723,7 @@ ul.list-backend li a.add-active {
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #ebbe84 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/knotis-icon-add-active.png") no-repeat 13px 10px #df9638;
+    background: url("../../images/layouts/knotis-icon-add-active.png") no-repeat 13px 10px #df9638;
 }
 
 ul.list-backend li a.add-code {
@@ -2734,7 +2734,7 @@ ul.list-backend li a.add-code {
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #d5d172 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/knotis-code.png") no-repeat 13px 12px #bcb840;
+    background: url("../../images/layouts/knotis-code.png") no-repeat 13px 12px #bcb840;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -2752,41 +2752,41 @@ ul.list-backend li a.add-ticket{
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-    background: url("../images/layouts/icon_ticket.png") no-repeat 11px 8px #dc5902;
+    background: url("../../images/layouts/icon_ticket.png") no-repeat 11px 8px #dc5902;
 }
 
 ul.list-backend li a.deals-active {
-    background: url("../images/layouts/knotis-icon-deals-active.png") no-repeat 11px 11px #7ab453;
+    background: url("../../images/layouts/knotis-icon-deals-active.png") no-repeat 11px 11px #7ab453;
 }
 
 ul.list-backend li a.deals02-active {
-    background: url("../images/layouts/knotis-icon-deals-back-active.png") no-repeat 11px 11px #ACCA2C;
+    background: url("../../images/layouts/knotis-icon-deals-back-active.png") no-repeat 11px 11px #ACCA2C;
 }
 
 ul.list-backend li a.deals02 {
-    background: url("../images/layouts/knotis-icon-deals-back.png") no-repeat 11px 11px;
+    background: url("../../images/layouts/knotis-icon-deals-back.png") no-repeat 11px 11px;
 }
 
 ul.list-backend li a.happy {
-    background: url("../images/layouts/knotis-icon-happy-back-active.png") no-repeat 11px 11px;
+    background: url("../../images/layouts/knotis-icon-happy-back-active.png") no-repeat 11px 11px;
     color:#ccc;
     text-decoration:line-through;
 	cursor: default;
 }
 
 ul.list-backend li a.happy-active {
-    background: url("../images/layouts/knotis-icon-happy-back.png") no-repeat 11px 11px #7ab453;
+    background: url("../../images/layouts/knotis-icon-happy-back.png") no-repeat 11px 11px #7ab453;
 }
 
 ul.list-backend li a.events {
-    background: url("../images/layouts/knotis-icon-events-back.png") no-repeat 11px 7px;
+    background: url("../../images/layouts/knotis-icon-events-back.png") no-repeat 11px 7px;
     color:#ccc;
     text-decoration:line-through;
 	cursor: default;
 }
 
 ul.list-backend li a.events-active {
-    background: url("../images/layouts/knotis-icon-events-back-active.png") no-repeat 11px 7px #7ab453;
+    background: url("../../images/layouts/knotis-icon-events-back-active.png") no-repeat 11px 7px #7ab453;
 }
 
 /* Menu list deal  */
@@ -2794,7 +2794,7 @@ ul.list-backend li a.events-active {
 ul.list-backend li a span { display:block;}
 
 ul.list-backend .All a  {
-    background: url("../images/layouts/deals-all.png") no-repeat 15px 11px;
+    background: url("../../images/layouts/deals-all.png") no-repeat 15px 11px;
 }
 
 ul.list-backend .All a.active  {
@@ -2806,7 +2806,7 @@ ul.list-backend .All a.active  {
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #464646 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-all-active.png") no-repeat 15px 11px #1b1b1b;
+    background: url("../../images/layouts/deals-all-active.png") no-repeat 15px 11px #1b1b1b;
 }
 
 
@@ -2814,7 +2814,7 @@ ul.list-backend .All a.active  {
 
 
 ul.list-backend .Nig a {
-    background: url("../images/layouts/deals-nig.png") no-repeat 17px 8px;
+    background: url("../../images/layouts/deals-nig.png") no-repeat 17px 8px;
 }
 
 ul.list-backend .Nig a.active {
@@ -2826,12 +2826,12 @@ ul.list-backend .Nig a.active {
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #66b5d2 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-nig-active.png") no-repeat 16px 8px #43a4c8;
+    background: url("../../images/layouts/deals-nig-active.png") no-repeat 16px 8px #43a4c8;
 }
 
 
 ul.list-backend .Foo a {
-    background: url("../images/layouts/deals-foo.png") no-repeat 14px 8px;
+    background: url("../../images/layouts/deals-foo.png") no-repeat 14px 8px;
 }
 
 ul.list-backend .Foo a.active{
@@ -2843,13 +2843,13 @@ ul.list-backend .Foo a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #ba59cc inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-foo-active.png") no-repeat 14px 8px #aa33c0;
+    background: url("../../images/layouts/deals-foo-active.png") no-repeat 14px 8px #aa33c0;
 
 }
 
 
 ul.list-backend .Hea a {
-    background: url("../images/layouts/deals-hea.png") no-repeat 11px 12px;
+    background: url("../../images/layouts/deals-hea.png") no-repeat 11px 12px;
 }
 
 ul.list-backend .Hea a.active{
@@ -2861,12 +2861,12 @@ ul.list-backend .Hea a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #e9813d inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-hea-active.png") no-repeat 12px 12px #dc5902;
+    background: url("../../images/layouts/deals-hea-active.png") no-repeat 12px 12px #dc5902;
 }
 
 
 ul.list-backend .Hom a {
-    background: url("../images/layouts/deals-hom.png") no-repeat 12px 10px;
+    background: url("../../images/layouts/deals-hom.png") no-repeat 12px 10px;
 }
 
 ul.list-backend .Hom a.active{
@@ -2878,11 +2878,11 @@ ul.list-backend .Hom a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #8dc75d inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-hom-active.png") no-repeat 13px 10px #72ba37;
+    background: url("../../images/layouts/deals-hom-active.png") no-repeat 13px 10px #72ba37;
 }
 
 ul.list-backend .Tra a {
-    background: url("../images/layouts/deals-tra.png") no-repeat 12px 10px;
+    background: url("../../images/layouts/deals-tra.png") no-repeat 12px 10px;
 }
 
 ul.list-backend .Tra a.active{
@@ -2894,13 +2894,13 @@ ul.list-backend .Tra a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #d5d172 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-tra-active.png") no-repeat 13px 10px #bcb840;
+    background: url("../../images/layouts/deals-tra-active.png") no-repeat 13px 10px #bcb840;
 }
 
 
 
 ul.list-backend .Art a {
-    background: url("../images/layouts/deals-art.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/deals-art.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Art a.active{
@@ -2912,12 +2912,12 @@ ul.list-backend .Art a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #7964d2 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-art-active.png") no-repeat 13px 10px #482fb5;
+    background: url("../../images/layouts/deals-art-active.png") no-repeat 13px 10px #482fb5;
 }
 
 
 ul.list-backend .Aut a {
-    background: url("../images/layouts/deals-aut.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/deals-aut.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Aut a.active{
@@ -2929,11 +2929,11 @@ ul.list-backend .Aut a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #90adda inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-aut-active.png") no-repeat 13px 10px #4376c3;
+    background: url("../../images/layouts/deals-aut-active.png") no-repeat 13px 10px #4376c3;
 }
 
 ul.list-backend .Bea a {
-    background: url("../images/layouts/deals-bea.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/deals-bea.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Bea a.active{
@@ -2946,11 +2946,11 @@ ul.list-backend .Bea a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #e16e9f inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-bea-active.png") no-repeat 13px 10px #d6377b;
+    background: url("../../images/layouts/deals-bea-active.png") no-repeat 13px 10px #d6377b;
 }
 
 ul.list-backend .Edu a {
-    background: url("../images/layouts/deals-edu.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/deals-edu.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Edu a.active{
@@ -2962,11 +2962,11 @@ ul.list-backend .Edu a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #ebbe84 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-edu-active.png") no-repeat 13px 10px #df9638;
+    background: url("../../images/layouts/deals-edu-active.png") no-repeat 13px 10px #df9638;
 }
 
 ul.list-backend .Fin a {
-    background: url("../images/layouts/deals-fin.png") no-repeat 15px 10px;
+    background: url("../../images/layouts/deals-fin.png") no-repeat 15px 10px;
 }
 
 ul.list-backend .Fin a.active{
@@ -2977,11 +2977,11 @@ ul.list-backend .Fin a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #dbd39d inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-fin-active.png") no-repeat 15px 10px #dfc513;
+    background: url("../../images/layouts/deals-fin-active.png") no-repeat 15px 10px #dfc513;
 }
 
 ul.list-backend .Leg a {
-    background: url("../images/layouts/deals-leg.png") no-repeat 12px 10px;
+    background: url("../../images/layouts/deals-leg.png") no-repeat 12px 10px;
 }
 
 ul.list-backend .Leg a.active{
@@ -2993,11 +2993,11 @@ ul.list-backend .Leg a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #d39871 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-leg-active.png") no-repeat 13px 10px #ad5418;
+    background: url("../../images/layouts/deals-leg-active.png") no-repeat 13px 10px #ad5418;
 }
 
 ul.list-backend .Pet a {
-    background: url("../images/layouts/deals-pet.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/deals-pet.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Pet a.active{
@@ -3009,11 +3009,11 @@ ul.list-backend .Pet a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #77cf8a inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-pet-active.png") no-repeat 13px 10px #1aa738;
+    background: url("../../images/layouts/deals-pet-active.png") no-repeat 13px 10px #1aa738;
 }
 
 ul.list-backend .Pro a {
-    background: url("../images/layouts/deals-pro.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/deals-pro.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Pro a.active{
@@ -3025,11 +3025,11 @@ ul.list-backend .Pro a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #dd6851 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-pro-active.png") no-repeat 13px 10px #cf2807;
+    background: url("../../images/layouts/deals-pro-active.png") no-repeat 13px 10px #cf2807;
 }
 
 ul.list-backend .Pub a {
-    background: url("../images/layouts/deals-pub.png") no-repeat 12px 10px;
+    background: url("../../images/layouts/deals-pub.png") no-repeat 12px 10px;
 }
 
 ul.list-backend .Pub a.active{
@@ -3041,11 +3041,11 @@ ul.list-backend .Pub a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #81e7e6 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-pub-active.png") no-repeat 13px 10px #07cfcd;
+    background: url("../../images/layouts/deals-pub-active.png") no-repeat 13px 10px #07cfcd;
 }
 
 ul.list-backend .Rea a {
-    background: url("../images/layouts/deals-rea.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/deals-rea.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Rea a.active{
@@ -3057,11 +3057,11 @@ ul.list-backend .Rea a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #80c8b1 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-rea-active.png") no-repeat 13px 10px #17926b;
+    background: url("../../images/layouts/deals-rea-active.png") no-repeat 13px 10px #17926b;
 }
 
 ul.list-backend .Res a {
-    background: url("../images/layouts/deals-res.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/deals-res.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Res a.active{
@@ -3073,11 +3073,11 @@ ul.list-backend .Res a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #d17a8f inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-res-active.png") no-repeat 13px 10px #ad1136;
+    background: url("../../images/layouts/deals-res-active.png") no-repeat 13px 10px #ad1136;
 }
 
 ul.list-backend .Sho a {
-    background: url("../images/layouts/deals-sho.png") no-repeat 15px 10px;
+    background: url("../../images/layouts/deals-sho.png") no-repeat 15px 10px;
 }
 
 ul.list-backend .Sho a.active{
@@ -3089,7 +3089,7 @@ ul.list-backend .Sho a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #f471bf inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../images/layouts/deals-sho-active.png") no-repeat 12px 10px #ec008c;
+    background: url("../../images/layouts/deals-sho-active.png") no-repeat 12px 10px #ec008c;
 }
 
 /* Arrow deals */
@@ -3097,7 +3097,7 @@ ul.list-backend .Sho a.active{
 ul.list-backend li .arrow {
     width:11px;
     height:19px;
-    background: url("../images/layouts/knotis-arrow-backend.png") no-repeat center center;
+    background: url("../../images/layouts/knotis-arrow-backend.png") no-repeat center center;
     position:absolute;
     left:-9px;
     top:10px;
@@ -3105,92 +3105,92 @@ ul.list-backend li .arrow {
 }
 
 ul.list-backend li .arrow-Nig {
-    background: url("../images/layouts/arrow-nig.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-nig.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Foo {
-    background: url("../images/layouts/arrow-foo.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-foo.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Hea {
-    background: url("../images/layouts/arrow-hea.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-hea.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Hom {
-    background: url("../images/layouts/arrow-home.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-home.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Tra {
-    background: url("../images/layouts/arrow-tra.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-tra.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Art {
-    background: url("../images/layouts/arrow-art.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-art.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-All {
-    background: url("../images/layouts/arrow-all.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-all.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Aut {
-    background: url("../images/layouts/arrow-aut.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-aut.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Bea {
-    background: url("../images/layouts/arrow-bea.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-bea.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Edu {
-    background: url("../images/layouts/arrow-edu.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-edu.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Fin {
-    background: url("../images/layouts/arrow-fin.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-fin.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Leg {
-    background: url("../images/layouts/arrow-leg.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-leg.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Pet {
-    background: url("../images/layouts/arrow-pet.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-pet.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Pro {
-    background: url("../images/layouts/arrow-pro.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-pro.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Pub {
-    background: url("../images/layouts/arrow-pub.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-pub.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Rea {
-    background: url("../images/layouts/arrow-rea.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-rea.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Res {
-    background: url("../images/layouts/arrow-res.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-res.png") no-repeat center center;
 
 }
 
 ul.list-backend li .arrow-Sho {
-    background: url("../images/layouts/arrow-sho.png") no-repeat center center;
+    background: url("../../images/layouts/arrow-sho.png") no-repeat center center;
 
 }
 
@@ -3201,12 +3201,12 @@ ul.date-dash li {
     font-style: italic;
     color:#939393;
     margin:7px 10px 7px 0;
-    background: url("../images/layouts/knotis-icon-calendar-date.png") no-repeat;
+    background: url("../../images/layouts/knotis-icon-calendar-date.png") no-repeat;
     padding:1px 0 1px 19px;
 }
 
 .graphic ul {
-    background: url("../images/layouts/knotis-pixel.png") repeat-x left bottom;
+    background: url("../../images/layouts/knotis-pixel.png") repeat-x left bottom;
 }
 
 .graphic ul li {
@@ -3233,7 +3233,7 @@ ul.date-dash li {
 
 
 .premiumdeals_filter  {
-    background: url("../images/layouts/knotis-pixel.png") repeat-x left bottom;
+    background: url("../../images/layouts/knotis-pixel.png") repeat-x left bottom;
 }
 
 .premiumdeals_filter  li {
@@ -3428,7 +3428,7 @@ ul.paginate-dash li a.active {
 }
 
 ul.date-deals li {
-     background: url("../images/layouts/circle.png") no-repeat left 3px;
+     background: url("../../images/layouts/circle.png") no-repeat left 3px;
     padding-left:18px;
     margin-bottom:5px;
 }
@@ -3468,12 +3468,12 @@ ul.account li.user a{
 }
 
 h2.account-user {
-    background: url("../images/layouts/account-user.png") no-repeat;
+    background: url("../../images/layouts/account-user.png") no-repeat;
     padding-left:40px;
 }
 
 h2.account-business {
-    background: url("../images/layouts/account-business.png") no-repeat;
+    background: url("../../images/layouts/account-business.png") no-repeat;
     padding-left:40px;
 }
 
@@ -3590,19 +3590,19 @@ ul.account li h3 {
 }
 
 ul.account li h3.business-profile {
-    background: url("../images/layouts/business-pro.png") no-repeat;
+    background: url("../../images/layouts/business-pro.png") no-repeat;
 }
 ul.account li h3.deals-profile {
-    background: url("../images/layouts/deals-profile.png") no-repeat;
+    background: url("../../images/layouts/deals-profile.png") no-repeat;
 }
 ul.account li h3.social-profile {
-     background: url("../images/layouts/social-pro.png") no-repeat 1px 3px;
+     background: url("../../images/layouts/social-pro.png") no-repeat 1px 3px;
 }
 ul.account li h3.premium-profile {
-    background: url("../images/layouts/premium-pro.png") no-repeat;
+    background: url("../../images/layouts/premium-pro.png") no-repeat;
 }
 ul.account li h3.geo-profile {
-    background: url("../images/layouts/geo-pro.png") no-repeat 4px 0;
+    background: url("../../images/layouts/geo-pro.png") no-repeat 4px 0;
 }
 
 
@@ -3632,7 +3632,7 @@ ul.account li.plus p {
 li.base-price {
     width:42px;
     height:24px;
-    background: url("../images/layouts/base-price.png") no-repeat;
+    background: url("../../images/layouts/base-price.png") no-repeat;
     margin-top:3px;
     color: #fff;
     font-size:13px;
@@ -3787,11 +3787,11 @@ li.categoryselect div.selector select {
 }
 
 .address {
-    background: url("../images/layouts/knotis-icon-adres.png") no-repeat;
+    background: url("../../images/layouts/knotis-icon-adres.png") no-repeat;
 }
 
 .phone {
-    background: url("../images/layouts/knotis-icon-phone.png") no-repeat;
+    background: url("../../images/layouts/knotis-icon-phone.png") no-repeat;
     padding-bottom: 5px;
 }
 
@@ -3880,22 +3880,22 @@ li.categoryselect div.selector select {
 }
 
 .info-business ul li.feature {
-    background: url("../images/layouts/knotis-icon-feature.png") no-repeat;
+    background: url("../../images/layouts/knotis-icon-feature.png") no-repeat;
     padding-left: 23px;
 }
 
 .info-business ul li.icon-twitter {
-    background: url("../images/layouts/knotis-mini-twitter.png") no-repeat;
+    background: url("../../images/layouts/knotis-mini-twitter.png") no-repeat;
     padding-left: 23px;
 }
 
 .info-business ul li.icon-facebook {
-    background: url("../images/layouts/knotis-mini-facebook.png") no-repeat;
+    background: url("../../images/layouts/knotis-mini-facebook.png") no-repeat;
     padding-left: 23px;
 }
 
 .info-business ul li.icon-yelp {
-    background: url("../images/layouts/icon-yelp.png") no-repeat;
+    background: url("../../images/layouts/icon-yelp.png") no-repeat;
     padding-left: 23px;
 }
 
@@ -3917,19 +3917,19 @@ li.categoryselect div.selector select {
     cursor: pointer;
 }
 .paginate ul li.knotis-slider-left {
-    background: url("../images/layouts/knotis-slider-left.png") no-repeat center center;
+    background: url("../../images/layouts/knotis-slider-left.png") no-repeat center center;
 }
 .paginate ul li.knotis-slider-left02 {
-    background: url("../images/layouts/knotis-slider-left02.png") no-repeat center center;
+    background: url("../../images/layouts/knotis-slider-left02.png") no-repeat center center;
 }
 .paginate ul li.knotis-slider-button-active {
-    background: url("../images/layouts/knotis-slider-button-active.png") no-repeat center center;
+    background: url("../../images/layouts/knotis-slider-button-active.png") no-repeat center center;
 }
 .paginate ul li.knotis-slider-button {
-    background: url("../images/layouts/knotis-slider-button.png") no-repeat center center;
+    background: url("../../images/layouts/knotis-slider-button.png") no-repeat center center;
 }
 .paginate ul li.knotis-slider-right {
-    background: url("../images/layouts/knotis-slider-right.png") no-repeat center center;
+    background: url("../../images/layouts/knotis-slider-right.png") no-repeat center center;
 }
 /* override dot pagination for deals page */
 .curve .paginate {
@@ -3980,7 +3980,7 @@ li.search {
 }
 
  ul.social li.mail {
-    background: url("../images/layouts/knotis-icon-envelope.png") no-repeat 15px top;
+    background: url("../../images/layouts/knotis-icon-envelope.png") no-repeat 15px top;
     padding-left:45px;
     padding-bottom:2px;
     margin-top: 3px;
@@ -4074,16 +4074,16 @@ ul.social li.deal-social-helper {
     float:left;
     margin-right:35px;
     font-size:1.4em;
-    background: url("../images/layouts/knotis-print01.png") no-repeat;
+    background: url("../../images/layouts/knotis-print01.png") no-repeat;
     padding-left:45px;
 }
 
 .box-print ul  li.second {
-    background: url("../images/layouts/knotis-print02.png") no-repeat;
+    background: url("../../images/layouts/knotis-print02.png") no-repeat;
 }
 
 .box-print ul  li.third {
-    background: url("../images/layouts/knotis-print03.png") no-repeat;
+    background: url("../../images/layouts/knotis-print03.png") no-repeat;
 }
 
 .box-print ul li:last-child {
@@ -4163,17 +4163,17 @@ ul.tag li a {
 }
 
 li.facebook {
-    background: url("../images/layouts/icon-facebook.png") no-repeat left center;
+    background: url("../../images/layouts/icon-facebook.png") no-repeat left center;
     padding-left:20px;
 }
 
 li.twitter {
-    background: url("../images/layouts/icon-twitter.png") no-repeat left center;
+    background: url("../../images/layouts/icon-twitter.png") no-repeat left center;
     padding-left:20px;
 }
 
 li.phone-h {
-    background: url("../images/layouts/phone-home.png") no-repeat left center;
+    background: url("../../images/layouts/phone-home.png") no-repeat left center;
     padding-left:15px;
 }
 
@@ -4227,13 +4227,13 @@ input[type=text], input[type=password], textarea {
 .column-map ul li input.search {
     font-size: 1.5em;
     width: 467px;
-    background: url("../images/layouts/knotis-icon-search.png") no-repeat 7px center #fff;
+    background: url("../../images/layouts/knotis-icon-search.png") no-repeat 7px center #fff;
 }
 
 .column-map ul li input.city {
     font-size: 1.5em;
     width: 80px;
-    background: url("../images/layouts/knotis-icon-circ.png") no-repeat 7px center #fff;
+    background: url("../../images/layouts/knotis-icon-circ.png") no-repeat 7px center #fff;
     padding-right: 30px;
 }
 
@@ -4360,7 +4360,7 @@ input[type='password'],
 .backend-setting input.date {
     width:213px;
     margin-right:10px;
-    background: url("../images/layouts/knotis-icon-calendar.png") no-repeat 200px center #fff;
+    background: url("../../images/layouts/knotis-icon-calendar.png") no-repeat 200px center #fff;
 }
 
 .backend-setting input.card {
