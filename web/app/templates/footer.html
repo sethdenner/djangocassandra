@@ -1,3 +1,72 @@
 <div id="footer">
-	&copy; 2012 knotis.com. All rights reserved.
+    <div class="wrapper clear-fix">
+        <ul class="left">
+            <h5 class="txt-green margin-general"><strong>About us</strong></h5>
+            {% for content in about_us %} 
+            <li class="txt-size"> 
+                <a class="txt-gray no-line" href="{{ content.uri }}" >{{ content.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <ul class="left">
+            <h5 class="txt-green margin-general"><strong>Account Services</strong></h5>
+            {% for content in account_services %} 
+            <li class="txt-size"> 
+                <a class="txt-gray no-line" href="{{ content.uri }}" >{{ content.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <ul class="left">
+            <h5 class="txt-green margin-general"><strong>Merchant Center</strong></h5>
+            {% for content in merchant_center %} <li class="txt-size"> 
+                <a class="txt-gray no-line" href="{{ content.uri }}" >{{ content.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <ul class="left">
+            <h5 class="txt-green margin-general"><strong>Contact Us</strong></h5>
+            {% for content in contact_us %}
+            <li class="txt-size">
+                <a class="txt-gray no-line" href="{{ content.uri }}" >{{ content.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <ul class="left">
+            <h5 class="txt-green margin-general"><strong>Follow Us</strong></h5>
+            <li class="txt-size facebook">
+                <a class="txt-gray no-line" href="https://www.facebook.com/knotis" target="_blank">Connect on
+                    Facebook</a>
+            </li>
+            <li class="txt-size twitter">
+                <a class="txt-gray no-line" href="https://www.twitter.com/knotis" target="_blank">Connect on Twitter</a>
+            </li>
+        </ul>
+        <p class="clean txt-size privacy">© 2011 knotis Inc. All Rights Reserved. <a href="<?php echo site_url('category/terms_of_use') ?>"> Terms</a> &amp; <a href="<?php echo site_url('category/privacy_policy') ?>">
+            Privacy</a></p>
+    </div>
 </div>
+<div id="fb-root" data-app-id="<?= config_item('facebook_app_id'); ?>" data-sign-up-action="<?php echo site_url("user/facebook_login"); ?>"></div>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-25438470-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script type="text/javascript" charset="utf-8">
+    var is_ssl = ("https:" == document.location.protocol);
+    var asset_host = is_ssl ? "https://s3.amazonaws.com/getsatisfaction.com/" : "http://s3.amazonaws.com/getsatisfaction.com/";
+    document.write(unescape("%3Cscript src='" + asset_host + "javascripts/feedback-v2.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript" charset="utf-8">
+    var feedback_widget_options = {};
+    feedback_widget_options.display = "overlay";
+    feedback_widget_options.company = "knotis";
+    feedback_widget_options.placement = "left";
+    feedback_widget_options.color = "#222";
+    feedback_widget_options.style = "idea";
+    var feedback_widget = new GSFN.feedback_widget(feedback_widget_options);
+</script>
