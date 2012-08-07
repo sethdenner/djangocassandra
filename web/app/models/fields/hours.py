@@ -1,9 +1,10 @@
 from app.models.fields.binary import PickledObjectField
 from datetime import datetime
+from abc import ABCMeta
 
 class TimeSpan:
-    __metaclass__ = TimeSpan
-    @abstractmethod
+    __metaclass__ = ABCMeta
+    
     def __init__(self):
         pass
 
