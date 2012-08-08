@@ -1,0 +1,631 @@
+[
+    {
+        "pk": "5e5d5d1f-e897-4ab3-8c74-f92a1846f019",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_contact_inquire",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "General Inquiries",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:09:18",
+            "previous": null
+        }
+    },
+    {
+        "pk": "019e2868-37df-4539-96d0-c7b4556fb9ac",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_follow_twitter",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Connect on Twitter",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:11:16",
+            "previous": null
+        }
+    },
+    {
+        "pk": "b9dd5364-0993-434c-95c0-d2e686aa126e",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_merchant_login",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Merchant Login",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:08:03",
+            "previous": null
+        }
+    },
+    {
+        "pk": "b08d80c8-a54d-46a0-bb87-41a5a14bc067",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_about_knotis",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "What is knotis?",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:04:50",
+            "previous": null
+        }
+    },
+    {
+        "pk": "f55b2d29-be91-45a4-8a18-e98d0b4ddab4",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_contact",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Contact Us",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:09:02",
+            "previous": null
+        }
+    },
+    {
+        "pk": "794c5336-97a2-4084-b283-643ac63939bc",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "content_root",
+            "parent": "794c5336-97a2-4084-b283-643ac63939bc",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "0",
+            "pub_date": "2012-08-06 16:15:02",
+            "previous": null
+        }
+    },
+    {
+        "pk": "550580c1-a0c7-4595-a170-9e8edf7edc19",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_deals",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Deals",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:25:59",
+            "previous": null
+        }
+    },
+    {
+        "pk": "af6984fb-726f-42b1-9faf-764af8cad4ec",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_contact",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Contact",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:27:25",
+            "previous": null
+        }
+    },
+    {
+        "pk": "c58ad456-8889-46fa-9021-3c3844ace5c8",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_login",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Sign In",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:27:37",
+            "previous": null
+        }
+    },
+    {
+        "pk": "f7cedf4e-59b6-4f52-a53c-c170ec067028",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "home_heading",
+            "parent": "f9e734b7-d476-474e-b391-447564ec9d7a",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "knotis knows deals",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:18:56",
+            "previous": null
+        }
+    },
+    {
+        "pk": "a63d0d37-3b38-48a7-b68c-1463831b1772",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_copyright",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "&cpy; 2011 knotis Inc. All Rights Reserved. <a href=\"{{ terms_url }}\"> Terms</a> & <a href=\"{{ privacy_url }}\"> Privacy</a>",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.4",
+            "pub_date": "2012-08-06 20:28:05",
+            "previous": null
+        }
+    },
+    {
+        "pk": "1e9c92da-eed2-46c7-aeb0-a2fa83316f62",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_happy_hour",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Happy Hour",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:26:44",
+            "previous": null
+        }
+    },
+    {
+        "pk": "ed036d8b-ff6d-46cf-aa4c-477ae95521e3",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_about_how",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "How it works",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:05:04",
+            "previous": null
+        }
+    },
+    {
+        "pk": "0dfe8617-7e2e-43ac-9bec-4167c78b83ec",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_merchant_deals",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Manage Deals",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:08:31",
+            "previous": null
+        }
+    },
+    {
+        "pk": "7528fb88-795f-427c-bd98-6c92bac5d059",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header",
+            "parent": "9f5b072c-e1ed-4897-85ca-c87aa27c7d49",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.1",
+            "pub_date": "2012-08-06 16:53:18",
+            "previous": null
+        }
+    },
+    {
+        "pk": "0be4a619-0ce8-4c64-b6b0-c4145886b141",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_about_story",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Our Story",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:05:27",
+            "previous": null
+        }
+    },
+    {
+        "pk": "899701da-0529-420f-b05f-3d531b78c837",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_account",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Account Services",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:05:46",
+            "previous": null
+        }
+    },
+    {
+        "pk": "19324c11-e0f1-47e6-b6af-90706262435c",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_contact_support",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Customer Support Center",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:10:07",
+            "previous": null
+        }
+    },
+    {
+        "pk": "03530922-b14e-4e9b-9dcc-f5aca1172919",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_sign_up",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Sign Up",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:28:01",
+            "previous": null
+        }
+    },
+    {
+        "pk": "af77c9dd-7c81-49be-922a-9f02d8117f3b",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_events",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Events",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:26:12",
+            "previous": null
+        }
+    },
+    {
+        "pk": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer",
+            "parent": "9f5b072c-e1ed-4897-85ca-c87aa27c7d49",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.1",
+            "pub_date": "2012-08-06 16:55:05",
+            "previous": null
+        }
+    },
+    {
+        "pk": "2922857e-d66a-4a27-9a61-1b57e3723a98",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_all_deals",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "All Deals",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:25:46",
+            "previous": null
+        }
+    },
+    {
+        "pk": "ee8f6443-0595-4e25-97f0-413840f8c38c",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_follow",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Follow Us",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:10:33",
+            "previous": null
+        }
+    },
+    {
+        "pk": "9f5b072c-e1ed-4897-85ca-c87aa27c7d49",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "web_root",
+            "parent": "794c5336-97a2-4084-b283-643ac63939bc",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.0",
+            "pub_date": "2012-08-06 16:15:25",
+            "previous": null
+        }
+    },
+    {
+        "pk": "ae351450-49eb-4137-a7fc-d3de56b01627",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "home_feature",
+            "parent": "f9e734b7-d476-474e-b391-447564ec9d7a",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Feature your business!",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:29:50",
+            "previous": null
+        }
+    },
+    {
+        "pk": "1f72571d-174d-4ac2-92c9-8d3e47144dc6",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "home_blurb",
+            "parent": "f9e734b7-d476-474e-b391-447564ec9d7a",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "knotis helps you discover great deals from businesses you\u2019ll love. Find special offers around you - happening right now. We help local businesses offer their products and services to you.",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:24:36",
+            "previous": null
+        }
+    },
+    {
+        "pk": "c1e06dfc-06e8-4a76-b27e-b41dcea6d834",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "home_special_deals",
+            "parent": "f9e734b7-d476-474e-b391-447564ec9d7a",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Special deals happening right now",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:31:17",
+            "previous": null
+        }
+    },
+    {
+        "pk": "f9e734b7-d476-474e-b391-447564ec9d7a",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "home",
+            "parent": "9f5b072c-e1ed-4897-85ca-c87aa27c7d49",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.1",
+            "pub_date": "2012-08-06 16:16:16",
+            "previous": null
+        }
+    },
+    {
+        "pk": "99f177c9-d202-47b3-b1ee-a32aff15dbd5",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "home_search_text",
+            "parent": "f9e734b7-d476-474e-b391-447564ec9d7a",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "What are you interested in?",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:28:24",
+            "previous": null
+        }
+    },
+    {
+        "pk": "b0af1446-2706-4f37-a673-a7c0b41c8761",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "home_search",
+            "parent": "f9e734b7-d476-474e-b391-447564ec9d7a",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Search",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:28:50",
+            "previous": null
+        }
+    },
+    {
+        "pk": "bbe8e699-3846-4a39-83a9-3235c3dee6d5",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_account_settings",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Account Settings",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:06:44",
+            "previous": null
+        }
+    },
+    {
+        "pk": "692c1c02-000e-4e15-b324-399cadc493f9",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_merchant",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Merchant Center",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:07:05",
+            "previous": null
+        }
+    },
+    {
+        "pk": "5b91f683-2346-460e-a6bc-848639b1259b",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_follow_facebook",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Connect on Facebook",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:10:57",
+            "previous": null
+        }
+    },
+    {
+        "pk": "1646804f-ee20-4af3-8db0-73ccb1725463",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_about",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "About Us",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:03:11",
+            "previous": null
+        }
+    },
+    {
+        "pk": "10dc7c40-abe5-40f2-8f9d-63cb426aa75a",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "home_sign_up",
+            "parent": "f9e734b7-d476-474e-b391-447564ec9d7a",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Sign Up & Discover Great Deals",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 16:29:24",
+            "previous": null
+        }
+    },
+    {
+        "pk": "af8b1bde-c5f9-48dc-b548-7e10f386672b",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_account_create",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Create Account",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:06:30",
+            "previous": null
+        }
+    },
+    {
+        "pk": "710e355a-a86c-44cf-ac06-3016794e69a2",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "footer_account_login",
+            "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "User Login",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-06 17:06:12",
+            "previous": null
+        }
+    }
+]

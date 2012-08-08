@@ -71,12 +71,6 @@ class EndpointSMS(Endpoint):
     def send_message(self):
         pass
 
-class EndpointEmail(Endpoint):
-    class Meta:
-        proxy = True
-    def send_message(self):
-        pass
-
 #class EndpointAddress(Endpoint):
 #    #class Meta:
 #    #    proxy = True
