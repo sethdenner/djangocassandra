@@ -116,45 +116,24 @@ $(document).ready(function() {
 
     });
 
-
-
-
     // Popup that load the view login
     $('.log_in').live('click', function() {
-
-
         $('.signup_popup').remove();
-
         $('.log_in_popup').remove();
 
-
-        $.post([server + "user/log_in_popup"].join('/'), {},
-
+        $.get('/login/', {},
                 function(data) {
                     $("input:checkbox").uniform();
-
-
                     $(".header-content").append(data).fadeIn;
-
                     $("#login").validity(function() {
-
                         $("#email")// The first input:
                                 .require();// Required:
-
                         $("#password").require();
-
-
                     });
-
                     $("input:text").placeholder();
-
-
                 });
         return false;
-
-
     });
-
 
     // Popup that load the view login
     $('.signup_pop').live('click', function() {

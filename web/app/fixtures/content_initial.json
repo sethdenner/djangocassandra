@@ -1,5 +1,22 @@
 [
     {
+        "pk": "66147ae7-e72a-4742-8f49-4a253acdfd77",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_business_profile",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Business Profile",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-07 20:53:10",
+            "previous": null
+        }
+    },
+    {
         "pk": "5e5d5d1f-e897-4ab3-8c74-f92a1846f019",
         "model": "app.content",
         "fields": {
@@ -13,6 +30,23 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.2",
             "pub_date": "2012-08-06 17:09:18",
+            "previous": null
+        }
+    },
+    {
+        "pk": "70b577e3-a004-4dcc-8a17-44d0fb5f1e5a",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_all_deals_wa",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "All in WA",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-07 20:44:50",
             "previous": null
         }
     },
@@ -102,6 +136,40 @@
         }
     },
     {
+        "pk": "c8f5e351-1a6f-4235-ba54-4375b3bfc6a2",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_browse_deals",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Browse Deals by City and Neighborhood",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-07 20:40:02",
+            "previous": null
+        }
+    },
+    {
+        "pk": "1da78695-0e47-4330-beec-186a36f6fb0d",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_profile",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "My profile",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-07 20:51:20",
+            "previous": null
+        }
+    },
+    {
         "pk": "550580c1-a0c7-4595-a170-9e8edf7edc19",
         "model": "app.content",
         "fields": {
@@ -115,6 +183,23 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.2",
             "pub_date": "2012-08-06 16:25:59",
+            "previous": null
+        }
+    },
+    {
+        "pk": "76d55147-f2df-426d-8507-67b5f026da08",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_launch",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "knotis is launching in the Greater Seattle Area.                             We\u2019re building out to surrounding cities to offer you deals from your favorite places.",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-07 20:41:15",
             "previous": null
         }
     },
@@ -178,7 +263,7 @@
             "parent": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
             "locale": "en_us",
             "certainty_sigma": 0.0,
-            "value": "&cpy; 2011 knotis Inc. All Rights Reserved. <a href=\"{{ terms_url }}\"> Terms</a> & <a href=\"{{ privacy_url }}\"> Privacy</a>",
+            "value": "&copy; 2011 knotis Inc. All Rights Reserved. <a href=\"/terms/\"> Terms</a> & <a href=\"/privacy/\"> Privacy</a>",
             "certainty_mu": 1.0,
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.4",
@@ -234,6 +319,23 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.2",
             "pub_date": "2012-08-06 17:08:31",
+            "previous": null
+        }
+    },
+    {
+        "pk": "9be406b6-0c62-49ab-a626-38d2884aab2c",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_cities",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Cities",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-07 20:56:52",
             "previous": null
         }
     },
@@ -425,6 +527,23 @@
         }
     },
     {
+        "pk": "d860d477-1809-47d3-8ef5-0455c20f4318",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_add_city",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Let us know if you want to add your city to the list.",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-07 20:42:30",
+            "previous": null
+        }
+    },
+    {
         "pk": "1f72571d-174d-4ac2-92c9-8d3e47144dc6",
         "model": "app.content",
         "fields": {
@@ -527,6 +646,23 @@
         }
     },
     {
+        "pk": "a8b0910e-f37c-4832-8d99-9bbb44b878a3",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_dashboard",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Dashboard",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-07 20:49:08",
+            "previous": null
+        }
+    },
+    {
         "pk": "692c1c02-000e-4e15-b324-399cadc493f9",
         "model": "app.content",
         "fields": {
@@ -540,6 +676,23 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.2",
             "pub_date": "2012-08-06 17:07:05",
+            "previous": null
+        }
+    },
+    {
+        "pk": "42024ffc-9732-4b64-a216-c2903127f017",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_dynamic_pages",
+            "parent": "66147ae7-e72a-4742-8f49-4a253acdfd77",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Dynamic Pages",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-07 20:55:59",
             "previous": null
         }
     },
@@ -625,6 +778,40 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.2",
             "pub_date": "2012-08-06 17:06:12",
+            "previous": null
+        }
+    },
+    {
+        "pk": "5269a479-b0b6-44da-b578-db721970894b",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_subscriptions",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "My Subscriptions",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-07 20:51:45",
+            "previous": null
+        }
+    },
+    {
+        "pk": "65cc38c2-564b-4e01-b132-21e075b73b1e",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "header_sign_out",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Sign Out",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-07 20:53:52",
             "previous": null
         }
     }
