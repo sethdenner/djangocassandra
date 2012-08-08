@@ -3,11 +3,133 @@
 {% block title %}Knotis.com - Home{% endblock title %}
 
 {% block content %} 
-<p>
-	Welcome to Knotis.com!
-</p>
+<div class="header-bottom">
+    <div class="curve curve01 curve02">
+        <div class="wrapper back-curve clear-fix">
+            <div class="column-text left">
+                <h2 class="txt-white"><strong>knotis knows deals</strong></h2>
+                <p>knotis helps you discover great deals from businesses you’ll love. Find special offers around you -
+                    happening right now. We help local businesses offer their products and services to you.</p>
+                {% if not logged_in %}
+                <div class="box-border sig_in margin-general">
+                    <a class="button radius-general clear-fix" title="Sign Up &amp; Discover Great Deals"
+                       href="<?= site_url('home/account') ?>">Sign Up &amp; Discover Great Deals</a>
+                </div>
+                <div class="box-border sig_in sign-in-business">
+                    <a class="button radius-general clear-fix" title="Sign Up &amp; Discover Great Deals"
+                       href="<?= site_url('home/account') ?>">Feature your business!</a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="column-map right">
+                <form class="principal" action="<?php echo site_url('deals/keywords/'); ?>" method="get" id="">
+                    <ul class="clear-fix">
+                        <li class="radius-general">
+                            <div class="suggestionsBox" id="suggestions" style="display: none;">
+                                <div class="suggestionList" id="autoSuggestionsList">
+                                    &nbsp;
+                                </div>
+                            </div>
+                            <label>
+                                <input id="search" type="text" class="search radius-general" placeholder="What are you interested in?" value="">
+                            </label>
+                        </li>
+                        <li class="radius-general">
+                            <a class="button radius-general txt-size link-search" name="link" href="">Search</a>
+                        </li>
+                    </ul>
+                </form>
+                <div class="map box-border">
+                    <script>
+                        $(document).ready(function() {
+                            var mapOptions = {
+                                center : new google.maps.LatLng(47.602227802480606, -122.30203628540039),
+                                zoom: 15,
+                                mapTypeId : google.maps.MapTypeId.ROADMAP
+                            };
+                            map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+                            markers = [];
 
+                            var bounds = new google.maps.LatLngBounds(markers[0].getPosition(), markers[0].getPosition());
+                            for (var i = 0; i < markers.length; i++) {
+                                bounds.extend(markers[i].getPosition());
+                            }
+                            map.fitBounds(bounds);
+                        });
+                   </script>
+                   <span class="radius-general span-map" id="map_canvas">
+                   </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<a href="/business/create">Create Business</a>&nbsp;|&nbsp;<a href="/business/list">List Businesses</a>
+<div id="content" class="content-home">
+    <div class="wrapper">
+        <h3 class="txt-center shadow-white divider">
+            <strong><span>Special deals happening right now</span></strong>
+        </h3>
+    </div>
+    <div class="wrapper clear-fix">
+        {% if premium_deals %}
+        {% for deal in premium_deals %}
+        <div class="box relative" style="width:222px">
+            <div class="category cat-{{ deal.class }}"></div>
+            <div class="ribbon-price"><p>{{ deal.savings }}%</p></div>
+            <h4 class="circle shadow-white">
+                <strong>
+                    {% if user.city_name %}
+                    {% if user.neighbourhood_name %}
+                    {{ user.neighbourhood_name }}
+                    {% else %}
+                    {{ user.city_name}}
+                    {% endif %}
+                    {% else %}
+                    ALL
+                    {% endif %}
+                </strong>
+            </h4>
 
+            <div class="box-bottom box-border">
+                <div class="box-image-home relative">
+                    <a href="<?=site_url("deal/profile/" . $row->id); ?>" title="<?=$row->title ?>"
+                       alt="<?=$row->title ?>">
+                       <img alt="<?=$business->name; ?>" src="<?php echo $imageUrl; ?>"/>
+                    </a>
+                </div>
+                <div class="box-info">
+                    <h5>
+                        <strong><a href="/deal/{{ deal.id }}">
+                        <strong><a href="/deal/{{ deal.id }}">
+                            {% if deal.title_type == 1 %}
+                            ${{ deal.new_price }} for ${{ deal.old_price }} at {{ deal.business.name }}
+                            {% endif %}
+                            {% if deal.title_type == 2 %}
+                            ${{ deal.new_price }} for ${{ deal.title }} at {{ deal.business.name }}
+                            {% endif %}
+                            {% if deal.title_type == 3 %}
+                            {{ deal.title }}
+                            {% endif %}
+                        </a></strong>
+                        </a></strong>
+                    </h5>
+                    <p>
+                        <a class="txt-size margin-general clear-fix business-link business-buy" title="{{ deal.business.name }}"
+                            href="/business/{{ deal.business.id }}" >
+                            {{ deal.business.name }}
+                        </a>
+                    </p>
+                    <p class="txt-size clean">
+                        {% if deal.description %}
+                        {{ deal.description }}
+                        {% endif %}
+                    </p>    
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
 {% endblock content %}

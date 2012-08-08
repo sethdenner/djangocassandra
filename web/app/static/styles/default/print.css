@@ -1,0 +1,42 @@
+#header,
+#footer {
+    display: none;
+}
+
+
+body {
+    color:#000;
+}
+
+p a {
+    color:#444;
+}
+
+span img.print {
+    display:none;
+}
+
+.logo-print {
+    display: inline;
+}
+
+.print-div {
+  display: none;
+}
+
+.print-only {
+  display: inherit;
+}
+
+table { 
+	page-break-inside: auto;
+}
+
+tr { 
+	page-break-inside: avoid; 
+	page-break-after: auto; 
+}
+
+thead { 
+	display: table-header-group; 
+}
