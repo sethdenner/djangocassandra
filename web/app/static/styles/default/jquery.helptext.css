@@ -4,7 +4,7 @@
   left: 0;
   z-index: 999;
   width: 200px;
-  background: url("../images/layouts/knotis-transparence.png") repeat scroll 0 0 transparent;
+  background: url("/static/images/layouts/knotis-transparence.png") repeat scroll 0 0 transparent;
   border-radius: 5px 5px 5px 5px;
 }
 
@@ -26,7 +26,7 @@
 .help-icon {
   height: 14px;
   width: 16px;
-  background: url(../images/helpicon.png) no-repeat scroll top left transparent;
+  background: url(/static/images/helpicon.png) no-repeat scroll top left transparent;
   display: inline-block;
   margin: 0;
   padding: 0;

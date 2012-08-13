@@ -8,13 +8,15 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', 'app.views.home.index', name='home'),
-    url(r'^business/create', 'app.views.business.create_business', name="business"),
+    url(r'^plans/$', 'app.views.account.plans', name='account'),
+    url(r'^business/create', 'app.views.business.create_business', name='business'),
     url(
         r'^login/$', 
         'django.contrib.auth.views.login', {
             'template_name': 'login.html', 
             'authentication_form': KnotisAuthenticationForm
-        }
+        },
+        name='auth'
     ),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),

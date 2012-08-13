@@ -17,7 +17,7 @@
                 var id = $this.attr('id');
                 var id = id.replace(/^ht-/, '');
                 $.ajax({
-                    url: '/js/helptext.json?' + settings.version,
+                    url: '/static/scripts/helptext.json?' + settings.version,
                     cache: true,
                     dataType: 'json',
                     error: function(jqXHR, textStatus, errorThrown) {
