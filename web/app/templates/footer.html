@@ -1,48 +1,57 @@
 <div id="footer">
     <div class="wrapper clear-fix">
         <ul class="left">
-            <h5 class="txt-green margin-general"><strong>About us</strong></h5>
-            {% for content in about_us %} 
+            <h5 class="txt-green margin-general"><strong>{{ footer_about }}</strong></h5>
             <li class="txt-size"> 
-                <a class="txt-gray no-line" href="{{ content.uri }}" >{{ content.title }}</a>
+                <a class="txt-gray no-line" href="/" >{{ footer_about_knotis }}</a>
             </li>
-            {% endfor %}
-        </ul>
-        <ul class="left">
-            <h5 class="txt-green margin-general"><strong>Account Services</strong></h5>
-            {% for content in account_services %} 
             <li class="txt-size"> 
-                <a class="txt-gray no-line" href="{{ content.uri }}" >{{ content.title }}</a>
+                <a class="txt-gray no-line" href="/" >{{ footer_about_how }}</a>
             </li>
-            {% endfor %}
+            <li class="txt-size"> 
+                <a class="txt-gray no-line" href="/" >{{ footer_about_story }}</a>
+            </li>
         </ul>
         <ul class="left">
-            <h5 class="txt-green margin-general"><strong>Merchant Center</strong></h5>
-            {% for content in merchant_center %} <li class="txt-size"> 
-                <a class="txt-gray no-line" href="{{ content.uri }}" >{{ content.title }}</a>
+            <h5 class="txt-green margin-general"><strong>{{ footer_account }}</strong></h5>
+            <li class="txt-size"> 
+                <a class="txt-gray no-line" href="/" >{{ footer_account_login }}</a>
             </li>
-            {% endfor %}
+            <li class="txt-size"> 
+                <a class="txt-gray no-line" href="/" >{{ footer_account_create }}</a>
+            </li>
+            <li class="txt-size"> 
+                <a class="txt-gray no-line" href="/" >{{ footer_account_settings }}</a>
+            </li>
         </ul>
         <ul class="left">
-            <h5 class="txt-green margin-general"><strong>Contact Us</strong></h5>
-            {% for content in contact_us %}
+            <h5 class="txt-green margin-general"><strong>{{ footer_merchant }}</strong></h5>
+            <li class="txt-size"> 
+                <a class="txt-gray no-line" href="/" >{{ footer_merchant_login }}</a>
+            </li>
+            <li class="txt-size"> 
+                <a class="txt-gray no-line" href="/" >{{ footer_merchant_deals }}</a>
+            </li>
+        </ul>
+        <ul class="left">
+            <h5 class="txt-green margin-general"><strong>{{ footer_contact }}</strong></h5>
             <li class="txt-size">
-                <a class="txt-gray no-line" href="{{ content.uri }}" >{{ content.title }}</a>
+                <a class="txt-gray no-line" href="/" >{{ footer_contact_inquire }}</a>
             </li>
-            {% endfor %}
+            <li class="txt-size">
+                <a class="txt-gray no-line" href="/" >{{ footer_contact_support }}</a>
+            </li>
         </ul>
         <ul class="left">
-            <h5 class="txt-green margin-general"><strong>Follow Us</strong></h5>
+            <h5 class="txt-green margin-general"><strong>{{ footer_follow }}</strong></h5>
             <li class="txt-size facebook">
-                <a class="txt-gray no-line" href="https://www.facebook.com/knotis" target="_blank">Connect on
-                    Facebook</a>
+                <a class="txt-gray no-line" href="https://www.facebook.com/knotis" target="_blank">{{ footer_follow_facebook }}</a>
             </li>
             <li class="txt-size twitter">
-                <a class="txt-gray no-line" href="https://www.twitter.com/knotis" target="_blank">Connect on Twitter</a>
+                <a class="txt-gray no-line" href="https://www.twitter.com/knotis" target="_blank">{{ footer_follow_twitter }}</a>
             </li>
         </ul>
-        <p class="clean txt-size privacy">© 2011 knotis Inc. All Rights Reserved. <a href="<?php echo site_url('category/terms_of_use') ?>"> Terms</a> &amp; <a href="<?php echo site_url('category/privacy_policy') ?>">
-            Privacy</a></p>
+        <p class="clean txt-size privacy">{{ footer_copyright|safe }}</p>
     </div>
 </div>
 <div id="fb-root" data-app-id="<?= config_item('facebook_app_id'); ?>" data-sign-up-action="<?php echo site_url("user/facebook_login"); ?>"></div>

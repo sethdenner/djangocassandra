@@ -1,9 +1,20 @@
 from django.contrib.auth.models import User, Group
-from django.db.models import CharField, DateTimeField, FloatField
+from django.db.models import CharField, DateTimeField, FloatField, Manager
 from foreignkeynonrel.models import ForeignKeyNonRel
 from django.utils.datetime_safe import datetime
 
 from app.models.knotis import KnotisModel
+
+
+class ContentManager(Manager):
+    def get_template_content(self, template_name):
+        """
+        FIXME: Inefficient. We should find some way to reduce this to one
+        query instead of 2 through denormalization.
+        """ 
+        qset = super(ContentManager, self).get_query_set().filter(content_type='1.1').filter(name=template_name)
+        parent = qset[0] 
+        return super(ContentManager, self).get_query_set().filter(parent=parent)
 
 
 class Content(KnotisModel):
@@ -18,7 +29,11 @@ class Content(KnotisModel):
 #    certainty=(mu,sigma)
     CONTENT_TYPES = (
         ('0', 'Root'),
-        ('1', 'Site Text'),
+        ('1.0', 'Site Root'),
+        ('1.1', 'Template'),
+        ('1.2', 'Text'),
+        ('1.3', 'URI'),
+        ('1.4', 'HTML'),
         ('2', 'User Submitted'),
         ('3.0', 'Business Root'),
         ('3.1', 'Business Name'),
@@ -43,8 +58,9 @@ class Content(KnotisModel):
         ('jp', 'jp')
     )
 
-    content_type = CharField(max_length=30, choices=CONTENT_TYPES, null=True)
-    locale = CharField(max_length='10', choices=LOCALES, null=True, default=LOCALES[0])
+    content_type = CharField(max_length=30, choices=CONTENT_TYPES, null=True, db_index=True)
+    locale = CharField(max_length=10, choices=LOCALES, null=True, default=LOCALES[0])
+    name = CharField(max_length=30, null=True, db_index=True)
 
     user = ForeignKeyNonRel(User)
     group = ForeignKeyNonRel(Group, null=True, blank=True)
@@ -57,16 +73,16 @@ class Content(KnotisModel):
 
     value = CharField(max_length=2000, null=True, blank=True)  # Base64Field()
 
-    certainty_mu = FloatField(null=True)  # average - expected value
-    certainty_sigma = FloatField(null=True)  # stdev - expected error
+    certainty_mu = FloatField(null=True, default='1.0')  # average - expected value
+    certainty_sigma = FloatField(null=True, default='0.0')  # stdev - expected error
 
     pub_date = DateTimeField('date published', auto_now_add=True)
 
     def __unicode__(self):
-        if None == self.value:
-            return '(None)'
+        if not self.name:
+            return '(' + self.id + ')'
         else:
-            return self.value
+            return self.name + ' (' + self.id + ')'
 
     def was_published_recently(self):
         return self.pub_date >= datetime.now() - datetime.timedelta(days=1)
@@ -74,3 +90,6 @@ class Content(KnotisModel):
     was_published_recently.admin_order_field = 'pub_date'
     was_published_recently.boolean = True
     was_published_recently.short_description = 'Published recently?'
+    
+    objects = Manager()
+    content_objects = ContentManager()

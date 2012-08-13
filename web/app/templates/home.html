@@ -7,22 +7,21 @@
     <div class="curve curve01 curve02">
         <div class="wrapper back-curve clear-fix">
             <div class="column-text left">
-                <h2 class="txt-white"><strong>knotis knows deals</strong></h2>
-                <p>knotis helps you discover great deals from businesses you’ll love. Find special offers around you -
-                    happening right now. We help local businesses offer their products and services to you.</p>
+                <h2 class="txt-white"><strong>{{ home_heading }}</strong></h2>
+                <p>{{ home_blurb }}</p>
                 {% if not logged_in %}
                 <div class="box-border sig_in margin-general">
-                    <a class="button radius-general clear-fix" title="Sign Up &amp; Discover Great Deals"
-                       href="<?= site_url('home/account') ?>">Sign Up &amp; Discover Great Deals</a>
+                    <a class="button radius-general clear-fix" title="{{ home_sign_up }}"
+                       href="/signup/">{{ home_sign_up }}</a>
                 </div>
                 <div class="box-border sig_in sign-in-business">
                     <a class="button radius-general clear-fix" title="Sign Up &amp; Discover Great Deals"
-                       href="<?= site_url('home/account') ?>">Feature your business!</a>
+                       href="/signup/">{{ home_feature }}</a>
                 </div>
                 {% endif %}
             </div>
             <div class="column-map right">
-                <form class="principal" action="<?php echo site_url('deals/keywords/'); ?>" method="get" id="">
+                <form class="principal" action="/search/" method="post" id="">
                     <ul class="clear-fix">
                         <li class="radius-general">
                             <div class="suggestionsBox" id="suggestions" style="display: none;">
@@ -31,7 +30,7 @@
                                 </div>
                             </div>
                             <label>
-                                <input id="search" type="text" class="search radius-general" placeholder="What are you interested in?" value="">
+                                <input id="search" type="text" class="search radius-general" placeholder="{{ home_search_text }}" value="">
                             </label>
                         </li>
                         <li class="radius-general">
@@ -68,7 +67,7 @@
 <div id="content" class="content-home">
     <div class="wrapper">
         <h3 class="txt-center shadow-white divider">
-            <strong><span>Special deals happening right now</span></strong>
+            <strong><span>{{ home_special_deals }}</span></strong>
         </h3>
     </div>
     <div class="wrapper clear-fix">
@@ -95,7 +94,7 @@
                 <div class="box-image-home relative">
                     <a href="<?=site_url("deal/profile/" . $row->id); ?>" title="<?=$row->title ?>"
                        alt="<?=$row->title ?>">
-                       <img alt="<?=$business->name; ?>" src="<?php echo $imageUrl; ?>"/>
+                       <img alt="{{ deal.business.name }}" src="{{ deal.business.image }}"/>
                     </a>
                 </div>
                 <div class="box-info">

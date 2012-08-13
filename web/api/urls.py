@@ -41,8 +41,11 @@ urlpatterns += patterns('',
 #content
 urlpatterns += patterns(
    url(r'^content/write$', content_handler, {'emitter_format': 'json'}),
-   url(r'^content/(?P<content_id>[^/]+)/', content_handler),
-   url(r'^content/', content_handler),
+   # url(r'^content/(?P<content_id>[^/]+)/', content_handler),
+   # url(r'^content/(?P<template_name>[^/]+)/', content_handler),
+   url(r'^content/(?P<content_id>[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/$', content_handler),
+   url(r'^content/(?P<template_name>.+)/$', content_handler),
+   url(r'^content/$', content_handler),
 )
 
 testmodel_handler = CsrfExemptResource(TestModelHandler)

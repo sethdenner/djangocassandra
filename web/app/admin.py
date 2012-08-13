@@ -34,7 +34,7 @@ admin.site.register(Consumer, OAuthAdmin)
 
 
 class ContentAdmin(admin.ModelAdmin):
-    list_display = ('value', 'content_type', 'pub_date')
+    list_display = ('__unicode__', 'parent', 'content_type', 'pub_date')
     list_filter = ['pub_date']
     search_fields = ['value']
 

@@ -1,6 +1,29 @@
 from django.shortcuts import render_to_response
 
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
+
+
+class KnotisAuthenticationForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(KnotisAuthenticationForm, self).__init__(*args, **kwargs)
+        
+        self.fields['username'].widget.attrs = {
+            'class': 'radius-general',
+            'id': 'email',
+            'type': 'text',
+            'name': 'username',
+            'placeholder': 'Username',
+            'autofocus': None
+        }
+        
+        self.fields['password'].widget.attrs = {
+            'class': 'radius-general',
+            'id': 'password',
+            'type': 'password',
+            'name': 'password',
+            'placeholder': 'Password',
+        }
 
 
 def login_user(request):
