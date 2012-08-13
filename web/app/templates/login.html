@@ -2,7 +2,7 @@
 <div class="content-popup session absolute radius-general log_in_popup">
     <div class="content-popup-inset back-login radius-general">
         <div class="clear-fix relative">
-            <div id="ajaxBusy" class="absolute"><img src="<?php echo base_url() ?>/images/ajaxloading.gif" title="Loading" alt="loading"/></div>
+            <div id="ajaxBusy" class="absolute"><img src="{{ STATIC_URL }}/images/ajaxloading.gif" title="Loading" alt="loading"/></div>
             <h3><strong>Log In or sign up</strong></h3>
             <div class="close close_log_in"></div>
         </div>
@@ -23,7 +23,7 @@
                     </ul>
                     <p>
                         <input class="button radius-general left" value="Let me in!" id="button_sign" type="submit" name="submit">
-                        <a href="<?= site_url('user/forgot_my_password') ?>" title="Forgot your password?"
+                        <a href="/account/password_reset/" title="Forgot your password?"
                            class="left margin-general txt-size-12">Forgot your password?</a>
                     </p>
                 </form>
@@ -31,7 +31,7 @@
             <div class="box-facebook radius-general">
                 <p class="txt-size txt-center margin-general"><strong>Create your account</strong></p>
                 <div class="margin-general clean">
-                    <a href="<?= site_url('home/account')?>"
+                    <a href="/account/create/"
                        class="txt-center button-account button clear-fix radius-general">Register</a>
                 </div>
                 <div class="margin-general clear-fix">
