@@ -1,28 +1,15 @@
+import md5
+import random
+from datetime import datetime
+
 from django.contrib.auth.models import User, Group
-from django.db.models import CharField, DateTimeField, BooleanField, ManyToManyField
+from django.db.models import CharField, DateTimeField, BooleanField, \
+    IntegerField
+from django.core.mail import send_mail, BadHeaderError
 from foreignkeynonrel.models import ForeignKeyNonRel
 from app.models.knotis import KnotisModel
 from app.models.contents import Content
-from app.models.fields.permissions import PermissionsField
-
-class EndpointType(KnotisModel):
-    ENDPOINT_TYPES = (
-        ('0', 'email'),
-        ('1', 'phone')
-    )
-
-    value = CharField(max_length=30, choices=ENDPOINT_TYPES)
-    created_by = CharField(max_length=1024)
-    pub_date = DateTimeField('date published')
-
-    def __unicode__(self):
-        output_array = [
-            self.value,
-            ' (',
-            self.id,
-            ')'
-        ]
-        return ''.join([s for s in output_array])
+# from app.models.fields.permissions import PermissionsField
 
 class EndpointPermissionsType(KnotisModel):
     ENDPOINT_PERMISSION_TYPES = (
@@ -35,18 +22,27 @@ class EndpointPermissionsType(KnotisModel):
     pub_date = DateTimeField('date published')
 
 class Endpoint(KnotisModel):
-    endpoint_type = ForeignKeyNonRel(EndpointType)
+    ENDPOINT_TYPES = (
+        ('0', 'email'),
+        ('1', 'phone')
+    )
 
+    type = IntegerField(choices=ENDPOINT_TYPES)
+    
     user = ForeignKeyNonRel(User)
     group = ForeignKeyNonRel(Group, null=True)
-    #permissions = PermissionsField()
-    content = ForeignKeyNonRel(Content)
+    value = ForeignKeyNonRel(Content)
 
-    value = CharField(max_length=1024)
     validated = BooleanField(default=False)
+    validation_key = CharField(max_length=256, null=True, blank=True)
     disabled = BooleanField(default=False)
 
-    pub_date = DateTimeField('date published')
+    pub_date = DateTimeField('date published', auto_now_add=True)
+    
+    def send_message(self, **kwargs):
+        raise NotImplementedError('send_message was not implemented in derived \
+            class ' + self.__class__.__name__ + '.')
+    
 
 class EndpointPermissions(KnotisModel):
     endpoint = ForeignKeyNonRel(Endpoint)
@@ -58,23 +54,76 @@ class EndpointPhone(Endpoint):
     class Meta:
         proxy = True
 
-    def send_message(self):
+    def send_message(self, **kwargs):
         pass
 
 
 class EndpointEmail(Endpoint): #-- the data for all these is the same, we want different actual
     class Meta:
         proxy = True
+        
+    def __init__(self, *args, **kwargs):
+        kwargs['type'] = 0  # Always override the type to email (0).
+        
+        value = kwargs.get('value')
+        if not isinstance(value, Content):
+            content = None
+            if isinstance(value, str):
+                content = Content(
+                    content_type='4.1',
+                    locale='en_us',
+                    user=kwargs.get('user'),
+                    group=None,
+                    parent=None,
+                    previous=None,
+                    value=value,
+                    certainty_mu=1.,
+                    certainty_sigma=0.
+                )
+                content.save() 
+            else:
+                raise ValueError('value must be type <Content> or type <str>.')
+            
+            kwargs['value'] = content
+        
+        if kwargs.get('validation_key') is None:
+            validation_hash = md5.new()
+            
+            validation_hash.update(random.random())
+            
+            now = datetime.now()
+            milliseconds = (now.days * 24 * 60 * 60 + now.seconds) * 1000 \
+                + now.microseconds / 1000.0
+            validation_hash.update(milliseconds)
 
-    def send_message(self):
-        pass
+            kwargs['validation_key'] = validation_hash.hexdigest()
+        
+        super(EndpointEmail, self).__init__(*args, **kwargs)
+
+    def send_message(self, **kwargs):
+        try:
+            subject = kwargs.get('subject')
+            message = kwargs.get('message')
+            from_email = kwargs.get('from_address')
+            recipient_list = kwargs.get('recipient_list')
+            
+            send_mail(
+                subject,
+                message,
+                from_email,
+                recipient_list
+            )
+        except BadHeaderError as e:
+            pass
+        except:
+            pass
 
 
 class EndpointTwitter(Endpoint):
     class Meta:
         proxy = True
 
-    def send_message(self):
+    def send_message(self, **kwargs):
         pass
 
 
@@ -82,7 +131,7 @@ class EndpointSMS(Endpoint):
     class Meta:
         proxy = True
 
-    def send_message(self):
+    def send_message(self, **kwargs):
         pass
 
 
@@ -90,7 +139,7 @@ class EndpointAddress(Endpoint):
     class Meta:
         proxy = True
 
-    def send_message(self):
+    def send_message(self, **kwargs):
         pass
 
 #    street = CharField(max_length=1024)

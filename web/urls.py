@@ -18,6 +18,7 @@ urlpatterns = patterns('',
         },
         name='auth'
     ),
+    url(r'^signup/(?P<registration_type>[^/]+)$', 'auth.views.sign_up', name='auth'),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include('api.urls')),

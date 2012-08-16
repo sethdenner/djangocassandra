@@ -152,7 +152,7 @@ $(document).ready(function() {
 
         $('.log_in_popup').remove();
 
-        $.post([server + "user/sign_up_popup/" + type].join('/'), {},
+        $.get("/signup/" + type, {},
 
                 function(data) {
 

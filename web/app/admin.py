@@ -4,7 +4,7 @@ from models.accounts import Account, AccountType, Currency
 from models.actions import Action, ActionType
 from models.businesses import Business, BusinessEndpoint
 from models.contents import Content
-from models.endpoints import Endpoint, EndpointType
+from models.endpoints import Endpoint
 from models.establishments import Establishment, EstablishmentEndpoint, \
     EstablishmentHours
 from models.offers import Offer, OfferType, OfferProducts, OfferInventory
@@ -24,7 +24,6 @@ admin.site.register(UserProfile, UserAdmin)
 
 class EndpointAdmin(admin.ModelAdmin):
     pass
-admin.site.register(EndpointType, EndpointAdmin)
 admin.site.register(Endpoint, EndpointAdmin)
 
 

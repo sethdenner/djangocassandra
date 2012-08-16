@@ -6,6 +6,8 @@ import sys
 PROJECT_ROOT = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(PROJECT_ROOT, "../share"))
 
+SERVICE_NAME = 'Knotis'
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -25,6 +27,13 @@ DATABASES = {
         'PORT': '', # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+# Email Settings
+EMAIL_HOST = 'smtp.googlemail.com'
+EMAIL_PORT = '465'
+EMAIL_HOST_USER = 'support@knotis.com'
+EMAIL_HOST_PASSWORD = 'p0tent1al!'
+EMAIL_USE_TLS = True
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -49,6 +58,9 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
+# Base url for external access
+BASE_URL = 'localhost:8000' # NO TRAILING SLASH!!!
+
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = ''
@@ -67,6 +79,7 @@ STATIC_ROOT = ''
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
+STATIC_URL_ABSOLUTE = BASE_URL + STATIC_URL
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.

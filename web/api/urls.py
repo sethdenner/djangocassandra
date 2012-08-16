@@ -1,3 +1,4 @@
+from api.handlers.authentication import AuthenticationHandler
 from api.handlers.business import BusinessModelHandler
 from api.handlers.content import ContentHandler
 from api.handlers.establishment import EstablishmentModelHandler
@@ -11,18 +12,20 @@ oauth = OAuthAuthentication(realm="Knotis")
 AUTHENTICATORS = [oauth, ]
 handler_arguments = {'authentication': AUTHENTICATORS}
 
+authentication_handler = Resource(AuthenticationHandler, **handler_arguments)
 user_handler = Resource(UserHandler, **handler_arguments)
 endpoint_handler = Resource(EndpointHandler, **handler_arguments)
 establishment_handler = Resource(EstablishmentModelHandler)
 business_handler = Resource(BusinessModelHandler)
 urlpatterns = patterns('',
-  url(r'^user/(?P<user_id>[^/]+)/', user_handler),
-  url(r'^users/', user_handler),
-  url(r'^endpoints/(?P<user_id>[^/]+)/', endpoint_handler),
-  url(r'^establishments', establishment_handler),
-  url(r'^businesses', business_handler),
-  url(r'^business/(?P<id>[^/]+)/', business_handler),
-  url(r'^business/create/', business_handler, {'emitter_format': 'json'})
+    url(r'^auth/signup/(?P<registration_type>[^/]+)/', authentication_handler),
+    url(r'^user/(?P<user_id>[^/]+)/', user_handler),
+    url(r'^users/', user_handler),
+    url(r'^endpoints/(?P<user_id>[^/]+)/', endpoint_handler),
+    url(r'^establishments', establishment_handler),
+    url(r'^businesses', business_handler),
+    url(r'^business/(?P<id>[^/]+)/', business_handler),
+    url(r'^business/create/', business_handler, {'emitter_format': 'json'})
 )
 
 
@@ -33,10 +36,12 @@ class CsrfExemptResource(Resource):
 
 content_handler = CsrfExemptResource(ContentHandler)
 
+"""
 urlpatterns += patterns('',
     url(r'^oauth/callback', 'app.views.authentication.oauth_callback'),
     url(r'^oauth/', include('piston.authentication.oauth.urls')),
 )
+"""
 
 #content
 urlpatterns += patterns(

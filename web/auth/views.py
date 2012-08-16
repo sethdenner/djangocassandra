@@ -1,7 +1,58 @@
-from django.shortcuts import render_to_response
-
+from django.forms import CharField, EmailField, BooleanField, PasswordInput, \
+    HiddenInput, CheckboxInput, Form
+from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
+
+
+class SignUpForm(Form):
+    first_name = CharField(label='First Name')
+    last_name = CharField(label='Last Name')
+    email = EmailField(label='Email Address')
+    password = CharField(widget=PasswordInput, label='Password')
+    account_type = CharField(widget=HiddenInput)
+    business = BooleanField(widget=CheckboxInput)
+    
+    def __init__(self, *args, **kwargs):
+        super(SignUpForm, self).__init__(*args, **kwargs)
+        
+        self.fields['first_name'].widget.attrs = {
+            'class': 'radius-general',
+            'placeholder': 'First Name',
+            'autofocus': None,
+        }
+        
+        self.fields['last_name'].widget.attrs = {
+            'class': 'radius-general',
+            'placeholder': 'Last Name',
+        }
+        
+        self.fields['email'].widget.attrs = {
+            'class': 'radius-general',
+            'placeholder': 'Email',
+        }
+        
+        self.fields['password'].widget.attrs = {
+            'class': 'radius-general',
+            'placeholder': 'Password',
+        }
+        
+        self.fields['account_type'].widget.attrs = {
+        }
+        
+        self.fields['business'].widget.attrs = {
+            'checked': None,
+            'value': '1'
+        }
+        
+
+def sign_up(request, account_type=0):
+    return render(
+        request, 
+        'sign_up.html', {
+        'form': SignUpForm(),
+        'account_type': account_type,
+    })
 
 
 class KnotisAuthenticationForm(AuthenticationForm):
@@ -28,7 +79,7 @@ class KnotisAuthenticationForm(AuthenticationForm):
 
 def login_user(request):
     def generate_response(username):
-        return render_to_response('login.html', {'username': username})
+        return render(request, 'login.html', {'username': username})
 
     username = ''
 
