@@ -1,5 +1,22 @@
 [
     {
+        "pk": "5ce2ccf6-d1f1-4c94-9768-fa04b5b9559f",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_table_h3",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Monthly Unlimited ($14)",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:39:57",
+            "previous": null
+        }
+    },
+    {
         "pk": "66147ae7-e72a-4742-8f49-4a253acdfd77",
         "model": "app.content",
         "fields": {
@@ -30,6 +47,23 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.2",
             "pub_date": "2012-08-06 17:09:18",
+            "previous": null
+        }
+    },
+    {
+        "pk": "320aa724-9c6d-4e1d-b004-d698820a1439",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_table_f5",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Analytics",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:43:31",
             "previous": null
         }
     },
@@ -68,6 +102,23 @@
         }
     },
     {
+        "pk": "0a8e6480-7e69-47bf-b8cc-78becf9123d6",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_table_h2",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Forever Free ($0)",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:39:28",
+            "previous": null
+        }
+    },
+    {
         "pk": "b9dd5364-0993-434c-95c0-d2e686aa126e",
         "model": "app.content",
         "fields": {
@@ -102,6 +153,40 @@
         }
     },
     {
+        "pk": "1f1f7c70-7100-4a9b-8338-0754b435e732",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_table_h1",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Feature",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:38:24",
+            "previous": null
+        }
+    },
+    {
+        "pk": "b312f9fe-b3cb-432e-b7e8-801cd61c37fc",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_table_manual",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Self-Promoted",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:47:15",
+            "previous": null
+        }
+    },
+    {
         "pk": "f55b2d29-be91-45a4-8a18-e98d0b4ddab4",
         "model": "app.content",
         "fields": {
@@ -132,6 +217,23 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "0",
             "pub_date": "2012-08-06 16:15:02",
+            "previous": null
+        }
+    },
+    {
+        "pk": "63811a83-527e-4d2c-bca6-46eac1c99d1e",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_table_f6",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Social Incentives",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:44:08",
             "previous": null
         }
     },
@@ -204,6 +306,57 @@
         }
     },
     {
+        "pk": "150afe67-f81b-4e0c-8a26-bbb56d973004",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_consumer_feature_2",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Subscribe to Businesses",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:36:38",
+            "previous": null
+        }
+    },
+    {
+        "pk": "70513c7a-c450-4772-b056-7f7fa4761ba9",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_consumer_table_h2",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Free Account",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:34:44",
+            "previous": null
+        }
+    },
+    {
+        "pk": "5ba970d5-6290-4a5c-9a06-2d1d246eac34",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_table_f3",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Subscription Plus",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:42:49",
+            "previous": null
+        }
+    },
+    {
         "pk": "af6984fb-726f-42b1-9faf-764af8cad4ec",
         "model": "app.content",
         "fields": {
@@ -238,6 +391,57 @@
         }
     },
     {
+        "pk": "fa04b9f6-6cef-483e-bd08-61912a847eaf",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_forever_free_reallyblurb",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Yep, there's no catch. We won't even ask for a credit card. You will receive all the tools necessary to create, track and manage your own social promotions. The only catch is, you are responsible for promoting your own deals.",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:50:58",
+            "previous": null
+        }
+    },
+    {
+        "pk": "36065bb2-aabf-45ed-81e9-5bf77829c698",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_table_basic",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Basic",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:46:11",
+            "previous": null
+        }
+    },
+    {
+        "pk": "29c3d303-a145-4f46-988f-44eb2be6581e",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_table_advanced",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Advanced",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:46:42",
+            "previous": null
+        }
+    },
+    {
         "pk": "f7cedf4e-59b6-4f52-a53c-c170ec067028",
         "model": "app.content",
         "fields": {
@@ -251,6 +455,23 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.2",
             "pub_date": "2012-08-06 16:18:56",
+            "previous": null
+        }
+    },
+    {
+        "pk": "5bd97624-fc5e-4dd7-854c-82b61f860968",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_consumer_header",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Consumer Account",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:31:54",
             "previous": null
         }
     },
@@ -357,6 +578,40 @@
         }
     },
     {
+        "pk": "91367241-10b5-4f12-8a28-e778307ffefd",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_table_f4",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Social Pro",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:43:11",
+            "previous": null
+        }
+    },
+    {
+        "pk": "66abc217-d551-4ff0-a906-6940d950eb24",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_forever_free_header",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Forever Free Plan",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:48:19",
+            "previous": null
+        }
+    },
+    {
         "pk": "0be4a619-0ce8-4c64-b6b0-c4145886b141",
         "model": "app.content",
         "fields": {
@@ -442,6 +697,40 @@
         }
     },
     {
+        "pk": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans",
+            "parent": "9f5b072c-e1ed-4897-85ca-c87aa27c7d49",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.1",
+            "pub_date": "2012-08-13 17:30:07",
+            "previous": null
+        }
+    },
+    {
+        "pk": "a64d693e-50bc-4cfd-bede-87d18a970231",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_forever_free_really",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Is it really free forever?",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:50:05",
+            "previous": null
+        }
+    },
+    {
         "pk": "17aba722-3a1f-4392-a4cf-b2a4666b4059",
         "model": "app.content",
         "fields": {
@@ -455,6 +744,23 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.1",
             "pub_date": "2012-08-06 16:55:05",
+            "previous": null
+        }
+    },
+    {
+        "pk": "db7a7602-868d-4aaa-81c3-739047bb413f",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_header",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Business Account",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:37:33",
             "previous": null
         }
     },
@@ -493,6 +799,23 @@
         }
     },
     {
+        "pk": "d70f8553-d10f-4d3a-9e99-c898b50a04c8",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_forever_free_blurb",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "With our Forever Free Plan, you can create, manage and track live social promotions but there are a few features that are only available to users with paid accounts. By purchasing credits, the Forever Free Plan will allow you to promote externally but on a deal-by-deal basis only",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:49:40",
+            "previous": null
+        }
+    },
+    {
         "pk": "9f5b072c-e1ed-4897-85ca-c87aa27c7d49",
         "model": "app.content",
         "fields": {
@@ -510,6 +833,40 @@
         }
     },
     {
+        "pk": "83cc2e11-7e53-4f87-baa7-12cff8d11f14",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_sign_up_button",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Sign Up",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:37:06",
+            "previous": null
+        }
+    },
+    {
+        "pk": "7b2fb329-6319-4004-a5cd-a0c2f4af112f",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_consumer_feature_1",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Purchase Deals",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:36:11",
+            "previous": null
+        }
+    },
+    {
         "pk": "ae351450-49eb-4137-a7fc-d3de56b01627",
         "model": "app.content",
         "fields": {
@@ -523,6 +880,23 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.2",
             "pub_date": "2012-08-06 16:29:50",
+            "previous": null
+        }
+    },
+    {
+        "pk": "c1a4ab37-f571-4515-95d5-4e90c36acace",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_consumer_table_h1",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Feature",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:32:36",
             "previous": null
         }
     },
@@ -612,6 +986,23 @@
         }
     },
     {
+        "pk": "6059af1c-b946-431f-b325-8d04cf1c906a",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_table_f1",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Knotis Page",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:41:58",
+            "previous": null
+        }
+    },
+    {
         "pk": "b0af1446-2706-4f37-a673-a7c0b41c8761",
         "model": "app.content",
         "fields": {
@@ -642,6 +1033,23 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.2",
             "pub_date": "2012-08-06 17:06:44",
+            "previous": null
+        }
+    },
+    {
+        "pk": "8c1e5ce3-c409-417b-ab4a-ec089b83ca3f",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_choose_button",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Choose Plan",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:45:36",
             "previous": null
         }
     },
@@ -685,7 +1093,7 @@
         "fields": {
             "group": null,
             "name": "header_dynamic_pages",
-            "parent": "66147ae7-e72a-4742-8f49-4a253acdfd77",
+            "parent": "7528fb88-795f-427c-bd98-6c92bac5d059",
             "locale": "en_us",
             "certainty_sigma": 0.0,
             "value": "Dynamic Pages",
@@ -693,6 +1101,23 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.2",
             "pub_date": "2012-08-07 20:55:59",
+            "previous": null
+        }
+    },
+    {
+        "pk": "d660764f-1988-4644-b366-7cc9ccb4e201",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_table_auto",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Auto-Promoted",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:47:40",
             "previous": null
         }
     },
@@ -710,6 +1135,40 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.2",
             "pub_date": "2012-08-06 17:10:57",
+            "previous": null
+        }
+    },
+    {
+        "pk": "e4612fc0-7f5a-4b84-af06-654e7f9d56a5",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_forever_free_upsell",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Why should I upgrade to a paid account?",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:51:51",
+            "previous": null
+        }
+    },
+    {
+        "pk": "334a96c8-3df5-4a2c-811e-d3f57617f849",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_business_table_f2",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "QR Code Management",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:42:21",
             "previous": null
         }
     },
@@ -744,6 +1203,23 @@
             "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
             "content_type": "1.2",
             "pub_date": "2012-08-06 16:29:24",
+            "previous": null
+        }
+    },
+    {
+        "pk": "88282380-7864-4fea-93da-1b763322cb91",
+        "model": "app.content",
+        "fields": {
+            "group": null,
+            "name": "plans_forever_free_upsellblurb",
+            "parent": "396b9fc5-8681-4a7b-b72a-7ba40f9b9cf8",
+            "locale": "en_us",
+            "certainty_sigma": 0.0,
+            "value": "Besides getting access to additional features, upgrading to a paid account allows you to promote your social promotions through our network - website and mobile applications",
+            "certainty_mu": 1.0,
+            "user": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
+            "content_type": "1.2",
+            "pub_date": "2012-08-13 17:52:21",
             "previous": null
         }
     },
