@@ -44,7 +44,6 @@ class User(models.User):
         )
         new_user_profile.save()
         
-        """
         if account_type is 1:
             subject = 'New Free Business Account in Knotis'
         elif account_type is 2:
@@ -65,6 +64,5 @@ class User(models.User):
             ).send()
         except:
             pass
-        """
         
         return new_user
