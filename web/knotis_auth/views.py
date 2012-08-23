@@ -1,5 +1,5 @@
 from django.forms import CharField, EmailField, BooleanField, PasswordInput, \
-    HiddenInput, CheckboxInput, Form
+    HiddenInput, CheckboxInput, Form, ValidationError
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
@@ -11,9 +11,12 @@ class SignUpForm(Form):
     email = EmailField(label='Email Address')
     password = CharField(widget=PasswordInput, label='Password')
     account_type = CharField(widget=HiddenInput)
-    business = BooleanField(widget=CheckboxInput)
+    business = BooleanField(widget=CheckboxInput, required=False)
     
     def __init__(self, *args, **kwargs):
+        account_type = kwargs.pop('account_type') \
+            if 'account_type' in kwargs else 0
+            
         super(SignUpForm, self).__init__(*args, **kwargs)
         
         self.fields['first_name'].widget.attrs = {
@@ -38,19 +41,28 @@ class SignUpForm(Form):
         }
         
         self.fields['account_type'].widget.attrs = {
+            'value': account_type
         }
         
         self.fields['business'].widget.attrs = {
             'checked': None,
             'value': '1'
         }
-        
 
-def sign_up(request, account_type=0):
+
+def sign_up(request, account_type='user'):
+    if account_type == 'foreverfree':
+        account_type_int = 1
+    elif account_type == 'premium':
+        account_type_int = 2
+    else:
+        account_type_int = 0
+        
+    form = SignUpForm(account_type=account_type_int)
     return render(
         request, 
         'sign_up.html', {
-        'form': SignUpForm(),
+        'form': form,
         'account_type': account_type,
     })
 

@@ -158,11 +158,11 @@ class Emitter(object):
                 v = lambda f: getattr(data, f.attname)
 
                 if handler:
-                    fields = getattr(handler, 'fields')
-
+                    fields = getattr(handler, 'fields')    
+                
                 if not fields or hasattr(handler, 'fields'):
                     """
-                    FIELDS was not specified, try to find teh correct
+                    Fields was not specified, try to find teh correct
                     version in the typemapper we were sent.
                     """
                     mapped = self.in_typemapper(type(data), self.anonymous)
@@ -173,10 +173,9 @@ class Emitter(object):
                         get_absolute_uri = True
 
                     if not get_fields:
-                        get_fields = set([f.attname.replace("_id", "", 1)
-                            for f in data._meta.fields + data._meta.\
-                            virtual_fields if hasattr(f, 'attname')])
-
+                        get_fields = set([ f.attname.replace("_id", "", 1)
+                            for f in data._meta.fields + data._meta.virtual_fields])
+                    
                     if hasattr(mapped, 'extra_fields'):
                         get_fields.update(mapped.extra_fields)
 
@@ -196,9 +195,7 @@ class Emitter(object):
                 met_fields = self.method_fields(handler, get_fields)
 
                 for f in data._meta.local_fields + data._meta.virtual_fields:
-                    if f.serialize and \
-                        hasattr(f, 'attname') and not \
-                        any([p in met_fields for p in [f.attname, f.name]]):
+                    if f.serialize and not any([ p in met_fields for p in [ f.attname, f.name ]]):
                         if not f.rel:
                             if f.attname in get_fields:
                                 ret[f.attname] = _any(v(f))

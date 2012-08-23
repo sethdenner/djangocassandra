@@ -155,7 +155,7 @@ INSTALLED_APPS = (
     # Knotis apps.
     'manytomanynonrel',
     'foreignkeynonrel',
-    'auth',
+    'knotis_auth',
     'app',
 )
 

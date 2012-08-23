@@ -68,7 +68,7 @@ class EndpointEmail(Endpoint): #-- the data for all these is the same, we want d
         value = kwargs.get('value')
         if not isinstance(value, Content):
             content = None
-            if isinstance(value, str):
+            if isinstance(value, basestring):
                 content = Content(
                     content_type='4.1',
                     locale='en_us',
@@ -89,12 +89,12 @@ class EndpointEmail(Endpoint): #-- the data for all these is the same, we want d
         if kwargs.get('validation_key') is None:
             validation_hash = md5.new()
             
-            validation_hash.update(random.random())
+            validation_hash.update('%10.10f' % random.random())
             
             now = datetime.now()
-            milliseconds = (now.days * 24 * 60 * 60 + now.seconds) * 1000 \
-                + now.microseconds / 1000.0
-            validation_hash.update(milliseconds)
+            milliseconds = (now.day * 24 * 60 * 60 + now.second) * 1000 \
+                + now.microsecond / 1000.0
+            validation_hash.update('%i' % milliseconds)
 
             kwargs['validation_key'] = validation_hash.hexdigest()
         

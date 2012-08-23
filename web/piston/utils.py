@@ -226,11 +226,12 @@ class Mimer(object):
         """
         type_formencoded = "application/x-www-form-urlencoded"
 
-        ctype = self.request.META.get('CONTENT_TYPE', type_formencoded)
-        
-        if type_formencoded in ctype:
+        # added the .split(";")[0] to strip out any charset specifier that might accompany the encoding. 
+        # I was getting requests through as "application/x-www-form-urlencoded; charset=utf-8" 
+        # that piston did not recognise as forms. But were. 
+        ctype = self.request.META.get('CONTENT_TYPE', type_formencoded).split(";")[0]
+        if ctype == type_formencoded:
             return None
-        
         return ctype
 
     def translate(self):

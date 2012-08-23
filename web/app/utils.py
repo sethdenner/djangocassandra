@@ -12,8 +12,8 @@ class Email:
         recipients_list,
         data={}
     ):
-        text = get_template(template + '.txt')
-        html = get_template(template + '.html')
+        text = get_template('email/' + template + '.txt')
+        html = get_template('email/' + template + '.html')
         
         context = Context(data)
         

@@ -3,29 +3,34 @@ from api.handlers.business import BusinessModelHandler
 from api.handlers.content import ContentHandler
 from api.handlers.establishment import EstablishmentModelHandler
 from api.handlers.testmodel import TestModelHandler
-from django.conf.urls.defaults import patterns, url, include
+from django.conf.urls.defaults import patterns, url
 from handlers.endpoint import EndpointHandler
 from handlers.user import UserHandler
 from piston.authentication.oauth import OAuthAuthentication
 from piston.resource import Resource
+from resource import JsonResource
+
 oauth = OAuthAuthentication(realm="Knotis")
 AUTHENTICATORS = [oauth, ]
 handler_arguments = {'authentication': AUTHENTICATORS}
 
-authentication_handler = Resource(AuthenticationHandler, **handler_arguments)
+authentication_handler = JsonResource(
+    AuthenticationHandler
+)
+
 user_handler = Resource(UserHandler, **handler_arguments)
 endpoint_handler = Resource(EndpointHandler, **handler_arguments)
 establishment_handler = Resource(EstablishmentModelHandler)
 business_handler = Resource(BusinessModelHandler)
 urlpatterns = patterns('',
-    url(r'^auth/signup/(?P<registration_type>[^/]+)/', authentication_handler),
+    url(r'^auth/signup/', authentication_handler, { 'emitter_format': 'json' }),
     url(r'^user/(?P<user_id>[^/]+)/', user_handler),
     url(r'^users/', user_handler),
     url(r'^endpoints/(?P<user_id>[^/]+)/', endpoint_handler),
     url(r'^establishments', establishment_handler),
     url(r'^businesses', business_handler),
     url(r'^business/(?P<id>[^/]+)/', business_handler),
-    url(r'^business/create/', business_handler, {'emitter_format': 'json'})
+    url(r'^business/create/', business_handler, { 'emitter_format': 'json' })
 )
 
 
