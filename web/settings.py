@@ -8,15 +8,13 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, "../share"))
 
 SERVICE_NAME = 'Knotis'
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
 
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django_cassandra.db', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -27,13 +25,12 @@ DATABASES = {
         'PORT': '', # Set to empty string for default. Not used with sqlite3.
     }
 }
+"""
 
 # Email Settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.googlemail.com'
 EMAIL_PORT = '587'
-EMAIL_HOST_USER = 'support@knotis.com'
-EMAIL_HOST_PASSWORD = 'p0tent1al!'
 EMAIL_USE_TLS = True
 
 # Local time zone for this installation. Choices can be found here:
@@ -59,9 +56,6 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
-# Base url for external access
-BASE_URL = 'localhost:8000' # NO TRAILING SLASH!!!
-
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = ''
@@ -76,11 +70,6 @@ MEDIA_URL = ''
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = ''
-
-# URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
-STATIC_URL_ABSOLUTE = BASE_URL + STATIC_URL
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
@@ -182,3 +171,26 @@ LOGGING = {
         },
     }
 }
+
+# Import additional settings.
+ENVIRONMENT_NAME = 'dev'
+
+# You can key the configurations off of anything - I use project path.
+configs = {
+    'dev': 'dev',
+    'int': 'int',
+    'prod': 'prod'
+}
+
+# Import the configuration settings file - REPLACE projectname with your project
+config_module = __import__(
+    'config.%s' % configs[ENVIRONMENT_NAME], 
+    globals(), 
+    locals(), 
+    'web'
+)
+
+# Load the config settings properties into the local scope.
+for setting in dir(config_module):
+    if setting == setting.upper():
+        locals()[setting] = getattr(config_module, setting)
