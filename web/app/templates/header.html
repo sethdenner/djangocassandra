@@ -1,8 +1,8 @@
 <div id="header">
     <div class="header-top">
         <div class="wrapper solution clearfix  header-content">
-            {% if logged_in %}
-            	<!-- $this->load->view('general/login_sig'); ?> -->
+            {% if login %}
+            	<input type="hidden" id="auto_login" />
         	{% endif %}
         	{% if merchant_login %}
             	<!--<?php if (isset($merchantlogin)) $this->load->view('sign_up'); ?>-->

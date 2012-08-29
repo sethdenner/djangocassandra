@@ -121,7 +121,7 @@ $(document).ready(function() {
         $('.signup_popup').remove();
         $('.log_in_popup').remove();
 
-        $.get('/login/', {},
+        $.get('/login_popup/', {},
                 function(data) {
                     $("input:checkbox").uniform();
                     $(".header-content").append(data).fadeIn;
@@ -134,6 +134,11 @@ $(document).ready(function() {
                 });
         return false;
     });
+    
+    auto_login = $('#auto_login');
+    if (auto_login.length != 0) {
+        $('.log_in').click();
+    }
 
     // Popup that load the view login
     $('.signup_pop').live('click', function() {

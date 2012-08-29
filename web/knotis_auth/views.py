@@ -1,9 +1,11 @@
 from django.forms import CharField, EmailField, BooleanField, PasswordInput, \
     HiddenInput, CheckboxInput, Form, ValidationError
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 
+from knotis_auth.models import User
+from app.views.home import index as index_view
 
 class SignUpForm(Form):
     first_name = CharField(label='First Name')
@@ -112,3 +114,22 @@ def login_user(request):
         login(request, user)
 
     return generate_response(username)
+
+def validate(
+    request,
+    user_id,
+    validation_key
+):
+    login = '0'
+    feedback = 'There was a problem activating your account.'
+    
+    if (User.activate_user(
+        user_id,
+        validation_key
+    )):
+        login = '1'
+        feedback = 'Your account has been successfully activated.'
+        
+    return redirect(
+        index_view
+    )

@@ -2,7 +2,10 @@ from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from app.models.contents import Content
 
-def index(request):
+def index(
+    request,
+    login
+):
     template_parameters = {}
     
     content = {}
@@ -19,10 +22,13 @@ def index(request):
     for c in content_set:
         content[c.name] = c.value
         
-    
+    if 'login' == login:
+        content['login'] = True
+        
     template_parameters.update(content)
     
     return render_to_response(
         'home.html',
         template_parameters,
-        context_instance=RequestContext(request))
+        context_instance=RequestContext(request)
+    )
