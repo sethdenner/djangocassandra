@@ -29,7 +29,7 @@ def index(
         template_parameters['login'] = True
         
     if request.user.is_authenticated():
-        template_parameters['username_truncated'] = request.user.username[:9]
+        template_parameters['username_truncated'] = request.user.username[:9] + '...'
         template_parameters['avatar_uri'] = UserUtils.get_avatar(
             request.user.username, 
             None, 
