@@ -95,7 +95,7 @@
                 	<a href="/contact/" >{{ header_contact }}</a>
 				</li>
             </ul>
-            {% if not logged_in %}
+            {% if not user.is_authenticated %}
             <ul class="login-signup absolute">
                 <li><a class="login txt-white log_in" href="/login/">{{ header_login }}</a></li>
                 <li><a class="sig_in signup txt-white" href="/plans/">{{ header_sign_up }}</a></li>
@@ -103,10 +103,10 @@
 			{% else %}
             <div class="name-user absolute radius-general clear-fix">
                 <div class="image left ">
-                	<img src=""/>
+                	<img src="{{ avatar_uri }}"/>
                 </div>
                 <p class="txt-size-12 txt-white left clear-fix">
-                    <strong>{{ request.session.user.name }}</strong>
+                    <strong>{{ username_truncated }}</strong>
                 </p>
                 <div class="arrow-user right"></div>
                 <div class="option-user absolute radius-general">
@@ -132,10 +132,11 @@
                             <li>
                                <fb:login-button autologoutlink="true"></fb:login-button>
                             </li>
-							{% endif %}
+							{% else %}
                             <li>
-                            	<a href="/logout/" >Sign out</a>
+                            	<a href="/logout/" >{{ header_sign_out }}</a>
                             </li>
+                            {% endif %}
                         </ul>
 						{% else %}						
                         <ul class="menu-user">

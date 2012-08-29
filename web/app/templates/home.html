@@ -9,7 +9,7 @@
             <div class="column-text left">
                 <h2 class="txt-white"><strong>{{ home_heading }}</strong></h2>
                 <p>{{ home_blurb }}</p>
-                {% if not logged_in %}
+                {% if not user.is_authenticated %}
                 <div class="box-border sig_in margin-general">
                     <a class="button radius-general clear-fix" title="{{ home_sign_up }}"
                        href="/signup/">{{ home_sign_up }}</a>

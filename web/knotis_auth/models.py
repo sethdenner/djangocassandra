@@ -85,7 +85,11 @@ class User(models.User):
         if validation_key != primary_endpoint.validation_key:
             return False
         
+        primary_endpoint.validated = True
+        primary_endpoint.save()
+        
         user_profile = UserProfile.objects.get(pk=user)
         user_profile.account_status = 1 # Active
+        user_profile.save()
         
         return True        

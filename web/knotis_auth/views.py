@@ -1,11 +1,15 @@
+import json
+
 from django.forms import CharField, EmailField, BooleanField, PasswordInput, \
     HiddenInput, CheckboxInput, Form, ValidationError
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login as django_login
 from django.contrib.auth.forms import AuthenticationForm
+from django.conf import settings
+from django.http import HttpResponse
 
 from knotis_auth.models import User
-from app.views.home import index as index_view
+
 
 class SignUpForm(Form):
     first_name = CharField(label='First Name')
@@ -91,45 +95,71 @@ class KnotisAuthenticationForm(AuthenticationForm):
         }
 
 
-def login_user(request):
-    def generate_response(username):
-        return render(request, 'login.html', {'username': username})
+def login(request):
+    def generate_response(data):
+        if request.method == 'POST':
+            return HttpResponse(
+                json.dumps(data),
+                content_type='application/json'
+            )
+        elif request.method == 'GET':
+            form = KnotisAuthenticationForm()
+            return render(
+                request, 
+                'login.html', {
+                    'form': form
+                }
+            )
 
-    username = ''
-
-    if request.POST:
+    if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        user = authenticate(username=username, password=password)
+        user = authenticate(
+            username=username, 
+            password=password
+        )
 
         if not user:
             # Message user about failed login attempt.
-            return generate_response(username)
+            return generate_response({
+                'success': 'no',
+                'message': 'Login failed. Please try again.'
+            })
 
-        if not user.is_active():
+        if not user.is_active:
             # Message user about account deactivation.
-            return generate_response(username)
+            return generate_response({
+                'success': 'no',
+                'message': 'This account is inactive. Please contact support.'
+            })
 
-        login(request, user)
+        django_login(
+            request, 
+            user
+        )
+        
+        return generate_response({
+            'success': 'yes',
+            'redirect': 1
+        })
+    
+    else:
+        return generate_response(None)
 
-    return generate_response(username)
 
 def validate(
     request,
     user_id,
     validation_key
 ):
-    login = '0'
-    feedback = 'There was a problem activating your account.'
-    
+    redirect_url = '/'
     if (User.activate_user(
         user_id,
         validation_key
     )):
-        login = '1'
-        feedback = 'Your account has been successfully activated.'
+        redirect_url = settings.LOGIN_URL
         
     return redirect(
-        index_view
+        redirect_url
     )

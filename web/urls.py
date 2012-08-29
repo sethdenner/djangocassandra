@@ -1,6 +1,5 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from knotis_auth.views import KnotisAuthenticationForm
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -12,10 +11,7 @@ urlpatterns = patterns('',
     url(r'^business/create', 'app.views.business.create_business', name='business'),
     url(
         r'^login_popup/$', 
-        'django.contrib.auth.views.login', {
-            'template_name': 'login.html', 
-            'authentication_form': KnotisAuthenticationForm
-        },
+        'knotis_auth.views.login',
         name='auth'
     ),
     url(

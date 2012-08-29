@@ -877,7 +877,7 @@ $(document).ready(function() {
 
                 if (data.success == 'yes') {
                     if (data.redirect == 1) {
-                        window.location = window.location;
+                        window.location = '/';
                     }
 
                     if (data.redirect == 5) {
