@@ -3,7 +3,8 @@ import json
 from django.forms import CharField, EmailField, BooleanField, PasswordInput, \
     HiddenInput, CheckboxInput, Form, ValidationError
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login as django_login
+from django.contrib.auth import authenticate, login as django_login, \
+    logout as django_logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django.http import HttpResponse
@@ -147,6 +148,11 @@ def login(request):
     else:
         return generate_response(None)
 
+
+def logout(request):
+    django_logout(request)
+    return redirect('/')
+    
 
 def validate(
     request,

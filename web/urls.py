@@ -15,6 +15,11 @@ urlpatterns = patterns('',
         name='auth'
     ),
     url(
+        r'^logout/$',
+        'knotis_auth.views.logout',
+        name='auth'
+    ),
+    url(
         r'^signup/(?P<account_type>[^/]+)$', 
         'knotis_auth.views.sign_up', 
         name='auth'
