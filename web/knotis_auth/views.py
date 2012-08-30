@@ -4,6 +4,8 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 
+from knotis_auth.models import User
+
 
 class SignUpForm(Form):
     first_name = CharField(label='First Name')
@@ -48,6 +50,17 @@ class SignUpForm(Form):
             'checked': None,
             'value': '1'
         }
+        
+    def clean_email(self):
+        """
+        Validate that the supplied email address is unique for the
+        site.
+        
+        """
+        email = self.cleaned_data['email']
+        if User.objects.filter(email__iexact=email):
+            raise ValidationError(_("This email address is already in use. Please supply a different email address."))
+        return email
 
 
 def sign_up(request, account_type='user'):
