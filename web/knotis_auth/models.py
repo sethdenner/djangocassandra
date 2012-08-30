@@ -32,7 +32,8 @@ class User(models.User):
         
         email_endpoint = EndpointEmail(
             user=new_user,
-            value=email
+            value=email,
+            primary=True
         )
         email_endpoint.save()
 
@@ -59,10 +60,36 @@ class User(models.User):
                 settings.EMAIL_HOST_USER,
                 [email], {
                     'user_id': new_user.id,
-                    'validation_key': email_endpoint.validation_key
+                    'validation_key': email_endpoint.validation_key,
+                    'BASE_URL': settings.BASE_URL,
+                    'SERVICE_NAME': settings.SERVICE_NAME
                 }
             ).send()
         except:
             pass
         
         return new_user
+
+    @staticmethod
+    def activate_user(
+        user_id,
+        validation_key
+    ):
+        user = User.objects.get(pk=user_id)
+        primary_endpoint = EndpointEmail.objects.filter(
+            user=user,
+            type='0',
+            primary=True
+        )[0]
+            
+        if validation_key != primary_endpoint.validation_key:
+            return False
+        
+        primary_endpoint.validated = True
+        primary_endpoint.save()
+        
+        user_profile = UserProfile.objects.get(pk=user)
+        user_profile.account_status = 1 # Active
+        user_profile.save()
+        
+        return True        

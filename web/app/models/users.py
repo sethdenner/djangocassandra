@@ -19,9 +19,15 @@ class UserProfile(KnotisModel):
         (2, 'Business - Monthly'),
     )
     
+    ACCOUNT_STATUS = (
+        (0, 'Disabled'),
+        (1, 'Active')
+    )
+    
     user = OneToOneField(User, primary_key=True)
 
     account_type =  IntegerField(null=True, choices=ACCOUNT_TYPES, default=0)
+    account_status = IntegerField(null=True, choices=ACCOUNT_STATUS, default=0)
     
     reputation_mu = FloatField(null=True, default='1.0')
     reputation_sigma = FloatField(null=True, default='0.0')

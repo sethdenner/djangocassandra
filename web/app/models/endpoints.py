@@ -29,10 +29,10 @@ class Endpoint(KnotisModel):
 
     type = IntegerField(choices=ENDPOINT_TYPES)
     
-    user = ForeignKeyNonRel(User)
-    group = ForeignKeyNonRel(Group, null=True)
+    user = ForeignKeyNonRel(User, primary_key=True)
     value = ForeignKeyNonRel(Content)
 
+    primary = BooleanField(default=False)
     validated = BooleanField(default=False)
     validation_key = CharField(max_length=256, null=True, blank=True)
     disabled = BooleanField(default=False)
@@ -66,7 +66,7 @@ class EndpointEmail(Endpoint): #-- the data for all these is the same, we want d
         kwargs['type'] = 0  # Always override the type to email (0).
         
         value = kwargs.get('value')
-        if not isinstance(value, Content):
+        if value and not isinstance(value, Content):
             content = None
             if isinstance(value, basestring):
                 content = Content(

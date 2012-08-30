@@ -2,4 +2,4 @@ Welcome to {{ SERVICE_NAME }},
 
 To verify your email address, please follow this link:
 
-{{ BASE_URL }}/auth/validate/{{ user_id }}/{{ validation_key }}/
+http://{{ BASE_URL }}/validate/{{ user_id }}/{{ validation_key }}/
