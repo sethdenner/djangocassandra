@@ -1,14 +1,10 @@
-from django.contrib.auth.models import Group, User
-from django.db.models import CharField, DateTimeField, FloatField, BooleanField
+from django.db.models import CharField, DateTimeField
 from foreignkeynonrel.models import ForeignKeyNonRel
 
 from app.models.knotis import KnotisModel
 #from app.models.fields.permissions import PermissionsField
 from app.models.contents import Content
 from app.models.endpoints import Endpoint
-
-# from manytomany.models import ManyToManyFieldNonRel
-from manytomanynonrel.models import ManyToManyFieldNonRel
 
 
 class Business(KnotisModel):
@@ -37,6 +33,82 @@ class Business(KnotisModel):
             ')'
         ]
         return ''.join([s for s in output_array])
+    
+    @staticmethod
+    def create_business(
+        user,
+        backend_name=None,
+        business_name=None,
+        avatar=None,
+        hours=None
+    ):
+        # Create the root content node for the business.
+        content_business_root = Content(
+            content_type='3.0',
+            locale='en_us',
+            user=user,
+            group=None,
+            parent=None,
+            previous=None,
+            value=None,
+            certainty_mu=1., # Root certainty should always be 100%
+            certainty_sigma=0.
+        )
+        content_business_root.save()
+
+        content_business_name = Content(
+            content_type='3.1',
+            locale='en_us',
+            user=user,
+            group=None,
+            parent=content_business_root,
+            previous=None,
+            value=business_name,
+            certainty_mu=1., # Derive this from the user eventually
+            certainty_sigma=0.
+        )
+        content_business_name.save()
+
+        content_hours = Content(
+            content_type='3.2',
+            locale='en_us',
+            user=user,
+            group=None,
+            parent=content_business_root,
+            previous=None,
+            value=hours,
+            certainty_mu=1., # Derive this from the user eventually
+            certainty_sigma=0.
+        )
+        content_hours.save()
+
+        content_avatar = Content(
+            content_type='3.3',
+            locale='en_us',
+            user=user,
+            group=None,
+            parent=content_business_root,
+            previous=None,
+            value=avatar,
+            certainty_mu=1., # Derive this from the user eventually
+            certainty_sigma=0.
+        )
+        content_avatar.save()
+
+        """
+        Now that the content tree for this business
+        is built we can create the actual business.
+        """
+        new_business = Business(
+            content_root=content_business_root,
+            name=backend_name,
+            avatar=content_avatar,
+            hours=content_hours,
+            business_name=content_business_name
+        )
+        new_business.save()
+
+        return new_business
 
 # FIXME: Implement tag's as content node types submitted by users.  The core tennant of 
 #class BusinessTag(KnotisModel):

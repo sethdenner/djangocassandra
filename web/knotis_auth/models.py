@@ -3,6 +3,7 @@ from django.contrib.auth import models
 
 from app.models.users import UserProfile
 from app.models.endpoints import EndpointEmail
+from app.models.businesses import Business
 from app.utils import Email
 
 
@@ -44,6 +45,9 @@ class User(models.User):
             account_type=account_type
         )
         new_user_profile.save()
+        
+        if account_type != 0:
+            Business.create_business(new_user)
         
         if account_type is 1:
             subject = 'New Free Business Account in Knotis'
