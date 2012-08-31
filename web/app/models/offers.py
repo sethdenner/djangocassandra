@@ -10,50 +10,44 @@ from app.models.accounts import Currency
 #from app.models.fields.permissions import PermissionsField
 from app.models.fields.hours import HoursField
 
-
-class OfferType(KnotisModel):
-    OFFER_TYPES = (
-        ('0', 'normal'),
-    )
-
-    value = CharField(max_length=30, choices=OFFER_TYPES)
-    pub_date = DateTimeField('date published')
-
-    def __unicode__(self):
-        return self.name
-
-
 class Offer(KnotisModel):
+    OFFER_TYPES = (
+        ('0', 'normal'),             
+    )
+    
     establishment = ForeignKeyNonRel(Establishment)
-    offer_type = ForeignKeyNonRel(OfferType)
-    currency = ForeignKeyNonRel(Currency)
-    content = ForeignKeyNonRel(Content)
+    offer_type = CharField(max_length=100, choices=OFFER_TYPES, null=True)
+    
+    title = ForeignKeyNonRel(Content, related_name='offer_title')
+    description = ForeignKeyNonRel(Content, related_name='offer_description')
+    
+    city = CharField(max_length=100)
+    neighborhood = CharField(max_length=100)
+    
+    image_uri = CharField(max_length=1024, null=True, blank=True)
+    category = CharField(max_length=100, null=True, blank=True)
 
-    price_regular = FloatField()
+    price_retail = FloatField(null=True)
+    price_discount = FloatField(null=True)
 
-    """ Some things may only be purchased by people with certain user_relationships. """
-    #permissions = ManyToManyField(Permission, null=True, blank=True)
-    #permissions = PermissionsField()
+    start_date = DateTimeField(null=True)
+    end_date = DateTimeField(null=True)
 
-    """ When can this deal be purchased? """
-    hours = HoursField()
-
-    pub_date = DateTimeField('date published')
-
-
-class OfferProducts(KnotisModel):
-    offer = ForeignKeyNonRel(Offer)
-    product = ForeignKeyNonRel(Product)
-    #How do we account for offers that are combined between businesse?
-
-
-class OfferInventory(KnotisModel):
-    """
-    This is essentially the inventory. It has an associated hours field for allowing scheduled offers.
-    """
-    offer = ForeignKeyNonRel(Offer)
-    hours = HoursField()
-    price = FloatField()
-    available = IntegerField()
-    total = IntegerField()
-    sold = IntegerField()
+    pub_date = DateTimeField(null=True, auto_now_add=True)
+    
+    @staticmethod
+    def create(
+        establishment,
+        offer_type,
+        title,
+        description,
+        city,
+        neighborhood,
+        image_uri,
+        category,
+        price_retail,
+        price_discount,
+        start_date,
+        end_date
+    ):
+        pass

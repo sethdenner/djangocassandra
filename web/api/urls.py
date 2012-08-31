@@ -30,7 +30,8 @@ urlpatterns = patterns('',
     url(r'^establishments', establishment_handler),
     url(r'^businesses', business_handler),
     url(r'^business/(?P<id>[^/]+)/', business_handler),
-    url(r'^business/create/', business_handler, { 'emitter_format': 'json' })
+    url(r'^business/create/', business_handler, { 'emitter_format': 'json' }),
+    url(r'^business/update/', business_handler, { 'emitter_format': 'json' })
 )
 
 

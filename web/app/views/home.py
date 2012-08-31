@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from app.models.contents import Content
 from app.utils import User as UserUtils
+from app.models.users import UserProfile
 
 def index(
     request,
@@ -29,6 +30,8 @@ def index(
         template_parameters['login'] = True
         
     if request.user.is_authenticated():
+        user_profile = UserProfile.objects.get(user=request.user)
+        template_parameters['user_profile'] = user_profile
         template_parameters['username_truncated'] = request.user.username[:9] + '...'
         template_parameters['avatar_uri'] = UserUtils.get_avatar(
             request.user.username, 
