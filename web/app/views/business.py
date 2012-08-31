@@ -1,11 +1,11 @@
 from django.contrib.auth.models import User
 from django.forms import Form, ModelChoiceField, CharField, URLField
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, render
-from django.template.context import RequestContext
+from django.shortcuts import render
 
 from app.models.users import UserProfile
 from app.models.contents import Content
+from app.models.businesses import Business
 from app.utils import User as UserUtils
 
 class CreateBusinessForm(Form):
@@ -55,8 +55,20 @@ class UpdateBusinessForm(Form):
 class AddBusinessLinkForm(Form):
     uri = CharField()
     title = CharField()
+
     
 def edit_profile(request):
+    update_form = None
+    link_form = None
+    
+    if request.method.lower() == 'post':
+        update_form = UpdateBusinessForm(request.POST)
+        if update_form.is_valid():
+            business = Business.objects.create_business(
+                request.user, 
+                **update_form.cleaned_data
+            )
+    
     template_parameters = {}
     
     content = {}
@@ -80,9 +92,9 @@ def edit_profile(request):
             None, 
             20
         )
-        
-    template_parameters['update_form'] = UpdateBusinessForm()
-    template_parameters['link_form'] = AddBusinessLinkForm()
+
+    template_parameters['update_form'] = update_form if update_form else UpdateBusinessForm()
+    template_parameters['link_form'] = link_form if link_form else AddBusinessLinkForm()
 
     return render(
         request,

@@ -23,8 +23,12 @@ class EndpointPermissionsType(KnotisModel):
 
 class Endpoint(KnotisModel):
     ENDPOINT_TYPES = (
-        ('0', 'email'),
-        ('1', 'phone')
+        (0, 'email'),
+        (1, 'phone'),
+        (2, 'address'),
+        (3, 'twitter'),
+        (4, 'facebook'),
+        (5, 'yelp')
     )
 
     type = IntegerField(choices=ENDPOINT_TYPES)
@@ -38,6 +42,39 @@ class Endpoint(KnotisModel):
     disabled = BooleanField(default=False)
 
     pub_date = DateTimeField('date published', auto_now_add=True)
+    
+    @staticmethod
+    def _value_string_to_content(**kwargs):
+        value = kwargs.get('value')
+        
+        if isinstance(value, Content):
+            return
+
+        if not isinstance(value, basestring):
+            raise ValueError('value must be type <Content> or type <basestring>.')
+            
+        endpoint_type = kwargs.get('type')
+        if endpoint_type == 0:
+            content_type='4.1'
+        elif endpoint_type == 1:
+            content_type='4.2'
+        elif endpoint_type == 2:
+            content_type='4.3'
+        elif endpoint_type == 3:
+            content_type='4.4'
+        elif endpoint_type == 4:
+            content_type='4.5'
+        elif endpoint_type == 5:
+            content_type='4.6'
+    
+        content = Content(
+            content_type=content_type,
+            user=kwargs.get('user'),
+            value=value,
+        )
+        content.save() 
+        
+        kwargs['value'] = content
     
     def send_message(self, **kwargs):
         raise NotImplementedError('send_message was not implemented in derived \
@@ -53,9 +90,13 @@ class EndpointPermissions(KnotisModel):
 class EndpointPhone(Endpoint):
     class Meta:
         proxy = True
+        
+    def __init__(self, *args, **kwargs):
+        kwargs['type'] = 1
+        
+        Endpoint._value_string_to_content(**kwargs)
 
-    def send_message(self, **kwargs):
-        pass
+        super(EndpointEmail, self).__init__(*args, **kwargs)
 
 
 class EndpointEmail(Endpoint): #-- the data for all these is the same, we want different actual
@@ -65,26 +106,7 @@ class EndpointEmail(Endpoint): #-- the data for all these is the same, we want d
     def __init__(self, *args, **kwargs):
         kwargs['type'] = 0  # Always override the type to email (0).
         
-        value = kwargs.get('value')
-        if value and not isinstance(value, Content):
-            content = None
-            if isinstance(value, basestring):
-                content = Content(
-                    content_type='4.1',
-                    locale='en_us',
-                    user=kwargs.get('user'),
-                    group=None,
-                    parent=None,
-                    previous=None,
-                    value=value,
-                    certainty_mu=1.,
-                    certainty_sigma=0.
-                )
-                content.save() 
-            else:
-                raise ValueError('value must be type <Content> or type <str>.')
-            
-            kwargs['value'] = content
+        Endpoint._value_string_to_content(**kwargs)
         
         if kwargs.get('validation_key') is None:
             validation_hash = md5.new()
@@ -123,35 +145,45 @@ class EndpointTwitter(Endpoint):
     class Meta:
         proxy = True
 
-    def send_message(self, **kwargs):
-        pass
+    def __init__(self, *args, **kwargs):
+        kwargs['type'] = 3
+        
+        Endpoint._value_string_to_content(**kwargs)
+
+        super(EndpointEmail, self).__init__(*args, **kwargs)
 
 
-class EndpointSMS(Endpoint):
+class EndpointFacebook(Endpoint):
+    class Meta: 
+        proxy = True
+        
+    def __init__(self, *args, **kwargs):
+        kwargs['type'] = 4
+        
+        Endpoint._value_string_to_content(**kwargs)
+
+        super(EndpointEmail, self).__init__(*args, **kwargs)
+
+
+class EndpointYelp(Endpoint):
     class Meta:
         proxy = True
+        
+    def __init__(self, *args, **kwargs):
+        kwargs['type'] = 5
 
-    def send_message(self, **kwargs):
-        pass
-
+        Endpoint._value_string_to_content(**kwargs)
+        
+        super(EndpointEmail, self).__init__(*args, **kwargs)
+        
 
 class EndpointAddress(Endpoint):
     class Meta:
         proxy = True
 
-    def send_message(self, **kwargs):
-        pass
+    def __init__(self, *args, **kwargs):
+        kwargs['type'] = 2
 
-#    street = CharField(max_length=1024)
-#    street_2 = CharField(max_length=1024)
-#    street_3 = CharField(max_length=1024)
-#    city = CharField(max_length=1024)
-#    state = CharField(max_length=1024)
-#    zipcode = CharField(max_length=1024)
-#    country = CharField(max_length=1024)
-#
-#    def send_message(self):
-#        pass
-
-#class EndpointInternationalAddress(Endpoint):
-
+        Endpoint._value_string_to_content(**kwargs)
+        
+        super(EndpointEmail, self).__init__(*args, **kwargs)

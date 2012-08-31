@@ -36,7 +36,7 @@
 <p class="message-confirm margin-general-25 radius-general ">{{ feedback }}</p>
 </div>
 {% endif %}
-<form class="backend-setting" method="post" class="">
+<form class="backend-setting" method="post" class="">{% csrf_token %}
     <fieldset>
         <h3 class="margin-general"><strong>Contact info</strong></h3>
         <ul class="pass-user">
@@ -46,14 +46,14 @@
                     <input class="search radius-general first-name" value="{% firstof update_form.name.value business_content.name %}"
                         placeholder="Business Name"
                         type="text"
-                        name="name">
+                        name="{{ update_form.name.html_name }}">
                 </label>
             </li>
             <li>
                 <label>
                     <span class="txt-size">{{ update_form.summary.label }}<div id="ht-13" class="help-icon vertical-align-bottom float-right" ></div></span>
                     <textarea id="summary" class="radius-general" 
-                        name="description">{% firstof update_form.summary.value business_content.summary 'Short Description (140 character maximum)' %}</textarea>
+                        name="{{ update_form.summary.label }}">{% firstof update_form.summary.value business_content.summary 'Short Description (140 character maximum)' %}</textarea>
                     <p id="summary_counter" class="generated-titles indented">140 character maximum</p>
                 </label>
             </li>
@@ -61,7 +61,7 @@
                 <label>
                     <span class="txt-size">{{ update_form.description.label }}<div id="ht-14" class="help-icon vertical-align-bottom float-right" ></div></span>
                     <textarea class="radius-general"
-                        name="extendedDescription">{% firstof update_form.description.value business_content.description 'Extended Description' %}</textarea>
+                        name="{{ update_form.description.html_name }}">{% firstof update_form.description.value business_content.description 'Extended Description' %}</textarea>
                 </label>
             </li>
             <li>
@@ -70,7 +70,7 @@
                     <input class="search radius-general"
                         value="{% firstof update_form.address.value business_content.address %}"
                         placeholder="Address"
-                        type="text" name="street1">
+                        type="text" name="{{ update_form.address.html_name }}">
                     <p class="generated-titles indented">e.g. 845 106th Avenue NE, Bellevue, WA 98004</p>
                 </label>
             </li>
@@ -80,7 +80,7 @@
                     <input class="search radius-general"
                         value="{% firstof update_form.phone.value business_content.phone %}"
                         placeholder="Phone"
-                        type="text" name="phone">
+                        type="text" name="{{ update_form.phone.html_name }}">
                     <p class="generated-titles indented">Please include your 10-digit phone number e.g. 206-429-5049</p>
                 </label>
             </li>
@@ -95,7 +95,7 @@
                     <input class="search radius-general"
                         value="{% firstof update_form.twitter_name.value business_content.twitter_name %}"
                            placeholder="Twitter Username"
-                           type="text" name="twitter">
+                           type="text" name="{{ update_form.twitter_name.label }}">
                     <p class="generated-titles indented">Twitter username e.g. 4thavemaps</p>
                 </label>
             </li>
@@ -105,7 +105,7 @@
                     <input class="search radius-general"
                            value="{% firstof update_form.facebook_uri.value business_content.facebook_uri %}"
                            placeholder="Facebook Page"
-                           type="text" name="facebook">
+                           type="text" name="{{ update_form.facebook_uri.html_name }}">
                     <p class="generated-titles indented">Facebook URL e.g. http://facebook.com/pages/company</p>
                 </label>
             </li>
@@ -115,7 +115,7 @@
                     <input class="search radius-general"
                            value="{% firstof update_form.yelp_id.value business_content.yelp_id %}"
                            placeholder="e.g the-waterboy-sacramento"
-                           type="text" name="yelp">
+                           type="text" name="{{ update_form.yelp_id.html_name }}">
                     <p class="generated-titles indented">Yelp ID e.g. in http://www.yelp.com/biz/the-waterboy-sacramento the ID is -> the-waterboy-sacramento</p>
                 </label>
             </li>
@@ -128,7 +128,7 @@
     </fieldset>
 </form>
 {% if business %}
-<form class="backend-setting" id="addlinks" method="post" class="">
+<form class="backend-setting" id="addlinks" method="post" class="">{% csrf_token %}
     <fieldset>
         <h3 class="margin-general"><strong>Other info</strong><div id="ht-19" class="help-icon vertical-align-baseline margin-sides" ></div></h3>
         <ul>
@@ -165,7 +165,7 @@
         {% endif %}
     </fieldset>
 </form>
-<form class="backend-setting" method="post" class="">
+<form class="backend-setting" method="post" class="">{% csrf_token %}
     <fieldset class="last">
         <h3 class="margin-general"><strong>Gallery</strong><div id="ht-22" class="help-icon vertical-align-baseline margin-sides" ></div></h3>
         <div class="relative">

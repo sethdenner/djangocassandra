@@ -34,19 +34,18 @@ class Content(KnotisModel):
         ('1.2', 'Text'),
         ('1.3', 'URI'),
         ('1.4', 'HTML'),
-        ('2', 'User Submitted'),
+        ('2.0', 'User Submitted'),
         ('3.0', 'Business Root'),
         ('3.1', 'Business Name'),
-        ('3.2', 'Business Hours'),
-        ('3.3', 'Business Avatar'),
-        ('3.4', 'Business Summary'),
-        ('3.5', 'Business Description'),
-        ('3.6', 'Business Short Name'),
-        ('4', 'Endpoint'),
+        ('3.2', 'Business Summary'),
+        ('3.3', 'Business Description'),
+        ('4.0', 'Endpoint'),
         ('4.1', 'Endpoint Email'),
         ('4.2', 'Endpoint Phone'),
         ('4.3', 'Endpoint Address'),
-        ('4.4', 'Endpoint Twitter')
+        ('4.4', 'Endpoint Twitter'),
+        ('4.5', 'Endpoint Facebook'),
+        ('4.6', 'Endpoint Yelp')
 
         # terms of service
         # hours, address, business name, all endpoints, anything that a user
@@ -63,15 +62,15 @@ class Content(KnotisModel):
     name = CharField(max_length=30, null=True, db_index=True)
 
     user = ForeignKeyNonRel(User)
-    group = ForeignKeyNonRel(Group, null=True, blank=True)
+    group = ForeignKeyNonRel(Group, null=True, blank=True, default=None)
     #permissions = ManyToManyField(Permission, null=True, blank=True)
     #permission = ForeignKeyNonRel(Permission, null=True, blank=True)
     #permissions = PermissionsField()
 
-    parent = ForeignKeyNonRel('self', blank=True, null=True, related_name='content_parent')
-    previous = ForeignKeyNonRel('self', related_name='content_previous', blank=True, null=True)
+    parent = ForeignKeyNonRel('self', blank=True, null=True, related_name='content_parent', default=None)
+    previous = ForeignKeyNonRel('self', related_name='content_previous', blank=True, null=True, default=None)
 
-    value = CharField(max_length=2000, null=True, blank=True)  # Base64Field()
+    value = CharField(max_length=2000, null=True, blank=True, default=None)  # Base64Field()
 
     certainty_mu = FloatField(null=True, default='1.0')  # average - expected value
     certainty_sigma = FloatField(null=True, default='0.0')  # stdev - expected error

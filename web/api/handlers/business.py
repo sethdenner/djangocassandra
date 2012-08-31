@@ -15,10 +15,7 @@ class BusinessModelHandler(BaseHandler):
         # Get required parameters.
         post_data = request.POST
         user_id = post_data.get('user')
-        backend_name = post_data.get('backend_name')
         business_name = post_data.get('business_name')
-        avatar = post_data.get('avatar')
-        hours = post_data.get('hours')
         
         if not user_id:
             return rc.INTERNAL_ERROR
@@ -32,11 +29,8 @@ class BusinessModelHandler(BaseHandler):
         if not backend_name:
             return rc.INTERNAL_ERROR
 
-        return Business.create_business(
+        return Business.objects.create_business(
             user,
-            backend_name,
             business_name,
-            avatar,
-            hours
         )
 
