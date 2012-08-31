@@ -14,6 +14,10 @@ class TimeSpan:
     def next(self):
         pass
 
+    def intersection(self, timespan):
+        """ Return the difference between the two timespans. """
+        pass
+
 class TimeSpanSimple(TimeSpan):
     def __init__(self, start, end):
         self.start = start
