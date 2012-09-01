@@ -1,8 +1,8 @@
 from django.shortcuts import render
 
-def dashboard(request):
-    render(
+def offers(request):
+    return render(
         request,
-        'dashboard.html',
+        'offers.html',
         {}
     )

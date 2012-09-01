@@ -2,12 +2,12 @@ from django.contrib import admin
 from django.forms import ModelChoiceField, ModelForm
 from models.accounts import Account, AccountType, Currency
 from models.actions import Action, ActionType
-from models.businesses import Business, BusinessEndpoint
+from models.businesses import Business
 from models.contents import Content
 from models.endpoints import Endpoint
 from models.establishments import Establishment, EstablishmentEndpoint, \
     EstablishmentHours
-from models.offers import Offer, OfferType, OfferProducts, OfferInventory
+from models.offers import Offer
 from models.products import Product
 from models.purchases import Purchase, PurchaseType
 from models.testmodel import TestModel, EmbeddedModelFieldTest
@@ -73,7 +73,6 @@ admin.site.register(Business, BusinessAdmin)
 
 class GeneralAdmin(admin.ModelAdmin):
     pass
-admin.site.register(BusinessEndpoint, GeneralAdmin)
 
 admin.site.register(UserRelation, GeneralAdmin)
 admin.site.register(UserRelationType, GeneralAdmin)
@@ -88,9 +87,6 @@ admin.site.register(PurchaseType, GeneralAdmin)
 admin.site.register(Product, GeneralAdmin)
 
 admin.site.register(Offer, GeneralAdmin)
-admin.site.register(OfferType, GeneralAdmin)
-admin.site.register(OfferProducts, GeneralAdmin)
-admin.site.register(OfferInventory, GeneralAdmin)
 
 admin.site.register(Action, GeneralAdmin)
 admin.site.register(ActionType, GeneralAdmin)

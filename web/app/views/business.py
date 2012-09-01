@@ -1,9 +1,12 @@
 from django.contrib.auth.models import User
 from django.forms import Form, ModelChoiceField, CharField, URLField
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, render
-from django.template.context import RequestContext
+from django.shortcuts import render
 
+from app.models.users import UserProfile
+from app.models.contents import Content
+from app.models.businesses import Business
+from app.utils import User as UserUtils
 
 class CreateBusinessForm(Form):
     user = ModelChoiceField(label="User", queryset=User.objects.all())
@@ -36,3 +39,95 @@ def create_business(request):
 
 def list_businesses(request):
     return render(request, 'list_businesses.html')
+
+
+class UpdateBusinessForm(Form):
+    name = CharField(label='Name')
+    summary = CharField(label='Summary', max_length=140, required=False)
+    description = CharField(label='Description', required=False)
+    address = CharField(label='Address', required=False)
+    phone = CharField(label='Phone', required=False)
+    twitter_name = CharField(label='Twitter', required=False)
+    facebook_uri = CharField(label='Facebook', required=False)
+    yelp_id = CharField(label='Yelp ID', required=False)
+    
+
+class AddBusinessLinkForm(Form):
+    uri = CharField()
+    title = CharField()
+
+    
+def edit_profile(request):
+    update_form = None
+    link_form = None
+    
+    business = None
+    try:
+        business = Business.objects.get(user=request.user)
+    except Business.DoesNotExist:
+        pass #fine
+    except:
+        pass #fatal
+    
+    if request.method.lower() == 'post':
+        update_form = UpdateBusinessForm(request.POST)                
+        if update_form.is_valid():
+            if business:
+                business.update(
+                    **update_form.cleaned_data
+                )
+            else:
+                business = Business.objects.create_business(
+                    request.user, 
+                    **update_form.cleaned_data
+                )
+    
+    template_parameters = {}
+    
+    content = {}
+        
+    content_set = Content.content_objects.get_template_content('header')
+    for c in content_set:
+        content[c.name] = c.value
+        
+    content_set = Content.content_objects.get_template_content('footer')
+    for c in content_set:
+        content[c.name] = c.value
+        
+    template_parameters.update(content)
+            
+    if request.user.is_authenticated():
+        user_profile = UserProfile.objects.get(user=request.user)
+        template_parameters['user_profile'] = user_profile
+        template_parameters['username_truncated'] = request.user.username[:9] + '...'
+        template_parameters['avatar_uri'] = UserUtils.get_avatar(
+            request.user.username, 
+            None, 
+            20
+        )
+        
+    if not update_form:
+        if business:
+            business_values = {
+                'name': business.business_name.value,
+                'summary': business.summary.value,
+                'description': business.description.value,
+                'address': business.address.value.value,
+                'phone': business.phone.value.value,
+                'twitter_name': business.twitter_name.value.value,
+                'facebook_uri': business.facebook_uri.value.value,
+                'yelp_id': business.yelp_id.value.value
+            }
+            update_form = UpdateBusinessForm(business_values)
+        else:
+            update_form = UpdateBusinessForm()
+
+    template_parameters['business'] = business
+    template_parameters['update_form'] = update_form
+    template_parameters['link_form'] = link_form if link_form else AddBusinessLinkForm()
+
+    return render(
+        request,
+        'edit_business_profile.html',
+        template_parameters
+    )

@@ -33,3 +33,6 @@ class UserProfile(KnotisModel):
     reputation_sigma = FloatField(null=True, default='0.0')
     reputation_total = FloatField(null=True, default='0.0')
     reputation_matrix = MatrixField(null=True, blank=True, max_length=200)
+
+    def is_business_owner(self):
+        return True if self.account_type != 0 else False

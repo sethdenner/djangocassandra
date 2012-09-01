@@ -6,9 +6,36 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^(?P<login>(login)*)(/)*$', 'app.views.home.index', name='home'),
-    url(r'^plans/$', 'app.views.account.plans', name='account'),
-    url(r'^business/create', 'app.views.business.create_business', name='business'),
+    url(
+        r'^(?P<login>(login)*)(/)*$', 
+        'app.views.home.index', 
+        name='home'
+    ),
+    url(
+        r'^plans/$', 
+        'app.views.account.plans', 
+        name='account'
+    ),
+    url(
+        r'^dashboard',
+        'app.views.dashboard.dashboard',
+        name='dashboard'
+    ),
+    url(
+        r'^offers/$',
+        'app.views.offer.offers',
+        name='offers'
+    ),
+    url(
+        r'^business/create', 
+        'app.views.business.create_business', 
+        name='business'
+    ),
+    url(
+        r'^business_profile/$',
+        'app.views.business.edit_profile',
+        name='business'
+    ),
     url(
         r'^login_popup/$', 
         'knotis_auth.views.login',

@@ -1,0 +1,223 @@
+{% extends 'master.html' %}
+
+{% block title %}Knotis - Edit Business Profile{% endblock title %}
+
+{% block content %}
+<div id="content" class="back-deals">
+<div class="curve">
+<div class="wrapper clear-fix relative">
+<div class="upgrade">
+    <p class="txt-center">
+        {% if user_profile.is_business_owner %}
+        {% if 1 == user_profile.account_type %}
+        <a href="/backend/tickets/">Forever Free<br/> ({% firstof user_tickets '0' %} Tickets)</a>
+        {% else %}
+        <a href="#">knotis<br/> Premium</a>
+        {% endif %}
+        {% else %}
+        {% if not user.is_staff %}
+        <a href="#">knotis<br />user</a>
+        {% else %}
+        <a href="#">knotis <br />admin</a>
+        {% endif %}
+        {% endif %}
+    </p>
+</div>
+<div class="box-deals box-border left">
+<h2 class="backend">
+    <strong>Business profile</strong>
+    {% if business %} 
+    <a href="/business/{{ business.backend_name }}/" target="_blank">View Business Page</a>
+    {% endif %}
+</h2>
+{% if feedback %}
+<div class="relative closeinfo">
+<div class="close-message absolute"></div>
+<p class="message-confirm margin-general-25 radius-general ">{{ feedback }}</p>
+</div>
+{% endif %}
+<form class="backend-setting" method="post" class="">{% csrf_token %}
+    <fieldset>
+        <h3 class="margin-general"><strong>Contact info</strong></h3>
+        <ul class="pass-user">
+            <li class="left">
+                <label>
+                    <span class="txt-size">{{ update_form.name.label }}<div id="ht-12" class="help-icon vertical-align-bottom float-right float-right" ></div></span>
+                    <input class="search radius-general first-name" value="{% firstof update_form.name.value business_content.name %}"
+                        placeholder="Business Name"
+                        type="text"
+                        name="{{ update_form.name.html_name }}">
+                </label>
+            </li>
+            <li>
+                <label>
+                    <span class="txt-size">{{ update_form.summary.label }}<div id="ht-13" class="help-icon vertical-align-bottom float-right" ></div></span>
+                    <textarea id="summary" class="radius-general" 
+                        name="{{ update_form.summary.html_name }}">{% firstof update_form.summary.value business_content.summary 'Short Description (140 character maximum)' %}</textarea>
+                    <p id="summary_counter" class="generated-titles indented">140 character maximum</p>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <span class="txt-size">{{ update_form.description.label }}<div id="ht-14" class="help-icon vertical-align-bottom float-right" ></div></span>
+                    <textarea class="radius-general"
+                        name="{{ update_form.description.html_name }}">{% firstof update_form.description.value business_content.description 'Extended Description' %}</textarea>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <span class="txt-size">{{ update_form.address.label }}</span>
+                    <input class="search radius-general"
+                        value="{% firstof update_form.address.value business_content.address %}"
+                        placeholder="Address"
+                        type="text" name="{{ update_form.address.html_name }}">
+                    <p class="generated-titles indented">e.g. 845 106th Avenue NE, Bellevue, WA 98004</p>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <span class="txt-size">{{ update_form.phone.label }}</span>
+                    <input class="search radius-general"
+                        value="{% firstof update_form.phone.value business_content.phone %}"
+                        placeholder="Phone"
+                        type="text" name="{{ update_form.phone.html_name }}">
+                    <p class="generated-titles indented">Please include your 10-digit phone number e.g. 206-429-5049</p>
+                </label>
+            </li>
+        </ul>
+    </fieldset>
+    <fieldset>
+        <h3 class="margin-general"><strong>Social business</strong></h3>
+        <ul class="pass-user">
+            <li>
+                <label>
+                    <span class="txt-size">{{ update_form.twitter_name.label }}<div id="ht-15" class="help-icon vertical-align-bottom float-right" ></div></span>
+                    <input class="search radius-general"
+                        value="{% firstof update_form.twitter_name.value business_content.twitter_name %}"
+                           placeholder="Twitter Username"
+                           type="text" name="{{ update_form.twitter_name.html_name }}">
+                    <p class="generated-titles indented">Twitter username e.g. 4thavemaps</p>
+                </label>
+            </li>
+            <li class="margin-general">
+                <label>
+                    <span class="txt-size">{{ update_form.facebook_uri.label }}<div id="ht-17" class="help-icon vertical-align-bottom float-right" ></div></span>
+                    <input class="search radius-general"
+                           value="{% firstof update_form.facebook_uri.value business_content.facebook_uri %}"
+                           placeholder="Facebook Page"
+                           type="text" name="{{ update_form.facebook_uri.html_name }}">
+                    <p class="generated-titles indented">Facebook URL e.g. http://facebook.com/pages/company</p>
+                </label>
+            </li>
+            <li class="margin-general">
+                <label>
+                    <span class="txt-size">{{ update_form.yelp_id.label }}<div id="ht-18" class="help-icon vertical-align-bottom float-right" ></div></span>
+                    <input class="search radius-general"
+                           value="{% firstof update_form.yelp_id.value business_content.yelp_id %}"
+                           placeholder="e.g the-waterboy-sacramento"
+                           type="text" name="{{ update_form.yelp_id.html_name }}">
+                    <p class="generated-titles indented">Yelp ID e.g. in http://www.yelp.com/biz/the-waterboy-sacramento the ID is -> the-waterboy-sacramento</p>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input class="button radius-general " type="submit" value="Save business">
+                </label>
+            </li>
+        </ul>
+    </fieldset>
+</form>
+{% if business %}
+<form class="backend-setting" id="addlinks" method="post" class="">{% csrf_token %}
+    <fieldset>
+        <h3 class="margin-general"><strong>Other info</strong><div id="ht-19" class="help-icon vertical-align-baseline margin-sides" ></div></h3>
+        <ul>
+            <li class="left">
+                <label>
+                    <input class="search radius-general first-namen date card" value="" type="text"
+                           placeholder="http://company.com/specials"
+                           name="{{ link_form.uri.html_name }}" id="urlLink">
+                    <div id="ht-20" class="help-icon vertical-align-top margin-right" ></div>
+                </label>
+            </li>
+            <li class="left">
+                <label>
+                    <input class="search radius-general first-name date card" value="" placeholder="Our Special Deals!"
+                           type="text"
+                           name="{{link_form.title.html_name }}" id="titleLink">
+                    <div id="ht-21" class="help-icon vertical-align-top margin-right" ></div>
+                </label>
+            </li>
+            <label>
+                <input class="button radius-general" type="submit" value="Add Links">
+            </label>
+            </li>
+        </ul>
+        {% if business_links %}
+        <ul class="link-name">
+            {% for link in business_links %}
+                <li class="clear-fix radius-general">
+                    <a class="name" href="{{ link.uri }}" target="_blank">{{ link.title }}</a>
+                    <a class="right delete radius-general" href="/business/delete_business_link/{{ link.id }}/">Delete</a>
+                </li>';
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </fieldset>
+</form>
+<form class="backend-setting" method="post" class="">{% csrf_token %}
+    <fieldset class="last">
+        <h3 class="margin-general"><strong>Gallery</strong><div id="ht-22" class="help-icon vertical-align-baseline margin-sides" ></div></h3>
+        <div class="relative">
+            <p class="message-confirm margin-general-25 radius-general ">Be careful, for correct visibility on the
+                business profile, the images must be sized at 500 x 235</p>
+        </div>
+        <ul>
+            {% if images %}
+            <ul class="link-name images-gallery">
+                {% for image in images %}
+                <ul class="link-name clear-fix radius-general {{ forloop.counter0 }}">
+                    <li class="radius-general active clear-fix">
+                        <img
+                            alt=""
+                            src="{% firstof image.uri default_deal_image %}"
+                            class="gallery" />
+                            <a class="right delete radius-general delete-image" href="#" data-id="{{ image.id }}"
+                               data-cont="{{ forloop.counter0 }}">delete</a>
+                            <a class="right {% if image.primary %}active{% else %}noheadimage{% endif %} principal delete radius-general headimage"
+                               data-id="{{ image.id }}" href="#">Primary</a>
+                    </li>
+                </ul>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <div class="clean"></div>
+        </ul>
+    </fieldset>
+</form>
+<div id="file-uploader">
+    <noscript>
+        <p>Please enable JavaScript to use file uploader.</p>
+        <!-- or put a simple form for upload here -->
+    </noscript>
+</div>
+<script>
+	$(function(){
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('file-uploader'),
+            action: '<?php echo site_url("backend/doupload"); ?>',
+            debug: true,
+            params: {
+                id: '<?php if (isset($business)) echo $business->id; ?>',
+                type: 'business'
+            }
+        });
+ 	});
+</script>
+{% endif %}
+</div>
+{% include 'deal_menu.html' %}
+</div>
+</div>
+</div>
+{% endblock content %}

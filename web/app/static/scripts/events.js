@@ -147,7 +147,7 @@ $(document).ready(function() {
 
         if (type == 'user')
             $("#fb-root").attr('data-sign-up-action', server + "user/facebook_login/1");
-        if (type == 'tickets')
+        if (type == 'foreverfree')
             $("#fb-root").attr('data-sign-up-action', server + "user/facebook_login/2");
         if (type == 'premium')
             $("#fb-root").attr('data-sign-up-action', server + "user/facebook_login/3");
@@ -975,7 +975,7 @@ $(document).ready(function() {
                         $('.replace').replaceWith('');
                         $('.resultsContainer').replaceWith(data.message);
                     }
-                    if (data.user == 'tickets'){
+                    if (data.user == 'foreverfree'){
                         $('.replace').replaceWith('');
                         $('.resultsContainer').replaceWith('<p class="message-confirm message-info radius-general txt-size">' + data.message + '</p>');
                     }
@@ -1177,7 +1177,7 @@ $(document).ready(function() {
                                     if (data.user == 'premium')
                                         $('.replace').replaceWith(data.message);
 
-                                    if (data.user == 'tickets')
+                                    if (data.user == 'foreverfree')
                                         window.location = server + "backend/businessprofile";
 
                                     if (data.user == 'normal')

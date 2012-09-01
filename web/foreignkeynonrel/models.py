@@ -16,3 +16,6 @@ class ForeignKeyNonRel(ForeignKey):
             rel_class,
             **kwargs
         )
+        
+    def db_type(self, connection):
+        return 'ForeignKeyNonRel'
