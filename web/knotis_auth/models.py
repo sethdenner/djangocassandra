@@ -3,7 +3,6 @@ from django.contrib.auth import models
 
 from app.models.users import UserProfile
 from app.models.endpoints import EndpointEmail
-from app.models.businesses import Business
 from app.utils import Email
 
 

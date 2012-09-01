@@ -43,13 +43,13 @@ def list_businesses(request):
 
 class UpdateBusinessForm(Form):
     name = CharField(label='Name')
-    summary = CharField(label='Summary', max_length=140)
-    description = CharField(label='Description')
-    address = CharField(label='Address')
-    phone = CharField(label='Phone')
-    twitter_name = CharField(label='Twitter')
-    facebook_uri = CharField(label='Facebook')
-    yelp_id = CharField(label='Yelp ID')
+    summary = CharField(label='Summary', max_length=140, required=False)
+    description = CharField(label='Description', required=False)
+    address = CharField(label='Address', required=False)
+    phone = CharField(label='Phone', required=False)
+    twitter_name = CharField(label='Twitter', required=False)
+    facebook_uri = CharField(label='Facebook', required=False)
+    yelp_id = CharField(label='Yelp ID', required=False)
     
 
 class AddBusinessLinkForm(Form):
@@ -61,13 +61,26 @@ def edit_profile(request):
     update_form = None
     link_form = None
     
+    business = None
+    try:
+        business = Business.objects.get(user=request.user)
+    except Business.DoesNotExist:
+        pass #fine
+    except:
+        pass #fatal
+    
     if request.method.lower() == 'post':
-        update_form = UpdateBusinessForm(request.POST)
+        update_form = UpdateBusinessForm(request.POST)                
         if update_form.is_valid():
-            business = Business.objects.create_business(
-                request.user, 
-                **update_form.cleaned_data
-            )
+            if business:
+                business.update(
+                    **update_form.cleaned_data
+                )
+            else:
+                business = Business.objects.create_business(
+                    request.user, 
+                    **update_form.cleaned_data
+                )
     
     template_parameters = {}
     
@@ -92,8 +105,25 @@ def edit_profile(request):
             None, 
             20
         )
+        
+    if not update_form:
+        if business:
+            business_values = {
+                'name': business.business_name.value,
+                'summary': business.summary.value,
+                'description': business.description.value,
+                'address': business.address.value.value,
+                'phone': business.phone.value.value,
+                'twitter_name': business.twitter_name.value.value,
+                'facebook_uri': business.facebook_uri.value.value,
+                'yelp_id': business.yelp_id.value.value
+            }
+            update_form = UpdateBusinessForm(business_values)
+        else:
+            update_form = UpdateBusinessForm()
 
-    template_parameters['update_form'] = update_form if update_form else UpdateBusinessForm()
+    template_parameters['business'] = business
+    template_parameters['update_form'] = update_form
     template_parameters['link_form'] = link_form if link_form else AddBusinessLinkForm()
 
     return render(

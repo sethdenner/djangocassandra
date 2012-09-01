@@ -33,7 +33,7 @@ class Endpoint(KnotisModel):
 
     type = IntegerField(choices=ENDPOINT_TYPES)
     
-    user = ForeignKeyNonRel(User, primary_key=True)
+    user = ForeignKeyNonRel(User)
     value = ForeignKeyNonRel(Content)
 
     primary = BooleanField(default=False)
@@ -44,10 +44,10 @@ class Endpoint(KnotisModel):
     pub_date = DateTimeField('date published', auto_now_add=True)
     
     @staticmethod
-    def _value_string_to_content(**kwargs):
+    def _value_string_to_content(kwargs):
         value = kwargs.get('value')
         
-        if isinstance(value, Content):
+        if not value or isinstance(value, Content):
             return
 
         if not isinstance(value, basestring):
@@ -70,6 +70,7 @@ class Endpoint(KnotisModel):
         content = Content(
             content_type=content_type,
             user=kwargs.get('user'),
+            name=value,
             value=value,
         )
         content.save() 
@@ -94,9 +95,9 @@ class EndpointPhone(Endpoint):
     def __init__(self, *args, **kwargs):
         kwargs['type'] = 1
         
-        Endpoint._value_string_to_content(**kwargs)
+        Endpoint._value_string_to_content(kwargs)
 
-        super(EndpointEmail, self).__init__(*args, **kwargs)
+        super(EndpointPhone, self).__init__(*args, **kwargs)
 
 
 class EndpointEmail(Endpoint): #-- the data for all these is the same, we want different actual
@@ -106,7 +107,7 @@ class EndpointEmail(Endpoint): #-- the data for all these is the same, we want d
     def __init__(self, *args, **kwargs):
         kwargs['type'] = 0  # Always override the type to email (0).
         
-        Endpoint._value_string_to_content(**kwargs)
+        Endpoint._value_string_to_content(kwargs)
         
         if kwargs.get('validation_key') is None:
             validation_hash = md5.new()
@@ -148,9 +149,9 @@ class EndpointTwitter(Endpoint):
     def __init__(self, *args, **kwargs):
         kwargs['type'] = 3
         
-        Endpoint._value_string_to_content(**kwargs)
+        Endpoint._value_string_to_content(kwargs)
 
-        super(EndpointEmail, self).__init__(*args, **kwargs)
+        super(EndpointTwitter, self).__init__(*args, **kwargs)
 
 
 class EndpointFacebook(Endpoint):
@@ -160,9 +161,9 @@ class EndpointFacebook(Endpoint):
     def __init__(self, *args, **kwargs):
         kwargs['type'] = 4
         
-        Endpoint._value_string_to_content(**kwargs)
+        Endpoint._value_string_to_content(kwargs)
 
-        super(EndpointEmail, self).__init__(*args, **kwargs)
+        super(EndpointFacebook, self).__init__(*args, **kwargs)
 
 
 class EndpointYelp(Endpoint):
@@ -172,9 +173,9 @@ class EndpointYelp(Endpoint):
     def __init__(self, *args, **kwargs):
         kwargs['type'] = 5
 
-        Endpoint._value_string_to_content(**kwargs)
+        Endpoint._value_string_to_content(kwargs)
         
-        super(EndpointEmail, self).__init__(*args, **kwargs)
+        super(EndpointYelp, self).__init__(*args, **kwargs)
         
 
 class EndpointAddress(Endpoint):
@@ -184,6 +185,6 @@ class EndpointAddress(Endpoint):
     def __init__(self, *args, **kwargs):
         kwargs['type'] = 2
 
-        Endpoint._value_string_to_content(**kwargs)
+        Endpoint._value_string_to_content(kwargs)
         
-        super(EndpointEmail, self).__init__(*args, **kwargs)
+        super(EndpointAddress, self).__init__(*args, **kwargs)

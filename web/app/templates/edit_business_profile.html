@@ -53,7 +53,7 @@
                 <label>
                     <span class="txt-size">{{ update_form.summary.label }}<div id="ht-13" class="help-icon vertical-align-bottom float-right" ></div></span>
                     <textarea id="summary" class="radius-general" 
-                        name="{{ update_form.summary.label }}">{% firstof update_form.summary.value business_content.summary 'Short Description (140 character maximum)' %}</textarea>
+                        name="{{ update_form.summary.html_name }}">{% firstof update_form.summary.value business_content.summary 'Short Description (140 character maximum)' %}</textarea>
                     <p id="summary_counter" class="generated-titles indented">140 character maximum</p>
                 </label>
             </li>
@@ -95,7 +95,7 @@
                     <input class="search radius-general"
                         value="{% firstof update_form.twitter_name.value business_content.twitter_name %}"
                            placeholder="Twitter Username"
-                           type="text" name="{{ update_form.twitter_name.label }}">
+                           type="text" name="{{ update_form.twitter_name.html_name }}">
                     <p class="generated-titles indented">Twitter username e.g. 4thavemaps</p>
                 </label>
             </li>
