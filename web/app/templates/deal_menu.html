@@ -18,7 +18,7 @@
         <div class="box-border colum-width-menu margin-general-25 right no-padding">
         <ul class="list-backend">
             <li class="relative">
-                <a class=" add-ticket radius-general" href="Tickets">Manage Tickets & Subscriptions</a>
+                <a class=" add-ticket radius-general" href="Tickets">Manage Tickets &amp; Subscriptions</a>
             </li>
         </ul>
     </div>
@@ -30,17 +30,21 @@
             </li>
             {% if user_profile.is_business_owner %}
             <li class="relative">
-                <a class="dash first" href="/dashboard/">Dashboard</a>
+                <a class="dash{% if current_page == 'dashboard' %}-active active{% endif %} first" href="/dashboard/">Dashboard</a>
+                {% if current_page == 'dashboard' %}<div class="arrow"></div>{% endif %}
             </li>
             {% endif %}
             <li class="relative">
-                <a class="deals02" href="/deals/">Deals</a>
+                <a class="deals02{% if current_page == 'deals' %}-active active{% endif %}" href="/deals/">Deals</a>
+                {% if current_page == 'deals' %}<div class="arrow"></div>{% endif %}
             </li>
             <li class="relative">
-				<a class="happy" href="">Happy Hour</a>
+				<a class="happy{% if current_page == 'happy_hour' %}-active active{% endif %}" href="">Happy Hour</a>
+                {% if current_page == 'happy_hour' %}<div class="arrow"></div>{% endif %}
             </li>
             <li class="relative">
-				<a class="events last" href="">Special Events</a>
+				<a class="events{% if current_page == 'events' %}-active active{% endif %} last" href="">Special Events</a>
+                {% if current_page == 'events' %}<div class="arrow"></div>{% endif %}
             </li>
         </ul>
     </div>
@@ -50,18 +54,20 @@
                 <h3 class="title-backend"><strong>Settings</strong></h3>
             </li>
             <li class="relative">
-                <a class="profile first"
+                <a class="profile{% if current_page == 'user_profile' %}-active active{% endif %} first"
                    href="/profile/">My profile</a>
+                {% if current_page == 'user_profile' %}<div class="arrow"></div>{% endif %}
             </li>
             <li class="relative">
-                <a class="subscription"
+                <a class="subscription{% if current_page == 'subscriptions' %}-active active{% endif %}"
                    href="/mysubcriptions/">My Subscriptions</a>
+                {% if current_page == 'subscriptions' %}<div class="arrow"></div>{% endif %}
             </li>
             {% if user_profile.is_business_owner %}
             <li class="relative">
-                <a class="last business-active active"
+                <a class="last business{% if current_page == 'business_profile' %}-active active{% endif %}"
                    href="/business_profile/">Business profile</a>
-                <div class="arrow"></div>
+                {% if current_page == 'business_profile' %}<div class="arrow"></div>{% endif %}
             </li>
             {% endif %}
         </ul>
