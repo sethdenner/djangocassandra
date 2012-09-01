@@ -4,79 +4,41 @@
 
 {% block content %}
 <div id="content" class="back-deals">
-<div class="curve">
-
-<div class="wrapper clear-fix relative">
-<div class="upgrade">
-    <p class="txt-center">
-        {% if is_businessowner %}
-        {% if 0 == user_profile.account_type %}
-        <a href="/tickets/">Forever Free<br/> ({{ user_tickets }} Tickets)</a>
-        {% else %}
-        <a href="#">knotis<br/> Premium</a>
-        {% endif %}
-        {% else %}
-        {% if user.is_staff %}
-        <a href="#">knotis <br />admin</a>
-        {% else %}
-        <a href="#">knotis<br />user</a>'
-        {% endif %}
-        {% endif %}
-    </p>
-</div>
-<div class="box-deals box-border left">
-<div class="clear-fix margin-general">
-    <ul class="filtering-bar-dash clear-fix">
-        <li class="txt-size"><a class="first active" href="#">Deals</a></li>
-        <li class="txt-size"><a class="first" href="/dashboard/qrcodes/">Qrcode Scans</a></li>
-        <li class="txt-size"><a class="coming-soon" href="#">Happy hour</a></li>
-        <li class="txt-size"><a class="coming-soon" href="#">Special event</a></li>
-    </ul>
-</div>
-<div class="deal_list_backend">
-    {% if offers %}
-    {% for o in offers %}
-    {% if offer_orders %}
-    
-    {% endif %}
-    {% endfor %}
-    {% endif %}
-        <?php
-        if (isset($deals)) {
-            if ($deals) {
-                $cont = 0;
-                foreach ($deals->result() as $deal)
-                {
-                    $business = $this->knotis_api->get_this_business_byid($deal->merchantId);
-                    $dealOrders = $this->knotis_api->get_all_orderactives_by_IdDeal($deal->id);
-                    if ($dealOrders) {
-                        ?>
-
-
-                        <div class="premiumdeals_filter margin-up">
+    <div class="curve">
+        <div class="wrapper clear-fix relative">
+            {% include 'account_notifications.html' %}
+            <div class="box-deals box-border left">
+                <div class="clear-fix margin-general">
+                    <ul class="filtering-bar-dash clear-fix">
+                        <li class="txt-size"><a class="first active" href="#">Deals</a></li>
+                        <li class="txt-size"><a class="first" href="/dashboard/qrcodes/">Qrcode Scans</a></li>
+                        <li class="txt-size"><a class="coming-soon" href="#">Happy hour</a></li>
+                        <li class="txt-size"><a class="coming-soon" href="#">Special event</a></li>
+                    </ul>
+                </div>
+                <div class="deal_list_backend">
+                    {% if offers %}
+                    {% for offer in offers %}
+                    {% if offer.orders %}
+                    <div class="premiumdeals_filter margin-up">
                         <ul class="clear-fix graphic-buttoms-<?= $deal->id ?>">
-                            <li><a class="active graphic-buttom" href="#"  data-id="<?= $deal->id ?>" data-type="year">Monthly</a></li>
-                            <li><a href="#" class="graphic-buttom" data-id="<?= $deal->id ?>" data-type="week">Weekly</a></li>
-                            <li><a href="#" class="graphic-buttom" data-id="<?= $deal->id ?>" data-type="days">Daily</a></li>
-
+                            <li><a class="active graphic-buttom" href="#"  data-id="{{ offer.id }}" data-type="year">Monthly</a></li>
+                            <li><a href="#" class="graphic-buttom" data-id="{{ offer.id }}" data-type="week">Weekly</a></li>
+                            <li><a href="#" class="graphic-buttom" data-id="{{ offer.id }}" data-type="days">Daily</a></li>
                         </ul>
-                        </div>
-
-                    <div class="clear-fix" id="graphic-<?= $deal->id ?>">
-
+                    </div>
+                    <div class="clear-fix" id="graphic-{{ offer.id }}">
                         <script type="text/javascript">
-
                             var chart;
                             $(document).ready(function() {
                                 chart = new Highcharts.Chart({
                                     chart: {
-                                        renderTo: 'graphic<?= $deal->id ?>',
+                                        renderTo: 'graphic{{ offer.id }}',
                                         defaultSeriesType: 'area'
                                     },
                                     title: {
                                         text: 'Sold'
                                     },
-
                                     xAxis: {
                                         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ],
                                         tickmarkPlacement: 'on',
@@ -114,166 +76,111 @@
                                     series: [
                                         {
                                             name: 'Total Sold',
-                                            data: [<?= $this->knotis_api->getallmoneyfordate(date ("Y").'-01-01', date ("Y").'-01-31', $deal->id) ?>, <?= $this->knotis_api->getallmoneyfordate(date ("Y").'-02-01', date ("Y").'-02-31', $deal->id) ?>, <?= $this->knotis_api->getallmoneyfordate(date ("Y").'-03-01', date ("Y").'-03-31', $deal->id) ?>, <?= $this->knotis_api->getallmoneyfordate(date ("Y").'-04-01', date ("Y").'-04-31', $deal->id) ?>, <?= $this->knotis_api->getallmoneyfordate(date ("Y").'-05-01', date ("Y").'-05-31', $deal->id) ?>, <?= $this->knotis_api->getallmoneyfordate(date ("Y").'-06-01', date ("Y").'-06-31', $deal->id) ?>, <?= $this->knotis_api->getallmoneyfordate(date ("Y").'-07-01', date ("Y").'-07-31', $deal->id) ?>, <?= $this->knotis_api->getallmoneyfordate(date ("Y").'-08-01', date ("Y").'-08-31', $deal->id) ?>, <?= $this->knotis_api->getallmoneyfordate(date ("Y").'-09-01', date ("Y").'-09-31', $deal->id) ?>, <?= $this->knotis_api->getallmoneyfordate(date ("Y").'-10-01', date ("Y").'-10-31', $deal->id) ?>, <?= $this->knotis_api->getallmoneyfordate(date ("Y").'-11-01', date ("Y").'-11-31', $deal->id) ?>, <?= $this->knotis_api->getallmoneyfordate(date ("Y").'-12-01', date ("Y").'-12-31', $deal->id) ?>]
+                                            data: [
+                                                {% for revenue in monthly_revenue %}
+                                                {{ revenue }},
+                                                {% endfor %}
+                                            ]
                                         }
                                     ]
                                 });
-
-
                             });
-
                         </script>
-
-
-
-                        <div class="graphic" id="graphic<?= $deal->id ?>">
-
+                        <div class="graphic" id="graphic{{ offer.id }}">
                         </div>
                     </div>
-
-
                     <ul class="information-dash ">
                         <li class="sold clear-fix radius-general">
                             <span class="left"><strong>Sold:</strong></span>
-                            <span class="right second"><?=$deal->purchase ?></span>
+                            <span class="right second">{{ offer.purchase }}</span>
                         </li>
                         <li class="revenue radius-general clear-fix">
                             <span class="left"><strong>Revenue:</strong></span>
-                                            <span class="right second">$<?= $this->knotis_api->getallmoneyfordate(date ("Y").'-01-01', date ("Y").'-12-31', $deal->id) ?>
-                                                </span>
+                            <span class="right second">${{ yearly_revenue }}</span>
                         </li>
                     </ul>
-
                     <div class="deals-div line-bottom clear-fix">
                         <div class="not-deals clear-fix">
                             <div class="deals-image radius-general left relative">
                                 <div class="category food"></div>
                                 <img alt=""
-                                     src="<?php if ($deal->image == '') echo base_url() . 'images/layouts/knotis-deal-image.jpg'; else echo site_url('images/thumb') . '/72/72/' . $deal->image;?>"
+                                     src="{% if not deal.image %}images/layouts/knotis-deal-image.jpg{% else %}/images/thumb/72/72/{{ offer.image }}{% endif %}"
                                      class="image-knotis-thumb"/>
                             </div>
                             <div class="deals-txt left">
-                                <h5><strong><?php echo $deal->title; ?></strong></h5>
+                                <h5><strong>{{ offer.title }}</strong></h5>
                                 <ul class="date-dash clear-fix">
-                                    <li><?=$deal->startDate ?></li>
-                                    <li><?=$deal->endDate ?></li>
+                                    <li>{{ offer.start_date }}</li>
+                                    <li>{{ offer.end_date }}</li>
                                 </ul>
                                 <a class="txt-size margin-general clear-fix business"
-                                   alt="<?=$business->name ?>"
-                                   title="<?=$business->name ?>" target="_blank"
-                                   href="<?=site_url("business/profile/" . $business->id); ?>"><?=$business->name ?></a>
-
+                                   alt="{{ offer.business.business_name }}"
+                                   title="{{ offer.business.business_name }}" target="_blank"
+                                   href="/business/{{ offer.business.backend_name }}/">{{ offer.business.business_name }}</a>
                             </div>
                         </div>
-                        
                         <div class="not-deals left select-sort">
                 		    <label for="sortby" class="left-side2 txt-size">
-							  Sort By:
-						    </label>
-							<div class="right">
+                			  Sort By:
+                		    </label>
+                			<div class="right">
                         	  <select id="sortby">
                         		<option value="0" >Username</option>
                         		<option value="1" >Code</option>
                 			  </select>
                         	</div>
                         </div>
-                        
                 	    <span class="not-deals right">
-    	  			      <a id="print-deals" href="./printdeals" target="_blank" > 
-		    			    Print Unredeemed Deals <img class="print" src="<?php echo base_url() ?>images/layouts/print.png" />
-	  					  </a>
-	    				</span>
-	    				
-                        <?php $dealOrders = $this->knotis_api->get_all_orderactives_by_IdDeal($deal->id);
-                        if ($dealOrders) {
-                            foreach ($dealOrders->result() as $dealOrder)
-                            {
-                                $user = $this->auth->get_user_by_id($dealOrder->accountId);
-                                $total_rows = $this->knotis_api->get_number_orderactives_by_IdDeal($deal->id);
-                                $num_pages = ceil($total_rows / $per_page);
-                                ?>
-
-                                <div class="deal-div clear-fix clean reedem-code radius-general ">
-
-                                    <ul class="left txt-size">
-                                        <li><strong>User:</strong> <?= $user->username ?></li>
-                                        <li><strong>Code:</strong>#<?=$dealOrder->code?></li>
-                                        <?php $startDate = $this->knotis_api->mysqldatetime_to_timestamp($dealOrder->date); ?>
-                                        <li><strong>Purchase Date:</strong> <?=mdate($datestring, $startDate) ?></li>
-                                      </ul>
-                                    <ul class="left txt-size" >
-                                        <li><strong>Stock:</strong> <?=$dealOrder->stock?></li>
-                                        <li><strong>Paid:</strong> $<?=$dealOrder->price?></li>
-                                        <li class="redeem"><strong>Redeemed:</strong> <?=$dealOrder->redeem?></li>
-                                    </ul>
-                                    <form class="backend-setting"
-                                          action="<?php echo site_url('backend/redeem'); ?>"
-                                          method="post">
-                                        <div class="deals-action deals-action-dash radius-general left">
-                                            <?php if ($dealOrder->redeem != $dealOrder->stock) { ?>
-                                            <label class="number-redeem left">
-                                                <select name="stock_select">
-                                                    <?php
-                                                    $stock_redeem = $dealOrder->stock - $dealOrder->redeem;
-                                                    for ($size = 1; $size <= $stock_redeem; $size++)
-                                                    {
-                                                        ?>
-                                                        <option value="<?=$size?>"><?=$size?></option>
-                                                        <?php } ?>
-                                                </select>
-                                            </label>
-
-                                            <input type="submit" class="button radius-general left"
-                                                   value="Redeem"/>
-                                            <input type="hidden" value="<?=$dealOrder->id ?>"
-                                                   name="dealOrderid"/>
-                                            <input type="hidden" value="<?=$dealOrder->redeem ?>"
-                                                   name="redeem_actual"/>
-                                            <?php } ?>
-                                        </div>
-                                    </form>
-
+                	      <a id="print-deals" href="./printdeals" target="_blank" > 
+                		    Print Unredeemed Deals <img class="print" src="{{ STATIC_URL }}images/layouts/print.png" />
+                		  </a>
+                		</span>
+                        {% if deal.orders %}
+                        {% for order in deal.orders %}
+                        <div class="deal-div clear-fix clean reedem-code radius-general ">
+                            <ul class="left txt-size">
+                                <li><strong>User:</strong> {{ order.user.username }}</li>
+                                <li><strong>Code:</strong>#{{ order.redemption_code }}</li>
+                                <li><strong>Purchase Date:</strong> {{ order.formatted_date }}</li>
+                              </ul>
+                            <ul class="left txt-size" >
+                                <li><strong>Stock:</strong> {{ order.pending }}</li>
+                                <li><strong>Paid:</strong> ${{ order.price }}</li>
+                                <li class="redeem"><strong>Redeemed:</strong> {{ order.redeemed }}</li>
+                            </ul>
+                            <form class="backend-setting" method="post">
+                                <div class="deals-action deals-action-dash radius-general left">
+                                    {% if order.redeemed != order.pending %}
+                                    <label class="number-redeem left">
+                                        <select name="stock_select">
+                                            {% for n in order.redeem_numbers %}
+                                            <option value="{{forloop.counter}}">{{ forloop.counter }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                    <input type="submit" class="button radius-general left"
+                                           value="Redeem"/>
+                                    <input type="hidden" value="{{ offer.id }}"
+                                           name="dealOrderid"/>
+                                    <input type="hidden" value="{{ order.redeemed }}"
+                                           name="redeem_actual"/>
+                                    {% endif %}
                                 </div>
-
-                                <?php
-
-                            }
-                        } ?>
-
-
+                            </form>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
                     </div>
-                        <?php
-
-                    }
-                    ?>
-
-
-                    <?php $cont++;
-                }
-
-            }
-            else
-            {
-                echo ' <p class="message-confirm message-info radius-general txt-size">' . config_item('no_deals_list') . '</p>';
-
-            }
-
-        }
-
-        else {
-            echo ' <p class="message-confirm message-info radius-general txt-size">' . config_item('no_deals_list') . '</p>';
-        }
-        ?>
-
-</div>
-
-
-</div>
-
-<?php $this->load->view('backend/backend_deal_menu'); ?>
-
-</div>
-</div>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    <p class="message-confirm message-info radius-general txt-size">No deals yet.</p>';
+                    {% endif%}
+                </div>
+            </div>
+            {% include 'deal_menu.html' with current_page='dashboard' %}
+        </div>
+    </div>
 </div>
 <script type="text/javascript" >
 	$(function(){

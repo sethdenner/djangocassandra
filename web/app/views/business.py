@@ -7,6 +7,7 @@ from app.models.users import UserProfile
 from app.models.contents import Content
 from app.models.businesses import Business
 from app.utils import User as UserUtils
+from app.utils import View as ViewUtils
 
 class CreateBusinessForm(Form):
     user = ModelChoiceField(label="User", queryset=User.objects.all())
@@ -82,30 +83,8 @@ def edit_profile(request):
                     **update_form.cleaned_data
                 )
     
-    template_parameters = {}
-    
-    content = {}
-        
-    content_set = Content.content_objects.get_template_content('header')
-    for c in content_set:
-        content[c.name] = c.value
-        
-    content_set = Content.content_objects.get_template_content('footer')
-    for c in content_set:
-        content[c.name] = c.value
-        
-    template_parameters.update(content)
-            
-    if request.user.is_authenticated():
-        user_profile = UserProfile.objects.get(user=request.user)
-        template_parameters['user_profile'] = user_profile
-        template_parameters['username_truncated'] = request.user.username[:9] + '...'
-        template_parameters['avatar_uri'] = UserUtils.get_avatar(
-            request.user.username, 
-            None, 
-            20
-        )
-        
+    template_parameters = ViewUtils.get_standard_template_parameters(request)
+                    
     if not update_form:
         if business:
             business_values = {

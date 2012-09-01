@@ -47,7 +47,7 @@ class Endpoint(KnotisModel):
     def _value_string_to_content(kwargs):
         value = kwargs.get('value')
         
-        if not value or isinstance(value, Content):
+        if None == value or isinstance(value, Content):
             return
 
         if not isinstance(value, basestring):
