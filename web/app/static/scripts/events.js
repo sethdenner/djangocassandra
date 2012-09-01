@@ -777,7 +777,7 @@ $(document).ready(function() {
      var $summary = $('#summary');
      var $summaryCounter = $('#summary_counter');
      var updateSummaryCounter = function(event) {
-         if ( 0 == $summaryCount.length ) return;
+         if ( 0 == $summaryCounter.length ) return;
          var summaryCount = $summary.val().length;
          $summaryCounter.html(maxText + ' (' + summaryCount + '/' + maxSummary + ')');
          if (maxSummary <= summaryCount && 
