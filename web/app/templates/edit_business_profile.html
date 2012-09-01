@@ -6,23 +6,7 @@
 <div id="content" class="back-deals">
 <div class="curve">
 <div class="wrapper clear-fix relative">
-<div class="upgrade">
-    <p class="txt-center">
-        {% if user_profile.is_business_owner %}
-        {% if 1 == user_profile.account_type %}
-        <a href="/backend/tickets/">Forever Free<br/> ({% firstof user_tickets '0' %} Tickets)</a>
-        {% else %}
-        <a href="#">knotis<br/> Premium</a>
-        {% endif %}
-        {% else %}
-        {% if not user.is_staff %}
-        <a href="#">knotis<br />user</a>
-        {% else %}
-        <a href="#">knotis <br />admin</a>
-        {% endif %}
-        {% endif %}
-    </p>
-</div>
+{% include 'account_notifications.html' %}
 <div class="box-deals box-border left">
 <h2 class="backend">
     <strong>Business profile</strong>
@@ -216,7 +200,7 @@
 </script>
 {% endif %}
 </div>
-{% include 'deal_menu.html' %}
+{% include 'deal_menu.html' with current_page='business_profile' %}
 </div>
 </div>
 </div>

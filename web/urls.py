@@ -27,6 +27,11 @@ urlpatterns = patterns('',
         name='offers'
     ),
     url(
+        r'^offers/create/$',
+        'app.views.offer.create',
+        name='offers'
+    ),
+    url(
         r'^business/create', 
         'app.views.business.create_business', 
         name='business'
