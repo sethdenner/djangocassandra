@@ -11,15 +11,10 @@
 <h2 class="backend">
     <strong>Business profile</strong>
     {% if business %} 
-    <a href="/business/{{ business.backend_name }}/" target="_blank">View Business Page</a>
+    <a href="/{{ business.backend_name }}/" target="_blank">View Business Page</a>
     {% endif %}
 </h2>
-{% if feedback %}
-<div class="relative closeinfo">
-<div class="close-message absolute"></div>
-<p class="message-confirm margin-general-25 radius-general ">{{ feedback }}</p>
-</div>
-{% endif %}
+{% include 'feedback.html' with feedback=feedback %}
 <form class="backend-setting" method="post" class="">{% csrf_token %}
     <fieldset>
         <h3 class="margin-general"><strong>Contact info</strong></h3>

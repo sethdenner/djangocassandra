@@ -4,7 +4,7 @@
     <div class="box-border colum-width-menu margin-general right no-padding">
         <ul class="list-backend">
             <li class="relative">
-                <a class=" add radius-general" href="/offers/create/">Create New Deal</a>
+                <a class=" add radius-general" href="/business/offers/create/">Create New Deal</a>
             </li>
         </ul>
     </div>
@@ -66,7 +66,7 @@
             {% if user_profile.is_business_owner %}
             <li class="relative">
                 <a class="last business{% if current_page == 'business_profile' %}-active active{% endif %}"
-                   href="/business_profile/">Business profile</a>
+                   href="/business/profile/">Business profile</a>
                 {% if current_page == 'business_profile' %}<div class="arrow"></div>{% endif %}
             </li>
             {% endif %}

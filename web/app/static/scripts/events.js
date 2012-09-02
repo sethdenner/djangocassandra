@@ -121,7 +121,7 @@ $(document).ready(function() {
         $('.signup_popup').remove();
         $('.log_in_popup').remove();
 
-        $.get('/login_popup/', {},
+        $.get('/auth/login/', {},
                 function(data) {
                     $("input:checkbox").uniform();
                     $(".header-content").append(data).fadeIn;

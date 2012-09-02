@@ -16,13 +16,7 @@
             {% endif %}
         </h2>
         <!--Show Notification div is any info exists to show-->
-        {% if feedback %}
-        <div class="relative closeinfo">
-            <div class="close-message absolute"></div>
-            <div class="message-confirm margin-general-25 radius-general ">{{ feedback }}</div>
-        </div>
-        <div class="clean"></div>
-        {% endif %}
+        {% include 'feedback.html' with feedback=feedback %}
         <!--Show option to share deal if deal already exists -->
         {% if deal and deal.published %}
         <ul class="social deal-helper clear-fix margin-general">

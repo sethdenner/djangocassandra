@@ -110,3 +110,12 @@ def edit_profile(request):
         'edit_business_profile.html',
         template_parameters
     )
+    
+def qrcode(request):
+    template_parameters = ViewUtils.get_standard_template_parameters(request)
+    
+    return render(
+        request,
+        'manage_qrcode.html',
+        template_parameters
+    )
