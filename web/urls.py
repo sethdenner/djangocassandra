@@ -42,6 +42,11 @@ urlpatterns = patterns('',
         name='business'
     ),
     url(
+        r'^business/tickets/$',
+        'app.views.business.tickets',
+        name='business'
+    ),
+    url(
         r'^auth/login/$', 
         'knotis_auth.views.login',
         name='auth'
