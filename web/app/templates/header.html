@@ -121,7 +121,7 @@
                             <li><a href="/user/">{{ header_profile }}</a></li>
                             <li><a href="/subscriptions/">{{ header_subscriptions }}</a></li>
                             {% if user_profile.is_business_owner %}
-                            <li><a href="/business_profile/" >{{ header_business_profile }}</a></li>
+                            <li><a href="/business/profile/" >{{ header_business_profile }}</a></li>
                             {% endif %}
                         </ul>
                         <ul class="face">
@@ -131,7 +131,7 @@
                             </li>
 							{% else %}
                             <li>
-                            	<a href="/logout/" >{{ header_sign_out }}</a>
+                            	<a href="/auth/logout/" >{{ header_sign_out }}</a>
                             </li>
                             {% endif %}
                         </ul>
@@ -149,7 +149,7 @@
                             </li>
                             {% else %}
                             <li>
-                            	<a href="/logout/" >{{ header_sign_out }}</a>
+                            	<a href="/auth/logout/" >{{ header_sign_out }}</a>
                             </li>
 							{% endif %}
                         </ul>

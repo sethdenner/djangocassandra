@@ -27,27 +27,32 @@ urlpatterns = patterns('',
         name='offers'
     ),
     url(
-        r'^offers/create/$',
+        r'^business/offers/create/$',
         'app.views.offer.create',
-        name='offers'
-    ),
-    url(
-        r'^business/create', 
-        'app.views.business.create_business', 
         name='business'
     ),
     url(
-        r'^business_profile/$',
+        r'^business/profile/$',
         'app.views.business.edit_profile',
         name='business'
     ),
     url(
-        r'^login_popup/$', 
+        r'^business/qrcode/$',
+        'app.views.business.qrcode',
+        name='business'
+    ),
+    url(
+        r'^business/tickets/$',
+        'app.views.business.tickets',
+        name='business'
+    ),
+    url(
+        r'^auth/login/$', 
         'knotis_auth.views.login',
         name='auth'
     ),
     url(
-        r'^logout/$',
+        r'^auth/logout/$',
         'knotis_auth.views.logout',
         name='auth'
     ),
@@ -57,7 +62,7 @@ urlpatterns = patterns('',
         name='auth'
     ),
     url(
-        r'^validate/(?P<user_id>[^/]+)/(?P<validation_key>[^/]+)', 
+        r'^auth/validate/(?P<user_id>[^/]+)/(?P<validation_key>[^/]+)', 
         'knotis_auth.views.validate', 
         name='auth'
     ),
