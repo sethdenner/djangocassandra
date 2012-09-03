@@ -11,8 +11,6 @@ from django.http import HttpResponse
 
 from knotis_auth.models import User
 
-from knotis_auth.models import User
-
 
 class SignUpForm(Form):
     first_name = CharField(label='First Name')
@@ -107,6 +105,22 @@ class KnotisAuthenticationForm(AuthenticationForm):
             'name': 'password',
             'placeholder': 'Password',
         }
+
+
+class KnotisPasswordChangeForm(Form):
+    old_password=CharField(label='Old Pass', widget=PasswordInput)
+    new_password=CharField(label='New Pass', widget=PasswordInput)
+    
+    def __init__(self, user, *args, **kwargs):
+        super(KnotisPasswordChangeForm, self).__init__(*args, **kwargs)
+        
+        self.user = user
+        
+    def clean_old_password(self):
+        old_password = self.cleaned_data["old_password"]
+        if not self.user.check_password(old_password):
+            raise ValidationError('Your old password was entered incorrectly. Please enter it again.')
+        return old_password
 
 
 def login(request):

@@ -32,6 +32,11 @@ urlpatterns = patterns('',
         name='business'
     ),
     url(
+        r'^profile/$',
+        'app.views.user.profile',
+        name='user'
+    ),
+    url(
         r'^business/profile/$',
         'app.views.business.edit_profile',
         name='business'
