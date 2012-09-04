@@ -1,11 +1,12 @@
-from django.db.models import CharField, DateTimeField, FloatField, Manager
+from datetime import datetime
+
+from django.db.models import DateTimeField, IntegerField, \
+    FloatField, BooleanField, Manager
 from django.utils.http import urlquote
 from foreignkeynonrel.models import ForeignKeyNonRel
 from app.models.knotis import KnotisModel
 from app.models.contents import Content
-from app.models.products import Product
-from app.models.establishments import Establishment
-from app.models.accounts import Currency
+from app.models.businesses import Business
 from app.models.endpoints import EndpointAddress
 from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
@@ -13,15 +14,13 @@ from app.models.categories import Category
 from app.models.images import Image
 
 
-#from app.models.fields.permissions import PermissionsField
-from app.models.fields.hours import HoursField
-
 class OfferManager(Manager):
     def create_offer(
+        self,
         user,
-        establishment,
-        offer_type,
+        business,
         title,
+        title_type,
         description,
         restrictions,
         city,
@@ -32,9 +31,12 @@ class OfferManager(Manager):
         price_retail,
         price_discount,
         start_date,
-        end_date
+        end_date,
+        stock,
+        unlimited,
+        published
     ):
-        backend_name = urlquote(('offer_' + establishment.name + '_' + title).strip().lower().replace(' ', '-'))
+        backend_name = urlquote(('offer_' + business.name + '_' + title).strip().lower().replace(' ', '-'))
 
         content_root = Content(
             content_type='8.0',
@@ -71,8 +73,7 @@ class OfferManager(Manager):
         content_restrictions.save()
 
         offer = Offer(
-            establishment=establishment,
-            offer_type='0',
+            business=business,
             title=content_title,
             description=content_description,
             restrictions=content_restrictions,
@@ -84,20 +85,37 @@ class OfferManager(Manager):
             price_retail=price_retail,
             price_discount=price_discount,
             start_date=start_date,
-            end_date=end_date
+            end_date=end_date,
+            stock=stock,
+            published=published,
+            unlimited=unlimited
         )
         offer.save()
 
+        return offer
+
 
 class Offer(KnotisModel):
+    NORMAL = 0
     OFFER_TYPES = (
-        ('0', 'normal'),
+        (NORMAL, 'normal'),
     )
 
-    establishment = ForeignKeyNonRel(Establishment)
-    offer_type = CharField(max_length=100, choices=OFFER_TYPES, null=True)
+    TITLE_1 = 1
+    TITLE_2 = 2
+    TITLE_3 = 3
+
+    OFFER_TITLE_TYPES = (
+        (TITLE_1, 'Title 1'),
+        (TITLE_2, 'Title 2'),
+        (TITLE_3, 'Title 3'),
+    )
+
+    business = ForeignKeyNonRel(Business)
+    offer_type = IntegerField(choices=OFFER_TYPES, null=True, blank=True)
 
     title = ForeignKeyNonRel(Content, related_name='offer_title')
+    title_type = IntegerField(choices=OFFER_TITLE_TYPES, blank=True, null=True)
     description = ForeignKeyNonRel(Content, related_name='offer_description')
     restrictions = ForeignKeyNonRel(Content, related_name='offer_restrictions')
 
@@ -106,12 +124,26 @@ class Offer(KnotisModel):
     address = ForeignKeyNonRel(EndpointAddress)
 
     image = ForeignKeyNonRel(Image)
-    category = CharField(max_length=100, null=True, blank=True)
+    category = ForeignKeyNonRel(Category)
 
-    price_retail = FloatField(null=True)
-    price_discount = FloatField(null=True)
+    price_retail = FloatField(default=0., blank=True, null=True)
+    price_discount = FloatField(default=0., blank=True, null=True)
 
-    start_date = DateTimeField(null=True)
-    end_date = DateTimeField(null=True)
+    start_date = DateTimeField(
+        default=datetime.now().strftime('%m/%d/%Y %H:%M:%S'),
+        null=True
+    )
+    end_date = DateTimeField(
+        default=datetime.now().replace(day=datetime.today().day + 7).strftime('%m/%d/%Y %H:%M:%S'),
+        null=True
+    )
+
+    stock = IntegerField(default=0, blank=True, null=True)
+    purchased = IntegerField(default=0, blank=True, null=True)
+    unlimited = BooleanField(default=False)
+
+    published = BooleanField(default=False)
 
     pub_date = DateTimeField(null=True, auto_now_add=True)
+
+    objects = OfferManager()
