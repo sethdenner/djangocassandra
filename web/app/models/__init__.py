@@ -15,6 +15,12 @@ import offers
 import actions
 import products
 
+import categories
+import cities
+import neighborhoods
+
+import images
+
 # delete these from git.
 import testmodel
 #

@@ -11,9 +11,9 @@ class ContentManager(Manager):
         """
         FIXME: Inefficient. We should find some way to reduce this to one
         query instead of 2 through denormalization.
-        """ 
+        """
         qset = super(ContentManager, self).get_query_set().filter(content_type='1.1').filter(name=template_name)
-        parent = qset[0] 
+        parent = qset[0]
         return super(ContentManager, self).get_query_set().filter(parent=parent)
 
 
@@ -45,7 +45,17 @@ class Content(KnotisModel):
         ('4.3', 'Endpoint Address'),
         ('4.4', 'Endpoint Twitter'),
         ('4.5', 'Endpoint Facebook'),
-        ('4.6', 'Endpoint Yelp')
+        ('4.6', 'Endpoint Yelp'),
+        ('5.0', 'Category'),
+        ('5.1', 'Category Name'),
+        ('6.0', 'City'),
+        ('6.1', 'City Name'),
+        ('7.0', 'Neighborhood'),
+        ('7.1', 'Neighborhood Name'),
+        ('8.0', 'Offer'),
+        ('8.1', 'Offer Title'),
+        ('8.2', 'Offer Description'),
+        ('8.3', 'Offer Restrictions'),
 
         # terms of service
         # hours, address, business name, all endpoints, anything that a user
@@ -89,6 +99,6 @@ class Content(KnotisModel):
     was_published_recently.admin_order_field = 'pub_date'
     was_published_recently.boolean = True
     was_published_recently.short_description = 'Published recently?'
-    
+
     objects = Manager()
     content_objects = ContentManager()
