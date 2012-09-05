@@ -99,7 +99,7 @@
                             <p id="price_deal_radio" class="left label-new price_deal_radio">{% if offer %}{{ offer_form.price_discount.value }}{% else %}$20{% endif %}</p>
                             <p class="left label-new price_deal_radio">for</p>
                             <p id="old_deal_radio" class="left label-new">{% if offer %}{{ offer_form.price_retail.value }}{% else %}$40{% endif %}</p>
-                            <p class="left label-new">at <b>{{ business.business_name }}</b></p>
+                            <p class="left label-new">at <b>{{ business.business_name.value }}</b></p>
                             <p id="title_deal_radio" class="label-new level clean">{% if offer %}{{ offer_form.title_value.value }}{% else %}Food and Drinks{% endif %}</p>
                         </div>
                         <!--Second Title Suggestion-->
@@ -108,7 +108,7 @@
                             <p id="price_deal_radio2" class="left label-new price_deal_radio">{% firstof offer_form.price_discount.value '$20' %}</p>
                             <p class="left label-new price_deal_radio">for</p>
                             <p id="title_deal_radio2" class="left label-new">{% if offer %}{{ offer_form.title_value.value }}{% else %}Food and Drinks{% endif %}</p>
-                            <p class="left label-new">at <b>{{ business.business_name }}</b></p>
+                            <p class="left label-new">at <b>{{ business.business_name.value }}</b></p>
                         </div>
                         <!--Third Title Suggestion-->
                         <div class="seat-deal-02 clear-fix margin-general">
@@ -133,7 +133,7 @@
                         <span class="txt-size">End Date<div id="ht-29" class="help-icon float-right vertical-align-bottom" ></div></span>
                         <input class="date radius-general"
                             value="{{ offer_form.end_date.value }}"
-                            type="text" name="{{ offer_form.start_date.value }}" placeholder="Finish Date"
+                            type="text" name="{{ offer_form.end_date.html_name }}" placeholder="Finish Date"
                             id="enddate">
                     </label>
                 </li>
@@ -173,11 +173,12 @@
                         <input type="hidden" name="image" value="{{ offer.image }}"/>
                         {% if offer.image %}
                         <ul class="link-name images-gallery">
-                        <ul class="link-name clear-fix radius-general">
-                            <li class=" radius-general active clear-fix">
-                                <img alt="" src="/images/thumb/30/30/{{ offer.image }}" class="gallery"/>
-                                <a class="right delete radius-general delete-image-deal" href="#" data-id="{{ offer.id }}" data-cont="0">delete</a>
-                            </li>
+                            <ul class="link-name clear-fix radius-general">
+                                <li class=" radius-general active clear-fix">
+                                    <img alt="" src="/images/thumb/30/30/{{ offer.image }}" class="gallery"/>
+                                    <a class="right delete radius-general delete-image-deal" href="#" data-id="{{ offer.id }}" data-cont="0">delete</a>
+                                </li>
+                            </ul>
                         </ul>
                         {% endif %}
                         <div class="clean"></div>
@@ -223,7 +224,7 @@
                     <!--Street Address-->
                     <li class="left title-set">
                             <input class=" radius-general" id="deal_address"
-                                type="text" name="{{ offer_form.address_value.value }}" placeholder="Deal Address"
+                                type="text" name="{{ offer_form.address_value.html_name }}" placeholder="Deal Address"
                                 value="{% firstof offer_form.address_value.value business.address.value.value %}"/>
                             <p class="generated-titles">e.g. 845 106th Avenue NE, Bellevue, WA 98004</p>
                     </li>
