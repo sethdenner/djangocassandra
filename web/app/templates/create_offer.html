@@ -41,7 +41,7 @@
             </ul>
         {% endif %}
         <!-- START PAGE FORM -->
-        <form enctype="multipart/form-data" class="backend-setting edit-deal" data-id="{{ offer.id }}" method="post" id="update_deal">
+        <form enctype="multipart/form-data" class="backend-setting edit-deal" data-id="{{ offer.id }}" method="post" id="update_deal">{% csrf_token %}
             <fieldset>
             <ul class="pass-user">
                 <!--Value-->
@@ -52,13 +52,13 @@
                         <li class="seat-deal-column">
                             <label>Retail Price<div id="ht-24" class="help-icon vertical-align-super"></div></label>
                             <input class="radius-general" id="old_deal_input" 
-                                value="{{ offer.retail_value }}" type="text" name="oldprice" placeholder="0"/>
+                                value="{{ offer_form.price_retail.value }}" type="text" name="{{ offer_form.price_retail.html_name }}" placeholder="0"/>
                         </li>
                          <!--PRICE-->
                         <li class="seat-deal-column">
                             <label>Discount Price<div id="ht-23" class="help-icon vertical-align-super" ></div></label>
                             <input {% if offer.purchased > 0 %}disabled{% endif %} class="radius-general first" id="price_deal_input" 
-                                value="{{ offer.discount_price }}" type="text" name="newprice" placeholder="0"/>
+                                value="{{ offer_form.price_discount.value }}" type="text" name="{{ offer_form.price_discount.html_name }}" placeholder="0"/>
                         </li>
                        <!--DISCOUNT-->
                         <li class="seat-deal-column">
@@ -73,8 +73,8 @@
                     <ul class="seat-deal radius-general clear-fix">
                         <!--UNITS-->
                         <li class="seat-deal-column">
-                            <label># of Units<div id="ht-25" class="help-icon vertical-align-super" ></div></label>
-                            <input class="radius-general" name="stock" id="stock" value="{{ offer.total_orders }}" placeholder="Units" type="text"/>
+                            <label># Units<div id="ht-25" class="help-icon vertical-align-super" ></div></label>
+                            <input class="radius-general" name="{{ offer_form.stock.html_name }}" id="stock" value="{{ offer_form.stock.value }}" placeholder="Units" type="text"/>
                         </li>
                         <li class="seat-deal-column" style="width:50px">
                             <label style="text-align:center">OR</label>
@@ -82,8 +82,8 @@
                          <!--UNLIMITED CHECKBOX-->
                         <li class="seat-deal-column" style="width:100px">
                             <label>Unlimited<div id="ht-26" class="help-icon vertical-align-super" ></div></label>
-                                <input class="radius-general" value="1" {% if deal.unlimited %}checked{% endif %}  
-                                        type="checkbox" style="margin-right:5px" name="unlimited" /> 
+                                <input class="radius-general" value="{{ offer_form.unlimited.value }}" {% if deal.unlimited %}checked{% endif %}  
+                                        type="checkbox" style="margin-right:5px" name="{{ offer_form.unlimited.html_name }}" /> 
                         </li>
                     </ul>
                  </li>
@@ -91,29 +91,29 @@
                 <li class="clear-fix">
                     <label class="left-side txt-size">Title<div id="ht-27" class="help-icon float-right vertical-align-bottom" ></div></label>
                     <div class="title-set">
-                        <input {% if offer.purchased > 0 %}disabled{% endif %} class="radius-general card" value="{{ offer.title }}" placeholder="Deal Title" type="text" name="title" id="title_deal_input"/>
+                        <input {% if offer.purchased > 0 %}disabled{% endif %} class="radius-general card" value="{{ offer_form.title_value.value }}" placeholder="Deal Title" type="text" name="{{ offer_form.title_value.html_name }}" id="title_deal_input"/>
                         <p class="generated-titles">Create your deal title above (or try one of the titles below)</p>
                         <!-- First Title Suggestion-->
                         <div class="seat-deal-02 clear-fix margin-general">
-                            <input {% if offer.purchased > 0 %}disabled{% endif %} class="radius-general" value="1" placeholder="Title" {% if not offer or offer.title_type == 1 %}checked{% endif %} type="radio" name="inputTitle">
-                            <p id="price_deal_radio" class="left label-new price_deal_radio">{% if offer %}{{ offer.discount_price }}{% else %}$20{% endif %}</p>
+                            <input {% if offer.purchased > 0 %}disabled{% endif %} class="radius-general" value="1" placeholder="Title" {% if not offer or offer_form.title_type.value == 1 %}checked{% endif %} type="radio" name="{{ offer_form.title_type.html_name }}">
+                            <p id="price_deal_radio" class="left label-new price_deal_radio">{% if offer %}{{ offer_form.price_discount.value }}{% else %}$20{% endif %}</p>
                             <p class="left label-new price_deal_radio">for</p>
-                            <p id="old_deal_radio" class="left label-new">{% if offer %}{{ offer.retail_price }}{% else %}$40{% endif %}</p>
-                            <p class="left label-new">at <b>{{ business.business_name }}</b></p>
-                            <p id="title_deal_radio" class="label-new level clean">{% if offer %}{{ offer.title }}{% else %}Food and Drinks{% endif %}</p>
+                            <p id="old_deal_radio" class="left label-new">{% if offer %}{{ offer_form.price_retail.value }}{% else %}$40{% endif %}</p>
+                            <p class="left label-new">at <b>{{ business.business_name.value }}</b></p>
+                            <p id="title_deal_radio" class="label-new level clean">{% if offer %}{{ offer_form.title_value.value }}{% else %}Food and Drinks{% endif %}</p>
                         </div>
                         <!--Second Title Suggestion-->
                         <div class="seat-deal-02 clear-fix margin-general">
-                            <input {% if offer.purchased > 0 %}disabled{% endif %} class="radius-general" {% if offer.title_type == 2 %}checked{% endif %} value="2" placeholder="Title" type="radio" name="inputTitle">
-                            <p id="price_deal_radio2" class="left label-new price_deal_radio">{% firstof offer.discount_price  '$20' %}</p>
+                            <input {% if offer.purchased > 0 %}disabled{% endif %} class="radius-general" {% if offer_form.title_type.value == 2 %}checked{% endif %} value="2" placeholder="Title" type="radio" name="{{ offer_form.title_type.html_name }}">
+                            <p id="price_deal_radio2" class="left label-new price_deal_radio">{% firstof offer_form.price_discount.value '$20' %}</p>
                             <p class="left label-new price_deal_radio">for</p>
-                            <p id="title_deal_radio2" class="left label-new">{% if offer %}{{ offer.title }}{% else %}Food and Drinks{% endif %}</p>
-                            <p class="left label-new">at <b>{{ business.business_name }}</b></p>
+                            <p id="title_deal_radio2" class="left label-new">{% if offer %}{{ offer_form.title_value.value }}{% else %}Food and Drinks{% endif %}</p>
+                            <p class="left label-new">at <b>{{ business.business_name.value }}</b></p>
                         </div>
                         <!--Third Title Suggestion-->
                         <div class="seat-deal-02 clear-fix margin-general">
-                            <input id="title_deal_radio3_input" {% if offer.purchased > 0 %}disabled{% endif %}  class="radius-general" {% if offer.title_type == 3 %}checked{% endif %} value="3" placeholder="Title" type="radio" name="inputTitle">
-                            <p id="title_deal_radio3" class="left label-new">{% if offer %}{{ offer.title }}{% else %}Food and Drinks{% endif %}</p>
+                            <input id="title_deal_radio3_input" {% if offer.purchased > 0 %}disabled{% endif %}  class="radius-general" {% if offer_form.title_type.value == 3 %}checked{% endif %} value="3" placeholder="Title" type="radio" name="{{ offer_form.title_type.html_name }}">
+                            <p id="title_deal_radio3" class="left label-new">{% if offer %}{{ offer_form.title_value.value }}{% else %}Food and Drinks{% endif %}</p>
                         </div>
                     </div>
                 </li>
@@ -122,8 +122,8 @@
                     <label>
                         <span class="txt-size">Start Date<div id="ht-28" class="help-icon float-right vertical-align-bottom" ></div></span>
                         <input {% if offer.purchased > 0 %}disabled{% endif %} class="date radius-general left"
-                            value="{{ offer.start_date }}"
-                            type="text" name="startdate" placeholder="Start Date"
+                            value="{{ offer_form.start_date.value }}"
+                            type="text" name="{{ offer_form.start_date.html_name }}" placeholder="Start Date"
                             id="startdate">
                     </label>
                 </li>
@@ -132,17 +132,17 @@
                     <label>
                         <span class="txt-size">End Date<div id="ht-29" class="help-icon float-right vertical-align-bottom" ></div></span>
                         <input class="date radius-general"
-                            value="{{ offer.end_date }}"
-                            type="text" name="enddate" placeholder="Finish Date"
+                            value="{{ offer_form.end_date.value }}"
+                            type="text" name="{{ offer_form.end_date.html_name }}" placeholder="Finish Date"
                             id="enddate">
                     </label>
                 </li>
                 <!--Category-->
                 <li class="categoryselect left">
                     <label class="left-side txt-size">Category<div id="ht-30" class="help-icon float-right vertical-align-bottom" ></div></label>
-                    <select name="categoryId">
+                    <select name="{{ offer_form.category.html_name }}">
                         {% for category in categories %}
-                        <option value="{{ category.id }}" {% if offer.category_id == category.id %}selected{% endif%}>{{ category.name }}</option>
+                        <option value="{{ category.id }}" {% if offer_form.category.value == category.id %}selected{% endif%}>{{ category.name }}</option>
                         {% endfor %}
                     </select>
                 </li>
@@ -150,14 +150,14 @@
                 <li class="left">
                     <label>
                         <span class="txt-size">Description<div id="ht-31" class="help-icon float-right vertical-align-bottom" ></div></span>
-                        <textarea class="radius-general" type="text" name="description" placeholder="Description">{{ offer.description }}</textarea>
+                        <textarea class="radius-general" name="{{ offer_form.description_value.html_name }}" placeholder="Description">{{ offer_form.description_value.value }}</textarea>
                     </label>
                 </li>
                 <!--Restrictions-->
                 <li class="left">
                     <label>
                         <span class="txt-size">Restrictions<div id="ht-32" class="help-icon float-right vertical-align-bottom" ></div></span>
-                        <textarea class="radius-general extendedDescription" type="text" name="extendedDescription" placeholder="Custom Restrictions">{{ offer.restrictions }}</textarea>
+                        <textarea class="radius-general extendedDescription" name="{{ offer_form.restrictions_value.html_name }}" placeholder="Custom Restrictions">{{ offer_form.restrictions_value.value }}</textarea>
                     </label>
                 </li>
                 <div class="clean"></div>
@@ -173,17 +173,18 @@
                         <input type="hidden" name="image" value="{{ offer.image }}"/>
                         {% if offer.image %}
                         <ul class="link-name images-gallery">
-                        <ul class="link-name clear-fix radius-general">
-                            <li class=" radius-general active clear-fix">
-                                <img alt="" src="/images/thumb/30/30/{{ offer.image }}" class="gallery"/>
-                                <a class="right delete radius-general delete-image-deal" href="#" data-id="{{ offer.id }}" data-cont="0">delete</a>
-                            </li>
+                            <ul class="link-name clear-fix radius-general">
+                                <li class=" radius-general active clear-fix">
+                                    <img alt="" src="/images/thumb/30/30/{{ offer.image }}" class="gallery"/>
+                                    <a class="right delete radius-general delete-image-deal" href="#" data-id="{{ offer.id }}" data-cont="0">delete</a>
+                                </li>
+                            </ul>
                         </ul>
                         {% endif %}
                         <div class="clean"></div>
                     </ul>
                     <div id="uploader">
-                        <input class="uploader radius-general" type="file" name="file" value="Upload Image"/>
+                        <input class="uploader radius-general" type="file" name="{{ offer_form.image_source.html_name }}" value="Upload Image"/>
                     </div>
                     <div class="clean"></div>
                 </fieldset>
@@ -199,10 +200,10 @@
                     <div class="clean"></div>
                     <li class="left">
                         <label>
-                            <select name="cityId" id="citySelect" onchange="loadNeighbourhood();">
+                            <select name="{{ offer_form.city.html_name }}" id="citySelect" onchange="loadNeighbourhood();">
                                 <option value="">Select City</option>
                                 {% for city in cities %}
-                                <option value="{{city.id }}" {% if offer.city_id == city.id or city.name|lower in business.address.value.value %}selected{% endif %}>{{ city.name }}</option>
+                                <option value="{{city.id }}" {% if offer_form.city.value == city.id or city.name|lower in business.address.value.value %}selected{% endif %}>{{ city.name }}</option>
                                 {% endfor %}
                             </select>
                         </label>
@@ -212,9 +213,9 @@
                         <label>
                             <select name="neighbourhoodId" id="neighbourhoodSelect">
                                 <option value="" >All the City</option>
-                                {% if offer.neighbourhood %}
+                                {% if offer_form.neighbourhood.value %}
                                 {% for neighbourhood in neighbourhoods %}
-                                <option value="{{ neighbourhood.id }}" {% if offer.neighbourhood_id == neighbourhood.id %}selected{% endif %}>{{neighbourhood.name}}</option>
+                                <option value="{{ neighbourhood.id }}" {% if offer_form.neighbourhood.value == neighbourhood.id %}selected{% endif %}>{{neighbourhood.name}}</option>
                                 {% endfor %}
                                 {% endif %}
                             </select>
@@ -223,8 +224,8 @@
                     <!--Street Address-->
                     <li class="left title-set">
                             <input class=" radius-general" id="deal_address"
-                                type="text" name="streetAddress" placeholder="Deal Address"
-                                value="{% firstof offer.address business.address.value.value %}"/>
+                                type="text" name="{{ offer_form.address_value.html_name }}" placeholder="Deal Address"
+                                value="{% firstof offer_form.address_value.value business.address.value.value %}"/>
                             <p class="generated-titles">e.g. 845 106th Avenue NE, Bellevue, WA 98004</p>
                     </li>
                     <!--Map-->
@@ -268,6 +269,7 @@
                 </li>
             </ul>
             </fieldset>
+        </form>
     </div>
 <!--LOAD BACKEND DEAL MENU-->
 {% include 'deal_menu.html' with current_page='create_offer' %}

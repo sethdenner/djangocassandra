@@ -7,13 +7,13 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(
-        r'^(?P<login>(login)*)(/)*$', 
-        'app.views.home.index', 
+        r'^(?P<login>(login)*)(/)*$',
+        'app.views.home.index',
         name='home'
     ),
     url(
-        r'^plans/$', 
-        'app.views.account.plans', 
+        r'^plans/$',
+        'app.views.account.plans',
         name='account'
     ),
     url(
@@ -28,13 +28,18 @@ urlpatterns = patterns('',
     ),
     url(
         r'^business/offers/create/$',
-        'app.views.offer.create',
+        'app.views.offer.edit',
         name='business'
     ),
     url(
         r'^profile/$',
         'app.views.user.profile',
         name='user'
+    ),
+    url(
+        r'^business/offers/update/(?P<offer_id>[^/]+)/$',
+        'app.views.offer.edit',
+        name='business',
     ),
     url(
         r'^business/profile/$',
@@ -52,7 +57,7 @@ urlpatterns = patterns('',
         name='business'
     ),
     url(
-        r'^auth/login/$', 
+        r'^auth/login/$',
         'knotis_auth.views.login',
         name='auth'
     ),
@@ -62,13 +67,13 @@ urlpatterns = patterns('',
         name='auth'
     ),
     url(
-        r'^signup/(?P<account_type>[^/]+)$', 
-        'knotis_auth.views.sign_up', 
+        r'^signup/(?P<account_type>[^/]+)$',
+        'knotis_auth.views.sign_up',
         name='auth'
     ),
     url(
-        r'^auth/validate/(?P<user_id>[^/]+)/(?P<validation_key>[^/]+)', 
-        'knotis_auth.views.validate', 
+        r'^auth/validate/(?P<user_id>[^/]+)/(?P<validation_key>[^/]+)',
+        'knotis_auth.views.validate',
         name='auth'
     ),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

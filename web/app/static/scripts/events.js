@@ -302,16 +302,16 @@ $(document).ready(function() {
     $('#price_deal_input').keyup(function () {
 
         var value = $("#price_deal_input").val();
-        $('#price_deal_radio').replaceWith('<p id="price_deal_radio" class="left label-new price_deal_radio">' + value + '</p>');
-        $('#price_deal_radio2').replaceWith('<p id="price_deal_radio2" class="left label-new price_deal_radio">' + value + '</p>');
+        $('#price_deal_radio').replaceWith('<p id="price_deal_radio" class="left label-new price_deal_radio">$' + value + '</p>');
+        $('#price_deal_radio2').replaceWith('<p id="price_deal_radio2" class="left label-new price_deal_radio">$' + value + '</p>');
 
     });
 
     $('#old_deal_input').keyup(function () {
 
         var value = $("#old_deal_input").val();
-        $('#old_deal_radio').replaceWith('<p id="old_deal_radio" class="left label-new">' + value + '</p>');
-        $('#old_deal_radio2').replaceWith('<p id="old_deal_radio2" class="left label-new">' + value + '</p>');
+        $('#old_deal_radio').replaceWith('<p id="old_deal_radio" class="left label-new">$' + value + '</p>');
+        $('#old_deal_radio2').replaceWith('<p id="old_deal_radio2" class="left label-new">$' + value + '</p>');
 
         var value_new = $("#price_deal_input").val();
 
