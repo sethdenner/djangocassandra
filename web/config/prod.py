@@ -20,3 +20,12 @@ BASE_URL = 'knotis.com' # NO TRAILING SLASH!!!
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 STATIC_URL_ABSOLUTE = BASE_URL + STATIC_URL
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home/media/media.lawrence.com/media/"
+MEDIA_ROOT = '/srv/knotis/media/'
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_URL = 'http://knotis.com/media/'

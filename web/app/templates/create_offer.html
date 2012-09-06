@@ -1,5 +1,7 @@
 {% extends 'master.html' %}
 
+{% load thumbnail %}
+
 {% block title %}Knotis - Edit Business Profile{% endblock title %}
 
 {% block content %}
@@ -175,7 +177,9 @@
                         <ul class="link-name images-gallery">
                             <ul class="link-name clear-fix radius-general">
                                 <li class=" radius-general active clear-fix">
-                                    <img alt="" src="/images/thumb/30/30/{{ offer.image }}" class="gallery"/>
+                                    {% thumbnail offer.image.image '30x30' as image %}
+                                    <img alt="" src="{{ image.url }}" class="gallery"/>
+                                    {% endthumbnail %}
                                     <a class="right delete radius-general delete-image-deal" href="#" data-id="{{ offer.id }}" data-cont="0">delete</a>
                                 </li>
                             </ul>
