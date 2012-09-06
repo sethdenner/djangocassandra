@@ -57,6 +57,11 @@ urlpatterns = patterns('',
         name='business'
     ),
     url(
+        r'^media/(?P<media_type>[^/]+)(/(?P<width>[^/]+)/(?P<height>[^/]+))*/(?P<media_id>[^/]+)/$',
+        'app.views.media.get',
+        name='media'
+    ),
+    url(
         r'^auth/login/$',
         'knotis_auth.views.login',
         name='auth'

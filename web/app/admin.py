@@ -13,6 +13,7 @@ from models.purchases import Purchase, PurchaseType
 from models.testmodel import TestModel, EmbeddedModelFieldTest
 from models.user_relations import UserRelation, UserRelationType, \
     UserRelationEndpoint
+from models.images import Image
 from models.users import UserProfile
 from piston.models import Consumer
 
@@ -74,6 +75,7 @@ admin.site.register(Business, BusinessAdmin)
 class GeneralAdmin(admin.ModelAdmin):
     pass
 
+admin.site.register(Image, GeneralAdmin)
 admin.site.register(UserRelation, GeneralAdmin)
 admin.site.register(UserRelationType, GeneralAdmin)
 admin.site.register(UserRelationEndpoint, GeneralAdmin)
