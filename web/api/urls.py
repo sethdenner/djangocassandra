@@ -4,21 +4,33 @@ from api.handlers.business import BusinessModelHandler
 from api.handlers.content import ContentHandler
 from api.handlers.establishment import EstablishmentModelHandler
 from api.handlers.testmodel import TestModelHandler
-from django.conf.urls.defaults import patterns, url, include
 from handlers.endpoint import EndpointHandler
 from handlers.user import UserHandler
 from resource import JsonResource
 """
 
+from django.conf.urls.defaults import patterns, url, include
+
 from piston.authentication.oauth import OAuthAuthentication
 from piston.resource import Resource
-from api.handlers.media import MediaModelHandler
+from api.handlers.media import ImageModelHandler
 
 oauth_three_legged = OAuthAuthentication(realm='knotis')
 oauth_two_legged = OAuthAuthentication(realm='knotis', two_legged=True)
 
 
-media_handler = Resource(MediaModelHandler, authentication=oauth_two_legged)
+image_handler = Resource(ImageModelHandler, authentication=oauth_two_legged)
+
+urlpatterns = patterns('',
+    url(
+        r'^media/image/create/$',
+        image_handler
+    ),
+    url(
+        r'^oauth/',
+        include('piston.authentication.oauth.urls')
+    )
+)
 
 """
 user_handler = Resource(UserHandler, **handler_arguments)
