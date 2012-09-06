@@ -47,6 +47,11 @@ urlpatterns = patterns('',
         name='business'
     ),
     url(
+        r'^subscriptions/$',
+        'app.views.subscription.view',
+        name='subscriptions'
+    ),
+    url(
         r'^business/qrcode/$',
         'app.views.business.qrcode',
         name='business'
