@@ -7,7 +7,7 @@ from foreignkeynonrel.models import ForeignKeyNonRel
 from app.models.knotis import KnotisModel
 from app.models.contents import Content
 from app.models.businesses import Business
-from app.models.endpoints import EndpointAddress
+from app.models.endpoints import Endpoint, EndpointAddress
 from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
 from app.models.categories import Category
@@ -72,6 +72,15 @@ class OfferManager(Manager):
         )
         content_restrictions.save()
 
+        endpoint_address = EndpointAddress(
+            type=Endpoint.EndpointTypes.ADDRESS,
+            user=user,
+            value=address,
+            primary=True,
+        )
+        endpoint_address.save()
+
+
         offer = Offer(
             business=business,
             title=content_title,
@@ -80,8 +89,7 @@ class OfferManager(Manager):
             restrictions=content_restrictions,
             city=city,
             neighborhood=neighborhood,
-            address=address,
-            image=image,
+            address=endpoint_address,
             category=category,
             price_retail=price_retail,
             price_discount=price_discount,
@@ -91,6 +99,15 @@ class OfferManager(Manager):
             published=published,
             unlimited=unlimited
         )
+
+        model_image = Image(
+            user=user,
+            related_object_id=offer.id,
+            image=image,
+        )
+        model_image.save()
+
+        offer.image = model_image
         offer.save()
 
         return offer

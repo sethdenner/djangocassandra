@@ -4,8 +4,6 @@ from django.utils.html import strip_tags
 from django.forms import ModelForm, CharField, ImageField, DateTimeField
 from app.models.offers import Offer
 from app.models.businesses import Business
-from app.models.endpoints import Endpoint, EndpointAddress
-from app.models.images import Image
 
 from app.utils import View as ViewUtils
 
@@ -74,20 +72,6 @@ class OfferForm(ModelForm):
                 published
             )
         else:
-            address = EndpointAddress(
-                type=Endpoint.EndpointTypes.ADDRESS,
-                user=request.user,
-                value=self.cleaned_data['address_value'],
-                primary=True,
-            )
-            address.save()
-
-            image = Image(
-                self.cleaned_data['image_source']
-            )
-            image.save()
-
-
             Offer.objects.create_offer(
                 request.user,
                 business,
@@ -97,8 +81,8 @@ class OfferForm(ModelForm):
                 self.cleaned_data['restrictions_value'],
                 self.cleaned_data['city'],
                 self.cleaned_data['neighborhood'],
-                address,
-                image,
+                self.cleaned_data['address_value'],
+                self.cleaned_data['image_source'],
                 self.cleaned_data['category'],
                 self.cleaned_data['price_retail'],
                 self.cleaned_data['price_discount'],
@@ -160,6 +144,7 @@ def edit(request, offer_id=None):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
     template_parameters['business'] = Business.objects.get(user=request.user)
     template_parameters['offer_form'] = form
+    template_parameters['offer'] = offer
     template_parameters['feedback'] = feedback
 
     return render(

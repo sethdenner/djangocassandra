@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -57,8 +58,10 @@ urlpatterns = patterns('',
         name='business'
     ),
     url(
-        r'^media/(?P<media_type>[^/]+)(/(?P<width>[^/]+)/(?P<height>[^/]+))*/(?P<media_id>[^/]+)/$',
-        'app.views.media.get',
+        r'media/(?P<path>.+)/$',
+        'app.views.media.xsendfileserve', {
+            'document_root': settings.MEDIA_ROOT
+        },
         name='media'
     ),
     url(

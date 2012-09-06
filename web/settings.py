@@ -125,7 +125,7 @@ INSTALLED_APPS = (
     'permission_backend_nonrel',
     'background_task',
     'timezones',
-    'sorl',
+    'sorl.thumbnail',
     # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',
