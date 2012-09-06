@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 from app.models.contents import Content
 from optparse import make_option
 
-from django.contrib.auth.models import User#, Group
+from django.contrib.auth.models import User
 
 import re
 import os
@@ -69,18 +69,19 @@ class Command(BaseCommand):
 
                         url = re.search('<a href="(?P<url>[^"]*)">(?P<url_content>.*)</a>', j).group('url')
                         url_new = Content(
-                            content_type='1.2',
+                            content_type='1.3',
                             user=user,
                             name = backend_name + '_url_' + str(url_count),
                             parent=parent,
                             value=url
                         )
                         url_new.save()
+
                         url_count += 1
                         paragraph_contents = paragraph_contents.replace(url, "{{ %s }}" % url_new.name)
 
                     paragraph_content_new = Content(
-                        content_type='1.2',
+                        content_type='1.4',
                         user=user,
                         name = backend_name + '_paragrah_html_' + str(paragraph_content_count) + '|safe',
                         parent=parent,
@@ -122,7 +123,7 @@ class Command(BaseCommand):
                 url_content = m.group('url_content')
 
                 url_content_new = Content(
-                    content_type='1.4',
+                    content_type='1.2',
                     user=user,
                     name = backend_name + '_url_content_' + str(url_content_count),
                     parent=parent,
@@ -131,7 +132,7 @@ class Command(BaseCommand):
                 url_content_new.save()
 
                 url_new = Content(
-                    content_type='1.2',
+                    content_type='1.3',
                     user=user,
                     name = backend_name + '_url_' + str(url_count),
                     parent=parent,
@@ -157,6 +158,7 @@ class Command(BaseCommand):
         #   Assign backend (template name)
         #   Type of content.
 
+        web_content_root = Content.objects.get(pk='9f5b072c-e1ed-4897-85ca-c87aa27c7d49')
 
         input_dir = options['input_dir']
         output_dir = options['output_dir']
@@ -172,19 +174,16 @@ class Command(BaseCommand):
                 input_html = os.path.join(dirname, filename)
                 output_html = os.path.join(dirname.replace(input_dir, output_dir), filename)
 
-                #new_template = Content(
-                #    content_type='1.1',
-                #    user=user,
-                #    name = filename.replace('.html', ''),
-                #    parent=parent,
-                #    value=filename
-                #)
-                #new_template.save()
+                user = User.objects.get(pk="fa612ae0-253d-435c-8746-a6278e4c03cd")
+                new_template = Content(
+                    content_type='1.1',
+                    user=user,
+                    name=filename.replace('.html', ''),
+                    parent=web_content_root,
+                    value=input_html
+                )
 
-                scrape_file(input_html, output_html)
+                new_template.save()
 
-                #print input_html, output_html
-                #output_html = os.path.join(
-                #print filename
-
-
+                scrape_file(input_html, output_html,
+                        user, parent=new_template, backend_name = new_template.name)
