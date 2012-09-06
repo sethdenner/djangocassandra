@@ -24,7 +24,8 @@ image_handler = Resource(ImageModelHandler, authentication=oauth_two_legged)
 urlpatterns = patterns('',
     url(
         r'^media/image/create/$',
-        image_handler
+        image_handler,
+        emitter_format='json'
     ),
     url(
         r'^oauth/',
