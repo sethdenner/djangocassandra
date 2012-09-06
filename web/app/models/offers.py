@@ -11,7 +11,7 @@ from app.models.endpoints import Endpoint, EndpointAddress
 from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
 from app.models.categories import Category
-from app.models.images import Image
+from app.models.media import Image
 
 
 class OfferManager(Manager):

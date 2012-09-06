@@ -19,7 +19,7 @@ import categories
 import cities
 import neighborhoods
 
-import images
+import media
 
 # delete these from git.
 import testmodel

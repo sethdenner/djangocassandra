@@ -1,23 +1,26 @@
+"""
 from api.handlers.authentication import AuthenticationHandler
 from api.handlers.business import BusinessModelHandler
 from api.handlers.content import ContentHandler
 from api.handlers.establishment import EstablishmentModelHandler
 from api.handlers.testmodel import TestModelHandler
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls.defaults import patterns, url, include
 from handlers.endpoint import EndpointHandler
 from handlers.user import UserHandler
+from resource import JsonResource
+"""
+
 from piston.authentication.oauth import OAuthAuthentication
 from piston.resource import Resource
-from resource import JsonResource
+from api.handlers.media import MediaModelHandler
 
-oauth = OAuthAuthentication(realm="Knotis")
-AUTHENTICATORS = [oauth, ]
-handler_arguments = {'authentication': AUTHENTICATORS}
+oauth_three_legged = OAuthAuthentication(realm='knotis')
+oauth_two_legged = OAuthAuthentication(realm='knotis', two_legged=True)
 
-authentication_handler = JsonResource(
-    AuthenticationHandler
-)
 
+media_handler = Resource(MediaModelHandler, authentication=oauth_two_legged)
+
+"""
 user_handler = Resource(UserHandler, **handler_arguments)
 endpoint_handler = Resource(EndpointHandler, **handler_arguments)
 establishment_handler = Resource(EstablishmentModelHandler)
@@ -42,12 +45,9 @@ class CsrfExemptResource(Resource):
 
 content_handler = CsrfExemptResource(ContentHandler)
 
-"""
 urlpatterns += patterns('',
-    url(r'^oauth/callback', 'app.views.authentication.oauth_callback'),
     url(r'^oauth/', include('piston.authentication.oauth.urls')),
 )
-"""
 
 #content
 urlpatterns += patterns(
@@ -67,3 +67,5 @@ urlpatterns += patterns(
    url(r'^testmodel/(?P<testmodel_id>[^/]+)/', testmodel_handler),
    url(r'^testmodel/', testmodel_handler),
 )
+
+"""

@@ -4,8 +4,32 @@ import os
 
 from django.conf import settings
 from django.views.static import serve
+from django.forms import ModelForm, CharField
 from django.http import HttpResponse, HttpResponseRedirect
 
+from app.models.media import Image
+
+class ImageModelForm(ModelForm):
+    class Meta:
+        model = Image
+        exclude = (
+            'user',
+            'caption'
+        )
+
+    caption_value = CharField(max_length=1024, required=False)
+    related_object_id = CharField(max_length=36, required=False)
+
+    def save_image(
+        self,
+        request,
+        image=None
+    ):
+        if image:
+            image.update(
+                self.cleaned_data['image'],
+                self.cleaned_data['caption_value']
+            )
 
 USE_XSENDFILE = getattr(settings, 'USE_XSENDFILE', False)
 

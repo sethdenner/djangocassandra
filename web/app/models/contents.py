@@ -56,6 +56,8 @@ class Content(KnotisModel):
         ('8.1', 'Offer Title'),
         ('8.2', 'Offer Description'),
         ('8.3', 'Offer Restrictions'),
+        ('9.0', 'Image'),
+        ('9.1', 'Image Caption'),
 
         # terms of service
         # hours, address, business name, all endpoints, anything that a user
