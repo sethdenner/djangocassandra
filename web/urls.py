@@ -14,8 +14,58 @@ urlpatterns = patterns('',
     ),
     url(
         r'^plans/$',
-        'app.views.account.plans',
-        name='account'
+        'app.views.home.plans',
+        name='home'
+    ),
+    url(
+        r'^contact/$',
+        'app.views.home.contact',
+        name='home'
+    ),
+    url(
+        r'^about/$',
+        'app.views.home.about',
+        name='home'
+    ),
+    url(
+        r'^howitworks/$',
+        'app.views.home.how_it_works',
+        name='home'
+    ),
+    url(
+        r'^story/$',
+        'app.views.home.story',
+        name='home'
+    ),
+    url(
+        r'^inquire/$',
+        'app.views.home.inquire',
+        name='home'
+    ),
+    url(
+        r'^support/$',
+        'app.views.home.support',
+        name='home'
+    ),
+    url(
+        r'^terms/$',
+        'app.views.home.terms',
+        name='home'
+    ),
+    url(
+        r'^privacy/$',
+        'app.views.home.privacy',
+        name='home'
+    ),
+    url(
+        r'^events/$',
+        'app.views.events.events',
+        name='events'
+    ),
+    url(
+        r'^happyhours/$',
+        'app.views.happy_hours.happy_hours',
+        name='happy_hours'
     ),
     url(
         r'^dashboard',
@@ -25,6 +75,11 @@ urlpatterns = patterns('',
     url(
         r'^offers/$',
         'app.views.offer.offers',
+        name='offers'
+    ),
+    url(
+        r'^offers/dashboard/$',
+        'app.views.offer.dashboard',
         name='offers'
     ),
     url(
@@ -87,6 +142,16 @@ urlpatterns = patterns('',
     url(
         r'^auth/validate/(?P<user_id>[^/]+)/(?P<validation_key>[^/]+)',
         'knotis_auth.views.validate',
+        name='auth'
+    ),
+    url(
+        r'^forgotpassword/$',
+        'knotis_auth.views.password_forgot',
+        name='auth'
+    ),
+    url(
+        r'^passwordreset/$',
+        'knotis_auth.views.password_reset',
         name='auth'
     ),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

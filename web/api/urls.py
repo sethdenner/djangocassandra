@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     url(
         r'^media/image/create/$',
         image_handler,
-        emitter_format='json'
+        { 'emitter_format': 'json' }
     ),
     url(
         r'^oauth/',

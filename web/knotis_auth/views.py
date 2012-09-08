@@ -11,6 +11,8 @@ from django.http import HttpResponse
 
 from knotis_auth.models import User
 
+from app.utils import View as ViewUtils
+
 
 class SignUpForm(Form):
     first_name = CharField(label='First Name')
@@ -19,43 +21,43 @@ class SignUpForm(Form):
     password = CharField(widget=PasswordInput, label='Password')
     account_type = CharField(widget=HiddenInput)
     business = BooleanField(widget=CheckboxInput, required=False)
-    
+
     def __init__(self, *args, **kwargs):
         account_type = kwargs.pop('account_type') \
             if 'account_type' in kwargs else 0
-            
+
         super(SignUpForm, self).__init__(*args, **kwargs)
-        
+
         self.fields['first_name'].widget.attrs = {
             'class': 'radius-general',
             'placeholder': 'First Name',
             'autofocus': None,
         }
-        
+
         self.fields['last_name'].widget.attrs = {
             'class': 'radius-general',
             'placeholder': 'Last Name',
         }
-        
+
         self.fields['email'].widget.attrs = {
             'class': 'radius-general',
             'placeholder': 'Email',
         }
-        
+
         self.fields['password'].widget.attrs = {
             'class': 'radius-general',
             'placeholder': 'Password',
         }
-        
+
         self.fields['account_type'].widget.attrs = {
             'value': account_type
         }
-        
+
         self.fields['business'].widget.attrs = {
             'checked': None,
             'value': '1'
         }
-        
+
     def clean_email(self):
         """
         Validate that the supplied email address is unique for the
@@ -75,10 +77,10 @@ def sign_up(request, account_type='user'):
         account_type_int = 2
     else:
         account_type_int = 0
-        
+
     form = SignUpForm(account_type=account_type_int)
     return render(
-        request, 
+        request,
         'sign_up.html', {
         'form': form,
         'account_type': account_type,
@@ -88,7 +90,7 @@ def sign_up(request, account_type='user'):
 class KnotisAuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(KnotisAuthenticationForm, self).__init__(*args, **kwargs)
-        
+
         self.fields['username'].widget.attrs = {
             'class': 'radius-general',
             'id': 'email',
@@ -97,7 +99,7 @@ class KnotisAuthenticationForm(AuthenticationForm):
             'placeholder': 'Username',
             'autofocus': None
         }
-        
+
         self.fields['password'].widget.attrs = {
             'class': 'radius-general',
             'id': 'password',
@@ -108,14 +110,14 @@ class KnotisAuthenticationForm(AuthenticationForm):
 
 
 class KnotisPasswordChangeForm(Form):
-    old_password=CharField(label='Old Pass', widget=PasswordInput)
-    new_password=CharField(label='New Pass', widget=PasswordInput)
-    
+    old_password = CharField(label='Old Pass', widget=PasswordInput)
+    new_password = CharField(label='New Pass', widget=PasswordInput)
+
     def __init__(self, user, *args, **kwargs):
         super(KnotisPasswordChangeForm, self).__init__(*args, **kwargs)
-        
+
         self.user = user
-        
+
     def clean_old_password(self):
         old_password = self.cleaned_data["old_password"]
         if not self.user.check_password(old_password):
@@ -133,7 +135,7 @@ def login(request):
         elif request.method == 'GET':
             form = KnotisAuthenticationForm()
             return render(
-                request, 
+                request,
                 'login.html', {
                     'form': form
                 }
@@ -144,7 +146,7 @@ def login(request):
         password = request.POST.get('password')
 
         user = authenticate(
-            username=username, 
+            username=username,
             password=password
         )
 
@@ -163,15 +165,15 @@ def login(request):
             })
 
         django_login(
-            request, 
+            request,
             user
         )
-        
+
         return generate_response({
             'success': 'yes',
             'redirect': 1
         })
-    
+
     else:
         return generate_response(None)
 
@@ -179,7 +181,7 @@ def login(request):
 def logout(request):
     django_logout(request)
     return redirect('/')
-    
+
 
 def validate(
     request,
@@ -192,7 +194,27 @@ def validate(
         validation_key
     )):
         redirect_url = settings.LOGIN_URL
-        
+
     return redirect(
         redirect_url
+    )
+
+
+def password_forgot(request):
+    template_parameters = ViewUtils.get_standard_template_parameters(request)
+
+    return render(
+        request,
+        'password_forgot.html',
+        template_parameters
+    )
+
+
+def password_reset(request):
+    template_parameters = ViewUtils.get_standard_template_parameters(request)
+
+    return render(
+        request,
+        'password_reset.html',
+        template_parameters
     )

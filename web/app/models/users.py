@@ -1,4 +1,5 @@
-from django.db.models import OneToOneField, FloatField, IntegerField
+from django.db.models import OneToOneField, FloatField, IntegerField, \
+    NullBooleanField
 from foreignkeynonrel.models import ForeignKeyNonRel
 from django.contrib.auth.models import User
 
@@ -18,17 +19,21 @@ class UserProfile(KnotisModel):
         (1, 'Business - Free'),
         (2, 'Business - Monthly'),
     )
-    
+
     ACCOUNT_STATUS = (
         (0, 'Disabled'),
         (1, 'Active')
     )
-    
+
     user = OneToOneField(User, primary_key=True)
 
-    account_type =  IntegerField(null=True, choices=ACCOUNT_TYPES, default=0)
+    account_type = IntegerField(null=True, choices=ACCOUNT_TYPES, default=0)
     account_status = IntegerField(null=True, choices=ACCOUNT_STATUS, default=0)
-    
+
+    notify_announcements = NullBooleanField(blank=True, default=False)
+    notify_offers = NullBooleanField(blank=True, default=False)
+    notify_events = NullBooleanField(blank=True, default=False)
+
     reputation_mu = FloatField(null=True, default='1.0')
     reputation_sigma = FloatField(null=True, default='0.0')
     reputation_total = FloatField(null=True, default='0.0')

@@ -96,10 +96,22 @@ class OfferForm(ModelForm):
 
 def offers(request):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
+    template_parameters['current_page'] = 'offers'
 
     return render(
         request,
         'offers.html',
+        template_parameters
+    )
+
+
+@login_required
+def dashboard(request):
+    template_parameters = ViewUtils.get_standard_template_parameters(request)
+
+    return render(
+        request,
+        'offers_dashboard.html',
         template_parameters
     )
 
@@ -129,7 +141,7 @@ def edit(request, offer_id=None):
         if form.is_valid():
             try:
                 form.save_offer(request, offer)
-                return redirect('/offers/')
+                return redirect('/offers/dashboard/')
             except ValueError as e:
                 feedback = 'ValueError: ' + e.message
             except Exception as e:

@@ -1,0 +1,58 @@
+{% if offers %}
+<ul class="slider-rounded">
+    {% for offer in offers %}
+    <li class="slider box-deals box-border">
+        <div class="ribbon absolute"></div>
+        <div class="clear-fix">
+            <div class="deals-image radius-general left relative">
+                <div class="category cat-<?=substr($this->knotis_api->get_this_category($row->categoryId)->title, 0, 3) ?>"></div>
+                <a class="clear-fix  txt-size "
+                   href="<?=site_url("deal/profile/" . $idDeal); ?>">
+                    <img alt=""
+                         src="<?php if ($row->image == '') echo base_url() . 'images/layouts/knotis-deal-image.jpg'; else echo site_url('images/thumb') . '/72/72/' . $row->image;?>"
+                         class="image-knotis-thumb"/>
+                </a>
+            </div>
+            <div class="deals-txt left">
+                <h5><strong><a href="/offer/{{ offer.id }}/">
+                    {% if offer.title_type == 1 %}
+                    ${{ offer.price_discount }} for ${{ offer.price_retail }} at {{ offer.business.business_name.value }}
+                    {% endif %}
+                    {% if offer.title_type == 2 %}
+                    ${{ offer.price_discount }} for {{ offer.title.value }} at {{ offer.business.business_name.value }}
+                    {% endif %}
+                    {% if offer.title_type == 3 %}
+                    {{ offer.title.value }}
+                    {% endif %}
+                </a></strong></h5>
+                <a class="txt-size margin-general clear-fix business-link"
+                   href="/{{ offer.business.backend_name }}/"
+                   target="_blank">{{ offer.business.business_name.value }}</a>
+                <p class="txt-size txt-premium">{{ offer.description.value|truncatewords:30 }}</p>
+            </div>
+            <div class="deals-action radius-general right">
+                <div class="deals-action-top  relative">
+                    <div class="arrow-small absolute"></div>
+                    <p class="txt-center">savings</p>
+                    <em class="txt-center txt-white clear-fix">${{ offer.savings }}</em>
+                </div>
+                <a class="clear-fix txt-center txt-size gradient-gray"
+                   href="/offer/{{ offer.id }}">View Deal</a>
+
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% if offers|length > 1 %}
+<div class="paginate">
+    <ul>
+        <li class="knotis-slider-left"></li>
+        {% for offer in offers %}
+        <li class="knotis-slider-button{%if forloop.counter0 == 0 %}-active{% endif %}"></li>
+        {% endfor %}
+        <li class="knotis-slider-right"></li>
+    </ul>
+</div>
+{% endif %}
+{% endif %}

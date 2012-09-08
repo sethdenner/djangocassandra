@@ -1,0 +1,27 @@
+<div class="box-border colum-width-menu right no-padding ">
+    <ul class="list-backend">
+        <li class="search relative gradient-gray clear-fix">
+                <label class="left">
+                     <input class="" placeholder="Find offers by keyword" value="" id="search" type="text" onChange="document.links.link.href='<?= site_url('deals/keywords').'/'  ?>'+this.value+'';">
+                </label>
+                    <a class="gradient-gray search-deals left" name="link" href="">Search</a>
+        </li>
+        <li class="relative All">
+            <a class="{% if not current_category %}active {% endif %}categories-filter" data-filter="actives"
+               data-category_name="All" href="#" data-category="" href="#">All Categories
+                ({% if offers %}{{ offers|length }}{% else %}0{% endif %})</a>
+            {% if not current_category %}<div class="arrow arrow-All"></div>{% endif %}
+        </li>
+        {% for category in categories %}
+        <li class="relative {{ category.backend_name }}">
+            <a class="{% if category.backend_name == current_category %}active {% endif %}categories-filter" 
+            data-filter="actives" 
+            data-category_name="{{ category.backend_name }}" 
+            href="#" 
+            data-category="{{ category.id }}">{{ category.name }} ({{ category.active_offers }})</a>
+            {% if category.backend_name == current_category %}<div class="arrow arrow-{{ category.backend_name }}"></div>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>

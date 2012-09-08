@@ -5,26 +5,42 @@
 {% block content %}
 <div id="content" class="back-deals">
     <div class="curve">
-        <div class="wrapper clear-fix relative">
-            {% include 'account_notifications.html' %}
-            <div class="box-deals box-border left">
-                <div class="clear-fix relative">
-                    <ul class="filtering-bar filtering-bar-dash clear-fix  deallist_backend">
-                        {% if user_profile.is_business_owner %}
-                        <li class="txt-size"><a id="createdDealsA"  class="first active" href="#" data-filter="DealStatus_0">Created Deals</a></li>
-                        <li class="txt-size"><a id="currentDealsA" href="#" data-filter="DealStatus_1">Current Deals</a></li>
-                        <li class="txt-size"><a id="completedDealsA" href="#" data-filter="DealStatus_2">Completed Deals</a></li>
-                        {% endif %}
-                        <li class="txt-size"><a  href="#" class="{% if not user_profile.is_business_owner %}first active{% endif %}" data-filter="DealOrderStatus_0">Purchased</a></li>
-                        <li class="txt-size"><a href="#" data-filter="DealOrderStatus_1">Used</a></li>
+        <div class="wrapper relative content-slide">
+            {% include 'offers_premium.html' with offers=offers %}
+        </div>
+        <div class="wrapper clear-fix">
+            <div class="box-deals box-border left relative">
+                <div class="clear-fix">
+                    <ul class="filtering-bar clear-fix left">
+                        <li class="txt-size"><a class="active" href="#" data-filter="actives">New deals</a></li>
+                        <li class="txt-size"><a href="#" data-filter="popular">Popular</a></li>
+                        <li class="txt-size"><a href="#" data-filter="expiring">Expiring</a></li>
                     </ul>
-                    <div id="ajaxBusy" class="absolute"><img src="{{ STATIC_URL }}/images/ajaxloading.gif" title="Loading" alt="loading"/> </div>
+                    <ul class="view-mode clear-fix right">
+                        <li class="mode-list">
+                            <a class=" gradient-gray active deal-mode-list" href="#">
+                                <img alt="" src="{{ STATIC_URL }}images/layouts/knotis-mode-list.png">
+                            </a>
+                        </li>
+                        <li class="mode-map">
+                            <a class=" gradient-gray deal-mode-map" href="#">
+                                
+                                <img alt="" src="{{ STATIC_URL }}images/layouts/knotis-mode-map.png">
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="deal_list_backend">
+                <div id="ajaxBusy" class="absolute"><img src="{{ STATIC_URL }}/images/ajaxloading.gif" title="Loading" alt="loading"/> </div>
+                <div class="deal-content">
                     {% include 'offers_list.html' with offers=offers %}
                 </div>
             </div>
-            {% include 'deal_menu.html' with current_page='offers' %}
+            <div class="box-border colum-width right {% if user_profile.notify_offers %}hide{% else %}notify{% endif %}">
+                <a class=" button clear-fix txt-center radius-general button-receive{% if not user %} log_in{% endif %}" href="#">
+                    <span>Receive new deals via email</span>
+                </a>
+            </div>
+            {% include 'offers_menu.html' %}
         </div>
     </div>
 </div>

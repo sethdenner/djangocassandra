@@ -26,7 +26,7 @@
                             <ul class="first ">
                                 <li class="txt-size margin-general">
                                     <a class="all-cities gradient-gray radius-general"
-                                       href="/deals/">{{ header_all_deals_wa }}</a>
+                                       href="/offers/">{{ header_all_deals_wa }}</a>
                                 </li>
                             </ul>
                         </div>
@@ -40,13 +40,13 @@
 		                    <ul class="left first {margin-general">
 		                    	<li class="txt-size">
 		                    		<a class="all-cities gradient-gray radius-general" 
-		                    			href="/deals/city/{{ c.id }}/">All of {{ c.name }}</a>
+		                    			href="/offers/{{ c.backend_name }}/">All of {{ c.name }}</a>
 		                    	</li>
 		                    	{% if neighbourhoods %}
 		                    	{% for n in neighbourhoods %}
 		                        {% if active_deals_neighbourhood %}
 								<li class="txt-size">
-									<a href="/deals/city/{{ c.id }}/{{ n.id }}/">{{ n.name }}</a>
+									<a href="/offers/{{ c.backend_name }}/{{ n.backend_name }}/">{{ n.name }}</a>
 								</li>
 		                        {% endif %}
 		                    	{% endfor %}
@@ -80,16 +80,16 @@
             </div>
             <ul class="nav clear-fix right">
                 <li>
-                	<a href="/deals/" >{{ header_deals }}</a>
+                	<a href="/offers/" {% if current_page == 'offers' %}class="active" {% endif %}>{{ header_deals }}</a>
                 </li>
                 <li>
-                	<a href="/events/" >{{ header_events }}</a>
+                	<a href="/events/" {% if current_page == 'events' %}class="active" {% endif %}>{{ header_events }}</a>
                 </li>
                 <li>
-                	<a href="/happyhours/" >{{ header_happy_hour }}</a>
+                	<a href="/happyhours/" {% if current_page == 'happy_hours' %}class="active" {% endif %}>{{ header_happy_hour }}</a>
 				</li>
                 <li>
-                	<a href="/contact/" >{{ header_contact }}</a>
+                	<a href="/contact/" {% if current_page == 'contact' %}class="active" {% endif %}>{{ header_contact }}</a>
 				</li>
             </ul>
             {% if not user.is_authenticated %}
@@ -115,10 +115,10 @@
                             {% if user_profile.is_business_owner %}
                             <li><a href="/dashboard/" >{{ header_dashboard }}</a></li>
                             {% endif %}
-                            <li><a href="/deals/">{{ header_deals }}</a></li>
+                            <li><a href="/offers/dashboard/">{{ header_deals }}</a></li>
                         </ul>
                         <ul class="menu-user">
-                            <li><a href="/user/">{{ header_profile }}</a></li>
+                            <li><a href="/profile/">{{ header_profile }}</a></li>
                             <li><a href="/subscriptions/">{{ header_subscriptions }}</a></li>
                             {% if user_profile.is_business_owner %}
                             <li><a href="/business/profile/" >{{ header_business_profile }}</a></li>
@@ -137,7 +137,7 @@
                         </ul>
 						{% else %}						
                         <ul class="menu-user">
-                            <li><a href="/dynamic_pages/"); ?>">{{ header_dynamic_pages }}</a>
+                            <li><a href="/dynamic_pages/">{{ header_dynamic_pages }}</a>
                             </li>
                             <li><a href="/deals/premium/">{{ header_all_deals }}</a></li>
                             <li><a href="/locations/">{{ header_cities }}</a></li>

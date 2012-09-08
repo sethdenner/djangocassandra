@@ -2,7 +2,7 @@
     <p class="txt-center">
         {% if user_profile.is_business_owner %}
         {% if 1 == user_profile.account_type %}
-        <a href="/backend/tickets/">Forever Free<br/> ({% firstof user_tickets '0' %} Tickets)</a>
+        <a href="/business/tickets/">Forever Free<br/> ({% firstof user_tickets '0' %} Tickets)</a>
         {% else %}
         <a href="#">knotis<br/> Premium</a>
         {% endif %}

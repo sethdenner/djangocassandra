@@ -5,3 +5,5 @@ import account
 import user
 import subscription
 import media
+import events
+import happy_hours
