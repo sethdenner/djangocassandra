@@ -8,7 +8,7 @@ from knotis_auth.models import User
 class AuthenticationHandler(AnonymousBaseHandler):
     allowed_methods = ('POST')
     model = User
-    
+
     @staticmethod
     def create_user(post):
         first_name = post.get('first_name')
@@ -17,13 +17,13 @@ class AuthenticationHandler(AnonymousBaseHandler):
         password = post.get('password')
         account_type = post.get('account_type')
         business = post.get('business')
-        
+
         response = {
             'success': 'no',
             'message': 'Unknown error.'
         }
         try:
-            User.create_user(
+            User.objects.create_user(
                 first_name,
                 last_name,
                 email,
@@ -31,9 +31,9 @@ class AuthenticationHandler(AnonymousBaseHandler):
                 account_type,
                 business
             )
-            
+
             response['success'] = 'yes'
-            
+
             if business:
                 if account_type == 'premium':
                     response['user'] = 'premium'
@@ -44,15 +44,15 @@ class AuthenticationHandler(AnonymousBaseHandler):
             else:
                 response['user'] = 'normal'
                 response['message'] = 'Your Knotis account has been created.'
-                
+
         except Exception as e:
             response['message'] = 'There was an error creating your account: ' + e.message
-            
-        
+
+
         return response
-    
+
     @validate(SignUpForm)
     def create(self, request):
         post_data = request.POST
         return AuthenticationHandler.create_user(post_data)
-        
+

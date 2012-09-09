@@ -2,27 +2,75 @@ import md5
 import random
 from datetime import datetime
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.db.models import CharField, DateTimeField, BooleanField, \
-    IntegerField
+    IntegerField, Manager
 from django.core.mail import send_mail, BadHeaderError
 from foreignkeynonrel.models import ForeignKeyNonRel
 from app.models.knotis import KnotisModel
 from app.models.contents import Content
 # from app.models.fields.permissions import PermissionsField
 
-class EndpointPermissionsType(KnotisModel):
-    ENDPOINT_PERMISSION_TYPES = (
-        ('0', 'promotions'),
-        ('1', 'following'),
-        ('2', 'best deals')
-    )
-    value = CharField(max_length=30, choices=ENDPOINT_PERMISSION_TYPES)
-    created_by = CharField(max_length=1024)
-    pub_date = DateTimeField('date published')
+
+class EndpointManager(Manager):
+    def create_endpoint(
+        self,
+        user,
+        endpoint_type,
+        value,
+        primary=False,
+        validation_key=None,
+        disabled=False
+    ):
+        class_type = Endpoint
+        if Endpoint.EndpointTypes.EMAIL == endpoint_type:
+            class_type = EndpointEmail
+        elif Endpoint.EndpointTypes.ADDRESS == endpoint_type:
+            class_type = EndpointAddress
+        elif Endpoint.EndpointTypes.PHONE == endpoint_type:
+            class_type = EndpointPhone
+        elif Endpoint.EndpointTypes.FACEBOOK == endpoint_type:
+            class_type = EndpointFacebook
+        elif Endpoint.EndpointTypes.TWITTER == endpoint_type:
+            class_type = EndpointTwitter
+        elif Endpoint.EndpointTypes.YELP == endpoint_type:
+            class_type = EndpointYelp
+        else:
+            class_type = Endpoint
+
+        endpoint = class_type(
+            user=user,
+            primary=primary,
+            value=value,
+            validation_key=validation_key,
+            disabled=disabled
+        )
+        endpoint.save()
+
+        return endpoint
+
+    def validate_endpoints(
+        self,
+        validation_key,
+        user=None,
+        endpoints=[]
+    ):
+        if endpoints:
+            endpoint_set = endpoints
+        elif user:
+            endpoint_set = self.filter(user=user)
+        else:
+            raise ValueError('Could not validate endpoint. user and endpoints both None.')
+
+        for endpoint in endpoint_set:
+            if endpoint.validation_key == validation_key:
+                return endpoint.validate(validation_key)
+
+        return False
 
 class Endpoint(KnotisModel):
     class EndpointTypes:
+        UNDEFINED = -1
         EMAIL = 0
         PHONE = 1
         ADDRESS = 2
@@ -31,6 +79,7 @@ class Endpoint(KnotisModel):
         YELP = 5
 
         CHOICES = (
+            (UNDEFINED, 'Undefined'),
             (EMAIL, 'Email'),
             (PHONE, 'Phone'),
             (ADDRESS, 'Address'),
@@ -39,7 +88,7 @@ class Endpoint(KnotisModel):
             (YELP, 'Yelp')
         )
 
-    type = IntegerField(choices=EndpointTypes.CHOICES)
+    type = IntegerField(choices=EndpointTypes.CHOICES, default=EndpointTypes.UNDEFINED)
 
     user = ForeignKeyNonRel(User)
     value = ForeignKeyNonRel(Content)
@@ -50,6 +99,18 @@ class Endpoint(KnotisModel):
     disabled = BooleanField(default=False)
 
     pub_date = DateTimeField('date published', auto_now_add=True)
+
+    objects = EndpointManager()
+
+    def validate(
+        self,
+        validation_key
+    ):
+        if validation_key == self.validation_key:
+            self.validated = True
+            self.save()
+
+        return self.validated
 
     @staticmethod
     def _value_string_to_content(kwargs):
@@ -74,6 +135,8 @@ class Endpoint(KnotisModel):
             content_type = '4.5'
         elif endpoint_type == 5:
             content_type = '4.6'
+        else:
+            content_type = '4.0'
 
         content = Content(
             content_type=content_type,
@@ -88,11 +151,6 @@ class Endpoint(KnotisModel):
     def send_message(self, **kwargs):
         raise NotImplementedError('send_message was not implemented in derived \
             class ' + self.__class__.__name__ + '.')
-
-
-class EndpointPermissions(KnotisModel):
-    endpoint = ForeignKeyNonRel(Endpoint)
-    endpoint_permission_type = ForeignKeyNonRel(EndpointPermissionsType)
 
 
 """ Endpoint Proxy Classes """

@@ -1,22 +1,18 @@
 from django.conf import settings
 from django.contrib.auth import models
-
-from app.models.users import UserProfile
-from app.models.endpoints import EndpointEmail
+from django.db.models import Manager
+from app.models.users import UserProfile, AccountTypes
+from app.models.endpoints import Endpoint
 from app.utils import Email
 
-
-class User(models.User):
-    class Meta:
-        proxy = True
-
-    @staticmethod
+class UserManager(Manager):
     def create_user(
+        self,
         first_name,
         last_name,
         email,
         password,
-        account_type=0,
+        account_type=AccountTypes.USER,
         business=False
     ):
         new_user = models.User.objects.create_user(
@@ -24,34 +20,33 @@ class User(models.User):
             email,
             password
         )
-        
+
         new_user.first_name = first_name
         new_user.last_name = last_name
-        
+
         new_user.save()
-        
-        email_endpoint = EndpointEmail(
-            user=new_user,
-            value=email,
+
+        email_endpoint = Endpoint.objects.create_endpoint(
+            new_user,
+            Endpoint.EndpointTypes.EMAIL,
+            email,
             primary=True
         )
-        email_endpoint.save()
 
-        account_type = account_type if business else 0
+        account_type = account_type if business else AccountTypes.USER
 
-        new_user_profile = UserProfile(
-            user=new_user, 
-            account_type=account_type
+        UserProfile.objects.create_profile(
+            new_user,
+            account_type
         )
-        new_user_profile.save()
-        
-        if account_type is 1:
+
+        if account_type == AccountTypes.BUSINESS_FREE:
             subject = 'New Free Business Account in Knotis'
-        elif account_type is 2:
+        elif account_type == AccountTypes.BUSINESS_MONTHLY:
             subject = 'New Premium Business Account in Knotis'
-        else: 
+        else:
             subject = 'New user Account in Knotis'
-        
+
         #TODO This should be handled by an async task
         try:
             Email.generate_email(
@@ -67,29 +62,27 @@ class User(models.User):
             ).send()
         except:
             pass
-        
+
         return new_user
 
-    @staticmethod
+class User(models.User):
+    class Meta:
+        proxy = True
+
+    objects = UserManager()
+
     def activate_user(
-        user_id,
+        self,
         validation_key
     ):
-        user = User.objects.get(pk=user_id)
-        primary_endpoint = EndpointEmail.objects.filter(
-            user=user,
-            type='0',
-            primary=True
-        )[0]
-            
-        if validation_key != primary_endpoint.validation_key:
+
+        if not Endpoint.objects.validate_endpoints(
+            validation_key,
+            user=self
+        ):
             return False
-        
-        primary_endpoint.validated = True
-        primary_endpoint.save()
-        
-        user_profile = UserProfile.objects.get(pk=user)
-        user_profile.account_status = 1 # Active
-        user_profile.save()
-        
-        return True        
+
+        if not UserProfile.objects.activate_profile(self):
+            return False
+
+        return True

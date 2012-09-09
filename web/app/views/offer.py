@@ -6,6 +6,7 @@ from app.models.offers import Offer
 from app.models.businesses import Business
 
 from app.utils import View as ViewUtils
+from app.views.business import edit_profile
 
 
 class OfferForm(ModelForm):
@@ -119,9 +120,9 @@ def dashboard(request):
 @login_required
 def edit(request, offer_id=None):
     try:
-        business = Business.objects.get(user=request.user)
+        Business.objects.get(user=request.user)
     except:
-        return redirect(business.edit_profile)
+        return redirect(edit_profile)
 
     offer = None
     if None != offer_id:

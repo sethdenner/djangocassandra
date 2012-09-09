@@ -1,7 +1,7 @@
 <div class="signup_popup content-popup absolute radius-general">
     <div class="content-replace relative">
         <div class="content-popup-inset radius-general">
-            <form action="/api/auth/signup/" method="post" id="newuser">
+            <form action="/signup/" method="post" id="newuser">{% csrf_token %}
                 <div class="clear-fix relative">
                     <h3><strong>{% if account_type == 'user' %}Sign up for Knotis deals!
                         {% else %}{% if account_type == 'foreverfree' %}Sign up - Forever Free Business Plan!

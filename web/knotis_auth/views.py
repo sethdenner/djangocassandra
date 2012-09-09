@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login as django_login, \
 from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django.http import HttpResponse
+from django.utils.html import strip_tags
 
 from knotis_auth.models import User
 
@@ -66,25 +67,75 @@ class SignUpForm(Form):
         """
         email = self.cleaned_data['email']
         if User.objects.filter(email__iexact=email):
-            raise ValidationError(_("This email address is already in use. Please supply a different email address."))
+            raise ValidationError("This email address is already in use. Please supply a different email address.")
         return email
+
+    def create_user(
+        self,
+        request
+    ):
+        User.objects.create_user(
+            self.cleaned_data['first_name'],
+            self.cleaned_data['last_name'],
+            self.cleaned_data['email'],
+            self.cleaned_data['password'],
+            self.cleaned_data['account_type'],
+            self.cleaned_data['business']
+        )
 
 
 def sign_up(request, account_type='user'):
-    if account_type == 'foreverfree':
-        account_type_int = 1
-    elif account_type == 'premium':
-        account_type_int = 2
-    else:
-        account_type_int = 0
+    if request.method == 'POST':
+        response_data = {
+            'success': 'no',
+            'message': 'Unknown error.'
+        }
 
-    form = SignUpForm(account_type=account_type_int)
-    return render(
-        request,
-        'sign_up.html', {
-        'form': form,
-        'account_type': account_type,
-    })
+        sign_up_form = SignUpForm(request.POST)
+
+        if sign_up_form.is_valid():
+            account_type = sign_up_form.cleaned_data['account_type']
+            try:
+                sign_up_form.create_user(request)
+
+                response_data['success'] = 'yes'
+
+                if True == sign_up_form.cleaned_data['business']:
+                    if account_type == 'premium':
+                        response_data['user'] = 'premium'
+                        response_data['message'] = ''
+                    else:
+                        response_data['user'] = 'foreverfree'
+                        response_data['message'] = 'Your Forever Free account has been created'
+                else:
+                    response_data['user'] = 'normal'
+                    response_data['message'] = 'Your Knotis account has been created.'
+            except Exception as e:
+                response_data['message'] = 'There was an error creating your account: ' + e.message
+        else:
+            response_data['message'] = 'The following fields are invalid: '
+            for error in sign_up_form.errors:
+                response_data['message'] += strip_tags(error) + '<br/>'
+
+        return HttpResponse(
+            json.dumps(response_data),
+            mimetype='application/json'
+        )
+    else:
+        if account_type == 'foreverfree':
+            account_type_int = 1
+        elif account_type == 'premium':
+            account_type_int = 2
+        else:
+            account_type_int = 0
+
+        form = SignUpForm(account_type=account_type_int)
+        return render(
+            request,
+            'sign_up.html', {
+            'form': form,
+            'account_type': account_type,
+        })
 
 
 class KnotisAuthenticationForm(AuthenticationForm):
@@ -189,15 +240,12 @@ def validate(
     validation_key
 ):
     redirect_url = '/'
-    if (User.activate_user(
-        user_id,
-        validation_key
-    )):
+
+    user = User.objects.get(pk=user_id)
+    if (user.activate_user(validation_key)):
         redirect_url = settings.LOGIN_URL
 
-    return redirect(
-        redirect_url
-    )
+    return redirect(redirect_url)
 
 
 def password_forgot(request):
