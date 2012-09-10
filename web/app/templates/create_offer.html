@@ -20,7 +20,7 @@
         <!--Show Notification div is any info exists to show-->
         {% include 'feedback.html' with feedback=feedback %}
         <!--Show option to share deal if deal already exists -->
-        {% if deal and deal.published %}
+        {% if offer and offer.published %}
         <ul class="social deal-helper clear-fix margin-general">
                 <li class="deal-social-helper">Ready to promote this deal? Select Facebook, Twitter or Email to share this deal now.</li>
                 <li>
@@ -124,7 +124,7 @@
                     <label>
                         <span class="txt-size">Start Date<div id="ht-28" class="help-icon float-right vertical-align-bottom" ></div></span>
                         <input {% if offer.purchased > 0 %}disabled{% endif %} class="date radius-general left"
-                            value="{{ offer_form.start_date.value }}"
+                            value="{{ offer_form.start_date.value|date:'m/d/Y i:s' }}"
                             type="text" name="{{ offer_form.start_date.html_name }}" placeholder="Start Date"
                             id="startdate">
                     </label>
@@ -133,8 +133,8 @@
                 <li class="left">
                     <label>
                         <span class="txt-size">End Date<div id="ht-29" class="help-icon float-right vertical-align-bottom" ></div></span>
-                        <input class="date radius-general"
-                            value="{{ offer_form.end_date.value }}"
+                        <input {% if offer.purchased > 0 %}disabled{% endif %} class="date radius-general"
+                            value="{{ offer_form.end_date.value|date:'m/d/Y i:s' }}"
                             type="text" name="{{ offer_form.end_date.html_name }}" placeholder="Finish Date"
                             id="enddate">
                     </label>
@@ -144,7 +144,7 @@
                     <label class="left-side txt-size">Category<div id="ht-30" class="help-icon float-right vertical-align-bottom" ></div></label>
                     <select name="{{ offer_form.category.html_name }}">
                         {% for category in categories %}
-                        <option value="{{ category.id }}" {% if offer_form.category.value == category.id %}selected{% endif%}>{{ category.name }}</option>
+                        <option value="{{ category.id }}" {% if offer_form.category.value == category.id %}selected{% endif%}>{{ category.name.value }}</option>
                         {% endfor %}
                     </select>
                 </li>
@@ -207,7 +207,7 @@
                             <select name="{{ offer_form.city.html_name }}" id="citySelect" onchange="loadNeighbourhood();">
                                 <option value="">Select City</option>
                                 {% for city in cities %}
-                                <option value="{{city.id }}" {% if offer_form.city.value == city.id or city.name|lower in business.address.value.value %}selected{% endif %}>{{ city.name }}</option>
+                                <option value="{{city.id }}" {% if offer_form.city.value == city.id or city.name|lower in business.address.value.value %}selected{% endif %}>{{ city.name.value }}</option>
                                 {% endfor %}
                             </select>
                         </label>
@@ -215,13 +215,11 @@
                     <!--Neighborhood-->
                     <li class="left">
                         <label>
-                            <select name="neighbourhoodId" id="neighbourhoodSelect">
+                            <select name="{{ offer_form.neighborhood.html_name }}" id="neighbourhoodSelect">
                                 <option value="" >All the City</option>
-                                {% if offer_form.neighbourhood.value %}
-                                {% for neighbourhood in neighbourhoods %}
-                                <option value="{{ neighbourhood.id }}" {% if offer_form.neighbourhood.value == neighbourhood.id %}selected{% endif %}>{{neighbourhood.name}}</option>
+                                {% for neighborhood in neighborhoods %}
+                                <option value="{{ neighborhood.id }}" {% if offer_form.neighborhood.value == neighborhood.id %}selected{% endif %}>{{ neighborhood.name.value }}</option>
                                 {% endfor %}
-                                {% endif %}
                             </select>
                         </label>               
                     </li>

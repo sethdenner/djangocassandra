@@ -5,10 +5,10 @@ from foreignkeynonrel.models import ForeignKeyNonRel
 
 from app.models.knotis import KnotisModel
 #from app.models.fields.permissions import PermissionsField
-from app.models.contents import Content
+from app.models.contents import Content, ContentTypes
 from app.models.endpoints import EndpointPhone, EndpointAddress, \
     EndpointTwitter, EndpointFacebook, EndpointYelp
-    
+
 
 class BusinessManager(Manager):
     def create_business(
@@ -24,72 +24,77 @@ class BusinessManager(Manager):
         yelp_id
     ):
         backend_name = urlquote(name.strip().lower().replace(' ', '-'))
-        
-        content_root = Content(
-            content_type='3.0',
+
+        content_root = Content.objects.create(
+            content_type=ContentTypes.BUSINESS_ROOT,
             user=user,
             name=backend_name
         )
-        content_root.save()
-        
-        content_business_name = Content(
-            content_type='3.1',
+
+        content_business_name = Content.objects.create(
+            content_type=ContentTypes.BUSINESS_NAME,
             user=user,
             name=backend_name + '_name',
             parent=content_root,
             value=name
         )
-        content_business_name.save()
-        
-        content_summary = Content(
-            content_type='3.2',
-            user=user,
-            name=backend_name + '_summary',
-            parent=content_root,
-            value=summary
-        )
-        content_summary.save()
-        
-        content_description = Content(
-            content_type='3.4',
-            user=user,
-            name=backend_name + '_description',
-            parent=content_root,
-            value=description
-        )
-        content_description.save()
-        
-        endpoint_address = EndpointAddress(
-            user=user,
-            value=address
-        )
-        endpoint_address.save()
-        
-        endpoint_phone = EndpointPhone(
-            user=user,
-            value=phone
-        )
-        endpoint_phone.save()
-        
-        endpoint_twitter = EndpointTwitter(
-            user=user,
-            value=twitter_name
-        )
-        endpoint_twitter.save()
-        
-        endpoint_facebook = EndpointFacebook(
-            user=user,
-            value=facebook_uri
-        )
-        endpoint_facebook.save()
-        
-        endpoint_yelp = EndpointYelp(
-            user=user,
-            value=yelp_id
-        )
-        endpoint_yelp.save()
-        
-        new_business = Business(
+
+        content_summary = None
+        if summary:
+            content_summary = Content.objects.create(
+                content_type=ContentTypes.BUSINESS_SUMMARY,
+                user=user,
+                name=backend_name + '_summary',
+                parent=content_root,
+                value=summary
+            )
+
+        content_description = None
+        if description:
+            content_description = Content.objects.create(
+                content_type=ContentTypes.BUSINESS_DESCRIPTION,
+                user=user,
+                name=backend_name + '_description',
+                parent=content_root,
+                value=description
+            )
+
+        endpoint_address = None
+        if address:
+            endpoint_address = EndpointAddress.objects.create(
+                user=user,
+                value=address
+            )
+
+        endpoint_phone = None
+        if phone:
+            endpoint_phone = EndpointPhone.objects.create(
+                user=user,
+                value=phone
+            )
+
+        endpoint_twitter = None
+        if twitter_name:
+            endpoint_twitter = EndpointTwitter.objects.create(
+                user=user,
+                value=twitter_name
+            )
+
+        endpoint_facebook = None
+        if facebook_uri:
+            endpoint_facebook = EndpointFacebook.objects.create(
+                user=user,
+                value=facebook_uri
+            )
+
+        endpoint_yelp = None
+        if yelp_id:
+            endpoint_yelp = EndpointYelp.objects.create(
+                user=user,
+                value=yelp_id
+            )
+
+        return Business.objects.create(
             user=user,
             backend_name=backend_name,
             content_root=content_root,
@@ -102,9 +107,6 @@ class BusinessManager(Manager):
             facebook_uri=endpoint_facebook,
             yelp_id=endpoint_yelp
         )
-        new_business.save()
-        
-        return new_business
 
 
 class Business(KnotisModel):
@@ -119,10 +121,10 @@ class Business(KnotisModel):
     business_name = ForeignKeyNonRel(Content, related_name='business_business_name')
     summary = ForeignKeyNonRel(Content, related_name='business_summary')
     description = ForeignKeyNonRel(Content, related_name='business_description')
-    
+
     address = ForeignKeyNonRel(EndpointAddress)
     phone = ForeignKeyNonRel(EndpointPhone)
-    
+
     twitter_name = ForeignKeyNonRel(EndpointTwitter)
     facebook_uri = ForeignKeyNonRel(EndpointFacebook)
     yelp_id = ForeignKeyNonRel(EndpointYelp)
@@ -140,9 +142,9 @@ class Business(KnotisModel):
         ]
         return ''.join([s for s in output_array])
         """
-        
+
     objects = BusinessManager()
-    
+
     def update(
         self,
         name=None,
@@ -154,44 +156,105 @@ class Business(KnotisModel):
         facebook_uri=None,
         yelp_id=None
     ):
-        backend_name = None
-        if name != self.business_name.value:
-            backend_name = urlquote(name.strip().lower().replace(' ', '-'))
-            self.backend_name = backend_name
-            self.business_name.value = name
-            self.business_name.name = backend_name + '_name'
-            self.business_name.save()
-            self.content_root.name = backend_name
-            self.content_root.save()
-            
-        if summary != self.summary.value or backend_name:
-            self.summary.value = summary if summary else self.summary.value
-            self.summary.name = backend_name + '_summary' if backend_name else self.summary.name
-            self.summary.save()
-            
-        if description != self.description.value or backend_name:
-            self.description.value = description if description else self.description.value
-            self.description.name = backend_name + '_description' if backend_name else self.summary.name
-            self.description.save()
-            
-        if address != self.address.value.value:
-            self.address.value.value = address
-            self.address.value.save()
-            
-        if phone != self.phone.value.value:
-            self.phone.value.value = phone
-            self.phone.value.save()
-            
-        if twitter_name != self.twitter_name.value.value:
-            self.twitter_name.value.value = twitter_name
-            self.twitter_name.value.save()
+        is_self_dirty = False
 
-        if facebook_uri != self.twitter_name.value.value:
-            self.facebook_uri.value.value = facebook_uri
-            self.facebook_uri.value.save()
-            
-        if yelp_id != self.yelp_id.value.value:
-            self.yelp_id.value.value = yelp_id
-            self.yelp_id.value.save()
+        if None != name:
+            if name != self.business_name.value:
+                backend_name = urlquote(name.strip().lower().replace(' ', '-'))
+                self.backend_name = backend_name
+                self.business_name.update(name)
+                is_self_dirty = True
 
-        self.save()
+        if None != summary:
+            current_summary = self.summary.value if self.summary else None
+            if summary != current_summary:
+                if self.summary:
+                    self.summary.update(summary)
+                else:
+                    self.summary = Content.objects.create(
+                        content_type=ContentTypes.BUSINESS_SUMMARY,
+                        user=self.user,
+                        name=self.backend_name + '_summary',
+                        parent=self.content_root,
+                        value=summary
+                    )
+                    is_self_dirty = True
+
+        if None != description:
+            current_description = self.description.value if self.description else None
+            if description != current_description:
+                if self.description:
+                    self.description.update(description)
+                else:
+                    self.description = Content.objects.create(
+                        content_type=ContentTypes.BUSINESS_DESCRIPTION,
+                        user=self.user,
+                        name=self.backend_name + '_description',
+                        parent=self.content_root,
+                        value=description
+                    )
+                    is_self_dirty = True
+
+
+        if None != address:
+            current_address = self.address.value.value if self.address else None
+            if address != current_address:
+                if self.address:
+                    self.address.update(address)
+                else:
+                    self.address = EndpointAddress.objects.create(
+                        user=self.user,
+                        value=address
+                    )
+                    is_self_dirty = True
+
+        if None != phone:
+            current_phone = self.phone.value.value if self.phone else None
+            if phone != current_phone:
+                if self.phone:
+                    self.phone.update(phone)
+                else:
+                    self.phone = EndpointPhone.objects.create(
+                        user=self.user,
+                        value=phone
+                    )
+                    is_self_dirty = True
+
+        if None != twitter_name:
+            current_twitter = self.twitter_name.value.value if self.twitter_name else None
+            if twitter_name != current_twitter:
+                if self.twitter_name:
+                    self.twitter_name.update(twitter_name)
+                else:
+                    self.twitter_name = EndpointTwitter.objects.create(
+                        user=self.user,
+                        value=twitter_name
+                    )
+                    is_self_dirty = True
+
+        if None != facebook_uri:
+            current_facebook = self.facebook_uri.value.value if self.facebook_uri else None
+            if facebook_uri != current_facebook:
+                if self.facebook_uri:
+                    self.facebook_uri.update(facebook_uri)
+                else:
+                    self.facebook_uri = EndpointFacebook.objects.create(
+                        user=self.user,
+                        value=facebook_uri
+                    )
+                    is_self_dirty = True
+
+        if None != yelp_id:
+            current_yelp = self.yelp_id.value.value if self.yelp_id else None
+            if yelp_id != current_yelp:
+                if self.yelp_id:
+                    self.yelp_id.update(yelp_id)
+                else:
+                    self.yelp_id = EndpointYelp.objects.create(
+                        user=self.user,
+                        value=yelp_id
+                    )
+                    is_self_dirty = True
+
+        if is_self_dirty:
+            self.save()

@@ -1,13 +1,11 @@
-from datetime import datetime
-
 from django.db.models import DateTimeField, IntegerField, \
-    FloatField, BooleanField, Manager
+    FloatField, NullBooleanField, CharField, Manager
 from django.utils.http import urlquote
 from foreignkeynonrel.models import ForeignKeyNonRel
 from app.models.knotis import KnotisModel
-from app.models.contents import Content
+from app.models.contents import Content, ContentTypes
 from app.models.businesses import Business
-from app.models.endpoints import Endpoint, EndpointAddress
+from app.models.endpoints import EndpointTypes, EndpointAddress
 from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
 from app.models.categories import Category
@@ -38,48 +36,42 @@ class OfferManager(Manager):
     ):
         backend_name = urlquote(('offer_' + business.backend_name + '_' + title).strip().lower().replace(' ', '-'))
 
-        content_root = Content(
-            content_type='8.0',
+        content_root = Content.objects.create(
+            content_type=ContentTypes.OFFER,
             user=user,
             name=backend_name
         )
-        content_root.save()
 
-        content_title = Content(
-            content_type='8.1',
+        content_title = Content.objects.create(
+            content_type=ContentTypes.OFFER_TITLE,
             user=user,
             name=backend_name,
             parent=content_root,
             value=title
         )
-        content_title.save()
 
-        content_description = Content(
-            content_type='8.2',
+        content_description = Content.objects.create(
+            content_type=ContentTypes.OFFER_DESCRIPTION,
             user=user,
             name=backend_name,
             parent=content_root,
             value=description
         )
-        content_description.save()
 
-        content_restrictions = Content(
-            content_type='8.3',
+        content_restrictions = Content.objects.create(
+            content_type=ContentTypes.OFFER_RESTRICTIONS,
             user=user,
             name=backend_name,
             parent=content_root,
             value=restrictions
         )
-        content_restrictions.save()
 
-        endpoint_address = EndpointAddress(
-            type=Endpoint.EndpointTypes.ADDRESS,
+        endpoint_address = EndpointAddress.objects.create(
+            type=EndpointTypes.ADDRESS,
             user=user,
             value=address,
             primary=True,
         )
-        endpoint_address.save()
-
 
         offer = Offer(
             business=business,
@@ -96,42 +88,56 @@ class OfferManager(Manager):
             start_date=start_date,
             end_date=end_date,
             stock=stock,
+            unlimited=unlimited,
             published=published,
-            unlimited=unlimited
+            status=OfferStatus.CURRENT if published else OfferStatus.CREATED,
+            active=published
         )
 
-        model_image = Image(
-            user=user,
-            related_object_id=offer.id,
-            image=image,
-        )
-        model_image.save()
+        if image:
+            model_image = Image.objects.create(
+                user=user,
+                related_object_id=offer.id,
+                image=image,
+            )
+            offer.image = model_image
 
-        offer.image = model_image
         offer.save()
-
         return offer
 
 
+class OfferTypes:
+    NORMAL = 0
+
+    CHOICES = (
+        (NORMAL, 'normal'),
+    )
+
+class OfferStatus:
+    CREATED = 'created'
+    CURRENT = 'current'
+    COMPLETE = 'complete'
+
+    CHOICES = (
+        (CREATED, 'Created'),
+        (CURRENT, 'Current'),
+        (COMPLETE, 'Complete')
+    )
+
+
+class OfferTitleTypes:
+    TITLE_1 = 1
+    TITLE_2 = 2
+    TITLE_3 = 3
+
+    CHOICES = (
+        (TITLE_1, 'Title 1'),
+        (TITLE_2, 'Title 2'),
+        (TITLE_3, 'Title 3'),
+    )
+
+
 class Offer(KnotisModel):
-    class OfferTypes:
-        NORMAL = 0
-
-        CHOICES = (
-            (NORMAL, 'normal'),
-        )
-
-    class OfferTitleTypes:
-        TITLE_1 = 1
-        TITLE_2 = 2
-        TITLE_3 = 3
-
-        CHOICES = (
-            (TITLE_1, 'Title 1'),
-            (TITLE_2, 'Title 2'),
-            (TITLE_3, 'Title 3'),
-        )
-
     business = ForeignKeyNonRel(Business)
     offer_type = IntegerField(default=OfferTypes.NORMAL, choices=OfferTypes.CHOICES, null=True, blank=True)
 
@@ -153,11 +159,14 @@ class Offer(KnotisModel):
     start_date = DateTimeField(null=True)
     end_date = DateTimeField(null=True)
 
+    status = CharField(max_length=32, choices=OfferStatus.CHOICES, db_index=True, default=OfferStatus.CREATED)
     stock = IntegerField(default=0, blank=True, null=True)
     purchased = IntegerField(default=0, blank=True, null=True)
-    unlimited = BooleanField(default=False)
+    redeemed = IntegerField(default=0, blank=True, null=True)
+    unlimited = NullBooleanField(default=False)
 
-    published = BooleanField(default=False)
+    published = NullBooleanField(default=False)
+    active = NullBooleanField(default=False)
 
     pub_date = DateTimeField(null=True, auto_now_add=True)
 
@@ -180,25 +189,58 @@ class Offer(KnotisModel):
         end_date=None,
         stock=None,
         unlimited=None,
-        published=None
+        published=None,
+        status=None,
+        purchased=None,
+        redeemed=None,
+        active=None
     ):
         is_self_dirty = False
 
-        if None != title and title != self.title.value:
-            self.title.value = title
-            self.title.save()
+        if None != title:
+            current_title = self.title.value if self.title else None
+            if title != current_title:
+                if self.title:
+                    self.title.update(title)
+                else:
+                    self.title = Content.objects.create(
+                        content_type=ContentTypes.OFFER_TITLE,
+                        user=self.business.user,
+                        name=self.content_root.name,
+                        parent=self.content_root,
+                        value=title
+                    )
+                    is_self_dirty = True
 
-        if None != title_type and title_type != self.title_type:
-            self.title_type = title_type
-            is_self_dirty = True
+        if None != description:
+            current_description = self.description.value if self.description else None
+            if description != current_description:
+                if self.description:
+                    self.description.update(description)
+                else:
+                    self.description = Content.objects.create(
+                        content_type=ContentTypes.OFFER_DESCRIPTION,
+                        user=self.business.user,
+                        name=self.content_root.name,
+                        parent=self.content_root,
+                        value=description
+                    )
+                    is_self_dirty = True
 
-        if None != description and description != self.description.value:
-            self.description.value = description
-            self.description.save()
-
-        if None != restrictions and restrictions != self.restrictions.value:
-            self.restrictions.value = restrictions
-            self.restrictions.save()
+        if None != restrictions:
+            current_restrictions = self.restrictions.value if self.restrictions else None
+            if restrictions != current_restrictions:
+                if self.restrictions:
+                    self.restrictions.update(restrictions)
+                else:
+                    self.restricitons = Content.objects.create(
+                        content_type=ContentTypes.OFFER_RESTRICTIONS,
+                        user=self.business.user,
+                        name=self.content_root.name,
+                        parent=self.content_root,
+                        value=restrictions
+                    )
+                    is_self_dirty = True
 
         if None != city and city != self.city:
             self.city = city
@@ -208,9 +250,17 @@ class Offer(KnotisModel):
             self.neighborhood = neighborhood
             is_self_dirty = True
 
-        if None != address and address != self.address.value.value:
-            self.address.value.value = address
-            self.address.value.save()
+        if None != address:
+            current_address = self.address.value.value if self.address else None
+            if address != current_address:
+                if self.address:
+                    self.address.update(address)
+                else:
+                    self.address = EndpointAddress.objects.create(
+                        user=self.business.user,
+                        value=address
+                    )
+                    is_self_dirty = True
 
         if None != image and image != self.image.image:
             self.image.image = image
@@ -247,6 +297,22 @@ class Offer(KnotisModel):
         # Don't allow to unpublish
         if published:
             self.published = published
+            is_self_dirty = True
+
+        if status and status != self.status:
+            self.status = status
+            is_self_dirty = True
+
+        if purchased and purchased != self.purchased:
+            self.purchased = purchased
+            is_self_dirty = True
+
+        if redeemed and redeemed != self.redeemed:
+            self.redeemed = redeemed
+            is_self_dirty = True
+
+        if active and active != self.active:
+            self.active = active
             is_self_dirty = True
 
         if is_self_dirty:

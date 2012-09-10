@@ -14,7 +14,11 @@ from models.testmodel import TestModel, EmbeddedModelFieldTest
 from models.user_relations import UserRelation, UserRelationType, \
     UserRelationEndpoint
 from models.media import Image
+from models.cities import City
+from models.neighborhoods import Neighborhood
+from models.categories import Category
 from models.users import UserProfile
+
 from piston.models import Consumer
 
 
@@ -75,6 +79,9 @@ admin.site.register(Business, BusinessAdmin)
 class GeneralAdmin(admin.ModelAdmin):
     pass
 
+admin.site.register(City, GeneralAdmin)
+admin.site.register(Neighborhood, GeneralAdmin)
+admin.site.register(Category, GeneralAdmin)
 admin.site.register(Image, GeneralAdmin)
 admin.site.register(UserRelation, GeneralAdmin)
 admin.site.register(UserRelationType, GeneralAdmin)

@@ -8,7 +8,7 @@ from django.db.models import CharField, DateTimeField, BooleanField, \
 from django.core.mail import send_mail, BadHeaderError
 from foreignkeynonrel.models import ForeignKeyNonRel
 from app.models.knotis import KnotisModel
-from app.models.contents import Content
+from app.models.contents import Content, ContentTypes
 # from app.models.fields.permissions import PermissionsField
 
 
@@ -68,26 +68,28 @@ class EndpointManager(Manager):
 
         return False
 
+
+class EndpointTypes:
+    UNDEFINED = -1
+    EMAIL = 0
+    PHONE = 1
+    ADDRESS = 2
+    TWITTER = 3
+    FACEBOOK = 4
+    YELP = 5
+
+    CHOICES = (
+        (UNDEFINED, 'Undefined'),
+        (EMAIL, 'Email'),
+        (PHONE, 'Phone'),
+        (ADDRESS, 'Address'),
+        (TWITTER, 'Twitter'),
+        (FACEBOOK, 'Facebook'),
+        (YELP, 'Yelp')
+    )
+
+
 class Endpoint(KnotisModel):
-    class EndpointTypes:
-        UNDEFINED = -1
-        EMAIL = 0
-        PHONE = 1
-        ADDRESS = 2
-        TWITTER = 3
-        FACEBOOK = 4
-        YELP = 5
-
-        CHOICES = (
-            (UNDEFINED, 'Undefined'),
-            (EMAIL, 'Email'),
-            (PHONE, 'Phone'),
-            (ADDRESS, 'Address'),
-            (TWITTER, 'Twitter'),
-            (FACEBOOK, 'Facebook'),
-            (YELP, 'Yelp')
-        )
-
     type = IntegerField(choices=EndpointTypes.CHOICES, default=EndpointTypes.UNDEFINED)
 
     user = ForeignKeyNonRel(User)
@@ -112,6 +114,27 @@ class Endpoint(KnotisModel):
 
         return self.validated
 
+    def update(
+        self,
+        value=None,
+        primary=None,
+        disabled=None
+    ):
+        is_self_dirty = False
+        if None != value:
+            current_value = self.value.value if self.value else None
+            if value != current_value:
+                if self.value:
+                    self.value.update(value)
+                else:
+                    self.value = Content.objects.create(
+
+                    )
+                    is_self_dirty = True
+
+        if is_self_dirty:
+            self.save()
+
     @staticmethod
     def _value_string_to_content(kwargs):
         value = kwargs.get('value')
@@ -123,20 +146,20 @@ class Endpoint(KnotisModel):
             raise ValueError('value must be type <Content> or type <basestring>.')
 
         endpoint_type = kwargs.get('type')
-        if endpoint_type == 0:
-            content_type = '4.1'
-        elif endpoint_type == 1:
-            content_type = '4.2'
-        elif endpoint_type == 2:
-            content_type = '4.3'
-        elif endpoint_type == 3:
-            content_type = '4.4'
-        elif endpoint_type == 4:
-            content_type = '4.5'
-        elif endpoint_type == 5:
-            content_type = '4.6'
+        if endpoint_type == EndpointTypes.EMAIL:
+            content_type = ContentTypes.ENDPOINT_EMAIL
+        elif endpoint_type == EndpointTypes.PHONE:
+            content_type = ContentTypes.ENDPOINT_PHONE
+        elif endpoint_type == EndpointTypes.ADDRESS:
+            content_type = ContentTypes.ENDPOINT_ADDRESS
+        elif endpoint_type == EndpointTypes.FACEBOOK:
+            content_type = ContentTypes.ENDPOINT_FACEBOOK
+        elif endpoint_type == EndpointTypes.TWITTER:
+            content_type = ContentTypes.ENDPOINT_TWITTER
+        elif endpoint_type == EndpointTypes.YELP:
+            content_type = ContentTypes.ENDPOINT_YELP
         else:
-            content_type = '4.0'
+            content_type = ContentTypes.ENDPOINT
 
         content = Content(
             content_type=content_type,
@@ -171,7 +194,7 @@ class EndpointEmail(Endpoint): #-- the data for all these is the same, we want d
         proxy = True
 
     def __init__(self, *args, **kwargs):
-        kwargs['type'] = 0  # Always override the type to email (0).
+        kwargs['type'] = EndpointTypes.EMAIL  # Always override the type to email (0).
 
         Endpoint._value_string_to_content(kwargs)
 
@@ -213,7 +236,7 @@ class EndpointTwitter(Endpoint):
         proxy = True
 
     def __init__(self, *args, **kwargs):
-        kwargs['type'] = 3
+        kwargs['type'] = EndpointTypes.TWITTER
 
         Endpoint._value_string_to_content(kwargs)
 
@@ -225,7 +248,7 @@ class EndpointFacebook(Endpoint):
         proxy = True
 
     def __init__(self, *args, **kwargs):
-        kwargs['type'] = 4
+        kwargs['type'] = EndpointTypes.FACEBOOK
 
         Endpoint._value_string_to_content(kwargs)
 
@@ -237,7 +260,7 @@ class EndpointYelp(Endpoint):
         proxy = True
 
     def __init__(self, *args, **kwargs):
-        kwargs['type'] = 5
+        kwargs['type'] = EndpointTypes.YELP
 
         Endpoint._value_string_to_content(kwargs)
 
@@ -249,7 +272,7 @@ class EndpointAddress(Endpoint):
         proxy = True
 
     def __init__(self, *args, **kwargs):
-        kwargs['type'] = 2
+        kwargs['type'] = EndpointTypes.ADDRESS
 
         Endpoint._value_string_to_content(kwargs)
 

@@ -2,8 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.html import strip_tags
 from django.forms import ModelForm, CharField, ImageField, DateTimeField
-from app.models.offers import Offer
+from app.models.offers import Offer, OfferStatus
 from app.models.businesses import Business
+from app.models.categories import Category
+from app.models.cities import City
+from app.models.neighborhoods import Neighborhood
+from app.models.users import UserProfile
 
 from app.utils import View as ViewUtils
 from app.views.business import edit_profile
@@ -20,8 +24,11 @@ class OfferForm(ModelForm):
             'restrictions',
             'address',
             'image',
+            'status',
             'purchased',
+            'redeemed',
             'published',
+            'active',
             'pub_date'
         )
 
@@ -36,13 +43,13 @@ class OfferForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(OfferForm, self).__init__(*args, **kwargs)
 
-        instance = kwargs['instance']
+        instance = kwargs.get('instance')
         if None != instance:
             self.fields['description_value'].initial = instance.description.value
             self.fields['title_value'].initial = instance.title.value
             self.fields['restrictions_value'].initial = instance.restrictions.value
             self.fields['address_value'].initial = instance.address.value.value
-
+            self.fields['neighborhood'].initial = instance.neighborhood
 
     def save_offer(
         self,
@@ -51,7 +58,7 @@ class OfferForm(ModelForm):
     ):
         business = Business.objects.get(user=request.user)
 
-        published = 'Publish' in request.POST
+        published = 'publish' in request.POST
 
         if offer:
             offer.update(
@@ -70,7 +77,9 @@ class OfferForm(ModelForm):
                 self.cleaned_data['end_date'],
                 self.cleaned_data['stock'],
                 self.cleaned_data['unlimited'],
-                published
+                published,
+                OfferStatus.CURRENT if published else None,
+                active=published
             )
         else:
             Offer.objects.create_offer(
@@ -110,6 +119,11 @@ def offers(request):
 def dashboard(request):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
 
+    template_parameters['user_profile'] = UserProfile.objects.get(user=request.user)
+    business = Business.objects.get(user=request.user)
+    template_parameters['business'] = business
+    template_parameters['offers'] = Offer.objects.filter(business=business)
+
     return render(
         request,
         'offers_dashboard.html',
@@ -135,8 +149,7 @@ def edit(request, offer_id=None):
     if request.method == 'POST':
         form = OfferForm(
             request.POST,
-            request.FILES,
-            instance=offer
+            request.FILES
         )
 
         if form.is_valid():
@@ -154,8 +167,15 @@ def edit(request, offer_id=None):
     else:
         form = OfferForm(instance=offer)
 
+
     template_parameters = ViewUtils.get_standard_template_parameters(request)
+
+    if offer:
+        template_parameters['neighborhoods'] = Neighborhood.objects.filter(city=offer.city)
+
     template_parameters['business'] = Business.objects.get(user=request.user)
+    template_parameters['categories'] = Category.objects.all()
+    template_parameters['cities'] = City.objects.all()
     template_parameters['offer_form'] = form
     template_parameters['offer'] = offer
     template_parameters['feedback'] = feedback
@@ -163,5 +183,23 @@ def edit(request, offer_id=None):
     return render(
         request,
         'create_offer.html',
+        template_parameters
+    )
+
+def get_offers_by_status(
+    request,
+    status
+):
+    template_parameters = {}
+    template_parameters['offers'] = Offer.objects.filter(status=status)
+    try:
+        template_parameters['user_profile'] = UserProfile.objects.get(user=request.user)
+        template_parameters['business'] = Business.objects.get(user=request.user)
+    except:
+        pass
+
+    return render(
+        request,
+        'offers_list.html',
         template_parameters
     )

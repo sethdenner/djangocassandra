@@ -11,17 +11,17 @@
                 <div class="clear-fix relative">
                     <ul class="filtering-bar filtering-bar-dash clear-fix  deallist_backend">
                         {% if user_profile.is_business_owner %}
-                        <li class="txt-size"><a id="createdDealsA"  class="first active" href="#" data-filter="DealStatus_0">Created Deals</a></li>
-                        <li class="txt-size"><a id="currentDealsA" href="#" data-filter="DealStatus_1">Current Deals</a></li>
-                        <li class="txt-size"><a id="completedDealsA" href="#" data-filter="DealStatus_2">Completed Deals</a></li>
+                        <li class="txt-size"><a id="createdDealsA"  class="first active" href="#" data-filter="created">Created Deals</a></li>
+                        <li class="txt-size"><a id="currentDealsA" href="#" data-filter="current">Current Deals</a></li>
+                        <li class="txt-size"><a id="completedDealsA" href="#" data-filter="completed">Completed Deals</a></li>
                         {% endif %}
-                        <li class="txt-size"><a  href="#" class="{% if not user_profile.is_business_owner %}first active{% endif %}" data-filter="DealOrderStatus_0">Purchased</a></li>
-                        <li class="txt-size"><a href="#" data-filter="DealOrderStatus_1">Used</a></li>
+                        <li class="txt-size"><a  href="#" class="{% if not user_profile.is_business_owner %}first active{% endif %}" data-filter="purchased">Purchased</a></li>
+                        <li class="txt-size"><a href="#" data-filter="redeemed">Used</a></li>
                     </ul>
                     <div id="ajaxBusy" class="absolute"><img src="{{ STATIC_URL }}/images/ajaxloading.gif" title="Loading" alt="loading"/> </div>
                 </div>
                 <div class="deal_list_backend">
-                    {% include 'offers_list.html' with offers=offers %}
+                    {% include 'offers_list.html' with offers=offers business=business %}
                 </div>
             </div>
             {% include 'dashboard_menu.html' with current_page='offers_dashboard' %}

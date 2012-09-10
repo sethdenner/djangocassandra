@@ -83,6 +83,11 @@ urlpatterns = patterns('',
         name='offers'
     ),
     url(
+        r'^offers/get_offers_by_status/(?P<status>[^/]+)/$',
+        'app.views.offer.get_offers_by_status',
+        name='offers'
+    ),
+    url(
         r'^business/offers/create/$',
         'app.views.offer.edit',
         name='business'
@@ -153,6 +158,11 @@ urlpatterns = patterns('',
         r'^passwordreset/$',
         'knotis_auth.views.password_reset',
         name='auth'
+    ),
+    url(
+        r'^neighborhood/(?P<city>[^/]+)*/$',
+        'app.views.city.get_neighborhoods',
+        name='city'
     ),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),

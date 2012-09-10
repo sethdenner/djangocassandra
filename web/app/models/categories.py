@@ -2,7 +2,7 @@ from django.db.models import Manager
 from django.utils.http import urlquote
 
 from knotis import KnotisModel
-from contents import Content
+from contents import Content, ContentTypes
 from foreignkeynonrel.models import ForeignKeyNonRel
 
 class CategoryManager(Manager):
@@ -13,27 +13,28 @@ class CategoryManager(Manager):
     ):
         backend_name = urlquote(name.strip().lower().replace(' ', '-'))
 
-        content_root = Content(
-            content_type='5.0',
+        content_root = Content.objects.create(
+            content_type=ContentTypes.CATEGORY,
             user=user,
             name=backend_name
         )
-        content_root.save()
 
-        content_name = Content(
-            content_type='5.1',
+        content_name = Content.objects.create(
+            content_type=ContentTypes.CATEGORY_NAME,
             user=user,
             name=backend_name + '_name',
             parent=content_root,
             value=name
         )
-        content_name.save()
 
-        category = Category(name=content_name)
-        category.save()
+        return Category.objects.create(
+            content_root=content_root,
+            name=content_name
+        )
 
 
 class Category(KnotisModel):
+    content_root = ForeignKeyNonRel(Content, related_name='category_root')
     name = ForeignKeyNonRel(Content, related_name='category_name')
 
     objects = CategoryManager()

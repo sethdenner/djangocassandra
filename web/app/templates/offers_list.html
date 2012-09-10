@@ -1,3 +1,4 @@
+{% load thumbnail %}
 <div class="deal_list_backend">
     {% if offers %}
     {% for offer in offers %}
@@ -6,19 +7,23 @@
             <div class="ribbon-backend{% if not offer.active %}-inactive{% endif %}" ></div>
             <div class="category food"></div>
             <img alt=""
-                 src="{% if offer.image %}/images/thumb/72/72/{{ offer.image }}{% else %}{{ STATIC_URL }}/images/layouts/knotis-deal-image.jpg{% endif %}"
+                 {% thumbnail offer.image.image '72x72' as image %}
+                 src="{{ image.url }}"
+                 {% empty %}
+                 src="{{ STATIC_URL }}/images/layouts/knotis-deal-image.jpg"
+                 {% endthumbnail %}
                  class="image-knotis-thumb"/>
         </div>
         <div class="deals-txt left">
-            <h5><strong>{{ offer.title }}</strong></h5>
+            <h5><strong>{{ offer.title.value }}</strong></h5>
             <ul class="date-dash clear-fix">
-                <li>{{ offer.start_date }}</li>
-                <li>{{ offer.end_date }}</li>
+                <li>{{ offer.start_date|date:'N j, Y - f a' }}</li>
+                <li>{{ offer.end_date|date:'N j, Y - f a' }}</li>
             </ul>
-            <a class="txt-size margin-general clear-fix business" alt="{{ offer.business.business_name }}"
-               title="{{ offer.business.name }}" target="_blank"
-               href="/{{ offer.business.backend_name }}/" >{{ offer.business.business_name }}</a>
-            <p class="txt-size margin-general">{{ offer.description }}</p>
+            <a class="txt-size margin-general clear-fix business" alt="{{ offer.business.business_name.value }}"
+               title="{{ offer.business.business_name.value }}" target="_blank"
+               href="/{{ offer.business.backend_name }}/" >{{ offer.business.business_name.value }}</a>
+            <p class="txt-size margin-general">{{ offer.description.value }}</p>
             {% if not business %}
             <ul class="clear-fix txt-size date-deals">
                 <li><strong>Purchased on: </strong>{{ offer.purchase_date }}</li>
@@ -35,7 +40,7 @@
             {% else %}
             {% if offer.status != 'complete' %}
             <a class="print button margin-general"
-               href="/business/offer/{{ offer.id }}/">Edit</a>
+               href="/business/offers/update/{{ offer.id }}/">Edit</a>
             {% endif %}
             {% if offer.status != 'created' %}
             <div class="clear-fix ">
@@ -45,7 +50,7 @@
             {% endif %}
             {% if offer.status == 'current' %}
             <div class="clear-fix margin-general">
-                <a class="{% if offer.active %}play{% else %}pause{% endif %} relative playstop"
+                <a class="{% if not offer.active %}play{% else %}pause{% endif %} relative playstop"
                    data-status="{% if offer.active %}1{% else %}0{% endif %}"
                    data-id="{{ offer.id }}"></a>
             </div>
@@ -62,7 +67,7 @@
             {% endif %}
             {% endif %}
             {% else %}
-            {% if offer.stock > offer.redeemed %}
+            {% if offer.purchased > offer.redeemed %}
             <a class="print button margin-general"
                href="/offer/print/{{ offer.id }}" target="_blank">Print</a>
             {% endif %}

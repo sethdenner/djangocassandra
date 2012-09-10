@@ -259,7 +259,7 @@ $(document).ready(function() {
                 $category = $('.' + categoryname),
                 id = $(this).attr('data-category');
 
-        $.post([server + "deals/deals_list",cityId,neightbourhoodId, filter, id].join('/'), {}, function(data) {
+        $.get(["/offers/offers_list", cityId, neightbourhoodId, filter, id].join('/').replace(/[/]+/g, '/'), {}, function(data) {
             $('.more-results').remove();
 
             $('.deal-content').replaceWith(data);
@@ -464,7 +464,7 @@ $(document).ready(function() {
         var $this = $(this),
                 filter = $this.attr('data-filter');
 
-        $.post([server + "backend/dealsListByStatus", filter].join('/'), {}, function(data) {
+        $.get(['/offers/get_offers_by_status', filter, ''].join('/'), {}, function(data) {
             $('.deal_list_backend').html(data);
             $('.deallist_backend li a').removeClass('active');
             $this.addClass('active');
@@ -473,6 +473,7 @@ $(document).ready(function() {
         return false;
     });
 
+    /*
     $('.filtering-bar li a').live('click', function() {
         var $this = $(this),
                 filter = $this.attr('data-filter'),
@@ -488,7 +489,7 @@ $(document).ready(function() {
 
         return false;
     });
-
+    */
 
 
     $('#softDeleteClick').live('click', function() {
@@ -1318,7 +1319,7 @@ function loadNeighbourhood() {
     var idCity = $('#citySelect').val();
 
     if (idCity) {
-        $.post([server + "backend/neighbourhood",idCity].join('/'), {},
+        $.get(["/neighborhood",idCity, ''].join('/'), {},
             function(data) {
               $.uniform.update($('#neighbourhoodSelect').html(data));
             });

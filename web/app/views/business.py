@@ -17,31 +17,6 @@ class CreateBusinessForm(Form):
     hours = CharField(label="Business Hours", max_length=100, required=False)
 
 
-def create_business(request):
-    if request.method == 'POST':  # If the form has been submitted...
-        form = CreateBusinessForm(request.POST)  # A form bound to the POST data
-        if form.is_valid():  # All validation rules pass
-            # Process the data in form.cleaned_data
-            # ...
-            return HttpResponseRedirect('/thanks/')  # Redirect after POST
-    else:
-        form = CreateBusinessForm()  # An unbound form
-
-    return render(request, 'create_business.html', {
-        'form': form,
-    })
-
-    """
-    return render_to_response(
-        'create_business.html',
-        {},
-        context_instance=RequestContext(request))
-    """
-
-def list_businesses(request):
-    return render(request, 'list_businesses.html')
-
-
 class UpdateBusinessForm(Form):
     name = CharField(label='Name')
     summary = CharField(label='Summary', max_length=140, required=False)
@@ -51,17 +26,17 @@ class UpdateBusinessForm(Form):
     twitter_name = CharField(label='Twitter', required=False)
     facebook_uri = CharField(label='Facebook', required=False)
     yelp_id = CharField(label='Yelp ID', required=False)
-    
+
 
 class AddBusinessLinkForm(Form):
     uri = CharField()
     title = CharField()
 
-    
+
 def edit_profile(request):
     update_form = None
     link_form = None
-    
+
     business = None
     try:
         business = Business.objects.get(user=request.user)
@@ -69,9 +44,9 @@ def edit_profile(request):
         pass #fine
     except:
         pass #fatal
-    
+
     if request.method.lower() == 'post':
-        update_form = UpdateBusinessForm(request.POST)                
+        update_form = UpdateBusinessForm(request.POST)
         if update_form.is_valid():
             if business:
                 business.update(
@@ -79,12 +54,12 @@ def edit_profile(request):
                 )
             else:
                 business = Business.objects.create_business(
-                    request.user, 
+                    request.user,
                     **update_form.cleaned_data
                 )
-    
+
     template_parameters = ViewUtils.get_standard_template_parameters(request)
-                    
+
     if not update_form:
         if business:
             business_values = {
@@ -110,10 +85,10 @@ def edit_profile(request):
         'edit_business_profile.html',
         template_parameters
     )
-    
+
 def qrcode(request):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
-    
+
     return render(
         request,
         'manage_qrcode.html',
@@ -122,9 +97,9 @@ def qrcode(request):
 
 def tickets(request):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
-    
+
     template_parameters['user_profile'] = UserProfile.objects.get(user=request.user)
-    
+
     return render(
         request,
         'manage_tickets.html',

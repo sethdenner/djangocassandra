@@ -7,3 +7,4 @@ import subscription
 import media
 import events
 import happy_hours
+import city
