@@ -123,6 +123,11 @@ urlpatterns = patterns('',
         name='business'
     ),
     url(
+        r'^qrcode/(?P<qrcode_id>[^/]+)/$',
+        'app.views.qrcode.scan',
+        name='qrcode'
+    ),
+    url(
         r'media/(?P<path>.+)/$',
         'app.views.media.xsendfileserve', {
             'document_root': settings.MEDIA_ROOT

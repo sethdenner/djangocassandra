@@ -1,11 +1,14 @@
 from django.contrib.auth.models import User
 from django.forms import Form, ModelForm, ModelChoiceField, CharField, URLField
 from django.shortcuts import render, redirect
+from django.conf import settings
+from django.utils.http import urlquote
 
 from app.models.users import UserProfile
-from app.models.contents import Content
 from app.models.businesses import Business, BusinessLink
-from app.utils import User as UserUtils
+from app.models.qrcodes import Qrcode, QrcodeTypes, Scan
+from app.models.offers import Offer, OfferStatus
+
 from app.utils import View as ViewUtils
 
 
@@ -59,6 +62,13 @@ def edit_profile(request):
                         request.user,
                         **update_form.cleaned_data
                     )
+                    # Create QR Code for business.
+                    Qrcode.objects.create(
+                        business=business,
+                        uri=settings.BASE_URL + '/' + business.backend_name + '/',
+                        qrcode_type=QrcodeTypes.PROFILE
+                    )
+
         elif 'submit_links' in request.POST:
             link_form = AddBusinessLinkForm(request.POST)
             if link_form.is_valid():
@@ -104,6 +114,35 @@ def edit_profile(request):
 def qrcode(request):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
 
+    business = None
+    try:
+        business = Business.objects.get(user=request.user)
+        template_parameters['business'] = business
+    except:
+        redirect(edit_profile)
+
+
+    if business:
+        try:
+            template_parameters['offers'] = Offer.objects.filter(business=business).filter(status=OfferStatus.CURRENT)
+        except:
+            pass
+
+        qrcode = None
+        try:
+            qrcode = Qrcode.objects.get(business=business)
+            template_parameters['qrcode'] = qrcode
+        except:
+            pass
+
+        if qrcode:
+            try:
+                template_parameters['scans'] = Scan.objects.filter(qrcode=qrcode)
+            except:
+                pass
+
+    template_parameters['BASE_URL'] = settings.BASE_URL
+
     return render(
         request,
         'manage_qrcode.html',
@@ -128,7 +167,7 @@ def profile(request, backend_name):
 
     business = None
     try:
-        business = Business.objects.get(backend_name=backend_name)
+        business = Business.objects.get(backend_name=urlquote(backend_name))
     except:
         return redirect('/')
 

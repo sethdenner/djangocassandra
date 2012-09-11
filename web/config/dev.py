@@ -17,7 +17,7 @@ EMAIL_HOST_USER = 'knotis.dev@gmail.com'
 EMAIL_HOST_PASSWORD = 'wheeling and dealing'
 
 # Base url for external access
-BASE_URL = 'localhost:8000' # NO TRAILING SLASH!!!
+BASE_URL = 'http://localhost:8000' # NO TRAILING SLASH!!!
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"

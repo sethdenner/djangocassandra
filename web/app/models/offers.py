@@ -1,6 +1,8 @@
 from django.db.models import DateTimeField, IntegerField, \
     FloatField, NullBooleanField, CharField, Manager
 from django.utils.http import urlquote
+from django.conf import settings
+
 from foreignkeynonrel.models import ForeignKeyNonRel
 from app.models.knotis import KnotisModel
 from app.models.contents import Content, ContentTypes
@@ -171,6 +173,9 @@ class Offer(KnotisModel):
     pub_date = DateTimeField(null=True, auto_now_add=True)
 
     objects = OfferManager()
+
+    def public_url(self):
+        return settings.BASE_URL + '/offer/' + self.id + '/'
 
     def update(
         self,

@@ -17,7 +17,7 @@ EMAIL_HOST_USER = 'knotis.int@gmail.com'
 EMAIL_HOST_PASSWORD = 'wheeling and dealing'
 
 # Base url for external access
-BASE_URL = 'wow3.knotis.com' # NO TRAILING SLASH!!!
+BASE_URL = 'http://wow3.knotis.com' # NO TRAILING SLASH!!!
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"

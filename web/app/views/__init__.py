@@ -8,3 +8,4 @@ import media
 import events
 import happy_hours
 import city
+import qrcode

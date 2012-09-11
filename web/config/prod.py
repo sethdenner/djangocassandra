@@ -14,7 +14,7 @@ EMAIL_HOST_USER = 'support@knotis.com'
 EMAIL_HOST_PASSWORD = 'p0tent1al!'
 
 # Base url for external access
-BASE_URL = 'knotis.com' # NO TRAILING SLASH!!!
+BASE_URL = 'http://knotis.com' # NO TRAILING SLASH!!!
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"

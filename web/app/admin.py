@@ -1,24 +1,17 @@
 from django.contrib import admin
-from django.forms import ModelChoiceField, ModelForm
-from models.accounts import Account, AccountType, Currency
-from models.actions import Action, ActionType
+from django.forms import ModelForm
+
 from models.businesses import Business
 from models.contents import Content
 from models.endpoints import Endpoint
-from models.establishments import Establishment, EstablishmentEndpoint, \
-    EstablishmentHours
 from models.offers import Offer
-from models.products import Product
-from models.purchases import Purchase, PurchaseType
-from models.testmodel import TestModel, EmbeddedModelFieldTest
-from models.user_relations import UserRelation, UserRelationType, \
-    UserRelationEndpoint
 from models.media import Image
 from models.cities import City
 from models.neighborhoods import Neighborhood
 from models.categories import Category
 from models.users import UserProfile
 from models.transactions import Transaction
+from models.qrcodes import Qrcode, Scan
 
 from piston.models import Consumer
 
@@ -50,7 +43,6 @@ class ContentAdmin(admin.ModelAdmin):
         return super(ContentAdmin, self).formfield_for_foreignkey(
             db_field, request, **kwargs
         )
-
 admin.site.register(Content, ContentAdmin)
 
 
@@ -69,6 +61,7 @@ class BusinessForm(ModelForm):
             self.fields['root_content'].initial = self.instance.content
         """
 
+
 class BusinessAdmin(admin.ModelAdmin):
     form = BusinessForm
 
@@ -79,56 +72,11 @@ admin.site.register(Business, BusinessAdmin)
 
 class GeneralAdmin(admin.ModelAdmin):
     pass
-
+admin.site.register(Scan, GeneralAdmin)
+admin.site.register(Qrcode, GeneralAdmin)
 admin.site.register(Transaction, GeneralAdmin)
 admin.site.register(City, GeneralAdmin)
 admin.site.register(Neighborhood, GeneralAdmin)
 admin.site.register(Category, GeneralAdmin)
 admin.site.register(Image, GeneralAdmin)
-admin.site.register(UserRelation, GeneralAdmin)
-admin.site.register(UserRelationType, GeneralAdmin)
-admin.site.register(UserRelationEndpoint, GeneralAdmin)
-
-admin.site.register(Account, GeneralAdmin)
-admin.site.register(AccountType, GeneralAdmin)
-admin.site.register(Currency, GeneralAdmin)
-
-admin.site.register(Purchase, GeneralAdmin)
-admin.site.register(PurchaseType, GeneralAdmin)
-admin.site.register(Product, GeneralAdmin)
-
 admin.site.register(Offer, GeneralAdmin)
-
-admin.site.register(Action, GeneralAdmin)
-admin.site.register(ActionType, GeneralAdmin)
-
-admin.site.register(Establishment, GeneralAdmin)
-admin.site.register(EstablishmentEndpoint, GeneralAdmin)
-admin.site.register(EstablishmentHours, GeneralAdmin)
-
-
-class EmbeddedModelFieldTestAdminForm(ModelForm, object):
-    class Meta:
-        model = EmbeddedModelFieldTest
-
-    embedded = ModelChoiceField(queryset=TestModel.objects)
-
-    def __init__(self, *args, **kwargs):
-        super(EmbeddedModelFieldTestAdminForm, self).__init__(*args, **kwargs)
-
-        # self.fields['embedded'] = ModelChoiceField(queryset=TestModel.objects)
-
-
-class EmbeddedModelFieldTestAdmin(admin.ModelAdmin):
-    form = EmbeddedModelFieldTestAdminForm
-admin.site.register(EmbeddedModelFieldTest, EmbeddedModelFieldTestAdmin)
-
-
-class TestModelAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(TestModel, TestModelAdmin)
-
-#class TestModelAdmin(admin.ModelAdmin):
-#    pass
-#from models.testmodel import TestModel
-#admin.site.register(TestModel, TestModelAdmin)

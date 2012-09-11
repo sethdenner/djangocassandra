@@ -1,6 +1,7 @@
 from django.db.models import CharField, DateTimeField, URLField, Manager
 from django.utils.http import urlquote
 from django.contrib.auth.models import User as DjangoUser
+
 from foreignkeynonrel.models import ForeignKeyNonRel
 
 from app.models.knotis import KnotisModel
@@ -95,7 +96,7 @@ class BusinessManager(Manager):
                 value=yelp_id
             )
 
-        return Business.objects.create(
+        business = Business.objects.create(
             user=user,
             backend_name=backend_name,
             content_root=content_root,
@@ -108,6 +109,8 @@ class BusinessManager(Manager):
             facebook_uri=endpoint_facebook,
             yelp_id=endpoint_yelp
         )
+
+        return business
 
 
 class Business(KnotisModel):

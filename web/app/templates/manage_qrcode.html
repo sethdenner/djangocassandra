@@ -12,7 +12,7 @@
                 {% include 'feedback.html' with feedback=feedback %}
                 <div class="relative closeinfo">
                     <div class="message-confirm margin-general-25 radius-general ">QR Code url
-                        -> http://{{ BASE_URL }}/business/qrcode/</div>
+                        -> {{ BASE_URL }}/qrcode/{{ qrcode.id }}/</div>
                 </div>
                 <div class="clean"></div>
                 <form class="backend-setting edit-deal" data-id="" method="post">
@@ -23,7 +23,7 @@
                             <li class="clear-fix margin-general">
                                 <label>
                                     <span class="txt-size">Business Profile link</span>
-                                    <input type="radio" value="profile" name="qrcode" {% if business.qrcode_type == 'profile' %}checked{% endif %} />
+                                    <input type="radio" value="profile" name="qrcode" {% if qrcode.qrcode_type == 'profile' %}checked{% endif %} />
                                     <input type="hidden" value="{{ business.id }}" name="merchantId"/>
                                 </label>
                             </li>
@@ -37,14 +37,14 @@
                                 <label>
                                     <span class="txt-size">Link</span>
                                     <input type="radio" name="qrcode"
-                                        value="link" {% if business.qrcode_type == 'link' %}
+                                        value="link" {% if qrcode.qrcode_type == 'link' %}
                                         checked{% endif %} />
                                 </label>
                             </li>
                             <li class="clear-fix">
                                 <label>
                                     <input class="radius-general"
-                                        value="{% if business.qrcode_type == 'link' %}{{ business.qrcode_uri }}{% endif %}"
+                                        {% if qrcode.qrcode_type == 'link' %}value="{{ qrcode.uri }}"{% endif %}
                                         placeholder="Enter the link – ie: http://www.google.com"
                                         type="text" name="link_content">
                                 </label>
@@ -56,14 +56,14 @@
                                 <label>
                                     <span class="txt-size">Video</span>
                                     <input type="radio" name="qrcode"
-                                        value="video" {% if business.qrcode_type == 'video' %}
+                                        value="video" {% if qrcode.qrcode_type == 'video' %}
                                         checked{% endif %} />
                                 </label>
                             </li>
                             <li class="clear-fix ">
                                 <label>
                                     <input class="radius-general"
-                                        value="{% if business.qrcode_type == 'video' %}{{ business.qrcode_uri }}{% endif %}"
+                                        {% if business.qrcode_type == 'video' %}value="{{ qrcode.uri }}"{% endif %}
                                         placeholder="Enter the link to the video – ie: http://www.youtube.com"
                                         type="text" name="video_content">
                                 </label>
@@ -78,9 +78,9 @@
                             {% for offer in offers %}
                             <li class="clear-fix margin-general">
                                 <label>
-                                    <span class="txt-size">{{ offer.title }}<?= $deal->title ?></span>
+                                    <span class="txt-size">{{ offer.title }}</span>
                                     <input type="radio"
-                                           name="qrcode" {% if business.qrcode_type == 'deal' and business.qrcode_uri == offer.id %}
+                                           name="qrcode" {% if qrcode.qrcode_type == 'offer' and qrcode.uri == offer.public_url %}
                                            checked{% endif %}
                                            value="{{ offer.id }}"/> {% if offer.active %}[active]{% else %}[expired]{% endif %}
                                 </label>
@@ -95,10 +95,10 @@
                         </li>
                         <fieldset>
                             <h3 class="margin-general"><strong>History</strong></h3>
-                            {% if redirections %}
-                            {% for redirection in redirections %}<br />
+                            {% if scans %}
+                            {% for scan in scans %}<br />
                                 <div class="relative closeinfo">
-                                    <div class="message-confirm margin-general-25 radius-general ">{{ redirection.uri }} ({{ redirection.hits }})</div>
+                                    <div class="message-confirm margin-general-25 radius-general ">{{ scan.uri }} ({{ scan.hits }})</div>
                                 </div>
                                 <div class="clean"></div>
                             {% endfor%}
