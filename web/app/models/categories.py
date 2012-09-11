@@ -5,6 +5,7 @@ from knotis import KnotisModel
 from contents import Content, ContentTypes
 from foreignkeynonrel.models import ForeignKeyNonRel
 
+
 class CategoryManager(Manager):
     def create_category(
         self,
@@ -38,3 +39,6 @@ class Category(KnotisModel):
     name = ForeignKeyNonRel(Content, related_name='category_name')
 
     objects = CategoryManager()
+
+    def short_name(self):
+        return self.name.value.strip().lower()[:3]

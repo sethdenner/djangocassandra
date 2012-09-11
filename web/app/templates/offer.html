@@ -1,0 +1,333 @@
+{% extends 'master.html' %}
+
+{% block title %}Knotis | {{ offer.title.value }}{% endblock title%}
+
+{% load thumbnail %}
+
+{% block content %}
+<div id="content" class="back-deals">
+<div class="curve">
+<div class="wrapper clear-fix">
+<div class="clear-fix right">
+    {% include 'offer_profile_menu.html' with offer=offer categories=categories category_offers=category_offers %}
+</div>
+{% if offer.active %}
+<div class="box-deals box-border left margin-general-25">
+    <div class="deal-profile-left">
+        <div class="deals-image image radius-general relative">
+            <div class="active absolute"></div>
+            <a class="gallery-zoom"
+               href="{{ MEDIA_URL }}{{ offer.image.image }}"
+               title="{{ offer.title.value }}">
+               {% if offer.image %}
+               <div class="zoom zoom-inactive"></div>
+               {% endif %}
+            </a>
+            <img class="deal-image-profile" alt=""
+                {% thumbnail offer.image.image '190x192' as image %}
+                src="{{ image.url }}"
+                {% empty %}
+                src="{{ STATIC_URL }}images/layouts/knotis-deal-image.jpg"
+                {% endthumbnail %} />
+        </div>
+        <div class="clean"></div>
+        {% if offer.address %}
+        <script>
+            $(document).ready(function() {
+                var mapOptions = {
+                    center : new google.maps.LatLng({{ offer.lattitude }}, {{ offer.longitude }}),
+                    {% thumbnail offer.image.image '33x33' as image %}
+                    icon: '{{ image.url }}',
+                    {% empty %}
+                    icon: '{{ STATIC_URL }}images/layouts/knotis-icon-rounded-map.png',
+                    {% endthumbnail %}
+                    zoom:15,
+                    mapTypeId : google.maps.MapTypeId.ROADMAP
+                },
+                map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions),
+                markers = [
+                    new KnotisMarker({
+                        map:map,
+                        profile:1,
+                        position: new google.maps.LatLng({{ offer.lattitude }}, {{ offer.longitude }})
+                    })
+
+                ];
+                map.setMapType(HYBRID);
+            });
+        </script>
+        <div id="map_canvas" class="deals-image-map content-map radius-general margin-general ">
+        </div>
+        <p class=" margin-general address radius-general"><strong>{{ offer.address.value.value }}</strong></p>
+        {% endif %}
+        <p class=" margin-general conditions radius-general"><a href="#" class="load_conditions">Universal Fine Print</a> </p>
+    </div>
+    <div class="deal-profile-right">
+        <h2 class="margin-general"><strong>
+            {% if offer %}
+            {% if offer.title_type == 1 %}
+            ${{ offer.price_discount }} for ${{ offer.price_retail }} at {{ offer.business.business_name.value }}
+            {% endif %}
+            {% if offer.title_type == 2 %}
+            ${{ offer.price_discount }} for {{ offer.title.value }} at {{ offer.business.business_name.value }}
+            {% endif %}
+            {% if offer.title_type == 3 %}
+            {{ offer.title.value }}
+            {% endif %}
+            {% endif %}
+        </strong></h2>
+        <p>
+            <a class="txt-size margin-general clear-fix business-buy business-link" alt="{{ offer.business.business_name.value }}"
+               title="{{ offer.business.business_name.value }}" target="_blank"
+               href="/{{ offer.business.backend_name }}/">{{ offer.business.business_name.value }}</a>
+        </p>
+        <h4 class="margin-general">{% if offer %}{{ offer.summary.value }}{% endif %}</h4>
+        <div class="clear-fix margin-general">
+            <p class="price left"><span>$</span>{{ offer.price_discount }}</p>
+            <form method="post" action="/purchase/offer/">
+                <div class="button-deals-profile left">
+                    <input class="button radius-general left{% if user.is_anonymous %} log_in{% endif %}"
+                           value="Buy Now" type="submit" name="Buy Now">
+                </div>
+                <input type="hidden" name="dealId" value="{{ offer.id }}" />
+            </form>
+        </div>
+        <ul class="number clear-fix margin-general radius-general">
+            <li>
+                <p>{{ offer.savings_percent }}%</p>
+                <span class="txt-size">SAVINGS</span>
+            </li>
+            <li>
+                <p>{% if offer.unlimited %}Unlimited{% else %}{{ offer.stock }}{% endif %}</p>
+                <span class="txt-size">{% if offer.unlimited %}Stock{% else %}REMAINING{% endif %}</span>
+            </li>
+            <li>
+                <p>{{ offer.days_remaining }} Days</p>
+                <span class="txt-size">REMAINING</span>
+            </li>
+        </ul>
+        <p class="txt-size margin-general">{{ offer.description.value }}
+        <ul class="social clear-fix margin-general">
+            <li>
+                <a href="http://www.facebook.com/sharer.php?u={{ BASE_URL }}/offer/{{ offer.id}}/"
+                   target="_blank"><img src="{{ STATIC_URL }}images/layouts/shared-facebook.png"
+                                        title="Share Facebook" alt="Shared Facebook"/></a>
+            </li>
+            <li>
+                <a href="#"> <a target="_blank"
+                        href="http://twitter.com/intent/tweet?url={{ BASE_URL }}/offer/{{ offer.id }}/"><img
+                        src="{{ STATIC_URL }}images/layouts/shared-twitter.png" title="Shared Twitter"
+                        alt="Shared Twitter"/></a></a>
+            </li>
+            <li class="mail"><a
+                    href="mailto:?subject=Check out this deal on Knotis&body=Hi there,%0D%0A%0D%0AI saw this on Knotis and I liked it so much I wanted to share it with you.%0D%0A%0D%0A{{ BASE_URL }}/offer/{{ offer.id }}/ %0D%0A%0D%0A.">
+                E-mail</a></li>
+        </ul>
+        <p class="clear-fix">
+            <span class="left follow-deal ">
+            <a class="button-follow right radius-general {% if not user.is_anonymous %}
+                {% if user in followers %}unfollow{% else %}followmen{% endif %}"
+                href="{% if user.is_anonymous %}/login/{% else %}#{% endif %}">{% if user in followers %}
+                Unsubscribe{% else %}Subscribe{% endif %}
+                {% else %}Subscribe{% endif %}
+            </a>
+            </span>
+            <span class="left txt-deal-follow">If you want to stay informed of all deals of this business</span>
+        </p>
+    </div>
+</div>
+
+{% else %}
+
+<div class="box-deals box-border left margin-general-25">
+    <div class="deal-profile-left">
+        <div class="deals-image image radius-general relative">
+            <?php if ($deal->stock==0 AND $deal->unlimited==0) { ?>
+            <div class="exhausted absolute"></div>
+            <?php } else { ?>
+            <div class="expired absolute"></div>
+            <?php } ?>
+            <a class="gallery-zoom"
+               href="<?php if ($deal->image != '') echo base_url() . 'uploads/' . $deal->image . '';?>"
+               title="<?=$deal->title?>">
+                <?php if ($deal->image != '') { ?>
+                <div class="zoom zoom-inactive"></div>
+                <?php }?>
+            </a>
+            <img class="deal-image-profile" alt=""
+                 src="<?php if ($deal->image == '') echo base_url() . 'images/layouts/knotis-deal-image.jpg'; else echo site_url('images/thumb') . '/190/192/' . $deal->image;?>"/>
+        </div>
+
+        <div class="clean"></div>
+        <?php if ($deal->address != '') { ?>
+        <script>
+            $(document).ready(function() {
+                var mapOptions = {
+                    center : new google.maps.LatLng(<?= $deal->lat ?>, <?= $deal->lon ?>),
+                    icon: '<?php if ($deal->image == '') echo base_url() . 'images/layouts/knotis-icon-rounded-map.png'; else echo site_url('images/thumb') . '/33/33/' . $deal->image;?>',
+                    zoom:15,
+
+                    mapTypeId : google.maps.MapTypeId.ROADMAP
+                },
+                        map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions),
+                        markers = [
+                            new KnotisMarker({
+                                map:map,
+                                profile:1,
+                                position: new google.maps.LatLng(<?= $deal->lat ?>,<?= $deal->lon ?>)
+                            })
+
+                        ];
+
+                map.setMapType(HYBRID);
+
+
+            });
+
+
+        </script>
+
+
+        <div id="map_canvas" class="deals-image-map content-map radius-general margin-general ">
+
+        </div>
+        <p class=" margin-general address radius-general"><strong><?= $deal->address ?></strong></p>
+        <?php }?>
+
+
+    </div>
+    <div class="deal-profile-right">
+        <h2 class="margin-general"><strong><?php if (isset($deal))
+            if ($deal->titleType == 1)
+                echo '$' . $deal->newprice . ' for $' . $deal->oldprice . ' at ' . $business->name;
+
+            if ($deal->titleType == 2)
+                echo '$' . $deal->newprice . ' for ' . $deal->title . ' at ' . $business->name;
+
+            if ($deal->titleType == 3)
+                echo $deal->title;
+            ?>
+
+        </strong></h2>
+
+        <p>
+            <a class="txt-size margin-general clear-fix business-buy business-link" alt="<?=$business->name?>"
+               title="<?=$business->name?>" target="_blank"
+               href="<?=site_url("business/profile/") . '/' . $business->id?>"><?=$business->name?></a>
+        </p>
+        <h4 class="margin-general"><?php if (isset($deal)) echo $deal->description; ?></h4>
+
+        <div class="clear-fix margin-general">
+            <p class="price left"><span>$</span><?php if (isset($deal)) echo $deal->newprice; ?></p>
+
+
+            <div class="button-deals-profile left">
+                <a class=" button-none radius-general" href="#">Buy now</a>
+            </div>
+        </div>
+        <ul class="number clear-fix margin-general radius-general">
+            <li>
+                <p><?php echo substr(((($deal->oldprice - $deal->newprice)) / $deal->oldprice) * 100, 0, 2); ?>%</p>
+                <span class="txt-size">SAVINGS</span>
+            </li>
+            <li>
+                <p><?php if (isset($deal)) echo $deal->purchase; ?></p>
+                <span class="txt-size">PURCHASED</span>
+            </li>
+            <li>
+                <p>End</p>
+                <span class="txt-size">REMAINING</span>
+            </li>
+        </ul>
+        <p class="txt-size margin-general"><?php if (isset($deal)) echo $deal->extendedDescription; ?>
+        <ul class="social clear-fix margin-general">
+            <li>
+                <a href="http://www.facebook.com/sharer.php?u=<?= site_url('deal/profile') . '/' . $deal->id ?>"
+                   target="_blank"><img src="<?php echo base_url() ?>/images/layouts/shared-facebook.png"
+                                        title="Share Facebook" alt="Shared Facebook"/></a>
+            </li>
+            <li>
+                <a href="#"> <a
+                        href="http://twitter.com/intent/tweet?url=<?= site_url('deal/profile') . '/' . $deal->id ?>"><img
+                        src="<?php echo base_url() ?>/images/layouts/shared-twitter.png" title="Shared Twitter"
+                        alt="Shared Twitter"/></a></a>
+            </li>
+            <li class="mail"><a
+                    href="mailto:?subject=Check out this deal on Knotis&body=Hi there,%0D%0A%0D%0AI saw this on Knotis and I liked it so much I wanted to share it with you.%0D%0A%0D%0Ahttp://<?php echo $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?> %0D%0A%0D%0A.">
+                E-mail</a></li>
+        </ul>
+        <p class="clear-fix">
+            <span class="left follow-deal ">
+
+            <a class="button-follow right radius-general <?php if ($this->auth->is_user()) {
+                if ($this->knotis_api->is_follower($business->id, $this->auth->get_this_user()->id)) {
+                    echo 'unfollowme';
+                    echo '" data-idFollow="' . $this->knotis_api->is_follower($business->id, $this->auth->get_this_user()->id)->id;
+                    echo '" data-idUser="' . $this->session->userdata('user_id');
+                } else {
+                    echo 'followme';
+                }
+            } ?>" data-id="<?=$business->id?>"
+               href="<?php if (!$this->auth->is_user()) echo site_url('home/login'); else echo '#';  ?>"> <?php if ($this->auth->is_user()) {
+                if ($this->knotis_api->is_follower($business->id, $this->auth->get_this_user()->id)) {
+                    echo 'Unsubscribe';
+                } else {
+                    echo 'Subscribe';
+                }
+            } else {
+                echo 'Subscribe';
+            } ?></a>
+            </span>
+            <span class="left txt-deal-follow">If you want to stay informed of all deals of this business</span>
+        </p>
+    </div>
+</div>
+
+
+{% endif %}
+
+{% if offers %}
+<div class="box-deals box-border left">
+    <h3 class="margin-general-25"><strong>Nearby deals</strong></h3>
+
+    <?php foreach ($deals->result() as $deal_next) {
+    $business = $this->knotis_api->get_this_business_byid($deal_next->merchantId);
+    ?>
+    <?php if ($deal_next->id != $deal->id) { ?>
+
+        <div class="nearby-content clear-fix margin-general-25 left">
+            <div class="deals-image image-nearby radius-general left">
+                <a class="clear-fix txt-size"
+                   href="<?=site_url("deal/profile/" . $deal_next->id); ?>">
+                    <img alt="<?= $deal_next->title ?>" title="<?= $deal_next->title ?>"
+                         src="<?php if ($deal_next->image == '') echo base_url() . 'images/layouts/knotis-deal-image.jpg'; else echo site_url('images/thumb') . '/62/62/' . $deal_next->image;?>"
+                         height="62" width="62"/>
+                </a>
+
+            </div>
+            <div class="txt-nearby left">
+                <a class="txt-size" href="<?=site_url("deal/profile/" . $deal_next->id); ?>"><strong>
+                    <?php
+                                    if ($deal_next->titleType == 1)
+                    echo '$' . $deal_next->newprice . ' for $' . $deal_next->oldprice . ' at ' . $business->name;
+
+                    if ($deal_next->titleType == 2)
+                        echo '$' . $deal_next->newprice . ' for ' . $deal_next->title . ' at ' . $business->name;
+
+                    if ($deal_next->titleType == 3)
+                        echo $deal_next->title; ?>
+
+                </strong></a>
+
+
+            </div>
+        </div>
+        <?php } ?>
+    <?php }?>
+</div>
+{% endif %}
+
+</div>
+</div>
+</div>
+{% endblock content %}

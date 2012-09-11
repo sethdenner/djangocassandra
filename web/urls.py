@@ -73,6 +73,11 @@ urlpatterns = patterns('',
         name='dashboard'
     ),
     url(
+        r'^offer/(?P<offer_id>[^/]+)/$',
+        'app.views.offer.offer',
+        name='offers'
+    ),
+    url(
         r'^offers/$',
         'app.views.offer.offers',
         name='offers'

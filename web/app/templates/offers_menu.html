@@ -13,15 +13,19 @@
             {% if not current_category %}<div class="arrow arrow-All"></div>{% endif %}
         </li>
         {% for category in categories %}
-        <li class="relative {{ category.backend_name }}">
-            <a class="{% if category.backend_name == current_category %}active {% endif %}categories-filter" 
+        {% for key, value in category_offers.items %}
+        {% if category.short_name == key %}
+        <li class="relative {{ category.short_name }}">
+            <a class="{% if category.short_name == current_category %}active {% endif %}categories-filter" 
             data-filter="actives" 
-            data-category_name="{{ category.backend_name }}" 
+            data-category_name="{{ category.short_name }}" 
             href="#" 
-            data-category="{{ category.id }}">{{ category.name }} ({{ category.active_offers }})</a>
-            {% if category.backend_name == current_category %}<div class="arrow arrow-{{ category.backend_name }}"></div>
+            data-category="{{ category.id }}">{{ category.name.value }} ({{ value|length }})</a>
+            {% if category.short_name == current_category %}<div class="arrow arrow-{{ category.short_name }}"></div>
             {% endif %}
         </li>
+        {% endif %}
+        {% endfor %}
         {% endfor %}
     </ul>
 </div>

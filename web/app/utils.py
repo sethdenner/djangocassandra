@@ -7,6 +7,7 @@ from django.template import Context
 from app.models.contents import Content
 from app.models.users import UserProfile
 
+
 class View:
 
     @staticmethod

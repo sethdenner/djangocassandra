@@ -21,7 +21,7 @@
                     <div id="ajaxBusy" class="absolute"><img src="{{ STATIC_URL }}/images/ajaxloading.gif" title="Loading" alt="loading"/> </div>
                 </div>
                 <div class="deal_list_backend">
-                    {% include 'offers_list.html' with offers=offers business=business %}
+                    {% include 'offers_list_manage.html' with offers=offers business=business %}
                 </div>
             </div>
             {% include 'dashboard_menu.html' with current_page='offers_dashboard' %}

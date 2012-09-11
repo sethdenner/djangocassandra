@@ -108,9 +108,44 @@ def offers(request):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
     template_parameters['current_page'] = 'offers'
 
+    try:
+        template_parameters['offers'] = Offer.objects.filter(status=OfferStatus.CURRENT)
+    except:
+        pass
+
+    try:
+        template_parameters['categories'] = Category.objects.all()
+        template_parameters['category_offers'] = Offer.objects.get_offers_category_dict()
+    except:
+        pass
+
     return render(
         request,
         'offers.html',
+        template_parameters
+    )
+
+
+def offer(
+    request,
+    offer_id
+):
+    template_parameters = ViewUtils.get_standard_template_parameters(request)
+
+    try:
+        template_parameters['offer'] = Offer.objects.get(pk=offer_id)
+    except:
+        redirect(offers)
+
+    try:
+        template_parameters['categories'] = Category.objects.all()
+        template_parameters['category_offers'] = Offer.objects.get_offers_category_dict()
+    except:
+        pass
+
+    return render(
+        request,
+        'offer.html',
         template_parameters
     )
 
@@ -129,7 +164,7 @@ def dashboard(request):
     if business:
         offers = None
         try:
-            template_parameters['offers'] = Offer.objects.filter(business=business)
+            template_parameters['offers'] = Offer.objects.filter(business=business, status=OfferStatus.CREATED)
         except:
             pass
 
@@ -211,6 +246,6 @@ def get_offers_by_status(
 
     return render(
         request,
-        'offers_list.html',
+        'offers_list_manage.html',
         template_parameters
     )

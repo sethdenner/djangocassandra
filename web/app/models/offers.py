@@ -107,6 +107,27 @@ class OfferManager(Manager):
         offer.save()
         return offer
 
+    def get_offers_category_dict(self):
+        categories = None
+        try:
+            categories = Category.objects.all()
+        except:
+            pass
+
+        if not categories:
+            return None
+
+        results = {}
+
+        for category in categories:
+            try:
+                offers = self.filter(category=category)
+                if len(offers):
+                    results[category.short_name()] = offers
+            except:
+                pass
+
+        return results
 
 class OfferTypes:
     NORMAL = 0
@@ -168,11 +189,14 @@ class Offer(KnotisModel):
     unlimited = NullBooleanField(default=False)
 
     published = NullBooleanField(default=False)
-    active = NullBooleanField(default=False)
+    active = NullBooleanField(default=False, db_index=True)
 
     pub_date = DateTimeField(null=True, auto_now_add=True)
 
     objects = OfferManager()
+
+    def savings(self):
+        return self.price_retail - self.price_discount
 
     def public_url(self):
         return settings.BASE_URL + '/offer/' + self.id + '/'

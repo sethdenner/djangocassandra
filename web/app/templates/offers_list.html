@@ -1,83 +1,62 @@
 {% load thumbnail %}
-<div class="deal_list_backend">
-    {% if offers %}
+<div class="deal-content deal-data" >
+    {% if offers%}
     {% for offer in offers %}
     <div class="line-bottom clear-fix">
         <div class="deals-image radius-general left relative">
-            <div class="ribbon-backend{% if not offer.active %}-inactive{% endif %}" ></div>
-            <div class="category food"></div>
-            <img alt=""
-                 {% thumbnail offer.image.image '72x72' as image %}
-                 src="{{ image.url }}"
-                 {% empty %}
-                 src="{{ STATIC_URL }}/images/layouts/knotis-deal-image.jpg"
-                 {% endthumbnail %}
-                 class="image-knotis-thumb"/>
+            <div class="category cat-<?=substr($this->knotis_api->get_this_category($row->categoryId)->title, 0, 3) ?>"></div>
+            <a class="clear-fix txt-size"
+               href="/offer/{{ offer.id }}/">
+                <img alt=""
+                     {% thumbnail offer.image.image '72x72' as image %}
+                     src="{{ image.url }}"
+                     {% empty %}
+                     src="{{ STATIC_URL }}images/layouts/knotis-deal-image.jpg"
+                     {% endthumbnail %}
+                     class="image-knotis-thumb"/>
+            </a>
         </div>
         <div class="deals-txt left">
-            <h5><strong>{{ offer.title.value }}</strong></h5>
-            <ul class="date-dash clear-fix">
-                <li>{{ offer.start_date|date:'N j, Y - f a' }}</li>
-                <li>{{ offer.end_date|date:'N j, Y - f a' }}</li>
-            </ul>
-            <a class="txt-size margin-general clear-fix business" alt="{{ offer.business.business_name.value }}"
-               title="{{ offer.business.business_name.value }}" target="_blank"
+            <h5><strong><a href="/offer/{{ offer.id }}/">
+                {% if offer.title_type == 1 %}
+                ${{ offer.price_discount }} for ${{ offer.price_retail }} at {{ offer.business.business_name.value }}
+                {% endif %}
+                {% if offer.title_type == 2 %}
+                ${{ offer.price_discount }} for {{ offer.title.value }} at {{ offer.business.business_name.value }}
+                {% endif %}
+                {% if offer.title_type == 3 %}
+                {{ offer.title.value }}
+                {% endif %}
+            </a></strong>
+            </h5>
+            <a class="txt-size margin-general clear-fix business-link"
+               title="{{ offer.business.business_name.value }}"
                href="/{{ offer.business.backend_name }}/" >{{ offer.business.business_name.value }}</a>
-            <p class="txt-size margin-general">{{ offer.description.value }}</p>
-            {% if not business %}
-            <ul class="clear-fix txt-size date-deals">
-                <li><strong>Purchased on: </strong>{{ offer.purchase_date }}</li>
-                <li><strong>Deals:</strong> {{ offer.available }}</li>
-                <li><strong>Redeemed:</strong> {{ offer.redeemed }}</li>
-            </ul>
-            {% endif %}
+            <p class="txt-size">{{ offer.description.value|truncatewords:30 }}</p>
         </div>
         <div class="deals-action radius-general right">
-            {% if business %}
-            {% if business != offer.business %}
-            <a class="print button margin-general"
-               href="/offers/print/{{ offer.id }}/" target="_blank">Print</a>
-            {% else %}
-            {% if offer.status != 'complete' %}
-            <a class="print button margin-general"
-               href="/business/offers/update/{{ offer.id }}/">Edit</a>
-            {% endif %}
-            {% if offer.status != 'created' %}
-            <div class="clear-fix ">
-                <a class="print button margin-general" target="_blank"
-                   href="/offer/{{ offer.id }}/">View Deal</a>
+            <div class="deals-action-top  relative">
+                <div class="arrow-small absolute"></div>
+                <p class="txt-center">savings</p>
+                <em class="txt-center txt-white clear-fix">${{ offer.savings }}</em>
             </div>
-            {% endif %}
-            {% if offer.status == 'current' %}
-            <div class="clear-fix margin-general">
-                <a class="{% if not offer.active %}play{% else %}pause{% endif %} relative playstop"
-                   data-status="{% if offer.active %}1{% else %}0{% endif %}"
-                   data-id="{{ offer.id }}"></a>
-            </div>
-            {% endif %}
-            {% if offer.status == 'complete' %}
-            <div class="clear-fix ">
-                <a class="print button margin-general" target="_blank"
-                   href="/business/offer/rerun/{{ offer.id }}">Re-run Deal</a>
-            </div>
-            <div class="clear-fix ">
-                <a id="softDeleteClick" class="print button margin-general" target="_blank" 
-                   data-id="{{ offer.id }}">Delete Deal</a>
-            </div>
-            {% endif %}
-            {% endif %}
-            {% else %}
-            {% if offer.purchased > offer.redeemed %}
-            <a class="print button margin-general"
-               href="/offer/print/{{ offer.id }}" target="_blank">Print</a>
-            {% endif %}
-            <a class="print button margin-general"
-               href="/offer/{{ offer.id }}" target="_blank">View Deal</a>
-            {% endif%}
+            <a class="clear-fix txt-center txt-size gradient-gray"
+               href="/offer/{{ offer.id }}/">View Deal</a>
         </div>
     </div>
     {% endfor %}
     {% else %}
-    <p class="message-confirm message-info radius-general txt-size">No deals here</p>
+    <p class="message-confirm message-warn radius-general txt-size">No deals.</p>
+    {% endif %}
+    {% if not search %}
+    {% if more_results %}
+    <div class="more-results">
+        <a class="button-lead txt-size clear-fix gradient-gray txt-center radius-general btn-grey load_more_results"
+           data-id="" data-cityId="" data-neightbourhoodId=""
+           data-filter="" data-offset="" href="#">
+            <span>Load more results</span>
+        </a>
+    </div>
+    {% endif %}
     {% endif %}
 </div>
