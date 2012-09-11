@@ -1,4 +1,4 @@
-from django.db.models import CharField, DateTimeField, Manager
+from django.db.models import CharField, DateTimeField, URLField, Manager
 from django.utils.http import urlquote
 from django.contrib.auth.models import User as DjangoUser
 from foreignkeynonrel.models import ForeignKeyNonRel
@@ -8,6 +8,7 @@ from app.models.knotis import KnotisModel
 from app.models.contents import Content, ContentTypes
 from app.models.endpoints import EndpointPhone, EndpointAddress, \
     EndpointTwitter, EndpointFacebook, EndpointYelp
+from app.models.media import Image
 
 
 class BusinessManager(Manager):
@@ -129,6 +130,8 @@ class Business(KnotisModel):
     facebook_uri = ForeignKeyNonRel(EndpointFacebook)
     yelp_id = ForeignKeyNonRel(EndpointYelp)
 
+    primary_image = ForeignKeyNonRel(Image)
+
     pub_date = DateTimeField('date published', auto_now_add=True)
 
     def __unicode__(self):
@@ -162,14 +165,14 @@ class Business(KnotisModel):
             if name != self.business_name.value:
                 backend_name = urlquote(name.strip().lower().replace(' ', '-'))
                 self.backend_name = backend_name
-                self.business_name.update(name)
+                self.business_name = self.business_name.update(name)
                 is_self_dirty = True
 
         if None != summary:
             current_summary = self.summary.value if self.summary else None
             if summary != current_summary:
                 if self.summary:
-                    self.summary.update(summary)
+                    self.summary = self.summary.update(summary)
                 else:
                     self.summary = Content.objects.create(
                         content_type=ContentTypes.BUSINESS_SUMMARY,
@@ -178,13 +181,13 @@ class Business(KnotisModel):
                         parent=self.content_root,
                         value=summary
                     )
-                    is_self_dirty = True
+                is_self_dirty = True
 
         if None != description:
             current_description = self.description.value if self.description else None
             if description != current_description:
                 if self.description:
-                    self.description.update(description)
+                    self.description = self.description.update(description)
                 else:
                     self.description = Content.objects.create(
                         content_type=ContentTypes.BUSINESS_DESCRIPTION,
@@ -193,7 +196,7 @@ class Business(KnotisModel):
                         parent=self.content_root,
                         value=description
                     )
-                    is_self_dirty = True
+                is_self_dirty = True
 
 
         if None != address:
@@ -258,3 +261,9 @@ class Business(KnotisModel):
 
         if is_self_dirty:
             self.save()
+
+
+class BusinessLink(KnotisModel):
+    business = ForeignKeyNonRel(Business)
+    uri = URLField()
+    title = CharField(max_length=64)

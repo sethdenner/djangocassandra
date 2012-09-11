@@ -201,7 +201,7 @@ class Offer(KnotisModel):
             current_title = self.title.value if self.title else None
             if title != current_title:
                 if self.title:
-                    self.title.update(title)
+                    self.title = self.title.update(title)
                 else:
                     self.title = Content.objects.create(
                         content_type=ContentTypes.OFFER_TITLE,
@@ -210,13 +210,13 @@ class Offer(KnotisModel):
                         parent=self.content_root,
                         value=title
                     )
-                    is_self_dirty = True
+                is_self_dirty = True
 
         if None != description:
             current_description = self.description.value if self.description else None
             if description != current_description:
                 if self.description:
-                    self.description.update(description)
+                    self.description = self.description.update(description)
                 else:
                     self.description = Content.objects.create(
                         content_type=ContentTypes.OFFER_DESCRIPTION,
@@ -225,13 +225,13 @@ class Offer(KnotisModel):
                         parent=self.content_root,
                         value=description
                     )
-                    is_self_dirty = True
+                is_self_dirty = True
 
         if None != restrictions:
             current_restrictions = self.restrictions.value if self.restrictions else None
             if restrictions != current_restrictions:
                 if self.restrictions:
-                    self.restrictions.update(restrictions)
+                    self.restrictions = self.restrictions.update(restrictions)
                 else:
                     self.restricitons = Content.objects.create(
                         content_type=ContentTypes.OFFER_RESTRICTIONS,
@@ -240,7 +240,7 @@ class Offer(KnotisModel):
                         parent=self.content_root,
                         value=restrictions
                     )
-                    is_self_dirty = True
+                is_self_dirty = True
 
         if None != city and city != self.city:
             self.city = city
