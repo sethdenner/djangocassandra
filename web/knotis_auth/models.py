@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth import models
 from django.db.models import Manager
 from app.models.users import UserProfile, AccountTypes
-from app.models.endpoints import Endpoint
+from app.models.endpoints import Endpoint, EndpointTypes
 from app.utils import Email
 
 class UserManager(Manager):
@@ -28,7 +28,7 @@ class UserManager(Manager):
 
         email_endpoint = Endpoint.objects.create_endpoint(
             new_user,
-            Endpoint.EndpointTypes.EMAIL,
+            EndpointTypes.EMAIL,
             email,
             primary=True
         )

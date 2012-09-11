@@ -119,10 +119,21 @@ def offers(request):
 def dashboard(request):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
 
+    business = None
+    try:
+        business = Business.objects.get(user=request.user)
+        template_parameters['business'] = business
+    except:
+        pass
+
+    if business:
+        offers = None
+        try:
+            template_parameters['offers'] = Offer.objects.filter(business=business)
+        except:
+            pass
+
     template_parameters['user_profile'] = UserProfile.objects.get(user=request.user)
-    business = Business.objects.get(user=request.user)
-    template_parameters['business'] = business
-    template_parameters['offers'] = Offer.objects.filter(business=business)
 
     return render(
         request,

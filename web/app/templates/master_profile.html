@@ -7,11 +7,8 @@
     {% include 'scripts.html' with maps=maps gallery=gallery do_upload=do_upload graphics=graphics %}
 </head>
 <body>
-  {% include 'header.html' %}
-  <div id="content">
-    {% block content %}
+    {% block body %}
     {% endblock %}
-  </div>
-  {% include 'footer.html' %}
+    {% include 'footer.html' %}
 </body>
 </html>

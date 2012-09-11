@@ -23,17 +23,17 @@ class EndpointManager(Manager):
         disabled=False
     ):
         class_type = Endpoint
-        if Endpoint.EndpointTypes.EMAIL == endpoint_type:
+        if EndpointTypes.EMAIL == endpoint_type:
             class_type = EndpointEmail
-        elif Endpoint.EndpointTypes.ADDRESS == endpoint_type:
+        elif EndpointTypes.ADDRESS == endpoint_type:
             class_type = EndpointAddress
-        elif Endpoint.EndpointTypes.PHONE == endpoint_type:
+        elif EndpointTypes.PHONE == endpoint_type:
             class_type = EndpointPhone
-        elif Endpoint.EndpointTypes.FACEBOOK == endpoint_type:
+        elif EndpointTypes.FACEBOOK == endpoint_type:
             class_type = EndpointFacebook
-        elif Endpoint.EndpointTypes.TWITTER == endpoint_type:
+        elif EndpointTypes.TWITTER == endpoint_type:
             class_type = EndpointTwitter
-        elif Endpoint.EndpointTypes.YELP == endpoint_type:
+        elif EndpointTypes.YELP == endpoint_type:
             class_type = EndpointYelp
         else:
             class_type = Endpoint
@@ -120,20 +120,17 @@ class Endpoint(KnotisModel):
         primary=None,
         disabled=None
     ):
-        is_self_dirty = False
         if None != value:
             current_value = self.value.value if self.value else None
             if value != current_value:
                 if self.value:
-                    self.value.update(value)
+                    self.value = self.value.update(value)
                 else:
                     self.value = Content.objects.create(
 
                     )
-                    is_self_dirty = True
 
-        if is_self_dirty:
-            self.save()
+                self.save()
 
     @staticmethod
     def _value_string_to_content(kwargs):

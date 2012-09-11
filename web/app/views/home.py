@@ -21,16 +21,6 @@ def index(
     if 'login' == login:
         template_parameters['login'] = True
 
-    if request.user.is_authenticated():
-        user_profile = UserProfile.objects.get(user=request.user)
-        template_parameters['user_profile'] = user_profile
-        template_parameters['username_truncated'] = request.user.username[:9] + '...'
-        template_parameters['avatar_uri'] = UserUtils.get_avatar(
-            request.user.username,
-            None,
-            20
-        )
-
     return render(
         request,
         'home.html',

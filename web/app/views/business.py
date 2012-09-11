@@ -1,13 +1,13 @@
 from django.contrib.auth.models import User
-from django.forms import Form, ModelChoiceField, CharField, URLField
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.forms import Form, ModelForm, ModelChoiceField, CharField, URLField
+from django.shortcuts import render, redirect
 
 from app.models.users import UserProfile
 from app.models.contents import Content
-from app.models.businesses import Business
+from app.models.businesses import Business, BusinessLink
 from app.utils import User as UserUtils
 from app.utils import View as ViewUtils
+
 
 class CreateBusinessForm(Form):
     user = ModelChoiceField(label="User", queryset=User.objects.all())
@@ -28,9 +28,10 @@ class UpdateBusinessForm(Form):
     yelp_id = CharField(label='Yelp ID', required=False)
 
 
-class AddBusinessLinkForm(Form):
-    uri = CharField()
-    title = CharField()
+class AddBusinessLinkForm(ModelForm):
+    class Meta:
+        model = BusinessLink
+        exclude = ('business')
 
 
 def edit_profile(request):
@@ -46,16 +47,24 @@ def edit_profile(request):
         pass #fatal
 
     if request.method.lower() == 'post':
-        update_form = UpdateBusinessForm(request.POST)
-        if update_form.is_valid():
-            if business:
-                business.update(
-                    **update_form.cleaned_data
-                )
-            else:
-                business = Business.objects.create_business(
-                    request.user,
-                    **update_form.cleaned_data
+        if 'submit_profile' in request.POST:
+            update_form = UpdateBusinessForm(request.POST)
+            if update_form.is_valid():
+                if business:
+                    business.update(
+                        **update_form.cleaned_data
+                    )
+                else:
+                    business = Business.objects.create_business(
+                        request.user,
+                        **update_form.cleaned_data
+                    )
+        elif 'submit_links' in request.POST:
+            link_form = AddBusinessLinkForm(request.POST)
+            if link_form.is_valid():
+                BusinessLink.objects.create(
+                    business=business,
+                    **link_form.cleaned_data
                 )
 
     template_parameters = ViewUtils.get_standard_template_parameters(request)
@@ -63,18 +72,23 @@ def edit_profile(request):
     if not update_form:
         if business:
             business_values = {
-                'name': business.business_name.value,
-                'summary': business.summary.value,
-                'description': business.description.value,
-                'address': business.address.value.value,
-                'phone': business.phone.value.value,
-                'twitter_name': business.twitter_name.value.value,
-                'facebook_uri': business.facebook_uri.value.value,
-                'yelp_id': business.yelp_id.value.value
+                'name': business.business_name.value if business.business_name else None,
+                'summary': business.summary.value if business.summary else None,
+                'description': business.description.value if business.description else None,
+                'address': business.address.value.value if business.address else None,
+                'phone': business.phone.value.value if business.phone else None,
+                'twitter_name': business.twitter_name.value.value if business.twitter_name else None,
+                'facebook_uri': business.facebook_uri.value.value if business.facebook_uri else None,
+                'yelp_id': business.yelp_id.value.value if business.yelp_id else None
             }
             update_form = UpdateBusinessForm(business_values)
         else:
             update_form = UpdateBusinessForm()
+
+    try:
+        template_parameters['business_links'] = BusinessLink.objects.filter(business=business)
+    except:
+        pass
 
     template_parameters['business'] = business
     template_parameters['update_form'] = update_form
@@ -86,6 +100,7 @@ def edit_profile(request):
         template_parameters
     )
 
+
 def qrcode(request):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
 
@@ -95,6 +110,7 @@ def qrcode(request):
         template_parameters
     )
 
+
 def tickets(request):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
 
@@ -103,5 +119,29 @@ def tickets(request):
     return render(
         request,
         'manage_tickets.html',
+        template_parameters
+    )
+
+
+def profile(request, backend_name):
+    template_parameters = ViewUtils.get_standard_template_parameters(request)
+
+    business = None
+    try:
+        business = Business.objects.get(backend_name=backend_name)
+    except:
+        return redirect('/')
+
+    template_parameters['business'] = business
+
+    if business:
+        try:
+            template_parameters['business_links'] = BusinessLink.objects.filter(business=business)
+        except:
+            pass
+
+    return render(
+        request,
+        'business_profile.html',
         template_parameters
     )
