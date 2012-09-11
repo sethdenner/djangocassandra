@@ -18,6 +18,7 @@ from models.cities import City
 from models.neighborhoods import Neighborhood
 from models.categories import Category
 from models.users import UserProfile
+from models.transactions import Transaction
 
 from piston.models import Consumer
 
@@ -79,6 +80,7 @@ admin.site.register(Business, BusinessAdmin)
 class GeneralAdmin(admin.ModelAdmin):
     pass
 
+admin.site.register(Transaction, GeneralAdmin)
 admin.site.register(City, GeneralAdmin)
 admin.site.register(Neighborhood, GeneralAdmin)
 admin.site.register(Category, GeneralAdmin)

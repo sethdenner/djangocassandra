@@ -18,6 +18,7 @@ import products
 import categories
 import cities
 import neighborhoods
+import transactions
 
 import media
 
