@@ -99,7 +99,7 @@ class Content(KnotisModel):
     group = ForeignKeyNonRel(Group, null=True, blank=True, default=None)
 
     content_type = FloatField(choices=ContentTypes.CHOICES, blank=True, null=True, db_index=True)
-    locale = CharField(max_length=10, choices=ContentLocales.CHOICES, null=True, default=ContentLocales.CHOICES[0])
+    locale = CharField(max_length=10, choices=ContentLocales.CHOICES, null=True, default=ContentLocales.EN_US)
     name = CharField(max_length=30, null=True, default=None, db_index=True)
     parent = ForeignKeyNonRel('self', blank=True, null=True, related_name='content_parent', default=None)
     previous = ForeignKeyNonRel('self', related_name='content_previous', blank=True, null=True, default=None)
