@@ -1,9 +1,12 @@
 from django.conf import settings
 from django.contrib.auth import models
-from django.db.models import Manager
+from django.db.models import Manager, Model, CharField, IntegerField
 from app.models.users import UserProfile, AccountTypes
 from app.models.endpoints import Endpoint, EndpointTypes
 from app.utils import Email
+
+from foreignkeynonrel.models import ForeignKeyNonRel
+
 
 class UserManager(Manager):
     def create_user(
@@ -15,7 +18,7 @@ class UserManager(Manager):
         account_type=AccountTypes.USER,
         business=False
     ):
-        new_user = models.User.objects.create_user(
+        new_user = super(UserManager, self).create_user(
             email,
             email,
             password
@@ -65,6 +68,7 @@ class UserManager(Manager):
 
         return new_user
 
+
 class User(models.User):
     class Meta:
         proxy = True
@@ -86,3 +90,18 @@ class User(models.User):
             return False
 
         return True
+
+
+class CredentialsTypes:
+    FACEBOOK = 0
+
+    CHOICES = (
+        (FACEBOOK, 'Facebook'),
+    )
+
+
+class Credentials(Model):
+    user = ForeignKeyNonRel(User)
+    credentials_type = IntegerField(choices=CredentialsTypes.CHOICES, null=True, blank=True, default=CredentialsTypes.FACEBOOK)
+    user_identifier = CharField(max_length=256, null=True, blank=True, default=None)
+    value = CharField(max_length=256, null=True, blank=True, default=None)
