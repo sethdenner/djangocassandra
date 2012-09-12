@@ -18,7 +18,7 @@ class UserManager(Manager):
         account_type=AccountTypes.USER,
         business=False
     ):
-        new_user = super(UserManager, self).create_user(
+        new_user = models.User.objects.create_user(
             email,
             email,
             password
