@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'manytomanynonrel',
     'foreignkeynonrel',
     'knotis_auth',
+    'legacy',
     'app',
 )
 
