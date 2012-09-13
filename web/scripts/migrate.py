@@ -47,8 +47,7 @@ def import_user(cursor):
             first_name,
             last_name,
             email,
-            password,
-            send_email=False
+            password
         )
 
 # TODO: sebastian
