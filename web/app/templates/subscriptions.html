@@ -10,8 +10,8 @@
             <div class="box-deals box-border left">
                 <h2 class="backend"><strong>My Subscriptions</strong><div id="ht-40" class="help-icon vertical-align-baseline margin-sides" ></div></h2>
                 {% if subscriptions %}
-                {% for business in subscriptions %}
-                <div class="line-bottom clear-fix margin-general-25 follow-<?= $cont; ?>">
+                {% for subscription in subscriptions %}
+                <div class="line-bottom clear-fix margin-general-25 follow-{{ forloop.counter0 }}">
                     <div class="clear-fix">
                         <div class="deals-image radius-general left relative">
                             <div class="category food"></div>
@@ -20,16 +20,16 @@
                                  class="image-knotis-thumb"/>
                         </div>
                         <div class="deals-txt left">
-                            <h5><strong>{{ business.business_name }}</strong></h5>
-                            <a class="txt-size margin-general clear-fix" href="http://maps.google.com/maps?q={{ business.address.value.value }}" target="_blank">See location on map</a>
+                            <h5><strong>{{ subscription.business.business_name.value }}</strong></h5>
+                            <a class="txt-size margin-general clear-fix" href="http://maps.google.com/maps?q={{ subscription.business.address.value.value }}" target="_blank">See location on map</a>
                             <a class="more gradient-gray radius-general"
-                               href="/{{ business.backend_name }}"
+                               href="/{{ subscription.business.backend_name }}"
                                target="_blank" class="more radius-general">More info</a>
                         </div>
                         <div class=" radius-general right">
                             <input class="print button margin-general btn-unfollow  radius-general"
                                    type="button" target="_blank" data-cont="{{ forloop.counter0 }}"
-                                   data-id="<?= $Business->id; ?>"
+                                   data-id="{{ subscription.business_id }}"
                                    value="Unsubscribe"/>
                         </div>
                     </div>

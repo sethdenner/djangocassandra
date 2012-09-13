@@ -2,11 +2,13 @@ import md5
 import random
 from datetime import datetime
 
-from django.contrib.auth.models import User
 from django.db.models import CharField, DateTimeField, BooleanField, \
     IntegerField, Manager
 from django.core.mail import send_mail, BadHeaderError
+
 from foreignkeynonrel.models import ForeignKeyNonRel
+from knotis_auth.models import User
+
 from app.models.knotis import KnotisModel
 from app.models.contents import Content, ContentTypes
 # from app.models.fields.permissions import PermissionsField

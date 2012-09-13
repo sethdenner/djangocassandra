@@ -30,7 +30,29 @@ $(document).ready(function() {
     $("#ajaxBusy").ajaxStop(function() {
         $(this).hide();
     });
-
+    $(document).ajaxSend(         
+        function(event, xhr, settings){
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                // Only send the token to relative URLs i.e. locally.
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        }
+    )
 
     // Disable some of the non-functional feature links
     $('a.happy, a.events, a.coming-soon').click(function(e) {
@@ -507,31 +529,32 @@ $(document).ready(function() {
     }); 
     
     $('.playstop').live('click', function() {
-        var $this = $(this),
-                status = $this.attr('data-status'),
-                cont = $this.attr('data-cont'),
-                id = $this.attr('data-id');
+        var $this = $(this);
+        var active = $this.attr('data-active');
+        var cont = $this.attr('data-cont');
+        var id = $this.attr('data-id');
   
-        $.post([server + "backend/status", status,id].join('/'), {},
+        active = active.toLowerCase() == 'true' ? false : true;
+        $.post(
+            '/offers/update/', {
+                'offer_id': id,
+                'active': active
+            }, function(data) {
+                $('#currentDealsA').click();
+            }
+        );
 
-                function(data) {
-                    $('#currentDealsA').click();
-                });
-
-        if (status == 1) {
+        if (status == 'true') {
             $this.removeClass('play');
             $this.addClass('pause');
             $this.removeAttr('data-status');
             $this.attr('data-status', "0");
-        }
-        else {
+        } else {
             $this.removeClass('pause');
             $this.addClass('play');
             $this.removeAttr('data-status');
             $this.attr('data-status', "1");
         }
-
-
     });
 
 
@@ -715,41 +738,38 @@ $(document).ready(function() {
 
         number = parseInt(number) + parseInt(1);
 
-        $.post([server + "business/follow_me",id].join('/'), {},
-
-                function(data) {
-
+        $.post(
+            '/business/follow/', {
+                business_id: id
+            }, function(data) {
                     $this.fadeOut();
                     $('.followers-list').append(data);
                     $('.number-replace').replaceWith('<span>' + number + '</span>');
-                });
+            }
+        );
 
         return false;
-
-
     });
 
     // Button follow in business profile
     $('.unfollowme').live('click', function() {
 
-        var $this = $(this),
-                idUser = $this.attr('data-idUser'),
-                number = $('.number-follow').attr('data-number'),
-                idFollow = $this.attr('data-idFollow');
+        var $this = $(this);
+        var id_user = $this.attr('data-iduser');
+        var number = $('.number-follow').attr('data-number');
+        var id = $this.attr('data-id');
 
-        $number = number - 1;
+        number = number - 1;
 
-
-        $.post([server + "business/unfollow_me",idFollow].join('/'), {},
-
-                function(data) {
-
-                    $this.fadeOut();
-                    $('.follow-' + idUser).hide();
-                    $('.number-replace').replaceWith('<span>' + $number + '</span>');
-                });
+        $.post('/business/unfollow/', {
+                business_id: id, 
+            }, function(data){
+                $this.fadeOut();
+                $('.follow-' + id_user).hide();
+                $('.number-replace').replaceWith('<span>' + number + '</span>');
+            }
+        );
         return false;
-
     });
 
     // Button follow in business profile
@@ -808,20 +828,17 @@ $(document).ready(function() {
 
     // Button unfollow in backend
     $('.btn-unfollow').live('click', function() {
+        var $this = $(this);
+        var cont = $this.attr('data-cont');
+        var id = $this.attr('data-id');        
 
-        var $this = $(this),
-                cont = $this.attr('data-cont'),
-                id = $this.attr('data-id');
-
-        $.post([server + "business/unfollow_me",id].join('/'), {},
-
-                function(data) {
-
-
-                });
-
-        $('.follow-' + cont).fadeOut();
-
+        $.post('/business/unfollow/', {
+                business_id: id, 
+            }, function(data){
+                $('.follow-' + cont).fadeOut();
+            }
+        );
+        return false;
     });
 
 

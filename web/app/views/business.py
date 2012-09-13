@@ -1,15 +1,13 @@
-from django.contrib.auth.models import User
-from django.forms import Form, ModelForm, ModelChoiceField, CharField, URLField
-from django.shortcuts import render, redirect
-from django.conf import settings
-from django.utils.http import urlquote
-
-from app.models.users import UserProfile
-from app.models.businesses import Business, BusinessLink
-from app.models.qrcodes import Qrcode, QrcodeTypes, Scan
+from app.models.businesses import Business, BusinessLink, BusinessSubscription
 from app.models.offers import Offer, OfferStatus
-
+from app.models.qrcodes import Qrcode, QrcodeTypes, Scan
 from app.utils import View as ViewUtils
+from django.conf import settings
+from django.forms import Form, ModelForm, ModelChoiceField, CharField, URLField
+from django.http import HttpResponseNotFound, HttpResponseBadRequest
+from django.shortcuts import render, redirect
+from django.utils.http import urlquote
+from knotis_auth.models import User, UserProfile
 
 
 class CreateBusinessForm(Form):
@@ -121,7 +119,6 @@ def qrcode(request):
     except:
         redirect(edit_profile)
 
-
     if business:
         try:
             template_parameters['offers'] = Offer.objects.filter(business=business).filter(status=OfferStatus.CURRENT)
@@ -179,6 +176,15 @@ def profile(request, backend_name):
     if business:
         try:
             template_parameters['business_links'] = BusinessLink.objects.filter(business=business)
+            subscriptions = BusinessSubscription.objects.filter(
+                business=business,
+                active=True
+            )
+            template_parameters['subscriptions'] = subscriptions
+            template_parameters['subscribed_users'] = BusinessSubscription.objects.get_users_subscribed_to_business(
+                business,
+                subscriptions
+            )
         except:
             pass
 
@@ -193,5 +199,92 @@ def profile(request, backend_name):
     return render(
         request,
         'business_profile.html',
+        template_parameters
+    )
+
+
+def follow(
+    request,
+    subscribe
+):
+    if request.method.lower() != 'post':
+        return HttpResponseBadRequest()
+
+    business_id = request.POST.get('business_id')
+    if not business_id:
+        return HttpResponseNotFound()
+
+    business = None
+    try:
+        business = Business.objects.get(pk=business_id)
+    except:
+        pass
+
+    knotis_user = None
+    try:
+        knotis_user = User.objects.get(pk=request.user.id)
+    except:
+        pass
+
+    if not business or not knotis_user:
+        return HttpResponseNotFound()
+
+    existing = None
+    try:
+        existing = BusinessSubscription.objects.filter(
+            user=knotis_user,
+            business=business
+        )[0]
+    except:
+        pass
+
+    if existing:
+        try:
+            existing.active = subscribe
+            existing.save()
+        except:
+            return HttpResponseBadRequest()
+    else:
+        try:
+            BusinessSubscription.objects.create(
+                user=knotis_user,
+                business=business
+            )
+        except:
+            return HttpResponseBadRequest()
+
+    template_parameters = {
+        'knotis_user': knotis_user
+    }
+
+    return render(
+        request,
+        'business_profile_follower.html',
+        template_parameters
+    )
+
+
+def subscriptions(request):
+    template_parameters = ViewUtils.get_standard_template_parameters(request)
+
+    subscriptions = None
+    try:
+        subscriptions = BusinessSubscription.objects.filter(
+            user=request.user,
+            active=True
+        )
+    except:
+        pass
+
+    template_parameters['subscriptions'] = subscriptions
+
+    try:
+        template_parameters['offers'] = Offer.objects.get_subscribed_businesses_offers_dict(subscriptions)
+    except:
+        pass
+
+    return render(
+        request,
+        'subscriptions.html',
         template_parameters
     )

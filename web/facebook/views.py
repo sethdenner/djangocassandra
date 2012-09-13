@@ -7,3 +7,7 @@ def channel(request):
         'channel.html',
         {}
     )
+
+
+def avatar(user):
+    pass

@@ -92,8 +92,13 @@ urlpatterns = patterns('',
         name='offers'
     ),
     url(
-        r'^offers/get_offers_by_status/(?P<status>[^/]+)/$',
+        r'^offers/get_offers_by_status/(?P<status>[^/]+)/(?P<business_id>[^/]+/)*$',
         'app.views.offer.get_offers_by_status',
+        name='offers'
+    ),
+    url(
+        r'^offers/update/$',
+        'app.views.offer.update',
         name='offers'
     ),
     url(
@@ -117,13 +122,25 @@ urlpatterns = patterns('',
         name='business',
     ),
     url(
+        r'^business/follow/$',
+        'app.views.business.follow',
+        {'subscribe': True},
+        name='business'
+    ),
+    url(
+        r'^business/unfollow/$',
+        'app.views.business.follow',
+        {'subscribe': False},
+        name='business'
+    ),
+    url(
         r'^business/profile/$',
         'app.views.business.edit_profile',
         name='business'
     ),
     url(
         r'^subscriptions/$',
-        'app.views.subscription.view',
+        'app.views.business.subscriptions',
         name='subscriptions'
     ),
     url(

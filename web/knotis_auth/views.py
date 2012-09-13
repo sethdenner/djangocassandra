@@ -10,9 +10,10 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.utils.html import strip_tags
 
-from knotis_auth.models import User
+from knotis_auth.models import User, UserProfile, AccountStatus, AccountTypes
 
-from app.utils import View as ViewUtils
+from app.utils import View as ViewUtils, Email as EmailUtils
+from app.models.endpoints import Endpoint, EndpointTypes
 
 
 class SignUpForm(Form):
@@ -63,7 +64,6 @@ class SignUpForm(Form):
         """
         Validate that the supplied email address is unique for the
         site.
-        
         """
         email = self.cleaned_data['email']
         if User.objects.filter(email__iexact=email):
@@ -74,7 +74,7 @@ class SignUpForm(Form):
         self,
         request
     ):
-        User.objects.create_user(
+        return User.objects.create_user(
             self.cleaned_data['first_name'],
             self.cleaned_data['last_name'],
             self.cleaned_data['email'],
@@ -94,9 +94,38 @@ def sign_up(request, account_type='user'):
         sign_up_form = SignUpForm(request.POST)
 
         if sign_up_form.is_valid():
-            account_type = sign_up_form.cleaned_data['account_type']
             try:
-                sign_up_form.create_user(request)
+                user, account_type = sign_up_form.create_user(request)
+
+                email = Endpoint.objects.create_endpoint(
+                    user,
+                    EndpointTypes.EMAIL,
+                    user.username,
+                    primary=True
+                )
+
+                #TODO This should be handled by an async task
+                if account_type == AccountTypes.BUSINESS_FREE:
+                    subject = 'New Free Business Account in Knotis'
+                elif account_type == AccountTypes.BUSINESS_MONTHLY:
+                    subject = 'New Premium Business Account in Knotis'
+                else:
+                    subject = 'New user Account in Knotis'
+
+                try:
+                    EmailUtils.generate_email(
+                        'activate',
+                        subject,
+                        settings.EMAIL_HOST_USER,
+                        [email.value], {
+                            'user_id': user.id,
+                            'validation_key': email.validation_key,
+                            'BASE_URL': settings.BASE_URL,
+                            'SERVICE_NAME': settings.SERVICE_NAME
+                        }
+                    ).send()
+                except:
+                    pass
 
                 response_data['success'] = 'yes'
 
@@ -175,6 +204,13 @@ class KnotisPasswordChangeForm(Form):
             raise ValidationError('Your old password was entered incorrectly. Please enter it again.')
         return old_password
 
+    def save_password(
+        self,
+        request
+    ):
+        request.user.set_password(self.cleaned_data['new_password'])
+        request.user.save()
+
 
 def login(request):
     def generate_response(data):
@@ -208,7 +244,13 @@ def login(request):
                 'message': 'Login failed. Please try again.'
             })
 
-        if not user.is_active:
+        user_profile = None
+        try:
+            user_profile = UserProfile.objects.get(user=user)
+        except:
+            pass
+
+        if not user_profile or user_profile.account_status != AccountStatus.ACTIVE:
             # Message user about account deactivation.
             return generate_response({
                 'success': 'no',
@@ -241,9 +283,15 @@ def validate(
 ):
     redirect_url = '/'
 
-    user = User.objects.get(pk=user_id)
-    if (user.activate_user(validation_key)):
-        redirect_url = settings.LOGIN_URL
+    try:
+        user = User.objects.get(pk=user_id)
+        if Endpoint.objects.validate_endpoints(
+            validation_key,
+            user
+        ) and UserProfile.objects.activate_profile(user):
+            redirect_url = settings.LOGIN_URL
+    except:
+        pass
 
     return redirect(redirect_url)
 

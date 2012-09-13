@@ -64,17 +64,7 @@
     </div>
     <div class="deal-profile-right">
         <h2 class="margin-general"><strong>
-            {% if offer %}
-            {% if offer.title_type == 1 %}
-            ${{ offer.price_discount }} for ${{ offer.price_retail }} at {{ offer.business.business_name.value }}
-            {% endif %}
-            {% if offer.title_type == 2 %}
-            ${{ offer.price_discount }} for {{ offer.title.value }} at {{ offer.business.business_name.value }}
-            {% endif %}
-            {% if offer.title_type == 3 %}
-            {{ offer.title.value }}
-            {% endif %}
-            {% endif %}
+            {{ offer.title_formatted }}
         </strong></h2>
         <p>
             <a class="txt-size margin-general clear-fix business-buy business-link" alt="{{ offer.business.business_name.value }}"
@@ -83,7 +73,7 @@
         </p>
         <h4 class="margin-general">{% if offer %}{{ offer.summary.value }}{% endif %}</h4>
         <div class="clear-fix margin-general">
-            <p class="price left"><span>$</span>{{ offer.price_discount }}</p>
+            <p class="price left"><span>$</span>{{ offer.price_discount_formatted }}</p>
             <form method="post" action="/purchase/offer/">
                 <div class="button-deals-profile left">
                     <input class="button radius-general left{% if user.is_anonymous %} log_in{% endif %}"
