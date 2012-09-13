@@ -19,7 +19,7 @@ oauth_three_legged = OAuthAuthentication(realm='knotis')
 oauth_two_legged = OAuthAuthentication(realm='knotis', two_legged=True)
 
 
-image_handler = Resource(ImageModelHandler, authentication=oauth_two_legged)
+image_handler = Resource(ImageModelHandler, authentication=oauth_three_legged)
 
 urlpatterns = patterns('',
     url(
