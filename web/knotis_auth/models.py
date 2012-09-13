@@ -16,7 +16,8 @@ class UserManager(Manager):
         email,
         password,
         account_type=AccountTypes.USER,
-        business=False
+        business=False,
+        send_email=True,
     ):
         new_user = models.User.objects.create_user(
             email,
@@ -51,20 +52,21 @@ class UserManager(Manager):
             subject = 'New user Account in Knotis'
 
         #TODO This should be handled by an async task
-        try:
-            Email.generate_email(
-                'activate',
-                subject,
-                settings.EMAIL_HOST_USER,
-                [email], {
-                    'user_id': new_user.id,
-                    'validation_key': email_endpoint.validation_key,
-                    'BASE_URL': settings.BASE_URL,
-                    'SERVICE_NAME': settings.SERVICE_NAME
-                }
-            ).send()
-        except:
-            pass
+        if send_email:
+            try:
+                Email.generate_email(
+                    'activate',
+                    subject,
+                    settings.EMAIL_HOST_USER,
+                    [email], {
+                        'user_id': new_user.id,
+                        'validation_key': email_endpoint.validation_key,
+                        'BASE_URL': settings.BASE_URL,
+                        'SERVICE_NAME': settings.SERVICE_NAME
+                    }
+                ).send()
+            except:
+                pass
 
         return new_user
 
