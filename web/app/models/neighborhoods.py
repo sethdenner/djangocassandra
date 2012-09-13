@@ -6,6 +6,7 @@ from contents import Content, ContentTypes
 from cities import City
 from foreignkeynonrel.models import ForeignKeyNonRel
 
+
 class NeighborhoodManager(Manager):
     def create_neighborhood(
         self,

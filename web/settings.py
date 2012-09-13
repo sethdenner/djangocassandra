@@ -138,6 +138,7 @@ INSTALLED_APPS = (
     # Knotis apps.
     'manytomanynonrel',
     'foreignkeynonrel',
+    'facebook',
     'knotis_auth',
     'legacy',
     'app',

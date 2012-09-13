@@ -1,14 +1,37 @@
-from django.conf import settings
 from django.contrib.auth import models
-from django.db.models import Manager, Model, CharField, IntegerField
-from app.models.users import UserProfile, AccountTypes
-from app.models.endpoints import Endpoint, EndpointTypes
-from app.utils import Email
+from django.db.models import Model, CharField, OneToOneField, \
+    FloatField, IntegerField, NullBooleanField, Manager
+
+from facebook.views import avatar as facebook_avatar
+from gravatar.views import avatar as gravatar_avatar
 
 from foreignkeynonrel.models import ForeignKeyNonRel
+from app.models.fields.math import MatrixField
 
 
-class UserManager(Manager):
+class AccountTypes:
+    USER = 0
+    BUSINESS_FREE = 1
+    BUSINESS_MONTHLY = 2
+
+    CHOICES = (
+        (USER, 'User'),
+        (BUSINESS_FREE, 'Business - Free'),
+        (BUSINESS_MONTHLY, 'Business - Monthly'),
+    )
+
+
+class AccountStatus:
+    DISABLED = 0
+    ACTIVE = 1
+
+    CHOICES = (
+        (DISABLED, 'Disabled'),
+        (ACTIVE, 'Active')
+    )
+
+
+class UserManager(models.UserManager):
     def create_user(
         self,
         first_name,
@@ -16,10 +39,9 @@ class UserManager(Manager):
         email,
         password,
         account_type=AccountTypes.USER,
-        business=False,
-        send_email=True,
+        business=False
     ):
-        new_user = models.User.objects.create_user(
+        new_user = super(UserManager, self).create_user(
             email,
             email,
             password
@@ -30,13 +52,6 @@ class UserManager(Manager):
 
         new_user.save()
 
-        email_endpoint = Endpoint.objects.create_endpoint(
-            new_user,
-            EndpointTypes.EMAIL,
-            email,
-            primary=True
-        )
-
         account_type = account_type if business else AccountTypes.USER
 
         UserProfile.objects.create_profile(
@@ -44,31 +59,7 @@ class UserManager(Manager):
             account_type
         )
 
-        if account_type == AccountTypes.BUSINESS_FREE:
-            subject = 'New Free Business Account in Knotis'
-        elif account_type == AccountTypes.BUSINESS_MONTHLY:
-            subject = 'New Premium Business Account in Knotis'
-        else:
-            subject = 'New user Account in Knotis'
-
-        #TODO This should be handled by an async task
-        if send_email:
-            try:
-                Email.generate_email(
-                    'activate',
-                    subject,
-                    settings.EMAIL_HOST_USER,
-                    [email], {
-                        'user_id': new_user.id,
-                        'validation_key': email_endpoint.validation_key,
-                        'BASE_URL': settings.BASE_URL,
-                        'SERVICE_NAME': settings.SERVICE_NAME
-                    }
-                ).send()
-            except:
-                pass
-
-        return new_user
+        return new_user, account_type
 
 
 class User(models.User):
@@ -77,21 +68,162 @@ class User(models.User):
 
     objects = UserManager()
 
-    def activate_user(
+    def username_12(self):
+        return ''.join([
+            self.username[:9],
+            '...'
+        ])
+
+    def avatar(
         self,
-        validation_key
+        email,
+        facebook_id=None,
+        s=32,
+        d='mm',
+        r='g',
+        img=False,
+        img_attrs={}
     ):
+        return gravatar_avatar(
+            email,
+            s,
+            d,
+            r,
+            img,
+            img_attrs
+        ) if not facebook_id else facebook_avatar(facebook_id)
 
-        if not Endpoint.objects.validate_endpoints(
-            validation_key,
-            user=self
-        ):
-            return False
+    def update(
+        self,
+        username=None,
+        first_name=None,
+        last_name=None,
+    ):
+        is_self_dirty = False
 
-        if not UserProfile.objects.activate_profile(self):
-            return False
+        if username:
+            if username != self.username:
+                self.username = username
+                is_self_dirty = True
 
-        return True
+        if first_name:
+            if first_name != self.first_name:
+                self.first_name = first_name
+                is_self_dirty = True
+
+        if last_name:
+            if last_name != self.last_name:
+                self.last_name = last_name
+                is_self_dirty = True
+
+        if is_self_dirty:
+            self.save()
+
+
+class UserProfileManager(Manager):
+    def create_profile(
+        self,
+        user,
+        account_type=AccountTypes.USER
+    ):
+        user_profile = UserProfile(
+            user=user,
+            account_type=account_type
+        )
+        user_profile.save()
+
+        return user_profile
+
+    def activate_profile(
+        self,
+        user
+    ):
+        user_profile = self.get(pk=user)
+        user_profile.account_status = AccountStatus.ACTIVE
+        user_profile.save()
+
+
+class UserProfile(Model):
+    user = OneToOneField(User, primary_key=True)
+
+    account_type = IntegerField(null=True, choices=AccountTypes.CHOICES, default=AccountTypes.USER)
+    account_status = IntegerField(null=True, choices=AccountStatus.CHOICES, default=AccountStatus.DISABLED)
+
+    notify_announcements = NullBooleanField(blank=True, default=False)
+    notify_offers = NullBooleanField(blank=True, default=False)
+    notify_events = NullBooleanField(blank=True, default=False)
+
+    reputation_mu = FloatField(null=True, default=1.)
+    reputation_sigma = FloatField(null=True, default=0.)
+    reputation_total = FloatField(null=True, default=0.)
+    reputation_matrix = MatrixField(null=True, blank=True, max_length=200)
+
+    objects = UserProfileManager()
+
+    def is_business_owner(self):
+        return self.account_type != AccountTypes.USER
+
+    def update(
+        self,
+        account_type=None,
+        account_status=None,
+        notify_announcements=None,
+        notify_offers=None,
+        notify_events=None,
+        reputation_mu=None,
+        reputation_sigma=None,
+        reputation_total=None,
+        reputation_matrix=None
+    ):
+        is_self_dirty = False
+
+        if None != account_type:
+            if account_type != self.account_type:
+                self.account_type = account_type
+                is_self_dirty = True
+
+        if None != account_status:
+            if account_status != self.account_status:
+                self.account_status = account_status
+                is_self_dirty = True
+
+        if None != notify_announcements:
+            if notify_announcements != self.notify_announcements:
+                self.notify_announcements = notify_announcements
+                is_self_dirty = True
+
+        if None != notify_offers:
+            if notify_offers != self.notify_offers:
+                self.notify_offers = notify_offers
+                is_self_dirty = True
+
+        if None != notify_events:
+            if notify_events != self.notify_events:
+                self.notify_events = notify_events
+                is_self_dirty = True
+
+        if None != reputation_mu:
+            if reputation_mu != self.reputation_mu:
+                self.reputation_mu = reputation_mu
+                is_self_dirty = True
+
+        if None != reputation_sigma:
+            if reputation_sigma != self.reputation_sigma:
+                self.reputation_sigma = reputation_sigma
+                is_self_dirty = True
+
+        if None != reputation_total:
+            if reputation_total != self.reputation_total:
+                self.reputation_total = reputation_total
+                is_self_dirty = True
+
+        if None != reputation_matrix:
+            if reputation_matrix != self.reputation_matrix:
+                self.reputation_matrix = reputation_matrix
+                is_self_dirty = True
+
+        if is_self_dirty:
+            self.save()
 
 
 class CredentialsTypes:

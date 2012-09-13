@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.forms import ModelForm
 
-from models.businesses import Business
+from knotis_auth.models import User, UserProfile
+
+from models.businesses import Business, BusinessLink, BusinessSubscription
 from models.contents import Content
 from models.endpoints import Endpoint
 from models.offers import Offer
@@ -9,7 +11,6 @@ from models.media import Image
 from models.cities import City
 from models.neighborhoods import Neighborhood
 from models.categories import Category
-from models.users import UserProfile
 from models.transactions import Transaction
 from models.qrcodes import Qrcode, Scan
 
@@ -72,6 +73,9 @@ admin.site.register(Business, BusinessAdmin)
 
 class GeneralAdmin(admin.ModelAdmin):
     pass
+admin.site.register(User, GeneralAdmin)
+admin.site.register(BusinessLink, GeneralAdmin)
+admin.site.register(BusinessSubscription, GeneralAdmin)
 admin.site.register(Scan, GeneralAdmin)
 admin.site.register(Qrcode, GeneralAdmin)
 admin.site.register(Transaction, GeneralAdmin)

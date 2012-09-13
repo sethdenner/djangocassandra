@@ -6,7 +6,7 @@
         <div class="ribbon absolute"></div>
         <div class="clear-fix">
             <div class="deals-image radius-general left relative">
-                <div class="category cat-{{ offer.category.short_name }}"></div>
+                <div class="category cat-{{ offer.category.name_short }}"></div>
                 <a class="clear-fix  txt-size "
                    href="/offer/{{ offer.id }}/">
                     <img alt=""
@@ -20,20 +20,12 @@
             </div>
             <div class="deals-txt left">
                 <h5><strong><a href="/offer/{{ offer.id }}/">
-                    {% if offer.title_type == 1 %}
-                    ${{ offer.price_discount }} for ${{ offer.price_retail }} at {{ offer.business.business_name.value }}
-                    {% endif %}
-                    {% if offer.title_type == 2 %}
-                    ${{ offer.price_discount }} for {{ offer.title.value }} at {{ offer.business.business_name.value }}
-                    {% endif %}
-                    {% if offer.title_type == 3 %}
-                    {{ offer.title.value }}
-                    {% endif %}
+                    {{ offer.title_formatted }}
                 </a></strong></h5>
                 <a class="txt-size margin-general clear-fix business-link"
                    href="/{{ offer.business.backend_name }}/"
                    target="_blank">{{ offer.business.business_name.value }}</a>
-                <p class="txt-size txt-premium">{{ offer.description.value|truncatewords:30 }}</p>
+                <p class="txt-size txt-premium">{{ offer.description_100 }}</p>
             </div>
             <div class="deals-action radius-general right">
                 <div class="deals-action-top  relative">

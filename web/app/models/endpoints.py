@@ -2,11 +2,13 @@ import md5
 import random
 from datetime import datetime
 
-from django.contrib.auth.models import User
 from django.db.models import CharField, DateTimeField, BooleanField, \
     IntegerField, Manager
 from django.core.mail import send_mail, BadHeaderError
+from django.contrib.auth.models import User
+
 from foreignkeynonrel.models import ForeignKeyNonRel
+
 from app.models.knotis import KnotisModel
 from app.models.contents import Content, ContentTypes
 # from app.models.fields.permissions import PermissionsField
@@ -38,14 +40,13 @@ class EndpointManager(Manager):
         else:
             class_type = Endpoint
 
-        endpoint = class_type(
+        endpoint = class_type.objects.create(
             user=user,
             primary=primary,
             value=value,
             validation_key=validation_key,
             disabled=disabled
         )
-        endpoint.save()
 
         return endpoint
 
@@ -173,7 +174,6 @@ class Endpoint(KnotisModel):
             class ' + self.__class__.__name__ + '.')
 
 
-""" Endpoint Proxy Classes """
 class EndpointPhone(Endpoint):
     class Meta:
         proxy = True

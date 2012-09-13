@@ -1,8 +1,11 @@
 from django.shortcuts import render
-from django.template.context import RequestContext
+from django.conf import settings
+
 from app.models.contents import Content
-from app.utils import User as UserUtils, View as ViewUtils
-from app.models.users import UserProfile
+from app.models.offers import Offer, OfferTypes
+from app.utils import View as ViewUtils
+
+from pymaps.pymaps import Icon, PyMap
 
 def index(
     request,
@@ -20,6 +23,26 @@ def index(
 
     if 'login' == login:
         template_parameters['login'] = True
+
+    try:
+        template_parameters['premium_offers'] = Offer.objects.filter(offer_type=OfferTypes.PREMIUM)
+    except:
+        pass
+
+    '''
+    icon = Icon()
+    gmap.addicon(icon)
+    point0 = [1, 1]
+    point1 = [2, 4, 'hello']
+    point3 = [21, 4, None, icon]
+    gmap.maps[0].setpoint(point0)
+    gmap.maps[0].setpoint(point1)
+    gmap.maps[0].setpoint(point3)
+    template_parameters['map'] = gmap.pymapjs()
+    '''
+    gmap = PyMap()
+    gmap.key = settings.GOOGLE_MAPS_API_KEY
+    template_parameters['map_script'] = gmap.headerjs()
 
     return render(
         request,

@@ -1,18 +1,35 @@
-import md5
-
+from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
 
+from knotis_auth.models import User, UserProfile
+
 from app.models.contents import Content
-from app.models.users import UserProfile
 
 
 class View:
 
     @staticmethod
+    def get_boolean_from_request(request, key, method='POST'):
+        " gets the value from request and returns it's boolean state "
+        value = getattr(request, method).get(key, False)
+
+        if isinstance(value, basestring):
+            value = value.lower()
+
+        if not value or value == 'false' or value == '0':
+            value = False
+        elif value:
+            value = True
+
+        return value
+
+    @staticmethod
     def get_standard_template_parameters(request):
         template_parameters = {}
+
+        template_parameters['FACEBOOK_APP_ID'] = settings.FACEBOOK_APP_ID
 
         try:
             content = {}
@@ -28,14 +45,17 @@ class View:
             template_parameters.update(content)
 
             if request.user.is_authenticated():
+                knotis_user = User.objects.get(pk=request.user.id)
+                template_parameters['knotis_user'] = knotis_user
                 user_profile = UserProfile.objects.get(user=request.user)
                 template_parameters['user_profile'] = user_profile
-                template_parameters['username_truncated'] = request.user.username[:9] + '...'
-                template_parameters['avatar_uri'] = User.get_avatar(
+                template_parameters['username_truncated'] = knotis_user.username_12()
+                template_parameters['avatar_uri'] = knotis_user.avatar(
                     request.user.username,
                     None,
                     20
                 )
+
         except:
             pass
 
@@ -70,56 +90,3 @@ class Email:
             "text/html"
         )
         return email
-
-
-class User:
-
-    @staticmethod
-    def get_avatar(
-        email,
-        facebook_id=None,
-        s=32,
-        d='mm',
-        r='g',
-        img=False,
-        img_attrs={}
-    ):
-        return Gravatar.get_avatar(
-            email,
-            s,
-            d,
-            r,
-            img,
-            img_attrs
-        ) if not facebook_id else Facebook.get_avatar(facebook_id)
-
-
-class Gravatar:
-
-    @staticmethod
-    def get_avatar(
-        email,
-        s=32,
-        d='mm',
-        r='g',
-        img=False,
-        img_attrs={}
-    ):
-        url = 'http://www.gravatar.com/avatar/'
-        url += md5.new(email.lower().strip()).hexdigest()
-        url += '?s=%i&d=%s&r=%s' % (s, d, r)
-
-        if img:
-            url = '<img src="' + url + '"'
-            for key in img_attrs:
-                url += ' ' + key + '="' + img_attrs[key] + '"'
-            url += ' />'
-
-        return url
-
-
-class Facebook:
-
-    @staticmethod
-    def get_avatar(facebook_id):
-        return None

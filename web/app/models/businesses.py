@@ -1,6 +1,7 @@
-from django.db.models import CharField, DateTimeField, URLField, Manager
+from django.db.models import CharField, DateTimeField, URLField, Manager, \
+    NullBooleanField
 from django.utils.http import urlquote
-from django.contrib.auth.models import User as DjangoUser
+from django.contrib.auth.models import User
 
 from foreignkeynonrel.models import ForeignKeyNonRel
 
@@ -120,7 +121,7 @@ class Business(KnotisModel):
 
     backend_name = CharField(max_length=128, db_index=True)
 
-    user = ForeignKeyNonRel(DjangoUser)
+    user = ForeignKeyNonRel(User)
     content_root = ForeignKeyNonRel(Content, related_name='business_content_root')
     business_name = ForeignKeyNonRel(Content, related_name='business_business_name')
     summary = ForeignKeyNonRel(Content, related_name='business_summary')
@@ -201,7 +202,6 @@ class Business(KnotisModel):
                     )
                 is_self_dirty = True
 
-
         if None != address:
             current_address = self.address.value.value if self.address else None
             if address != current_address:
@@ -270,3 +270,39 @@ class BusinessLink(KnotisModel):
     business = ForeignKeyNonRel(Business)
     uri = URLField()
     title = CharField(max_length=64)
+
+
+class BusinessSubscriptionManager(Manager):
+    def get_users_subscribed_to_business(
+        self,
+        business,
+        subscriptions=None
+    ):
+        if not subscriptions:
+            try:
+                subscriptions = BusinessSubscription.objects.filter(
+                    business=business,
+                    active=True
+                )
+            except:
+                pass
+
+        if not subscriptions:
+            return None
+
+        users = []
+        for subscription in subscriptions:
+            users.append(subscription.user)
+
+        return users
+
+
+class BusinessSubscription(KnotisModel):
+    user = ForeignKeyNonRel(User)
+    business = ForeignKeyNonRel(Business)
+    active = NullBooleanField(default=True, blank=True, db_index=True)
+
+    objects = BusinessSubscriptionManager()
+
+    def get_user_avatar(self):
+        return self.user.avatar

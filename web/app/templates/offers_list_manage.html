@@ -51,7 +51,7 @@
             {% if offer.status == 'current' %}
             <div class="clear-fix margin-general">
                 <a class="{% if not offer.active %}play{% else %}pause{% endif %} relative playstop"
-                   data-status="{% if offer.active %}1{% else %}0{% endif %}"
+                   data-active="{% if offer.active %}true{% else %}false{% endif %}"
                    data-id="{{ offer.id }}"></a>
             </div>
             {% endif %}

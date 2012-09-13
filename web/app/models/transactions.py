@@ -1,8 +1,7 @@
 from django.db.models import IntegerField, FloatField, DateTimeField, Manager
-
+from django.contrib.auth.models import User
 from knotis import KnotisModel
 from foreignkeynonrel.models import ForeignKeyNonRel
-from knotis_auth.models import User
 from app.models.businesses import Business
 from app.models.offers import Offer
 

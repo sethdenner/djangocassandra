@@ -180,22 +180,20 @@
                 <div class="clear-fix margin-general">
                     <div class="left">
                         <strong class="number-follow"
-                                data-number="{{ followers|length }}" >
-                            <span class="number-replace">{{ followers|length }}</span></strong>
+                                data-number="{{ subscriptions|length }}" >
+                            <span class="number-replace">{{ subscriptions|length }}</span></strong>
                         <span class="clear-fix">SUBSCRIBERS</span>
                     </div>
-                    <a class="button-follow right radius-general {% if user in followers %}unfollowme" data-idFollow="{{ user.id }}" data-idUser="{{ user.id }}"{% else %}}followme" data-id="{{ business.id }}"{% endif %}
-                        href="{% if not user %}/login/{% else %}#{% endif %}"> {% if user %}{% if user in followers %}Unsubscribe{% else %}Subscribe{% endif %}{% else %}Subscribe{% endif %}</a>
+                    <a class="button-follow right radius-general {% if not user.is_anonymous %}{% if user in subscribed_users %}unfollowme" data-idUser="{{ user.id }}" {% else %}followme" {% endif %}data-id="{{ business.id }}"{% endif %}
+                        href="{% if user.is_anonymous %}/login/{% else %}#{% endif %}"> {% if not user.is_anonymous %}{% if user in subscribed_users %}Unsubscribe{% else %}Subscribe{% endif %}{% else %}Subscribe{% endif %}</a>
                 </div>
-                {% if followers %}
                 <div class="clear-fix followers-list">
-                    {% for follower in followers %}
-                    <div class="image-follow radius-general left margin-general follow-{{ follower.id }}">
-                        <img src="{{ follower.get_avatar }}"/>
+                    {% for subscription in subscriptions %}
+                    <div class="image-follow radius-general left margin-general follow-{{ subscription.user_id }}">
+                        <img src="{{ subscription.user.avatar }}"/>
                     </div>
                     {% endfor %}
                 </div>        
-                {% endif %}
                 <div class="clear-fix" >
                   <h4>Why Subscribe?</h4> 
                   <p>By subscribing to businesses you will be the first to know about the promotions they decide to publish. Great savings delivered right to you. When you subscribe you will only receive amazing promotions, no other spam or communication from any 3rd party.</p> 

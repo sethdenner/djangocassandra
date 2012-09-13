@@ -1,11 +1,8 @@
 from django.db import models
-from web.app.knotis.db import KnotisModel
+from app.models.knotis import KnotisModel
 
 from contents import Content
-from products import Product
-from businesses import Business
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
 
 """
 

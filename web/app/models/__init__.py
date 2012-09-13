@@ -1,6 +1,5 @@
 import knotis
 
-import users
 import contents
 import endpoints
 # import user_relations

@@ -1,16 +1,20 @@
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.html import strip_tags
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.forms import ModelForm, CharField, ImageField, DateTimeField
 from app.models.offers import Offer, OfferStatus
 from app.models.businesses import Business
 from app.models.categories import Category
 from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
-from app.models.users import UserProfile
+from knotis_auth.models import UserProfile
 
 from app.utils import View as ViewUtils
 from app.views.business import edit_profile
+
+from pymaps.pymaps import PyMap
 
 
 class OfferForm(ModelForm):
@@ -109,7 +113,10 @@ def offers(request):
     template_parameters['current_page'] = 'offers'
 
     try:
-        template_parameters['offers'] = Offer.objects.filter(status=OfferStatus.CURRENT)
+        template_parameters['offers'] = Offer.objects.filter(
+            status=OfferStatus.CURRENT,
+            active=True
+        )
     except:
         pass
 
@@ -118,6 +125,10 @@ def offers(request):
         template_parameters['category_offers'] = Offer.objects.get_offers_category_dict()
     except:
         pass
+
+    gmap = PyMap()
+    gmap.key = settings.GOOGLE_MAPS_API_KEY
+    template_parameters['map_script'] = gmap.headerjs()
 
     return render(
         request,
@@ -143,6 +154,10 @@ def offer(
     except:
         pass
 
+    gmap = PyMap()
+    gmap.key = settings.GOOGLE_MAPS_API_KEY
+    template_parameters['map_script'] = gmap.headerjs()
+
     return render(
         request,
         'offer.html',
@@ -164,11 +179,16 @@ def dashboard(request):
     if business:
         offers = None
         try:
-            template_parameters['offers'] = Offer.objects.filter(business=business, status=OfferStatus.CREATED)
+            template_parameters['offers'] = Offer.objects.filter(
+                business=business,
+                status=OfferStatus.CREATED
+            )
         except:
             pass
 
-    template_parameters['user_profile'] = UserProfile.objects.get(user=request.user)
+    template_parameters['user_profile'] = UserProfile.objects.get(
+        user=request.user
+    )
 
     return render(
         request,
@@ -213,15 +233,24 @@ def edit(request, offer_id=None):
     else:
         form = OfferForm(instance=offer)
 
-
     template_parameters = ViewUtils.get_standard_template_parameters(request)
 
-    if offer:
-        template_parameters['neighborhoods'] = Neighborhood.objects.filter(city=offer.city)
+    template_parameters['cities'] = cities = City.objects.all()
+    template_parameters['cities'] = cities
+
+    if offer and offer.city:
+        template_parameters['neighborhoods'] = Neighborhood.objects.filter(
+            city=offer.city
+        )
+    elif len(cities):
+        template_parameters['neighborhoods'] = Neighborhood.objects.filter(
+            city=cities[0]
+        )
+    else:
+        template_parameters['neighborhoods'] = None
 
     template_parameters['business'] = Business.objects.get(user=request.user)
     template_parameters['categories'] = Category.objects.all()
-    template_parameters['cities'] = City.objects.all()
     template_parameters['offer_form'] = form
     template_parameters['offer'] = offer
     template_parameters['feedback'] = feedback
@@ -232,20 +261,80 @@ def edit(request, offer_id=None):
         template_parameters
     )
 
+
+def update(request):
+    if request.method.lower() != 'post':
+        return HttpResponseBadRequest()
+
+    offer = None
+    offer_id = request.POST.get('offer_id')
+    active = ViewUtils.get_boolean_from_request(
+        request,
+        'active'
+    )
+
+    try:
+        offer = Offer.objects.get(pk=offer_id)
+    except:
+        pass
+
+    if not offer:
+        return HttpResponseBadRequest()
+
+    try:
+        offer.update(
+            active=active
+        )
+    except:
+        pass
+
+    return HttpResponse()
+
+
 def get_offers_by_status(
     request,
-    status
+    status,
+    business_id=None
 ):
     template_parameters = {}
-    template_parameters['offers'] = Offer.objects.filter(status=status)
     try:
-        template_parameters['user_profile'] = UserProfile.objects.get(user=request.user)
-        template_parameters['business'] = Business.objects.get(user=request.user)
+        template_parameters['user_profile'] = UserProfile.objects.get(
+            user=request.user
+        )
+
+        business = None
+        if business_id:
+            business = business.objects.get(
+                pk=business_id
+            )
+        else:
+            business = Business.objects.get(
+                user=request.user
+            )
+        template_parameters['business'] = business
+
+        template_parameters['offers'] = Offer.objects.filter(
+            status=status,
+            business=business
+        )
+
     except:
         pass
 
     return render(
         request,
         'offers_list_manage.html',
+        template_parameters
+    )
+
+
+def offer_map(request):
+    template_parameters = {}
+
+    template_parameters['offers'] = Offer.objects.filter(status=OfferStatus.CURRENT)
+
+    return render(
+        request,
+        'offer_map.html',
         template_parameters
     )

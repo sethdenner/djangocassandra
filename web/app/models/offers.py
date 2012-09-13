@@ -75,7 +75,7 @@ class OfferManager(Manager):
             primary=True,
         )
 
-        offer = Offer(
+        offer = Offer.objects.create(
             business=business,
             title=content_title,
             title_type=title_type,
@@ -129,11 +129,34 @@ class OfferManager(Manager):
 
         return results
 
+    def get_subscribed_businesses_offers_dict(
+        self,
+        subscriptions
+    ):
+        offers = {}
+        for subscription in subscriptions:
+            try:
+                business = Business.objects.get(pk=subscription.business_id)
+                offers[business.backend_name] = business
+            except:
+                pass
+
+        for key, value in offers:
+            try:
+                offers[key] = Offer.objects.filter(business=value)
+            except:
+                offers.pop(key)
+
+        return offers
+
+
 class OfferTypes:
     NORMAL = 0
+    PREMIUM = 1
 
     CHOICES = (
-        (NORMAL, 'normal'),
+        (NORMAL, 'Normal'),
+        (PREMIUM, 'Premium')
     )
 
 class OfferStatus:
@@ -182,7 +205,12 @@ class Offer(KnotisModel):
     start_date = DateTimeField(null=True)
     end_date = DateTimeField(null=True)
 
-    status = CharField(max_length=32, choices=OfferStatus.CHOICES, db_index=True, default=OfferStatus.CREATED)
+    status = CharField(
+        max_length=32,
+        choices=OfferStatus.CHOICES,
+        db_index=True,
+        default=OfferStatus.CREATED
+    )
     stock = IntegerField(default=0, blank=True, null=True)
     purchased = IntegerField(default=0, blank=True, null=True)
     redeemed = IntegerField(default=0, blank=True, null=True)
@@ -195,8 +223,61 @@ class Offer(KnotisModel):
 
     objects = OfferManager()
 
+    def title_formatted(self):
+        if OfferTitleTypes.TITLE_1 == self.title_type:
+            return ''.join([
+                '$',
+                self.price_discount_formatted(),
+                ' for $',
+                self.price_retail_formatted(),
+                ' at ',
+                self.business.business_name.value
+            ])
+        elif OfferTitleTypes.TITLE_2 == self.title_type:
+            return ''.join([
+                '$',
+                self.price_discount_formatted(),
+                ' for ',
+                self.title.value,
+                ' at ',
+                self.business.business_name.value
+            ])
+        else:
+            return self.title.value
+
+    def description_100(self):
+        return ''.join([
+            self.description.value[:97],
+            '...'
+        ])
+
+    def price_retail_formatted(self):
+        return ("%.2f" % round(
+            self.price_retail,
+            2
+        )).replace('.00', '')
+
+    def price_discount_formatted(self):
+        return ("%.2f" % round(
+            self.price_discount,
+            2
+        )).replace('.00', '')
+
     def savings(self):
-        return self.price_retail - self.price_discount
+        return ("%.2f" % round(
+            self.price_retail - self.price_discount,
+            2
+        )).replace('.00', '')
+
+    def savings_percent(self):
+        return '%.0f' % round(
+            (self.price_retail - self.price_discount) / self.price_retail * 100,
+            0
+        )
+
+    def days_remaining(self):
+        delta = self.end_date - self.start_date
+        return delta.days
 
     def public_url(self):
         return settings.BASE_URL + '/offer/' + self.id + '/'
@@ -328,19 +409,19 @@ class Offer(KnotisModel):
             self.published = published
             is_self_dirty = True
 
-        if status and status != self.status:
+        if None != status and status != self.status:
             self.status = status
             is_self_dirty = True
 
-        if purchased and purchased != self.purchased:
+        if None != purchased and purchased != self.purchased:
             self.purchased = purchased
             is_self_dirty = True
 
-        if redeemed and redeemed != self.redeemed:
+        if None != redeemed and redeemed != self.redeemed:
             self.redeemed = redeemed
             is_self_dirty = True
 
-        if active and active != self.active:
+        if None != active and active != self.active:
             self.active = active
             is_self_dirty = True
 

@@ -1,7 +1,7 @@
 //ONLY FOR DEVELOPER TIME
 
 if (location.hostname == 'localhost') {
-    var server = "/knotis/webapp/";
+    var server = "http://localhost:8000";
 }
 
 else {
@@ -24,14 +24,35 @@ $(document).ready(function() {
     var facebookAppId = $('#fb-root').attr('data-app-id');
 
     // Ajax loading
-
     $("#ajaxBusy").ajaxStart(function() {
         $(this).show();
     });
     $("#ajaxBusy").ajaxStop(function() {
         $(this).hide();
     });
-
+    $(document).ajaxSend(         
+        function(event, xhr, settings){
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                // Only send the token to relative URLs i.e. locally.
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        }
+    )
 
     // Disable some of the non-functional feature links
     $('a.happy, a.events, a.coming-soon').click(function(e) {
@@ -146,11 +167,11 @@ $(document).ready(function() {
         var $this = $(this), type = $this.attr('data-type');
 
         if (type == 'user')
-            $("#fb-root").attr('data-sign-up-action', server + "user/facebook_login/1");
+            $("#fb-root").attr('data-sign-up-action', server + "/auth/login/facebook/user");
         if (type == 'foreverfree')
-            $("#fb-root").attr('data-sign-up-action', server + "user/facebook_login/2");
+            $("#fb-root").attr('data-sign-up-action', server + "/auth/login/facebook/foreverfree");
         if (type == 'premium')
-            $("#fb-root").attr('data-sign-up-action', server + "user/facebook_login/3");
+            $("#fb-root").attr('data-sign-up-action', server + "/auth/facebook_login/premium");
 
 
         $('.signup_popup').remove();
@@ -288,10 +309,15 @@ $(document).ready(function() {
                 neightbourhoodId = $('.deal-data').attr('data-neightbourhoodId'),
                 id = $('.deal-data').attr('data-id');
 
-        $.post([server + "deals/deals_list_map", cityId, neightbourhoodId, filter, id].join('/'), {}, function(data) {
-            $('.deal-data').replaceWith(data);
-            $('.mode-map a').addClass('active');
-            $('.mode-list a').removeClass('active');
+        $.get('/offers/offer_map/', {
+                'city': null,
+                'neighborhood': null,
+                'status': null,
+                'offer': null            
+            }, function(data) {
+                $('.deal-content').replaceWith(data);
+                $('.mode-map a').addClass('active');
+                $('.mode-list a').removeClass('active');
         });
 
         return false;
@@ -503,31 +529,32 @@ $(document).ready(function() {
     }); 
     
     $('.playstop').live('click', function() {
-        var $this = $(this),
-                status = $this.attr('data-status'),
-                cont = $this.attr('data-cont'),
-                id = $this.attr('data-id');
+        var $this = $(this);
+        var active = $this.attr('data-active');
+        var cont = $this.attr('data-cont');
+        var id = $this.attr('data-id');
   
-        $.post([server + "backend/status", status,id].join('/'), {},
+        active = active.toLowerCase() == 'true' ? false : true;
+        $.post(
+            '/offers/update/', {
+                'offer_id': id,
+                'active': active
+            }, function(data) {
+                $('#currentDealsA').click();
+            }
+        );
 
-                function(data) {
-                    $('#currentDealsA').click();
-                });
-
-        if (status == 1) {
+        if (status == 'true') {
             $this.removeClass('play');
             $this.addClass('pause');
             $this.removeAttr('data-status');
             $this.attr('data-status', "0");
-        }
-        else {
+        } else {
             $this.removeClass('pause');
             $this.addClass('play');
             $this.removeAttr('data-status');
             $this.attr('data-status', "1");
         }
-
-
     });
 
 
@@ -711,41 +738,38 @@ $(document).ready(function() {
 
         number = parseInt(number) + parseInt(1);
 
-        $.post([server + "business/follow_me",id].join('/'), {},
-
-                function(data) {
-
+        $.post(
+            '/business/follow/', {
+                business_id: id
+            }, function(data) {
                     $this.fadeOut();
                     $('.followers-list').append(data);
                     $('.number-replace').replaceWith('<span>' + number + '</span>');
-                });
+            }
+        );
 
         return false;
-
-
     });
 
     // Button follow in business profile
     $('.unfollowme').live('click', function() {
 
-        var $this = $(this),
-                idUser = $this.attr('data-idUser'),
-                number = $('.number-follow').attr('data-number'),
-                idFollow = $this.attr('data-idFollow');
+        var $this = $(this);
+        var id_user = $this.attr('data-iduser');
+        var number = $('.number-follow').attr('data-number');
+        var id = $this.attr('data-id');
 
-        $number = number - 1;
+        number = number - 1;
 
-
-        $.post([server + "business/unfollow_me",idFollow].join('/'), {},
-
-                function(data) {
-
-                    $this.fadeOut();
-                    $('.follow-' + idUser).hide();
-                    $('.number-replace').replaceWith('<span>' + $number + '</span>');
-                });
+        $.post('/business/unfollow/', {
+                business_id: id, 
+            }, function(data){
+                $this.fadeOut();
+                $('.follow-' + id_user).hide();
+                $('.number-replace').replaceWith('<span>' + number + '</span>');
+            }
+        );
         return false;
-
     });
 
     // Button follow in business profile
@@ -804,20 +828,17 @@ $(document).ready(function() {
 
     // Button unfollow in backend
     $('.btn-unfollow').live('click', function() {
+        var $this = $(this);
+        var cont = $this.attr('data-cont');
+        var id = $this.attr('data-id');        
 
-        var $this = $(this),
-                cont = $this.attr('data-cont'),
-                id = $this.attr('data-id');
-
-        $.post([server + "business/unfollow_me",id].join('/'), {},
-
-                function(data) {
-
-
-                });
-
-        $('.follow-' + cont).fadeOut();
-
+        $.post('/business/unfollow/', {
+                business_id: id, 
+            }, function(data){
+                $('.follow-' + cont).fadeOut();
+            }
+        );
+        return false;
     });
 
 
@@ -1179,7 +1200,7 @@ $(document).ready(function() {
                                         $('.replace').replaceWith(data.message);
 
                                     if (data.user == 'foreverfree')
-                                        window.location = server + "backend/businessprofile";
+                                        window.location = '/business/profile/';
 
                                     if (data.user == 'normal')
                                         window.location.reload(true);
@@ -1209,9 +1230,9 @@ $(document).ready(function() {
             cookie: true,
             xfbml: true,
             oauth: true,
-            channelUrl: window.location.protocol + '//' + window.location.host + server + 'channel.php'
+            channelUrl: window.location.protocol + '//' + window.location.host + '/facebook/channel/'
         });
-
+        
         FB.Event.subscribe('auth.authResponseChange', function(response) {
             handleSession(response, true);
         });
@@ -1220,7 +1241,7 @@ $(document).ready(function() {
             handleSession(response, false);
         });
         
-        FB.Canvas.setAutoResize();
+        FB.Canvas.setAutoGrow();
     };
 
     (function(d){
