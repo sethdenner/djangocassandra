@@ -117,7 +117,7 @@ def sign_up(request, account_type='user'):
                         'activate',
                         subject,
                         settings.EMAIL_HOST_USER,
-                        [email.value], {
+                        [email.value.value], {
                             'user_id': user.id,
                             'validation_key': email.validation_key,
                             'BASE_URL': settings.BASE_URL,
