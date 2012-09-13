@@ -206,9 +206,11 @@
                         <label>
                             <select name="{{ offer_form.city.html_name }}" id="citySelect" onchange="loadNeighbourhood();">
                                 <option value="">Select City</option>
+                                {% if cities %}
                                 {% for city in cities %}
                                 <option value="{{city.id }}" {% if offer_form.city.value == city.id or city.name|lower in business.address.value.value %}selected{% endif %}>{{ city.name.value }}</option>
                                 {% endfor %}
+                                {% endif %}
                             </select>
                         </label>
                     </li>
@@ -217,9 +219,11 @@
                         <label>
                             <select name="{{ offer_form.neighborhood.html_name }}" id="neighbourhoodSelect">
                                 <option value="" >All the City</option>
+                                {% if neighborhoods %}
                                 {% for neighborhood in neighborhoods %}
                                 <option value="{{ neighborhood.id }}" {% if offer_form.neighborhood.value == neighborhood.id %}selected{% endif %}>{{ neighborhood.name.value }}</option>
                                 {% endfor %}
+                                {% endif %}
                             </select>
                         </label>               
                     </li>

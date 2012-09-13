@@ -38,14 +38,13 @@ class EndpointManager(Manager):
         else:
             class_type = Endpoint
 
-        endpoint = class_type(
+        endpoint = class_type.objects.create(
             user=user,
             primary=primary,
             value=value,
             validation_key=validation_key,
             disabled=disabled
         )
-        endpoint.save()
 
         return endpoint
 
@@ -173,7 +172,6 @@ class Endpoint(KnotisModel):
             class ' + self.__class__.__name__ + '.')
 
 
-""" Endpoint Proxy Classes """
 class EndpointPhone(Endpoint):
     class Meta:
         proxy = True

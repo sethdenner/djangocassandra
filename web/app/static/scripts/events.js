@@ -24,7 +24,6 @@ $(document).ready(function() {
     var facebookAppId = $('#fb-root').attr('data-app-id');
 
     // Ajax loading
-
     $("#ajaxBusy").ajaxStart(function() {
         $(this).show();
     });
@@ -288,10 +287,15 @@ $(document).ready(function() {
                 neightbourhoodId = $('.deal-data').attr('data-neightbourhoodId'),
                 id = $('.deal-data').attr('data-id');
 
-        $.post([server + "deals/deals_list_map", cityId, neightbourhoodId, filter, id].join('/'), {}, function(data) {
-            $('.deal-data').replaceWith(data);
-            $('.mode-map a').addClass('active');
-            $('.mode-list a').removeClass('active');
+        $.get('/offers/offer_map/', {
+                'city': null,
+                'neighborhood': null,
+                'status': null,
+                'offer': null            
+            }, function(data) {
+                $('.deal-content').replaceWith(data);
+                $('.mode-map a').addClass('active');
+                $('.mode-list a').removeClass('active');
         });
 
         return false;

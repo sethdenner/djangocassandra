@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.html import strip_tags
@@ -11,6 +12,8 @@ from app.models.users import UserProfile
 
 from app.utils import View as ViewUtils
 from app.views.business import edit_profile
+
+from pymaps.pymaps import PyMap
 
 
 class OfferForm(ModelForm):
@@ -119,6 +122,10 @@ def offers(request):
     except:
         pass
 
+    gmap = PyMap()
+    gmap.key = settings.GOOGLE_MAPS_API_KEY
+    template_parameters['map_script'] = gmap.headerjs()
+
     return render(
         request,
         'offers.html',
@@ -143,6 +150,10 @@ def offer(
     except:
         pass
 
+    gmap = PyMap()
+    gmap.key = settings.GOOGLE_MAPS_API_KEY
+    template_parameters['map_script'] = gmap.headerjs()
+
     return render(
         request,
         'offer.html',
@@ -164,11 +175,16 @@ def dashboard(request):
     if business:
         offers = None
         try:
-            template_parameters['offers'] = Offer.objects.filter(business=business, status=OfferStatus.CREATED)
+            template_parameters['offers'] = Offer.objects.filter(
+                business=business,
+                status=OfferStatus.CREATED
+            )
         except:
             pass
 
-    template_parameters['user_profile'] = UserProfile.objects.get(user=request.user)
+    template_parameters['user_profile'] = UserProfile.objects.get(
+        user=request.user
+    )
 
     return render(
         request,
@@ -213,15 +229,24 @@ def edit(request, offer_id=None):
     else:
         form = OfferForm(instance=offer)
 
-
     template_parameters = ViewUtils.get_standard_template_parameters(request)
 
-    if offer:
-        template_parameters['neighborhoods'] = Neighborhood.objects.filter(city=offer.city)
+    template_parameters['cities'] = cities = City.objects.all()
+    template_parameters['cities'] = cities
+
+    if offer and offer.city:
+        template_parameters['neighborhoods'] = Neighborhood.objects.filter(
+            city=offer.city
+        )
+    elif len(cities):
+        template_parameters['neighborhoods'] = Neighborhood.objects.filter(
+            city=cities[0]
+        )
+    else:
+        template_parameters['neighborhoods'] = None
 
     template_parameters['business'] = Business.objects.get(user=request.user)
     template_parameters['categories'] = Category.objects.all()
-    template_parameters['cities'] = City.objects.all()
     template_parameters['offer_form'] = form
     template_parameters['offer'] = offer
     template_parameters['feedback'] = feedback
@@ -232,6 +257,7 @@ def edit(request, offer_id=None):
         template_parameters
     )
 
+
 def get_offers_by_status(
     request,
     status
@@ -239,13 +265,29 @@ def get_offers_by_status(
     template_parameters = {}
     template_parameters['offers'] = Offer.objects.filter(status=status)
     try:
-        template_parameters['user_profile'] = UserProfile.objects.get(user=request.user)
-        template_parameters['business'] = Business.objects.get(user=request.user)
+        template_parameters['user_profile'] = UserProfile.objects.get(
+            user=request.user
+        )
+        template_parameters['business'] = Business.objects.get(
+            user=request.user
+        )
     except:
         pass
 
     return render(
         request,
         'offers_list_manage.html',
+        template_parameters
+    )
+
+
+def offer_map(request):
+    template_parameters = {}
+
+    template_parameters['offers'] = Offer.objects.filter(status=OfferStatus.CURRENT)
+
+    return render(
+        request,
+        'offer_map.html',
         template_parameters
     )

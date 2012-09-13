@@ -35,7 +35,7 @@
         <script>
             $(document).ready(function() {
                 var mapOptions = {
-                    center : new google.maps.LatLng({{ offer.lattitude }}, {{ offer.longitude }}),
+                    center : new google.maps.LatLng({{ offer.address.lat }}, {{ offer.address.lon }}),
                     {% thumbnail offer.image.image '33x33' as image %}
                     icon: '{{ image.url }}',
                     {% empty %}

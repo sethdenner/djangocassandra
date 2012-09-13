@@ -75,7 +75,7 @@ class OfferManager(Manager):
             primary=True,
         )
 
-        offer = Offer(
+        offer = Offer.objects.create(
             business=business,
             title=content_title,
             title_type=title_type,
@@ -131,9 +131,11 @@ class OfferManager(Manager):
 
 class OfferTypes:
     NORMAL = 0
+    PREMIUM = 1
 
     CHOICES = (
-        (NORMAL, 'normal'),
+        (NORMAL, 'Normal'),
+        (PREMIUM, 'Premium')
     )
 
 class OfferStatus:
@@ -182,7 +184,12 @@ class Offer(KnotisModel):
     start_date = DateTimeField(null=True)
     end_date = DateTimeField(null=True)
 
-    status = CharField(max_length=32, choices=OfferStatus.CHOICES, db_index=True, default=OfferStatus.CREATED)
+    status = CharField(
+        max_length=32,
+        choices=OfferStatus.CHOICES,
+        db_index=True,
+        default=OfferStatus.CREATED
+    )
     stock = IntegerField(default=0, blank=True, null=True)
     purchased = IntegerField(default=0, blank=True, null=True)
     redeemed = IntegerField(default=0, blank=True, null=True)
@@ -194,6 +201,34 @@ class Offer(KnotisModel):
     pub_date = DateTimeField(null=True, auto_now_add=True)
 
     objects = OfferManager()
+
+    def title_formatted(self):
+        if OfferTitleTypes.TITLE_1 == self.title_type:
+            return ''.join([
+                '$',
+                self.price_discount,
+                ' for $',
+                self.price_retail,
+                ' at ',
+                self.business.business_name.value
+            ])
+        elif OfferTitleTypes.TITLE_2 == self.title_type:
+            return ''.join([
+                '$',
+                self.price_discount,
+                ' for ',
+                self.title.value,
+                ' at ',
+                self.business.business_name.value
+            ])
+        else:
+            return self.title.value
+
+    def description_100(self):
+        return ''.join([
+            self.description.value[:97],
+            '...'
+        ])
 
     def savings(self):
         return self.price_retail - self.price_discount

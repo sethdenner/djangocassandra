@@ -169,6 +169,9 @@ def profile(request, backend_name):
     try:
         business = Business.objects.get(backend_name=urlquote(backend_name))
     except:
+        pass
+
+    if not business:
         return redirect('/')
 
     template_parameters['business'] = business
@@ -176,6 +179,14 @@ def profile(request, backend_name):
     if business:
         try:
             template_parameters['business_links'] = BusinessLink.objects.filter(business=business)
+        except:
+            pass
+
+        try:
+            template_parameters['current_offers'] = Offer.objects.filter(
+                business=business,
+                status=OfferStatus.CURRENT
+            )
         except:
             pass
 

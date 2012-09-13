@@ -93,6 +93,11 @@ urlpatterns = patterns('',
         name='offers'
     ),
     url(
+        r'^offers/offer_map/',
+        'app.views.offer.offer_map',
+        name='offers'
+    ),
+    url(
         r'^business/offers/create/$',
         'app.views.offer.edit',
         name='business'

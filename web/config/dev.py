@@ -32,3 +32,5 @@ MEDIA_ROOT = '/home/seth/workspace/knotis.com/media/'
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = 'http://localhost:8000/media/'
+
+GOOGLE_MAPS_API_KEY = 'AIzaSyBrsdJdU3pwYc5Rsbg7f25yOGNYaOmaFnk'
