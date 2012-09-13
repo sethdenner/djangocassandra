@@ -8,6 +8,10 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(
+        r'^facebook/',
+        include('facebook.urls')
+    ),
+    url(
         r'^(?P<login>(login)*)(/)*$',
         'app.views.home.index',
         name='home'

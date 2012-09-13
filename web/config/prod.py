@@ -14,7 +14,7 @@ EMAIL_HOST_USER = 'support@knotis.com'
 EMAIL_HOST_PASSWORD = 'p0tent1al!'
 
 # Base url for external access
-BASE_URL = 'http://knotis.com' # NO TRAILING SLASH!!!
+BASE_URL = 'http://knotis.com'  # NO TRAILING SLASH!!!
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -31,3 +31,8 @@ MEDIA_ROOT = '/srv/knotis/media/'
 MEDIA_URL = 'http://knotis.com/media/'
 
 GOOGLE_MAPS_API_KEY = 'AIzaSyBrsdJdU3pwYc5Rsbg7f25yOGNYaOmaFnk'
+
+FACEBOOK_APP_ID = '227221503982317'
+FACEBOOK_API_SECRET = 'c38d6b546822e6142d958d4e6f7c940d'
+FACEBOOK_DEFAULT_SCOPE = 'email,user_about_me'
+FACEBOOK_API_URL = 'https://graph.facebook.com'

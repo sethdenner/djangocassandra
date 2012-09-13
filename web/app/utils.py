@@ -1,5 +1,6 @@
 import md5
 
+from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
@@ -13,6 +14,8 @@ class View:
     @staticmethod
     def get_standard_template_parameters(request):
         template_parameters = {}
+
+        template_parameters['FACEBOOK_APP_ID'] = settings.FACEBOOK_APP_ID
 
         try:
             content = {}
@@ -36,6 +39,7 @@ class View:
                     None,
                     20
                 )
+
         except:
             pass
 

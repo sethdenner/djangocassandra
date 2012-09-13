@@ -1,7 +1,7 @@
 //ONLY FOR DEVELOPER TIME
 
 if (location.hostname == 'localhost') {
-    var server = "/knotis/webapp/";
+    var server = "http://localhost:8000";
 }
 
 else {
@@ -145,11 +145,11 @@ $(document).ready(function() {
         var $this = $(this), type = $this.attr('data-type');
 
         if (type == 'user')
-            $("#fb-root").attr('data-sign-up-action', server + "user/facebook_login/1");
+            $("#fb-root").attr('data-sign-up-action', server + "/auth/login/facebook/user");
         if (type == 'foreverfree')
-            $("#fb-root").attr('data-sign-up-action', server + "user/facebook_login/2");
+            $("#fb-root").attr('data-sign-up-action', server + "/auth/login/facebook/foreverfree");
         if (type == 'premium')
-            $("#fb-root").attr('data-sign-up-action', server + "user/facebook_login/3");
+            $("#fb-root").attr('data-sign-up-action', server + "/auth/facebook_login/premium");
 
 
         $('.signup_popup').remove();
@@ -1183,7 +1183,7 @@ $(document).ready(function() {
                                         $('.replace').replaceWith(data.message);
 
                                     if (data.user == 'foreverfree')
-                                        window.location = server + "backend/businessprofile";
+                                        window.location = '/business/profile/';
 
                                     if (data.user == 'normal')
                                         window.location.reload(true);
@@ -1213,9 +1213,9 @@ $(document).ready(function() {
             cookie: true,
             xfbml: true,
             oauth: true,
-            channelUrl: window.location.protocol + '//' + window.location.host + server + 'channel.php'
+            channelUrl: window.location.protocol + '//' + window.location.host + '/facebook/channel/'
         });
-
+        
         FB.Event.subscribe('auth.authResponseChange', function(response) {
             handleSession(response, true);
         });
@@ -1224,7 +1224,7 @@ $(document).ready(function() {
             handleSession(response, false);
         });
         
-        FB.Canvas.setAutoResize();
+        FB.Canvas.setAutoGrow();
     };
 
     (function(d){
