@@ -15,8 +15,6 @@ var KnotisMarker = function(options) {
 
     this._latlng = options.position;
 
-    this.setMap(options.map);
-
     this._div.hover($.proxy(this.openPopup, this), $.proxy(this.closePopup, this));
 
     google.maps.event.addDomListener(this._div, 'mousedown', KnotisMarker.cancelEvent);

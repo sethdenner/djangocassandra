@@ -2,6 +2,7 @@
 
 {% block title %}Knotis.com - Home{% endblock title %}
 
+{% load thumbnail %}
 {% block content %} 
 <div class="header-bottom">
     <div class="curve curve01 curve02">
@@ -47,13 +48,32 @@
                                 mapTypeId : google.maps.MapTypeId.ROADMAP
                             };
                             map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-                            markers = [];
-
-                            var bounds = new google.maps.LatLngBounds(markers[0].getPosition(), markers[0].getPosition());
-                            for (var i = 0; i < markers.length; i++) {
-                                bounds.extend(markers[i].getPosition());
+                            markers = [
+                                {% for offer in premium_offers %}
+                                new KnotisMarker({
+                                    map:map,
+                                    title_var: '{{ offer.title_formatted }}',
+                                    description_var: '{{ offer.description_100 }}',
+                                    icon_var: '{{ offer.category.title_short }}',
+                                    profile: 0,
+                                    url_var: '{{ BASE_URL }}/offer/{{ offer.id }}/',
+                                    position: new google.maps.LatLng('{{ offer.address.geo.lat }}', '{{ offer.address.geo.lon }}'),
+                                    {% thumbnail offer.image.image '49x49' as image %}
+                                    icon: '{{ image.url }}'
+                                    {% empty %}
+                                    icon: '{{ STATIC_URL }}images/layouts/knotis-icon-rounded-map.png'
+                                    {% endthumbnail %}
+                                }){% if forloop.counter != premium_offers|length %},
+                                {% endif %}
+                                {% endfor %}
+                            ];
+                            if (0 < markers.length){
+                                var bounds = new google.maps.LatLngBounds(markers[0].getPosition(), markers[0].getPosition());
+                                for (var i = 0; i < markers.length; i++) {
+                                    bounds.extend(markers[i].getPosition());
+                                }
+                                map.fitBounds(bounds);
                             }
-                            map.fitBounds(bounds);
                         });
                    </script>
                    <span class="radius-general span-map" id="map_canvas">
@@ -71,11 +91,11 @@
         </h3>
     </div>
     <div class="wrapper clear-fix">
-        {% if premium_deals %}
-        {% for deal in premium_deals %}
+        {% if premium_offers %}
+        {% for offer in premium_offers %}
         <div class="box relative" style="width:222px">
-            <div class="category cat-{{ deal.class }}"></div>
-            <div class="ribbon-price"><p>{{ deal.savings }}%</p></div>
+            <div class="category cat-{{ offer.class }}"></div>
+            <div class="ribbon-price"><p>{{ offer.savings }}%</p></div>
             <h4 class="circle shadow-white">
                 <strong>
                     {% if user.city_name %}
@@ -94,34 +114,26 @@
                 <div class="box-image-home relative">
                     <a href="<?=site_url("deal/profile/" . $row->id); ?>" title="<?=$row->title ?>"
                        alt="<?=$row->title ?>">
-                       <img alt="{{ deal.business.name }}" src="{{ deal.business.image }}"/>
+                       <img alt="{{ offer.business.name }}" src="{{ offer.business.image }}"/>
                     </a>
                 </div>
                 <div class="box-info">
                     <h5>
-                        <strong><a href="/deal/{{ deal.id }}">
-                        <strong><a href="/deal/{{ deal.id }}">
-                            {% if deal.title_type == 1 %}
-                            ${{ deal.new_price }} for ${{ deal.old_price }} at {{ deal.business.name }}
-                            {% endif %}
-                            {% if deal.title_type == 2 %}
-                            ${{ deal.new_price }} for ${{ deal.title }} at {{ deal.business.name }}
-                            {% endif %}
-                            {% if deal.title_type == 3 %}
-                            {{ deal.title }}
-                            {% endif %}
+                        <strong><a href="/deal/{{ offer.id }}">
+                        <strong><a href="/deal/{{ offer.id }}">
+                            {{ offer.title_formatted }}
                         </a></strong>
                         </a></strong>
                     </h5>
                     <p>
-                        <a class="txt-size margin-general clear-fix business-link business-buy" title="{{ deal.business.name }}"
-                            href="/business/{{ deal.business.id }}" >
-                            {{ deal.business.name }}
+                        <a class="txt-size margin-general clear-fix business-link business-buy" title="{{ offer.business.business_name.value }}"
+                            href="/{{ offer.business.backend_name }}/" >
+                            {{ deal.business.business_name.value }}
                         </a>
                     </p>
                     <p class="txt-size clean">
-                        {% if deal.description %}
-                        {{ deal.description }}
+                        {% if offer.description %}
+                        {{ offer.description.value }}
                         {% endif %}
                     </p>    
                 </div>
