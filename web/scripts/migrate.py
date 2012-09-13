@@ -5,15 +5,15 @@ import getpass
 import MySQLdb
 import MySQLdb.cursors
 import hashlib
-from knotis_auth.models import UserManager
+from knotis_auth.models import User
 from app.models.businesses import BusinessManager, Business
 from app.models.offers import OfferManager
 from app.models.cities import CityManager, City
 from app.models.categories import CategoryManager, Category
+from app.models.endpoints import EndpointEmail, EndpointTypes
 
 from app.models.neighborhoods import NeighborhoodManager, Neighborhood
 
-from django.contrib.auth.models import User
 from legacy.models import BusinessIdMap
 
 """
@@ -42,13 +42,18 @@ def import_user(cursor):
 
         print 'Importing user %s' % email
 
-        user_manager = UserManager()
-        user_manager.create_user(
+        user, account_type  = User.objects.create_user(
             first_name,
             last_name,
             email,
-            password,
-            send_email=False
+            password
+        )
+
+        endpoint_email = EndpointEmail.objects.create_endpoint(
+            user,
+            EndpointTypes.EMAIL,
+            email,
+            primary=True
         )
 
 # TODO: sebastian
@@ -327,8 +332,8 @@ if __name__ == '__main__':
     c = db.cursor()
     print 'Migration Script!'
 
-    import os
-    os.system('./reset.sh')
+    # import os
+    # os.system('./reset.sh')
 
     import_user(c)
     import_business(c)
