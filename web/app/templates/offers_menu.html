@@ -6,12 +6,15 @@
                 </label>
                     <a class="gradient-gray search-deals left" name="link" href="">Search</a>
         </li>
+        {% for key, value in category_offers.items %}
+        {% if key == 'total_offers' %}
         <li class="relative All">
             <a class="{% if not current_category %}active {% endif %}categories-filter" data-filter="actives"
-               data-category_name="All" href="#" data-category="" href="#">All Categories
-                ({% if offers %}{{ offers|length }}{% else %}0{% endif %})</a>
+               data-category_name="All" href="#" data-category="" href="#">All Categories ({{ value }})</a>
             {% if not current_category %}<div class="arrow arrow-All"></div>{% endif %}
         </li>
+        {% endif %}
+        {% endfor %}
         {% for category in categories %}
         {% for key, value in category_offers.items %}
         {% if category.short_name == key %}

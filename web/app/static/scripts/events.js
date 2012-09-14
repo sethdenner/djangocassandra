@@ -499,7 +499,6 @@ $(document).ready(function() {
         return false;
     });
 
-    /*
     $('.filtering-bar li a').live('click', function() {
         var $this = $(this),
                 filter = $this.attr('data-filter'),
@@ -507,7 +506,15 @@ $(document).ready(function() {
                 neightbourhoodId = $('.deal-data').attr('data-neightbourhoodId'),
                 id = $('.deal-content').attr('data-id');
 
-        $.post([server + "deals/deals_list",cityId, neightbourhoodId, filter,id].join('/'), {}, function(data) {
+        var url; 
+        if (filter == 'popular'){
+            url = '/offers/get_popular_offers';
+        } else if (filter == 'expiring'){
+            url = '/offers/get_expiring_offers';
+        } else {
+            url = '/offers/get_newest_offers';
+        }
+        $.get(url, {}, function(data) {
             $('.deal-content').replaceWith(data);
             $('.filtering-bar li a').removeClass('active');
             $this.addClass('active');
@@ -515,7 +522,6 @@ $(document).ready(function() {
 
         return false;
     });
-    */
 
 
     $('#softDeleteClick').live('click', function() {

@@ -113,10 +113,8 @@ def offers(request):
     template_parameters['current_page'] = 'offers'
 
     try:
-        template_parameters['offers'] = Offer.objects.filter(
-            status=OfferStatus.CURRENT,
-            active=True
-        )
+        template_parameters['offers'] = Offer.objects.get_newest_offers()
+        template_parameters['offers_premium'] = Offer.objects.get_premium_offers()
     except:
         pass
 
@@ -289,6 +287,69 @@ def update(request):
         pass
 
     return HttpResponse()
+
+
+def get_popular_offers(
+    request,
+    city_name=None,
+    neighborhood_name=None
+):
+    template_parameters = {}
+    try:
+        template_parameters['offers'] = Offer.objects.get_popular_offers(
+            city_name,
+            neighborhood_name
+        )
+    except:
+        pass
+
+    return render(
+        request,
+        'offers_list.html',
+        template_parameters
+    )
+
+
+def get_newest_offers(
+    request,
+    city_name=None,
+    neighborhood_name=None
+):
+    template_parameters = {}
+    try:
+        template_parameters['offers'] = Offer.objects.get_newest_offers(
+            city_name,
+            neighborhood_name
+        )
+    except:
+        pass
+
+    return render(
+        request,
+        'offers_list.html',
+        template_parameters
+    )
+
+
+def get_expiring_offers(
+    request,
+    city_name=None,
+    neighborhood_name=None
+):
+    template_parameters = {}
+    try:
+        template_parameters['offers'] = Offer.objects.get_expiring_offers(
+            city_name,
+            neighborhood_name
+        )
+    except:
+        pass
+
+    return render(
+        request,
+        'offers_list.html',
+        template_parameters
+    )
 
 
 def get_offers_by_status(

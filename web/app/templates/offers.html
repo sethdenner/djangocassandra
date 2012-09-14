@@ -6,13 +6,13 @@
 <div id="content" class="back-deals">
     <div class="curve">
         <div class="wrapper relative content-slide">
-            {% include 'offers_premium.html' with offers=offers %}
+            {% include 'offers_premium.html' with offers=offers_premium %}
         </div>
         <div class="wrapper clear-fix">
             <div class="box-deals box-border left relative">
                 <div class="clear-fix">
                     <ul class="filtering-bar clear-fix left">
-                        <li class="txt-size"><a class="active" href="#" data-filter="actives">New deals</a></li>
+                        <li class="txt-size"><a class="active" href="#" data-filter="newest">New deals</a></li>
                         <li class="txt-size"><a href="#" data-filter="popular">Popular</a></li>
                         <li class="txt-size"><a href="#" data-filter="expiring">Expiring</a></li>
                     </ul>
@@ -40,7 +40,7 @@
                     <span>Receive new deals via email</span>
                 </a>
             </div>
-            {% include 'offers_menu.html' with offers=offers categories=categories %}
+            {% include 'offers_menu.html' with categories=categories %}
         </div>
     </div>
 </div>

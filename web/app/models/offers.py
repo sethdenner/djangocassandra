@@ -1,3 +1,6 @@
+import datetime
+import random
+
 from django.db.models import DateTimeField, IntegerField, \
     FloatField, NullBooleanField, CharField, Manager
 from django.utils.http import urlquote
@@ -12,6 +15,28 @@ from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
 from app.models.categories import Category
 from app.models.media import Image
+
+
+class OfferTypes:
+    NORMAL = 0
+    PREMIUM = 1
+
+    CHOICES = (
+        (NORMAL, 'Normal'),
+        (PREMIUM, 'Premium')
+    )
+
+
+class OfferStatus:
+    CREATED = 'created'
+    CURRENT = 'current'
+    COMPLETE = 'complete'
+
+    CHOICES = (
+        (CREATED, 'Created'),
+        (CURRENT, 'Current'),
+        (COMPLETE, 'Complete')
+    )
 
 
 class OfferManager(Manager):
@@ -34,7 +59,8 @@ class OfferManager(Manager):
         end_date,
         stock,
         unlimited,
-        published
+        published,
+        premium=False
     ):
         backend_name = urlquote(('offer_' + business.backend_name + '_' + title).strip().lower().replace(' ', '-'))
 
@@ -93,7 +119,8 @@ class OfferManager(Manager):
             unlimited=unlimited,
             published=published,
             status=OfferStatus.CURRENT if published else OfferStatus.CREATED,
-            active=published
+            active=published,
+            premium=premium
         )
 
         if image:
@@ -127,6 +154,12 @@ class OfferManager(Manager):
             except:
                 pass
 
+        total = 0
+        for key in results:
+            total += len(results[key])
+
+        results['total_offers'] = total
+
         return results
 
     def get_subscribed_businesses_offers_dict(
@@ -149,26 +182,129 @@ class OfferManager(Manager):
 
         return offers
 
+    def get_popular_offers(
+        self,
+        city_name=None,
+        neighborhood_name=None
+    ):
+        offers = None
+        try:
+            offers = Offer.objects.filter(
+                status=OfferStatus.CURRENT,
+                active=True
+            )
+        except:
+            pass
 
-class OfferTypes:
-    NORMAL = 0
-    PREMIUM = 1
+        if not offers:
+            return None
 
-    CHOICES = (
-        (NORMAL, 'Normal'),
-        (PREMIUM, 'Premium')
-    )
+        popular_offers = []
+        for offer in offers:
+            if offer.purchased > 3 and offer.last_purchase >= datetime.datetime.now() + datetime.timedelta(days= -1):
+                popular_offers.append(offer)
 
-class OfferStatus:
-    CREATED = 'created'
-    CURRENT = 'current'
-    COMPLETE = 'complete'
+        def get_popularity_sort_key(offer):
+            return offer.last_purchase
 
-    CHOICES = (
-        (CREATED, 'Created'),
-        (CURRENT, 'Current'),
-        (COMPLETE, 'Complete')
-    )
+        popular_offers = sorted(popular_offers, key=get_popularity_sort_key)
+
+        return popular_offers[:20]
+
+    def get_premium_offers(
+        self,
+        city_name=None,
+        neighborhood_name=None
+    ):
+        offers = None
+        try:
+            offers = Offer.objects.filter(
+                status=OfferStatus.CURRENT,
+                active=True,
+                premium=True
+            )
+        except:
+            pass
+
+        if not offers:
+            return None
+
+        offers_list = list(offers)
+        random.shuffle(offers_list)
+        return offers_list[:5]
+
+    def get_newest_offers(
+        self,
+        city_name=None,
+        neighborhood_name=None
+    ):
+        offers = None
+        try:
+            offers = Offer.objects.filter(
+                status=OfferStatus.CURRENT,
+                active=True
+            )
+        except:
+            pass
+
+        if not offers:
+            return None
+
+        newest_offers = []
+        for offer in offers:
+            if offer.pub_date >= datetime.datetime.now() + datetime.timedelta(days= -1):
+                newest_offers.append(offer)
+
+        def get_newest_sort_key(offer):
+            return offer.pub_date
+
+        newest_offers = sorted(newest_offers, key=get_newest_sort_key)
+
+        return newest_offers[:20]
+
+    def get_expiring_offers(
+        self,
+        city_name=None,
+        neighborhood_name=None
+    ):
+        offers = None
+        try:
+            offers = Offer.objects.filter(
+                status=OfferStatus.CURRENT,
+                active=True
+            )
+        except:
+            pass
+
+        if not offers:
+            return None
+
+        expiring_offers = []
+        for offer in offers:
+            if offer.end_date <= datetime.datetime.now() + datetime.timedelta(days=1):
+                expiring_offers.append(offer)
+
+        def get_expiring_sort_key(offer):
+            return offer.end_date
+
+        expiring_offers = sorted(expiring_offers, key=get_expiring_sort_key)
+
+        return expiring_offers[:20]
+
+    def get_active_offer_count(self):
+        offers = None
+        try:
+            offers = Offer.objects.filter(
+                status=OfferStatus.CURRENT,
+                active=True
+            )
+        except:
+            pass
+
+        if not offers:
+            return 0
+        else:
+            return len(offers)
 
 
 class OfferTitleTypes:
@@ -202,8 +338,8 @@ class Offer(KnotisModel):
     price_retail = FloatField(default=0., blank=True, null=True)
     price_discount = FloatField(default=0., blank=True, null=True)
 
-    start_date = DateTimeField(null=True)
-    end_date = DateTimeField(null=True)
+    start_date = DateTimeField(null=True, db_index=True)
+    end_date = DateTimeField(null=True, db_index=True)
 
     status = CharField(
         max_length=32,
@@ -218,12 +354,17 @@ class Offer(KnotisModel):
 
     published = NullBooleanField(default=False)
     active = NullBooleanField(default=False, db_index=True)
+    premium = NullBooleanField(default=False, db_index=True)
 
+    last_purchase = DateTimeField(null=True)
     pub_date = DateTimeField(null=True, auto_now_add=True)
 
     objects = OfferManager()
 
     def title_formatted(self):
+        if not self.title:
+            return ''
+
         if OfferTitleTypes.TITLE_1 == self.title_type:
             return ''.join([
                 '$',
@@ -246,6 +387,9 @@ class Offer(KnotisModel):
             return self.title.value
 
     def description_100(self):
+        if not self.description:
+            return ''
+
         return ''.join([
             self.description.value[:97],
             '...'
@@ -303,7 +447,8 @@ class Offer(KnotisModel):
         status=None,
         purchased=None,
         redeemed=None,
-        active=None
+        active=None,
+        premium=None
     ):
         is_self_dirty = False
 
@@ -423,6 +568,10 @@ class Offer(KnotisModel):
 
         if None != active and active != self.active:
             self.active = active
+            is_self_dirty = True
+
+        if None != premium and premium != self.premium:
+            self.premium = premium
             is_self_dirty = True
 
         if is_self_dirty:

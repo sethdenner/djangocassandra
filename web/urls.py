@@ -97,6 +97,21 @@ urlpatterns = patterns('',
         name='offers'
     ),
     url(
+        r'^offers/get_popular_offers/((?P<city_name>[^/]+)(/(?P<neighborhood_name>[^/]+))?/)?$',
+        'app.views.offer.get_popular_offers',
+        name='offers'
+    ),
+    url(
+        r'^offers/get_newest_offers/((?P<city_name>[^/]+)(/(?P<neighborhood_name>[^/]+))?/)?$',
+        'app.views.offer.get_newest_offers',
+        name='offers'
+    ),
+    url(
+        r'^offers/get_expiring_offers/((?P<city_name>[^/]+)(/(?P<neighborhood_name>[^/]+))?/)?$',
+        'app.views.offer.get_expiring_offers',
+        name='offers'
+    ),
+    url(
         r'^offers/update/$',
         'app.views.offer.update',
         name='offers'
