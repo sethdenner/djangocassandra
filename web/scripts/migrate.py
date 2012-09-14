@@ -6,18 +6,18 @@ import MySQLdb
 import MySQLdb.cursors
 import hashlib
 from knotis_auth.models import User, AccountTypes
-from app.models.businesses import BusinessManager, Business, BusinessLink, BusinessSubscription
-from app.models.offers import OfferManager
-from app.models.cities import CityManager, City
+from app.models.businesses import Business, BusinessLink, BusinessSubscription
+from app.models.offers import Offer
+from app.models.cities import City
 from app.models.qrcodes import Qrcode
-from app.models.categories import CategoryManager, Category
-from app.models.transactions import TransactionManager, Transaction
+from app.models.categories import Category
+from app.models.transactions import Transaction, TransactionTypes
 from app.models.endpoints import EndpointEmail, EndpointTypes
 import sys
 
-from app.models.neighborhoods import NeighborhoodManager, Neighborhood
+from app.models.neighborhoods import Neighborhood
 
-from legacy.models import BusinessIdMap
+from legacy.models import BusinessIdMap, OfferIdMap
 
 """
 TODO:
@@ -50,7 +50,10 @@ def import_user(cursor):
 
         first_name = user_table['firstName'].decode('cp1252')
         last_name = user_table['lastName'].decode('cp1252')
-        password = user_table['password']
+
+        password    = user_table['password']
+        salt        = user_table['salt']
+
 
         account_type = AccountTypes.USER
         role = user_table['role_id']
@@ -85,13 +88,13 @@ def import_business(cursor):
     for business_table in all_businesses:
         name        = business_table['name'].decode('cp1252')
         description = business_table['description'].decode('cp1252')
-        phone       = business_table['phone']
+        phone       = business_table['phone'].decode('cp1252')
         summary     = business_table['extendedDescription'].decode('cp1252')
 
-        address     = business_table['street1'] + business_table['street2']
-        twitter_name= business_table['twitter']
-        facebook_uri= business_table['facebook']
-        yelp_id     = business_table['yelp']
+        address     = business_table['street1'].decode('cp1252') + business_table['street2'].decode('cp1252')
+        twitter_name= business_table['twitter'].decode('cp1252')
+        facebook_uri= business_table['facebook'].decode('cp1252')
+        yelp_id     = business_table['yelp'].decode('cp1252')
 
         # Getting the user id for the new system.
         old_user_id     = business_table['userId']
@@ -99,13 +102,12 @@ def import_business(cursor):
             continue
 
         #user = get_user_from_old_id(old_user_id, cursor)
-        username = business_table['username']
+        username = business_table['username'].decode('cp1252')
         user = User.objects.get(username=username)
 
         print 'Importing business for %s with username = %s, id = %s' % (name, user, business_table['id'])
 
-        business_manager = BusinessManager()
-        new_business = business_manager.create_business(
+        new_business = Business.objects.create_business(
             user,
             name,
             summary,
@@ -231,10 +233,11 @@ def import_offer(cursor):
         stock           = old_offer['stock']
         unlimited       = old_offer['unlimited']
         published       = old_offer['Published']
+        premium         = old_offer['premium']
+        active          = old_offer['active']
 
         print 'Importing offer for business %s by user %s' % (business, user)
-        new_offer = OfferManager()
-        new_offer.create_offer(
+        new_offer = Offer.objects.create_offer(
             user,
             business,
             title,
@@ -252,8 +255,15 @@ def import_offer(cursor):
             end_date,
             stock,
             unlimited,
-            published
+            active
         )
+
+        old_offer_id = old_offer['id']
+
+        OfferIdMap.objects.create(
+            old_id=old_offer_id,
+            new_offer = new_offer
+            )
 
 
 def import_categories(cursor):
@@ -261,10 +271,9 @@ def import_categories(cursor):
     all_categories = cursor.fetchall()
     user = User.objects.get(username='simlay')
     for category_dict in all_categories:
-        name = category_dict['title']
-        category_manager = CategoryManager()
+        name = category_dict['title'].decode('cp1252')
         print 'Importing category %s by %s' % (name, user)
-        category_manager.create_category(user, name)
+        category = Category.objects.create_category(user, name)
 
 
 def import_cities(cursor):
@@ -272,11 +281,10 @@ def import_cities(cursor):
     user = User.objects.get(username='simlay')
     all_cities = cursor.fetchall()
     for city_dict in all_cities:
-        city_name = city_dict['title']
+        city_name = city_dict['title'].decode('cp1252')
 
-        new_city = CityManager()
 
-        new_city = new_city.create_city(user=user, name=city_name)
+        new_city = City.objects.create_city(user=user, name=city_name)
 
         print 'City %s added by %s' % (city_name, user)
 
@@ -285,7 +293,7 @@ def import_neighborhoods(cursor):
     all_neighborhoods = cursor.fetchall()
     for neighborhood_dict in all_neighborhoods:
 
-        title = neighborhood_dict['title']
+        title = neighborhood_dict['title'].decode('cp1252')
         city_id = neighborhood_dict['cityId']
         cursor.execute("""select * from city where id = %s""", city_id)
 
@@ -308,8 +316,7 @@ def import_neighborhoods(cursor):
         name = title
         user = User.objects.get(username='simlay')
         print "%s creating neighborhood %s in %s" % (user, name, city_name)
-        neighborhood_manager = NeighborhoodManager()
-        neighborhood_manager.create_neighborhood(
+        Neighborhood.objects.create_neighborhood(
             user,
             city,
             name
@@ -323,7 +330,7 @@ def import_qrcodes(cursor):
     for qrcode_dict in all_qrcodes:
 
         old_business_id = qrcode_dict['merchantId']
-        uri             = qrcode_dict['link']
+        uri             = qrcode_dict['link'].decode('cp1252')
 
         qrcode_type     = qrcode_dict['qrcodeType']
         qrcode_date     = qrcode_dict['date']
@@ -348,8 +355,8 @@ def import_business_links(cursor):
     all_links = cursor.fetchall()
     for link_table in all_links:
         old_business_id = link_table['merchantId']
-        uri             = link_table['urlLink']
-        title           = link_table['titleLink']
+        uri             = link_table['urlLink'].decode('cp1252')
+        title           = link_table['titleLink'].decode('cp1252')
 
         businesses = BusinessIdMap.objects.filter(old_id = old_business_id)
         business = None
@@ -368,11 +375,22 @@ def import_transactions(cursor):
     all_transactions = cursor.fetchall()
     for transaction_table in all_transactions:
         account_id  = transaction_table['accountId']
-        username = transaction_table['email']
-        user = Users.objects.get(username=username)
+        username = transaction_table['email'].decode('cp1252')
+        user = User.objects.get(username=username)
 
         deal_id     = transaction_table['dealId']
+        offer = OfferIdMap.objects.get(old_id = deal_id).new_offer
+
+        business = offer.business
+        redeem      = transaction_table['redeem']
+        quantity    = transaction_table['stock']
+
+        transaction_type = TransactionTypes.REDEMPTION
+        if redeem != 1:
+            transaction_type = TransactionTypes.PURCHASE
+
         date        = transaction_table['date']
+        print "Importing transaction between %s and %s" % (user, business)
 
         Transaction.objects.create_transaction(
             user,
@@ -387,6 +405,7 @@ def get_business_from_old_id(old_business_id):
     businesses = BusinessIdMap.objects.filter(old_id = old_business_id)
     if len(businesses) > 0:
         business = businesses[0].new_business
+
     else:
         business = None
 
@@ -418,6 +437,7 @@ def import_business_subscriptions(cursor):
     for subscription_table in all_subscriptions:
         user_id         = subscription_table['accountId']
         old_business_id = subscription_table['merchantId']
+
         business = get_business_from_old_id(old_business_id)
         user = get_user_from_old_id(user_id, cursor)
         print 'Adding business subscription: business = %s, user = %s' % (business, user)
@@ -426,7 +446,6 @@ def import_business_subscriptions(cursor):
                 user = user,
                 business = business,
             )
-
 
 if __name__ == '__main__':
     #host = options['host']
@@ -457,17 +476,17 @@ if __name__ == '__main__':
     print 'Migration Script!'
 
 
-    #import os
-    #os.system('./reset.sh')
+    import os
+    os.system('./reset.sh')
 
-    #import_user(c)
-    #import_business(c)
-    #import_cities(c)
-    #import_neighborhoods(c)
-    #import_categories(c)
-    #import_offer(c)
+    import_user(c)
+    import_business(c)
+    import_cities(c)
+    import_neighborhoods(c)
+    import_categories(c)
+    import_offer(c)
 
-    #import_qrcodes(c)
-    #import_business_links(c)
-    #import_business_subscriptions(c)
+    import_qrcodes(c)
+    import_business_links(c)
+    import_business_subscriptions(c)
     import_transactions(c)
