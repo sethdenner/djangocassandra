@@ -49,9 +49,11 @@ class OfferForm(ModelForm):
 
         instance = kwargs.get('instance')
         if None != instance:
-            self.fields['description_value'].initial = instance.description.value
+            self.fields['description_value'].initial = \
+                instance.description.value
             self.fields['title_value'].initial = instance.title.value
-            self.fields['restrictions_value'].initial = instance.restrictions.value
+            self.fields['restrictions_value'].initial = \
+                instance.restrictions.value
             self.fields['address_value'].initial = instance.address.value.value
             self.fields['neighborhood'].initial = instance.neighborhood
 
@@ -114,7 +116,8 @@ def offers(request):
 
     try:
         template_parameters['offers'] = Offer.objects.get_newest_offers()
-        template_parameters['offers_premium'] = Offer.objects.get_premium_offers()
+        template_parameters['offers_premium'] = \
+            Offer.objects.get_premium_offers()
     except:
         pass
     template_parameters['offer_load_uri'] = '/offers/get_newest_offers/'
@@ -122,7 +125,8 @@ def offers(request):
 
     try:
         template_parameters['categories'] = Category.objects.all()
-        template_parameters['category_offers'] = Offer.objects.get_offers_category_dict()
+        template_parameters['total_active_offers'] = \
+            Offer.objects.get_active_offer_count()
     except:
         pass
 
@@ -150,13 +154,15 @@ def offer(
 
     try:
         template_parameters['categories'] = Category.objects.all()
-        template_parameters['category_offers'] = Offer.objects.get_offers_category_dict()
+        template_parameters['total_active_offers'] = \
+            Offer.objects.get_active_offer_count()
     except:
         pass
 
     gmap = PyMap()
     gmap.key = settings.GOOGLE_MAPS_API_KEY
     template_parameters['map_script'] = gmap.headerjs()
+    template_parameters['BASE_URL'] = settings.BASE_URL
 
     return render(
         request,
@@ -325,7 +331,7 @@ def get_category_offers(
                 category=the_category,
                 page=int(page) if page else 1
             )
-        except Exception as e:
+        except:
             pass
 
     return render(
@@ -465,7 +471,8 @@ def offer_map(request):
     template_parameters = {}
 
     try:
-        template_parameters['offers'] = Offer.objects.filter(status=OfferStatus.CURRENT)
+        template_parameters['offers'] = \
+            Offer.objects.filter(status=OfferStatus.CURRENT)
     except:
         pass
 

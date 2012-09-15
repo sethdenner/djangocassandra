@@ -115,11 +115,11 @@
         </ul>
         <p class="clear-fix">
             <span class="left follow-deal ">
-            <a class="button-follow right radius-general {% if not user.is_anonymous %}
-                {% if user in followers %}unfollow{% else %}followmen{% endif %}"
+            <a class="button-follow right radius-general{% if not user.is_anonymous %}
+                {% if user in followers %} unfollow{% else %} followme{% endif %}"
                 href="{% if user.is_anonymous %}/login/{% else %}#{% endif %}">{% if user in followers %}
                 Unsubscribe{% else %}Subscribe{% endif %}
-                {% else %}Subscribe{% endif %}
+                {% else %}"> Subscribe{% endif %}
             </a>
             </span>
             <span class="left txt-deal-follow">If you want to stay informed of all deals of this business</span>

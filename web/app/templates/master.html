@@ -4,14 +4,14 @@
     <title>{% block title %}Knotis.com{% endblock %}</title>
     {% include 'meta.html' %}
     {% include 'styles.html' with maps=maps gallery=gallery do_upload=do_upload graphics=graphics %}
-    {% include 'scripts.html' with maps=maps gallery=gallery do_upload=do_upload graphics=graphics %}
 </head>
 <body>
-  {% include 'header.html' %}
-  <div id="content">
-    {% block content %}
-    {% endblock %}
-  </div>
-  {% include 'footer.html' %}
+    {% include 'header.html' %}
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+    {% include 'footer.html' %}
+    {% include 'scripts.html' with maps=maps gallery=gallery do_upload=do_upload graphics=graphics %}
 </body>
 </html>

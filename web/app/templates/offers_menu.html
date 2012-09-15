@@ -6,29 +6,23 @@
                 </label>
                     <a class="gradient-gray search-deals left" name="link" href="">Search</a>
         </li>
-        {% for key, value in category_offers.items %}
-        {% if key == 'total_offers' %}
         <li class="relative All">
             <a class="{% if not current_category %}active {% endif %}categories-filter" data-filter="actives"
-               data-category_name="All" href="#" data-category="" href="#">All Categories ({{ value }})</a>
+               data-category_name="All" href="#" data-category="" href="#">All Categories ({{ total_active_offers }})</a>
             {% if not current_category %}<div class="arrow arrow-All"></div>{% endif %}
         </li>
-        {% endif %}
-        {% endfor %}
         {% for category in categories %}
-        {% for key, value in category_offers.items %}
-        {% if category.short_name == key %}
+        {% if category.active_offer_count > 0 %}
         <li class="relative {{ category.short_name }}">
             <a class="{% if category.short_name == current_category %}active {% endif %}categories-filter" 
             data-filter="actives" 
             data-category_name="{{ category.short_name }}" 
             href="#" 
-            data-category="{{ category.id }}">{{ category.name.value }} ({{ value|length }})</a>
+            data-category="{{ category.id }}">{{ category.name.value }} ({{ category.active_offer_count }})</a>
             {% if category.short_name == current_category %}<div class="arrow arrow-{{ category.short_name }}"></div>
             {% endif %}
         </li>
         {% endif %}
-        {% endfor %}
         {% endfor %}
     </ul>
 </div>

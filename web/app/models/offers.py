@@ -134,6 +134,11 @@ class OfferManager(Manager):
             offer.image = model_image
 
         offer.save()
+
+        if None != category and offer.active:
+            category.active_offer_count = category.active_offer_count + 1
+            category.save()
+
         return offer
 
     def get_offers_category_dict(self):
@@ -660,6 +665,10 @@ class Offer(KnotisModel):
         if None != active and active != self.active:
             self.active = active
             is_self_dirty = True
+
+            self.category.active_offer_count = \
+                self.category.active_offer_count + (1 if active else -1)
+            self.category.save()
 
         if None != premium and premium != self.premium:
             self.premium = premium

@@ -1,4 +1,4 @@
-from django.db.models import Manager
+from django.db.models import IntegerField, Manager
 from django.utils.http import urlquote
 
 from knotis import KnotisModel
@@ -37,6 +37,7 @@ class CategoryManager(Manager):
 class Category(KnotisModel):
     content_root = ForeignKeyNonRel(Content, related_name='category_root')
     name = ForeignKeyNonRel(Content, related_name='category_name')
+    active_offer_count = IntegerField(null=True, blank=True, default=0)
 
     objects = CategoryManager()
 
