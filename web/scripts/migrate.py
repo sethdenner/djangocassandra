@@ -472,17 +472,17 @@ if __name__ == '__main__':
     print 'Migration Script!'
 
 
-    #import os
-    #os.system('./reset.sh')
+    import os
+    os.system('./reset.sh')
 
-    #import_user(c)
-    #import_business(c)
-    #import_cities(c)
-    #import_neighborhoods(c)
-    #import_categories(c)
-    #import_offer(c)
+    import_user(c)
+    import_business(c)
+    import_cities(c)
+    import_neighborhoods(c)
+    import_categories(c)
+    import_offer(c)
 
-    #import_qrcodes(c)
-    #import_business_links(c)
-    #import_business_subscriptions(c)
-    #import_transactions(c)
+    import_qrcodes(c)
+    import_business_links(c)
+    import_business_subscriptions(c)
+    import_transactions(c)
