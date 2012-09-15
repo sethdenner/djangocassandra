@@ -13,6 +13,8 @@ from app.models.qrcodes import Qrcode
 from app.models.categories import Category
 from app.models.transactions import Transaction, TransactionTypes
 from app.models.endpoints import EndpointEmail, EndpointTypes
+
+import datetime
 import sys
 
 from app.models.neighborhoods import Neighborhood
@@ -41,24 +43,21 @@ def import_user(cursor):
 
         email = user_table['email'].decode('cp1252')
 
-        # I don't want any damn duplicate email addresses in my new database.
-        if email in added_users:
-            continue
-
-        else:
-            added_users[email] = 1
-
         first_name = user_table['firstName'].decode('cp1252')
         last_name = user_table['lastName'].decode('cp1252')
 
         password    = user_table['password']
         salt        = user_table['salt']
 
-
         account_type = AccountTypes.USER
         role = user_table['role_id']
         if role == 2:
             account_type = AccountTypes.BUSINESS_FREE
+
+        current_users = User.objects.filter(username = email)
+        if len(current_users) > 0:
+            print 'User %s is already in the database.' % email
+            continue
 
         print 'Importing user %s' % email
 
@@ -102,11 +101,14 @@ def import_business(cursor):
             continue
 
         #user = get_user_from_old_id(old_user_id, cursor)
-        username = business_table['username'].decode('cp1252')
-        user = User.objects.get(username=username)
+        username = business_table['email'].decode('cp1252')
 
-        print 'Importing business for %s with username = %s, id = %s' % (name, user, business_table['id'])
+        user = None
+        user_objects = User.objects.filter(username=username)
+        if len(user_objects) > 0:
+            user = user_objects[0]
 
+        print 'Importing business for %s with username = %s' % (name, username)
         new_business = Business.objects.create_business(
             user,
             name,
@@ -116,8 +118,7 @@ def import_business(cursor):
             phone,
             twitter_name,
             facebook_uri,
-            yelp_id
-        )
+            yelp_id)
 
         id = business_table['id']
         BusinessIdMap.objects.create(
@@ -135,15 +136,6 @@ def import_offer(cursor):
         #old_user_id     = old_offer['usersId']
         username = old_offer['email'].decode('cp1252')
         user = User.objects.get(username=username)
-
-        #user = get_user_from_old_id(old_user_id, cursor)
-        #cursor.execute("""SELECT email FROM users WHERE id = '%s'""" % old_user_id)
-        #username = cursor.fetchone()
-
-        #if username == None:
-        #    print "USER %s NOT IN SYSTEM." % old_user_id
-        #    raise
-
 
         # Get the business for the new system.
         old_business_id = old_offer['merchantId']
@@ -235,6 +227,10 @@ def import_offer(cursor):
         published       = old_offer['Published']
         premium         = old_offer['premium']
         active          = old_offer['active']
+        end_date        = old_offer['endDate']
+
+        if end_date <= datetime.datetime.now():
+            active = 0
 
         print 'Importing offer for business %s by user %s' % (business, user)
         new_offer = Offer.objects.create_offer(
@@ -282,7 +278,6 @@ def import_cities(cursor):
     all_cities = cursor.fetchall()
     for city_dict in all_cities:
         city_name = city_dict['title'].decode('cp1252')
-
 
         new_city = City.objects.create_city(user=user, name=city_name)
 
@@ -409,6 +404,7 @@ def get_business_from_old_id(old_business_id):
     else:
         business = None
 
+
     return business
 
 def get_user_from_old_id(old_user_id, cursor):
@@ -476,17 +472,17 @@ if __name__ == '__main__':
     print 'Migration Script!'
 
 
-    import os
-    os.system('./reset.sh')
+    #import os
+    #os.system('./reset.sh')
 
-    import_user(c)
-    import_business(c)
-    import_cities(c)
-    import_neighborhoods(c)
-    import_categories(c)
-    import_offer(c)
+    #import_user(c)
+    #import_business(c)
+    #import_cities(c)
+    #import_neighborhoods(c)
+    #import_categories(c)
+    #import_offer(c)
 
-    import_qrcodes(c)
-    import_business_links(c)
-    import_business_subscriptions(c)
-    import_transactions(c)
+    #import_qrcodes(c)
+    #import_business_links(c)
+    #import_business_subscriptions(c)
+    #import_transactions(c)
