@@ -1,5 +1,7 @@
+import logging
 import datetime
 import random
+import re
 
 from django.db.models import DateTimeField, IntegerField, \
     FloatField, NullBooleanField, CharField, Manager
@@ -101,7 +103,7 @@ class OfferManager(Manager):
             primary=True,
         )
 
-        offer = Offer.objects.create(
+        offer = self.create(
             business=business,
             title=content_title,
             title_type=title_type,
@@ -148,7 +150,7 @@ class OfferManager(Manager):
 
         for category in categories:
             try:
-                offers = self.filter(category=category)
+                offers = self.get_available_offers(category=category)
                 if len(offers):
                     results[category.short_name()] = offers
             except:
@@ -174,25 +176,89 @@ class OfferManager(Manager):
             except:
                 pass
 
-        for key, value in offers:
+        for key in offers:
             try:
-                offers[key] = Offer.objects.filter(business=value)
+                offers[key] = self.get_available_offers(business=offers[key])
             except:
                 offers.pop(key)
 
         return offers
 
+    def _page_results(
+        self,
+        results,
+        page
+    ):
+        if None == page:
+            return results
+
+        page_size = 20
+        slice_start = (page - 1) * page_size
+        slice_end = slice_start + page_size - 1
+
+        return results[slice_start:slice_end]
+
+    def get_available_offers(
+        self,
+        city=None,
+        neighborhood=None,
+        category=None,
+        business=None,
+        premium=None,
+        page=None
+    ):
+        try:
+            results = self.filter(
+                published=True,
+                active=True,
+                status=OfferStatus.CURRENT
+            )
+            if None != city:
+                results = results.filter(city=city)
+            if None != neighborhood:
+                results = results.filter(neighborhood=neighborhood)
+            if None != premium:
+                results = results.filter(premium=premium)
+            if None != category:
+                results = results.filter(category=category)
+            if None != business:
+                results = results.filter(business=business)
+
+            return self._page_results(
+                results,
+                page
+            )
+
+        except:
+            return None
+
+    def get_category_offers(
+        self,
+        category,
+        page='1'
+    ):
+        page = int(page)
+
+        results = None
+        try:
+            results = self.get_available_offers(
+                category=category,
+                page=page
+            )
+        except:
+            pass
+
+        return results
+
     def get_popular_offers(
         self,
         city_name=None,
-        neighborhood_name=None
+        neighborhood_name=None,
+        page=1
     ):
         offers = None
         try:
-            offers = Offer.objects.filter(
-                status=OfferStatus.CURRENT,
-                active=True
-            )
+            offers = self.get_available_offers()
         except:
             pass
 
@@ -209,7 +275,10 @@ class OfferManager(Manager):
 
         popular_offers = sorted(popular_offers, key=get_popularity_sort_key)
 
-        return popular_offers[:20]
+        return self._page_results(
+            popular_offers,
+            page
+        )
 
     def get_premium_offers(
         self,
@@ -218,11 +287,7 @@ class OfferManager(Manager):
     ):
         offers = None
         try:
-            offers = Offer.objects.filter(
-                status=OfferStatus.CURRENT,
-                active=True,
-                premium=True
-            )
+            offers = self.get_available_offers(premium=True)
         except:
             pass
 
@@ -236,14 +301,12 @@ class OfferManager(Manager):
     def get_newest_offers(
         self,
         city_name=None,
-        neighborhood_name=None
+        neighborhood_name=None,
+        page=1
     ):
         offers = None
         try:
-            offers = Offer.objects.filter(
-                status=OfferStatus.CURRENT,
-                active=True
-            )
+            offers = self.get_available_offers()
         except:
             pass
 
@@ -260,19 +323,20 @@ class OfferManager(Manager):
 
         newest_offers = sorted(newest_offers, key=get_newest_sort_key)
 
-        return newest_offers[:20]
+        return self._page_results(
+            newest_offers,
+            page
+        )
 
     def get_expiring_offers(
         self,
         city_name=None,
-        neighborhood_name=None
+        neighborhood_name=None,
+        page='1'
     ):
         offers = None
         try:
-            offers = Offer.objects.filter(
-                status=OfferStatus.CURRENT,
-                active=True
-            )
+            offers = self.get_available_offers()
         except:
             pass
 
@@ -289,15 +353,15 @@ class OfferManager(Manager):
 
         expiring_offers = sorted(expiring_offers, key=get_expiring_sort_key)
 
-        return expiring_offers[:20]
+        return self._page_results(
+            expiring_offers,
+            page
+        )
 
     def get_active_offer_count(self):
         offers = None
         try:
-            offers = Offer.objects.filter(
-                status=OfferStatus.CURRENT,
-                active=True
-            )
+            offers = self.get_available_offers()
         except:
             pass
 
@@ -305,6 +369,33 @@ class OfferManager(Manager):
             return 0
         else:
             return len(offers)
+
+    def search_offers(
+        self,
+        query
+    ):
+        offers = None
+        try:
+            offers = self.get_available_offers()
+        except:
+            pass
+
+        if not offers:
+            return None
+
+        query = query.lower().replace(
+            ' ',
+            ''
+        )
+
+        regex = re.compile(query, re.IGNORECASE)
+
+        results = []
+        for offer in offers:
+            if regex.search(offer.title.value.lower().replace(' ', '')):
+                results.append(offer)
+
+        return results
 
 
 class OfferTitleTypes:

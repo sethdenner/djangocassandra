@@ -1,6 +1,6 @@
 {% load thumbnail %}
-<div class="deal-content deal-data" >
-    {% if offers%}
+{% if offers %}
+<div class="deal-data" >
     {% for offer in offers %}
     <div class="line-bottom clear-fix">
         <div class="deals-image radius-general left relative">
@@ -37,18 +37,8 @@
         </div>
     </div>
     {% endfor %}
-    {% else %}
-    <p class="message-confirm message-warn radius-general txt-size">No deals.</p>
-    {% endif %}
-    {% if not search %}
-    {% if more_results %}
-    <div class="more-results">
-        <a class="button-lead txt-size clear-fix gradient-gray txt-center radius-general btn-grey load_more_results"
-           data-id="" data-cityId="" data-neightbourhoodId=""
-           data-filter="" data-offset="" href="#">
-            <span>Load more results</span>
-        </a>
-    </div>
-    {% endif %}
-    {% endif %}
 </div>
+{% else %}
+<div class="deal-data no-more-deals" ><p class="message-confirm message-warn radius-general txt-size">No more deals of this type.</p></div>
+{% endif %}
+

@@ -66,7 +66,7 @@
         return attributes;
     };
     
-    jQuery.fn.render_data = function(options) {
+    $.fn.render_data = function(options) {
         _options = $.extend({
             'data': null,
             'attribute_operator': '-'

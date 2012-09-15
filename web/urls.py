@@ -92,23 +92,33 @@ urlpatterns = patterns('',
         name='offers'
     ),
     url(
-        r'^offers/get_offers_by_status/(?P<status>[^/]+)/(?P<business_id>[^/]+/)*$',
+        r'^offers/get_offers_by_status(/(?P<status>[a-zA-Z_-]+)){1}(/(?P<business_id>[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}))?(/(?P<page>[\d]+))?/$',
         'app.views.offer.get_offers_by_status',
         name='offers'
     ),
     url(
-        r'^offers/get_popular_offers/((?P<city_name>[^/]+)(/(?P<neighborhood_name>[^/]+))?/)?$',
+        r'^offers/get_popular_offers((/(?P<city_name>[a-zA-Z_-]+)){1}(/(?P<neighborhood_name>[a-zA-Z_-]+)){1})?(/(?P<page>[\d]+))?/$',
         'app.views.offer.get_popular_offers',
         name='offers'
     ),
     url(
-        r'^offers/get_newest_offers/((?P<city_name>[^/]+)(/(?P<neighborhood_name>[^/]+))?/)?$',
+        r'^offers/get_newest_offers((/(?P<city_name>[a-zA-Z_-]+)){1}(/(?P<neighborhood_name>[a-zA-Z_-]+)){1})?(/(?P<page>[\d]+))?/$',
         'app.views.offer.get_newest_offers',
         name='offers'
     ),
     url(
-        r'^offers/get_expiring_offers/((?P<city_name>[^/]+)(/(?P<neighborhood_name>[^/]+))?/)?$',
+        r'^offers/get_expiring_offers((/(?P<city_name>[a-zA-Z_-]+)){1}(/(?P<neighborhood_name>[a-zA-Z_-]+)){1})?(/(?P<page>[\d]+))?/$',
         'app.views.offer.get_expiring_offers',
+        name='offers'
+    ),
+    url(
+        r'^offers/get_category_offers(/(?P<category_short_name>[a-zA-Z_-]{1,3})){1}((/(?P<city_name>[a-zA-Z_-]+))(/(?P<neighborhood_name>[a-zA-Z_-]+)))?(/(?P<page>[\d]+))?/$',
+        'app.views.offer.get_category_offers',
+        name='offers'
+    ),
+    url(
+        r'^offers/search/(?P<query>[^/]+)/$',
+        'app.views.offer.search_offers',
         name='offers'
     ),
     url(

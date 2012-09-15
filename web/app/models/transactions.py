@@ -46,4 +46,3 @@ class Transaction(KnotisModel):
     pub_date = DateTimeField(auto_now_add=True)
 
     objects = TransactionManager()
-

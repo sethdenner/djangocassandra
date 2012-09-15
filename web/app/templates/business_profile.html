@@ -184,7 +184,7 @@
                             <span class="number-replace">{{ subscriptions|length }}</span></strong>
                         <span class="clear-fix">SUBSCRIBERS</span>
                     </div>
-                    <a class="button-follow right radius-general {% if not user.is_anonymous %}{% if user in subscribed_users %}unfollowme" data-idUser="{{ user.id }}" {% else %}followme" {% endif %}data-id="{{ business.id }}"{% endif %}
+                    <a class="button-follow right radius-general{% if not user.is_anonymous %}{% if user in subscribed_users %} unfollowme" data-idUser="{{ user.id }}"{% else %} followme"{% endif %} data-id="{{ business.id }}"{% else%}"{% endif %}
                         href="{% if user.is_anonymous %}/login/{% else %}#{% endif %}"> {% if not user.is_anonymous %}{% if user in subscribed_users %}Unsubscribe{% else %}Subscribe{% endif %}{% else %}Subscribe{% endif %}</a>
                 </div>
                 <div class="clear-fix followers-list">

@@ -5,16 +5,19 @@ import getpass
 import MySQLdb
 import MySQLdb.cursors
 import hashlib
-from knotis_auth.models import User
-from app.models.businesses import BusinessManager, Business
-from app.models.offers import OfferManager
-from app.models.cities import CityManager, City
-from app.models.categories import CategoryManager, Category
+from knotis_auth.models import User, AccountTypes
+from app.models.businesses import Business, BusinessLink, BusinessSubscription
+from app.models.offers import Offer
+from app.models.cities import City
+from app.models.qrcodes import Qrcode
+from app.models.categories import Category
+from app.models.transactions import Transaction, TransactionTypes
 from app.models.endpoints import EndpointEmail, EndpointTypes
+import sys
 
-from app.models.neighborhoods import NeighborhoodManager, Neighborhood
+from app.models.neighborhoods import Neighborhood
 
-from legacy.models import BusinessIdMap
+from legacy.models import BusinessIdMap, OfferIdMap
 
 """
 TODO:
@@ -29,16 +32,33 @@ TODO:
 #     import user
 def import_user(cursor):
     print 'IMPORTING USERS!'
-    cursor.execute("""SELECT * from users;""")
+    cursor.execute("""SELECT * from users, users_to_roles WHERE users_to_roles.user_id = users.id ORDER BY email;""")
 
     all_users = cursor.fetchall()
+    added_users = {}
 
     for user_table in all_users:
 
-        email = user_table['email']
-        first_name = user_table['firstName']
-        last_name = user_table['lastName']
-        password = user_table['email']
+        email = user_table['email'].decode('cp1252')
+
+        # I don't want any damn duplicate email addresses in my new database.
+        if email in added_users:
+            continue
+
+        else:
+            added_users[email] = 1
+
+        first_name = user_table['firstName'].decode('cp1252')
+        last_name = user_table['lastName'].decode('cp1252')
+
+        password    = user_table['password']
+        salt        = user_table['salt']
+
+
+        account_type = AccountTypes.USER
+        role = user_table['role_id']
+        if role == 2:
+            account_type = AccountTypes.BUSINESS_FREE
 
         print 'Importing user %s' % email
 
@@ -46,7 +66,8 @@ def import_user(cursor):
             first_name,
             last_name,
             email,
-            password
+            password,
+            account_type = account_type
         )
 
         endpoint_email = EndpointEmail.objects.create_endpoint(
@@ -61,37 +82,32 @@ def import_user(cursor):
 #     import business
 def import_business(cursor):
 
-    cursor.execute("""SELECT * from merchantProfile""")
+    cursor.execute("""SELECT * FROM merchantProfile, users WHERE users.id = merchantProfile.userId""")
 
     all_businesses = cursor.fetchall()
     for business_table in all_businesses:
         name        = business_table['name'].decode('cp1252')
         description = business_table['description'].decode('cp1252')
-        phone       = business_table['phone']
+        phone       = business_table['phone'].decode('cp1252')
         summary     = business_table['extendedDescription'].decode('cp1252')
 
-        address     = business_table['street1'] + business_table['street2']
-        twitter_name= business_table['twitter']
-        facebook_uri= business_table['facebook']
-        yelp_id     = business_table['yelp']
+        address     = business_table['street1'].decode('cp1252') + business_table['street2'].decode('cp1252')
+        twitter_name= business_table['twitter'].decode('cp1252')
+        facebook_uri= business_table['facebook'].decode('cp1252')
+        yelp_id     = business_table['yelp'].decode('cp1252')
 
         # Getting the user id for the new system.
         old_user_id     = business_table['userId']
         if old_user_id == 0:
             continue
-        cursor.execute("""SELECT email FROM users WHERE id = '%s'""" % old_user_id)
-        username = cursor.fetchone()
-        print 'Importing business for %s with %s' % (name ,username)
-        if username == None:
-            print "USER %s NOT IN SYSTEM." % old_user_id
-            continue
-            #raise
 
-        username = username['email'].decode('cp1252')
+        #user = get_user_from_old_id(old_user_id, cursor)
+        username = business_table['username'].decode('cp1252')
         user = User.objects.get(username=username)
 
-        business_manager = BusinessManager()
-        new_business = business_manager.create_business(
+        print 'Importing business for %s with username = %s, id = %s' % (name, user, business_table['id'])
+
+        new_business = Business.objects.create_business(
             user,
             name,
             summary,
@@ -111,21 +127,23 @@ def import_business(cursor):
 
 #     import deal
 def import_offer(cursor):
-    cursor.execute("""SELECT * from deal""")
+    cursor.execute("""SELECT * from deal, users where users.id = deal.usersId""")
     all_offers = cursor.fetchall()
     for old_offer in all_offers:
 
         # Getting the user id for the new system.
-        old_user_id     = old_offer['usersId']
-        cursor.execute("""SELECT email FROM users WHERE id = '%s'""" % old_user_id)
-        username = cursor.fetchone()
-
-        if username == None:
-            print "USER %s NOT IN SYSTEM." % old_user_id
-            raise
-
-        username = username['email'].decode('cp1252')
+        #old_user_id     = old_offer['usersId']
+        username = old_offer['email'].decode('cp1252')
         user = User.objects.get(username=username)
+
+        #user = get_user_from_old_id(old_user_id, cursor)
+        #cursor.execute("""SELECT email FROM users WHERE id = '%s'""" % old_user_id)
+        #username = cursor.fetchone()
+
+        #if username == None:
+        #    print "USER %s NOT IN SYSTEM." % old_user_id
+        #    raise
+
 
         # Get the business for the new system.
         old_business_id = old_offer['merchantId']
@@ -140,8 +158,10 @@ def import_offer(cursor):
 
         #business = Business.objects.get(business_name=business_name)
 
-        business = BusinessIdMap.objects.get(old_id = old_business_id).new_business
-        #business = Business.objects.get(user=user)
+        business = None
+        businesses = BusinessIdMap.objects.filter(old_id = old_business_id)
+        if len(businesses) > 0:
+            business = businesses[0].new_business
 
         title       = old_offer['title'].decode('cp1252')
         title_type  = old_offer['titleType']
@@ -213,10 +233,11 @@ def import_offer(cursor):
         stock           = old_offer['stock']
         unlimited       = old_offer['unlimited']
         published       = old_offer['Published']
+        premium         = old_offer['premium']
+        active          = old_offer['active']
 
         print 'Importing offer for business %s by user %s' % (business, user)
-        new_offer = OfferManager()
-        new_offer.create_offer(
+        new_offer = Offer.objects.create_offer(
             user,
             business,
             title,
@@ -234,24 +255,25 @@ def import_offer(cursor):
             end_date,
             stock,
             unlimited,
-            published
+            active
         )
 
-#     import qrcodes
-def import_qrcodes(cursor):
-    None
+        old_offer_id = old_offer['id']
+
+        OfferIdMap.objects.create(
+            old_id=old_offer_id,
+            new_offer = new_offer
+            )
+
 
 def import_categories(cursor):
     cursor.execute("""select * from category""")
     all_categories = cursor.fetchall()
     user = User.objects.get(username='simlay')
     for category_dict in all_categories:
-        name = category_dict['title']
-        category_manager = CategoryManager()
+        name = category_dict['title'].decode('cp1252')
         print 'Importing category %s by %s' % (name, user)
-        category_manager.create_category(user, name)
-
-
+        category = Category.objects.create_category(user, name)
 
 
 def import_cities(cursor):
@@ -259,20 +281,19 @@ def import_cities(cursor):
     user = User.objects.get(username='simlay')
     all_cities = cursor.fetchall()
     for city_dict in all_cities:
-        city_name = city_dict['title']
+        city_name = city_dict['title'].decode('cp1252')
 
-        new_city = CityManager()
 
-        new_city = new_city.create_city(user=user, name=city_name)
+        new_city = City.objects.create_city(user=user, name=city_name)
 
-        print 'City %s added by %s' % (new_city, user)
+        print 'City %s added by %s' % (city_name, user)
 
 def import_neighborhoods(cursor):
     cursor.execute("""select * from neighbourhood""")
     all_neighborhoods = cursor.fetchall()
     for neighborhood_dict in all_neighborhoods:
 
-        title = neighborhood_dict['title']
+        title = neighborhood_dict['title'].decode('cp1252')
         city_id = neighborhood_dict['cityId']
         cursor.execute("""select * from city where id = %s""", city_id)
 
@@ -295,13 +316,136 @@ def import_neighborhoods(cursor):
         name = title
         user = User.objects.get(username='simlay')
         print "%s creating neighborhood %s in %s" % (user, name, city_name)
-        neighborhood_manager = NeighborhoodManager()
-        neighborhood_manager.create_neighborhood(
+        Neighborhood.objects.create_neighborhood(
             user,
             city,
             name
         )
 
+#     import qrcodes
+def import_qrcodes(cursor):
+
+    cursor.execute("""select * from qrcodeHistory""")
+    all_qrcodes = cursor.fetchall()
+    for qrcode_dict in all_qrcodes:
+
+        old_business_id = qrcode_dict['merchantId']
+        uri             = qrcode_dict['link'].decode('cp1252')
+
+        qrcode_type     = qrcode_dict['qrcodeType']
+        qrcode_date     = qrcode_dict['date']
+        print 'Importing qrcode: old_business_id = %s, qrcode_type = %s, uri = %s, qrcode_date = %s' \
+            % (old_business_id, qrcode_type, uri, qrcode_date)
+
+        businesses = BusinessIdMap.objects.filter(old_id = old_business_id)
+        business = None
+        if len(businesses) > 0:
+            business = businesses[0].new_business
+
+        new_qrcode = Qrcode(
+                business = business,
+                uri      = uri,
+                qrcode_type = qrcode_type,
+                )
+        new_qrcode.save()
+
+
+def import_business_links(cursor):
+    cursor.execute('''select * from merchantLinks''')
+    all_links = cursor.fetchall()
+    for link_table in all_links:
+        old_business_id = link_table['merchantId']
+        uri             = link_table['urlLink'].decode('cp1252')
+        title           = link_table['titleLink'].decode('cp1252')
+
+        businesses = BusinessIdMap.objects.filter(old_id = old_business_id)
+        business = None
+        if len(businesses) > 0:
+            business = businesses[0].new_business
+        print 'Importing business link for %s to %s' % (business, uri)
+        new_business_link = BusinessLink(
+                business = business,
+                uri = uri,
+                title = title,
+                )
+        new_business_link.save()
+
+def import_transactions(cursor):
+    cursor.execute('''select * from dealOrder,users where users.id = dealOrder.accountId''')
+    all_transactions = cursor.fetchall()
+    for transaction_table in all_transactions:
+        account_id  = transaction_table['accountId']
+        username = transaction_table['email'].decode('cp1252')
+        user = User.objects.get(username=username)
+
+        deal_id     = transaction_table['dealId']
+        offer = OfferIdMap.objects.get(old_id = deal_id).new_offer
+
+        business = offer.business
+        redeem      = transaction_table['redeem']
+        quantity    = transaction_table['stock']
+
+        transaction_type = TransactionTypes.REDEMPTION
+        if redeem != 1:
+            transaction_type = TransactionTypes.PURCHASE
+
+        date        = transaction_table['date']
+        print "Importing transaction between %s and %s" % (user, business)
+
+        Transaction.objects.create_transaction(
+            user,
+            business,
+            offer,
+            transaction_type,
+            quantity,
+        )
+
+def get_business_from_old_id(old_business_id):
+
+    businesses = BusinessIdMap.objects.filter(old_id = old_business_id)
+    if len(businesses) > 0:
+        business = businesses[0].new_business
+
+    else:
+        business = None
+
+    return business
+
+def get_user_from_old_id(old_user_id, cursor):
+
+    if old_user_id == 0:
+        return None
+
+    cursor.execute("""SELECT email FROM users WHERE id = '%s'""" % old_user_id)
+    username = cursor.fetchone()
+    if username == None:
+        print "USER %s NOT IN SYSTEM." % old_user_id
+        return None
+
+    username = username['email']
+    #sys.stderr.write('username = %s\n' % username)
+    user = User.objects.filter(username=username)
+    if len(user) > 0:
+        return user[0]
+    else:
+        return None
+
+def import_business_subscriptions(cursor):
+    cursor.execute("""select * from followRelationship""")
+
+    all_subscriptions = cursor.fetchall()
+    for subscription_table in all_subscriptions:
+        user_id         = subscription_table['accountId']
+        old_business_id = subscription_table['merchantId']
+
+        business = get_business_from_old_id(old_business_id)
+        user = get_user_from_old_id(user_id, cursor)
+        print 'Adding business subscription: business = %s, user = %s' % (business, user)
+
+        BusinessSubscription.objects.create(
+                user = user,
+                business = business,
+            )
 
 if __name__ == '__main__':
     #host = options['host']
@@ -326,14 +470,14 @@ if __name__ == '__main__':
 
     except:
         print 'Database connect error!'
-        import sys
         sys.exit(1)
 
     c = db.cursor()
     print 'Migration Script!'
 
-    # import os
-    # os.system('./reset.sh')
+
+    import os
+    os.system('./reset.sh')
 
     import_user(c)
     import_business(c)
@@ -341,3 +485,8 @@ if __name__ == '__main__':
     import_neighborhoods(c)
     import_categories(c)
     import_offer(c)
+
+    import_qrcodes(c)
+    import_business_links(c)
+    import_business_subscriptions(c)
+    import_transactions(c)

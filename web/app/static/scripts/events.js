@@ -269,32 +269,33 @@ $(document).ready(function() {
 
 
     // For categories in the deals page
+    $('.categories-filter').live('click', function(evt) {
+        var category_name = $(this).attr('data-category_name');
 
-    $('.categories-filter').live('click', function() {
-        var $this = $(this),
-                filters = $('.categories-filter'),
-                filter = $('.deal-data').attr('data-filter'),
-                cityId = $('.deal-data').attr('data-cityId'),
-                neightbourhoodId = $('.deal-data').attr('data-neightbourhoodId'),
-                categoryname = $this.attr('data-category_name'),
-                $category = $('.' + categoryname),
-                id = $(this).attr('data-category');
+        $('.deal-content').load_offers(
+            'load', 
+            function(
+                jqxhr,
+                status 
+            ) {
+                $('.list-backend .relative a').removeClass('active');
+                $('.arrow').remove();
+                $('.mode-map a').removeClass('active');
+                $('.mode-list a').addClass('active');
+                $('.' + category_name + ' a').addClass('active');
+                $('.' + category_name).append('<div class="arrow arrow-' + category_name + '"></div>');
 
-        $.get(["/offers/offers_list", cityId, neightbourhoodId, filter, id].join('/').replace(/[/]+/g, '/'), {}, function(data) {
-            $('.more-results').remove();
+            }, 
+            1, 
+            '/offers/get_category_offers/',
+            category_name
+        );
+        $(document).load_offers(
+            'load_scroll', 
+            '.deal-content'
+        );
 
-            $('.deal-content').replaceWith(data);
-            $('.list-backend .relative a').removeClass('active');
-            $('.arrow').remove();
-            $('.mode-map a').removeClass('active');
-            $('.mode-list a').addClass('active');
-            $('.' + categoryname + ' a').addClass('active');
-            $('.' + categoryname).append('<div class="arrow arrow-' + categoryname + '"></div>');
-
-
-        });
-
-
+        evt.stopPropagation();
         return false;
 
     });
@@ -405,6 +406,32 @@ $(document).ready(function() {
 
     });
 
+    var cancelEvent = function(evt){
+        evt.stopPropagation()
+        return false;
+    }
+    
+    var searchDeals = function(query){
+        $.get(['/offers/search/', query, '/'].join(''), {}, function(data){
+            $('.more-results').remove();
+            $('.filtering-bar li a').removeClass('active');
+            $('.deal-content').replaceWith(data);
+            $('.relative a').removeClass('active');
+            $('.arrow').remove();
+        })
+    }
+
+    $search = $('#search');
+
+    $search.live('change', function(evt){
+        searchDeals($search.val());
+        return cancelEvent(evt);
+    })
+
+    $('.search-deals').live('click', function(evt){
+        searchDeals($search.val());        
+        return cancelEvent(evt);
+    })
 
     $('.searchtag').live('click', function() {
         var $this = $(this),
@@ -508,11 +535,11 @@ $(document).ready(function() {
 
         var url; 
         if (filter == 'popular'){
-            url = '/offers/get_popular_offers';
+            url = '/offers/get_popular_offers/';
         } else if (filter == 'expiring'){
-            url = '/offers/get_expiring_offers';
+            url = '/offers/get_expiring_offers/';
         } else {
-            url = '/offers/get_newest_offers';
+            url = '/offers/get_newest_offers/';
         }
         $.get(url, {}, function(data) {
             $('.deal-content').replaceWith(data);

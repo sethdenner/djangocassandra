@@ -117,6 +117,8 @@ def offers(request):
         template_parameters['offers_premium'] = Offer.objects.get_premium_offers()
     except:
         pass
+    template_parameters['offer_load_uri'] = '/offers/get_newest_offers/'
+    template_parameters['offer_load_context'] = ''
 
     try:
         template_parameters['categories'] = Category.objects.all()
@@ -289,16 +291,62 @@ def update(request):
     return HttpResponse()
 
 
+def get_category_offers(
+    request,
+    category_short_name,
+    city_name=None,
+    neighborhood_name=None,
+    page='1'
+):
+    template_parameters = {}
+
+    if category_short_name.strip().lower() == 'all':
+        template_parameters['offers'] = Offer.objects.get_newest_offers(
+            page=int(page) if page else 1
+        )
+    else:
+        categories = None
+        try:
+            categories = Category.objects.all()
+        except:
+            pass
+
+        if not categories:
+            return None
+
+        the_category = None
+        for category in categories:
+            if category_short_name == category.short_name():
+                the_category = category
+                break
+
+        try:
+            template_parameters['offers'] = Offer.objects.get_category_offers(
+                category=the_category,
+                page=int(page) if page else 1
+            )
+        except Exception as e:
+            pass
+
+    return render(
+        request,
+        'offers_list.html',
+        template_parameters
+    )
+
+
 def get_popular_offers(
     request,
     city_name=None,
-    neighborhood_name=None
+    neighborhood_name=None,
+    page='1'
 ):
     template_parameters = {}
     try:
         template_parameters['offers'] = Offer.objects.get_popular_offers(
             city_name,
-            neighborhood_name
+            neighborhood_name,
+            page=int(page) if page else 1
         )
     except:
         pass
@@ -313,13 +361,15 @@ def get_popular_offers(
 def get_newest_offers(
     request,
     city_name=None,
-    neighborhood_name=None
+    neighborhood_name=None,
+    page='1'
 ):
     template_parameters = {}
     try:
         template_parameters['offers'] = Offer.objects.get_newest_offers(
             city_name,
-            neighborhood_name
+            neighborhood_name,
+            page=int(page) if page else 1
         )
     except:
         pass
@@ -334,13 +384,15 @@ def get_newest_offers(
 def get_expiring_offers(
     request,
     city_name=None,
-    neighborhood_name=None
+    neighborhood_name=None,
+    page='1'
 ):
     template_parameters = {}
     try:
         template_parameters['offers'] = Offer.objects.get_expiring_offers(
             city_name,
-            neighborhood_name
+            neighborhood_name,
+            page=int(page) if page else 1
         )
     except:
         pass
@@ -355,7 +407,8 @@ def get_expiring_offers(
 def get_offers_by_status(
     request,
     status,
-    business_id=None
+    business_id=None,
+    page='1'
 ):
     template_parameters = {}
     try:
@@ -376,7 +429,8 @@ def get_offers_by_status(
 
         template_parameters['offers'] = Offer.objects.filter(
             status=status,
-            business=business
+            business=business,
+            page=int(page) if page else 1
         )
 
     except:
@@ -389,10 +443,31 @@ def get_offers_by_status(
     )
 
 
+def search_offers(
+    request,
+    query
+):
+    template_parameters = {}
+
+    try:
+        template_parameters['offers'] = Offer.objects.search_offers(query)
+    except:
+        pass
+
+    return render(
+        request,
+        'offers_list.html',
+        template_parameters
+    )
+
+
 def offer_map(request):
     template_parameters = {}
 
-    template_parameters['offers'] = Offer.objects.filter(status=OfferStatus.CURRENT)
+    try:
+        template_parameters['offers'] = Offer.objects.filter(status=OfferStatus.CURRENT)
+    except:
+        pass
 
     return render(
         request,
