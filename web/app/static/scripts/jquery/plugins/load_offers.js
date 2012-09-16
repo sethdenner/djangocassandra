@@ -1,9 +1,14 @@
 (function($) {
-    var _options = null;
+    var _options = {
+        'page_size': 20
+    };
     
     var _methods = {
         'init': function(options) {
-            
+            _options = $.extend(
+                _options,
+                options
+            );
         },
         
         'load': function(
@@ -48,7 +53,8 @@
             var max = load_uri.length;
             var cleaned_uri = '';
             var last_char = null;
-            for (var i = 0; i < max; ++i) {
+            var i = 0;
+            for (i; i < max; ++i) {
                 if (last_char == '/' && load_uri[i] == last_char) {
                     continue;
                 }
@@ -56,6 +62,8 @@
                 last_char = load_uri[i];
                 cleaned_uri += last_char;
             }
+            
+            var _data = 0;
             
             $.ajax(
                 cleaned_uri, {
@@ -66,7 +74,8 @@
                 status, 
                 jqxhr
             ) {
-                this.append(data)
+                _data = $(data);
+                this.append(data);
 
             }).fail(function(
                 jqxhr,
@@ -79,6 +88,7 @@
                 status
             ) {
                 callback(
+                    _data,
                     status,
                     jqxhr
                 );
@@ -115,15 +125,15 @@
                         $content.load_offers(
                             'load', 
                             function(
+                                data,
                                 jqxhr,
                                 status 
                             ) {
                                 $content.attr('data-page', current_page + 1)
                                 $('.arrow').remove();
 
-                                if ($content.find('.no-more-deals').length) {
-                                    return;
-                                }
+                                rows = data.children()
+                                if (rows.length < _options.page_size) { return; }
                                 
                                 throttled = false;            
                                 
@@ -159,10 +169,11 @@
             $.error('Method ' +  method + ' does not exist on jQuery.load_offers');
         }    
     };
-    
+})(jQuery);
+
+jQuery(function (){
     $(document).load_offers(
         'load_scroll', 
         '.deal-content'
     );
-    
-})(jQuery);
+});

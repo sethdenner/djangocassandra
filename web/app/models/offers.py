@@ -199,7 +199,7 @@ class OfferManager(Manager):
 
         page_size = 20
         slice_start = (page - 1) * page_size
-        slice_end = slice_start + page_size - 1
+        slice_end = slice_start + page_size
 
         return results[slice_start:slice_end]
 

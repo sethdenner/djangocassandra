@@ -12,7 +12,7 @@ var login = 0;
 
 //
 
-$(document).ready(function() {
+$(function() {
 
     //set up validaty
     $.validity.setup({
@@ -275,6 +275,7 @@ $(document).ready(function() {
         $('.deal-content').load_offers(
             'load', 
             function(
+                data,
                 jqxhr,
                 status 
             ) {
