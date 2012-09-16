@@ -6,6 +6,8 @@ from django.template import Context
 from knotis_auth.models import User, UserProfile
 
 from app.models.contents import Content
+from app.models.cities import City
+from app.models.neighborhoods import Neighborhood
 
 
 class View:
@@ -44,12 +46,16 @@ class View:
 
             template_parameters.update(content)
 
+            template_parameters['cities'] = City.objects.all()
+            template_parameters['neighborhood'] = Neighborhood.objects.all()
+
             if request.user.is_authenticated():
                 knotis_user = User.objects.get(pk=request.user.id)
                 template_parameters['knotis_user'] = knotis_user
                 user_profile = UserProfile.objects.get(user=request.user)
                 template_parameters['user_profile'] = user_profile
-                template_parameters['username_truncated'] = knotis_user.username_12()
+                template_parameters['username_truncated'] = \
+                    knotis_user.username_12()
                 template_parameters['avatar_uri'] = knotis_user.avatar(
                     request.user.username,
                     None,

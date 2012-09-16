@@ -7,7 +7,7 @@
     {% include 'render_scripts.html'  with maps=maps gallery=gallery do_upload=do_upload graphics=graphics %}
 </head>
 <body>
-    {% include 'header.html' %}
+    {% include 'header.html' with cities=cities %}
     <div id="content">
         {% block content %}
         {% endblock %}

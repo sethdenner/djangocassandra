@@ -64,7 +64,15 @@ class OfferManager(Manager):
         published,
         premium=False
     ):
-        backend_name = urlquote(('offer_' + business.backend_name + '_' + title).strip().lower().replace(' ', '-'))
+        backend_name = \
+            urlquote(('offer_' + business.backend_name + '_' + title)\
+                .strip()\
+                .lower()\
+                .replace(
+                    ' ',
+                    '-'
+                )
+            )
 
         content_root = Content.objects.create(
             content_type=ContentTypes.OFFER,
@@ -135,9 +143,29 @@ class OfferManager(Manager):
 
         offer.save()
 
-        if None != category and offer.active:
-            category.active_offer_count = category.active_offer_count + 1
-            category.save()
+        if offer.active:
+            if None != category:
+                if not category.active_offer_count:
+                    category.active_offer_count = 1
+                else:
+                    category.active_offer_count = \
+                        category.active_offer_count + 1
+                category.save()
+
+            if None != city:
+                if not city.active_offer_count:
+                    city.active_offer_count = 1
+                else:
+                    city.active_offer_count = city.active_offer_count + 1
+                city.save()
+
+            if None != neighborhood:
+                if not neighborhood.active_offer_count:
+                    neighborhood.active_offer_count = 1
+                else:
+                    neighborhood.active_offer_count = \
+                        neighborhood.active_offer_count + 1
+                neighborhood.save()
 
         return offer
 
@@ -205,12 +233,12 @@ class OfferManager(Manager):
 
     def get_available_offers(
         self,
+        business=None,
         city=None,
         neighborhood=None,
         category=None,
-        business=None,
-        premium=None,
-        page=None
+        page=None,
+        premium=None
     ):
         try:
             results = self.filter(
@@ -335,13 +363,21 @@ class OfferManager(Manager):
 
     def get_expiring_offers(
         self,
-        city_name=None,
-        neighborhood_name=None,
+        business=None,
+        city=None,
+        neighborhood=None,
+        category=None,
         page='1'
     ):
         offers = None
         try:
-            offers = self.get_available_offers()
+            offers = self.get_available_offers(
+                business,
+                city,
+                neighborhood,
+                category,
+                page
+            )
         except:
             pass
 
@@ -350,13 +386,17 @@ class OfferManager(Manager):
 
         expiring_offers = []
         for offer in offers:
-            if offer.end_date <= datetime.datetime.now() + datetime.timedelta(days=1):
+            if offer.end_date <= \
+                datetime.datetime.now() + datetime.timedelta(days=1):
                 expiring_offers.append(offer)
 
         def get_expiring_sort_key(offer):
             return offer.end_date
 
-        expiring_offers = sorted(expiring_offers, key=get_expiring_sort_key)
+        expiring_offers = sorted(
+            expiring_offers,
+            key=get_expiring_sort_key
+        )
 
         return self._page_results(
             expiring_offers,
@@ -417,10 +457,19 @@ class OfferTitleTypes:
 
 class Offer(KnotisModel):
     business = ForeignKeyNonRel(Business)
-    offer_type = IntegerField(default=OfferTypes.NORMAL, choices=OfferTypes.CHOICES, null=True, blank=True)
+    offer_type = IntegerField(
+        default=OfferTypes.NORMAL,
+        choices=OfferTypes.CHOICES,
+        null=True,
+        blank=True
+    )
 
     title = ForeignKeyNonRel(Content, related_name='offer_title')
-    title_type = IntegerField(choices=OfferTitleTypes.CHOICES, blank=True, null=True)
+    title_type = IntegerField(
+        choices=OfferTitleTypes.CHOICES,
+        blank=True,
+        null=True
+    )
     description = ForeignKeyNonRel(Content, related_name='offer_description')
     restrictions = ForeignKeyNonRel(Content, related_name='offer_restrictions')
 
@@ -489,7 +538,7 @@ class Offer(KnotisModel):
         return ''.join([
             self.description.value[:97],
             '...'
-        ])
+        ]).replace('\n', ' ')
 
     def price_retail_formatted(self):
         return ("%.2f" % round(
@@ -511,7 +560,8 @@ class Offer(KnotisModel):
 
     def savings_percent(self):
         return '%.0f' % round(
-            (self.price_retail - self.price_discount) / self.price_retail * 100,
+            (self.price_retail - self.price_discount) / \
+                self.price_retail * 100,
             0
         )
 
@@ -564,7 +614,8 @@ class Offer(KnotisModel):
                 is_self_dirty = True
 
         if None != description:
-            current_description = self.description.value if self.description else None
+            current_description = \
+                self.description.value if self.description else None
             if description != current_description:
                 if self.description:
                     self.description = self.description.update(description)
@@ -579,7 +630,8 @@ class Offer(KnotisModel):
                 is_self_dirty = True
 
         if None != restrictions:
-            current_restrictions = self.restrictions.value if self.restrictions else None
+            current_restrictions = \
+                self.restrictions.value if self.restrictions else None
             if restrictions != current_restrictions:
                 if self.restrictions:
                     self.restrictions = self.restrictions.update(restrictions)
@@ -602,7 +654,8 @@ class Offer(KnotisModel):
             is_self_dirty = True
 
         if None != address:
-            current_address = self.address.value.value if self.address else None
+            current_address = \
+                self.address.value.value if self.address else None
             if address != current_address:
                 if self.address:
                     self.address.update(address)
@@ -666,9 +719,31 @@ class Offer(KnotisModel):
             self.active = active
             is_self_dirty = True
 
-            self.category.active_offer_count = \
-                self.category.active_offer_count + (1 if active else -1)
-            self.category.save()
+            delta = 1 if active else -1
+
+            if self.category:
+                if self.category.active_offer_count:
+                    self.category.active_offer_count = \
+                        self.category.active_offer_count + delta
+                elif delta:
+                    self.category.active_offer_count = 1
+                self.category.save()
+
+            if self.city:
+                if self.city.active_offer_count:
+                    self.city.active_offer_count = \
+                        self.city.active_offer_count + delta
+                elif delta:
+                    self.city.active_offer_count = 1
+                self.city.save()
+
+            if self.neighborhood:
+                if self.neighborhood.active_offer_count:
+                    self.neighborhood.active_offer_count = \
+                        self.neighborhood.active_offer_count + delta
+                elif delta:
+                    self.neighborhood.active_offer_count = 1
+                self.neighborhood.save()
 
         if None != premium and premium != self.premium:
             self.premium = premium

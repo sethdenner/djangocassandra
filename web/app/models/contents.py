@@ -13,12 +13,18 @@ class ContentManager(Manager):
         FIXME: Inefficient. We should find some way to reduce this to one
         query instead of 2 through denormalization.
         """
-        qset = super(ContentManager, self).get_query_set().filter(content_type='1.1').filter(name=template_name)
+        qset = super(ContentManager, self)\
+            .get_query_set()\
+            .filter(content_type='1.1')\
+            .filter(name=template_name)
         parent = qset[0]
-        return super(ContentManager, self).get_query_set().filter(parent=parent)
+        return super(ContentManager, self)\
+            .get_query_set()\
+            .filter(parent=parent)
 
     def create_content(self):
         pass
+
 
 class ContentTypes:
     ROOT = 0.
@@ -85,6 +91,7 @@ class ContentTypes:
         (IMAGE_CAPTION, 'Image Caption'),
     )
 
+
 class ContentLocales:
     EN_US = 'en_us'
     JP = 'jp'
@@ -94,19 +101,42 @@ class ContentLocales:
         (JP, 'jp')
     )
 
+
 class Content(KnotisModel):
     user = ForeignKeyNonRel(User)
     group = ForeignKeyNonRel(Group, null=True, blank=True, default=None)
 
-    content_type = FloatField(choices=ContentTypes.CHOICES, blank=True, null=True, db_index=True)
-    locale = CharField(max_length=10, choices=ContentLocales.CHOICES, null=True, default=ContentLocales.EN_US)
+    content_type = FloatField(
+        choices=ContentTypes.CHOICES,
+        blank=True,
+        null=True,
+        db_index=True
+    )
+    locale = CharField(
+        max_length=10,
+        choices=ContentLocales.CHOICES,
+        null=True,
+        default=ContentLocales.EN_US
+    )
     name = CharField(max_length=30, null=True, default=None, db_index=True)
-    parent = ForeignKeyNonRel('self', blank=True, null=True, related_name='content_parent', default=None)
-    previous = ForeignKeyNonRel('self', related_name='content_previous', blank=True, null=True, default=None)
-    value = CharField(max_length=2000, null=True, blank=True, default=None)  # Base64Field()
+    parent = ForeignKeyNonRel(
+        'self',
+        blank=True,
+        null=True,
+        related_name='content_parent',
+        default=None
+    )
+    previous = ForeignKeyNonRel(
+        'self',
+        related_name='content_previous',
+        blank=True,
+        null=True,
+        default=None
+    )
+    value = CharField(max_length=2000, null=True, blank=True, default=None)
 
-    certainty_mu = FloatField(null=True, default='1.0')  # average - expected value
-    certainty_sigma = FloatField(null=True, default='0.0')  # stdev - expected error
+    certainty_mu = FloatField(null=True, default='1.0')
+    certainty_sigma = FloatField(null=True, default='0.0')
 
     pub_date = DateTimeField('date published', auto_now_add=True)
 
@@ -115,7 +145,10 @@ class Content(KnotisModel):
         if not name_param:
             value_param = kwargs.get('value')
             if value_param:
-                kwargs['name'] = urlquote(value_param.strip().lower().replace(' ', '_'))
+                kwargs['name'] = urlquote(value_param.strip()\
+                    .lower()\
+                    .replace(' ', '_')
+                )
 
         super(Content, self).__init__(*args, **kwargs)
 

@@ -18,7 +18,7 @@
             map.fitBounds(bounds);
             {% for offer in offers %}
             geocoder.geocode({
-                    'address': '{{ offer.address.value }}'
+                    'address': '{{ offer.address.value.value }}'
                 },
                 function(results, status){
                     if (google.maps.GeocoderStatus.OK == status) {

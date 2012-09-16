@@ -449,6 +449,51 @@ def get_offers_by_status(
     )
 
 
+def get_available_offers(
+    request,
+    business_name=None,
+    city_name=None,
+    neighborhood_name=None,
+    category_short_name=None,
+    page='1'
+):
+    template_parameters = {}
+
+    try:
+        business = None
+        if business_name:
+            business = Business.objects.get(backend_name=business_name)
+
+        city = None
+        if city_name:
+            city = City.objects.get(name_denormalized=city_name)
+
+        neighborhood = None
+        if neighborhood_name:
+            neighborhood = \
+                Neighborhood.objects.get(name_denormalized=neighborhood_name)
+
+        category = None
+        if category_short_name:
+            category = Category.objects.get(name_short=category_short_name)
+
+        template_parameters['offers'] = Offer.objects.get_available_offers(
+            business=business,
+            city=city,
+            neighborhood=neighborhood,
+            category=category,
+            page=page
+        )
+    except:
+        pass
+
+    return render(
+        request,
+        'offers_list.html',
+        template_parameters
+    )
+
+
 def search_offers(
     request,
     query
@@ -472,7 +517,7 @@ def offer_map(request):
 
     try:
         template_parameters['offers'] = \
-            Offer.objects.filter(status=OfferStatus.CURRENT)
+            Offer.objects.get_available_offers()
     except:
         pass
 

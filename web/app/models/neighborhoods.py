@@ -1,4 +1,4 @@
-from django.db.models import Manager
+from django.db.models import IntegerField, Manager
 from django.utils.http import urlquote
 
 from knotis import KnotisModel
@@ -41,5 +41,6 @@ class Neighborhood(KnotisModel):
     content_root = ForeignKeyNonRel(Content, related_name='neighborhood_root')
     name = ForeignKeyNonRel(Content, related_name='neighborhood_name')
     city = ForeignKeyNonRel(City)
+    active_offer_count = IntegerField(null=True, blank=True, default=0)
 
     objects = NeighborhoodManager()

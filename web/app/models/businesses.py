@@ -122,10 +122,21 @@ class Business(KnotisModel):
     backend_name = CharField(max_length=128, db_index=True)
 
     user = ForeignKeyNonRel(User)
-    content_root = ForeignKeyNonRel(Content, related_name='business_content_root')
-    business_name = ForeignKeyNonRel(Content, related_name='business_business_name')
-    summary = ForeignKeyNonRel(Content, related_name='business_summary')
-    description = ForeignKeyNonRel(Content, related_name='business_description')
+    content_root = ForeignKeyNonRel(
+        Content,
+        related_name='business_content_root'
+    )
+    business_name = ForeignKeyNonRel(
+        Content, related_name='business_business_name'
+    )
+    summary = ForeignKeyNonRel(
+        Content,
+        related_name='business_summary'
+    )
+    description = ForeignKeyNonRel(
+        Content,
+        related_name='business_description'
+    )
 
     address = ForeignKeyNonRel(EndpointAddress)
     phone = ForeignKeyNonRel(EndpointPhone)
@@ -188,7 +199,8 @@ class Business(KnotisModel):
                 is_self_dirty = True
 
         if None != description:
-            current_description = self.description.value if self.description else None
+            current_description = \
+                self.description.value if self.description else None
             if description != current_description:
                 if self.description:
                     self.description = self.description.update(description)
@@ -203,7 +215,8 @@ class Business(KnotisModel):
                 is_self_dirty = True
 
         if None != address:
-            current_address = self.address.value.value if self.address else None
+            current_address = \
+                self.address.value.value if self.address else None
             if address != current_address:
                 if self.address:
                     self.address.update(address)
@@ -227,7 +240,8 @@ class Business(KnotisModel):
                     is_self_dirty = True
 
         if None != twitter_name:
-            current_twitter = self.twitter_name.value.value if self.twitter_name else None
+            current_twitter = \
+                self.twitter_name.value.value if self.twitter_name else None
             if twitter_name != current_twitter:
                 if self.twitter_name:
                     self.twitter_name.update(twitter_name)
@@ -239,7 +253,8 @@ class Business(KnotisModel):
                     is_self_dirty = True
 
         if None != facebook_uri:
-            current_facebook = self.facebook_uri.value.value if self.facebook_uri else None
+            current_facebook = \
+                self.facebook_uri.value.value if self.facebook_uri else None
             if facebook_uri != current_facebook:
                 if self.facebook_uri:
                     self.facebook_uri.update(facebook_uri)

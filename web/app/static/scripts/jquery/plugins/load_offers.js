@@ -122,6 +122,8 @@
                             current_page = parseInt($content.attr('data-page'));
                         } catch(exception) {}
                         
+                        if (!load_uri) { return; }
+                        
                         $content.load_offers(
                             'load', 
                             function(

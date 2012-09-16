@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib import contenttypes
 from django.forms import ModelForm
 
 from knotis_auth.models import User, UserProfile
@@ -73,6 +74,7 @@ admin.site.register(Business, BusinessAdmin)
 
 class GeneralAdmin(admin.ModelAdmin):
     pass
+admin.site.register(contenttypes.models.ContentType, GeneralAdmin)
 admin.site.register(User, GeneralAdmin)
 admin.site.register(BusinessLink, GeneralAdmin)
 admin.site.register(BusinessSubscription, GeneralAdmin)
