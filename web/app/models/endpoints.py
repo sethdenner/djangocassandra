@@ -1,6 +1,4 @@
-import md5
-import random
-from datetime import datetime
+import uuid
 
 from django.db.models import CharField, DateTimeField, BooleanField, \
     IntegerField, Manager
@@ -196,16 +194,14 @@ class EndpointEmail(Endpoint): #-- the data for all these is the same, we want d
         Endpoint._value_string_to_content(kwargs)
 
         if kwargs.get('validation_key') is None:
-            validation_hash = md5.new()
-
-            validation_hash.update('%10.10f' % random.random())
-
-            now = datetime.now()
-            milliseconds = (now.day * 24 * 60 * 60 + now.second) * 1000 \
-                + now.microsecond / 1000.0
-            validation_hash.update('%i' % milliseconds)
-
-            kwargs['validation_key'] = validation_hash.hexdigest()
+            key = uuid.uuid4().hex
+            kwargs['validation_key'] = "%s-%s-%s-%s-%s" % (
+                key[:8],
+                key[8:12],
+                key[12:16],
+                key[16:20],
+                key[20:]
+            )
 
         super(EndpointEmail, self).__init__(*args, **kwargs)
 

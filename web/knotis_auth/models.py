@@ -153,6 +153,14 @@ class UserProfile(Model):
     notify_offers = NullBooleanField(blank=True, default=False)
     notify_events = NullBooleanField(blank=True, default=False)
 
+    password_reset_key = CharField(
+        max_length=36,
+        null=True,
+        blank=True,
+        default=None,
+        db_index=True
+    )
+
     reputation_mu = FloatField(null=True, default=1.)
     reputation_sigma = FloatField(null=True, default=0.)
     reputation_total = FloatField(null=True, default=0.)

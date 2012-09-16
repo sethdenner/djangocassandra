@@ -9,7 +9,6 @@ from app.models.contents import Content
 from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
 
-
 class View:
 
     @staticmethod

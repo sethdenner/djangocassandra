@@ -1,11 +1,12 @@
 import json
+import uuid
 
 from django.forms import CharField, EmailField, BooleanField, PasswordInput, \
     HiddenInput, CheckboxInput, Form, ValidationError
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as django_login, \
     logout as django_logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.conf import settings
 from django.http import HttpResponse
 from django.utils.html import strip_tags
@@ -121,6 +122,7 @@ def sign_up(request, account_type='user'):
                             'user_id': user.id,
                             'validation_key': email.validation_key,
                             'BASE_URL': settings.BASE_URL,
+                            'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
                             'SERVICE_NAME': settings.SERVICE_NAME
                         }
                     ).send()
@@ -187,29 +189,6 @@ class KnotisAuthenticationForm(AuthenticationForm):
             'name': 'password',
             'placeholder': 'Password',
         }
-
-
-class KnotisPasswordChangeForm(Form):
-    old_password = CharField(label='Old Pass', widget=PasswordInput)
-    new_password = CharField(label='New Pass', widget=PasswordInput)
-
-    def __init__(self, user, *args, **kwargs):
-        super(KnotisPasswordChangeForm, self).__init__(*args, **kwargs)
-
-        self.user = user
-
-    def clean_old_password(self):
-        old_password = self.cleaned_data["old_password"]
-        if not self.user.check_password(old_password):
-            raise ValidationError('Your old password was entered incorrectly. Please enter it again.')
-        return old_password
-
-    def save_password(
-        self,
-        request
-    ):
-        request.user.set_password(self.cleaned_data['new_password'])
-        request.user.save()
 
 
 def login(request):
@@ -296,8 +275,75 @@ def validate(
     return redirect(redirect_url)
 
 
+class KnotisPasswordForgotForm(Form):
+    email = EmailField()
+
+    def send_reset_instructions(self):
+        email = self.cleaned_data['email']
+
+        user = None
+        try:
+            user = User.objects.get(username=email)
+            user_profile = UserProfile.objects.get(user=user)
+        except:
+            pass
+
+        if not user_profile:
+            return False
+
+        digest = uuid.uuid4().hex
+        key = "%s-%s-%s-%s-%s" % (
+            digest[:8],
+            digest[8:12],
+            digest[12:16],
+            digest[16:20],
+            digest[20:]
+        )
+
+        try:
+            user_profile.password_reset_key = key
+            user_profile.save()
+
+            EmailUtils.generate_email(
+                'password_forgot',
+                'Knotis.com - Change Password',
+                settings.EMAIL_HOST_USER,
+                [email], {
+                    'validation_key': key,
+                    'BASE_URL': settings.BASE_URL,
+                    'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
+                    'SERVICE_NAME': settings.SERVICE_NAME
+                }
+            ).send()
+            return True
+        except:
+            return False
+
+
 def password_forgot(request):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
+
+    if ('post' == request.method.lower()):
+        forgot_form = KnotisPasswordForgotForm(request.POST)
+        if forgot_form.is_valid():
+            if forgot_form.send_reset_instructions():
+                template_parameters['feedback'] = \
+                    "Instructions on resetting your password have been sent to %s." % (
+                        forgot_form.cleaned_data['email'],
+                    )
+
+            else:
+                template_parameters['feedback'] = \
+                    "There was an error sending your instructions. Please try again."
+
+        else:
+            template_parameters['feedback'] = \
+                "Please enter a valid email address and try again."
+
+        template_parameters['forgot_form'] = forgot_form
+
+    else:
+        template_parameters['forgot_form'] = KnotisPasswordForgotForm()
 
     return render(
         request,
@@ -306,8 +352,80 @@ def password_forgot(request):
     )
 
 
-def password_reset(request):
+class KnotisPasswordChangeForm(Form):
+    old_password = CharField(label='Old Pass', widget=PasswordInput)
+    new_password = CharField(label='New Pass', widget=PasswordInput)
+
+    def __init__(self, user, *args, **kwargs):
+        super(KnotisPasswordChangeForm, self).__init__(*args, **kwargs)
+
+        self.user = user
+
+    def clean_old_password(self):
+        old_password = self.cleaned_data["old_password"]
+        if not self.user.check_password(old_password):
+            raise ValidationError(
+                'Your old password was entered incorrectly. Please enter it again.'
+            )
+        return old_password
+
+    def save_password(self):
+        self.user.set_password(self.cleaned_data['new_password'])
+        self.user.save()
+
+
+class KnotisPasswordResetForm(SetPasswordForm):
+    pass
+
+
+def password_reset(
+    request,
+    validation_key
+):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
+
+    user = None
+    user_profile = None
+    try:
+        user_profile = UserProfile.objects.get(
+            password_reset_key=validation_key
+        )
+        user = user_profile.user
+    except:
+        pass
+
+    if user:
+        template_parameters['user_profile'] = user_profile
+
+        if 'post' == request.method.lower():
+            reset_form = KnotisPasswordResetForm(
+                user,
+                request.POST
+            )
+            try:
+                if reset_form.is_valid():
+                    reset_form.save()
+                    user = authenticate(
+                       username=user.username,
+                       password=reset_form.cleaned_data['new_password1']
+                    )
+                    django_login(
+                        request,
+                        user
+                    )
+                    return redirect('/offers/')
+            except ValidationError:
+                template_parameters['feedback'] = \
+                    'The passwords you entered are invalid or do not match.'
+            except Exception as e:
+                raise e
+
+            template_parameters['reset_form'] = reset_form
+        else:
+            template_parameters['reset_form'] = KnotisPasswordResetForm(user)
+    else:
+        template_parameters['feedback'] = \
+            'There is no password reset request for this URL.'
 
     return render(
         request,
