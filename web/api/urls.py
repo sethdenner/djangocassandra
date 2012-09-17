@@ -1,6 +1,5 @@
 """
 from api.handlers.authentication import AuthenticationHandler
-from api.handlers.business import BusinessModelHandler
 from api.handlers.content import ContentHandler
 from api.handlers.establishment import EstablishmentModelHandler
 from api.handlers.testmodel import TestModelHandler
@@ -14,17 +13,23 @@ from django.conf.urls.defaults import patterns, url, include
 from piston.authentication.oauth import OAuthAuthentication
 from piston.resource import Resource
 from api.handlers.media import ImageModelHandler
+from api.handlers.business import BusinessModelHandler
 
 oauth_three_legged = OAuthAuthentication(realm='knotis')
 oauth_two_legged = OAuthAuthentication(realm='knotis', two_legged=True)
 
-
 image_handler = Resource(ImageModelHandler)
+business_handler = Resource(BusinessModelHandler)
 
 urlpatterns = patterns('',
     url(
         r'^media/image/create/$',
         image_handler,
+        { 'emitter_format': 'json' }
+    ),
+    url(
+        r'^business/$',
+        business_handler,
         { 'emitter_format': 'json' }
     ),
     url(

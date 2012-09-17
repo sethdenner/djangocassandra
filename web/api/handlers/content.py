@@ -12,17 +12,17 @@ class ContentHandler(BaseHandler):
     # exclude = ('parent')
     # fields = ('user','group','c_type','value')
     fields = (
-        'id', 
-        'parent_id',
-        # ('parent', ('value')), 
-        ('user', ('username', 'id', 'email')), 
+        'id',
+        # 'parent_id',
+        # ('parent', ('value')),
+        ('user', ('username', 'id', 'email')),
         'name',
         'content_type',
-        'value', 
-        ('group', ('id', 'name')), 
+        'value',
+        ('group', ('id', 'name')),
         ('type', ('id', 'name')),
     )
-    
+
     @classmethod
     def parent_id(self, instance):
         return instance.parent.id
@@ -34,7 +34,7 @@ class ContentHandler(BaseHandler):
         if content_id:
             return base.get(pk=content_id)
         elif template_name:
-            return Content.content_objects.get_template_content(template_name)
+            return Content.objects.get_template_content(template_name)
         else:
             return base.all()
 

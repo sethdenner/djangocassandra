@@ -5,7 +5,7 @@ from piston.utils import validate
 
 
 class BusinessModelHandler(BaseHandler):
-    allowed_methods = ('GET', 'POST', 'PUT', 'DELETE')
+    allowed_methods = ('GET', 'POST')
     model = Business
 
     @validate(CreateBusinessForm, 'POST')
@@ -14,8 +14,8 @@ class BusinessModelHandler(BaseHandler):
         post_data = request.POST
         business_name = post_data.get('business_name')
 
-        return Business.objects.create_business(
-            request.user,
-            business_name,
-        )
-
+    def read(
+        self,
+        request
+    ):
+        return Business.objects.all()
