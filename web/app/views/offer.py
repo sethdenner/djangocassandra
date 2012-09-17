@@ -3,7 +3,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.html import strip_tags
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.forms import ModelForm, CharField, ImageField, DateTimeField
+from django.forms import ModelForm, CharField, ImageField, DateTimeField, \
+    ModelChoiceField
 from app.models.offers import Offer, OfferStatus
 from app.models.businesses import Business
 from app.models.categories import Category
@@ -33,7 +34,8 @@ class OfferForm(ModelForm):
             'redeemed',
             'published',
             'active',
-            'pub_date'
+            'last_purchase',
+            'pub_date',
         )
 
     title_value = CharField(max_length=128, initial='Food and Drinks')
@@ -43,9 +45,17 @@ class OfferForm(ModelForm):
     start_date = DateTimeField(initial='Start Date')
     end_date = DateTimeField(initial='End Date')
     image_source = ImageField(required=False)
+    neighborhood = CharField(max_length=128, required=False)
 
-    def __init__(self, *args, **kwargs):
-        super(OfferForm, self).__init__(*args, **kwargs)
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(OfferForm, self).__init__(
+            *args,
+            **kwargs
+        )
 
         instance = kwargs.get('instance')
         if None != instance:
@@ -56,6 +66,12 @@ class OfferForm(ModelForm):
                 instance.restrictions.value
             self.fields['address_value'].initial = instance.address.value.value
             self.fields['neighborhood'].initial = instance.neighborhood
+
+    def clean_city(self):
+        pass
+
+    def clean_neighborhood(self):
+        pass
 
     def save_offer(
         self,

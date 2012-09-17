@@ -10,12 +10,15 @@ class ForeignKeyNonRel(ForeignKey):
         if 'blank' not in kwargs:
             kwargs['blank'] = True
 
+        if 'default' not in kwargs:
+            kwargs['default'] = None
+
         super(ForeignKeyNonRel, self).__init__(
             to,
             to_field,
             rel_class,
             **kwargs
         )
-        
+
     def db_type(self, connection):
         return 'ForeignKeyNonRel'

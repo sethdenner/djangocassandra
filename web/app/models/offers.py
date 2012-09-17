@@ -355,6 +355,7 @@ class OfferManager(Manager):
             return offer.pub_date
 
         newest_offers = sorted(newest_offers, key=get_newest_sort_key)
+        newest_offers.reverse()
 
         return self._page_results(
             newest_offers,

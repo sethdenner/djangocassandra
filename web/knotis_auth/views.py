@@ -362,11 +362,12 @@ class KnotisPasswordChangeForm(Form):
         self.user = user
 
     def clean_old_password(self):
-        old_password = self.cleaned_data["old_password"]
+        old_password = self.cleaned_data['old_password']
         if not self.user.check_password(old_password):
-            raise ValidationError(
-                'Your old password was entered incorrectly. Please enter it again.'
-            )
+            raise ValidationError('''
+                Your old password was entered incorrectly.
+                Please enter it again.
+            ''')
         return old_password
 
     def save_password(self):
