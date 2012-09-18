@@ -126,7 +126,6 @@ INSTALLED_APPS = (
     'manytomanynonrel',
     'foreignkeynonrel',
     'paypal',
-    'google',
     'facebook',
     'knotis_auth',
     'legacy',
