@@ -270,26 +270,42 @@ $(function() {
 
     // For categories in the deals page
     $('.categories-filter').live('click', function(evt) {
-        var category_name = $(this).attr('data-category_name');
+        var $this = $(this),
+            $content = $('.deal-content'),
+            href = $content.attr('data-href'),
+            query = $content.attr('data-query'),
+            business = $content.attr('data-business'),
+            city = $content.attr('data-city'),
+            neighborhood = $content.attr('data-neighborhood'),
+            category = $this.attr('data-category'),
+            premium = $content.attr('data-premium'),
+            page = $content.attr('data-page');
 
-        $('.deal-content').load_offers(
+        $content.load_offers();
+        $content.load_offers(
             'load', 
             function(
                 data,
                 jqxhr,
                 status 
             ) {
+                if (!category) {
+                    category = 'All';
+                }
                 $('.list-backend .relative a').removeClass('active');
                 $('.arrow').remove();
-                $('.mode-map a').removeClass('active');
-                $('.mode-list a').addClass('active');
-                $('.' + category_name + ' a').addClass('active');
-                $('.' + category_name).append('<div class="arrow arrow-' + category_name + '"></div>');
-
+                $('.' + category + ' a').addClass('active');
+                $('.' + category).append('<div class="arrow arrow-' + category + '"></div>');
+                $('.deal-content').html(data);
             }, 
-            1, 
-            '/offers/get_category_offers/',
-            category_name
+            href,
+            business,
+            city,
+            neighborhood,
+            category,
+            premium,
+            page,
+            query
         );
         $(document).load_offers(
             'load_scroll', 
@@ -306,26 +322,42 @@ $(function() {
 
     $('.deal-mode-map').live('click', function() {
         var $this = $(this),
-                filter = $('.deal-data').attr('data-filter'),
-                cityId = $('.deal-data').attr('data-cityId'),
-                neightbourhoodId = $('.deal-data').attr('data-neightbourhoodId'),
-                id = $('.deal-data').attr('data-id');
+            $content = $('.deal-content'),
+            href = '/offers/offer_map/',
+            business = $content.attr('data-business'),
+            city = $content.attr('data-city'),
+            neighborhood = $content.attr('data-neighborhood'),
+            category = $content.attr('data-category'),
+            premium = $content.attr('data-premium'),
+            page = $content.attr('data-page'),
+            query = $content.attr('data-query');
 
-        $.get('/offers/offer_map/', {
-                'city': null,
-                'neighborhood': null,
-                'status': null,
-                'offer': null            
-            }, function(data) {
-                $('.deal-content').replaceWith(data);
+        $content.load_offers();
+        $content.load_offers(
+            'load',
+            function(
+                data,
+                jqxhr,
+                status
+            ){
+                $(document).load_offers('stop_scroll');
+                $('.deal-content').html(data);
                 $('.mode-map a').addClass('active');
-                $('.mode-list a').removeClass('active');
-        });
-
+                $('.mode-list a').removeClass('active');                
+            },
+            href,
+            business,
+            city,
+            neighborhood,
+            category,
+            premium,
+            page,
+            query
+        )
+        
         return false;
 
     });
-
 
     $('#price_deal_input').keyup(function () {
 
@@ -386,25 +418,46 @@ $(function() {
         $('#title_deal_radio3_input').click();        
     });
 
-
-    $('.deal-mode-list').live('click', function() {
+    $('.deal-mode-list').live('click', function(evt) {
         var $this = $(this),
-                filter = $('.deal-data').attr('data-filter'),
-                cityId = $('.deal-data').attr('data-cityId'),
-                neightbourhoodId = $('.deal-data').attr('data-neightbourhoodId'),
-                id = $('.deal-data').attr('data-id');
+            $content = $('.deal-content'),
+            href = '/offers/get_newest_offers/',
+            query = $content.attr('data-query'),
+            business = $content.attr('data-business'),
+            city = $content.attr('data-city'),
+            neighborhood = $content.attr('data-neighborhood'),
+            category = $content.attr('data-category'),
+            premium = $content.attr('data-premium'),
+            page = $content.attr('data-page');
+        
+        $content.load_offers();
+        $content.load_offers(
+            'load', 
+            function(
+                data,
+                jqxhr,
+                status 
+            ) {
+                $('.mode-list a').addClass('active');
+                $('.mode-map a').removeClass('active');
+                $('.deal-content').html(data);
+            }, 
+            href,
+            business,
+            city,
+            neighborhood,
+            category,
+            premium,
+            page,
+            query
+        );
+        $(document).load_offers(
+            'load_scroll', 
+            '.deal-content'
+        );
 
-
-        $.post([server + "deals/deals_list", cityId, neightbourhoodId, filter, id].join('/'), {}, function(data) {
-            $('.mode-list a').addClass('active');
-            $('.mode-map a').removeClass('active');
-            $('.deal-content').replaceWith(data);
-
-
-        });
-
+        evt.stopPropagation();
         return false;
-
     });
 
     var cancelEvent = function(evt){
@@ -413,18 +466,43 @@ $(function() {
     }
     
     var searchDeals = function(query){
-        $.get(['/offers/search/', query, '/'].join(''), {}, function(data){
-            $('.more-results').remove();
-            $('.filtering-bar li a').removeClass('active');
-            $('.deal-content').replaceWith(data);
-            $('.relative a').removeClass('active');
-            $('.arrow').remove();
-        })
+        var $content = $('.deal-content'),
+            href = $content.attr('data-href'), 
+            business = $content.attr('data-business'),
+            city = $content.attr('data-city'),
+            neighborhood = $content.attr('data-neighborhood'),
+            category = $content.attr('data-category'),
+            premium = $content.attr('data-premium'),
+            page = $content.attr('data-page');
+        
+        $content.load_offers();
+        $content.load_offers(
+            'load', 
+            function(
+                data,
+                jqxhr,
+                status 
+            ) {
+                $content.html(data);
+            }, 
+            href,
+            business,
+            city,
+            neighborhood,
+            category,
+            premium,
+            '1',
+            query
+        );
+        $(document).load_offers(
+            'load_scroll', 
+            '.deal-content'
+        );
     }
 
     $search = $('#search');
 
-    $search.live('change', function(evt){
+    $search.live('keyup', function(evt){
         searchDeals($search.val());
         return cancelEvent(evt);
     })
@@ -527,28 +605,58 @@ $(function() {
         return false;
     });
 
-    $('.filtering-bar li a').live('click', function() {
+    $('.filtering-bar li a').live('click', function(evt) {
         var $this = $(this),
-                filter = $this.attr('data-filter'),
-                cityId = $('.deal-data').attr('data-cityId'),
-                neightbourhoodId = $('.deal-data').attr('data-neightbourhoodId'),
-                id = $('.deal-content').attr('data-id');
+            filter = $this.attr('data-filter'),
+            $content = $('.deal-content'),
+            query = $content.attr('data-query'),
+            business = $content.attr('data-business'),
+            city = $content.attr('data-city'),
+            neighborhood = $content.attr('data-neighborhood'),
+            category = $content.attr('data-category'),
+            premium = $content.attr('data-premium');
 
-        var url; 
+        var href; 
         if (filter == 'popular'){
-            url = '/offers/get_popular_offers/';
+            href = '/offers/get_popular_offers/';
         } else if (filter == 'expiring'){
-            url = '/offers/get_expiring_offers/';
+            href = '/offers/get_expiring_offers/';
         } else {
-            url = '/offers/get_newest_offers/';
+            href = '/offers/get_newest_offers/';
         }
-        $.get(url, {}, function(data) {
-            $('.deal-content').replaceWith(data);
-            $('.filtering-bar li a').removeClass('active');
-            $this.addClass('active');
-        });
+                
+        $content.load_offers();
+        $content.load_offers(
+            'load', 
+            function(
+                data,
+                jqxhr,
+                status 
+            ) {
+                $('.deal-content').html(data);
+                $('.filtering-bar li a').removeClass('active');
+                $('.mode-list a').addClass('active');
+                $('.mode-map a').removeClass('active');
+                $this.addClass('active');
+                
+            }, 
+            href,
+            business,
+            city,
+            neighborhood,
+            category,
+            premium,
+            1,
+            query
+        );
+        $(document).load_offers(
+            'load_scroll', 
+            '.deal-content'
+        );
 
+        evt.stopPropagation();
         return false;
+
     });
 
 
@@ -568,7 +676,7 @@ $(function() {
         var cont = $this.attr('data-cont');
         var id = $this.attr('data-id');
   
-        active = active.toLowerCase() == 'true' ? false : true;
+        active = active.toLowersCase() == 'true' ? false : true;
         $.post(
             '/offers/update/', {
                 'offer_id': id,
@@ -591,18 +699,15 @@ $(function() {
         }
     });
 
-
-    $('.notify').live('click', function() {
-
-
-        $.post([server + "user/notify_me"].join('/'), {},
-
-                function(data) {
-
-                    $('.notify').fadeOut();
-                });
+    $('.notify').live('click', function(evt) {
+        $.post('/profile/update/', {
+                'notify_offers': true
+            }, function(data) {
+                $('.notify').fadeOut();
+            }
+        );
+        evt.stopPropagation();
         return false;
-
     });
 
     $('.delete-image').live('click', function() {

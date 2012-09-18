@@ -1,7 +1,10 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.forms import Form
 from django.forms.fields import BooleanField, CharField, EmailField
+from django.http import HttpResponse
 
 from app.utils import View as ViewUtils
 
@@ -154,4 +157,35 @@ def profile(request):
         request,
         'user_profile.html',
         template_parameters
+    )
+
+
+@login_required
+def profile_ajax(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        if not first_name:
+            first_name = request.user.first_name
+
+        last_name = request.POST.get('last_name')
+        if not last_name:
+            last_name = request.user.last_name
+
+        profile_form = UserProfileForm({
+            'first_name': first_name,
+            'last_name': last_name,
+            'notify_announcements': request.POST.get('notify_announcements'),
+            'notify_offers': request.POST.get('notify_offers')
+        })
+        if profile_form.is_valid():
+            profile_form.save_user_profile(request)
+
+    else:
+        pass
+
+    return HttpResponse(
+        json.dumps({
+            'status': '200'
+        }),
+        mimetype='application/json'
     )

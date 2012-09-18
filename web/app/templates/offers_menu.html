@@ -2,7 +2,7 @@
     <ul class="list-backend">
         <li class="search relative gradient-gray clear-fix">
                 <label class="left">
-                     <input class="" placeholder="Find offers by keyword" value="" id="search" type="text" href="">
+                     <input class="" placeholder="Search offer titles" value="" id="search" type="text" href="">
                 </label>
                     <a class="gradient-gray search-deals left" name="link" href="">Search</a>
         </li>
@@ -13,13 +13,11 @@
         </li>
         {% for category in categories %}
         {% if category.active_offer_count > 0 %}
-        <li class="relative {{ category.short_name }}">
-            <a class="{% if category.short_name == current_category %}active {% endif %}categories-filter" 
-            data-filter="actives" 
-            data-category_name="{{ category.short_name }}" 
-            href="#" 
-            data-category="{{ category.id }}">{{ category.name.value }} ({{ category.active_offer_count }})</a>
-            {% if category.short_name == current_category %}<div class="arrow arrow-{{ category.short_name }}"></div>
+        <li class="relative {{ category.name_short|capfirst }}">
+            <a class="{% if category.name_short == current_category %}active {% endif %}categories-filter" 
+            href="/offers/" 
+            data-category="{{ category.name_short|capfirst }}">{{ category.name.value }} ({{ category.active_offer_count }})</a>
+            {% if category.name_short == current_category %}<div class="arrow arrow-{{ category.name_short|capfirst }}"></div>
             {% endif %}
         </li>
         {% endif %}

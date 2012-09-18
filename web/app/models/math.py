@@ -1,5 +1,5 @@
 from django.db import models
-from web.app.knotis.db import KnotisModel
+from app.models.knotis import KnotisModel
 
 #from django.contrib.auth.models import User
 
@@ -12,7 +12,7 @@ class Countable(KnotisModel):
 #    c_type = models.CharField(max_length=140)
 #    content = Base64Field()
     pub_date = models.DateTimeField('date published')
-    
+
 #class Content.Type(KnotisModel):
 #    deal = models.ForeignKeyNonRel(Deal)
 #    choice = models.CharField(max_length=200)

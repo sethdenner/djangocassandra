@@ -19,6 +19,8 @@ var KnotisMarker = function(options) {
 
     google.maps.event.addDomListener(this._div, 'mousedown', KnotisMarker.cancelEvent);
     google.maps.event.addDomListener(this._div, 'dblclick', KnotisMarker.cancelEvent);
+    
+    this.setMap(options.map);
 };
 
 KnotisMarker.prototype = new google.maps.OverlayView();

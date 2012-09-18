@@ -2,9 +2,42 @@ from django.conf.urls.defaults import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
 
+from app.models.offers import OfferSort
+
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
+
+
+REGEX_UUID = (
+    '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
+)
+
+REGEX_CATEGORY = (
+    'tra|sho|res|rea|pub|pro|'
+    'pet|nig|leg|hom|hea|foo|'
+    'fin|edu|bea|aut|art|all'
+)
+
+REGEX_NOT_CATEGORY = ''.join([
+    '(?!',
+    REGEX_CATEGORY,
+    ')'
+])
+
+REGEX_OFFER_FILTERING = ''.join([
+    '(/(?P<business>',
+    REGEX_NOT_CATEGORY,
+    '))?(/(?P<city>',
+    REGEX_NOT_CATEGORY,
+    ')(/(?P<neighborhood>',
+    REGEX_NOT_CATEGORY,
+    '))?)?(/(?P<category>',
+    REGEX_CATEGORY,
+    '))?(/(?P<premium>premium))?',
+    '(/(?P<page>[\d]+))?',
+])
+
 
 urlpatterns = patterns('',
     url(
@@ -92,33 +125,38 @@ urlpatterns = patterns('',
         name='offers'
     ),
     url(
-        r'^offers/get_offers_by_status(/(?P<status>[a-zA-Z_-]+)){1}(/(?P<business_id>[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}))?(/(?P<page>[\d]+))?/$',
+        r'^offers/get_offers_by_status/(?P<status>[a-zA-Z_-]+)/(?P<business_id>[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})(/(?P<city>[a-zA-Z_-]+)(/(?P<neighborhood>[a-zA-Z_-]+))?)?(/(?P<category>[a-zA-Z_-]+))?(/(?P<premium>premium))?(/(?P<page>[\d]+))?/$',
         'app.views.offer.get_offers_by_status',
         name='offers'
     ),
     url(
-        r'^offers/get_popular_offers((/(?P<city_name>[a-zA-Z_-]+)){1}(/(?P<neighborhood_name>[a-zA-Z_-]+)){1})?(/(?P<page>[\d]+))?/$',
-        'app.views.offer.get_popular_offers',
+        r''.join([
+            '^offers/get_popular_offers',
+            REGEX_OFFER_FILTERING,
+            '/$'
+        ]),
+        'app.views.offer.get_available_offers',
+        {'sort_by': OfferSort.POPULAR},
         name='offers'
     ),
     url(
-        r'^offers/get_newest_offers((/(?P<city_name>[a-zA-Z_-]+)){1}(/(?P<neighborhood_name>[a-zA-Z_-]+)){1})?(/(?P<page>[\d]+))?/$',
-        'app.views.offer.get_newest_offers',
+        r''.join([
+            '^offers/get_newest_offers',
+            REGEX_OFFER_FILTERING,
+            '/$'
+        ]),
+        'app.views.offer.get_available_offers',
+        {'sort_by': OfferSort.NEWEST},
         name='offers'
     ),
     url(
-        r'^offers/get_expiring_offers((/(?P<city_name>[a-zA-Z_-]+)){1}(/(?P<neighborhood_name>[a-zA-Z_-]+)){1})?(/(?P<page>[\d]+))?/$',
-        'app.views.offer.get_expiring_offers',
-        name='offers'
-    ),
-    url(
-        r'^offers/get_category_offers(/(?P<category_short_name>[a-zA-Z_-]{1,3})){1}((/(?P<city_name>[a-zA-Z_-]+))(/(?P<neighborhood_name>[a-zA-Z_-]+)))?(/(?P<page>[\d]+))?/$',
-        'app.views.offer.get_category_offers',
-        name='offers'
-    ),
-    url(
-        r'^offers/search/(?P<query>[^/]+)/$',
-        'app.views.offer.search_offers',
+        r''.join([
+            '^offers/get_expiring_offers',
+            REGEX_OFFER_FILTERING,
+            '/$'
+        ]),
+        'app.views.offer.get_available_offers',
+        {'sort_by': OfferSort.EXPIRING},
         name='offers'
     ),
     url(
@@ -127,7 +165,11 @@ urlpatterns = patterns('',
         name='offers'
     ),
     url(
-        r'^offers/offer_map/',
+        r''.join([
+            '^offers/offer_map',
+            REGEX_OFFER_FILTERING,
+            '/$'
+        ]),
         'app.views.offer.offer_map',
         name='offers'
     ),
@@ -139,6 +181,11 @@ urlpatterns = patterns('',
     url(
         r'^profile/$',
         'app.views.user.profile',
+        name='user'
+    ),
+    url(
+        r'^profile/update/$',
+        'app.views.user.profile_ajax',
         name='user'
     ),
     url(

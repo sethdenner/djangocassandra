@@ -20,7 +20,7 @@ class PermissionsField(models.Field):
         #if isinstance(value, Permission):
         #    return value
 
-        if len(value) == 0: 
+        if len(value) == 0:
             return None
         #raise Exception(value)
 
@@ -28,7 +28,7 @@ class PermissionsField(models.Field):
         #permission = pickle.loads(value)
         #if (type(permission) !=  Permission):
         #    raise ValidationError("Invalid input for a Permission instance")
-        return permission
+        return value
 
     def get_prep_value(self, value):
         return value

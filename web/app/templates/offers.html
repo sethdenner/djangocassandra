@@ -33,12 +33,14 @@
                 <div id="ajaxBusy" class="absolute"><img src="{{ STATIC_URL }}/images/ajaxloading.gif" title="Loading" alt="loading"/> </div>
                 <div 
                     class="deal-content" 
-                    data-page="1" 
-                    data-load_uri="{{ offer_load_uri }}" 
-                    data-context0="{{ offer_load_context0 }}"
-                    data-city="{{ offer_load_city }}"
-                    data-neighborhood="{{ offer_load_neighborhood }}"
-                    data-context1="{{ offer_load_context1}}" >
+                    data-href="{{ load_offers_href }}" 
+                    data-query="{{ load_offers_query }}"
+                    data-business="{{ load_offers_business }}"
+                    data-city="{{ load_offers_city }}"
+                    data-neighborhood="{{ load_offers_neighborhood }}"
+                    data-category="{{ load_offers_category|capfirst
+                    data-premium="{{ load_offers_premium }}"
+                    data-page="{{ load_offers_page }}" >
                     {% include 'offers_list.html' with offers=offers %}
                 </div>
             </div>

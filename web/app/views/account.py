@@ -9,7 +9,7 @@ def plans(request):
 
     content = {}
 
-    content_set = Content.content_objects.get_template_content('plans')
+    content_set = Content.objects.get_template_content('plans')
     for c in content_set:
         content[c.name] = c.value
 

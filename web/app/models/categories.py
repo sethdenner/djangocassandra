@@ -36,15 +36,34 @@ class CategoryManager(Manager):
 
 
 class Category(KnotisModel):
-    content_root = ForeignKeyNonRel(Content, related_name='category_root')
-    name = ForeignKeyNonRel(Content, related_name='category_name')
-    name_short = CharField(max_length=3, null=True, blank=True, default=None)
-    active_offer_count = IntegerField(null=True, blank=True, default=0)
+    content_root = ForeignKeyNonRel(
+        Content,
+        related_name='category_root'
+    )
+    name = ForeignKeyNonRel(
+        Content,
+        related_name='category_name'
+    )
+    name_short = CharField(
+        max_length=3,
+        null=True,
+        blank=True,
+        default=None,
+        db_index=True
+    )
+    active_offer_count = IntegerField(
+        null=True,
+        blank=True,
+        default=0
+    )
 
     objects = CategoryManager()
 
     def short_name(self):
         return self.name_short
+
+    def name_css(self):
+        return self.name_short.title()
 
     def update(
         self,

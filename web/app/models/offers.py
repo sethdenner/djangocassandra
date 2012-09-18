@@ -41,6 +41,18 @@ class OfferStatus:
     )
 
 
+class OfferSort:
+    NEWEST = 'newest'
+    EXPIRING = 'expiring'
+    POPULAR = 'popular'
+
+    CHOICES = (
+        (NEWEST, 'Newest'),
+        (EXPIRING, 'Expiring'),
+        (POPULAR, 'Popular')
+    )
+
+
 class OfferManager(Manager):
     def create_offer(
         self,
@@ -225,6 +237,12 @@ class OfferManager(Manager):
         if None == page:
             return results
 
+        if isinstance(page, basestring):
+            try:
+                page = int(page)
+            except:
+                page = 1
+
         page_size = 20
         slice_start = (page - 1) * page_size
         slice_end = slice_start + page_size
@@ -237,8 +255,10 @@ class OfferManager(Manager):
         city=None,
         neighborhood=None,
         category=None,
+        premium=None,
         page=None,
-        premium=None
+        query=None,
+        sort_by=OfferSort.NEWEST
     ):
         try:
             results = self.filter(
@@ -246,163 +266,75 @@ class OfferManager(Manager):
                 active=True,
                 status=OfferStatus.CURRENT
             )
+
+            if None != business:
+                results = results.filter(business=business)
             if None != city:
                 results = results.filter(city=city)
             if None != neighborhood:
                 results = results.filter(neighborhood=neighborhood)
-            if None != premium:
-                results = results.filter(premium=premium)
             if None != category:
                 results = results.filter(category=category)
-            if None != business:
-                results = results.filter(business=business)
+            if None != premium:
+                results = results.filter(premium=premium)
+
+            if not len(results):
+                return None
+
+            if query:
+                query_words = query.split(' ')
+
+                query_results = []
+                for offer in results:
+                    for word in query_words:
+                        if not word:
+                            continue
+
+                        regex = re.compile(
+                            word.strip(),
+                            re.IGNORECASE
+                        )
+                        if regex.search(offer.title.value):
+                            query_results.append(offer)
+
+                results = query_results
+
+            if OfferSort.NEWEST == sort_by:
+                def get_newest_sort_key(offer):
+                    return offer.pub_date
+
+                results = sorted(
+                    results,
+                    key=get_newest_sort_key
+                )
+                results.reverse()
+
+            elif OfferSort.POPULAR == sort_by:
+                def get_popularity_sort_key(offer):
+                    return offer.last_purchase
+
+                results = sorted(
+                    results,
+                    key=get_popularity_sort_key
+                )
+                results.reverse()
+
+            elif OfferSort.EXPIRING == sort_by:
+                def get_expiring_sort_key(offer):
+                    return offer.end_date
+
+                results = sorted(
+                    results,
+                    key=get_expiring_sort_key
+                )
 
             return self._page_results(
                 results,
                 page
             )
 
-        except:
+        except Exception as e:
             return None
-
-    def get_category_offers(
-        self,
-        category,
-        page='1'
-    ):
-        page = int(page)
-
-        results = None
-        try:
-            results = self.get_available_offers(
-                category=category,
-                page=page
-            )
-        except:
-            pass
-
-        return results
-
-    def get_popular_offers(
-        self,
-        city_name=None,
-        neighborhood_name=None,
-        page=1
-    ):
-        offers = None
-        try:
-            offers = self.get_available_offers()
-        except:
-            pass
-
-        if not offers:
-            return None
-
-        popular_offers = []
-        for offer in offers:
-            if offer.purchased > 3 and offer.last_purchase >= datetime.datetime.now() + datetime.timedelta(days= -1):
-                popular_offers.append(offer)
-
-        def get_popularity_sort_key(offer):
-            return offer.last_purchase
-
-        popular_offers = sorted(popular_offers, key=get_popularity_sort_key)
-
-        return self._page_results(
-            popular_offers,
-            page
-        )
-
-    def get_premium_offers(
-        self,
-        city_name=None,
-        neighborhood_name=None
-    ):
-        offers = None
-        try:
-            offers = self.get_available_offers(premium=True)
-        except:
-            pass
-
-        if not offers:
-            return None
-
-        offers_list = list(offers)
-        random.shuffle(offers_list)
-        return offers_list[:5]
-
-    def get_newest_offers(
-        self,
-        city_name=None,
-        neighborhood_name=None,
-        page=1
-    ):
-        offers = None
-        try:
-            offers = self.get_available_offers()
-        except:
-            pass
-
-        if not offers:
-            return None
-
-        newest_offers = []
-        for offer in offers:
-            if offer.pub_date >= datetime.datetime.now() + datetime.timedelta(days= -1):
-                newest_offers.append(offer)
-
-        def get_newest_sort_key(offer):
-            return offer.pub_date
-
-        newest_offers = sorted(newest_offers, key=get_newest_sort_key)
-        newest_offers.reverse()
-
-        return self._page_results(
-            newest_offers,
-            page
-        )
-
-    def get_expiring_offers(
-        self,
-        business=None,
-        city=None,
-        neighborhood=None,
-        category=None,
-        page='1'
-    ):
-        offers = None
-        try:
-            offers = self.get_available_offers(
-                business,
-                city,
-                neighborhood,
-                category,
-                page
-            )
-        except:
-            pass
-
-        if not offers:
-            return None
-
-        expiring_offers = []
-        for offer in offers:
-            if offer.end_date <= \
-                datetime.datetime.now() + datetime.timedelta(days=1):
-                expiring_offers.append(offer)
-
-        def get_expiring_sort_key(offer):
-            return offer.end_date
-
-        expiring_offers = sorted(
-            expiring_offers,
-            key=get_expiring_sort_key
-        )
-
-        return self._page_results(
-            expiring_offers,
-            page
-        )
 
     def get_active_offer_count(self):
         offers = None
@@ -418,30 +350,54 @@ class OfferManager(Manager):
 
     def search_offers(
         self,
-        query
+        query,
+        business=None,
+        city=None,
+        neighborhood=None,
+        category=None,
+        premium=None,
+        page=None,
+        sort_by=OfferSort.NEWEST
     ):
         offers = None
         try:
-            offers = self.get_available_offers()
+            offers = self.get_available_offers(
+                business,
+                city,
+                neighborhood,
+                category,
+                premium,
+                None,
+                sort_by
+            )
         except:
             pass
 
         if not offers:
             return None
 
-        query = query.lower().replace(
-            ' ',
-            ''
-        )
+        if not query:
+            return offers
 
-        regex = re.compile(query, re.IGNORECASE)
+        query_words = query.split(' ')
 
         results = []
         for offer in offers:
-            if regex.search(offer.title.value.lower().replace(' ', '')):
-                results.append(offer)
+            for word in query_words:
+                if not word:
+                    continue
 
-        return results
+                regex = re.compile(
+                    word.strip(),
+                    re.IGNORECASE
+                )
+                if regex.search(offer.title.value):
+                    results.append(offer)
+
+        return self._page_results(
+            results,
+            page
+        )
 
 
 class OfferTitleTypes:
@@ -502,7 +458,7 @@ class Offer(KnotisModel):
     active = NullBooleanField(default=False, db_index=True)
     premium = NullBooleanField(default=False, db_index=True)
 
-    last_purchase = DateTimeField(null=True)
+    last_purchase = DateTimeField(null=True, blank=True, default=None)
     pub_date = DateTimeField(null=True, auto_now_add=True)
 
     objects = OfferManager()
@@ -511,8 +467,9 @@ class Offer(KnotisModel):
         if not self.title:
             return ''
 
+        title_formatted = None
         if OfferTitleTypes.TITLE_1 == self.title_type:
-            return ''.join([
+            title_formatted = ''.join([
                 '$',
                 self.price_discount_formatted(),
                 ' for $',
@@ -521,7 +478,7 @@ class Offer(KnotisModel):
                 self.business.business_name.value
             ])
         elif OfferTitleTypes.TITLE_2 == self.title_type:
-            return ''.join([
+            title_formatted = ''.join([
                 '$',
                 self.price_discount_formatted(),
                 ' for ',
@@ -530,7 +487,48 @@ class Offer(KnotisModel):
                 self.business.business_name.value
             ])
         else:
-            return self.title.value
+            title_formatted = self.title.value
+
+        return title_formatted.replace('\n', ' ')
+
+    def description_javascript(self):
+        if not self.description:
+            return ''
+
+        return self.description.value.replace(
+            '\'',
+            '\\\''
+        ).replace(
+            '"',
+            '\\"'
+        ).replace(
+            '\n',
+            ''
+        )
+
+    def title_javascript(self):
+        if not self.title:
+            return ''
+
+        return self.title.value.replace(
+            '\'',
+            '\\\''
+        ).replace(
+            '"',
+            '\\"'
+        ).replace(
+            '\n',
+            ''
+        )
+
+    def title_short(self):
+        if not self.title:
+            return ''
+
+        return ''.join([
+            self.title_javascript()[:16],
+            '...'
+        ])
 
     def description_100(self):
         if not self.description:

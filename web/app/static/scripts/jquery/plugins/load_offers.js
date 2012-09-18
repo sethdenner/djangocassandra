@@ -1,73 +1,90 @@
 (function($) {
-    var _options = {
+    var _default_options = {
         'page_size': 20
     };
+    var _options = {};
     
     var _methods = {
         'init': function(options) {
             _options = $.extend(
-                _options,
+                _default_options,
                 options
             );
         },
         
         'load': function(
             callback,
-            page,
-            load_uri,
-            context0,
+            href,
+            business,
             city,
             neighborhood,
-            context1
+            category,
+            premium,
+            page,
+            query
         ){
             //Blow away old offers if offer source changes.
-            var current_load_uri = this.attr('data-load_uri');
+            var current_load_uri = this.attr('data-href');
             if (
-                this.attr('data-load_uri') != load_uri ||
-                this.attr('data-context0') != context0 ||
+                this.attr('data-href') != href ||
+                this.attr('data-query') != query ||
+                this.attr('data-business') != business ||
                 this.attr('data-city') != city ||
                 this.attr('data-neighborhood') != neighborhood ||
-                this.attr('data-context1') != context1
+                this.attr('data-category') != category ||
+                this.attr('data-premium') != premium
             ) {
-                this.html('');                
+                this.html('');
+                page=1;       
             }
  
             //Make sure necessary attributes stay updated.
-            this.attr('data-load_uri', load_uri)
-                .attr('data-page', page)
-                .attr('data-context0', context0)
+            this.attr('data-href', href)
+                .attr('data-query', query)
+                .attr('data-business', business)
                 .attr('data-city', city)
                 .attr('data-neighborhood', neighborhood)
-                .attr('data-context1', context1);
+                .attr('data-category', category)
+                .attr('data-premium', premium)
+                .attr('data-page', page);
             
-            load_uri = [
-                load_uri,
-                context0,
-                city,
-                neighborhood,
-                context1,
+            href = [
+                href.toLowerCase(),
+                business.toLowerCase(),
+                city.toLowerCase(),
+                neighborhood.toLowerCase(),
+                category.toLowerCase(),
+                premium ? premium.toLowerCase() : null,
                 page,
                 ''
             ].join('/');
             
-            var max = load_uri.length;
-            var cleaned_uri = '';
+            var max = href.length;
+            var cleaned_href = '';
             var last_char = null;
             var i = 0;
             for (i; i < max; ++i) {
-                if (last_char == '/' && load_uri[i] == last_char) {
+                if (last_char == '/' && href[i] == last_char) {
                     continue;
                 }
                 
-                last_char = load_uri[i];
-                cleaned_uri += last_char;
+                last_char = href[i];
+                cleaned_href += last_char;
             }
             
             var _data = 0;
             
+            var request_data = {};
+            
+            if (query){
+                request_data['query'] = query;
+            }
+            
             $.ajax(
-                cleaned_uri, {
+                cleaned_href, {
                     'context': this,
+                    'data': request_data,
+                    'dataType': 'html'
                 } 
             ).done(function(
                 data, 
@@ -75,7 +92,6 @@
                 jqxhr
             ) {
                 _data = $(data);
-                this.append(data);
 
             }).fail(function(
                 jqxhr,
@@ -95,12 +111,16 @@
                 
             });
         },
+        
+        'stop_scroll': function() {
+            this.unbind('scroll.load_scroll');
+        },
          
         'load_scroll': function(content_selector) {
             var throttled = false;
             
-            this.unbind('scroll.load_offers').bind(
-                'scroll.load_offers', 
+            this.unbind('scroll.load_scroll').bind(
+                'scroll.load_scroll', 
                 function(evt) {
                     if (throttled) { return; }
             
@@ -112,17 +132,23 @@
                     if (offers_bottom < window_bottom) {
                         throttled = true;
                         
-                        var load_uri = $content.attr('data-load_uri');
-                        var uri_context0 = $content.attr('data-context0');
+                        var href = $content.attr('data-href');
+                        var business = $content.attr('data-business');
                         var city = $content.attr('data-city');
                         var neighborhood = $content.attr('data-neighborhood')
-                        var context1 = $content.attr('data-context1');
+                        var category = $content.attr('data-category');
+                        var premium = $content.attr('data-premium');
+                        var query = $content.attr('data-query')
+                        
                         var current_page = 0;
                         try {
                             current_page = parseInt($content.attr('data-page'));
                         } catch(exception) {}
                         
-                        if (!load_uri) { return; }
+                        if (!href) { return; }
+                        
+                        rows = $content.children().children();
+                        if (rows.length < _options.page_size * current_page) { return; }
                         
                         $content.load_offers(
                             'load', 
@@ -131,21 +157,17 @@
                                 jqxhr,
                                 status 
                             ) {
-                                $content.attr('data-page', current_page + 1)
-                                $('.arrow').remove();
-
-                                rows = data.children()
-                                if (rows.length < _options.page_size) { return; }
-                                
                                 throttled = false;            
-                                
+                                $content.append(data);
                             }, 
-                            current_page + 1, 
-                            load_uri,
-                            uri_context0,
+                            href,
+                            business,
                             city,
                             neighborhood,
-                            context1
+                            category,
+                            premium,
+                            current_page + 1,
+                            query 
                         );
                     }
                 }

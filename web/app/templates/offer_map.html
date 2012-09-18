@@ -1,7 +1,7 @@
 {% load thumbnail %}
 <div class="deal-content deal-data deal-location radius-general relative" >
     <script>
-        $(document).ready(function() {
+        $(function() {
             var mapOptions = {
                 center : new google.maps.LatLng(47.602227802480606, -122.30203628540039),
                 zoom: 15,
@@ -24,11 +24,11 @@
                     if (google.maps.GeocoderStatus.OK == status) {
                         bounds.extend(results[0].geometry.location);
                         map.fitBounds(bounds);
-                        var marker = KnotisMarker({
+                        var marker = new KnotisMarker({
                             map:map,
-                            title_var: '{{ offer.title_formatted }}',
-                            description_var: '{{ offer.description_100 }}',
-                            icon_var: '{{ offer.category.title_short }}',
+                            title_var: '{{ offer.title_javascript }}',
+                            description_var: '{{ offer.description_javascript }}',
+                            icon_var: '{{ offer.category.name_css }}',
                             profile: 0,
                             url_var: '/offer/{{ offer.id }}/',
                             position: results[0].geometry.location,
