@@ -172,6 +172,7 @@ def import_offer(cursor):
         business = None
         businesses = BusinessIdMap.objects.filter(old_id = old_business_id)
         if len(businesses) > 0:
+            #print businesses
             business = businesses[0].new_business
 
         title       = old_offer['title'].decode('cp1252')
@@ -255,7 +256,7 @@ def import_offer(cursor):
             premium = False
 
 
-        if end_date <= datetime.datetime.now():
+        if end_date <= datetime.datetime.now() or not premium:
             active = 0
 
         print 'Importing offer for business %s by user %s' % (business, user)
