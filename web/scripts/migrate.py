@@ -65,11 +65,17 @@ def import_user(cursor):
             first_name,
             last_name,
             email,
-            password,
+            'whatever nuke in next statement',
             account_type = account_type
         )
+        user.password = '$'.join([
+            'sha1',
+            salt,
+            password
+        ])
+        user.save()
 
-        endpoint_email = EndpointEmail.objects.create_endpoint(
+        EndpointEmail.objects.create_endpoint(
             user,
             EndpointTypes.EMAIL,
             email,

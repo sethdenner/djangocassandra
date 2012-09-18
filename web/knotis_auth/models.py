@@ -1,3 +1,5 @@
+import hashlib
+
 from django.contrib.auth import models
 from django.db.models import Model, CharField, OneToOneField, \
     FloatField, IntegerField, NullBooleanField, Manager
@@ -68,6 +70,24 @@ class User(models.User):
 
     objects = UserManager()
 
+    def check_pasword(
+        self,
+        raw_password
+    ):
+        if super(User, self).check_password(raw_password):
+            return True
+        
+        algorithm, salt, digest = self.password.split('$')
+        
+        if 'sha1' != algorithm.lower():
+            return False
+        
+        reverse_sha = hashlib.sha1()
+        reverse_sha.update(raw_password)
+        reverse_sha.update(salt)
+        
+        return digest == unicode(reverse_sha.hexdigest()) 
+    
     def username_12(self):
         return ''.join([
             self.username[:9],

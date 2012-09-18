@@ -112,15 +112,15 @@
 
             <div class="box-bottom box-border">
                 <div class="box-image-home relative">
-                    <a href="<?=site_url("deal/profile/" . $row->id); ?>" title="<?=$row->title ?>"
-                       alt="<?=$row->title ?>">
+                    <a href="/offer/{{ offer.id }}/" title="{{ offer.title_formatted }}"
+                       alt="{{ offer.title_formatted }}">
                        <img alt="{{ offer.business.name }}" src="{{ offer.business.image }}"/>
                     </a>
                 </div>
                 <div class="box-info">
                     <h5>
-                        <strong><a href="/deal/{{ offer.id }}">
-                        <strong><a href="/deal/{{ offer.id }}">
+                        <strong><a href="/offer/{{ offer.id }}/">
+                        <strong><a href="/offer/{{ offer.id }}/">
                             {{ offer.title_formatted }}
                         </a></strong>
                         </a></strong>
