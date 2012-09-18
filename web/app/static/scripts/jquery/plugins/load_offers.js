@@ -2,7 +2,7 @@
     var _default_options = {
         'page_size': 20
     };
-    var _options = {};
+    var _options = _default_options;
     
     var _methods = {
         'init': function(options) {
@@ -196,8 +196,10 @@
 })(jQuery);
 
 jQuery(function (){
-    $(document).load_offers(
-        'load_scroll', 
-        '.deal-content'
-    );
+    if ($('.deal-content').length) {
+        $(document).load_offers(
+            'load_scroll', 
+            '.deal-content'
+        );
+    }
 });

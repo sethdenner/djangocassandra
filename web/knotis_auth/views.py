@@ -10,6 +10,8 @@ from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.conf import settings
 from django.http import HttpResponse
 from django.utils.html import strip_tags
+from django.template import Context
+from django.template.loader import get_template
 
 from knotis_auth.models import User, UserProfile, AccountStatus, AccountTypes
 
@@ -89,11 +91,11 @@ def sign_up(request, account_type='user'):
     if request.method == 'POST':
         response_data = {
             'success': 'no',
-            'message': 'Unknown error.'
         }
+        feedback = ''
+        error = ''
 
         sign_up_form = SignUpForm(request.POST)
-
         if sign_up_form.is_valid():
             try:
                 user, account_type = sign_up_form.create_user(request)
@@ -108,8 +110,10 @@ def sign_up(request, account_type='user'):
                 #TODO This should be handled by an async task
                 if account_type == AccountTypes.BUSINESS_FREE:
                     subject = 'New Free Business Account in Knotis'
+
                 elif account_type == AccountTypes.BUSINESS_MONTHLY:
                     subject = 'New Premium Business Account in Knotis'
+
                 else:
                     subject = 'New user Account in Knotis'
 
@@ -126,41 +130,45 @@ def sign_up(request, account_type='user'):
                             'SERVICE_NAME': settings.SERVICE_NAME
                         }
                     ).send()
+
                 except:
                     pass
 
                 response_data['success'] = 'yes'
+                response_data['user'] = account_type
 
                 if True == sign_up_form.cleaned_data['business']:
-                    if account_type == 'premium':
-                        response_data['user'] = 'premium'
-                        response_data['message'] = ''
-                    else:
-                        response_data['user'] = 'foreverfree'
-                        response_data['message'] = 'Your Forever Free account has been created'
+                    if account_type == AccountTypes.BUSINESS_FREE:
+                        feedback = 'Your Forever Free account has been created'
+
                 else:
-                    response_data['user'] = 'normal'
-                    response_data['message'] = 'Your Knotis account has been created.'
+                    feedback = 'Your free Knotis account has been created.'
+
             except Exception as e:
-                response_data['message'] = 'There was an error creating your account: ' + e.message
+                error = 'There was an error creating your account: ' + e.message
+
         else:
-            response_data['message'] = 'The following fields are invalid: '
-            for error in sign_up_form.errors:
-                response_data['message'] += strip_tags(error) + '<br/>'
+            error = 'The following fields are invalid: '
+            for e in sign_up_form.errors:
+                error += strip_tags(e) + '<br/>'
+
+        html = get_template('finish_registration.html')
+        context = Context({
+            'AccountTypes': AccountTypes,
+            'account_type': account_type,
+            'settings': settings,
+            'feedback': feedback,
+            'error': error
+        })
+        response_data['html'] = html.render(context)
 
         return HttpResponse(
             json.dumps(response_data),
             mimetype='application/json'
         )
-    else:
-        if account_type == 'foreverfree':
-            account_type_int = 1
-        elif account_type == 'premium':
-            account_type_int = 2
-        else:
-            account_type_int = 0
 
-        form = SignUpForm(account_type=account_type_int)
+    else:
+        form = SignUpForm(account_type=account_type)
         return render(
             request,
             'sign_up.html', {

@@ -10,9 +10,9 @@ from app.models.fields.math import MatrixField
 
 
 class AccountTypes:
-    USER = 0
-    BUSINESS_FREE = 1
-    BUSINESS_MONTHLY = 2
+    USER = 'normal'
+    BUSINESS_FREE = 'foreverfree'
+    BUSINESS_MONTHLY = 'premium'
 
     CHOICES = (
         (USER, 'User'),
@@ -146,8 +146,17 @@ class UserProfileManager(Manager):
 class UserProfile(Model):
     user = OneToOneField(User, primary_key=True)
 
-    account_type = IntegerField(null=True, choices=AccountTypes.CHOICES, default=AccountTypes.USER)
-    account_status = IntegerField(null=True, choices=AccountStatus.CHOICES, default=AccountStatus.DISABLED)
+    account_type = CharField(
+        max_length=32,
+        null=True,
+        choices=AccountTypes.CHOICES,
+        default=AccountTypes.USER
+    )
+    account_status = IntegerField(
+        null=True,
+        choices=AccountStatus.CHOICES,
+        default=AccountStatus.DISABLED
+    )
 
     notify_announcements = NullBooleanField(blank=True, default=False)
     notify_offers = NullBooleanField(blank=True, default=False)
@@ -167,6 +176,9 @@ class UserProfile(Model):
     reputation_matrix = MatrixField(null=True, blank=True, max_length=200)
 
     objects = UserProfileManager()
+
+    def __unicode__(self):
+        return self.user.username
 
     def is_business_owner(self):
         return self.account_type != AccountTypes.USER

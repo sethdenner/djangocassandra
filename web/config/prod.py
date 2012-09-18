@@ -36,3 +36,15 @@ FACEBOOK_APP_ID = '227221503982317'
 FACEBOOK_API_SECRET = 'c38d6b546822e6142d958d4e6f7c940d'
 FACEBOOK_DEFAULT_SCOPE = 'email,user_about_me'
 FACEBOOK_API_URL = 'https://graph.facebook.com'
+
+PAYPAL_ACCOUNT = 'billing@knotis.com'
+PAYPAL_FORM_URL = 'https://www.paypal.com/cgi-bin/webscr'
+PAYPAL_URL = 'ssl://www.paypal.com'
+PAYPAL_NOTIFY_URL = ''.join([
+    BASE_URL,
+    '/account/payment/'
+])
+PAYPAL_HOSTED_BUTTON_ID = 'RGN2J9C8A4MY4'
+PAYPAL_DEFAULT_BUTTON_TEXT = 'Finish in Paypal'
+PAYPAL_ITEM_SUBSCRIPTION = 'subscription'
+PAYPAL_TRANSACTION_PRICE = 0.45

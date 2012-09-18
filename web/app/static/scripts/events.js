@@ -182,7 +182,7 @@ $(function() {
 
                 function(data) {
 
-                    $(".header-content").append(data).fadeIn;
+                    $(".header-content").append(data).fadeIn();
 
                     $("input:text").placeholder();
 
@@ -1120,45 +1120,30 @@ $(function() {
 
     // For the create a user form
     $('#newuser').live('submit', function() {
-
-     $('#createdP').show();
-     $('#createP').hide();
+        $('#createdP').show();
+        $('#createP').hide();
 
         $.ajax({
             type: 'POST',
             url: $(this).attr('action'),
-            dataType: "json",
+            dataType: 'json',
             data: $(this).serialize(),
             success: function(data) {
-
-                if (data.success == 'yes') {
-                    if (data.user == 'premium'){
-                        $('.replace').replaceWith('');
-                        $('.resultsContainer').replaceWith(data.message);
-                    }
-                    if (data.user == 'foreverfree'){
-                        $('.replace').replaceWith('');
-                        $('.resultsContainer').replaceWith('<p class="message-confirm message-info radius-general txt-size">' + data.message + '</p>');
-                    }
-                    if (data.user == 'normal'){
-                       $('.replace').replaceWith('');
-                       $('.resultsContainer').replaceWith('<p class="message-confirm message-info radius-general txt-size">' + data.message + '</p>');
-                    }
-                }
                 if (data.success == 'no') {
-                         $('#createdP').hide();
-                         $('#createP').show();
-                    $('#message-log').replaceWith('<p class="message-confirm message-error radius-general txt-size">' + data.message + '</p>');
-                }
+                    $('#createdP').hide();
+                    $('#createP').show();
+                    $('#message-log').replaceWith(data.html);
 
+                } else if (data.success == 'yes') {
+                    $('.replace').replaceWith(data.html);
+
+                }
 
             }
         })
 
         return false;
-    })
-            ;
-
+    });
 
     // For the create a user form
     $('#deletedeal').live('submit', function() {
@@ -1333,7 +1318,6 @@ $(function() {
                 FB.api('/me', function(user) {
                     $.post(action, {'data' : { 'response': response, 'user' : user}},
                             function(data) {
-                                //todo redirect after login if necessary
                                 if (data.success == 'yes') {
                                     if (data.user == 'premium')
                                         $('.replace').replaceWith(data.message);
@@ -1343,18 +1327,22 @@ $(function() {
 
                                     if (data.user == 'normal')
                                         window.location.reload(true);
+                
                                 }
                                 if (data.success == 'no') {
                                     $('#message-log').replaceWith('<p class="message-confirm message-error radius-general txt-size">' + data.message + '</p>');
+                
                                 }
 
                                 if (data.success == 'reload') {
                                     window.location.reload(true);
+                
                                 }
 
-                            }, 'json');
-
-                });
+                            }, 'json'
+                        );
+                    }
+                );
 
             } else if (canLogout) {
                var $r = Math.floor(Math.random()*1000000000);

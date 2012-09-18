@@ -1,0 +1,18 @@
+{% if not error %}
+{% if account_type == AccountTypes.BUSINESS_MONTHLY %}
+<div class='replace'>
+    <div class='clear-fix'>
+        <div class='content-popup-left'>
+             <p id='message-log' class='message-confirm message-info  message-info radius-general txt-size'>Almost done! Please proceed to PayPal to complete this transaction.</p>
+        </div>
+        {% include 'paypal_button.html' with settings=settings %}
+        <div class='clean'></div>
+    </div>
+    <div class='clean'></div>
+</div>
+{% else %}
+<p class="message-confirm message-info radius-general txt-size">{{ feedback|safe }}</p>
+{% endif %}
+{% else %}
+<p class="message-confirm message-error radius-general txt-size">{{ error|safe }}</p>
+{% endif %}
