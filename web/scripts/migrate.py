@@ -5,7 +5,7 @@ import getpass
 import MySQLdb
 import MySQLdb.cursors
 import hashlib
-from knotis_auth.models import User, AccountTypes
+from knotis_auth.models import User, AccountTypes, AccountStatus
 from app.models.businesses import Business, BusinessLink, BusinessSubscription
 from app.models.offers import Offer
 from app.models.cities import City
@@ -46,16 +46,20 @@ def import_user(cursor):
         first_name = user_table['firstName'].decode('cp1252')
         last_name = user_table['lastName'].decode('cp1252')
 
+        status      = user_table['status'] # enum('banned','inactive','validating','active')
         password    = user_table['password']
         salt        = user_table['salt']
 
-        account_type = AccountTypes.USER
+        account_type = None
         role = user_table['role_id']
         if role == 2:
             account_type = AccountTypes.BUSINESS_FREE
 
+        else:
+            account_type = AccountTypes.USER
+
         current_users = User.objects.filter(username = email)
-        if len(current_users) > 0:
+        if current_users.count() > 0:
             print 'User %s is already in the database.' % email
             continue
 
@@ -73,6 +77,13 @@ def import_user(cursor):
             salt,
             password
         ])
+
+        if status == 'active':
+            user.account_status = AccountStatus.ACTIVE
+
+        else:
+            user.account_status = AccountStatus.DISABLED
+
         user.save()
 
         EndpointEmail.objects.create_endpoint(
@@ -82,12 +93,11 @@ def import_user(cursor):
             primary=True
         )
 
-# TODO: sebastian
-
 #     import business
 def import_business(cursor):
 
-    cursor.execute("""SELECT * FROM merchantProfile, users WHERE users.id = merchantProfile.userId""")
+    cursor.execute('''SELECT * FROM merchantProfile, users
+                      WHERE users.id = merchantProfile.userId''')
 
     all_businesses = cursor.fetchall()
     for business_table in all_businesses:
@@ -96,7 +106,9 @@ def import_business(cursor):
         phone       = business_table['phone'].decode('cp1252')
         summary     = business_table['extendedDescription'].decode('cp1252')
 
-        address     = business_table['street1'].decode('cp1252') + business_table['street2'].decode('cp1252')
+        address     = business_table['street1'].decode('cp1252') + \
+                      business_table['street2'].decode('cp1252')
+
         twitter_name= business_table['twitter'].decode('cp1252')
         facebook_uri= business_table['facebook'].decode('cp1252')
         yelp_id     = business_table['yelp'].decode('cp1252')
@@ -124,7 +136,8 @@ def import_business(cursor):
             phone,
             twitter_name,
             facebook_uri,
-            yelp_id)
+            yelp_id
+            )
 
         id = business_table['id']
         BusinessIdMap.objects.create(
@@ -235,6 +248,13 @@ def import_offer(cursor):
         active          = old_offer['active']
         end_date        = old_offer['endDate']
 
+        if premium == 1:
+            premium = True
+
+        else:
+            premium = False
+
+
         if end_date <= datetime.datetime.now():
             active = 0
 
@@ -257,7 +277,8 @@ def import_offer(cursor):
             end_date,
             stock,
             unlimited,
-            active
+            active,
+            premium = premium
         )
 
         old_offer_id = old_offer['id']
@@ -478,8 +499,8 @@ if __name__ == '__main__':
     print 'Migration Script!'
 
 
-    import os
-    os.system('./reset.sh')
+    #import os
+    #os.system('./reset.sh')
 
     import_user(c)
     import_business(c)
@@ -488,7 +509,7 @@ if __name__ == '__main__':
     import_categories(c)
     import_offer(c)
 
-    import_qrcodes(c)
-    import_business_links(c)
-    import_business_subscriptions(c)
-    import_transactions(c)
+    #import_qrcodes(c)
+    #import_business_links(c)
+    #import_business_subscriptions(c)
+    #import_transactions(c)
