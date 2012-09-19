@@ -2,7 +2,7 @@ from piston.handler import AnonymousBaseHandler
 from piston.utils import validate
 
 from knotis_auth.views import SignUpForm
-from knotis_auth.models import User
+from knotis_auth.models import User, AccountTypes
 
 
 class AuthenticationHandler(AnonymousBaseHandler):
@@ -35,14 +35,14 @@ class AuthenticationHandler(AnonymousBaseHandler):
             response['success'] = 'yes'
 
             if business:
-                if account_type == 'premium':
-                    response['user'] = 'premium'
+                if account_type == AccountTypes.BUSINESS_MONTHLY:
+                    response['user'] = AccountTypes.BUSINESS_MONTHLY
                     response['message'] = ''
                 else:
-                    response['user'] = 'foreverfree'
+                    response['user'] = AccountTypes.BUSINESS_FREE
                     response['message'] = 'Your Forever Free account has been created'
             else:
-                response['user'] = 'normal'
+                response['user'] = AccountTypes.USER
                 response['message'] = 'Your Knotis account has been created.'
 
         except Exception as e:

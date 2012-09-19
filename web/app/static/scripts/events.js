@@ -167,29 +167,24 @@ $(function() {
         var $this = $(this), type = $this.attr('data-type');
 
         if (type == 'user')
-            $("#fb-root").attr('data-sign-up-action', server + "/auth/login/facebook/user");
+            $("#fb-root").attr('data-sign-up-action', server + '/facebook/login/user/');
+
         if (type == 'foreverfree')
-            $("#fb-root").attr('data-sign-up-action', server + "/auth/login/facebook/foreverfree");
+            $("#fb-root").attr('data-sign-up-action', server + '/facebook/login/foreverfree/');
+
         if (type == 'premium')
-            $("#fb-root").attr('data-sign-up-action', server + "/auth/facebook_login/premium");
+            $("#fb-root").attr('data-sign-up-action', server + '/facebook/login/premium/');
 
 
         $('.signup_popup').remove();
-
         $('.log_in_popup').remove();
 
         $.get("/signup/" + type, {},
-
                 function(data) {
-
                     $(".header-content").append(data).fadeIn();
-
                     $("input:text").placeholder();
-
                     $("input:textarea, select, input:radio").uniform();
-
                     $("#newuser").validity(function() {
-
                         $("#email")// The first input:
                                 .require();// Required:
                         $("#password")// The first input:
@@ -199,8 +194,8 @@ $(function() {
 
                 });
 
-
         return false;
+
     });
 
 
@@ -1228,11 +1223,7 @@ $(function() {
     })
 
     return false;
-})
-        ;
-
-
-
+});
 
     $("#pay").live('change', function() {
         var $this = $(this),
@@ -1325,8 +1316,8 @@ $(function() {
                                     if (data.user == 'foreverfree')
                                         window.location = '/business/profile/';
 
-                                    if (data.user == 'normal')
-                                        window.location.reload(true);
+                                    if (data.user == 'user')
+                                        window.location = '/offers/';
                 
                                 }
                                 if (data.success == 'no') {

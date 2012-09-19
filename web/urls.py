@@ -277,9 +277,22 @@ urlpatterns = patterns('',
         'app.views.city.get_neighborhoods',
         name='city'
     ),
-    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^api/', include('api.urls')),
+    url(
+        r'^paypal/',
+        include('paypal.urls')
+    ),
+    url(
+        r'^admin/doc/',
+        include('django.contrib.admindocs.urls')
+    ),
+    url(
+        r'^admin/',
+        include(admin.site.urls)
+    ),
+    url(
+        r'^api/',
+        include('api.urls')
+    ),
     url(
         r'^(?P<backend_name>[^/]+)/$',
         'app.views.business.profile',

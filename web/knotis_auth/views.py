@@ -98,7 +98,7 @@ def sign_up(request, account_type='user'):
         sign_up_form = SignUpForm(request.POST)
         if sign_up_form.is_valid():
             try:
-                user, account_type = sign_up_form.create_user(request)
+                user, user_profile = sign_up_form.create_user(request)
 
                 email = Endpoint.objects.create_endpoint(
                     user,
@@ -108,10 +108,10 @@ def sign_up(request, account_type='user'):
                 )
 
                 #TODO This should be handled by an async task
-                if account_type == AccountTypes.BUSINESS_FREE:
+                if user_profile.account_type == AccountTypes.BUSINESS_FREE:
                     subject = 'New Free Business Account in Knotis'
 
-                elif account_type == AccountTypes.BUSINESS_MONTHLY:
+                elif user_profile.account_type == AccountTypes.BUSINESS_MONTHLY:
                     subject = 'New Premium Business Account in Knotis'
 
                 else:
@@ -135,10 +135,10 @@ def sign_up(request, account_type='user'):
                     pass
 
                 response_data['success'] = 'yes'
-                response_data['user'] = account_type
+                response_data['user'] = user_profile.account_type
 
                 if True == sign_up_form.cleaned_data['business']:
-                    if account_type == AccountTypes.BUSINESS_FREE:
+                    if user_profile.account_type == AccountTypes.BUSINESS_FREE:
                         feedback = 'Your Forever Free account has been created'
 
                 else:
@@ -155,10 +155,11 @@ def sign_up(request, account_type='user'):
         html = get_template('finish_registration.html')
         context = Context({
             'AccountTypes': AccountTypes,
-            'account_type': account_type,
+            'account_type': user_profile.account_type,
             'settings': settings,
             'feedback': feedback,
-            'error': error
+            'error': error,
+            'custom_field': user.id
         })
         response_data['html'] = html.render(context)
 
