@@ -21,7 +21,8 @@ oauth_two_legged = OAuthAuthentication(realm='knotis', two_legged=True)
 image_handler = Resource(ImageModelHandler)
 business_handler = Resource(BusinessModelHandler)
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(
         r'^media/image/create/$',
         image_handler,

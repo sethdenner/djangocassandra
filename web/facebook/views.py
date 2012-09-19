@@ -34,15 +34,18 @@ def login(
         return HttpResponseBadRequest('Only POST is supported.')
 
     try:
-        auth_response = request.POST['data']['response']['authResponse']
-        facebook_user = request.POST['data']['user']
+        facebook_id = request.POST['data[response][authResponse][userID]']
+        email = request.POST['data[user][email]']
+        first_name = request.POST['data[user][last_name]']
+        last_name = request.POST['data[user][last_name]']
+
     except:
         return HttpResponseBadRequest('No data returned from facebook')
         pass
 
     user = None
     try:
-        user = User.objects.get(username=facebook_user['email'])
+        user = User.objects.get(username=email)
     except:
         pass
 
@@ -50,15 +53,15 @@ def login(
         try:
             password = ''.join([
                 FACEBOOK_PASSWORD_SALT,
-                auth_response['userID'],
+                facebook_id,
                 FACEBOOK_PASSWORD_SALT
             ])
             password_hash = hashlib.md5(password)
 
             user, user_profile = User(
-                first_name=facebook_user['first_name'],
-                last_name=facebook_user['last_name'],
-                email=facebook_user['email'],
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
                 password=password_hash.hexdigest()
             )
             user.active = True
@@ -86,7 +89,7 @@ def login(
         username=user.username,
         password=''.join([
             FACEBOOK_PASSWORD_SALT,
-            auth_response['userID'],
+            facebook_id,
             FACEBOOK_PASSWORD_SALT
         ])
     )
