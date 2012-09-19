@@ -59,7 +59,7 @@ def login(
             ])
             password_hash = hashlib.md5(password)
 
-            user, user_profile = User(
+            user, user_profile = User.objects.create_user(
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
@@ -78,7 +78,7 @@ def login(
                 primary=True
             )
         except Exception as e:
-            message = e.str()
+            message = str(e)
 
     if None == user:
         return generate_response({
