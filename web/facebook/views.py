@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as django_login
 
 from app.models.endpoints import EndpointEmail
-from knotis_auth.models import User, AccountStatus, AccountTypes
+from knotis_auth.models import User, UserProfile, AccountStatus, AccountTypes
 
 
 FACEBOOK_PASSWORD_SALT = '@#^#$@FBb9xc8cy'
@@ -22,8 +22,11 @@ def channel(request):
 
 def login(
     request,
-    account_type=AccountTypes.USER
+    account_type=None
 ):
+    if None == account_type:
+        account_type = AccountTypes.USER
+
     def generate_response(data):
         return HttpResponse(
             json.dumps(data),
@@ -50,6 +53,7 @@ def login(
         pass
 
     message = None
+    user_profile = None
     if None == user:
         try:
             password = ''.join([
@@ -89,6 +93,9 @@ def login(
             ) % message,
         })
 
+    if None == user_profile:
+        user_profile = UserProfile.objects.get(user=user)
+
     password = ''.join([
         FACEBOOK_PASSWORD_SALT,
         facebook_id,
@@ -107,7 +114,7 @@ def login(
         )
         return generate_response({
             'success': 'yes',
-            'user': account_type
+            'user': user_profile.account_type
         })
     else:
         return generate_response({
