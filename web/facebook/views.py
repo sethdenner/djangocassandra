@@ -49,6 +49,7 @@ def login(
     except:
         pass
 
+    message = None
     if None == user:
         try:
             password = ''.join([
@@ -76,13 +77,16 @@ def login(
                 user.username,
                 primary=True
             )
-        except:
-            pass
+        except Exception as e:
+            message = e.str()
 
     if None == user:
         return generate_response({
             'success': 'no',
-            'message': 'Failed to associate your Facebook account with your Knotis account. Please try again.'
+            'message': (
+                'Failed to associate your Facebook account '
+                'with your Knotis account. Please try again. %s'
+            ) % message,
         })
 
     password = ''.join([
