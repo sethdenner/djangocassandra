@@ -103,7 +103,7 @@ def login(
     if authenticated_user:
         django_login(
             request,
-            user
+            authenticated_user
         )
         return generate_response({
             'success': 'yes',
