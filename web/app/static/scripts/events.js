@@ -1357,10 +1357,6 @@ $(function() {
         FB.Event.subscribe('auth.authResponseChange', function(response) {
             handleSession(response, true);
         });
-
-        FB.getLoginStatus(function(response) {
-            handleSession(response, false);
-        });
         
         FB.Canvas.setAutoGrow();
     };
