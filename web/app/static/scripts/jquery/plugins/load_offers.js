@@ -196,10 +196,10 @@
 })(jQuery);
 
 jQuery(function (){
-    if ($('.deal-content').length) {
+    if ($('.offer-content').length) {
         $(document).load_offers(
             'load_scroll', 
-            '.deal-content'
+            '.offer-content'
         );
     }
 });

@@ -3,11 +3,11 @@
 {% block title %}Knotis - Edit Business Profile{% endblock title %}
 
 {% block content %}
-<div id="content" class="back-deals">
+<div id="content" class="back-offers">
 <div class="curve">
 <div class="wrapper clear-fix relative">
 {% include 'account_notifications.html' %}
-<div class="box-deals box-border left">
+<div class="box-offers box-border left">
 <h2 class="backend">
     <strong>Business profile</strong>
     {% if business %} 
@@ -121,7 +121,7 @@
             </li>
             <li class="left">
                 <label>
-                    <input class="search radius-general first-name date card" value="" placeholder="Our Special Deals!"
+                    <input class="search radius-general first-name date card" value="" placeholder="Our Special Offers!"
                            type="text"
                            name="{{link_form.title.html_name }}" id="titleLink">
                     <div id="ht-21" class="help-icon vertical-align-top margin-right" ></div>
@@ -159,7 +159,7 @@
                     <li class="radius-general active clear-fix">
                         <img
                             alt=""
-                            src="{% firstof image.uri default_deal_image %}"
+                            src="{% firstof image.uri default_offer_image %}"
                             class="gallery" />
                             <a class="right delete radius-general delete-image" href="#" data-id="{{ image.id }}"
                                data-cont="{{ forloop.counter0 }}">delete</a>

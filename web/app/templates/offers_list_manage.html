@@ -1,20 +1,20 @@
 {% load thumbnail %}
-<div class="deal_list_backend">
+<div class="offer_list_backend">
     {% if offers %}
     {% for offer in offers %}
     <div class="line-bottom clear-fix">
-        <div class="deals-image radius-general left relative">
+        <div class="offers-image radius-general left relative">
             <div class="ribbon-backend{% if not offer.active %}-inactive{% endif %}" ></div>
             <div class="category food"></div>
             <img alt=""
                  {% thumbnail offer.image.image '72x72' as image %}
                  src="{{ image.url }}"
                  {% empty %}
-                 src="{{ STATIC_URL }}/images/layouts/knotis-deal-image.jpg"
+                 src="{{ STATIC_URL }}/images/layouts/knotis-offer-image.jpg"
                  {% endthumbnail %}
                  class="image-knotis-thumb"/>
         </div>
-        <div class="deals-txt left">
+        <div class="offers-txt left">
             <h5><strong>{{ offer.title.value }}</strong></h5>
             <ul class="date-dash clear-fix">
                 <li>{{ offer.start_date|date:'N j, Y - f a' }}</li>
@@ -25,14 +25,14 @@
                href="/{{ offer.business.backend_name }}/" >{{ offer.business.business_name.value }}</a>
             <p class="txt-size margin-general">{{ offer.description.value }}</p>
             {% if not business %}
-            <ul class="clear-fix txt-size date-deals">
+            <ul class="clear-fix txt-size date-offers">
                 <li><strong>Purchased on: </strong>{{ offer.purchase_date }}</li>
-                <li><strong>Deals:</strong> {{ offer.available }}</li>
+                <li><strong>Offers:</strong> {{ offer.available }}</li>
                 <li><strong>Redeemed:</strong> {{ offer.redeemed }}</li>
             </ul>
             {% endif %}
         </div>
-        <div class="deals-action radius-general right">
+        <div class="offers-action radius-general right">
             {% if business %}
             {% if business != offer.business %}
             <a class="print button margin-general"
@@ -45,7 +45,7 @@
             {% if offer.status != 'created' %}
             <div class="clear-fix ">
                 <a class="print button margin-general" target="_blank"
-                   href="/offer/{{ offer.id }}/">View Deal</a>
+                   href="/offer/{{ offer.id }}/">View Offer</a>
             </div>
             {% endif %}
             {% if offer.status == 'current' %}
@@ -58,11 +58,11 @@
             {% if offer.status == 'complete' %}
             <div class="clear-fix ">
                 <a class="print button margin-general" target="_blank"
-                   href="/business/offer/rerun/{{ offer.id }}">Re-run Deal</a>
+                   href="/business/offer/rerun/{{ offer.id }}">Re-run Offer</a>
             </div>
             <div class="clear-fix ">
                 <a id="softDeleteClick" class="print button margin-general" target="_blank" 
-                   data-id="{{ offer.id }}">Delete Deal</a>
+                   data-id="{{ offer.id }}">Delete Offer</a>
             </div>
             {% endif %}
             {% endif %}
@@ -72,12 +72,12 @@
                href="/offer/print/{{ offer.id }}" target="_blank">Print</a>
             {% endif %}
             <a class="print button margin-general"
-               href="/offer/{{ offer.id }}" target="_blank">View Deal</a>
+               href="/offer/{{ offer.id }}" target="_blank">View Offer</a>
             {% endif%}
         </div>
     </div>
     {% endfor %}
     {% else %}
-    <p class="message-confirm message-info radius-general txt-size">No deals here</p>
+    <p class="message-confirm message-info radius-general txt-size">No offers here</p>
     {% endif %}
 </div>

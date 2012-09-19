@@ -1,26 +1,26 @@
 {% extends 'master.html' %}
 
-{% block title %}Knotis - Deals{% endblock title %}
+{% block title %}Knotis - Offers{% endblock title %}
 
 {% block content %}
-<div id="content" class="back-deals">
+<div id="content" class="back-offers">
     <div class="curve">
         <div class="wrapper clear-fix relative">
             {% include 'account_notifications.html' %}
-            <div class="box-deals box-border left">
+            <div class="box-offers box-border left">
                 <div class="clear-fix relative">
-                    <ul class="filtering-bar filtering-bar-dash clear-fix  deallist_backend">
+                    <ul class="filtering-bar filtering-bar-dash clear-fix  offerlist_backend">
                         {% if user_profile.is_business_owner %}
-                        <li class="txt-size"><a id="createdDealsA"  class="first active" href="#" data-filter="created">Created Deals</a></li>
-                        <li class="txt-size"><a id="currentDealsA" href="#" data-filter="current">Current Deals</a></li>
-                        <li class="txt-size"><a id="completedDealsA" href="#" data-filter="completed">Completed Deals</a></li>
+                        <li class="txt-size"><a id="createdOffersA"  class="first active" href="#" data-filter="created">Created Offers</a></li>
+                        <li class="txt-size"><a id="currentOffersA" href="#" data-filter="current">Current Offers</a></li>
+                        <li class="txt-size"><a id="completedOffersA" href="#" data-filter="completed">Completed Offers</a></li>
                         {% endif %}
                         <li class="txt-size"><a  href="#" class="{% if not user_profile.is_business_owner %}first active{% endif %}" data-filter="purchased">Purchased</a></li>
                         <li class="txt-size"><a href="#" data-filter="redeemed">Used</a></li>
                     </ul>
                     <div id="ajaxBusy" class="absolute"><img src="{{ STATIC_URL }}/images/ajaxloading.gif" title="Loading" alt="loading"/> </div>
                 </div>
-                <div class="deal_list_backend">
+                <div class="offer_list_backend">
                     {% include 'offers_list_manage.html' with offers=offers business=business %}
                 </div>
             </div>

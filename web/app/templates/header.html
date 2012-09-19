@@ -19,20 +19,20 @@
                             <a href="/contact/" title="{{ header_add_city }}"> {{ header_add_city }}</a>
                         </p>
                         <div class="clear-fix">
-                            <h4 class="circle left"><strong>{{ header_all_deals }}</strong></h4>
+                            <h4 class="circle left"><strong>{{ header_all_offers }}</strong></h4>
                             <hr class="right">
                         </div>
                         <div class="clear-fix">
                             <ul class="first ">
                                 <li class="txt-size margin-general">
                                     <a class="all-cities gradient-gray radius-general"
-                                       href="/offers/">{{ header_all_deals_wa }}</a>
+                                       href="/offers/">{{ header_all_offers_wa }}</a>
                                 </li>
                             </ul>
                         </div>
 	                    <div class="clear-fix">
 	                    	{% for c in cities %}
-							{% if active_deals_city %}
+							{% if active_offers_city %}
 	                        <h4 class="circle left"><strong>{{ c.name }}</strong></h4>
 	                        <hr class="right">
 	               		</div>
@@ -44,7 +44,7 @@
 		                    	</li>
 		                    	{% if neighbourhoods %}
 		                    	{% for n in neighbourhoods %}
-		                        {% if active_deals_neighbourhood %}
+		                        {% if active_offers_neighbourhood %}
 								<li class="txt-size">
 									<a href="/offers/{{ c.backend_name }}/{{ n.backend_name }}/">{{ n.name }}</a>
 								</li>
@@ -70,7 +70,7 @@
                     	{{ session.user.city_name }}
                     	{% endif %}
                     	{% else %}
-                    	All Deals
+                    	All Offers
                     	{% endif %}
                     </strong>
                	</h4>
@@ -80,7 +80,7 @@
             </div>
             <ul class="nav clear-fix right">
                 <li>
-                	<a href="/offers/" {% if current_page == 'offers' %}class="active" {% endif %}>{{ header_deals }}</a>
+                	<a href="/offers/" {% if current_page == 'offers' %}class="active" {% endif %}>{{ header_offers }}</a>
                 </li>
                 <li>
                 	<a href="/events/" {% if current_page == 'events' %}class="active" {% endif %}>{{ header_events }}</a>
@@ -115,7 +115,7 @@
                             {% if user_profile.is_business_owner %}
                             <li><a href="/dashboard/" >{{ header_dashboard }}</a></li>
                             {% endif %}
-                            <li><a href="/offers/dashboard/">{{ header_deals }}</a></li>
+                            <li><a href="/offers/dashboard/">{{ header_offers }}</a></li>
                         </ul>
                         <ul class="menu-user">
                             <li><a href="/profile/">{{ header_profile }}</a></li>
@@ -139,7 +139,7 @@
                         <ul class="menu-user">
                             <li><a href="/dynamic_pages/">{{ header_dynamic_pages }}</a>
                             </li>
-                            <li><a href="/deals/premium/">{{ header_all_deals }}</a></li>
+                            <li><a href="/offers/premium/">{{ header_all_offers }}</a></li>
                             <li><a href="/locations/">{{ header_cities }}</a></li>
                         </ul>
                         <ul>

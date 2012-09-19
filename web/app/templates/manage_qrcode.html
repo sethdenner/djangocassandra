@@ -3,11 +3,11 @@
 {% block title %}Knotis - Manage QR Code{% endblock title %}
 
 {% block content %}
-<div id="content" class="back-deals">
+<div id="content" class="back-offers">
     <div class="curve">
         <div class="wrapper clear-fix relative">
             {% include 'account_notifications.html' %}
-            <div class="box-deals box-border left">
+            <div class="box-offers box-border left">
                 <h2 class="backend"><strong>Manage Qrcode Scans</strong><div id="ht-35" class="help-icon vertical-align-baseline margin-sides" ></div></h2>
                 {% include 'feedback.html' with feedback=feedback %}
                 <div class="relative closeinfo">
@@ -15,7 +15,7 @@
                         -> {{ BASE_URL }}/qrcode/{{ qrcode.id }}/</div>
                 </div>
                 <div class="clean"></div>
-                <form class="backend-setting edit-deal" data-id="" method="post">
+                <form class="backend-setting edit-offer" data-id="" method="post">
                     <ul class="qrcode-user">
                         <fieldset>
                             <h3 class="margin-general"><strong>Business Profile link</strong><div id="ht-36" class="help-icon vertical-align-baseline margin-sides" ></div></h3>
@@ -70,10 +70,10 @@
                             </li>
                         </fieldset>
                         <fieldset>
-                            <h3 class="margin-general"><strong>Deals</strong><div id="ht-39" class="help-icon vertical-align-baseline margin-sides" ></div></h3>
-                            <h4 class="margin-general">Send visitors to one of your current Knotis Deals. Visitors will
-                                be sent directly to the deal page where they will find details and discover how to
-                                redeem a deal.</h4>
+                            <h3 class="margin-general"><strong>Offers</strong><div id="ht-39" class="help-icon vertical-align-baseline margin-sides" ></div></h3>
+                            <h4 class="margin-general">Send visitors to one of your current Knotis Offers. Visitors will
+                                be sent directly to the offer page where they will find details and discover how to
+                                redeem a offer.</h4>
                             {% if offers %}
                             {% for offer in offers %}
                             <li class="clear-fix margin-general">

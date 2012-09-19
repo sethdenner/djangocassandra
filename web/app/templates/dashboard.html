@@ -3,25 +3,25 @@
 {% block title %}Knotis - Dashboard{% endblock title %}
 
 {% block content %}
-<div id="content" class="back-deals">
+<div id="content" class="back-offers">
     <div class="curve">
         <div class="wrapper clear-fix relative">
             {% include 'account_notifications.html' %}
-            <div class="box-deals box-border left">
+            <div class="box-offers box-border left">
                 <div class="clear-fix margin-general">
                     <ul class="filtering-bar-dash clear-fix">
-                        <li class="txt-size"><a class="first active" href="#">Deals</a></li>
+                        <li class="txt-size"><a class="first active" href="#">Offers</a></li>
                         <li class="txt-size"><a class="first" href="/dashboard/qrcodes/">Qrcode Scans</a></li>
                         <li class="txt-size"><a class="coming-soon" href="#">Happy hour</a></li>
                         <li class="txt-size"><a class="coming-soon" href="#">Special event</a></li>
                     </ul>
                 </div>
-                <div class="deal_list_backend">
+                <div class="offer_list_backend">
                     {% if offers %}
                     {% for offer in offers %}
                     {% if offer.orders %}
-                    <div class="premiumdeals_filter margin-up">
-                        <ul class="clear-fix graphic-buttoms-<?= $deal->id ?>">
+                    <div class="premiumoffers_filter margin-up">
+                        <ul class="clear-fix graphic-buttoms-<?= $offer->id ?>">
                             <li><a class="active graphic-buttom" href="#"  data-id="{{ offer.id }}" data-type="year">Monthly</a></li>
                             <li><a href="#" class="graphic-buttom" data-id="{{ offer.id }}" data-type="week">Weekly</a></li>
                             <li><a href="#" class="graphic-buttom" data-id="{{ offer.id }}" data-type="days">Daily</a></li>
@@ -99,15 +99,15 @@
                             <span class="right second">${{ yearly_revenue }}</span>
                         </li>
                     </ul>
-                    <div class="deals-div line-bottom clear-fix">
-                        <div class="not-deals clear-fix">
-                            <div class="deals-image radius-general left relative">
+                    <div class="offers-div line-bottom clear-fix">
+                        <div class="not-offers clear-fix">
+                            <div class="offers-image radius-general left relative">
                                 <div class="category food"></div>
                                 <img alt=""
-                                     src="{% if not deal.image %}images/layouts/knotis-deal-image.jpg{% else %}/images/thumb/72/72/{{ offer.image }}{% endif %}"
+                                     src="{% if not offer.image %}images/layouts/knotis-offer-image.jpg{% else %}/images/thumb/72/72/{{ offer.image }}{% endif %}"
                                      class="image-knotis-thumb"/>
                             </div>
-                            <div class="deals-txt left">
+                            <div class="offers-txt left">
                                 <h5><strong>{{ offer.title }}</strong></h5>
                                 <ul class="date-dash clear-fix">
                                     <li>{{ offer.start_date }}</li>
@@ -119,7 +119,7 @@
                                    href="/business/{{ offer.business.backend_name }}/">{{ offer.business.business_name }}</a>
                             </div>
                         </div>
-                        <div class="not-deals left select-sort">
+                        <div class="not-offers left select-sort">
                 		    <label for="sortby" class="left-side2 txt-size">
                 			  Sort By:
                 		    </label>
@@ -130,14 +130,14 @@
                 			  </select>
                         	</div>
                         </div>
-                	    <span class="not-deals right">
-                	      <a id="print-deals" href="./printdeals" target="_blank" > 
-                		    Print Unredeemed Deals <img class="print" src="{{ STATIC_URL }}images/layouts/print.png" />
+                	    <span class="not-offers right">
+                	      <a id="print-offers" href="./printoffers" target="_blank" > 
+                		    Print Unredeemed Offers <img class="print" src="{{ STATIC_URL }}images/layouts/print.png" />
                 		  </a>
                 		</span>
-                        {% if deal.orders %}
-                        {% for order in deal.orders %}
-                        <div class="deal-div clear-fix clean reedem-code radius-general ">
+                        {% if offer.orders %}
+                        {% for order in offer.orders %}
+                        <div class="offer-div clear-fix clean reedem-code radius-general ">
                             <ul class="left txt-size">
                                 <li><strong>User:</strong> {{ order.user.username }}</li>
                                 <li><strong>Code:</strong>#{{ order.redemption_code }}</li>
@@ -149,7 +149,7 @@
                                 <li class="redeem"><strong>Redeemed:</strong> {{ order.redeemed }}</li>
                             </ul>
                             <form class="backend-setting" method="post">
-                                <div class="deals-action deals-action-dash radius-general left">
+                                <div class="offers-action offers-action-dash radius-general left">
                                     {% if order.redeemed != order.pending %}
                                     <label class="number-redeem left">
                                         <select name="stock_select">
@@ -161,7 +161,7 @@
                                     <input type="submit" class="button radius-general left"
                                            value="Redeem"/>
                                     <input type="hidden" value="{{ offer.id }}"
-                                           name="dealOrderid"/>
+                                           name="offerOrderid"/>
                                     <input type="hidden" value="{{ order.redeemed }}"
                                            name="redeem_actual"/>
                                     {% endif %}
@@ -174,7 +174,7 @@
                     {% endif %}
                     {% endfor %}
                     {% else %}
-                    <p class="message-confirm message-info radius-general txt-size">No deals yet.</p>';
+                    <p class="message-confirm message-info radius-general txt-size">No offers yet.</p>';
                     {% endif%}
                 </div>
             </div>
@@ -184,10 +184,10 @@
 </div>
 <script type="text/javascript" >
 	$(function(){
-	  $('#print-deals').help
+	  $('#print-offers').help
 	  
-	  var sortDeals = function($deals, index) {
-	      var $rows = $('.deal-div',$deals);
+	  var sortOffers = function($offers, index) {
+	      var $rows = $('.offer-div',$offers);
 	      $rows.sort(function(a, b){
 	          var keyA = $.trim($('ul li:eq(' + index + ')',a).remove('strong').text().toLowerCase());
 	          var keyB = $.trim($('ul li:eq(' + index + ')',b).remove('strong').text().toLowerCase());
@@ -195,15 +195,15 @@
 	          return (keyA > keyB) ? 1 : -1;
 	      });
 	      $.each($rows, function(index, row){
-	        $deals.append(row);
+	        $offers.append(row);
 	      });
 	  }
-	  var $deals = $('.deals-div').remove('.not-deals');
-	  sortDeals($deals, 0);
+	  var $offers = $('.offers-div').remove('.not-offers');
+	  sortOffers($offers, 0);
 	  
 	  $('#sortby').change(function(event) {
 	  	event.preventDefault();
-	  	sortDeals($deals, $(this).val());
+	  	sortOffers($offers, $(this).val());
 	  });
 	});
 </script>
