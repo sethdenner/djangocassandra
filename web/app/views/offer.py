@@ -170,7 +170,7 @@ def offers(
             city_instance,
             neighborhood_instance,
             category_instance,
-            True if premium else False,
+            premium,
             int(page) if page else 1,
             query,
             sort_by.lower()
@@ -462,7 +462,7 @@ def get_available_offers(
             city_instance,
             neighborhood_instance,
             category_instance,
-            True if premium else False,
+            premium,
             int(page) if page else 1,
             query,
             sort_by.lower()

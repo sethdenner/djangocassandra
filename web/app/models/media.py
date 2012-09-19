@@ -24,13 +24,12 @@ class ImageManager(Manager):
             )
             content_caption.save()
 
-        image = Image(
+        image = Image.objects.create(
             user=user,
             image=image,
             caption=content_caption,
             relate_object_id=related_object_id
         )
-        image.save()
 
         return image
 
