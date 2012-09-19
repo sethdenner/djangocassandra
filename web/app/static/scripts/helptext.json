@@ -9,8 +9,8 @@
         "text": "This is the password you've chosen for your business, remember it. Hint: If you forget your password, click on \"Forgot Password\" and then check your inbox for the email you used for your username."
     },
     "3": {
-        "title": "Purchase Deals",
-        "text": "With a Knotis account you can purchase any and all deals. Hint: Make sure to subscribe to your favorite local businesses to be the first to know about the promotions they offer."
+        "title": "Purchase Offers",
+        "text": "With a Knotis account you can purchase any and all offers. Hint: Make sure to subscribe to your favorite local businesses to be the first to know about the promotions they offer."
     },
     "4": {
         "title": "Subscribe to Business",
@@ -18,7 +18,7 @@
     },
     "5": {
         "title": "Social Network",
-        "text": "Knotis is trully the first social platform geared for businesses that let's businesses take full control of creating incentives, promotions, and deals in order to engage customers and build brand loyalty. The Knotis social platform bridges your social media efforts on Facebook, Twitter, etc. and can convert those efforts into measurable ROI and revenue stream. Hint: Turn your existing Facebook and Twitter accounts into a marketing powerhouse by utilizing the Knotis point of sale. The cost is the same as using your credit card terminal."
+        "text": "Knotis is trully the first social platform geared for businesses that let's businesses take full control of creating incentives, promotions, and offers in order to engage customers and build brand loyalty. The Knotis social platform bridges your social media efforts on Facebook, Twitter, etc. and can convert those efforts into measurable ROI and revenue stream. Hint: Turn your existing Facebook and Twitter accounts into a marketing powerhouse by utilizing the Knotis point of sale. The cost is the same as using your credit card terminal."
     },
     "6": {
         "title": "Knotis Page",
@@ -34,15 +34,15 @@
     },
     "9": {
         "title": "Social Pro",
-        "text": "Sharing your deals just got  easier. With Social Pro, we allow you to connect your facebook and twitter accounts so that with one-click, your deals are distributed to your social followers. Hint: Make sure to share with your loyal followers to increase your repeat business."
+        "text": "Sharing your offers just got  easier. With Social Pro, we allow you to connect your facebook and twitter accounts so that with one-click, your offers are distributed to your social followers. Hint: Make sure to share with your loyal followers to increase your repeat business."
     },
     "10": {
         "title": "Analytics",
-        "text": "At Knotis we like to be accountable and ensure we are providing you with the best ROI. We want to make sure it is easy for you to track your sales and reach. The other Daily Deal sites bank on you focusing on revenue too much and not on maintaining relationships. We want you to take full credit for your services and we will never be a middle-man in your business. Track your most loyal customers and strengthen your relationships by keeping an eye on your Knotis analytics."
+        "text": "At Knotis we like to be accountable and ensure we are providing you with the best ROI. We want to make sure it is easy for you to track your sales and reach. The other Daily Offer sites bank on you focusing on revenue too much and not on maintaining relationships. We want you to take full credit for your services and we will never be a middle-man in your business. Track your most loyal customers and strengthen your relationships by keeping an eye on your Knotis analytics."
     },
     "11": {
         "title": "Social Incentives",
-        "text": "Knotis allows you to create your own deals, discounts, events and happy hours specials, when it makes sense for you. The best part is, you have total control and we don't share your revenue."
+        "text": "Knotis allows you to create your own offers, discounts, events and happy hours specials, when it makes sense for you. The best part is, you have total control and we don't share your revenue."
     },
     "12": {
         "title": "Name",
@@ -90,7 +90,7 @@
     },
     "23": {
         "title": "Discount Price",
-        "text": "Is the purchase value of a good or service that you are offering. This number is lower than the Retail Price since you are offering a good/service as a loss leader to incentivize customers to make a purchase at your business. Hint: Make your deal sticky and worthwhile to consider. If you wouldn't buy your promotion, chances are that neither would the general public."
+        "text": "Is the purchase value of a good or service that you are offering. This number is lower than the Retail Price since you are offering a good/service as a loss leader to incentivize customers to make a purchase at your business. Hint: Make your offer sticky and worthwhile to consider. If you wouldn't buy your promotion, chances are that neither would the general public."
     },
     "24": {
         "title": "Retail Price",
@@ -98,7 +98,7 @@
     },
     "25": {
         "title": "# of Units",
-        "text": "Knotis is the only platform that lets YOU set how many deals you are offering for sale. Everyone can see what you are promoting but only X number of customers can purchase allowing you to be in full control of your sales with no unforseen risks of breaking the bank. Hint: Keep the # of Units for sale small to create a sense of ugency and exclusivity. If someone misses your promotion they are more likely to subscribe to you not to miss a future promotion. You may re-run a deal with one click if you sell out but want more sales."
+        "text": "Knotis is the only platform that lets YOU set how many offers you are offering for sale. Everyone can see what you are promoting but only X number of customers can purchase allowing you to be in full control of your sales with no unforseen risks of breaking the bank. Hint: Keep the # of Units for sale small to create a sense of ugency and exclusivity. If someone misses your promotion they are more likely to subscribe to you not to miss a future promotion. You may re-run a offer with one click if you sell out but want more sales."
     },
     "26": {
         "title": "Unlimited",
@@ -106,11 +106,11 @@
     },
     "27": {
         "title": "Title",
-        "text": "Is the title of the promotion you are running. Make it clear and concise, it may be the first and only thing a potential customer reads so grab their attention. Hint: Make sure you click on the correct button if you have a custom title. Review your deal after it is published!"
+        "text": "Is the title of the promotion you are running. Make it clear and concise, it may be the first and only thing a potential customer reads so grab their attention. Hint: Make sure you click on the correct button if you have a custom title. Review your offer after it is published!"
     },
     "28": {
         "title": "Start Date",
-        "text": "You get to decide and schedule when your deal goes live. You can set a specific date and time. Want to plan out your promotions for the next 6 months in one afternoon? You can do that with Knotis. Hint: There is no limit on how many deals you may offer on your Knotis platform as long as they are worthwhile promotions."
+        "text": "You get to decide and schedule when your offer goes live. You can set a specific date and time. Want to plan out your promotions for the next 6 months in one afternoon? You can do that with Knotis. Hint: There is no limit on how many offers you may offer on your Knotis platform as long as they are worthwhile promotions."
     },
     "29": {
         "title": "End Date",
@@ -121,7 +121,7 @@
         "text": "Your promotion should fit in one of the pre created categories. Make sure to select the correct one. Hint: there are Knotis users who are subscribed to certain categories."
     },
     "31": {
-        "title": "Deal Description",
+        "title": "Offer Description",
         "text": "In this section you must describe what you are offering in full detail. Don't leave any room for the imagination. Hint: Set the expectations so that there are no communication break downs or \"he said, she said\" moments. Treat the description as a contract."
     },
     "32": {
@@ -129,11 +129,11 @@
         "text": "In this section you identify your \"fine print\". Make sure that you fully inform your potential customer what is NOT allowed when someone purchases this promotion. Hint: Take some time to think through all the restrictions that are necessary to ensure a smooth customer experience that still protects you."
     },
     "33": {
-        "title": "Deal Image",
-        "text": "Your deal is allowed one photo which must be a square image. Hint: Use an engaging photo. This is what will help sell your deal."
+        "title": "Offer Image",
+        "text": "Your offer is allowed one photo which must be a square image. Hint: Use an engaging photo. This is what will help sell your offer."
     },
     "34": {
-        "title": "Location of Deal",
+        "title": "Location of Offer",
         "text": "Check whether the address below is correct."
     },
     "35": {
@@ -153,12 +153,12 @@
         "text": "Send visitors directly to a video that is online, just input URL. Hint: Videos are a fast and great way to get your message out to your customer base."
     },
     "39": {
-        "title": "Deals",
-        "text": "The Deals option is an excellent way to help incentivize customers to give you a shot. Offer great specials and something that will encourage a visitor to want to know more about you or about the goods that you are selling Hint: You may use this option whenever you are running an ad in the newspaper or magazine."
+        "title": "Offers",
+        "text": "The Offers option is an excellent way to help incentivize customers to give you a shot. Offer great specials and something that will encourage a visitor to want to know more about you or about the goods that you are selling Hint: You may use this option whenever you are running an ad in the newspaper or magazine."
     },
     "40": {
         "title": "My Subscriptions",
-        "text": "This is where you can view deals from the business that you have subscribed to."
+        "text": "This is where you can view offers from the business that you have subscribed to."
     }
   }
 }

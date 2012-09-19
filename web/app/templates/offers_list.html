@@ -1,9 +1,9 @@
 {% load thumbnail %}
 {% if offers %}
-<div class="deal-data" >
+<div class="offer-data" >
     {% for offer in offers %}
     <div class="line-bottom clear-fix">
-        <div class="deals-image radius-general left relative">
+        <div class="offers-image radius-general left relative">
             <div class="category cat-{{ offer.category.title_short }}"></div>
             <a class="clear-fix txt-size"
                href="/offer/{{ offer.id }}/">
@@ -11,12 +11,12 @@
                      {% thumbnail offer.image.image '72x72' as image %}
                      src="{{ image.url }}"
                      {% empty %}
-                     src="{{ STATIC_URL }}images/layouts/knotis-deal-image.jpg"
+                     src="{{ STATIC_URL }}images/layouts/knotis-offer-image.jpg"
                      {% endthumbnail %}
                      class="image-knotis-thumb"/>
             </a>
         </div>
-        <div class="deals-txt left">
+        <div class="offers-txt left">
             <h5><strong><a href="/offer/{{ offer.id }}/">
                 {{ offer.title_formatted }}
             </a></strong>
@@ -26,19 +26,19 @@
                href="/{{ offer.business.backend_name }}/" >{{ offer.business.business_name.value }}</a>
             <p class="txt-size">{{ offer.description_100 }}</p>
         </div>
-        <div class="deals-action radius-general right">
-            <div class="deals-action-top  relative">
+        <div class="offers-action radius-general right">
+            <div class="offers-action-top  relative">
                 <div class="arrow-small absolute"></div>
                 <p class="txt-center">savings</p>
                 <em class="txt-center txt-white clear-fix">${{ offer.savings }}</em>
             </div>
             <a class="clear-fix txt-center txt-size gradient-gray"
-               href="/offer/{{ offer.id }}/">View Deal</a>
+               href="/offer/{{ offer.id }}/">View Offer</a>
         </div>
     </div>
     {% endfor %}
 </div>
 {% else %}
-<div class="deal-data no-more-deals" ><p class="message-confirm message-warn radius-general txt-size">No more deals of this type.</p></div>
+<div class="offer-data no-more-offers" ><p class="message-confirm message-warn radius-general txt-size">No more offers of this type.</p></div>
 {% endif %}
 

@@ -90,7 +90,7 @@ $(document).ready(function() {
     $("input:checkbox, input:file, textarea, select").uniform();
 
 
-    // For categories in the deals page
+    // For categories in the offers page
 
     $('.categories-filter').live('click', function() {
         var $this = $(this),
@@ -101,8 +101,8 @@ $(document).ready(function() {
                 id = $(this).attr('data-category');
 
 
-        $.post([server + "deals/deals_list", filter, id].join('/'), {}, function(data) {
-            $('.deal-content').replaceWith(data);
+        $.post([server + "offers/offers_list", filter, id].join('/'), {}, function(data) {
+            $('.offer-content').replaceWith(data);
             $('.relative a').removeClass('active');
             $('.arrow').remove();
             $('.' + categoryname + ' a').addClass('active');
@@ -113,14 +113,14 @@ $(document).ready(function() {
     });
 
 
-    $('.deallist_backend li a').live('click', function() {
+    $('.offerlist_backend li a').live('click', function() {
         var $this = $(this),
             filter = $this.attr('data-filter');
 
 
-        $.post([server + "backend/deals_list", filter].join('/'), {}, function(data) {
-            $('.deal_list_backend').replaceWith(data);
-            $('.deallist_backend li a').removeClass('active');
+        $.post([server + "backend/offers_list", filter].join('/'), {}, function(data) {
+            $('.offer_list_backend').replaceWith(data);
+            $('.offerlist_backend li a').removeClass('active');
             $this.addClass('active');
         });
 

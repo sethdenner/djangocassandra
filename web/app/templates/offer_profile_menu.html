@@ -4,7 +4,7 @@
             <label class="left">
                  <input class="" placeholder="Find offers by keyword" value="" id="search" type="text" onChange="document.links.link.href='/offers/keywords/' +this.value+ '';" />
             </label>
-            <a class="gradient-gray search-deals left" name="link" href="">Search</a>
+            <a class="gradient-gray search-offers left" name="link" href="">Search</a>
         </li>
         <li class="relative All">
             <a {% if not offer.category %}class="active"{% endif %} data-filter="actives" href="/offers/" >All Categories

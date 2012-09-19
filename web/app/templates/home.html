@@ -16,7 +16,7 @@
                        href="/signup/">{{ home_sign_up }}</a>
                 </div>
                 <div class="box-border sig_in sign-in-business">
-                    <a class="button radius-general clear-fix" title="Sign Up &amp; Discover Great Deals"
+                    <a class="button radius-general clear-fix" title="Sign Up &amp; Discover Great Offers"
                        href="/signup/">{{ home_feature }}</a>
                 </div>
                 {% endif %}
@@ -87,7 +87,7 @@
 <div id="content" class="content-home">
     <div class="wrapper">
         <h3 class="txt-center shadow-white divider">
-            <strong><span>{{ home_special_deals }}</span></strong>
+            <strong><span>{{ home_special_offers }}</span></strong>
         </h3>
     </div>
     <div class="wrapper clear-fix">
@@ -128,7 +128,7 @@
                     <p>
                         <a class="txt-size margin-general clear-fix business-link business-buy" title="{{ offer.business.business_name.value }}"
                             href="/{{ offer.business.backend_name }}/" >
-                            {{ deal.business.business_name.value }}
+                            {{ offer.business.business_name.value }}
                         </a>
                     </p>
                     <p class="txt-size clean">

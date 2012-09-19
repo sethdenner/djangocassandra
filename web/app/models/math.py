@@ -14,7 +14,7 @@ class Countable(KnotisModel):
     pub_date = models.DateTimeField('date published')
 
 #class Content.Type(KnotisModel):
-#    deal = models.ForeignKeyNonRel(Deal)
+#    offer = models.ForeignKeyNonRel(Offer)
 #    choice = models.CharField(max_length=200)
 #    clicks = models.IntegerField()
 #    bounces = models.IntegerField()

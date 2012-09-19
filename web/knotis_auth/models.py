@@ -4,7 +4,6 @@ from django.contrib.auth import models
 from django.db.models import Model, CharField, OneToOneField, \
     FloatField, IntegerField, NullBooleanField, Manager
 
-from facebook.views import avatar as facebook_avatar
 from gravatar.views import avatar as gravatar_avatar
 
 from foreignkeynonrel.models import ForeignKeyNonRel
@@ -12,7 +11,7 @@ from app.models.fields.math import MatrixField
 
 
 class AccountTypes:
-    USER = 'normal'
+    USER = 'user'
     BUSINESS_FREE = 'foreverfree'
     BUSINESS_MONTHLY = 'premium'
 
@@ -56,12 +55,12 @@ class UserManager(models.UserManager):
 
         account_type = account_type if business else AccountTypes.USER
 
-        UserProfile.objects.create_profile(
+        user_profile = UserProfile.objects.create_profile(
             new_user,
             account_type
         )
 
-        return new_user, account_type
+        return new_user, user_profile
 
 
 class User(models.User):
@@ -76,18 +75,18 @@ class User(models.User):
     ):
         if super(User, self).check_password(raw_password):
             return True
-        
+
         algorithm, salt, digest = self.password.split('$')
-        
+
         if 'sha1' != algorithm.lower():
             return False
-        
+
         reverse_sha = hashlib.sha1()
         reverse_sha.update(raw_password)
         reverse_sha.update(salt)
-        
-        return digest == unicode(reverse_sha.hexdigest()) 
-    
+
+        return digest == unicode(reverse_sha.hexdigest())
+
     def username_12(self):
         return ''.join([
             self.username[:9],

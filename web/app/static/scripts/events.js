@@ -167,29 +167,24 @@ $(function() {
         var $this = $(this), type = $this.attr('data-type');
 
         if (type == 'user')
-            $("#fb-root").attr('data-sign-up-action', server + "/auth/login/facebook/user");
+            $("#fb-root").attr('data-sign-up-action', server + '/facebook/login/user/');
+
         if (type == 'foreverfree')
-            $("#fb-root").attr('data-sign-up-action', server + "/auth/login/facebook/foreverfree");
+            $("#fb-root").attr('data-sign-up-action', server + '/facebook/login/foreverfree/');
+
         if (type == 'premium')
-            $("#fb-root").attr('data-sign-up-action', server + "/auth/facebook_login/premium");
+            $("#fb-root").attr('data-sign-up-action', server + '/facebook/login/premium/');
 
 
         $('.signup_popup').remove();
-
         $('.log_in_popup').remove();
 
         $.get("/signup/" + type, {},
-
                 function(data) {
-
                     $(".header-content").append(data).fadeIn();
-
                     $("input:text").placeholder();
-
                     $("input:textarea, select, input:radio").uniform();
-
                     $("#newuser").validity(function() {
-
                         $("#email")// The first input:
                                 .require();// Required:
                         $("#password")// The first input:
@@ -199,21 +194,21 @@ $(function() {
 
                 });
 
-
         return false;
+
     });
 
 
     $("#search").keyup(function(event) {
         if (event.keyCode == 13) {
             var string = $("#search").val();
-            window.location = server +"deals/keywords/" + string;
+            window.location = server +"offers/keywords/" + string;
         }
     });
 
     // count characters
 
-    $("#title_deal").charCount({
+    $("#title_offer").charCount({
         allowed: 50,
         warning: 20
     });
@@ -268,10 +263,10 @@ $(function() {
     $("input:checkbox, textarea, select, input:radio").uniform();
 
 
-    // For categories in the deals page
+    // For categories in the offers page
     $('.categories-filter').live('click', function(evt) {
         var $this = $(this),
-            $content = $('.deal-content'),
+            $content = $('.offer-content'),
             href = $content.attr('data-href'),
             query = $content.attr('data-query'),
             business = $content.attr('data-business'),
@@ -296,7 +291,7 @@ $(function() {
                 $('.arrow').remove();
                 $('.' + category + ' a').addClass('active');
                 $('.' + category).append('<div class="arrow arrow-' + category + '"></div>');
-                $('.deal-content').html(data);
+                $('.offer-content').html(data);
             }, 
             href,
             business,
@@ -309,7 +304,7 @@ $(function() {
         );
         $(document).load_offers(
             'load_scroll', 
-            '.deal-content'
+            '.offer-content'
         );
 
         evt.stopPropagation();
@@ -320,9 +315,9 @@ $(function() {
 
 // For nodes maps
 
-    $('.deal-mode-map').live('click', function() {
+    $('.offer-mode-map').live('click', function() {
         var $this = $(this),
-            $content = $('.deal-content'),
+            $content = $('.offer-content'),
             href = '/offers/offer_map/',
             business = $content.attr('data-business'),
             city = $content.attr('data-city'),
@@ -341,7 +336,7 @@ $(function() {
                 status
             ){
                 $(document).load_offers('stop_scroll');
-                $('.deal-content').html(data);
+                $('.offer-content').html(data);
                 $('.mode-map a').addClass('active');
                 $('.mode-list a').removeClass('active');                
             },
@@ -359,29 +354,29 @@ $(function() {
 
     });
 
-    $('#price_deal_input').keyup(function () {
+    $('#price_offer_input').keyup(function () {
 
-        var value = $("#price_deal_input").val();
-        $('#price_deal_radio').replaceWith('<p id="price_deal_radio" class="left label-new price_deal_radio">$' + value + '</p>');
-        $('#price_deal_radio2').replaceWith('<p id="price_deal_radio2" class="left label-new price_deal_radio">$' + value + '</p>');
+        var value = $("#price_offer_input").val();
+        $('#price_offer_radio').replaceWith('<p id="price_offer_radio" class="left label-new price_offer_radio">$' + value + '</p>');
+        $('#price_offer_radio2').replaceWith('<p id="price_offer_radio2" class="left label-new price_offer_radio">$' + value + '</p>');
 
     });
 
-    $('#old_deal_input').keyup(function () {
+    $('#old_offer_input').keyup(function () {
 
-        var value = $("#old_deal_input").val();
-        $('#old_deal_radio').replaceWith('<p id="old_deal_radio" class="left label-new">$' + value + '</p>');
-        $('#old_deal_radio2').replaceWith('<p id="old_deal_radio2" class="left label-new">$' + value + '</p>');
+        var value = $("#old_offer_input").val();
+        $('#old_offer_radio').replaceWith('<p id="old_offer_radio" class="left label-new">$' + value + '</p>');
+        $('#old_offer_radio2').replaceWith('<p id="old_offer_radio2" class="left label-new">$' + value + '</p>');
 
-        var value_new = $("#price_deal_input").val();
+        var value_new = $("#price_offer_input").val();
 
 
     });
 
     var updateDiscount = function(){
-        var value = $("#old_deal_input").val();
+        var value = $("#old_offer_input").val();
 
-        var value_new = $("#price_deal_input").val();
+        var value_new = $("#price_offer_input").val();
 
         var discount = value - value_new;
         
@@ -403,24 +398,24 @@ $(function() {
                 ')');
     };
     
-    $('#price_deal_input').change(updateDiscount).keyup(updateDiscount);
-    $('#old_deal_input').change(updateDiscount).keyup(updateDiscount);
+    $('#price_offer_input').change(updateDiscount).keyup(updateDiscount);
+    $('#old_offer_input').change(updateDiscount).keyup(updateDiscount);
     updateDiscount();
 
-    $('#title_deal_input').keyup(function () {
-        var value = $("#title_deal_input").val();
-        $('#title_deal_radio').replaceWith('<p id="title_deal_radio" class="label-new level clean">' + value + '</p>');
-        $('#title_deal_radio2').replaceWith('<p id="title_deal_radio2" class="left label-new">' + value + '</p>');
-        $('#title_deal_radio3').replaceWith('<p id="title_deal_radio3" class="left label-new">' + value + '</p>');
+    $('#title_offer_input').keyup(function () {
+        var value = $("#title_offer_input").val();
+        $('#title_offer_radio').replaceWith('<p id="title_offer_radio" class="label-new level clean">' + value + '</p>');
+        $('#title_offer_radio2').replaceWith('<p id="title_offer_radio2" class="left label-new">' + value + '</p>');
+        $('#title_offer_radio3').replaceWith('<p id="title_offer_radio3" class="left label-new">' + value + '</p>');
 
-        $('#title_deal_radio3_input').click();
+        $('#title_offer_radio3_input').click();
     }).keydown(function () {
-        $('#title_deal_radio3_input').click();        
+        $('#title_offer_radio3_input').click();        
     });
 
-    $('.deal-mode-list').live('click', function(evt) {
+    $('.offer-mode-list').live('click', function(evt) {
         var $this = $(this),
-            $content = $('.deal-content'),
+            $content = $('.offer-content'),
             href = '/offers/get_newest_offers/',
             query = $content.attr('data-query'),
             business = $content.attr('data-business'),
@@ -440,7 +435,7 @@ $(function() {
             ) {
                 $('.mode-list a').addClass('active');
                 $('.mode-map a').removeClass('active');
-                $('.deal-content').html(data);
+                $('.offer-content').html(data);
             }, 
             href,
             business,
@@ -453,7 +448,7 @@ $(function() {
         );
         $(document).load_offers(
             'load_scroll', 
-            '.deal-content'
+            '.offer-content'
         );
 
         evt.stopPropagation();
@@ -465,8 +460,8 @@ $(function() {
         return false;
     }
     
-    var searchDeals = function(query){
-        var $content = $('.deal-content'),
+    var searchOffers = function(query){
+        var $content = $('.offer-content'),
             href = $content.attr('data-href'), 
             business = $content.attr('data-business'),
             city = $content.attr('data-city'),
@@ -496,19 +491,19 @@ $(function() {
         );
         $(document).load_offers(
             'load_scroll', 
-            '.deal-content'
+            '.offer-content'
         );
     }
 
     $search = $('#search');
 
     $search.live('keyup', function(evt){
-        searchDeals($search.val());
+        searchOffers($search.val());
         return cancelEvent(evt);
     })
 
-    $('.search-deals').live('click', function(evt){
-        searchDeals($search.val());        
+    $('.search-offers').live('click', function(evt){
+        searchOffers($search.val());        
         return cancelEvent(evt);
     })
 
@@ -518,11 +513,11 @@ $(function() {
                 filter = 'actives';
 
 
-        $.post([server + "deals/search_list", idTag].join('/'), {}, function(data) {
+        $.post([server + "offers/search_list", idTag].join('/'), {}, function(data) {
 
             $('.more-results').remove();
             $('.filtering-bar li a').removeClass('active');
-            $('.deal-content').replaceWith(data);
+            $('.offer-content').replaceWith(data);
             $('.relative a').removeClass('active');
             $('.arrow').remove();
 
@@ -552,11 +547,11 @@ $(function() {
         var $this = $(this),
                 filter = $this.attr('data-filter'),
                 offset = $this.attr('data-offset'),
-                cityId = $('.deal-data').attr('data-cityId'),
-                neightbourhoodId = $('.deal-data').attr('data-neightbourhoodId'),
+                cityId = $('.offer-data').attr('data-cityId'),
+                neightbourhoodId = $('.offer-data').attr('data-neightbourhoodId'),
                 id = $this.attr('data-id');
 
-        $.post([server + "deals/deals_list", cityId, neightbourhoodId,filter,id, offset].join('/'), {}, function(data) {
+        $.post([server + "offers/offers_list", cityId, neightbourhoodId,filter,id, offset].join('/'), {}, function(data) {
             $('.more-results').replaceWith(data);
         });
         return false;
@@ -564,13 +559,13 @@ $(function() {
     });
 
 
-    $('.load_more_results_premiumdeals').live('click', function() {
+    $('.load_more_results_premiumoffers').live('click', function() {
         var $this = $(this),
                 offset = $this.attr('data-offset'),
                 cont = $this.attr('data-cont'),
                 id = $this.attr('data-id');
 
-        $.post([server + "backend/deals_premium_list", id, offset, cont].join('/'), {}, function(data) {
+        $.post([server + "backend/offers_premium_list", id, offset, cont].join('/'), {}, function(data) {
             $('.results-' + cont).replaceWith(data);
         });
         return false;
@@ -584,7 +579,7 @@ $(function() {
                 offset = $this.attr('data-offset'),
                 id = $this.attr('data-id');
 
-        $.post([server + "backend/deals_list",filter,id, offset].join('/'), {}, function(data) {
+        $.post([server + "backend/offers_list",filter,id, offset].join('/'), {}, function(data) {
             $('.more-results').replaceWith(data);
         });
         return false;
@@ -592,13 +587,13 @@ $(function() {
     });
 
 
-    $('.deallist_backend li a').live('click', function() {
+    $('.offerlist_backend li a').live('click', function() {
         var $this = $(this),
                 filter = $this.attr('data-filter');
 
         $.get(['/offers/get_offers_by_status', filter, ''].join('/'), {}, function(data) {
-            $('.deal_list_backend').html(data);
-            $('.deallist_backend li a').removeClass('active');
+            $('.offer_list_backend').html(data);
+            $('.offerlist_backend li a').removeClass('active');
             $this.addClass('active');
         });
 
@@ -608,7 +603,7 @@ $(function() {
     $('.filtering-bar li a').live('click', function(evt) {
         var $this = $(this),
             filter = $this.attr('data-filter'),
-            $content = $('.deal-content'),
+            $content = $('.offer-content'),
             query = $content.attr('data-query'),
             business = $content.attr('data-business'),
             city = $content.attr('data-city'),
@@ -633,7 +628,7 @@ $(function() {
                 jqxhr,
                 status 
             ) {
-                $('.deal-content').html(data);
+                $('.offer-content').html(data);
                 $('.filtering-bar li a').removeClass('active');
                 $('.mode-list a').addClass('active');
                 $('.mode-map a').removeClass('active');
@@ -651,7 +646,7 @@ $(function() {
         );
         $(document).load_offers(
             'load_scroll', 
-            '.deal-content'
+            '.offer-content'
         );
 
         evt.stopPropagation();
@@ -663,9 +658,9 @@ $(function() {
     $('#softDeleteClick').live('click', function() {
         var $this = $(this),
             id = $this.attr('data-id');
-        $.post([server + "backend/deletecompleteddeal",id].join('/'), {},
+        $.post([server + "backend/deletecompletedoffer",id].join('/'), {},
                  function(data) {
-                     $('#completedDealsA').click();
+                     $('#completedOffersA').click();
                 });
        return false;
     }); 
@@ -682,7 +677,7 @@ $(function() {
                 'offer_id': id,
                 'active': active
             }, function(data) {
-                $('#currentDealsA').click();
+                $('#currentOffersA').click();
             }
         );
 
@@ -727,13 +722,13 @@ $(function() {
     });
 
 
-    $('.delete-image-deal').live('click', function() {
+    $('.delete-image-offer').live('click', function() {
 
         var $this = $(this),
                 id = $this.attr('data-id'),
                 cont = $this.attr('data-cont');
 
-        $.post([server + "backend/delete_image_deal",id].join('/'), {},
+        $.post([server + "backend/delete_image_offer",id].join('/'), {},
 
                 function(data) {
 
@@ -762,13 +757,13 @@ $(function() {
     });
 
 
-    $('.premium-deal').live('click', function() {
+    $('.premium-offer').live('click', function() {
 
         var $this = $(this),
                 id = $this.attr('data-id'),
                 status = $this.attr('data-status');
 
-        $.post([server + "backend/premium_deal",id,status].join('/'), {},
+        $.post([server + "backend/premium_offer",id,status].join('/'), {},
 
                 function(data) {
 
@@ -833,7 +828,7 @@ $(function() {
                 id = $this.attr('data-id'),
                 status = $this.attr('data-status');
 
-        $.post([server + "backend/playstop_deal",id,status].join('/'), {},
+        $.post([server + "backend/playstop_offer",id,status].join('/'), {},
 
                 function(data) {
 
@@ -857,7 +852,7 @@ $(function() {
     });
 
 
-    $('.paginate-dealOrder').live('click', function() {
+    $('.paginate-offerOrder').live('click', function() {
 
         var $this = $(this);
 
@@ -981,14 +976,14 @@ $(function() {
     });
 
 
-    // For adds tags to the deals in backend
+    // For adds tags to the offers in backend
     $('.add-tags').live('click', function() {
 
         var $this = $(this),
-                idDeal = $('.edit-deal').attr('data-id'),
+                idOffer = $('.edit-offer').attr('data-id'),
                 idTag = $this.attr('data-idtag');
 
-        $.post([server + "backend/addtag",idTag,idDeal].join('/'), {},
+        $.post([server + "backend/addtag",idTag,idOffer].join('/'), {},
 
                 function(data) {
                     $('.tag-list').append(data);
@@ -1000,7 +995,7 @@ $(function() {
 
     });
 
-    // Slider Deals
+    // Slider Offers
 
     $('.slider-rounded').roundabout({
         duration: 550,
@@ -1051,7 +1046,7 @@ $(function() {
                     }
 
                     if (data.redirect == 4) {
-                        window.location = server + "backend/premiumDeals";
+                        window.location = server + "backend/premiumOffers";
 
                     }
                 }
@@ -1069,9 +1064,9 @@ $(function() {
 
     // For validate forms
 
-    $("#update_deal").validity(function() {
+    $("#update_offer").validity(function() {
 
-        $("#deal_address").require();
+        $("#offer_address").require();
 
         $("#startdate").require();
 
@@ -1146,7 +1141,7 @@ $(function() {
     });
 
     // For the create a user form
-    $('#deletedeal').live('submit', function() {
+    $('#deleteoffer').live('submit', function() {
 
 
         $.ajax({
@@ -1157,7 +1152,7 @@ $(function() {
             success: function(data) {
 
                 if (data.success == 'yes') {
-                    $('.deal-' + data.id).fadeOut();
+                    $('.offer-' + data.id).fadeOut();
 
                 }
                 if (data.success == 'no') {
@@ -1228,18 +1223,14 @@ $(function() {
     })
 
     return false;
-})
-        ;
-
-
-
+});
 
     $("#pay").live('change', function() {
         var $this = $(this),
                 value = $this.attr('data-value'),
                 id = $this.attr('data-id');
 
-        $.post([server + "backend/paydeal",id,value].join('/'), {},
+        $.post([server + "backend/payoffer",id,value].join('/'), {},
 
                 function(data) {
 
@@ -1314,8 +1305,11 @@ $(function() {
             if (response.status === "connected") {
                 // For now check to see if link account button exists, if does assume using that otherwise its login
                 var action = $('#fb-root').attr("data-sign-up-action");
-
+                var lock = false;
                 FB.api('/me', function(user) {
+                    if (lock) { return; }
+                    lock = true;
+                    
                     $.post(action, {'data' : { 'response': response, 'user' : user}},
                             function(data) {
                                 if (data.success == 'yes') {
@@ -1325,8 +1319,8 @@ $(function() {
                                     if (data.user == 'foreverfree')
                                         window.location = '/business/profile/';
 
-                                    if (data.user == 'normal')
-                                        window.location.reload(true);
+                                    if (data.user == 'user')
+                                        window.location = '/offers/';
                 
                                 }
                                 if (data.success == 'no') {
@@ -1338,7 +1332,7 @@ $(function() {
                                     window.location.reload(true);
                 
                                 }
-
+                                lock = false;
                             }, 'json'
                         );
                     }
@@ -1362,10 +1356,6 @@ $(function() {
         
         FB.Event.subscribe('auth.authResponseChange', function(response) {
             handleSession(response, true);
-        });
-
-        FB.getLoginStatus(function(response) {
-            handleSession(response, false);
         });
         
         FB.Canvas.setAutoGrow();
@@ -1408,7 +1398,7 @@ var intervalgallery = setInterval("showImg()", 10000);
 
 // End Slider Business
 
-// jquery autocomplete in search deals
+// jquery autocomplete in search offers
 
 
 function lookup_backend(inputString) {
@@ -1433,7 +1423,7 @@ function lookup_frontend(inputString) {
         // Hide the suggestion box.
         $('#suggestions').hide();
     } else {
-        $.post(server + "deals/autocomplete", {queryString: "" + inputString + ""}, function(data) {
+        $.post(server + "offers/autocomplete", {queryString: "" + inputString + ""}, function(data) {
             if (data.length > 0) {
                 $('#suggestions').show();
                 $('#autoSuggestionsList').html(data);

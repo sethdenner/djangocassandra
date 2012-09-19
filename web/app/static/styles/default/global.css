@@ -210,7 +210,7 @@ a:hover {
 }
 
 .button:hover,
-.deals-action a.print:hover {
+.offers-action a.print:hover {
     background: #93ddec;
     background: -moz-linear-gradient(top, #93ddec 0%, #49b8d0 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #93ddec), color-stop(100%, #49b8d0));
@@ -220,7 +220,7 @@ a:hover {
 }
 
 
-ul.list-backend li a.search-deals {
+ul.list-backend li a.search-offers {
     border-radius: 0 5px 5px 0;
     -moz-border-radius: 0 5px 5px 0;
     -webkit-border-radius: 0 5px 5px 0;
@@ -254,30 +254,30 @@ ul.category-list li:before {
 
 	}
 
-/*body:nth-of-type(1) ul.list-backend li a.search-deals {
+/*body:nth-of-type(1) ul.list-backend li a.search-offers {
     padding-bottom:6px;
 }*/
 
 
 
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-	  ul.list-backend li a.search-deals {
+	  ul.list-backend li a.search-offers {
 	    padding-bottom:6px;
 	  }
 }
 
-ul.list-backend li a.search-deals:hover {
+ul.list-backend li a.search-offers:hover {
     color:#444;
     text-decoration:none;
 }
 
 
 
-.deals-action a.print:hover {
+.offers-action a.print:hover {
     color:#fff;
 }
 
-.deals-action div.selector span{
+.offers-action div.selector span{
     width:50px;
 }
 
@@ -871,7 +871,7 @@ STRUCTURE
     padding-top: 20px;
 }
 
-.back-deals {
+.back-offers {
     /*background: url("../../images/layouts/knotis-back.png") repeat;*/
     background:#2ca2b8;
     /*padding-top: 70px;*/
@@ -944,7 +944,7 @@ h3.divider span {
 }
 
 
-.box-deals {
+.box-offers {
     width: 590px; /*620*/
     padding: 21px 21px 26px 21px;
     min-height: 100px;
@@ -978,7 +978,7 @@ h3.divider span {
     z-index: 999;
 }
 
-.deals-image {
+.offers-image {
     width: 80px;
     height: 80px;
     border: 1px solid #bbb;
@@ -989,7 +989,7 @@ h3.divider span {
     margin-right: 10px;
 }
 
-.deals-image-map {
+.offers-image-map {
     width: 80px;
     height: 80px;
     border: 1px solid #bbb;
@@ -1000,12 +1000,12 @@ h3.divider span {
     margin-right: 10px;
 }
 
-.deals-image div {
+.offers-image div {
     right: -10px;
     top: 50px;
 }
 
-.deals-txt {
+.offers-txt {
     width: 60%;
 }
 
@@ -1013,7 +1013,7 @@ h3.divider span {
     
 }
 
-.deals-txt-dash {
+.offers-txt-dash {
     width: 360px;
 }
 
@@ -1023,15 +1023,15 @@ h3.divider span {
 
 }
 
-.deals-action {
+.offers-action {
     width: 100px;
 }
 
-.deals-action-dash {
+.offers-action-dash {
     width: 239px;
 }
 
-.deals-action-top {
+.offers-action-top {
     height: 58px;
     background: #acca2c;
     border: 1px solid #96af2b;
@@ -1048,10 +1048,10 @@ h3.divider span {
     width: 100%;
     left: 0;
     bottom: -7px;
-    background: url("../../images/layouts/knotis-arrow-deals.png") no-repeat center center;
+    background: url("../../images/layouts/knotis-arrow-offers.png") no-repeat center center;
 }
 
-.deals-action-top em {
+.offers-action-top em {
     font-size: 2.2em;
     text-shadow: 0 -1px 0 #517937;
 }
@@ -1122,7 +1122,7 @@ p.button-lead span {
 	
 }
 
-.follow-deal a {
+.follow-offer a {
 
     color:#fff;
     padding: 4px 10px;
@@ -1156,13 +1156,13 @@ p.button-lead span {
     top:-31px;
 }
 
-.follow-deal a:hover {
+.follow-offer a:hover {
      box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
     -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
     -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
 }
 
-.txt-deal-follow {
+.txt-offer-follow {
     width:260px;
     font-size:1.1em;
     color:#737373;
@@ -1277,56 +1277,56 @@ label.left-side {
   page-break-after: always;
 }
 
-.print-unredeemed-deals .print-div {
+.print-unredeemed-offers .print-div {
   text-align: right;
 }
 
-.print-unredeemed-deals a{
+.print-unredeemed-offers a{
   text-decoration: underline;
   font-size: 1.6em;
   padding: 0 0 10px;
 }
 
-.print-unredeemed-deals h1 {
+.print-unredeemed-offers h1 {
     font-size: 2.5em;
     margin: 0 0 10px;
 }
 
-.print-unredeemed-deals h2 {
+.print-unredeemed-offers h2 {
     border: 0 none !important;
     padding: 0 0 10px !important;  
 }
 
-.print-unredeemed-deals strong {
+.print-unredeemed-offers strong {
     font-size: 1.8em;
     padding: 0 0 5px;
 }
 
-.print-unredeemed-deals p {
+.print-unredeemed-offers p {
     font-size: 1.5em;
     padding: 0 0 10px;  
 }
 
-.print-unredeemed-deals table {
+.print-unredeemed-offers table {
     font-size: 1.6em;
     width: 100%; 
 }
 
-.print-unredeemed-deals tr {
+.print-unredeemed-offers tr {
   border: 1px solid;
 }
 
-.print-unredeemed-deals th {
+.print-unredeemed-offers th {
     border: 1px solid;
     font-weight: bold;
     padding: 4px; 
 }
 
-.print-unredeemed-deals td {
+.print-unredeemed-offers td {
     padding: 4px;
 }
 
-.print-unredeemed-deals td.initials {
+.print-unredeemed-offers td.initials {
   border: 1px solid;  
 }
 
@@ -1365,12 +1365,12 @@ label.left-side {
     -webkit-border-radius: 0 0 5px 5px;
 }
 
-.deal-profile-left {
+.offer-profile-left {
     width:200px;
     float:left;
 }
 
-.deal-profile-left div.content-map {
+.offer-profile-left div.content-map {
     width:auto;
     margin-right:0px;
     height:130px;
@@ -1409,20 +1409,20 @@ label.left-side {
 }
 
 
-.deal-profile-left .image{
+.offer-profile-left .image{
     margin-bottom:15px;
     height:200px;
     width:198px;
 }
 
-.deal-profile-left .map{
+.offer-profile-left .map{
     width: 190px;
     height:122px;
-    background: url("../../images/layouts/knotis-deal-map.jpg") no-repeat center center #7ab453;
+    background: url("../../images/layouts/knotis-offer-map.jpg") no-repeat center center #7ab453;
     margin:4px 0 0 4px;
 }
 
-.deal-profile-right {
+.offer-profile-right {
     width:355px;
     float:right;
     overflow:hidden;
@@ -1441,12 +1441,12 @@ label.left-side {
 
 
 
-.button-deals-profile {
+.button-offers-profile {
     width:120px;
     margin-top:10px;
 }
 
-.button-deals-profile a {
+.button-offers-profile a {
     padding:10px 20px;
     display:block;
     font-size:1.9em;
@@ -1515,7 +1515,7 @@ label.left-side {
     margin-bottom:15px;
 }
 
-ul.deal-buy li span.padd {
+ul.offer-buy li span.padd {
     padding-top:5px;
     display:block;
 
@@ -1529,7 +1529,7 @@ ul.deal-buy li span.padd {
     -webkit-border-radius: 0 0 5px 5px;
 }
 
-.buy-deal div label span {
+.buy-offer div label span {
     margin-bottom:5px;
 }
 
@@ -1601,7 +1601,7 @@ ul.deal-buy li span.padd {
     right:395px;
 }
 
-.deals-image .expired {
+.offers-image .expired {
     width:108px;
     height:64px;
     left:-4px;
@@ -1609,7 +1609,7 @@ ul.deal-buy li span.padd {
     background: url("../../images/layouts/expired.png") no-repeat;
 }
 
-.deals-image .active {
+.offers-image .active {
     width:110px;
     height:67px;
     left:-6px;
@@ -1617,7 +1617,7 @@ ul.deal-buy li span.padd {
     background: url("../../images/layouts/ribbon-active.png") no-repeat;
 }
 
-.deals-image .expired {
+.offers-image .expired {
     width:108px;
     height:64px;
     left:-6px;
@@ -1625,7 +1625,7 @@ ul.deal-buy li span.padd {
     background: url("../../images/layouts/ribbon-expired.png") no-repeat;
 }
 
-.deals-image .exhausted {
+.offers-image .exhausted {
     width:108px;
     height:64px;
     left:-6px;
@@ -1634,7 +1634,7 @@ ul.deal-buy li span.padd {
 }
 
 
-.deal-location {
+.offer-location {
     border: 1px solid #bbb;
     background: #eee;
     box-shadow: 1px 1px 2px #c5c5c5 inset;
@@ -1782,19 +1782,19 @@ p.conditions a {
     margin-left:10px;
 }
 
-.seat-deal {
+.seat-offer {
     width: 465px;
     float: left;
     background: #eee;
 	margin-bottom: 10px;
 }
 
-.seat-deal-column {
+.seat-offer-column {
 	float: left;
 	width: 26%;
 }
 
-.seat-deal-column label {
+.seat-offer-column label {
 	font-weight: bold;
 	font-size: 1.2em;
 	display: inline-block;
@@ -1802,28 +1802,28 @@ p.conditions a {
 	text-shadow: 0 1px 0 rgba(255,255,255,1.0);
 }
 
-.seat-deal-column input[type=text] {
+.seat-offer-column input[type=text] {
 	width: 75% !important;
 	margin: 0 8px 8px !important;
 }
 
-.seat-deal-column .discount_val {
+.seat-offer-column .discount_val {
 	font-size: 1.1em;
 	display: inline-block;
 	padding: 3px 0 0 10px;
 	width: 220px;
 }
 
-.seat-deal-column .discount_error {
+.seat-offer-column .discount_error {
   color: red !important;
   font-weight: bold !important;
 }
 
-.seat-deal-row {
+.seat-offer-row {
 	clear: both;
 }
 
-.seat-deal-row .checker {
+.seat-offer-row .checker {
 	margin: -3px 3px 10px 8px;
 }
 
@@ -1844,28 +1844,28 @@ p.conditions a {
 	margin: 0 0 15px 80px;
 }
 
-.seat-deal ul li {
+.seat-offer ul li {
     float:left;
     width:25%;
     background: #E5E5E5;
     font-size:13px;
 }
 
-.seat-deal ul li span {
+.seat-offer ul li span {
     display:block;
     padding:10px;
 }
 
-.seat-deal ul.value li {
+.seat-offer ul.value li {
     background:#fff;
 }
 
-.seat-deal ul.value li input {
+.seat-offer ul.value li input {
     width:40px;
     margin-bottom:0;
 }
 
-.seat-deal ul.value li input.first{
+.seat-offer ul.value li input.first{
     width:70px;
 }
 
@@ -1875,7 +1875,7 @@ p.conditions a {
     padding-left:8px;
 }
 
-.deals-image .ribbon-backend {
+.offers-image .ribbon-backend {
     width:49px;
     height:50px;
     position:absolute;
@@ -1885,7 +1885,7 @@ p.conditions a {
     top:-3px;
 }
 
-.deals-image .ribbon-backend-inactive {
+.offers-image .ribbon-backend-inactive {
     width:49px;
     height:50px;
     position:absolute;
@@ -1895,7 +1895,7 @@ p.conditions a {
     top:-3px;
 }
 
-.deals-image .ribbon-backend-exhausted {
+.offers-image .ribbon-backend-exhausted {
     width:49px;
     height:50px;
     position:absolute;
@@ -1905,7 +1905,7 @@ p.conditions a {
     top:-3px;
 }
 
-.deals-image .ribbon-backend-expired {
+.offers-image .ribbon-backend-expired {
     width:49px;
     height:50px;
     position:absolute;
@@ -1915,7 +1915,7 @@ p.conditions a {
     top:-3px;
 }
 
-.search-deals-back {
+.search-offers-back {
     padding:20px 0 10px 20px;
     background: #F0F0F0;
     box-shadow:0px 0px 3px rgba(0, 0, 0, 0.3);
@@ -1924,7 +1924,7 @@ p.conditions a {
     margin-bottom:25px;
 }
 
-.search-deals-back:hover {
+.search-offers-back:hover {
     box-shadow:0px 0px 3px rgba(0, 0, 0, 0.5);
     -moz-box-shadow:0px 0px 3px rgba(0, 0, 0, 0.5);
     -webkit-box-shadow:0px 0px 3px rgba(0, 0, 0, 0.5);
@@ -2007,14 +2007,14 @@ h4.circle {
     margin-bottom: 8px;
 }
 
-.deals-action-top p {
+.offers-action-top p {
     text-transform: uppercase;
     color: #697a1e;
     margin-top: 10px;
     font-size: 1.1em;
 }
 
-.deals-action-bottom p {
+.offers-action-bottom p {
     font-size: 1.3em;
     padding-top: 8px;
 }
@@ -2056,7 +2056,7 @@ h2.ko {
     color:#6f6f6f;
 
 }
-.deal-profile-right ul.number li p {
+.offer-profile-right ul.number li p {
     font-size:2.0em;
     font-weight:bold;
     color:#444;
@@ -2187,8 +2187,8 @@ p.privacy a {
 #B3B3B3
 
 
-p.deals-business {
-    background: url("../../images/layouts/knotis-icon-deals-back.png") no-repeat left center;
+p.offers-business {
+    background: url("../../images/layouts/knotis-icon-offers-back.png") no-repeat left center;
     padding-left:27px;
 }
 
@@ -2225,7 +2225,7 @@ p.txt-premium {
 
 }
 
-.deal-profile-right h4 {
+.offer-profile-right h4 {
     font-size:18px;
     color:#8d8d8d;
     font-weight:bold;
@@ -2351,7 +2351,7 @@ a.signup {
 
 
 
-.deals-action a {
+.offers-action a {
     height: 24px;
     border-bottom: 1px solid #bbb;
     border-left: 1px solid #bbb;
@@ -2363,7 +2363,7 @@ a.signup {
     font-weight: bold;
 }
 
-.deals-action a.print {
+.offers-action a.print {
     display:block;
     border-radius: 5px;
     -moz-border-radius: 5px;
@@ -2377,13 +2377,13 @@ a.signup {
     padding:4px 0;
 }
 
-.deals-action a.redem {
+.offers-action a.redem {
     font-size:14px;
     padding:6px 0;
 }
 
 
-.deals-action a.play {
+.offers-action a.play {
     height:15px;
     display:block;
     background: url("../../images/layouts/knotis-play.png") no-repeat center center #B5D334;
@@ -2406,17 +2406,17 @@ a.link-search {
     font-size:14px;
 }
 
-.deals-action a.play:hover {
+.offers-action a.play:hover {
     background: url("../../images/layouts/knotis-play.png") no-repeat center center #cae829;
     cursor:pointer;
 }
 
-.deals-action a.pause:hover {
+.offers-action a.pause:hover {
     background: url("../../images/layouts/knotis-pause.png") no-repeat center center #c92f2f;
     cursor:pointer;
 }
 
-.deals-action a.pause {
+.offers-action a.pause {
     background: url("../../images/layouts/knotis-pause.png") no-repeat center center #b62929;
     height:15px;
     display:block;
@@ -2430,7 +2430,7 @@ a.link-search {
     -webkit-border-radius: 5px;
 }
 
-.deals-action a:hover,
+.offers-action a:hover,
 a.button-lead:hover,
 .view-mode li a:hover {
     color: #000;
@@ -2443,7 +2443,7 @@ a.button-lead:hover,
 }
 
 
-.deals-action a:active,
+.offers-action a:active,
 a.button-lead:active,
 .view-mode li a:active {
     box-shadows: 0 0px 5px #999 inset;
@@ -2459,14 +2459,14 @@ a.button-lead:active,
 
 
 
-.deals-txt a,
+.offers-txt a,
 .business-buy{
     background: url("../../images/layouts/knotis-icon-location.png") no-repeat scroll left 2px;
     margin-top: 5px;
     padding-left: 23px;
 }
 
-.deals-txt h5 a {
+.offers-txt h5 a {
     background:none;
     padding-left:0;
     padding-left:0;
@@ -2475,13 +2475,13 @@ a.button-lead:active,
     
 }
 
-.deals-txt a.business {
+.offers-txt a.business {
     background: url("../../images/layouts/knotis-icon-business-back.png") no-repeat scroll left 0;
     padding-left:21px;
     text-decoration:none;
 }
 
-.slider .deals-txt a {
+.slider .offers-txt a {
     /*padding-bottom: 10px;
     border-bottom: 1px solid #e5e5e5;*/
 }
@@ -2696,8 +2696,8 @@ ul.list-backend li a.cities-active {
     background: url("../../images/layouts/knotis-icon-cities-active.png") no-repeat 12px 7px #acca2c;
 }
 
-ul.list-backend li a.deals {
-    background: url("../../images/layouts/knotis-icon-deals.png") no-repeat 11px 11px;
+ul.list-backend li a.offers {
+    background: url("../../images/layouts/knotis-icon-offers.png") no-repeat 11px 11px;
 }
 
 ul.list-backend li a.add {
@@ -2755,16 +2755,16 @@ ul.list-backend li a.add-ticket{
     background: url("../../images/layouts/icon_ticket.png") no-repeat 11px 8px #dc5902;
 }
 
-ul.list-backend li a.deals-active {
-    background: url("../../images/layouts/knotis-icon-deals-active.png") no-repeat 11px 11px #7ab453;
+ul.list-backend li a.offers-active {
+    background: url("../../images/layouts/knotis-icon-offers-active.png") no-repeat 11px 11px #7ab453;
 }
 
-ul.list-backend li a.deals02-active {
-    background: url("../../images/layouts/knotis-icon-deals-back-active.png") no-repeat 11px 11px #ACCA2C;
+ul.list-backend li a.offers02-active {
+    background: url("../../images/layouts/knotis-icon-offers-back-active.png") no-repeat 11px 11px #ACCA2C;
 }
 
-ul.list-backend li a.deals02 {
-    background: url("../../images/layouts/knotis-icon-deals-back.png") no-repeat 11px 11px;
+ul.list-backend li a.offers02 {
+    background: url("../../images/layouts/knotis-icon-offers-back.png") no-repeat 11px 11px;
 }
 
 ul.list-backend li a.happy {
@@ -2789,12 +2789,12 @@ ul.list-backend li a.events-active {
     background: url("../../images/layouts/knotis-icon-events-back-active.png") no-repeat 11px 7px #7ab453;
 }
 
-/* Menu list deal  */
+/* Menu list offer  */
 
 ul.list-backend li a span { display:block;}
 
 ul.list-backend .All a  {
-    background: url("../../images/layouts/deals-all.png") no-repeat 15px 11px;
+    background: url("../../images/layouts/offers-all.png") no-repeat 15px 11px;
 }
 
 ul.list-backend .All a.active  {
@@ -2806,7 +2806,7 @@ ul.list-backend .All a.active  {
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #464646 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-all-active.png") no-repeat 15px 11px #1b1b1b;
+    background: url("../../images/layouts/offers-all-active.png") no-repeat 15px 11px #1b1b1b;
 }
 
 
@@ -2814,7 +2814,7 @@ ul.list-backend .All a.active  {
 
 
 ul.list-backend .Nig a {
-    background: url("../../images/layouts/deals-nig.png") no-repeat 17px 8px;
+    background: url("../../images/layouts/offers-nig.png") no-repeat 17px 8px;
 }
 
 ul.list-backend .Nig a.active {
@@ -2826,12 +2826,12 @@ ul.list-backend .Nig a.active {
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #66b5d2 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-nig-active.png") no-repeat 16px 8px #43a4c8;
+    background: url("../../images/layouts/offers-nig-active.png") no-repeat 16px 8px #43a4c8;
 }
 
 
 ul.list-backend .Foo a {
-    background: url("../../images/layouts/deals-foo.png") no-repeat 14px 8px;
+    background: url("../../images/layouts/offers-foo.png") no-repeat 14px 8px;
 }
 
 ul.list-backend .Foo a.active{
@@ -2843,13 +2843,13 @@ ul.list-backend .Foo a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #ba59cc inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-foo-active.png") no-repeat 14px 8px #aa33c0;
+    background: url("../../images/layouts/offers-foo-active.png") no-repeat 14px 8px #aa33c0;
 
 }
 
 
 ul.list-backend .Hea a {
-    background: url("../../images/layouts/deals-hea.png") no-repeat 11px 12px;
+    background: url("../../images/layouts/offers-hea.png") no-repeat 11px 12px;
 }
 
 ul.list-backend .Hea a.active{
@@ -2861,12 +2861,12 @@ ul.list-backend .Hea a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #e9813d inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-hea-active.png") no-repeat 12px 12px #dc5902;
+    background: url("../../images/layouts/offers-hea-active.png") no-repeat 12px 12px #dc5902;
 }
 
 
 ul.list-backend .Hom a {
-    background: url("../../images/layouts/deals-hom.png") no-repeat 12px 10px;
+    background: url("../../images/layouts/offers-hom.png") no-repeat 12px 10px;
 }
 
 ul.list-backend .Hom a.active{
@@ -2878,11 +2878,11 @@ ul.list-backend .Hom a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #8dc75d inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-hom-active.png") no-repeat 13px 10px #72ba37;
+    background: url("../../images/layouts/offers-hom-active.png") no-repeat 13px 10px #72ba37;
 }
 
 ul.list-backend .Tra a {
-    background: url("../../images/layouts/deals-tra.png") no-repeat 12px 10px;
+    background: url("../../images/layouts/offers-tra.png") no-repeat 12px 10px;
 }
 
 ul.list-backend .Tra a.active{
@@ -2894,13 +2894,13 @@ ul.list-backend .Tra a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #d5d172 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-tra-active.png") no-repeat 13px 10px #bcb840;
+    background: url("../../images/layouts/offers-tra-active.png") no-repeat 13px 10px #bcb840;
 }
 
 
 
 ul.list-backend .Art a {
-    background: url("../../images/layouts/deals-art.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/offers-art.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Art a.active{
@@ -2912,12 +2912,12 @@ ul.list-backend .Art a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #7964d2 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-art-active.png") no-repeat 13px 10px #482fb5;
+    background: url("../../images/layouts/offers-art-active.png") no-repeat 13px 10px #482fb5;
 }
 
 
 ul.list-backend .Aut a {
-    background: url("../../images/layouts/deals-aut.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/offers-aut.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Aut a.active{
@@ -2929,11 +2929,11 @@ ul.list-backend .Aut a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #90adda inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-aut-active.png") no-repeat 13px 10px #4376c3;
+    background: url("../../images/layouts/offers-aut-active.png") no-repeat 13px 10px #4376c3;
 }
 
 ul.list-backend .Bea a {
-    background: url("../../images/layouts/deals-bea.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/offers-bea.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Bea a.active{
@@ -2946,11 +2946,11 @@ ul.list-backend .Bea a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #e16e9f inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-bea-active.png") no-repeat 13px 10px #d6377b;
+    background: url("../../images/layouts/offers-bea-active.png") no-repeat 13px 10px #d6377b;
 }
 
 ul.list-backend .Edu a {
-    background: url("../../images/layouts/deals-edu.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/offers-edu.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Edu a.active{
@@ -2962,11 +2962,11 @@ ul.list-backend .Edu a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #ebbe84 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-edu-active.png") no-repeat 13px 10px #df9638;
+    background: url("../../images/layouts/offers-edu-active.png") no-repeat 13px 10px #df9638;
 }
 
 ul.list-backend .Fin a {
-    background: url("../../images/layouts/deals-fin.png") no-repeat 15px 10px;
+    background: url("../../images/layouts/offers-fin.png") no-repeat 15px 10px;
 }
 
 ul.list-backend .Fin a.active{
@@ -2977,11 +2977,11 @@ ul.list-backend .Fin a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #dbd39d inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-fin-active.png") no-repeat 15px 10px #dfc513;
+    background: url("../../images/layouts/offers-fin-active.png") no-repeat 15px 10px #dfc513;
 }
 
 ul.list-backend .Leg a {
-    background: url("../../images/layouts/deals-leg.png") no-repeat 12px 10px;
+    background: url("../../images/layouts/offers-leg.png") no-repeat 12px 10px;
 }
 
 ul.list-backend .Leg a.active{
@@ -2993,11 +2993,11 @@ ul.list-backend .Leg a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #d39871 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-leg-active.png") no-repeat 13px 10px #ad5418;
+    background: url("../../images/layouts/offers-leg-active.png") no-repeat 13px 10px #ad5418;
 }
 
 ul.list-backend .Pet a {
-    background: url("../../images/layouts/deals-pet.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/offers-pet.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Pet a.active{
@@ -3009,11 +3009,11 @@ ul.list-backend .Pet a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #77cf8a inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-pet-active.png") no-repeat 13px 10px #1aa738;
+    background: url("../../images/layouts/offers-pet-active.png") no-repeat 13px 10px #1aa738;
 }
 
 ul.list-backend .Pro a {
-    background: url("../../images/layouts/deals-pro.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/offers-pro.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Pro a.active{
@@ -3025,11 +3025,11 @@ ul.list-backend .Pro a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #dd6851 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-pro-active.png") no-repeat 13px 10px #cf2807;
+    background: url("../../images/layouts/offers-pro-active.png") no-repeat 13px 10px #cf2807;
 }
 
 ul.list-backend .Pub a {
-    background: url("../../images/layouts/deals-pub.png") no-repeat 12px 10px;
+    background: url("../../images/layouts/offers-pub.png") no-repeat 12px 10px;
 }
 
 ul.list-backend .Pub a.active{
@@ -3041,11 +3041,11 @@ ul.list-backend .Pub a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #81e7e6 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-pub-active.png") no-repeat 13px 10px #07cfcd;
+    background: url("../../images/layouts/offers-pub-active.png") no-repeat 13px 10px #07cfcd;
 }
 
 ul.list-backend .Rea a {
-    background: url("../../images/layouts/deals-rea.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/offers-rea.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Rea a.active{
@@ -3057,11 +3057,11 @@ ul.list-backend .Rea a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #80c8b1 inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-rea-active.png") no-repeat 13px 10px #17926b;
+    background: url("../../images/layouts/offers-rea-active.png") no-repeat 13px 10px #17926b;
 }
 
 ul.list-backend .Res a {
-    background: url("../../images/layouts/deals-res.png") no-repeat 13px 10px;
+    background: url("../../images/layouts/offers-res.png") no-repeat 13px 10px;
 }
 
 ul.list-backend .Res a.active{
@@ -3073,11 +3073,11 @@ ul.list-backend .Res a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #d17a8f inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-res-active.png") no-repeat 13px 10px #ad1136;
+    background: url("../../images/layouts/offers-res-active.png") no-repeat 13px 10px #ad1136;
 }
 
 ul.list-backend .Sho a {
-    background: url("../../images/layouts/deals-sho.png") no-repeat 15px 10px;
+    background: url("../../images/layouts/offers-sho.png") no-repeat 15px 10px;
 }
 
 ul.list-backend .Sho a.active{
@@ -3089,10 +3089,10 @@ ul.list-backend .Sho a.active{
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2), 1px 1px 0 #f471bf inset;
     text-decoration:none;
     text-shadow: 0 -1px 0 #517937;
-    background: url("../../images/layouts/deals-sho-active.png") no-repeat 12px 10px #ec008c;
+    background: url("../../images/layouts/offers-sho-active.png") no-repeat 12px 10px #ec008c;
 }
 
-/* Arrow deals */
+/* Arrow offers */
 
 ul.list-backend li .arrow {
     width:11px;
@@ -3232,17 +3232,17 @@ ul.date-dash li {
 }
 
 
-.premiumdeals_filter  {
+.premiumoffers_filter  {
     background: url("../../images/layouts/knotis-pixel.png") repeat-x left bottom;
 }
 
-.premiumdeals_filter  li {
+.premiumoffers_filter  li {
     float:left;
     font-size:1.2em;
     margin-right:2px;
 }
 
-.premiumdeals_filter  li a {
+.premiumoffers_filter  li a {
     border:1px solid #E5E5E5;
     float:left;
     font-size:1.0em;
@@ -3251,7 +3251,7 @@ ul.date-dash li {
     background:#f3f3f3;
 }
 
-.premiumdeals_filter  li a.active {
+.premiumoffers_filter  li a.active {
     border-bottom:1px solid #fff;
     background:#fff;
     color:#444;
@@ -3294,14 +3294,14 @@ a.stop_status{
 
 
 .link-name a.principal,
-p.deals-business a.premium-deal{
+p.offers-business a.premium-offer{
     margin-right:5px;
     background:#2d7bc4;
 }
 
 
 .link-name a.principal.active,
-p.deals-business a.active {
+p.offers-business a.active {
     background:#959494;
     text-decoration: line-through;
 }
@@ -3344,7 +3344,7 @@ ul.title li {
     color:#6e6e6e;
 }
 
-li.deal{
+li.offer{
     width:297px;
     border-right: 1px solid #fff;
     color:#6E6E6E;
@@ -3359,15 +3359,15 @@ li.quantity-print:last-child{
     border-right:0;
 }
 
-ul.deal-buy {
+ul.offer-buy {
     border-bottom:1px dotted #E5E5E5;
 }
 
-ul.deal-buy:last-child {
+ul.offer-buy:last-child {
     border-bottom:0;
 }
 
-ul.deal-buy li {
+ul.offer-buy li {
     float:left;
     padding: 10px;
     font-size:1.5em;
@@ -3427,7 +3427,7 @@ ul.paginate-dash li a.active {
     -webkit-box-shadow: none;
 }
 
-ul.date-deals li {
+ul.date-offers li {
      background: url("../../images/layouts/circle.png") no-repeat left 3px;
     padding-left:18px;
     margin-bottom:5px;
@@ -3592,8 +3592,8 @@ ul.account li h3 {
 ul.account li h3.business-profile {
     background: url("../../images/layouts/business-pro.png") no-repeat;
 }
-ul.account li h3.deals-profile {
-    background: url("../../images/layouts/deals-profile.png") no-repeat;
+ul.account li h3.offers-profile {
+    background: url("../../images/layouts/offers-profile.png") no-repeat;
 }
 ul.account li h3.social-profile {
      background: url("../../images/layouts/social-pro.png") no-repeat 1px 3px;
@@ -3674,11 +3674,11 @@ li.categoryselect div.selector select {
 
 /* content */
 
-.deals-image img {
+.offers-image img {
     margin: 4px 0 0 4px;
 }
 
-.deals-image a {
+.offers-image a {
     text-decoration:none;
 }
 
@@ -3700,7 +3700,7 @@ li.categoryselect div.selector select {
 .twitter-content img,
 .yelp-content img {width:32px;}
 
-.deal-image-profile  {}
+.offer-image-profile  {}
 
 
 /* footer */
@@ -3823,7 +3823,7 @@ li.categoryselect div.selector select {
 
 
 
-/* Filtering bar for deals list */
+/* Filtering bar for offers list */
 .filtering-bar-dash { /* necessary? */
 	width: auto;
 }
@@ -3931,7 +3931,7 @@ li.categoryselect div.selector select {
 .paginate ul li.knotis-slider-right {
     background: url("../../images/layouts/knotis-slider-right.png") no-repeat center center;
 }
-/* override dot pagination for deals page */
+/* override dot pagination for offers page */
 .curve .paginate {
 	background: none;
 	position: relative;
@@ -3948,19 +3948,19 @@ li.search {
     -webkit-border-radius: 5px 5px 0 0;
 }
 
-.deal-profile-right ul.number {
+.offer-profile-right ul.number {
     background:#e8f5b1;
     padding:5px 0;
     border: 1px solid #c6d784;
 }
-.deal-profile-right ul.number li {
+.offer-profile-right ul.number li {
     float: left;
     text-align:center;
     padding: 0 20px;
     border-left:1px solid #c6d784;
 }
 
-.deal-profile-right ul.number li:first-child {
+.offer-profile-right ul.number li:first-child {
     border-left:0;
 }
 
@@ -3986,14 +3986,14 @@ li.search {
     margin-top: 3px;
 }
 
-ul.social.deal-helper {
+ul.social.offer-helper {
 	text-align: center;
 	margin-bottom: 20px;
 	border-top: 0;
 	margin-top: -15px;
 }
 
-ul.social.deal-helper li {
+ul.social.offer-helper li {
 	float: none;
 	display: inline-block;
 	margin: 0 10px;
@@ -4001,7 +4001,7 @@ ul.social.deal-helper li {
 	padding: 0;
 }
 
-ul.social.deal-helper li.mail {
+ul.social.offer-helper li.mail {
 	padding-left: 30px;
 	background-position: 0 0;
 	position: relative;
@@ -4009,7 +4009,7 @@ ul.social.deal-helper li.mail {
 	padding-top: 1px;
 }
 
-ul.social li.deal-social-helper {
+ul.social li.offer-social-helper {
 	color: #777;
 	float: none;
 	display: block;
@@ -4022,7 +4022,7 @@ ul.social li.deal-social-helper {
     margin-right:5px;
 }
 
-.seat-deal-02 {
+.seat-offer-02 {
     border: none;
     padding-bottom: 0px;
 	line-height: 1em;
@@ -4040,11 +4040,11 @@ ul.social li.deal-social-helper {
 
 
 
-.deal-profile-right ul.social li:first-child {
+.offer-profile-right ul.social li:first-child {
     padding-left:0px;
 }
 
-.deal-profile-right ul.social li:last-child {
+.offer-profile-right ul.social li:last-child {
     border-right:0px;
 }
 
@@ -4260,9 +4260,9 @@ input[type='password'],
 li.search input[type='text'],
 textarea,
 .contact input[type='text'],
-.buy-deal input[type='text'],
+.buy-offer input[type='text'],
 .premium input[type='text'],
-.search-deals-back input[type='text']{
+.search-offers-back input[type='text']{
     border: 1px solid #bbb;
     margin-bottom: 13px;
     padding-left: 6px;
@@ -4299,16 +4299,16 @@ textarea.extendedDescription {
 
 .backend-setting input[type='text'],
 .backend-setting textarea,
-.buy-deal input[type='text']{
+.buy-offer input[type='text']{
     width:450px;
 }
 
-.box-deals input[type='text'],
+.box-offers input[type='text'],
 .search input[type='text'],
 .back-login input[type='text'],
 .backend-setting textarea,
 input[type='password'],
-.search-deals-back input[type='text']{
+.search-offers-back input[type='text']{
     font-size:15px;
 }
 
@@ -4320,7 +4320,7 @@ input[type='password'],
     margin-left: 10px;
 }
 
-.search-deals-back input[type="text"] {
+.search-offers-back input[type="text"] {
     width:400px;
 }
 
@@ -4391,7 +4391,7 @@ li.search input[type='submit']{
     font-weight:bold;
 }
 
-form.search-deals input[type='text'],
+form.search-offers input[type='text'],
 li.search input[type="text"]{
     border-radius: 5px 0 0 5px;
     -moz-border-radius: 5px 0 0 5px;

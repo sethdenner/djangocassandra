@@ -1,29 +1,29 @@
 {% extends 'master.html' %}
 
-{% block title %}Knotis - Deals{% endblock title %}
+{% block title %}Knotis - Offers{% endblock title %}
 
 {% block content %}
-<div id="content" class="back-deals">
+<div id="content" class="back-offers">
     <div class="curve">
         <div class="wrapper relative content-slide">
             {% include 'offers_premium.html' with offers=offers_premium %}
         </div>
         <div class="wrapper clear-fix">
-            <div class="box-deals box-border left relative">
+            <div class="box-offers box-border left relative">
                 <div class="clear-fix">
                     <ul class="filtering-bar clear-fix left">
-                        <li class="txt-size"><a class="active" href="#" data-filter="newest">New deals</a></li>
+                        <li class="txt-size"><a class="active" href="#" data-filter="newest">New offers</a></li>
                         <li class="txt-size"><a href="#" data-filter="popular">Popular</a></li>
                         <li class="txt-size"><a href="#" data-filter="expiring">Expiring</a></li>
                     </ul>
                     <ul class="view-mode clear-fix right">
                         <li class="mode-list">
-                            <a class=" gradient-gray active deal-mode-list" href="#">
+                            <a class=" gradient-gray active offer-mode-list" href="#">
                                 <img alt="" src="{{ STATIC_URL }}images/layouts/knotis-mode-list.png">
                             </a>
                         </li>
                         <li class="mode-map">
-                            <a class=" gradient-gray deal-mode-map" href="#">
+                            <a class=" gradient-gray offer-mode-map" href="#">
                                 
                                 <img alt="" src="{{ STATIC_URL }}images/layouts/knotis-mode-map.png">
                             </a>
@@ -32,7 +32,7 @@
                 </div>
                 <div id="ajaxBusy" class="absolute"><img src="{{ STATIC_URL }}/images/ajaxloading.gif" title="Loading" alt="loading"/> </div>
                 <div 
-                    class="deal-content" 
+                    class="offer-content" 
                     data-href="{{ load_offers_href }}" 
                     data-query="{{ load_offers_query }}"
                     data-business="{{ load_offers_business }}"
@@ -46,7 +46,7 @@
             </div>
             <div class="box-border colum-width right {% if user_profile.notify_offers %}hide{% else %}notify{% endif %}">
                 <a class=" button clear-fix txt-center radius-general button-receive{% if not user %} log_in{% endif %}" href="#">
-                    <span>Receive new deals via email</span>
+                    <span>Receive new offers via email</span>
                 </a>
             </div>
             {% include 'offers_menu.html' with categories=categories %}

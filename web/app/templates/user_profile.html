@@ -3,13 +3,13 @@
 {% block title %}Knotis - User Profile{% endblock title %}
 
 {% block content %}
-<div id="content" class="back-deals">
+<div id="content" class="back-offers">
     <div class="curve">
         <div class="wrapper clear-fix relative">
             {% include 'account_notifications.html' %}
             <div class="left">
                 {% include 'feedback.html' with feedback=feedback %}
-                <div class="box-deals box-border">
+                <div class="box-offers box-border">
                     <h2 class="backend"><strong>My profile</strong></h2>
                     <form class="backend-setting" method="post">{% csrf_token %}
                         <fieldset>
@@ -43,7 +43,7 @@
                                     <label class="clear-fix margin-general">
                                         <input type="checkbox" value="1"
                                                name="{{ profile_form.notify_offers.html_name }}"{% if profile_form.notify_offers.value %}
-                                               checked{% endif %} ><span class="txt-size">Notify me when new deals go live</span>
+                                               checked{% endif %} ><span class="txt-size">Notify me when new offers go live</span>
                                     </label>
                                 </li>
                                 <li >
@@ -59,7 +59,7 @@
                     </form>
                 </div>
                 {% if user and not user.is_staff and not user_profile.is_business_owner %}
-                <div class="box-deals box-border" style="margin-top:7px">
+                <div class="box-offers box-border" style="margin-top:7px">
                     <form class="backend-setting" method="post">{% csrf_token %}
                         <fieldset>
                             <h3 class="margin-general"><strong>Do you own a business?</strong></h3>
@@ -84,7 +84,7 @@
                     </form>
                 </div>
                 {% endif%}    
-                <div class="box-deals box-border" style="margin-top:7px">
+                <div class="box-offers box-border" style="margin-top:7px">
                     <form class="backend-setting" method="post">{% csrf_token %}
                         <fieldset>
                             <h3 class="margin-general"><strong>Change Email</strong></h3>
@@ -109,7 +109,7 @@
                         <input class="button radius-general" type="submit" name="change_email" value="Change Email">
                     </form>    
                 </div>
-                <div class="box-deals box-border" style="margin-top:7px">
+                <div class="box-offers box-border" style="margin-top:7px">
                     <form class="backend-setting" method="post">{% csrf_token %}
                      <fieldset>
                             <h3 class="margin-general"><strong>Change Password</strong></h3>
@@ -132,7 +132,7 @@
                     </form>    
                 </div>
                   <!--Profile Picture-->
-                <div class="box-deals box-border" style="margin-top:7px">
+                <div class="box-offers box-border" style="margin-top:7px">
                     {% if user %}
                     <fieldset>
                         <h3 class="margin-general"><strong>Profile Picture</strong></h3>

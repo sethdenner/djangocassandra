@@ -26,6 +26,6 @@ import media
 # import testmodel
 #
 #import math
-#import deals
+#import offers
 #import types
 #import subscriptions

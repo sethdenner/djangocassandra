@@ -3,23 +3,23 @@
 {% block title %}Knotis - My Subscriptions{% endblock title %}
 
 {% block content %}
-<div id="content" class="back-deals">
+<div id="content" class="back-offers">
     <div class="curve">
         <div class="wrapper clear-fix relative">
             {% include 'account_notifications.html' %}
-            <div class="box-deals box-border left">
+            <div class="box-offers box-border left">
                 <h2 class="backend"><strong>My Subscriptions</strong><div id="ht-40" class="help-icon vertical-align-baseline margin-sides" ></div></h2>
                 {% if subscriptions %}
                 {% for subscription in subscriptions %}
                 <div class="line-bottom clear-fix margin-general-25 follow-{{ forloop.counter0 }}">
                     <div class="clear-fix">
-                        <div class="deals-image radius-general left relative">
+                        <div class="offers-image radius-general left relative">
                             <div class="category food"></div>
                             <img alt=""
                                  src="/images/business/72/72/{ business.id }}"
                                  class="image-knotis-thumb"/>
                         </div>
-                        <div class="deals-txt left">
+                        <div class="offers-txt left">
                             <h5><strong>{{ subscription.business.business_name.value }}</strong></h5>
                             <a class="txt-size margin-general clear-fix" href="http://maps.google.com/maps?q={{ subscription.business.address.value.value }}" target="_blank">See location on map</a>
                             <a class="more gradient-gray radius-general"
@@ -35,7 +35,7 @@
                     </div>
                     {% for offer in business.offers %}
                     <div class="clear-fix clean reedem-code radius-general ">
-                        <p class="txt-size deals-business"><a
+                        <p class="txt-size offers-business"><a
                                 href="/offer/{{ offer.id }}"
                                 target="_blank">{{ offer.title }}</a></p>
                     </div>

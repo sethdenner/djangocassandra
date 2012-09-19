@@ -9,10 +9,12 @@ from app.models.offers import Offer
 class TransactionTypes:
     PURCHASE = 0
     REDEMPTION = 1
+    PURCHASE_KNOTIS_UNLIMITED = 2
 
     CHOICES = (
         (PURCHASE, 'Purchase'),
-        (REDEMPTION, 'Redemption')
+        (REDEMPTION, 'Redemption'),
+        (PURCHASE_KNOTIS_UNLIMITED, 'Purchase Knotis Unlimited')
     )
 
 
@@ -20,10 +22,10 @@ class TransactionManager(Manager):
     def create_transaction(
         self,
         user,
-        business,
-        offer,
         transaction_type,
-        quantity,
+        business='knotis',
+        offer=None,
+        quantity=1,
         value=0.
     ):
         return self.create(
