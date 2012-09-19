@@ -85,13 +85,15 @@ def login(
             'message': 'Failed to associate your Facebook account with your Knotis account. Please try again.'
         })
 
+    password = ''.join([
+        FACEBOOK_PASSWORD_SALT,
+        facebook_id,
+        FACEBOOK_PASSWORD_SALT
+    ])
+    password_hash = hashlib.md5(password)
     authenticated_user = authenticate(
         username=user.username,
-        password=''.join([
-            FACEBOOK_PASSWORD_SALT,
-            facebook_id,
-            FACEBOOK_PASSWORD_SALT
-        ])
+        password=password_hash.hexdigest()
     )
 
     if authenticated_user:
