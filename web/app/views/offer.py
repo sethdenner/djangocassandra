@@ -125,15 +125,57 @@ class OfferForm(ModelForm):
             )
 
 
-def offers(request):
+def offers(
+    request,
+    business=None,
+    city=None,
+    neighborhood=None,
+    category=None,
+    premium=None,
+    page='1',
+    sort_by=OfferSort.NEWEST
+):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
     template_parameters['current_page'] = 'offers'
 
     try:
+        business_instance = None
+        if business:
+            business_instance = Business.objects.get(
+                backend_name=business.lower()
+            )
+
+        city_instance = None
+        if city:
+            city_instance = City.objects.get(name_denormalized=city.lower())
+
+        neighborhood_instance = None
+        if neighborhood:
+            neighborhood_instance = Neighborhood.objects.get(
+                name_denormalized=neighborhood.lower()
+            )
+
+        category_instance = None
+        if category:
+            category_instance = Category.objects.get(
+                name_short=category.lower()
+            )
+            template_parameters['category'] = category
+
+        query = request.GET.get('query')
+        template_parameters['query'] = query
+
         template_parameters['offers'] = Offer.objects.get_available_offers(
-            page=1,
-            sort_by=OfferSort.NEWEST
+            business_instance,
+            city_instance,
+            neighborhood_instance,
+            category_instance,
+            True if premium else False,
+            int(page) if page else 1,
+            query,
+            sort_by.lower()
         )
+
         template_parameters['offers_premium'] = \
             Offer.objects.get_available_offers(
                 premium=True,

@@ -7,7 +7,10 @@ from django.forms import Form, ModelForm, ModelChoiceField, CharField, URLField
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.utils.http import urlquote
+from django.contrib.auth.decorators import login_required
+
 from knotis_auth.models import User, UserProfile
+
 
 
 class CreateBusinessForm(Form):

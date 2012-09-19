@@ -266,8 +266,13 @@ $(function() {
     // For categories in the offers page
     $('.categories-filter').live('click', function(evt) {
         var $this = $(this),
-            $content = $('.offer-content'),
-            href = $content.attr('data-href'),
+            $content = $('.deal-content');
+            
+        if (!$content.length) {
+            return true;
+        }
+        
+        var href = $content.attr('data-href'),
             query = $content.attr('data-query'),
             business = $content.attr('data-business'),
             city = $content.attr('data-city'),
@@ -460,9 +465,16 @@ $(function() {
         return false;
     }
     
+
     var searchOffers = function(query){
-        var $content = $('.offer-content'),
-            href = $content.attr('data-href'), 
+        var $content = $('.offer-content');
+        
+        if (!$content.length) {
+            window.location = '/offers/?query=' + query;
+            return false;
+        }
+        
+        var href = $content.attr('data-href'), 
             business = $content.attr('data-business'),
             city = $content.attr('data-city'),
             neighborhood = $content.attr('data-neighborhood'),

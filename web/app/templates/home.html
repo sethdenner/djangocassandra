@@ -94,7 +94,7 @@
         {% if premium_offers %}
         {% for offer in premium_offers %}
         <div class="box relative" style="width:222px">
-            <div class="category cat-{{ offer.class }}"></div>
+            <div class="category cat-{{ offer.category.name_short|capfirst }}"></div>
             <div class="ribbon-price"><p>{{ offer.savings }}%</p></div>
             <h4 class="circle shadow-white">
                 <strong>
@@ -109,7 +109,6 @@
                     {% endif %}
                 </strong>
             </h4>
-
             <div class="box-bottom box-border">
                 <div class="box-image-home relative">
                     <a href="/offer/{{ offer.id }}/" title="{{ offer.title_formatted }}"

@@ -115,7 +115,11 @@ urlpatterns = patterns('',
         name='offers'
     ),
     url(
-        r'^offers/$',
+        r''.join([
+            '^offers',
+            REGEX_OFFER_FILTERING,
+            '/$'
+        ]),
         'app.views.offer.offers',
         name='offers'
     ),

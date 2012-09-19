@@ -25,21 +25,10 @@ def index(
         template_parameters['login'] = True
 
     try:
-        template_parameters['premium_offers'] = Offer.objects.filter(offer_type=OfferTypes.PREMIUM)
+        template_parameters['premium_offers'] = Offer.objects.get_available_offers(premium=True)[:4]
     except:
         pass
 
-    '''
-    icon = Icon()
-    gmap.addicon(icon)
-    point0 = [1, 1]
-    point1 = [2, 4, 'hello']
-    point3 = [21, 4, None, icon]
-    gmap.maps[0].setpoint(point0)
-    gmap.maps[0].setpoint(point1)
-    gmap.maps[0].setpoint(point3)
-    template_parameters['map'] = gmap.pymapjs()
-    '''
     gmap = PyMap()
     gmap.key = settings.GOOGLE_MAPS_API_KEY
     template_parameters['map_script'] = gmap.headerjs()

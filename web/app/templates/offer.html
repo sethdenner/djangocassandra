@@ -9,13 +9,20 @@
 <div class="curve">
 <div class="wrapper clear-fix">
 <div class="clear-fix right">
-    {% include 'offer_profile_menu.html' with offer=offer categories=categories category_offers=category_offers %}
+    {% include 'offers_menu.html' with offer=offer categories=categories %}
 </div>
-{% if offer.active %}
 <div class="box-offers box-border left margin-general-25">
     <div class="offer-profile-left">
         <div class="offers-image image radius-general relative">
+            {% if not offer.active %}
+            {% if not offer.stock and not offer.unlimited%}
+            <div class="exhausted absolute"></div>
+            {% else %}
+            <div class="expired absolute"></div>
+            {% endif %}
+            {% else %}
             <div class="active absolute"></div>
+            {% endif %}
             <a class="gallery-zoom"
                href="{{ MEDIA_URL }}{{ offer.image.image }}"
                title="{{ offer.title.value }}">
@@ -116,7 +123,7 @@
         <p class="clear-fix">
             <span class="left follow-offer ">
             <a class="button-follow right radius-general{% if not user.is_anonymous %}
-                {% if user in followers %} unfollow{% else %} followme{% endif %}"
+                {% if user in followers %} unfollowme{% else %} followme{% endif %}"
                 href="{% if user.is_anonymous %}/login/{% else %}#{% endif %}">{% if user in followers %}
                 Unsubscribe{% else %}Subscribe{% endif %}
                 {% else %}"> Subscribe{% endif %}
@@ -126,197 +133,35 @@
         </p>
     </div>
 </div>
-
-{% else %}
-
-<div class="box-offers box-border left margin-general-25">
-    <div class="offer-profile-left">
-        <div class="offers-image image radius-general relative">
-            <?php if ($offer->stock==0 AND $offer->unlimited==0) { ?>
-            <div class="exhausted absolute"></div>
-            <?php } else { ?>
-            <div class="expired absolute"></div>
-            <?php } ?>
-            <a class="gallery-zoom"
-               href="<?php if ($offer->image != '') echo base_url() . 'uploads/' . $offer->image . '';?>"
-               title="<?=$offer->title?>">
-                <?php if ($offer->image != '') { ?>
-                <div class="zoom zoom-inactive"></div>
-                <?php }?>
-            </a>
-            <img class="offer-image-profile" alt=""
-                 src="<?php if ($offer->image == '') echo base_url() . 'images/layouts/knotis-offer-image.jpg'; else echo site_url('images/thumb') . '/190/192/' . $offer->image;?>"/>
-        </div>
-
-        <div class="clean"></div>
-        <?php if ($offer->address != '') { ?>
-        <script>
-            $(document).ready(function() {
-                var mapOptions = {
-                    center : new google.maps.LatLng(<?= $offer->lat ?>, <?= $offer->lon ?>),
-                    icon: '<?php if ($offer->image == '') echo base_url() . 'images/layouts/knotis-icon-rounded-map.png'; else echo site_url('images/thumb') . '/33/33/' . $offer->image;?>',
-                    zoom:15,
-
-                    mapTypeId : google.maps.MapTypeId.ROADMAP
-                },
-                        map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions),
-                        markers = [
-                            new KnotisMarker({
-                                map:map,
-                                profile:1,
-                                position: new google.maps.LatLng(<?= $offer->lat ?>,<?= $offer->lon ?>)
-                            })
-
-                        ];
-
-                map.setMapType(HYBRID);
-
-
-            });
-
-
-        </script>
-
-
-        <div id="map_canvas" class="offers-image-map content-map radius-general margin-general ">
-
-        </div>
-        <p class=" margin-general address radius-general"><strong><?= $offer->address ?></strong></p>
-        <?php }?>
-
-
-    </div>
-    <div class="offer-profile-right">
-        <h2 class="margin-general"><strong><?php if (isset($offer))
-            if ($offer->titleType == 1)
-                echo '$' . $offer->newprice . ' for $' . $offer->oldprice . ' at ' . $business->name;
-
-            if ($offer->titleType == 2)
-                echo '$' . $offer->newprice . ' for ' . $offer->title . ' at ' . $business->name;
-
-            if ($offer->titleType == 3)
-                echo $offer->title;
-            ?>
-
-        </strong></h2>
-
-        <p>
-            <a class="txt-size margin-general clear-fix business-buy business-link" alt="<?=$business->name?>"
-               title="<?=$business->name?>" target="_blank"
-               href="<?=site_url("business/profile/") . '/' . $business->id?>"><?=$business->name?></a>
-        </p>
-        <h4 class="margin-general"><?php if (isset($offer)) echo $offer->description; ?></h4>
-
-        <div class="clear-fix margin-general">
-            <p class="price left"><span>$</span><?php if (isset($offer)) echo $offer->newprice; ?></p>
-
-
-            <div class="button-offers-profile left">
-                <a class=" button-none radius-general" href="#">Buy now</a>
-            </div>
-        </div>
-        <ul class="number clear-fix margin-general radius-general">
-            <li>
-                <p><?php echo substr(((($offer->oldprice - $offer->newprice)) / $offer->oldprice) * 100, 0, 2); ?>%</p>
-                <span class="txt-size">SAVINGS</span>
-            </li>
-            <li>
-                <p><?php if (isset($offer)) echo $offer->purchase; ?></p>
-                <span class="txt-size">PURCHASED</span>
-            </li>
-            <li>
-                <p>End</p>
-                <span class="txt-size">REMAINING</span>
-            </li>
-        </ul>
-        <p class="txt-size margin-general"><?php if (isset($offer)) echo $offer->extendedDescription; ?>
-        <ul class="social clear-fix margin-general">
-            <li>
-                <a href="http://www.facebook.com/sharer.php?u=<?= site_url('offer/profile') . '/' . $offer->id ?>"
-                   target="_blank"><img src="<?php echo base_url() ?>/images/layouts/shared-facebook.png"
-                                        title="Share Facebook" alt="Shared Facebook"/></a>
-            </li>
-            <li>
-                <a href="#"> <a
-                        href="http://twitter.com/intent/tweet?url=<?= site_url('offer/profile') . '/' . $offer->id ?>"><img
-                        src="<?php echo base_url() ?>/images/layouts/shared-twitter.png" title="Shared Twitter"
-                        alt="Shared Twitter"/></a></a>
-            </li>
-            <li class="mail"><a
-                    href="mailto:?subject=Check out this offer on Knotis&body=Hi there,%0D%0A%0D%0AI saw this on Knotis and I liked it so much I wanted to share it with you.%0D%0A%0D%0Ahttp://<?php echo $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?> %0D%0A%0D%0A.">
-                E-mail</a></li>
-        </ul>
-        <p class="clear-fix">
-            <span class="left follow-offer ">
-
-            <a class="button-follow right radius-general <?php if ($this->auth->is_user()) {
-                if ($this->knotis_api->is_follower($business->id, $this->auth->get_this_user()->id)) {
-                    echo 'unfollowme';
-                    echo '" data-idFollow="' . $this->knotis_api->is_follower($business->id, $this->auth->get_this_user()->id)->id;
-                    echo '" data-idUser="' . $this->session->userdata('user_id');
-                } else {
-                    echo 'followme';
-                }
-            } ?>" data-id="<?=$business->id?>"
-               href="<?php if (!$this->auth->is_user()) echo site_url('home/login'); else echo '#';  ?>"> <?php if ($this->auth->is_user()) {
-                if ($this->knotis_api->is_follower($business->id, $this->auth->get_this_user()->id)) {
-                    echo 'Unsubscribe';
-                } else {
-                    echo 'Subscribe';
-                }
-            } else {
-                echo 'Subscribe';
-            } ?></a>
-            </span>
-            <span class="left txt-offer-follow">If you want to stay informed of all offers of this business</span>
-        </p>
-    </div>
-</div>
-
-
-{% endif %}
-
 {% if offers %}
 <div class="box-offers box-border left">
-    <h3 class="margin-general-25"><strong>Nearby offers</strong></h3>
-
-    <?php foreach ($offers->result() as $offer_next) {
-    $business = $this->knotis_api->get_this_business_byid($offer_next->merchantId);
-    ?>
-    <?php if ($offer_next->id != $offer->id) { ?>
-
-        <div class="nearby-content clear-fix margin-general-25 left">
-            <div class="offers-image image-nearby radius-general left">
-                <a class="clear-fix txt-size"
-                   href="<?=site_url("offer/profile/" . $offer_next->id); ?>">
-                    <img alt="<?= $offer_next->title ?>" title="<?= $offer_next->title ?>"
-                         src="<?php if ($offer_next->image == '') echo base_url() . 'images/layouts/knotis-offer-image.jpg'; else echo site_url('images/thumb') . '/62/62/' . $offer_next->image;?>"
-                         height="62" width="62"/>
-                </a>
-
-            </div>
-            <div class="txt-nearby left">
-                <a class="txt-size" href="<?=site_url("offer/profile/" . $offer_next->id); ?>"><strong>
-                    <?php
-                                    if ($offer_next->titleType == 1)
-                    echo '$' . $offer_next->newprice . ' for $' . $offer_next->oldprice . ' at ' . $business->name;
-
-                    if ($offer_next->titleType == 2)
-                        echo '$' . $offer_next->newprice . ' for ' . $offer_next->title . ' at ' . $business->name;
-
-                    if ($offer_next->titleType == 3)
-                        echo $offer_next->title; ?>
-
-                </strong></a>
-
-
-            </div>
+    <h3 class="margin-general-25"><strong>Nearby deals</strong></h3>
+    {% for o in offers %}
+    {% if o.id != offer.id %}
+    <div class="nearby-content clear-fix margin-general-25 left">
+        <div class="offers-image image-nearby radius-general left">
+            <a class="clear-fix txt-size"
+               href="/offer/{{ o.id }}/" >
+                <img alt="{{ o.title_formatted }}" title="{{ o.title_formatted }}"
+                    {% thumbnail o.image.image '62x62' as image %}
+                    src="{{ image.url }}"
+                    {% empty %}
+                    src="{{ STATIC_URL }}images/layouts/knotis-deal-image.jpg"
+                    {% endthumbnail %}
+                    height="62" 
+                    width="62" />
+            </a>
         </div>
-        <?php } ?>
-    <?php }?>
+        <div class="txt-nearby left">
+            <a class="txt-size" href="/offer/{{ o.id }}/"><strong>
+                {{ o.title_formatted }}
+            </strong></a>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
 </div>
 {% endif %}
-
 </div>
 </div>
 </div>
