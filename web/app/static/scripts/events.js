@@ -1305,8 +1305,11 @@ $(function() {
             if (response.status === "connected") {
                 // For now check to see if link account button exists, if does assume using that otherwise its login
                 var action = $('#fb-root').attr("data-sign-up-action");
-
+                var lock = false;
                 FB.api('/me', function(user) {
+                    if (lock) { return; }
+                    lock = true;
+                    
                     $.post(action, {'data' : { 'response': response, 'user' : user}},
                             function(data) {
                                 if (data.success == 'yes') {
@@ -1329,7 +1332,7 @@ $(function() {
                                     window.location.reload(true);
                 
                                 }
-
+                                lock = false;
                             }, 'json'
                         );
                     }
