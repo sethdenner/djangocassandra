@@ -1,9 +1,11 @@
-from app.models.businesses import Business, BusinessLink, BusinessSubscription
+from app.models.businesses import Business, BusinessLink, \
+    BusinessSubscription, clean_business_name
 from app.models.offers import Offer, OfferStatus
 from app.models.qrcodes import Qrcode, QrcodeTypes, Scan
 from app.utils import View as ViewUtils
 from django.conf import settings
-from django.forms import Form, ModelForm, ModelChoiceField, CharField, URLField
+from django.forms import Form, ModelForm, ModelChoiceField, CharField, \
+    URLField, ValidationError
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.utils.http import urlquote
@@ -29,6 +31,12 @@ class UpdateBusinessForm(Form):
     twitter_name = CharField(label='Twitter', required=False)
     facebook_uri = CharField(label='Facebook', required=False)
     yelp_id = CharField(label='Yelp ID', required=False)
+    
+    def clean_name(self):
+        if clean_business_name(
+            self.cleaned_data['name']
+        ) in settings.BUSINESS_NAME_BLACKLIST:
+            raise ValidationError('That business name is not allowed.')
 
 
 class AddBusinessLinkForm(ModelForm):

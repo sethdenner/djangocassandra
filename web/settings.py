@@ -10,6 +10,43 @@ SERVICE_NAME = 'Knotis'
 
 PRICE_MERCHANT_MONTHLY = 14.
 
+BUSINESS_NAME_BLACKLIST = (
+    'facebook',
+    'login',
+    'plans',
+    'contact',
+    'about',
+    'howitworks',
+    'story',
+    'inquire',
+    'support',
+    'terms',
+    'privacy',
+    'events',
+    'happyhours',
+    'dashboard',
+    'offer',
+    'offers',
+    'business',
+    'update',
+    'get_expiring_offers',
+    'get_newest_offers',
+    'get_popular_offers',
+    'get_offer_by_status',
+    'profile',
+    'subscriptions',
+    'qrcode',
+    'media',
+    'auth',
+    'signup',
+    'forgotpassword',
+    'passwordreset',
+    'admin',
+    'api',
+    'paypal',
+    'neighborhood',
+)
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
