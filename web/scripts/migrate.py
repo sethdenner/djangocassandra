@@ -65,7 +65,7 @@ def import_user(cursor):
 
             print 'Importing user %s' % email
 
-            user, account_type = User.objects.create_user(
+            user, user_profile = User.objects.create_user(
                 first_name,
                 last_name,
                 email,
@@ -78,12 +78,14 @@ def import_user(cursor):
                 password
             ])
 
-            if status == 'active':
-                user.account_status = AccountStatus.ACTIVE
+            if status.lower() == 'active':
+                user_profile.account_status = AccountStatus.ACTIVE
+                user.active = True
 
             else:
-                user.account_status = AccountStatus.DISABLED
+                user_profile.account_status = AccountStatus.DISABLED
 
+            user_profile.save()
             user.save()
 
             EndpointEmail.objects.create_endpoint(

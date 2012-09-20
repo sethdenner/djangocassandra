@@ -230,8 +230,8 @@ urlpatterns = patterns('',
         name='business'
     ),
     url(
-        r'^business/tickets/$',
-        'app.views.business.tickets',
+        r'^business/services/$',
+        'app.views.business.services',
         name='business'
     ),
     url(

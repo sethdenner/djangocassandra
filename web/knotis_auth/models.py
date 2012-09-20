@@ -110,7 +110,7 @@ class User(models.User):
             r,
             img,
             img_attrs
-        ) if not facebook_id else facebook_avatar(facebook_id)
+        )
 
     def update(
         self,

@@ -8,6 +8,8 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, "../share"))
 
 SERVICE_NAME = 'Knotis'
 
+PRICE_MERCHANT_MONTHLY = 14.
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )

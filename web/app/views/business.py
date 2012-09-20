@@ -9,8 +9,7 @@ from django.shortcuts import render, redirect
 from django.utils.http import urlquote
 from django.contrib.auth.decorators import login_required
 
-from knotis_auth.models import User, UserProfile
-
+from knotis_auth.models import User, UserProfile, AccountTypes
 
 
 class CreateBusinessForm(Form):
@@ -38,6 +37,7 @@ class AddBusinessLinkForm(ModelForm):
         exclude = ('business')
 
 
+@login_required
 def edit_profile(request):
     update_form = None
     link_form = None
@@ -112,6 +112,7 @@ def edit_profile(request):
     )
 
 
+@login_required
 def qrcode(request):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
 
@@ -150,14 +151,20 @@ def qrcode(request):
     )
 
 
-def tickets(request):
+@login_required
+def services(request):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
 
     template_parameters['user_profile'] = UserProfile.objects.get(user=request.user)
+    template_parameters['AccountTypes'] = AccountTypes
+    template_parameters['subscription_price'] = ("%.2f" % round(
+            settings.PRICE_MERCHANT_MONTHLY,
+            2
+        )).replace('.00', '')
 
     return render(
         request,
-        'manage_tickets.html',
+        'manage_services.html',
         template_parameters
     )
 
@@ -206,6 +213,7 @@ def profile(request, backend_name):
     )
 
 
+@login_required
 def follow(
     request,
     subscribe
