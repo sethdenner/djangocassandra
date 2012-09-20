@@ -40,44 +40,9 @@
                     </ul>
                 </form>
                 <div class="map box-border">
-                    <script>
-                        $(document).ready(function() {
-                            var mapOptions = {
-                                center : new google.maps.LatLng(47.602227802480606, -122.30203628540039),
-                                zoom: 15,
-                                mapTypeId : google.maps.MapTypeId.ROADMAP
-                            };
-                            map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-                            markers = [
-                                {% for offer in premium_offers %}
-                                new KnotisMarker({
-                                    map:map,
-                                    title_var: '{{ offer.title_formatted }}',
-                                    description_var: '{{ offer.description_100 }}',
-                                    icon_var: '{{ offer.category.title_short }}',
-                                    profile: 0,
-                                    url_var: '{{ BASE_URL }}/offer/{{ offer.id }}/',
-                                    position: new google.maps.LatLng('{{ offer.address.geo.lat }}', '{{ offer.address.geo.lon }}'),
-                                    {% thumbnail offer.image.image '49x49' as image %}
-                                    icon: '{{ image.url }}'
-                                    {% empty %}
-                                    icon: '{{ STATIC_URL }}images/layouts/knotis-icon-rounded-map.png'
-                                    {% endthumbnail %}
-                                }){% if forloop.counter != premium_offers|length %},
-                                {% endif %}
-                                {% endfor %}
-                            ];
-                            if (0 < markers.length){
-                                var bounds = new google.maps.LatLngBounds(markers[0].getPosition(), markers[0].getPosition());
-                                for (var i = 0; i < markers.length; i++) {
-                                    bounds.extend(markers[i].getPosition());
-                                }
-                                map.fitBounds(bounds);
-                            }
-                        });
-                   </script>
-                   <span class="radius-general span-map" id="map_canvas">
-                   </span>
+                    {{ map_script }}
+                    <span class="radius-general span-map" id="map_canvas">
+                    </span>
                 </div>
             </div>
         </div>

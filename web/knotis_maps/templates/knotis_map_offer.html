@@ -1,0 +1,47 @@
+{% load thumbnail %}
+<script>
+    $(function() {
+        var mapOptions = {
+            center : new google.maps.LatLng({{ center_lat }}, {{ center_lon }}),
+            zoom: {{ map_zoom }},
+            mapTypeId : google.maps.MapTypeId.{{ map_type }}
+        };
+        var map = new google.maps.Map(document.getElementById("{{ map_element_id }}"), mapOptions);
+        var geocoder = new google.maps.Geocoder();
+        var bounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(
+                {{ center_lat }}, 
+                {{ center_lon }}
+            )
+        );
+        map.fitBounds(bounds);
+        {% for offer in offers %}
+        geocoder.geocode({
+                'address': '{{ offer.address.value.value }}'
+            },
+            function(results, status){
+                if (google.maps.GeocoderStatus.OK == status) {
+                    bounds.extend(results[0].geometry.location);
+                    map.fitBounds(bounds);
+                    var marker = new KnotisMarker({
+                        map:map,
+                        title_var: '{{ offer.title_javascript }}',
+                        description_var: '{{ offer.description_javascript }}',
+                        icon_var: '{{ offer.category.name_css }}',
+                        profile: 0,
+                        url_var: '/offer/{{ offer.id }}/',
+                        position: results[0].geometry.location,
+                        {% thumbnail offer.image.image '49x49' as image %}
+                        icon: '{{ image.url }}'
+                        {% empty %}
+                        icon: '{{ STATIC_URL }}images/layouts/knotis-icon-rounded-map.png'
+                        {% endthumbnail %}
+                    });
+                } else {
+                    
+                }
+            }
+        );
+        {% endfor %}
+    });
+</script>

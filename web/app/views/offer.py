@@ -14,7 +14,7 @@ from knotis_auth.models import UserProfile
 from app.utils import View as ViewUtils
 from app.views.business import edit_profile
 
-from pymaps.pymaps import PyMap
+from knotis_maps.views import OfferMap
 
 
 class OfferForm(ModelForm):
@@ -183,7 +183,7 @@ def offers(
                 sort_by=OfferSort.NEWEST
             )[:5]
 
-    except:
+    except Exception as e:
         pass
 
     template_parameters['load_offers_href'] = '/offers/get_newest_offers/'
@@ -203,9 +203,11 @@ def offers(
     except:
         pass
 
-    gmap = PyMap()
-    gmap.key = settings.GOOGLE_MAPS_API_KEY
-    template_parameters['map_script'] = gmap.headerjs()
+    offer_map = OfferMap(
+        settings.GOOGLE_MAPS_API_KEY,
+        template_parameters['offers']
+    )
+    template_parameters['google_map_api_script'] = offer_map.render_api_js()
 
     return render(
         request,
@@ -232,10 +234,14 @@ def offer(
     except:
         pass
 
-    gmap = PyMap()
-    gmap.key = settings.GOOGLE_MAPS_API_KEY
-    template_parameters['map_script'] = gmap.headerjs()
+    offer_map = OfferMap(
+        settings.GOOGLE_MAPS_API_KEY,
+        [template_parameters['offer']]
+    )
+    template_parameters['google_map_api_script'] = offer_map.render_api_js()
+    template_parameters['map_script'] = offer_map.render()
     template_parameters['BASE_URL'] = settings.BASE_URL
+    template_parameters['gallery'] = True
 
     return render(
         request,
@@ -489,6 +495,7 @@ def offer_map(
 ):
     template_parameters = {}
 
+    offers = None
     try:
         business_instance = None
         if business:
@@ -514,7 +521,7 @@ def offer_map(
 
         query = request.GET.get('query')
 
-        template_parameters['offers'] = \
+        offers = \
             Offer.objects.get_available_offers(
                 business_instance,
                 city_instance,
@@ -528,10 +535,15 @@ def offer_map(
 
     except:
         pass
+    
+    offer_map = OfferMap(
+        settings.GOOGLE_MAPS_API_KEY,
+        offers
+    )
+    template_parameters['map_script'] = offer_map.render()
 
     return render(
         request,
         'offer_map.html',
-        template_parameters,
-        content_type='application/javascript'
+        template_parameters
     )

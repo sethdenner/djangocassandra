@@ -39,30 +39,7 @@
         </div>
         <div class="clean"></div>
         {% if offer.address %}
-        <script>
-            $(document).ready(function() {
-                var mapOptions = {
-                    center : new google.maps.LatLng({{ offer.address.lat }}, {{ offer.address.lon }}),
-                    {% thumbnail offer.image.image '33x33' as image %}
-                    icon: '{{ image.url }}',
-                    {% empty %}
-                    icon: '{{ STATIC_URL }}images/layouts/knotis-icon-rounded-map.png',
-                    {% endthumbnail %}
-                    zoom:15,
-                    mapTypeId : google.maps.MapTypeId.ROADMAP
-                },
-                map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions),
-                markers = [
-                    new KnotisMarker({
-                        map:map,
-                        profile:1,
-                        position: new google.maps.LatLng({{ offer.lattitude }}, {{ offer.longitude }})
-                    })
-
-                ];
-                map.setMapType(HYBRID);
-            });
-        </script>
+        {{ map_script }}
         <div id="map_canvas" class="offers-image-map content-map radius-general margin-general ">
         </div>
         <p class=" margin-general address radius-general"><strong>{{ offer.address.value.value }}</strong></p>

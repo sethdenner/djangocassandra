@@ -2,10 +2,11 @@ from django.shortcuts import render
 from django.conf import settings
 
 from app.models.contents import Content
-from app.models.offers import Offer, OfferTypes
+from app.models.offers import Offer
 from app.utils import View as ViewUtils
 
-from pymaps.pymaps import Icon, PyMap
+from knotis_maps.views import OfferMap
+
 
 def index(
     request,
@@ -25,13 +26,17 @@ def index(
         template_parameters['login'] = True
 
     try:
-        template_parameters['premium_offers'] = Offer.objects.get_available_offers(premium=True)[:4]
+        premium_offers = Offer.objects.get_available_offers(premium=True)[:4]
+        template_parameters['premium_offers'] = premium_offers
     except:
         pass
 
-    gmap = PyMap()
-    gmap.key = settings.GOOGLE_MAPS_API_KEY
-    template_parameters['map_script'] = gmap.headerjs()
+    offer_map = OfferMap(
+        settings.GOOGLE_MAPS_API_KEY,
+        premium_offers
+    )
+    template_parameters['google_map_api_script'] = offer_map.render_api_js()
+    template_parameters['map_script'] = offer_map.render() 
 
     return render(
         request,
