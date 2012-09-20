@@ -31,6 +31,7 @@ class View:
         template_parameters = {}
 
         template_parameters['FACEBOOK_APP_ID'] = settings.FACEBOOK_APP_ID
+        template_parameters['session'] = request.session
 
         try:
             content = {}
@@ -46,8 +47,8 @@ class View:
             template_parameters.update(content)
 
             template_parameters['cities'] = City.objects.all()
-            template_parameters['neighborhood'] = Neighborhood.objects.all()
-
+            template_parameters['neighborhoods'] = Neighborhood.objects.all()
+            
             if request.user.is_authenticated():
                 knotis_user = User.objects.get(pk=request.user.id)
                 template_parameters['knotis_user'] = knotis_user

@@ -266,7 +266,7 @@ $(function() {
     // For categories in the offers page
     $('.categories-filter').live('click', function(evt) {
         var $this = $(this),
-            $content = $('.deal-content');
+            $content = $('.offer-content');
             
         if (!$content.length) {
             return true;

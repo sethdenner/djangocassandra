@@ -9,9 +9,15 @@ from django.contrib import admin
 admin.autodiscover()
 
 
+REGEX_BACKEND_NAME = (
+    '[a-zA-Z]+[a-zA-Z0-9-_]*'
+)
+
+
 REGEX_UUID = (
     '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
 )
+
 
 REGEX_CATEGORY = (
     'tra|sho|res|rea|pub|pro|'
@@ -19,20 +25,19 @@ REGEX_CATEGORY = (
     'fin|edu|bea|aut|art|all'
 )
 
-REGEX_NOT_CATEGORY = ''.join([
-    '(?!',
+
+REGEX_NOT_CATEGORY_PREVIOUS = ''.join([
+    '(?<!',
     REGEX_CATEGORY,
     ')'
 ])
 
+
 REGEX_OFFER_FILTERING = ''.join([
     '(/(?P<business>',
-    REGEX_NOT_CATEGORY,
-    '))?(/(?P<city>',
-    REGEX_NOT_CATEGORY,
-    ')(/(?P<neighborhood>',
-    REGEX_NOT_CATEGORY,
-    '))?)?(/(?P<category>',
+    REGEX_BACKEND_NAME,
+    REGEX_NOT_CATEGORY_PREVIOUS,
+    '(?<!premium)))?(/(?P<category>',
     REGEX_CATEGORY,
     '))?(/(?P<premium>premium))?',
     '(/(?P<page>[\d]+))?',
@@ -115,15 +120,6 @@ urlpatterns = patterns('',
         name='offers'
     ),
     url(
-        r''.join([
-            '^offers',
-            REGEX_OFFER_FILTERING,
-            '/$'
-        ]),
-        'app.views.offer.offers',
-        name='offers'
-    ),
-    url(
         r'^offers/dashboard/$',
         'app.views.offer.dashboard',
         name='offers'
@@ -175,6 +171,15 @@ urlpatterns = patterns('',
             '/$'
         ]),
         'app.views.offer.offer_map',
+        name='offers'
+    ),
+    url(
+        r''.join([
+            '^offers',
+            REGEX_OFFER_FILTERING,
+            '/$'
+        ]),
+        'app.views.offer.offers',
         name='offers'
     ),
     url(

@@ -8,7 +8,7 @@
         </li>
         <li class="relative All">
             <a class="{% if not current_category and not offer %}active {% endif %}categories-filter" data-filter="actives"
-               data-category_name="All" href="#" data-category="" href="#">All Categories ({{ total_active_offers }})</a>
+               data-category_name="All" href="/offers/" data-category="" href="#">All Categories ({{ total_active_offers }})</a>
             {% if not current_category and not offer %}<div class="arrow arrow-All"></div>{% endif %}
         </li>
         {% for category in categories %}

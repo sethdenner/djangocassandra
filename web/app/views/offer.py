@@ -128,8 +128,6 @@ class OfferForm(ModelForm):
 def offers(
     request,
     business=None,
-    city=None,
-    neighborhood=None,
     category=None,
     premium=None,
     page='1',
@@ -138,23 +136,56 @@ def offers(
     template_parameters = ViewUtils.get_standard_template_parameters(request)
     template_parameters['current_page'] = 'offers'
 
+    city = request.GET.get('city')
+    if city:
+        if city.lower() == 'all':
+            request.session.pop(
+                'city',
+                None
+            )
+            request.session.pop(
+                'neighborhood',
+                None
+            )
+            
+        else:
+            request.session['city'] = city
+    
+        neighborhood = request.GET.get('neighborhood')
+        if neighborhood:
+            if neighborhood.lower() == 'all':
+                request.session.pop(
+                    'neighborhood',
+                    None
+                )
+    
+            else:
+                request.session['neighborhood'] = neighborhood
+        else:
+            request.session.pop(
+                'neighborhood',
+                None
+            )
+        
     try:
         business_instance = None
         if business:
             business_instance = Business.objects.get(
                 backend_name=business.lower()
             )
-
-        city_instance = None
-        if city:
-            city_instance = City.objects.get(name_denormalized=city.lower())
-
+    
         neighborhood_instance = None
-        if neighborhood:
+        if request.session.has_key('neighborhood'):
+            neighborhood = request.session.get('neighborhood') 
             neighborhood_instance = Neighborhood.objects.get(
-                name_denormalized=neighborhood.lower()
+                name_denormalized=neighborhood.title()
             )
 
+        city_instance = None
+        if request.session.has_key('city'):
+            city = request.session.get('city')
+            city_instance = City.objects.get(name_denormalized=city.title())
+            
         category_instance = None
         if category:
             category_instance = Category.objects.get(
@@ -163,7 +194,8 @@ def offers(
             template_parameters['category'] = category
 
         query = request.GET.get('query')
-        template_parameters['query'] = query
+        if query:
+            template_parameters['query'] = query
 
         template_parameters['offers'] = Offer.objects.get_available_offers(
             business_instance,
@@ -205,7 +237,7 @@ def offers(
 
     offer_map = OfferMap(
         settings.GOOGLE_MAPS_API_KEY,
-        template_parameters['offers']
+        template_parameters.get('offers')
     )
     template_parameters['google_map_api_script'] = offer_map.render_api_js()
 

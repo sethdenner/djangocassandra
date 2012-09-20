@@ -26,27 +26,27 @@
                             <ul class="first ">
                                 <li class="txt-size margin-general">
                                     <a class="all-cities gradient-gray radius-general"
-                                       href="/offers/">{{ header_all_offers_wa }}</a>
+                                       href="/offers/?city=all">{{ header_all_offers_wa }}</a>
                                 </li>
                             </ul>
                         </div>
 	                    <div class="clear-fix">
 	                    	{% for c in cities %}
-							{% if active_offers_city %}
-	                        <h4 class="circle left"><strong>{{ c.name }}</strong></h4>
+							{% if c.active_offer_count %}
+	                        <h4 class="circle left"><strong>{{ c.name.value }}</strong></h4>
 	                        <hr class="right">
 	               		</div>
 	               		<div class="clear-fix">
 		                    <ul class="left first {margin-general">
 		                    	<li class="txt-size">
 		                    		<a class="all-cities gradient-gray radius-general" 
-		                    			href="/offers/{{ c.backend_name }}/">All of {{ c.name }}</a>
+		                    			href="/offers/?city={{ c.name_denormalized|lower }}">All of {{ c.name_denormalized }}</a>
 		                    	</li>
-		                    	{% if neighbourhoods %}
-		                    	{% for n in neighbourhoods %}
-		                        {% if active_offers_neighbourhood %}
+		                    	{% if neighborhoods %}
+		                    	{% for n in neighborhoods %}
+		                        {% if n.city.id == c.id and n.active_offer_count %}
 								<li class="txt-size">
-									<a href="/offers/{{ c.backend_name }}/{{ n.backend_name }}/">{{ n.name }}</a>
+									<a href="/offers/?city={{ c.name_denormalized|lower }}&neighborhood={{ n.name_denormailized|lower }}">{{ n.name_denormalized }}</a>
 								</li>
 		                        {% endif %}
 		                    	{% endfor %}
@@ -63,11 +63,11 @@
                 </div>
                 <h4 class="circle shadow-white left clear-fix">
                     <strong>
-                    	{% if session.user.city_name %}
-                    	{% if session.user.city_name %}
-                    	{{ session.user.neighbourhood_name }}
-                    	{% else %}
-                    	{{ session.user.city_name }}
+                    	{% if session.city %}
+                    	{% if session.neighborhood %}
+                    	{{ session.neighborhood|capfirst }}
+                    	{% else%}
+                        {{ session.city|capfirst }}
                     	{% endif %}
                     	{% else %}
                     	All Offers
