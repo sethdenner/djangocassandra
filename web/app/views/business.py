@@ -33,10 +33,13 @@ class UpdateBusinessForm(Form):
     yelp_id = CharField(label='Yelp ID', required=False)
     
     def clean_name(self):
+        name = self.cleaned_data['name']
         if clean_business_name(
-            self.cleaned_data['name']
+            name
         ) in settings.BUSINESS_NAME_BLACKLIST:
             raise ValidationError('That business name is not allowed.')
+        
+        return name
 
 
 class AddBusinessLinkForm(ModelForm):
