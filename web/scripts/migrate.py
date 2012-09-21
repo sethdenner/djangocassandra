@@ -108,12 +108,13 @@ def import_business(cursor):
     for business_table in all_businesses:
         try:
             name = business_table['name'].decode('cp1252')
-            description = business_table['description'].decode('cp1252')
             phone = business_table['phone'].decode('cp1252')
-            summary = business_table['extendedDescription'].decode('cp1252')
 
-            address = business_table['street1'].decode('cp1252') + \
-                          business_table['street2'].decode('cp1252')
+            summary     = business_table['description'].decode('cp1252')
+            description = business_table['extendedDescription'].decode('cp1252')
+
+
+            address = business_table['street1'].decode('cp1252') #+ business_table['street2'].decode('cp1252')
 
             twitter_name = business_table['twitter'].decode('cp1252')
             facebook_uri = business_table['facebook'].decode('cp1252')
@@ -316,7 +317,12 @@ def import_categories(cursor):
 
 def import_cities(cursor):
     cursor.execute("""select * from city;""")
-    user = User.objects.get(username='simlay')
+    users = User.objects.filter(username='simlay')
+
+    if len(users) > 0:
+        user = users[0]
+    else:
+        user = None
     all_cities = cursor.fetchall()
     for city_dict in all_cities:
         try:
@@ -541,12 +547,13 @@ if __name__ == '__main__':
 
     import_user(c)
     import_business(c)
+    import_business_links(c)
+
     import_cities(c)
     import_neighborhoods(c)
     import_categories(c)
     import_offer(c)
 
     #import_qrcodes(c)
-    #import_business_links(c)
     #import_business_subscriptions(c)
     #import_transactions(c)
