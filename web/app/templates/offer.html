@@ -99,9 +99,9 @@
         </ul>
         <p class="clear-fix">
             <span class="left follow-offer ">
-            <a class="button-follow right radius-general{% if not user.is_anonymous %}
-                {% if user in followers %} unfollowme{% else %} followme{% endif %}"
-                href="{% if user.is_anonymous %}/login/{% else %}#{% endif %}">{% if user in followers %}
+            <a  data-id="{{ offer.business_id }}" class="button-follow right radius-general{% if not user.is_anonymous %}
+                {% if is_following %} unfollowme{% else %} followme{% endif %}"
+                href="{% if user.is_anonymous %}/login/{% else %}#{% endif %}">{% if is_following %}
                 Unsubscribe{% else %}Subscribe{% endif %}
                 {% else %}"> Subscribe{% endif %}
             </a>

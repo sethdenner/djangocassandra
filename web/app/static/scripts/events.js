@@ -877,7 +877,6 @@ $(function() {
 
     // Button follow in business profile
     $('.followme').live('click', function() {
-
         var $this = $(this),
                 number = $('.number-follow').attr('data-number'),
                 id = $this.attr('data-id');
@@ -886,11 +885,12 @@ $(function() {
 
         $.post(
             '/business/follow/', {
-                business_id: id
+                'business_id': id
             }, function(data) {
                     $this.fadeOut();
                     $('.followers-list').append(data);
                     $('.number-replace').replaceWith('<span>' + number + '</span>');
+
             }
         );
 

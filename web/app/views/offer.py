@@ -5,7 +5,7 @@ from django.utils.html import strip_tags
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.forms import ModelForm, CharField, ImageField, DateTimeField
 from app.models.offers import Offer, OfferStatus, OfferSort
-from app.models.businesses import Business
+from app.models.businesses import Business, BusinessSubscription
 from app.models.categories import Category
 from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
@@ -254,11 +254,26 @@ def offer(
 ):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
 
+    offer = None
     try:
-        template_parameters['offer'] = Offer.objects.get(pk=offer_id)
+        offer = Offer.objects.get(pk=offer_id)
+        template_parameters['offer'] = offer
+        
     except:
         redirect(offers)
 
+    if not request.user.is_anonymous():
+        try:
+            subscription = BusinessSubscription.objects.get(
+                business=offer.business,
+                user=request.user
+            )
+            template_parameters['is_following'] = \
+                None != subscription and subscription.active
+
+        except Exception, e:
+            pass
+    
     try:
         template_parameters['categories'] = Category.objects.all()
         template_parameters['total_active_offers'] = \
