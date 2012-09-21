@@ -63,17 +63,6 @@ def plans(request):
     )
 
 
-def contact(request):
-    template_parameters = ViewUtils.get_standard_template_parameters(request)
-    template_parameters['current_page'] = 'contact'
-
-    return render(
-        request,
-        'contact.html',
-        template_parameters
-    )
-
-
 def about(request):
     template_parameters = ViewUtils.get_standard_template_parameters(request)
 

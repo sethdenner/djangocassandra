@@ -60,9 +60,9 @@ urlpatterns = patterns('',
         name='home'
     ),
     url(
-        r'^contact/$',
-        'app.views.home.contact',
-        name='home'
+        r'^contact',
+        include('knotis_contact.urls'),
+        name='contact'
     ),
     url(
         r'^about/$',
@@ -100,14 +100,14 @@ urlpatterns = patterns('',
         name='home'
     ),
     url(
-        r'^events/$',
-        'app.views.events.events',
+        r'^events',
+        include('knotis_events.urls'),
         name='events'
     ),
     url(
-        r'^happyhours/$',
-        'app.views.happy_hours.happy_hours',
-        name='happy_hours'
+        r'^happyhours',
+        include('knotis_happyhour.urls'),
+        name='happyhour'
     ),
     url(
         r'^dashboard',

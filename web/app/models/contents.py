@@ -133,7 +133,7 @@ class Content(KnotisModel):
         null=True,
         default=None
     )
-    value = CharField(max_length=2000, null=True, blank=True, default=None)
+    value = CharField(max_length=2048, null=True, blank=True, default=None)
 
     certainty_mu = FloatField(null=True, default='1.0')
     certainty_sigma = FloatField(null=True, default='0.0')

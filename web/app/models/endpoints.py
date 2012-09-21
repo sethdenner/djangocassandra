@@ -15,9 +15,9 @@ from app.models.contents import Content, ContentTypes
 class EndpointManager(Manager):
     def create_endpoint(
         self,
-        user,
         endpoint_type,
         value,
+        user=None,
         primary=False,
         validation_key=None,
         disabled=False

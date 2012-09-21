@@ -1,0 +1,11 @@
+Contact Form:
+                                 
+Name:{{ name }}
+
+Email: {{ email }}
+
+Business Name: {{ business_name }}
+
+Topic: {{ topic }}
+                                   
+Message: {{ message }}

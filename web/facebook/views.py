@@ -2,10 +2,10 @@ import json
 import hashlib
 
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth import authenticate, login as django_login
 
-from app.models.endpoints import EndpointEmail
+from app.models.endpoints import Endpoint, EndpointTypes
 from knotis_auth.models import User, UserProfile, AccountStatus, AccountTypes
 
 
@@ -76,10 +76,11 @@ def login(
             user_profile.account_type = account_type
             user_profile.save()
 
-            EndpointEmail.objects.create_endpoint(
-                user,
+            Endpoint.objects.create_endpoint(
+                EndpointTypes.EMAIL,
                 user.username,
-                primary=True
+                user, 
+                True
             )
         except Exception as e:
             message = str(e)

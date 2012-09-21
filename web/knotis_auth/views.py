@@ -101,10 +101,10 @@ def sign_up(request, account_type='user'):
                 user, user_profile = sign_up_form.create_user(request)
 
                 email = Endpoint.objects.create_endpoint(
-                    user,
                     EndpointTypes.EMAIL,
                     user.username,
-                    primary=True
+                    user,
+                    True
                 )
 
                 #TODO This should be handled by an async task

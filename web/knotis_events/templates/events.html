@@ -11,21 +11,21 @@
                     <div class="column-map events-happy relative right">
                         <div class="content-popup content-popup-mail absolute radius-general log_in_popup">
                             <div class="content-popup-inset back-login radius-general clear-fix">
-                                <form class="backend-setting" action="<?php echo site_url('events/updatenewsletter'); ?>" method="post">
+                                <form class="backend-setting" method="post">{% csrf_token %}
                                 <h3 class="clear-fix"><strong>Get notified when Events go live</strong></h3><div class="clean"></div>
                                 {% if feedback %}
                                 <p class="message-confirm margin-general-25 radius-general ">{{ feedback }}</p>
-                                {% else %}
+                                {% endif %}
+                                {% if not success %}
                                 <ul>
                                     <li>
                                         <label>
-                                            <input type="text" class="radius-general" name="email" value="Your email address" onFocus="if(this.value=='Your email address')this.value='';" onBlur="if(this.value=='')this.value='Your email address';">
-                                            <input type="hidden" value="1" name="type">
+                                            <input type="text" class="radius-general" placeholder="Your email address." name="{{ email_form.email.html_name }}" value="{% firstof email_form.email.value  user.username '' %}" >
                                         </label>
                                     </li>
                                 </ul>
                                 <p class="txt-center">
-                                    <input class="button radius-general" type="submit" name="submit" value="Let me in!">
+                                    <input class="button radius-general" type="submit" name="submit" value="Keep me in the Kno!">
                                 </p>
                                 {% endif %}
                                 </form>

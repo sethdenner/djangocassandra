@@ -166,8 +166,11 @@ INSTALLED_APPS = (
     'foreignkeynonrel',
     'paypal',
     'facebook',
-    'knotis_maps',
     'knotis_auth',
+    'knotis_maps',
+    'knotis_contact',
+    'knotis_happyhour',
+    'knotis_events',
     'legacy',
     'app',
 )

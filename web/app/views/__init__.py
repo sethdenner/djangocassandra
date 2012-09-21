@@ -4,7 +4,5 @@ import business
 import account
 import user
 import media
-import events
-import happy_hours
 import city
 import qrcode

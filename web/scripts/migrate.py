@@ -12,7 +12,7 @@ from app.models.cities import City
 from app.models.qrcodes import Qrcode
 from app.models.categories import Category
 from app.models.transactions import Transaction, TransactionTypes
-from app.models.endpoints import EndpointEmail, EndpointTypes
+from app.models.endpoints import Endpoint, EndpointTypes
 
 import datetime
 import sys
@@ -88,11 +88,11 @@ def import_user(cursor):
             user_profile.save()
             user.save()
 
-            EndpointEmail.objects.create_endpoint(
-                user,
+            Endpoint.objects.create_endpoint(
                 EndpointTypes.EMAIL,
                 email,
-                primary=True
+                user,
+                True
             )
 
         except Exception as e:
