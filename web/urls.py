@@ -46,6 +46,11 @@ REGEX_OFFER_FILTERING = ''.join([
 
 urlpatterns = patterns('',
     url(
+        r'',
+        include('legacy.urls')
+    ),
+
+    url(
         r'^facebook/',
         include('facebook.urls')
     ),
