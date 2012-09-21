@@ -12,6 +12,8 @@ from django.contrib.auth.decorators import login_required
 
 from knotis_auth.models import User, UserProfile, AccountTypes
 from knotis_qrcodes.models import Qrcode, QrcodeTypes
+from knotis_yelp.views import get_reviews_by_yelp_id
+from knotis_twitter.views import get_twitter_feed_html
 
 
 class CreateBusinessForm(Form):
@@ -154,29 +156,37 @@ def profile(request, backend_name):
         return redirect('/')
 
     template_parameters['business'] = business
+    
+    if business.yelp_id:
+        template_parameters['yelp_reviews'] = get_reviews_by_yelp_id(business.yelp_id.value.value)
+        
+    if business.twitter_name:
+        template_parameters['twitter_feed'] =  get_twitter_feed_html(
+            business.twitter_name.value.value,
+            2
+        )
+        
+    try:
+        template_parameters['business_links'] = BusinessLink.objects.filter(business=business)
+        subscriptions = BusinessSubscription.objects.filter(
+            business=business,
+            active=True
+        )
+        template_parameters['subscriptions'] = subscriptions
+        template_parameters['subscribed_users'] = BusinessSubscription.objects.get_users_subscribed_to_business(
+            business,
+            subscriptions
+        )
+    except:
+        pass
 
-    if business:
-        try:
-            template_parameters['business_links'] = BusinessLink.objects.filter(business=business)
-            subscriptions = BusinessSubscription.objects.filter(
-                business=business,
-                active=True
-            )
-            template_parameters['subscriptions'] = subscriptions
-            template_parameters['subscribed_users'] = BusinessSubscription.objects.get_users_subscribed_to_business(
-                business,
-                subscriptions
-            )
-        except:
-            pass
-
-        try:
-            template_parameters['current_offers'] = Offer.objects.filter(
-                business=business,
-                status=OfferStatus.CURRENT
-            )
-        except:
-            pass
+    try:
+        template_parameters['current_offers'] = Offer.objects.filter(
+            business=business,
+            status=OfferStatus.CURRENT
+        )
+    except:
+        pass
 
     return render(
         request,

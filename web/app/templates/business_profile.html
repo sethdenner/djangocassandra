@@ -122,18 +122,18 @@
                 <div class="info-twitter clear-fix">
                     <h3 class="margin-general"><strong>Yelp</strong></h3>
                     <div class="clear-fix">
-                        {% for review in reviews %}
+                        {% for review in yelp_reviews %}
                         <div class="yelp-content">
                             <div class="pop box-border radius-general relative margin-general-25 clear-fix">
                                 <div class="clear-fix">
                                     <div class="image-follow radius-general left">
-                                        <img src="{{ review.user_avatar }}" width="32"/>
+                                        <img src="{{ review.user.image_url }}" width="32"/>
                                     </div>
                                     <p class="txt-size">{{ review.excerpt }}</p>
                                 </div>
                                 <ul class="star">
-                                    <li><img src="{{ review.rating }}" width="100"/></li>
-                                    <li><a href="http://www.yelp.com/biz/{{ business.yelp_id.value }}" target="_blank">More...</a> </li>
+                                    <li><img src="{{ review.rating_image_url }}" width="100"/></li>
+                                    <li><a href="http://www.yelp.com/biz/{{ business.yelp_id.value.value }}" target="_blank">More...</a> </li>
                                 </ul>
                             </div>
                         </div>

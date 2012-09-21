@@ -59,6 +59,21 @@ EMAIL_HOST = 'smtp.googlemail.com'
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = True
 
+YELP_API_URI = 'http://api.yelp.com/v2/business/'
+YELP_CONSUMER_KEY = 'FOe0SiqTLG-KTzXpg7fdxQ'
+YELP_CONSUMER_SECRET = 'vfyr5UHPQbjN5QFz22PcckRODSE'
+YELP_TOKEN_KEY = 'MEMHpkNVdQHmqK6fjjf0Xls30yAdg6sC'
+YELP_TOKEN_SECRET = 'WQyffYaB4R-NaMGaTcHJOkUWsWE'
+
+TWITTER_FEED_URI_TEMPLATE = (
+    'https://api.twitter.com/1/statuses/user_timeline.json'
+    '?include_entities=true'
+    '&include_rts=true'
+    '&screen_name=%s'
+    '&count=%s'
+)
+TWITTER_DEFAULT_RESULT_COUNT = 10
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -166,6 +181,8 @@ INSTALLED_APPS = (
     'foreignkeynonrel',
     'paypal',
     'facebook',
+    'knotis_yelp',
+    'knotis_twitter',
     'knotis_auth',
     'knotis_maps',
     'knotis_contact',
