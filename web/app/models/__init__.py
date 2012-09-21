@@ -18,7 +18,6 @@ import categories
 import cities
 import neighborhoods
 import transactions
-import qrcodes
 
 import media
 

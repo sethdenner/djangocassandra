@@ -225,19 +225,19 @@ urlpatterns = patterns('',
         name='subscriptions'
     ),
     url(
-        r'^business/qrcode/$',
-        'app.views.business.qrcode',
-        name='business'
-    ),
-    url(
         r'^business/services/$',
         'app.views.business.services',
         name='business'
     ),
     url(
+        r'^business/qrcode/$',
+        'knotis_qrcodes.views.manage',
+        name='qrcodes'
+    ),
+    url(
         r'^qrcode/(?P<qrcode_id>[^/]+)/$',
-        'app.views.qrcode.scan',
-        name='qrcode'
+        'knotis_qrcodes.views.scan',
+        name='qrcodes'
     ),
     url(
         r'media/(?P<path>.+)/$',

@@ -14,7 +14,7 @@ from models.cities import City
 from models.neighborhoods import Neighborhood
 from models.categories import Category
 from models.transactions import Transaction
-from models.qrcodes import Qrcode, Scan
+from knotis_qrcodes.models import Qrcode, Scan
 
 from piston.models import Consumer
 

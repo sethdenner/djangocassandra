@@ -9,7 +9,7 @@ from knotis_auth.models import User, AccountTypes, AccountStatus
 from app.models.businesses import Business, BusinessLink, BusinessSubscription
 from app.models.offers import Offer
 from app.models.cities import City
-from app.models.qrcodes import Qrcode
+from knotis_qrcodes.models import Qrcode, Scan
 from app.models.categories import Category
 from app.models.transactions import Transaction, TransactionTypes
 from app.models.endpoints import Endpoint, EndpointTypes

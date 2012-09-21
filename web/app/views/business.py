@@ -1,7 +1,6 @@
 from app.models.businesses import Business, BusinessLink, \
     BusinessSubscription, clean_business_name
 from app.models.offers import Offer, OfferStatus
-from app.models.qrcodes import Qrcode, QrcodeTypes, Scan
 from app.utils import View as ViewUtils
 from django.conf import settings
 from django.forms import Form, ModelForm, ModelChoiceField, CharField, \
@@ -12,6 +11,7 @@ from django.utils.http import urlquote
 from django.contrib.auth.decorators import login_required
 
 from knotis_auth.models import User, UserProfile, AccountTypes
+from knotis_qrcodes.models import Qrcode, QrcodeTypes
 
 
 class CreateBusinessForm(Form):
@@ -31,14 +31,14 @@ class UpdateBusinessForm(Form):
     twitter_name = CharField(label='Twitter', required=False)
     facebook_uri = CharField(label='Facebook', required=False)
     yelp_id = CharField(label='Yelp ID', required=False)
-    
+
     def clean_name(self):
         name = self.cleaned_data['name']
         if clean_business_name(
             name
         ) in settings.BUSINESS_NAME_BLACKLIST:
             raise ValidationError('That business name is not allowed.')
-        
+
         return name
 
 
@@ -119,45 +119,6 @@ def edit_profile(request):
     return render(
         request,
         'edit_business_profile.html',
-        template_parameters
-    )
-
-
-@login_required
-def qrcode(request):
-    template_parameters = ViewUtils.get_standard_template_parameters(request)
-
-    business = None
-    try:
-        business = Business.objects.get(user=request.user)
-        template_parameters['business'] = business
-    except:
-        redirect(edit_profile)
-
-    if business:
-        try:
-            template_parameters['offers'] = Offer.objects.filter(business=business).filter(status=OfferStatus.CURRENT)
-        except:
-            pass
-
-        qrcode = None
-        try:
-            qrcode = Qrcode.objects.get(business=business)
-            template_parameters['qrcode'] = qrcode
-        except:
-            pass
-
-        if qrcode:
-            try:
-                template_parameters['scans'] = Scan.objects.filter(qrcode=qrcode)
-            except:
-                pass
-
-    template_parameters['BASE_URL'] = settings.BASE_URL
-
-    return render(
-        request,
-        'manage_qrcode.html',
         template_parameters
     )
 

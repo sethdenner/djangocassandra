@@ -24,32 +24,31 @@ class QrcodeTypes:
 class Qrcode(KnotisModel):
     business = ForeignKeyNonRel(Business)
     uri = URLField(blank=True, null=True)
-    qrcode_type = CharField(max_length=16, choices=QrcodeTypes.CHOICES, null=True, default=QrcodeTypes.PROFILE, db_index=True)
+    qrcode_type = CharField(
+        max_length=16,
+        choices=QrcodeTypes.CHOICES,
+        null=True,
+        default=QrcodeTypes.PROFILE,
+        db_index=True
+    )
     hits = IntegerField(blank=True, null=True, default=0)
+    last_hit = DateTimeField(auto_now=True, blank=True, null=True)
+    pub_date = DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def __init__(self, *args, **kwargs):
-
         super(Qrcode, self).__init__(*args, **kwargs)
 
     def scan(self):
-        self.hits = self.hits + 1
-        self.save()
-
-        scan = None
         try:
-            scan = Scan.objects.filter(qrcode=self, uri=self.uri)[0]
-        except:
-            pass
-
-        if scan:
-            scan.hits = scan.hits + 1
-            scan.save()
-        else:
             Scan.objects.create(
                 qrcode=self,
-                uri=self.uri,
-                hits=1
+                uri=self.uri
             )
+
+            self.hits = self.hits + 1
+            self.save()
+        except:
+            pass
 
         return redirect(self.uri)
 
@@ -57,6 +56,4 @@ class Qrcode(KnotisModel):
 class Scan(KnotisModel):
     qrcode = ForeignKeyNonRel(Qrcode)
     uri = URLField(blank=True, null=True, db_index=True)
-    hits = IntegerField(default=0, blank=True, null=True)
-    last_hit = DateTimeField(auto_now=True)
     pub_date = DateTimeField(auto_now_add=True)
