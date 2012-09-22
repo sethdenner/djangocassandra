@@ -13,6 +13,8 @@ from django.utils.html import strip_tags
 from django.template import Context
 from django.template.loader import get_template
 
+from paypal.views import render_paypal_button
+
 from knotis_auth.models import User, UserProfile, AccountStatus, AccountTypes
 
 from app.utils import View as ViewUtils, Email as EmailUtils
@@ -152,14 +154,25 @@ def sign_up(request, account_type='user'):
             for e in sign_up_form.errors:
                 error += strip_tags(e) + '<br/>'
 
+        paypal_button = None
+        if AccountTypes.BUSINESS_MONTHLY == user_profile.account_type:
+            paypal_button = render_paypal_button({
+                'hosted_button_id': settings.PAYPAL_PREMIUM_BUTTON_ID,
+                'custom': user.id,
+                'return': '/'.join([
+                    settings.BASE_URL,
+                    'paypal/service/premium/buy/'
+                ]),
+                'rm': 2
+            })
+
         html = get_template('finish_registration.html')
         context = Context({
             'AccountTypes': AccountTypes,
             'account_type': user_profile.account_type,
-            'settings': settings,
+            'paypal_button': paypal_button,
             'feedback': feedback,
-            'error': error,
-            'custom_field': user.id
+            'error': error
         })
         response_data['html'] = html.render(context)
 

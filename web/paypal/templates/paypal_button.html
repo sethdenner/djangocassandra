@@ -1,9 +1,11 @@
-<form action='{{ settings.PAYPAL_FORM_URL }}' method='post'>
+<form action='{{ action }}' method='post'>
     <div class='box-facebook radius-general margin-general'>
         <p class='txt-size txt-center'><strong>The last step</strong></p>
-        <input type='submit' name='submit' class="txt-center button-paypal clear-fix radius-general" value="{% firstof button_text settings.PAYPAL_DEFAULT_BUTTON_TEXT %}" />
+        <input type='submit' name='submit' class="txt-center button-paypal clear-fix radius-general" value="{{ button_text }}" />
         <input type='hidden' name='cmd' value='_s-xclick'>
-        <input type='hidden' name='hosted_button_id' value='{{ settings.PAYPAL_PREMIUM_BUTTON_ID }}'>
-        <input type='hidden' name='custom' value='{{ custom_field }}'/>
+        {% if hosted_button_id %}<input type='hidden' name='hosted_button_id' value='{{ hosted_button_id }}'>{% endif %}
+        {% if custom %}<input type='hidden' name='custom' value='{{ custom }}'/>{% endif %}
+        {% if return %}<input type='hidden' name='return' value='{{ return }}' />{% endif %}
+        <input type='hidden' name='rm' value='{{ rm }}' />
     </div>
 </form>

@@ -4,8 +4,8 @@
     <div class='clear-fix'>
         <div class='content-popup-left'>
              <p id='message-log' class='message-confirm message-info  message-info radius-general txt-size'>Almost done! Please proceed to PayPal to complete this transaction.</p>
-        </div>
-        {% include 'paypal_button.html' with settings=settings custom_field=custom_field %}
+        </div>{% if paypal_button %}
+        {{ paypal_button }}{% endif %}
         <div class='clean'></div>
     </div>
     <div class='clean'></div>

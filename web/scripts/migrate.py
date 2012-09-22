@@ -110,7 +110,7 @@ def import_business(cursor):
             name = business_table['name'].decode('cp1252')
             phone = business_table['phone'].decode('cp1252')
 
-            summary     = business_table['description'].decode('cp1252')
+            summary = business_table['description'].decode('cp1252')
             description = business_table['extendedDescription'].decode('cp1252')
 
 
@@ -231,7 +231,10 @@ def import_offer(cursor):
                         neighborhood = curr_neighborhood
                         break
 
-            image = old_offer['image']
+            image = '/'.join([
+                'images',
+                old_offer['image']
+            ])
 
             # Get the category instance.
             category_id = old_offer['categoryId']
