@@ -56,4 +56,4 @@ def get_reviews_by_yelp_id(yelp_id):
     except urllib.HTTPError, error:
         response = json.loads(error.read())
 
-    return response['reviews']
+    return response.get('reviews')
