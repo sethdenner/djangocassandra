@@ -6,6 +6,7 @@ from knotis import KnotisModel
 from contents import Content
 from foreignkeynonrel.models import ForeignKeyNonRel
 
+
 class ImageManager(Manager):
     def create_image(
         self,

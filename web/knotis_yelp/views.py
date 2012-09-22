@@ -1,5 +1,6 @@
 import oauth2 as oauth
-import urllib2 as urllib
+import urllib
+import urllib2
 import json
 
 from django.conf import settings
@@ -34,7 +35,7 @@ def get_reviews_by_yelp_id(yelp_id):
     request = oauth.Request(
         method='GET',
         url=uri,
-        parameters=parameters
+        parameters=urllib.urlencode(parameters)
     )
     signature_method = oauth.SignatureMethod_HMAC_SHA1()
     request.sign_request(
@@ -45,7 +46,7 @@ def get_reviews_by_yelp_id(yelp_id):
     signed_uri = request.to_url()
 
     try:
-        connection = urllib.urlopen(
+        connection = urllib2.urlopen(
             signed_uri,
             None
         )
@@ -53,7 +54,7 @@ def get_reviews_by_yelp_id(yelp_id):
             response = json.loads(connection.read())
         finally:
             connection.close()
-    except urllib.HTTPError, error:
+    except urllib2.HTTPError, error:
         response = json.loads(error.read())
 
     return response.get('reviews')

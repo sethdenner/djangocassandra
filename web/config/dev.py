@@ -43,6 +43,7 @@ FACEBOOK_API_URL = 'https://graph.facebook.com'
 PAYPAL_ACCOUNT = 'billing@knotis.com'
 PAYPAL_FORM_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
 PAYPAL_URL = 'ssl://www.sandbox.paypal.com'
+PAYPAL_TEST_URL = 'ssl://www.sandbox.paypal.com'
 PAYPAL_NOTIFY_URL = ''.join([
     BASE_URL,
     '/account/payment/'

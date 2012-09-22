@@ -12,8 +12,9 @@ from django.http import HttpResponse
 from django.utils.html import strip_tags
 from django.template import Context
 from django.template.loader import get_template
+from django.core.urlresolvers import reverse
 
-from paypal.views import render_paypal_button
+from paypal.views import render_paypal_button, generate_ipn_hash
 
 from knotis_auth.models import User, UserProfile, AccountStatus, AccountTypes
 
@@ -158,12 +159,12 @@ def sign_up(request, account_type='user'):
         if AccountTypes.BUSINESS_MONTHLY == user_profile.account_type:
             paypal_button = render_paypal_button({
                 'hosted_button_id': settings.PAYPAL_PREMIUM_BUTTON_ID,
-                'custom': user.id,
-                'return': '/'.join([
-                    settings.BASE_URL,
-                    'paypal/service/premium/buy/'
+                'notify_url': reverse('paypal.views.buy_premium_service'),
+                'item_1': 'subscription',
+                'custom': '_'.join([
+                    user.id,
+                    generate_ipn_hash(user.id)
                 ]),
-                'rm': 2
             })
 
         html = get_template('finish_registration.html')

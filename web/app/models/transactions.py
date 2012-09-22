@@ -1,4 +1,5 @@
-from django.db.models import IntegerField, FloatField, DateTimeField, Manager
+from django.db.models import IntegerField, FloatField, DateTimeField, \
+    Manager, CharField
 from django.contrib.auth.models import User
 from knotis import KnotisModel
 from foreignkeynonrel.models import ForeignKeyNonRel
@@ -23,18 +24,33 @@ class TransactionManager(Manager):
         self,
         user,
         transaction_type,
-        business='knotis',
+        business=None,
         offer=None,
         quantity=1,
-        value=0.
+        value=0.,
+        transaction_context=None
     ):
+        try:
+            existing = self.get(
+                user=user,
+                business=business,
+                offer=offer,
+                transaction_context=transaction_context
+            )
+        except:
+            existing = None
+
+        if existing:
+            raise ValueError('We already have a record of this transaction')
+
         return self.create(
             user=user,
             business=business,
             offer=offer,
             transaction_type=transaction_type,
             quantity=quantity,
-            value=value
+            value=value,
+            transaction_context=transaction_context
         )
 
 
@@ -42,9 +58,19 @@ class Transaction(KnotisModel):
     user = ForeignKeyNonRel(User)
     business = ForeignKeyNonRel(Business)
     offer = ForeignKeyNonRel(Offer)
-    transaction_type = IntegerField(null=True, choices=TransactionTypes.CHOICES)
+    transaction_type = IntegerField(
+        null=True,
+        choices=TransactionTypes.CHOICES
+    )
     quantity = IntegerField(null=True)
     value = FloatField(blank=True, null=True, default=0.)
+    transaction_context = CharField(
+        max_length=1024,
+        null=True,
+        blank=True,
+        default=None,
+        db_index=True
+    )
     pub_date = DateTimeField(auto_now_add=True)
 
     objects = TransactionManager()
