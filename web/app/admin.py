@@ -76,6 +76,11 @@ class BusinessAdmin(admin.ModelAdmin):
 admin.site.register(Business, BusinessAdmin)
 
 
+class ImageAdmin(admin.ModelAdmin):
+    search_fields = ['related_object_id']
+admin.site.register(Image, ImageAdmin)
+
+
 class GeneralAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Contact, GeneralAdmin)
@@ -88,5 +93,4 @@ admin.site.register(Transaction, GeneralAdmin)
 admin.site.register(City, GeneralAdmin)
 admin.site.register(Neighborhood, GeneralAdmin)
 admin.site.register(Category, GeneralAdmin)
-admin.site.register(Image, GeneralAdmin)
 admin.site.register(Offer, GeneralAdmin)

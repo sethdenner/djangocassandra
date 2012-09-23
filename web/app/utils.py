@@ -57,9 +57,7 @@ class View:
                 template_parameters['username_truncated'] = \
                     knotis_user.username_12()
                 template_parameters['avatar_uri'] = knotis_user.avatar(
-                    request.user.username,
-                    request.session.get('fb_id'),
-                    20
+                    request.session.get('fb_id')
                 )
 
         except:

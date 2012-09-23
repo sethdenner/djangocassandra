@@ -1,6 +1,7 @@
 from app.models.businesses import Business, BusinessLink, \
     BusinessSubscription, clean_business_name
 from app.models.offers import Offer, OfferStatus
+from app.models.media import Image
 from app.utils import View as ViewUtils
 from django.conf import settings
 from django.forms import Form, ModelForm, ModelChoiceField, CharField, \
@@ -58,8 +59,10 @@ def edit_profile(request):
     business = None
     try:
         business = Business.objects.get(user=request.user)
+
     except Business.DoesNotExist:
         pass #fine
+
     except:
         pass #fatal
 
@@ -71,6 +74,7 @@ def edit_profile(request):
                     business.update(
                         **update_form.cleaned_data
                     )
+
                 else:
                     business = Business.objects.create_business(
                         request.user,
@@ -106,17 +110,26 @@ def edit_profile(request):
                 'yelp_id': business.yelp_id.value.value if business.yelp_id else None
             }
             update_form = UpdateBusinessForm(business_values)
+            
         else:
             update_form = UpdateBusinessForm()
 
     try:
         template_parameters['business_links'] = BusinessLink.objects.filter(business=business)
+
     except:
         pass
 
     template_parameters['business'] = business
     template_parameters['update_form'] = update_form
     template_parameters['link_form'] = link_form if link_form else AddBusinessLinkForm()
+    template_parameters['do_upload'] = True
+    template_parameters['gallery'] = True
+    
+    try:
+        template_parameters['images'] = Image.objects.filter(related_object_id=business.id)
+    except:
+        pass
 
     return render(
         request,
@@ -157,10 +170,10 @@ def profile(request, backend_name):
 
     template_parameters['business'] = business
     
-    if business.yelp_id:
+    if business.yelp_id and business.yelp_id.value.value:
         template_parameters['yelp_reviews'] = get_reviews_by_yelp_id(business.yelp_id.value.value)
         
-    if business.twitter_name:
+    if business.twitter_name and business.twitter_name.value.value:
         template_parameters['twitter_feed'] =  get_twitter_feed_html(
             business.twitter_name.value.value,
             2
@@ -181,12 +194,19 @@ def profile(request, backend_name):
         pass
 
     try:
+        template_parameters['business_images'] = Image.objects.filter(related_object_id=business.id)
+    except:
+        pass
+
+    try:
         template_parameters['current_offers'] = Offer.objects.filter(
             business=business,
             status=OfferStatus.CURRENT
         )
     except:
         pass
+    
+    template_parameters['gallery'] = True
 
     return render(
         request,

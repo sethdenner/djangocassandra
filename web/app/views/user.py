@@ -152,6 +152,9 @@ def profile(request):
     template_parameters['business_form'] = business_form
     template_parameters['email_form'] = email_form
     template_parameters['password_form'] = password_form
+    template_parameters['user_avatar'] = template_parameters['knotis_user'].avatar(
+        request.session.get('fb_id')
+    )
 
     return render(
         request,

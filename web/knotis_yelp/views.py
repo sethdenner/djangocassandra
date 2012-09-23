@@ -35,7 +35,7 @@ def get_reviews_by_yelp_id(yelp_id):
     request = oauth.Request(
         method='GET',
         url=uri,
-        parameters=urllib.urlencode(parameters)
+        parameters=parameters
     )
     signature_method = oauth.SignatureMethod_HMAC_SHA1()
     request.sign_request(

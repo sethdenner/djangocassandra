@@ -245,7 +245,11 @@ urlpatterns = patterns('',
         name='qrcodes'
     ),
     url(
-        r'media/(?P<path>.+)/$',
+        r'^media/ajax/',
+        'app.views.media.ajax'
+    ),
+    url(
+        r'^media/(?P<path>.+)/$',
         'app.views.media.xsendfileserve', {
             'document_root': settings.MEDIA_ROOT
         },

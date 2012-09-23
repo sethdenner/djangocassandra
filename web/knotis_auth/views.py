@@ -277,6 +277,22 @@ def login(request):
         return generate_response(None)
 
 
+def _authenticate_facebook(
+    username, 
+    facebook_id
+):
+    password = ''.join([
+        FACEBOOK_PASSWORD_SALT,
+        facebook_id,
+        FACEBOOK_PASSWORD_SALT
+    ])
+    password_hash = hashlib.md5(password)
+    return authenticate(
+        username=username,
+        password=password_hash.hexdigest()
+    )
+    
+
 def facebook_login(
     request,
     account_type=None
@@ -301,6 +317,14 @@ def facebook_login(
         pass
 
     if request.session.get('fb_id') == facebook_id:
+        django_login(
+            request,
+            _authenticate_facebook(
+                email,
+                facebook_id
+            )
+        )
+        
         return generate_response({
             'success': 'no',
             'message': 'Already authenticated.'
@@ -357,15 +381,9 @@ def facebook_login(
     if None == user_profile:
         user_profile = UserProfile.objects.get(user=user)
 
-    password = ''.join([
-        FACEBOOK_PASSWORD_SALT,
-        facebook_id,
-        FACEBOOK_PASSWORD_SALT
-    ])
-    password_hash = hashlib.md5(password)
-    authenticated_user = authenticate(
-        username=user.username,
-        password=password_hash.hexdigest()
+    authenticated_user = _authenticate_facebook(
+        user.username,
+        facebook_id
     )
 
     if authenticated_user:

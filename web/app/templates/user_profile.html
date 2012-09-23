@@ -143,8 +143,8 @@
                         <ul>
                             <ul class="link-name clear-fix radius-general">
                                 <li class=" radius-general active clear-fix">
-                                    <img alt="" src="{{ user_profile.get_avatar }}" class="gallery">
-                                    {% if not user_profile.facebook_id %}<a class="right delete radius-general" href="http://gravatar.com" target="_blank">Your Gravatar</a>{% endif %}
+                                    <img alt="" src="{{ user_avatar }}" class="gallery">
+                                    {% if not session.fb_id %}<a class="right delete radius-general" href="http://gravatar.com" target="_blank">Your Gravatar</a>{% endif %}
                                 </li>
                             </ul>
                             <div class="clean"></div>

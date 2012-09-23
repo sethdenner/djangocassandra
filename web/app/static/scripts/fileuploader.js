@@ -1165,6 +1165,21 @@ qq.extend(qq.UploadHandlerXhr.prototype, {
     getLoaded: function(id){
         return this._loaded[id] || 0; 
     },
+    _getCookie: function(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    },
     /**
      * Sends the file identified by id and additional query params to the server
      * @param {Object} params name-value string pairs
@@ -1200,6 +1215,7 @@ qq.extend(qq.UploadHandlerXhr.prototype, {
         xhr.open("POST", queryString, true);
         xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         xhr.setRequestHeader("X-File-Name", encodeURIComponent(name));
+        xhr.setRequestHeader('X-CSRFToken', this._getCookie('csrftoken'));
         xhr.setRequestHeader("Content-Type", "application/octet-stream");
         xhr.send(file);
     },

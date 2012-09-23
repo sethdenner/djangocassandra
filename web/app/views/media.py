@@ -1,13 +1,16 @@
 import posixpath
 import urllib
 import os
+import json
 
 from django.conf import settings
 from django.views.static import serve
 from django.forms import ModelForm, CharField
 from django.http import HttpResponse, HttpResponseRedirect
+from django.core.files.base import ContentFile
 
 from app.models.media import Image
+
 
 class ImageModelForm(ModelForm):
     class Meta:
@@ -30,6 +33,49 @@ class ImageModelForm(ModelForm):
                 self.cleaned_data['image'],
                 self.cleaned_data['caption_value']
             )
+
+
+def _get(request):
+    return HttpResponse()
+
+
+def _upload(request):
+    image_source = request.raw_post_data
+    object_id = request.GET.get('id')
+    name = request.GET.get('qqfile')
+    response = {}
+    try:
+        image = Image(
+            user=request.user,
+            related_object_id=object_id
+        )
+        image.image.save(
+            '/'.join([
+                'images',
+                name
+            ]),
+            ContentFile(image_source)
+        )
+        image.save()
+        
+        response['success'] = 'true'
+
+    except Exception, error:
+        response['success'] = 'false'
+        response['message'] = 'File upload failed.'
+        
+    return HttpResponse(
+        json.dumps(response),
+        content_type='application/json'
+    )
+
+
+def ajax(request):
+    if request.method.lower() == 'post':
+        return _upload(request)
+    else:
+        return _get(request)
+
 
 USE_XSENDFILE = getattr(settings, 'USE_XSENDFILE', False)
 

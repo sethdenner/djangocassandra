@@ -2,6 +2,7 @@
 
 {% block title %}Knotis - Edit Business Profile{% endblock title %}
 
+{% load thumbnail %}
 {% block content %}
 <div id="content" class="back-offers">
 <div class="curve">
@@ -31,16 +32,16 @@
             <li>
                 <label>
                     <span class="txt-size">{{ update_form.summary.label }}<div id="ht-13" class="help-icon vertical-align-bottom float-right" ></div></span>
-                    <textarea id="summary" class="radius-general" 
-                        name="{{ update_form.summary.html_name }}">{% firstof update_form.summary.value business_content.summary 'Short Description (140 character maximum)' %}</textarea>
+                    <textarea id="summary" class="radius-general" placeholder="Short Description (140 character maximum)"
+                        name="{{ update_form.summary.html_name }}">{% firstof update_form.summary.value business_content.summary '' %}</textarea>
                     <p id="summary_counter" class="generated-titles indented">140 character maximum</p>
                 </label>
             </li>
             <li>
                 <label>
                     <span class="txt-size">{{ update_form.description.label }}<div id="ht-14" class="help-icon vertical-align-bottom float-right" ></div></span>
-                    <textarea class="radius-general"
-                        name="{{ update_form.description.html_name }}">{% firstof update_form.description.value business_content.description 'Extended Description' %}</textarea>
+                    <textarea class="radius-general" placeholder="Extended Description"
+                        name="{{ update_form.description.html_name }}">{% firstof update_form.description.value business_content.description '' %}</textarea>
                 </label>
             </li>
             <li>
@@ -159,7 +160,9 @@
                     <li class="radius-general active clear-fix">
                         <img
                             alt=""
-                            src="{% firstof image.uri default_offer_image %}"
+                            {% thumbnail image.image '32x32' as img %}
+                            src="{{ img.url }}"
+                            {% endthumbnail %}
                             class="gallery" />
                             <a class="right delete radius-general delete-image" href="#" data-id="{{ image.id }}"
                                data-cont="{{ forloop.counter0 }}">delete</a>
@@ -173,26 +176,26 @@
             <div class="clean"></div>
         </ul>
     </fieldset>
+    <div id="file-uploader">
+        <noscript>
+            <p>Please enable JavaScript to use file uploader.</p>
+            <!-- or put a simple form for upload here -->
+        </noscript>
+    </div>
+    <script>
+    	$(function(){
+            var uploader = new qq.FileUploader({
+                element: document.getElementById('file-uploader'),
+                action: '/media/ajax/',
+                debug: true,
+                params: {
+                    'id': '{{ business.id }}',
+                    'type': 'image',
+                }
+            });
+     	});
+    </script>
 </form>
-<div id="file-uploader">
-    <noscript>
-        <p>Please enable JavaScript to use file uploader.</p>
-        <!-- or put a simple form for upload here -->
-    </noscript>
-</div>
-<script>
-	$(function(){
-        var uploader = new qq.FileUploader({
-            element: document.getElementById('file-uploader'),
-            action: '<?php echo site_url("backend/doupload"); ?>',
-            debug: true,
-            params: {
-                id: '<?php if (isset($business)) echo $business->id; ?>',
-                type: 'business'
-            }
-        });
- 	});
-</script>
 {% endif %}
 </div>
 {% include 'dashboard_menu.html' with current_page='business_profile' %}

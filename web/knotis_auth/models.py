@@ -96,24 +96,18 @@ class User(models.User):
 
     def avatar(
         self,
-        email,
-        facebook_id=None,
-        s=32,
-        d='mm',
-        r='g',
-        img=False,
-        img_attrs={}
+        facebook_id=None
     ):
         if facebook_id:
             return get_facebook_avatar(facebook_id)
         else:
             return gravatar_avatar(
-                email,
-                s,
-                d,
-                r,
-                img,
-                img_attrs
+                self.username,
+                32,
+                'mm',
+                'g',
+                False,
+                {}
             )
 
     def update(
