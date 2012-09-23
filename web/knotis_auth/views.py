@@ -287,18 +287,6 @@ def facebook_login(
             content_type='application/json'
         )
 
-    if request.session.get('fb_id'):
-        return generate_response({
-            'success': 'no',
-            'message': 'Already authenticated.'
-        })
-
-    registration = False
-    if None == account_type:
-        account_type = AccountTypes.USER
-    else:
-        registration = True
-
     if request.method.lower() != 'post':
         return HttpResponseBadRequest('Only POST is supported.')
 
@@ -312,6 +300,12 @@ def facebook_login(
         return HttpResponseBadRequest('No data returned from facebook')
         pass
 
+    if request.session.get('fb_id') == facebook_id:
+        return generate_response({
+            'success': 'yes',
+            'message': 'Already authenticated.'
+        })
+    
     user = None
     try:
         user = User.objects.get(username=email)
@@ -320,7 +314,7 @@ def facebook_login(
 
     message = None
     user_profile = None
-    if None == user:
+    if None == user and account_type:
         try:
             password = ''.join([
                 FACEBOOK_PASSWORD_SALT,
@@ -382,13 +376,13 @@ def facebook_login(
         
         request.session['fb_id'] = facebook_id
         
-        if registration:
+        if account_type:
             data = {
                 'success': 'yes',
-                'user': user_profile.account_type
+                'user': account_type
             }
             
-            if AccountTypes.BUSINESS_MONTHLY == user_profile.account_type:
+            if AccountTypes.BUSINESS_MONTHLY == account_type:
                 paypal_button = None
                 if AccountTypes.BUSINESS_MONTHLY == user_profile.account_type:
                     paypal_button = render_paypal_button({
