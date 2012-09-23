@@ -1331,14 +1331,26 @@ $(function() {
                          }, 
                          function(data) {
                             if (data.success == 'yes') {
-                                if (data.user == 'premium')
-                                    $('.replace').replaceWith(data.message);
-
-                                if (data.user == 'foreverfree')
-                                    window.location = '/business/profile/';
-
-                                if (data.user == 'user')
+                                if (data.user) {
+                                    if (data.user == 'premium') {
+                                        $('.replace').replaceWith(data.message);
+                                    
+                                    }
+    
+                                    if (data.user == 'foreverfree') {
+                                        window.location = '/business/profile/';
+                                        
+                                    }
+    
+                                    if (data.user == 'user') {
+                                        window.location = '/offers/';
+                                        
+                                    }
+                                    
+                                } else {
                                     window.location = '/offers/';
+                                    
+                                }
             
                             }
                             if (data.success == 'no') {

@@ -293,9 +293,11 @@ def facebook_login(
             'message': 'Already authenticated.'
         })
 
+    registration = False
     if None == account_type:
         account_type = AccountTypes.USER
-
+    else:
+        registration = True
 
     if request.method.lower() != 'post':
         return HttpResponseBadRequest('Only POST is supported.')
@@ -380,10 +382,41 @@ def facebook_login(
         
         request.session['fb_id'] = facebook_id
         
-        return generate_response({
-            'success': 'yes',
-            'user': user_profile.account_type
-        })
+        if registration:
+            data = {
+                'success': 'yes',
+                'user': user_profile.account_type
+            }
+            
+            if AccountTypes.BUSINESS_MONTHLY == user_profile.account_type:
+                paypal_button = None
+                if AccountTypes.BUSINESS_MONTHLY == user_profile.account_type:
+                    paypal_button = render_paypal_button({
+                        'hosted_button_id': settings.PAYPAL_PREMIUM_BUTTON_ID,
+                        'notify_url': reverse('paypal.views.buy_premium_service'),
+                        'item_1': 'subscription',
+                        'custom': '_'.join([
+                            user.id,
+                            generate_ipn_hash(user.id)
+                        ]),
+                    })
+        
+                html = get_template('finish_registration.html')
+                context = Context({
+                    'AccountTypes': AccountTypes,
+                    'account_type': user_profile.account_type,
+                    'paypal_button': paypal_button,
+                })
+                data['message'] = html.render(context)
+                
+
+            return generate_response(data)
+
+        else:
+            return generate_response({
+                'success': 'yes',
+                'message': 'Authentication successful.'
+            })
     else:
         return generate_response({
             'success': 'no',
