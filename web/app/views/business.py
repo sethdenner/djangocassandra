@@ -1,3 +1,5 @@
+import urllib
+
 from app.models.businesses import Business, BusinessLink, \
     BusinessSubscription, clean_business_name
 from app.models.offers import Offer, OfferStatus
@@ -15,6 +17,8 @@ from knotis_auth.models import User, UserProfile, AccountTypes
 from knotis_qrcodes.models import Qrcode, QrcodeTypes
 from knotis_yelp.views import get_reviews_by_yelp_id
 from knotis_twitter.views import get_twitter_feed_html
+
+from legacy.models import BusinessIdMap
 
 
 class CreateBusinessForm(Form):
@@ -195,6 +199,34 @@ def profile(request, backend_name):
 
     try:
         template_parameters['business_images'] = Image.objects.filter(related_object_id=business.id)
+    except:
+        pass
+    
+    try:
+        qrcode = Qrcode.objects.filter(business=business)[0]
+
+        try:
+            id_map = BusinessIdMap.objects.get(business=business)
+
+        except:
+            id_map = None
+        
+        if id_map:
+            qrcode_uri = urllib.urlencode('/'.join([
+                settings.BASE_URL,
+                'business',
+                id_map.old_id,
+            ]))
+
+        else:
+            qrcode_uri = urllib.urlencode('/'.join([
+                settings.BASE_URL,
+                'qrcode',
+                qrcode.id
+            ]))
+            
+        template_parameters['qrcode_uri'] = qrcode_uri
+        
     except:
         pass
 

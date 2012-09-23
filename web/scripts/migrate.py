@@ -144,7 +144,7 @@ def import_business(cursor):
                 twitter_name,
                 facebook_uri,
                 yelp_id
-                )
+            )
 
             id = business_table['id']
             BusinessIdMap.objects.create(
@@ -396,10 +396,10 @@ def import_qrcodes(cursor):
                 business = businesses[0].new_business
 
             new_qrcode = Qrcode(
-                    business=business,
-                    uri=uri,
-                    qrcode_type=qrcode_type,
-                    )
+                business=business,
+                uri=uri,
+                qrcode_type=qrcode_type,
+            )
             new_qrcode.save()
 
         except Exception as e:

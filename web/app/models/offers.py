@@ -569,7 +569,12 @@ class Offer(KnotisModel):
         return delta.days
 
     def public_url(self):
-        return settings.BASE_URL + '/offer/' + self.id + '/'
+        return '/'.join([
+            settings.BASE_URL,
+             'offer',
+             self.id,
+             ''
+        ])
 
     def update(
         self,
