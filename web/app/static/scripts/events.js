@@ -167,13 +167,13 @@ $(function() {
         var $this = $(this), type = $this.attr('data-type');
 
         if (type == 'user')
-            $("#fb-root").attr('data-sign-up-action', server + '/facebook/login/user/');
+            $("#fb-root").attr('data-sign-up-action', '/facebook/login/user/');
 
         if (type == 'foreverfree')
-            $("#fb-root").attr('data-sign-up-action', server + '/facebook/login/foreverfree/');
+            $("#fb-root").attr('data-sign-up-action', '/facebook/login/foreverfree/');
 
         if (type == 'premium')
-            $("#fb-root").attr('data-sign-up-action', server + '/facebook/login/premium/');
+            $("#fb-root").attr('data-sign-up-action', '/facebook/login/premium/');
 
 
         $('.signup_popup').remove();
