@@ -19,10 +19,13 @@ from knotis_qrcodes.models import Qrcode, Scan
 from piston.models import Consumer
 
 
-class UserAdmin(admin.ModelAdmin):
+class UserProfileAdmin(admin.ModelAdmin):
     pass
-admin.site.register(UserProfile, UserAdmin)
+admin.site.register(UserProfile, UserProfileAdmin)
 
+class UserAdmin(admin.ModelAdmin):
+    search_fields = ['username']
+admin.site.register(User, UserAdmin)
 
 class EndpointAdmin(admin.ModelAdmin):
     pass
@@ -77,7 +80,6 @@ class GeneralAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Contact, GeneralAdmin)
 admin.site.register(contenttypes.models.ContentType, GeneralAdmin)
-admin.site.register(User, GeneralAdmin)
 admin.site.register(BusinessLink, GeneralAdmin)
 admin.site.register(BusinessSubscription, GeneralAdmin)
 admin.site.register(Scan, GeneralAdmin)

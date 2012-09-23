@@ -7,8 +7,4 @@ urlpatterns = patterns(
         r'^channel/$',
         'channel'
     ),
-    url(
-        r'^login(/(?P<account_type>[^/]+))?/$',
-        'login'
-    )
 )

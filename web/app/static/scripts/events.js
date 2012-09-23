@@ -1322,39 +1322,46 @@ $(function() {
                     if (lock) { return; }
                     lock = true;
                     
-                    $.post(action, {'data' : { 'response': response, 'user' : user}},
-                            function(data) {
-                                if (data.success == 'yes') {
-                                    if (data.user == 'premium')
-                                        $('.replace').replaceWith(data.message);
+                    $.post(
+                        action, {
+                            'data' : { 
+                                'response': response, 
+                                'user' : user
+                             }
+                         }, 
+                         function(data) {
+                            if (data.success == 'yes') {
+                                if (data.user == 'premium')
+                                    $('.replace').replaceWith(data.message);
 
-                                    if (data.user == 'foreverfree')
-                                        window.location = '/business/profile/';
+                                if (data.user == 'foreverfree')
+                                    window.location = '/business/profile/';
 
-                                    if (data.user == 'user')
-                                        window.location = '/offers/';
-                
-                                }
-                                if (data.success == 'no') {
-                                    $('#message-log').replaceWith('<p class="message-confirm message-error radius-general txt-size">' + data.message + '</p>');
-                
-                                }
+                                if (data.user == 'user')
+                                    window.location = '/offers/';
+            
+                            }
+                            if (data.success == 'no') {
+                                $('#message-log').replaceWith('<p class="message-confirm message-error radius-general txt-size">' + data.message + '</p>');
+            
+                            }
 
-                                if (data.success == 'reload') {
-                                    window.location.reload(true);
-                
-                                }
-                                lock = false;
-                            }, 'json'
-                        );
-                    }
-                );
+                            if (data.success == 'reload') {
+                                window.location.reload(true);
+            
+                            }
+                            lock = false;
+                        }, 
+                        'json'
+                    );
+                });
 
             } else if (canLogout) {
-               var $r = Math.floor(Math.random()*1000000000);
-               var location = server + "user/log_out/" + $r;
+               var location = "/auth/logout/";
                window.location = location;
+
             }
+
         };
 
         FB.init({

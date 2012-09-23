@@ -1,15 +1,4 @@
-import json
-import hashlib
-
-from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login as django_login
-
-from app.models.endpoints import Endpoint, EndpointTypes
-from knotis_auth.models import User, UserProfile, AccountStatus, AccountTypes
-
-
-FACEBOOK_PASSWORD_SALT = '@#^#$@FBb9xc8cy'
 
 
 def channel(request):
@@ -20,105 +9,13 @@ def channel(request):
     )
 
 
-def login(
-    request,
-    account_type=None
-):
-    if None == account_type:
-        account_type = AccountTypes.USER
-
-    def generate_response(data):
-        return HttpResponse(
-            json.dumps(data),
-            content_type='application/json'
-        )
-
-    if request.method.lower() != 'post':
-        return HttpResponseBadRequest('Only POST is supported.')
-
-    try:
-        facebook_id = request.POST['data[response][authResponse][userID]']
-        email = request.POST['data[user][email]']
-        first_name = request.POST['data[user][last_name]']
-        last_name = request.POST['data[user][last_name]']
-
-    except:
-        return HttpResponseBadRequest('No data returned from facebook')
-        pass
-
-    user = None
-    try:
-        user = User.objects.get(username=email)
-    except:
-        pass
-
-    message = None
-    user_profile = None
-    if None == user:
-        try:
-            password = ''.join([
-                FACEBOOK_PASSWORD_SALT,
-                facebook_id,
-                FACEBOOK_PASSWORD_SALT
-            ])
-            password_hash = hashlib.md5(password)
-
-            user, user_profile = User.objects.create_user(
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-                password=password_hash.hexdigest()
-            )
-            user.active = True
-            user.save()
-
-            user_profile.status = AccountStatus.ACTIVE
-            user_profile.account_type = account_type
-            user_profile.save()
-
-            Endpoint.objects.create_endpoint(
-                EndpointTypes.EMAIL,
-                user.username,
-                user, 
-                True
-            )
-        except Exception as e:
-            message = str(e)
-
-    if None == user:
-        return generate_response({
-            'success': 'no',
-            'message': (
-                'Failed to associate your Facebook account '
-                'with your Knotis account. Please try again. %s'
-            ) % message,
-        })
-
-    if None == user_profile:
-        user_profile = UserProfile.objects.get(user=user)
-
-    password = ''.join([
-        FACEBOOK_PASSWORD_SALT,
+def get_facebook_avatar(request):
+    facebook_id = request.session.get('fb_id')
+    if not facebook_id:
+        return None
+    
+    return '/'.join([
+        'http://graph.facebook.com',
         facebook_id,
-        FACEBOOK_PASSWORD_SALT
+        'picture'
     ])
-    password_hash = hashlib.md5(password)
-    authenticated_user = authenticate(
-        username=user.username,
-        password=password_hash.hexdigest()
-    )
-
-    if authenticated_user:
-        django_login(
-            request,
-            authenticated_user
-        )
-        return generate_response({
-            'success': 'yes',
-            'user': user_profile.account_type
-        })
-    else:
-        return generate_response({
-            'success': 'no',
-            'message': 'Failed authenticate Facebook user.'
-        })

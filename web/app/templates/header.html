@@ -125,7 +125,7 @@
                             {% endif %}
                         </ul>
                         <ul class="face">
-                        	{% if logged_in_facebook %}
+                        	{% if session.fb_id %}
                             <li>
                                <fb:login-button autologoutlink="true"></fb:login-button>
                             </li>

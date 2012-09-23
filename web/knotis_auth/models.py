@@ -5,6 +5,7 @@ from django.db.models import Model, CharField, OneToOneField, \
     FloatField, IntegerField, NullBooleanField, Manager
 
 from gravatar.views import avatar as gravatar_avatar
+from facebook.views import get_facebook_avatar
 
 from foreignkeynonrel.models import ForeignKeyNonRel
 from app.models.fields.math import MatrixField
@@ -103,14 +104,17 @@ class User(models.User):
         img=False,
         img_attrs={}
     ):
-        return gravatar_avatar(
-            email,
-            s,
-            d,
-            r,
-            img,
-            img_attrs
-        )
+        if facebook_id:
+            return get_facebook_avatar(facebook_id)
+        else:
+            return gravatar_avatar(
+                email,
+                s,
+                d,
+                r,
+                img,
+                img_attrs
+            )
 
     def update(
         self,
