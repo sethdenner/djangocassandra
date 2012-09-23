@@ -1366,7 +1366,7 @@ $(function() {
 
         FB.init({
             appId: facebookAppId,
-            status: false,
+            status: true,
             cookie: true,
             xfbml: true,
             oauth: true,
