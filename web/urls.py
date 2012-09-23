@@ -257,7 +257,7 @@ urlpatterns = patterns('',
         name='auth'
     ),
     url(
-        r'^facebok/login(/(?P<account_type>[^/]+))?/$',
+        r'^facebook/login(/(?P<account_type>[^/]+))?/$',
         'knotis_auth.views.facebook_login',
         name='auth'
     ),
