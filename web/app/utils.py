@@ -58,7 +58,7 @@ class View:
                     knotis_user.username_12()
                 template_parameters['avatar_uri'] = knotis_user.avatar(
                     request.user.username,
-                    None,
+                    request.session.get('fb_id'),
                     20
                 )
 

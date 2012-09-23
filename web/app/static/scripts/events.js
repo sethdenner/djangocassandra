@@ -1366,7 +1366,7 @@ $(function() {
 
         FB.init({
             appId: facebookAppId,
-            status: true,
+            status: false,
             cookie: true,
             xfbml: true,
             oauth: true,
@@ -1376,7 +1376,7 @@ $(function() {
         FB.Event.subscribe('auth.authResponseChange', function(response) {
             handleSession(response, true);
         });
-        
+
         FB.Canvas.setAutoGrow();
     };
 

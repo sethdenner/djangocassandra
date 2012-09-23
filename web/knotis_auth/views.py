@@ -281,23 +281,30 @@ def facebook_login(
     request,
     account_type=None
 ):
-    if None == account_type:
-        account_type = AccountTypes.USER
-
     def generate_response(data):
         return HttpResponse(
             json.dumps(data),
             content_type='application/json'
         )
 
+    if request.session.get('fb_id'):
+        return generate_response({
+            'success': 'no',
+            'message': 'Already authenticated.'
+        })
+
+    if None == account_type:
+        account_type = AccountTypes.USER
+
+
     if request.method.lower() != 'post':
         return HttpResponseBadRequest('Only POST is supported.')
 
     try:
-        facebook_id = request.POST['data[response][authResponse][userID]']
-        email = request.POST['data[user][email]']
-        first_name = request.POST['data[user][last_name]']
-        last_name = request.POST['data[user][last_name]']
+        facebook_id = request.POST.get('data[response][authResponse][userID]')
+        email = request.POST.get('data[user][email]')
+        first_name = request.POST.get('data[user][last_name]')
+        last_name = request.POST.get('data[user][last_name]')
 
     except:
         return HttpResponseBadRequest('No data returned from facebook')
