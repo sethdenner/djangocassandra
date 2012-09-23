@@ -105,7 +105,8 @@ def render_paypal_button(parameters):
         'action': settings.PAYPAL_FORM_URL,
         'button_text': settings.PAYPAL_DEFAULT_BUTTON_TEXT,
     }
-    parameters = default_parameters.update(parameters)
+    default_parameters.update(parameters)
+    parameters = default_parameters
 
     notify_url = parameters.get('notify_url')
     if notify_url:

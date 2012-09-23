@@ -302,7 +302,7 @@ def facebook_login(
 
     if request.session.get('fb_id') == facebook_id:
         return generate_response({
-            'success': 'yes',
+            'success': 'no',
             'message': 'Already authenticated.'
         })
     
@@ -392,7 +392,7 @@ def facebook_login(
                         'custom': '_'.join([
                             user.id,
                             generate_ipn_hash(user.id)
-                        ]),
+                        ])
                     })
         
                 html = get_template('finish_registration.html')
