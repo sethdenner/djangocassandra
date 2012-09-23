@@ -305,7 +305,7 @@ def facebook_login(
     try:
         facebook_id = request.POST.get('data[response][authResponse][userID]')
         email = request.POST.get('data[user][email]')
-        first_name = request.POST.get('data[user][last_name]')
+        first_name = request.POST.get('data[user][first_name]')
         last_name = request.POST.get('data[user][last_name]')
 
     except:

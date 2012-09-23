@@ -15,7 +15,7 @@ def generate_ipn_hash(value):
         salt,
         value,
         salt
-    ]))
+    ])).hexdigest()
 
 
 def is_ipn_valid(request):
