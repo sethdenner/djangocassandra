@@ -198,7 +198,12 @@ def profile(request, backend_name):
         pass
 
     try:
-        template_parameters['business_images'] = Image.objects.filter(related_object_id=business.id)
+        business_images = Image.objects.filter(related_object_id=business.id)
+        template_parameters['business_images'] = business_images;
+        if not business.primary_image and len(business_images):
+            business.primary_image = business_images[0]
+            business.save()
+            
     except:
         pass
     
