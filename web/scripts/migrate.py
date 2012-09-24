@@ -5,7 +5,8 @@ import MySQLdb.cursors
 from django.contrib.auth import authenticate
 
 from optparse import OptionParser
-from knotis_auth.models import User, AccountTypes, AccountStatus, _generate_facebook_password
+from knotis_auth.models import User, AccountTypes, AccountStatus
+from knotis_auth.views import _generate_facebook_password
 from app.models.businesses import Business, BusinessLink, BusinessSubscription
 from app.models.offers import Offer
 from app.models.cities import City
