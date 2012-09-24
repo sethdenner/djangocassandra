@@ -505,16 +505,19 @@ def import_images(cursor):
                 related_object_id
             )
 
-            Image.objects.create_image(
+            image_instance = Image.objects.create_image(
                 user, 
                 image, 
                 None, 
                 related_object_id
             )
+            
+            if 'business' == asset_type:
+                if asset['headImage']:
+                    business_map.new_business.primary_image = image_instance
                     
         except Exception, e:
             print 'Exception!: %s\n' % e,
-
         
         
 def import_transactions(cursor):
