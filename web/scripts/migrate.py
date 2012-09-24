@@ -20,7 +20,7 @@ import sys
 
 from app.models.neighborhoods import Neighborhood
 
-from legacy.models import UserIdMap, BusinessIdMap, OfferIdMap
+from legacy.models import UserIdMap, BusinessIdMap, OfferIdMap, QrcodeIdMap
 
 """
 TODO:
@@ -172,10 +172,15 @@ def import_business(cursor):
             else:
                 qrcode_type = QrcodeTypes.PROFILE
             
-            Qrcode.objects.create(
+            qrcode = Qrcode.objects.create(
                 business=new_business,
                 uri=qrcode_uri,
                 qrcode_type=qrcode_type
+            )
+            
+            QrcodeIdMap.objects.create(
+                old_id=business_table['qrcodeId'],
+                new_qrcode=qrcode
             )
 
         except Exception as e:
@@ -489,7 +494,10 @@ def import_images(cursor):
                 related_object_id = None
                 user = None
         
-            image = asset['location']
+            image = '/'.join([
+                'images',
+                asset['location']
+            ])
     
             print 'Importing image "%s" by user "%s" for object with id "%s".'% (
                 image,

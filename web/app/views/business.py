@@ -18,7 +18,7 @@ from knotis_qrcodes.models import Qrcode, QrcodeTypes
 from knotis_yelp.views import get_reviews_by_yelp_id
 from knotis_twitter.views import get_twitter_feed_html
 
-from legacy.models import BusinessIdMap
+from legacy.models import QrcodeIdMap
 
 
 class CreateBusinessForm(Form):
@@ -206,28 +206,28 @@ def profile(request, backend_name):
         qrcode = Qrcode.objects.filter(business=business)[0]
 
         try:
-            id_map = BusinessIdMap.objects.get(business=business)
+            id_map = QrcodeIdMap.objects.get(new_qrcode=qrcode)
 
-        except:
+        except Exception, e:
             id_map = None
         
         if id_map:
-            qrcode_uri = urllib.urlencode('/'.join([
+            qrcode_uri = '/'.join([
                 settings.BASE_URL,
                 'business',
-                id_map.old_id,
-            ]))
+                unicode(id_map.old_id),
+            ])
 
         else:
-            qrcode_uri = urllib.urlencode('/'.join([
+            qrcode_uri = '/'.join([
                 settings.BASE_URL,
                 'qrcode',
                 qrcode.id
-            ]))
+            ])
             
         template_parameters['qrcode_uri'] = qrcode_uri
         
-    except:
+    except Exception, e:
         pass
 
     try:
