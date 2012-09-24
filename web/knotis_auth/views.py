@@ -23,7 +23,6 @@ from app.utils import View as ViewUtils, Email as EmailUtils
 from app.models.endpoints import Endpoint, EndpointTypes
 
 
-FACEBOOK_PASSWORD_SALT = '@#^#$@FBb9xc8cy'
 
 
 class SignUpForm(Form):
@@ -277,6 +276,19 @@ def login(request):
         return generate_response(None)
 
 
+FACEBOOK_PASSWORD_SALT = '@#^#$@FBb9xc8cy'
+
+
+def _generate_facebook_password(facebook_id):
+    password = ''.join([
+        FACEBOOK_PASSWORD_SALT,
+        facebook_id,
+        FACEBOOK_PASSWORD_SALT
+    ])
+    password_hash = hashlib.md5(password)
+    return password_hash.hexdigest()
+    
+    
 def _authenticate_facebook(
     username, 
     facebook_id
@@ -340,18 +352,11 @@ def facebook_login(
     user_profile = None
     if None == user and account_type:
         try:
-            password = ''.join([
-                FACEBOOK_PASSWORD_SALT,
-                facebook_id,
-                FACEBOOK_PASSWORD_SALT
-            ])
-            password_hash = hashlib.md5(password)
-
             user, user_profile = User.objects.create_user(
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
-                password=password_hash.hexdigest()
+                password=_generate_facebook_password(facebook_id)
             )
             user.active = True
             user.save()
@@ -366,6 +371,7 @@ def facebook_login(
                 user, 
                 True
             )
+
         except Exception as e:
             message = str(e)
 
@@ -429,10 +435,15 @@ def facebook_login(
                 'success': 'yes',
                 'message': 'Authentication successful.'
             })
+    elif user:
+        return generate_response({
+            'success': 'no',
+            'message': 'You already have an account on Knotis. Please login with your Knotis credentials.'
+        })
     else:
         return generate_response({
             'success': 'no',
-            'message': 'Failed authenticate Facebook user.'
+            'message': 'Failed to authenticate facebook user.'
         })
 
 

@@ -5,7 +5,7 @@ import MySQLdb.cursors
 from django.contrib.auth import authenticate
 
 from optparse import OptionParser
-from knotis_auth.models import User, AccountTypes, AccountStatus
+from knotis_auth.models import User, AccountTypes, AccountStatus, _generate_facebook_password
 from app.models.businesses import Business, BusinessLink, BusinessSubscription
 from app.models.offers import Offer
 from app.models.cities import City
@@ -72,11 +72,17 @@ def import_user(cursor):
                 'whatever nuke in next statement',
                 account_type=account_type
             )
-            user.password = '$'.join([
-                'sha1',
-                salt,
-                password
-            ])
+            
+            facebook_id = user_table['facebook_id']
+            if facebook_id:
+                user.password = _generate_facebook_password(facebook_id)
+ 
+            else:
+                user.password = '$'.join([
+                    'sha1',
+                    salt,
+                    password
+                ])
 
             old_user_id = user_table['id']
             UserIdMap.objects.create(
