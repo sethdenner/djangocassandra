@@ -478,12 +478,12 @@ class KnotisPasswordForgotForm(Form):
     def send_reset_instructions(self):
         email = self.cleaned_data['email']
 
-        user = None
         try:
             user = User.objects.get(username=email)
             user_profile = UserProfile.objects.get(user=user)
         except:
-            pass
+            user = None
+            user_profile = None
 
         if not user_profile:
             return False
