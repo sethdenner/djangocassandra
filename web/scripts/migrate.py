@@ -1,25 +1,26 @@
-#from app.models.contents import Content
-
+#from app.models.contentvs import Content
 import getpass
-
-import MySQLdb
 import MySQLdb.cursors
-import hashlib
+
+from django.contrib.auth import authenticate
+
+from optparse import OptionParser
 from knotis_auth.models import User, AccountTypes, AccountStatus
 from app.models.businesses import Business, BusinessLink, BusinessSubscription
 from app.models.offers import Offer
 from app.models.cities import City
-from knotis_qrcodes.models import Qrcode, Scan
+from knotis_qrcodes.models import Qrcode, QrcodeTypes, Scan
 from app.models.categories import Category
 from app.models.transactions import Transaction, TransactionTypes
 from app.models.endpoints import Endpoint, EndpointTypes
+from app.models.media import Image
 
 import datetime
 import sys
 
 from app.models.neighborhoods import Neighborhood
 
-from legacy.models import BusinessIdMap, OfferIdMap
+from legacy.models import UserIdMap, BusinessIdMap, OfferIdMap
 
 """
 TODO:
@@ -37,7 +38,6 @@ def import_user(cursor):
     cursor.execute("""SELECT * from users, users_to_roles WHERE users_to_roles.user_id = users.id ORDER BY email;""")
 
     all_users = cursor.fetchall()
-    added_users = {}
 
     for user_table in all_users:
         try:
@@ -78,6 +78,12 @@ def import_user(cursor):
                 password
             ])
 
+            old_user_id = user_table['id']
+            UserIdMap.objects.create(
+                old_id=old_user_id,
+                new_user=user
+            )
+            
             if status.lower() == 'active':
                 user_profile.account_status = AccountStatus.ACTIVE
                 user.active = True
@@ -146,11 +152,31 @@ def import_business(cursor):
                 yelp_id
             )
 
-            id = business_table['id']
+            old_id = business_table['id']
             BusinessIdMap.objects.create(
-                old_id=id,
+                old_id=old_id,
                 new_business=new_business
-                )
+            )
+            
+            qrcode_legacy_type = business_table['qrcodeType']
+            qrcode_uri = business_table['qrcodeContent']
+            if 'deal' == qrcode_legacy_type:
+                qrcode_type = QrcodeTypes.OFFER
+
+            elif 'video' == qrcode_legacy_type:
+                qrcode_type = QrcodeTypes.VIDEO
+            
+            elif 'link' == qrcode_legacy_type:
+                qrcode_type = QrcodeTypes.LINK
+            
+            else:
+                qrcode_type = QrcodeTypes.PROFILE
+            
+            Qrcode.objects.create(
+                business=new_business,
+                uri=qrcode_uri,
+                qrcode_type=qrcode_type
+            )
 
         except Exception as e:
             print 'Exception!: %s\n' % e,
@@ -193,8 +219,8 @@ def import_offer(cursor):
 
             # Get city instance.
             city_id = old_offer['cityId']
-            c.execute("""select title from city where id=%s""" % city_id)
-            city_name = c.fetchone()
+            cursor.execute("""select title from city where id=%s""" % city_id)
+            city_name = cursor.fetchone()
             city = None
             if city_name == None:
                 #print 'CITY OF ID %s NOT IN DATABASE!' % city_id
@@ -215,9 +241,9 @@ def import_offer(cursor):
 
             # Get neighborhood instance.
             neighborhood_id = old_offer['neightbourhoodId']
-            c.execute("""select title from neighbourhood where id = %s""" % neighborhood_id)
+            cursor.execute("""select title from neighbourhood where id = %s""" % neighborhood_id)
 
-            neighborhood_name = c.fetchone()
+            neighborhood_name = cursor.fetchone()
             neighborhood = None
 
             if neighborhood_name == None:
@@ -238,8 +264,8 @@ def import_offer(cursor):
 
             # Get the category instance.
             category_id = old_offer['categoryId']
-            c.execute("""select title from category where id = %s""" % category_id)
-            category_name = c.fetchone()
+            cursor.execute("""select title from category where id = %s""" % category_id)
+            category_name = cursor.fetchone()
             category = None
             if category_name == None:
                 print "Category of id %s not in database." % category_id
@@ -269,8 +295,10 @@ def import_offer(cursor):
                 premium = False
 
 
-            if end_date <= datetime.datetime.now() or not premium:
-                active = 0
+            if end_date <= datetime.datetime.now() or not published:
+                active = False
+            else:
+                active = True
 
             print 'Importing offer for business %s by user %s' % (business, user)
             new_offer = Offer.objects.create_offer(
@@ -291,9 +319,11 @@ def import_offer(cursor):
                 end_date,
                 stock,
                 unlimited,
-                active,
+                published,
                 premium=premium
             )
+            new_offer.active = active
+            new_offer.save()
 
             old_offer_id = old_offer['id']
 
@@ -305,27 +335,28 @@ def import_offer(cursor):
         except Exception as e:
             print 'Exception!: %s\n' % e,
 
-def import_categories(cursor):
+
+def import_categories(
+    cursor,
+    user
+):
     cursor.execute("""select * from category""")
     all_categories = cursor.fetchall()
-    user = User.objects.get(username='simlay')
     for category_dict in all_categories:
         try:
             name = category_dict['title'].decode('cp1252')
             print 'Importing category %s by %s' % (name, user)
-            category = Category.objects.create_category(user, name)
+            Category.objects.create_category(user, name)
 
         except Exception as e:
             print 'Exception!: %s\n' % e,
 
-def import_cities(cursor):
-    cursor.execute("""select * from city;""")
-    users = User.objects.filter(username='simlay')
 
-    if len(users) > 0:
-        user = users[0]
-    else:
-        user = None
+def import_cities(
+    cursor,
+    user
+):
+    cursor.execute("""select * from city;""")
     all_cities = cursor.fetchall()
     for city_dict in all_cities:
         try:
@@ -333,12 +364,16 @@ def import_cities(cursor):
 
             new_city = City.objects.create_city(user=user, name=city_name)
 
-            print 'City %s added by %s' % (city_name, user)
+            print 'City %s added by %s' % (new_city.name, user)
 
         except Exception as e:
             print 'Exception!: %s\n' % e,
 
-def import_neighborhoods(cursor):
+
+def import_neighborhoods(
+    cursor,
+    user
+):
     cursor.execute("""select * from neighbourhood""")
     all_neighborhoods = cursor.fetchall()
     for neighborhood_dict in all_neighborhoods:
@@ -364,7 +399,6 @@ def import_neighborhoods(cursor):
                         break
 
             name = title
-            user = User.objects.get(username='simlay')
             print "%s creating neighborhood %s in %s" % (user, name, city_name)
             Neighborhood.objects.create_neighborhood(
                 user,
@@ -375,32 +409,35 @@ def import_neighborhoods(cursor):
         except Exception as e:
             print 'Exception!: %s\n' % e,
 
+
 #     import qrcodes
-def import_qrcodes(cursor):
+def import_scans(cursor):
 
     cursor.execute("""select * from qrcodeHistory""")
-    all_qrcodes = cursor.fetchall()
-    for qrcode_dict in all_qrcodes:
+    all_scans = cursor.fetchall()
+    for scan in all_scans:
         try:
-            old_business_id = qrcode_dict['merchantId']
-            uri = qrcode_dict['link'].decode('cp1252')
+            old_business_id = scan['merchantId']
+            uri = scan['link'].decode('cp1252')
+            
+            business_map = BusinessIdMap.objects.get(old_id=old_business_id)
+            qrcode = Qrcode.objects.get(business=business_map.new_business)
+            scan_type = scan['qrcodeType']
+            scan_date = scan['date']
 
-            qrcode_type = qrcode_dict['qrcodeType']
-            qrcode_date = qrcode_dict['date']
-            print 'Importing qrcode: old_business_id = %s, qrcode_type = %s, uri = %s, qrcode_date = %s' \
-                % (old_business_id, qrcode_type, uri, qrcode_date)
+            print 'Importing qrcode scan: old_business_id = %s, qrcode_type = %s, uri = %s, qrcode_date = %s' \
+                % (old_business_id, scan_type, uri, scan_date)
 
-            businesses = BusinessIdMap.objects.filter(old_id=old_business_id)
-            business = None
-            if len(businesses) > 0:
-                business = businesses[0].new_business
-
-            new_qrcode = Qrcode(
-                business=business,
+            Scan.objects.create(
+                qrcode=qrcode,
                 uri=uri,
-                qrcode_type=qrcode_type,
+                pub_date=scan_date
             )
-            new_qrcode.save()
+            qrcode.hits = qrcode.hits + 1
+            if qrcode.last_hit  < scan_date:
+                qrcode.last_hit = scan_date
+                
+            qrcode.save()
 
         except Exception as e:
             print 'Exception!: %s\n' % e,
@@ -421,21 +458,62 @@ def import_business_links(cursor):
                 business = businesses[0].new_business
             print 'Importing business link for %s to %s' % (business, uri)
             new_business_link = BusinessLink(
-                    business=business,
-                    uri=uri,
-                    title=title,
-                    )
+                business=business,
+                uri=uri,
+                title=title,
+            )
             new_business_link.save()
 
         except Exception as e:
             print 'Exception!: %s\n' % e,
 
+
+def import_images(cursor):
+    cursor.execute('''select * from asset''')
+    all_assets = cursor.fetchall()
+    for asset in all_assets:
+        asset_type = asset['type'].decode('cp1252')
+        old_related_id = asset['idRel']
+        try:
+            if 'deal' == asset_type:
+                offer_map = OfferIdMap.objects.filter(old_id=old_related_id)[0]
+                related_object_id = offer_map.new_offer_id
+                user = offer_map.new_offer.business.user
+                
+            elif 'business' == asset_type:
+                business_map = BusinessIdMap.objects.filter(old_id=old_related_id)[0]
+                related_object_id = business_map.new_business_id
+                user = business_map.new_business.user
+                
+            else:
+                related_object_id = None
+                user = None
+        
+            image = asset['location']
+    
+            print 'Importing image "%s" by user "%s" for object with id "%s".'% (
+                image,
+                user.username,
+                related_object_id
+            )
+
+            Image.objects.create_image(
+                user, 
+                image, 
+                None, 
+                related_object_id
+            )
+                    
+        except Exception, e:
+            print 'Exception!: %s\n' % e,
+
+        
+        
 def import_transactions(cursor):
     cursor.execute('''select * from dealOrder,users where users.id = dealOrder.accountId''')
     all_transactions = cursor.fetchall()
     for transaction_table in all_transactions:
         try:
-            account_id = transaction_table['accountId']
             username = transaction_table['email'].decode('cp1252')
             user = User.objects.get(username=username)
 
@@ -445,7 +523,9 @@ def import_transactions(cursor):
             business = offer.business
             redeem = transaction_table['redeem']
             quantity = transaction_table['stock']
-
+            price = transaction_table['price']
+            transaction_context = transaction_table['txn_id']
+             
             transaction_type = TransactionTypes.REDEMPTION
             if redeem != 1:
                 transaction_type = TransactionTypes.PURCHASE
@@ -453,47 +533,32 @@ def import_transactions(cursor):
             date = transaction_table['date']
             print "Importing transaction between %s and %s" % (user, business)
 
-            Transaction.objects.create_transaction(
+            transaction = Transaction.objects.create_transaction(
                 user,
+                transaction_type,
                 business,
                 offer,
-                transaction_type,
                 quantity,
+                price,
+                transaction_context,
+                force_add=True
             )
+            transaction.pub_date = date
+            transaction.save()
 
         except Exception as e:
             print 'Exception!: %s\n' % e,
 
+
 def get_business_from_old_id(old_business_id):
-
-    businesses = BusinessIdMap.objects.get(old_id=old_business_id)
-    if len(businesses) > 0:
-        business = businesses[0].new_business
-
-    else:
-        business = None
+    business_map = BusinessIdMap.objects.get(old_id=old_business_id)
+    return business_map.new_business
 
 
-    return business
+def get_user_from_old_id(old_user_id):
+    user_map = UserIdMap.objects.get(old_id=old_user_id)
+    return user_map.new_user
 
-def get_user_from_old_id(old_user_id, cursor):
-
-    if old_user_id == 0:
-        return None
-
-    cursor.execute("""SELECT email FROM users WHERE id = '%s'""" % old_user_id)
-    username = cursor.fetchone()
-    if username == None:
-        print "USER %s NOT IN SYSTEM." % old_user_id
-        return None
-
-    username = username['email']
-    #sys.stderr.write('username = %s\n' % username)
-    user = User.objects.filter(username=username)
-    if len(user) > 0:
-        return user[0]
-    else:
-        return None
 
 def import_business_subscriptions(cursor):
     cursor.execute("""select * from followRelationship""")
@@ -501,22 +566,57 @@ def import_business_subscriptions(cursor):
     all_subscriptions = cursor.fetchall()
     for subscription_table in all_subscriptions:
         try:
-            user_id = subscription_table['accountId']
+            old_user_id = subscription_table['accountId']
             old_business_id = subscription_table['merchantId']
-
+            
             business = get_business_from_old_id(old_business_id)
-            user = get_user_from_old_id(user_id, cursor)
+            user = get_user_from_old_id(old_user_id)
             print 'Adding business subscription: business = %s, user = %s' % (business, user)
 
             BusinessSubscription.objects.create(
-                    user=user,
-                    business=business,
-                )
+                user=user,
+                business=business,
+                active=True
+            )
 
         except Exception as e:
             print 'Exception!: %s\n' % e,
 
+
 if __name__ == '__main__':
+    
+    
+    parser = OptionParser()
+    parser.add_option(
+        '-u', 
+        '--superuser', 
+        dest='superuser',
+        help='Super user to use for creating default content', 
+        metavar='SUPERUSER'
+    )
+
+    (options, args) = parser.parse_args()
+    
+    if options.superuser is None:
+        print "A mandatory option is missing\n"
+        parser.print_help()
+        sys.exit(-1)
+        
+        
+    password = getpass.getpass('Enter password: ')
+    try:
+        superuser = authenticate(
+            username=options.superuser,
+            password=password
+        )
+    except:
+        superuser = None
+        
+    if not superuser or not superuser.is_staff or not superuser.is_superuser:
+        print "This user is not a super user. Run python manage.py createsuperuser\n"
+        parser.print_help()
+        sys.exit(-1)
+        
     #host = options['host']
     host = '216.70.69.66'
 
@@ -530,12 +630,13 @@ if __name__ == '__main__':
     password = 'pHUb9ge4'
 
     try:
-        db = MySQLdb.connect(host=host,
-                             user=user,
-                             passwd=password,
-                             db=sqlDB,
-                             cursorclass=MySQLdb.cursors.DictCursor,
-                             )
+        db = MySQLdb.connect(
+            host=host,
+            user=user,
+            passwd=password,
+            db=sqlDB,
+            cursorclass=MySQLdb.cursors.DictCursor,
+        )
 
     except:
         print 'Database connect error!'
@@ -552,11 +653,22 @@ if __name__ == '__main__':
     import_business(c)
     import_business_links(c)
 
-    import_cities(c)
-    import_neighborhoods(c)
-    import_categories(c)
+    import_cities(
+        c, 
+        superuser
+    )
+    import_neighborhoods(
+        c, 
+        superuser
+    )
+    import_categories(
+        c, 
+        superuser
+    )
     import_offer(c)
+    
+    import_transactions(c)
+    import_images(c)
+    import_scans(c)
 
-    #import_qrcodes(c)
-    #import_business_subscriptions(c)
-    #import_transactions(c)
+    import_business_subscriptions(c)

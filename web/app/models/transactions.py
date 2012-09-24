@@ -10,12 +10,15 @@ from app.models.offers import Offer
 class TransactionTypes:
     PURCHASE = 0
     REDEMPTION = 1
-    PURCHASE_KNOTIS_UNLIMITED = 2
-
+    CANCEL = 2
+    REFUND = 3
+    COMPLETE = 4
+    
     CHOICES = (
-        (PURCHASE, 'Purchase'),
-        (REDEMPTION, 'Redemption'),
-        (PURCHASE_KNOTIS_UNLIMITED, 'Purchase Knotis Unlimited')
+        (PURCHASE, 'Purchased'),
+        (REDEMPTION, 'Redeemed'),
+        (CANCEL, 'Cancelled'),
+        (REFUND, 'Refunded')
     )
 
 
@@ -28,20 +31,23 @@ class TransactionManager(Manager):
         offer=None,
         quantity=1,
         value=0.,
-        transaction_context=None
+        transaction_context=None,
+        force_add=False  # if you are force adding you better be changing the date afterwards!!!
     ):
-        try:
-            existing = self.get(
-                user=user,
-                business=business,
-                offer=offer,
-                transaction_context=transaction_context
-            )
-        except:
-            existing = None
-
-        if existing:
-            raise ValueError('We already have a record of this transaction')
+        if not force_add:
+            try:
+                existing = self.get(
+                    user=user,
+                    business=business,
+                    offer=offer,
+                    transaction_type=transaction_type,
+                    transaction_context=transaction_context
+                )
+            except:
+                existing = None
+    
+            if existing:
+                raise ValueError('We already have a record of this transaction')
 
         return self.create(
             user=user,
@@ -60,7 +66,8 @@ class Transaction(KnotisModel):
     offer = ForeignKeyNonRel(Offer)
     transaction_type = IntegerField(
         null=True,
-        choices=TransactionTypes.CHOICES
+        choices=TransactionTypes.CHOICES,
+        db_index=True
     )
     quantity = IntegerField(null=True)
     value = FloatField(blank=True, null=True, default=0.)
@@ -71,6 +78,9 @@ class Transaction(KnotisModel):
         default=None,
         db_index=True
     )
-    pub_date = DateTimeField(auto_now_add=True)
+    pub_date = DateTimeField(
+        auto_now_add=True,
+        db_index=True
+    )
 
     objects = TransactionManager()

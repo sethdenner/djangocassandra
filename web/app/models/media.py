@@ -29,7 +29,7 @@ class ImageManager(Manager):
             user=user,
             image=image,
             caption=content_caption,
-            relate_object_id=related_object_id
+            related_object_id=related_object_id
         )
 
         return image
