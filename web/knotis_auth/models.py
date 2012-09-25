@@ -43,6 +43,9 @@ class UserManager(models.UserManager):
         account_type=AccountTypes.USER,
         business=False
     ):
+        if email:
+            email = email.lower()
+            
         new_user = super(UserManager, self).create_user(
             email,
             email,

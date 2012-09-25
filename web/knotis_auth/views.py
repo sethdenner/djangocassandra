@@ -93,7 +93,7 @@ class SignUpForm(Form):
         )
 
 
-def sign_up(request, account_type='user'):
+def sign_up(request, account_type=AccountTypes.USER):
     if request.method == 'POST':
         response_data = {
             'success': 'no',
@@ -102,6 +102,8 @@ def sign_up(request, account_type='user'):
         error = ''
 
         sign_up_form = SignUpForm(request.POST)
+        user = None
+        user_profile = None
         if sign_up_form.is_valid():
             try:
                 user, user_profile = sign_up_form.create_user(request)
@@ -237,6 +239,9 @@ def login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
+        if username:
+            username = username.lower()
+            
         user = authenticate(
             username=username,
             password=password
