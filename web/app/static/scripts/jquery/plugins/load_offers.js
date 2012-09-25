@@ -194,7 +194,7 @@
         }    
     };
 })(jQuery);
-
+/*
 jQuery(function (){
     if ($('.offer-content').length) {
         $(document).load_offers(
@@ -202,4 +202,6 @@ jQuery(function (){
             '.offer-content'
         );
     }
+    
 });
+*/

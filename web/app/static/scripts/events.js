@@ -612,7 +612,7 @@ $(function() {
         return false;
     });
 
-    $('.filtering-bar li a').live('click', function(evt) {
+    $('.offers-filter-menu li a').live('click', function(evt) {
         var $this = $(this),
             filter = $this.attr('data-filter'),
             $content = $('.offer-content'),
@@ -683,7 +683,7 @@ $(function() {
         var cont = $this.attr('data-cont');
         var id = $this.attr('data-id');
   
-        active = active.toLowersCase() == 'true' ? false : true;
+        active = active.toLowerCase() == 'true' ? false : true;
         $.post(
             '/offers/update/', {
                 'offer_id': id,

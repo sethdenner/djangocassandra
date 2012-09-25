@@ -670,8 +670,17 @@ class Offer(KnotisModel):
                     )
                     is_self_dirty = True
 
-        if None != image and image != self.image.image:
-            self.image.image = image
+        if None != image and (None == self.image or image != self.image.image):
+            if self.image:
+                self.image.image = image
+                
+            else:
+                self.image = Image.objects.create_image(
+                    self.business.user,
+                    image,
+                    related_object_id=self.id
+                )
+                
             self.image.save()
 
         if None != category and category != self.category:

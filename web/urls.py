@@ -130,7 +130,7 @@ urlpatterns = patterns('',
         name='offers'
     ),
     url(
-        r'^offers/get_offers_by_status/(?P<status>[a-zA-Z_-]+)/(?P<business_id>[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})(/(?P<city>[a-zA-Z_-]+)(/(?P<neighborhood>[a-zA-Z_-]+))?)?(/(?P<category>[a-zA-Z_-]+))?(/(?P<premium>premium))?(/(?P<page>[\d]+))?/$',
+        r'^offers/get_offers_by_status/(?P<status>[a-zA-Z_-]+)/$',
         'app.views.offer.get_offers_by_status',
         name='offers'
     ),

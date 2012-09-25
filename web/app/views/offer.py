@@ -3,7 +3,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.html import strip_tags
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.forms import ModelForm, CharField, ImageField, DateTimeField
+from django.forms import ModelForm, CharField, ImageField, DateTimeField, \
+    ValidationError
 from app.models.offers import Offer, OfferStatus, OfferSort
 from app.models.businesses import Business, BusinessSubscription
 from app.models.categories import Category
@@ -37,14 +38,15 @@ class OfferForm(ModelForm):
             'pub_date',
         )
 
-    title_value = CharField(max_length=128, initial='Food and Drinks')
-    description_value = CharField(max_length=1024, initial='Description')
-    restrictions_value = CharField(max_length=1024, initial='Restrictions')
+    title_value = CharField(max_length=128)
+    description_value = CharField(max_length=1024)
+    restrictions_value = CharField(max_length=1024)
     address_value = CharField(max_length=256)
-    start_date = DateTimeField(initial='Start Date')
-    end_date = DateTimeField(initial='End Date')
+    start_date = DateTimeField()
+    end_date = DateTimeField()
     image_source = ImageField(required=False)
     neighborhood = CharField(max_length=128, required=False)
+    city = CharField(max_length=128)
 
     def __init__(
         self,
@@ -64,14 +66,32 @@ class OfferForm(ModelForm):
             self.fields['restrictions_value'].initial = \
                 instance.restrictions.value
             self.fields['address_value'].initial = instance.address.value.value
-            self.fields['neighborhood'].initial = instance.neighborhood
+            self.fields['neighborhood'].initial = instance.neighborhood.id if instance.neighborhood else None
+            self.fields['city'].initial = instance.city.id if instance.city else None
 
     def clean_city(self):
-        pass
+        try:
+            self.cleaned_data['city'] = City.objects.get(pk=self.cleaned_data['city'])
+
+        except:
+            raise ValidationError('Invalid city.')
+        
+        return self.cleaned_data['city']
 
     def clean_neighborhood(self):
-        pass
+        neighborhood = self.cleaned_data.get('neighborhood')
+        if neighborhood and '-1' != neighborhood:
+            try:
+                self.cleaned_data['neighborhood'] = Neighborhood.objects.get(pk=neighborhood)
 
+            except:
+                raise ValidationError('Invalid neighborhood')
+            
+        else:
+            self.cleaned_data['neighborhood'] = None
+        
+        return self.cleaned_data['neighborhood']
+        
     def save_offer(
         self,
         request,
@@ -81,6 +101,9 @@ class OfferForm(ModelForm):
 
         published = 'publish' in request.POST
 
+        if published and not self.cleaned_data.get('image_source'):
+            raise ValidationError('Offer image is required before publishing.')
+        
         if offer:
             offer.update(
                 self.cleaned_data['title_value'],
@@ -333,6 +356,7 @@ def dashboard(request):
 def edit(request, offer_id=None):
     try:
         Business.objects.get(user=request.user)
+
     except:
         return redirect(edit_profile)
 
@@ -340,6 +364,7 @@ def edit(request, offer_id=None):
     if None != offer_id:
         try:
             offer = Offer.objects.get(pk=offer_id)
+
         except:
             pass
 
@@ -354,14 +379,26 @@ def edit(request, offer_id=None):
             try:
                 form.save_offer(request, offer)
                 return redirect('/offers/dashboard/')
-            except ValueError as e:
+
+            except ValueError, e:
                 feedback = 'ValueError: ' + e.message
-            except Exception as e:
+
+            except ValidationError, e:
+                feedback = 'The following fields are invalid:'
+                for message in e.messages:
+                    feedback = '<br/>'.join([
+                        feedback,                                        
+                        message
+                    ])
+
+            except Exception, e:
                 feedback = 'UnexpectedError: ' + e.message
+
         else:
             feedback = 'The following fields are invalid: '
             for error in form.errors:
                 feedback += strip_tags(error) + '<br/>'
+
     else:
         form = OfferForm(instance=offer)
 
@@ -427,7 +464,7 @@ def update(request):
 def get_offers_by_status(
     request,
     status,
-    business_id,
+    business_id=None,
     city=None,
     neighborhood=None,
     category=None,
@@ -453,11 +490,10 @@ def get_offers_by_status(
 
         template_parameters['offers'] = Offer.objects.filter(
             status=status,
-            business=business,
-            page=int(page) if page else 1
+            business=business
         )
 
-    except:
+    except Exception, e:
         pass
 
     return render(
