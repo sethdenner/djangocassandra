@@ -202,8 +202,28 @@ $(function() {
     $("#search").keyup(function(event) {
         if (event.keyCode == 13) {
             var string = $("#search").val();
-            window.location = server +"offers/keywords/" + string;
+            window.location = server +"offers/?query=" + string;
         }
+    });
+    
+    $('.link-search').click(function(event) {
+       window.location = [
+           '/offers/?query=',
+           $('#search').val()
+       ].join('');
+       event.stopPropagation();
+       return false;
+       
+    });
+    
+    $('#search_form').submit(function(event){
+       window.location = [
+           '/offers/?query=',
+           $('#search').val()
+       ].join('');
+       event.stopPropagation();
+       return false;
+        
     });
 
     // count characters

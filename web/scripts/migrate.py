@@ -73,11 +73,11 @@ def import_user(cursor):
                 'whatever nuke in next statement',
                 account_type=account_type
             )
-            
+
             facebook_id = user_table['facebook_id']
             if facebook_id:
                 user.password = _generate_facebook_password(facebook_id)
- 
+
             else:
                 user.password = '$'.join([
                     'sha1',
@@ -90,7 +90,7 @@ def import_user(cursor):
                 old_id=old_user_id,
                 new_user=user
             )
-            
+
             if status.lower() == 'active':
                 user_profile.account_status = AccountStatus.ACTIVE
                 user.active = True
@@ -125,7 +125,6 @@ def import_business(cursor):
 
             summary = business_table['description'].decode('cp1252')
             description = business_table['extendedDescription'].decode('cp1252')
-
 
             address = business_table['street1'].decode('cp1252') #+ business_table['street2'].decode('cp1252')
 
@@ -164,7 +163,7 @@ def import_business(cursor):
                 old_id=old_id,
                 new_business=new_business
             )
-            
+
             qrcode_legacy_type = business_table['qrcodeType']
             qrcode_uri = business_table['qrcodeContent']
             if 'deal' == qrcode_legacy_type:
@@ -172,19 +171,19 @@ def import_business(cursor):
 
             elif 'video' == qrcode_legacy_type:
                 qrcode_type = QrcodeTypes.VIDEO
-            
+
             elif 'link' == qrcode_legacy_type:
                 qrcode_type = QrcodeTypes.LINK
-            
+
             else:
                 qrcode_type = QrcodeTypes.PROFILE
-            
+
             qrcode = Qrcode.objects.create(
                 business=new_business,
                 uri=qrcode_uri,
                 qrcode_type=qrcode_type
             )
-            
+
             QrcodeIdMap.objects.create(
                 old_id=business_table['qrcodeId'],
                 new_qrcode=qrcode
@@ -428,7 +427,7 @@ def import_scans(cursor):
         try:
             old_business_id = scan['merchantId']
             uri = scan['link'].decode('cp1252')
-            
+
             business_map = BusinessIdMap.objects.get(old_id=old_business_id)
             qrcode = Qrcode.objects.get(business=business_map.new_business)
             scan_type = scan['qrcodeType']
@@ -443,9 +442,9 @@ def import_scans(cursor):
                 pub_date=scan_date
             )
             qrcode.hits = qrcode.hits + 1
-            if qrcode.last_hit  < scan_date:
+            if qrcode.last_hit < scan_date:
                 qrcode.last_hit = scan_date
-                
+
             qrcode.save()
 
         except Exception as e:
@@ -488,42 +487,42 @@ def import_images(cursor):
                 offer_map = OfferIdMap.objects.filter(old_id=old_related_id)[0]
                 related_object_id = offer_map.new_offer_id
                 user = offer_map.new_offer.business.user
-                
+
             elif 'business' == asset_type:
                 business_map = BusinessIdMap.objects.filter(old_id=old_related_id)[0]
                 related_object_id = business_map.new_business_id
                 user = business_map.new_business.user
-                
+
             else:
                 related_object_id = None
                 user = None
-        
+
             image = '/'.join([
                 'images',
                 asset['location']
             ])
-    
-            print 'Importing image "%s" by user "%s" for object with id "%s".'% (
+
+            print 'Importing image "%s" by user "%s" for object with id "%s".' % (
                 image,
                 user.username,
                 related_object_id
             )
 
             image_instance = Image.objects.create_image(
-                user, 
-                image, 
-                None, 
+                user,
+                image,
+                None,
                 related_object_id
             )
-            
+
             if 'business' == asset_type:
                 if asset['headImage']:
                     business_map.new_business.primary_image = image_instance
-                    
+
         except Exception, e:
             print 'Exception!: %s\n' % e,
-        
-        
+
+
 def import_transactions(cursor):
     cursor.execute('''select * from dealOrder,users where users.id = dealOrder.accountId''')
     all_transactions = cursor.fetchall()
@@ -537,9 +536,9 @@ def import_transactions(cursor):
             business = offer.business
             redeem = transaction_table['redeem']
             quantity = transaction_table['stock']
-            price = transaction_table['price']   
+            price = transaction_table['price']
             transaction_context = transaction_table['txn_id']
-             
+
             transaction_type = TransactionTypes.REDEMPTION
             if redeem != 1:
                 transaction_type = TransactionTypes.PURCHASE
@@ -581,7 +580,7 @@ def import_business_subscriptions(cursor):
         try:
             old_user_id = subscription_table['accountId']
             old_business_id = subscription_table['merchantId']
-            
+
             business = get_business_from_old_id(old_business_id)
             user = get_user_from_old_id(old_user_id)
             print 'Adding business subscription: business = %s, user = %s' % (business, user)
@@ -597,25 +596,25 @@ def import_business_subscriptions(cursor):
 
 
 if __name__ == '__main__':
-    
-    
+
+
     parser = OptionParser()
     parser.add_option(
-        '-u', 
-        '--superuser', 
+        '-u',
+        '--superuser',
         dest='superuser',
-        help='Super user to use for creating default content', 
+        help='Super user to use for creating default content',
         metavar='SUPERUSER'
     )
 
     (options, args) = parser.parse_args()
-    
+
     if options.superuser is None:
         print "A mandatory option is missing\n"
         parser.print_help()
         sys.exit(-1)
-        
-        
+
+
     password = getpass.getpass('Enter password: ')
     try:
         superuser = authenticate(
@@ -624,12 +623,12 @@ if __name__ == '__main__':
         )
     except:
         superuser = None
-        
+
     if not superuser or not superuser.is_staff or not superuser.is_superuser:
         print "This user is not a super user. Run python manage.py createsuperuser\n"
         parser.print_help()
         sys.exit(-1)
-        
+
     #host = options['host']
     host = '216.70.69.66'
 
@@ -667,19 +666,19 @@ if __name__ == '__main__':
     import_business_links(c)
 
     import_cities(
-        c, 
+        c,
         superuser
     )
     import_neighborhoods(
-        c, 
+        c,
         superuser
     )
     import_categories(
-        c, 
+        c,
         superuser
     )
     import_offer(c)
-    
+
     import_transactions(c)
     import_images(c)
     import_scans(c)

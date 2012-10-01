@@ -9,7 +9,7 @@
     <div class="wrapper clear-fix">
         <div class="main-image-txt left">
             <div class="main-image box-border left radius-general relative">
-                {% thumbnail business.primary_image.image '222x111' as image %}
+                {% thumbnail business.primary_image.image '222x111' upscale=True as image %}
                 <img alt="{{ business.business_name }}" src="{{ image.url }}">
                 {% empty %}
                 <img src="{{ STATIC_URL }}images/no-image-business.png" alt="{{ business.business_name }}">
