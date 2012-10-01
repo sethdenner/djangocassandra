@@ -1301,27 +1301,28 @@ $(function() {
     });
 
 
-    $(".qrcode-buttom").live('click', function() {
-    var $this = $(this),
-            type = $this.attr('data-type'),
-            id = $this.attr('data-id');
+    $(".qrcode-buttom").live('click', function(event) {
+        var $this = $(this),
+                type = $this.attr('data-type'),
+                id = $this.attr('data-id');
 
-    $.post([server + "backend/graphicqrcode",id,type].join('/'), {},
-
-            function(data) {
-
-                $('#graphic-' + id).replaceWith(data);
-
-
-            });
-
-        $(".qrcode-buttoms-" + id +" li a").removeClass('active');
-
+        $.ajax({
+            dataType: 'html',
+            url: [
+                '/charts/scans',
+                type,
+                ''    
+            ].join('/'), 
+            success: function(data) {
+                $('#graphic-offers').html(data);
+            }
+        });
+        
+        $(".qrcode-buttom").removeClass('active');
         $(this).addClass('active');
-
-         return false;
-
-});
+        return false;
+    
+    });
 
 
 

@@ -7,7 +7,7 @@
                 defaultSeriesType: 'area'
             },
             title: {
-                text: 'Sold'
+                text: '{{ chart_title }}'
             },
             xAxis: {
                 categories: [{% for category in categories %}
@@ -20,7 +20,7 @@
             },
             yAxis: {
                 title: {
-                    text: 'Dollars'
+                    text: '{{ y_axis_title }}'
                 },
                 labels: {
                     formatter: function() {
@@ -47,7 +47,7 @@
             },
             series: [
                 {
-                    name: 'Total Sold',
+                    name: '{{ series_title }}',
                     data: [{% for item in data %}
                         {{ item }},{% endfor %}
                     ]

@@ -119,9 +119,13 @@ urlpatterns = patterns('',
         name='happyhour'
     ),
     url(
-        r'^dashboard',
+        r'^dashboard/$',
         'app.views.dashboard.dashboard',
         name='dashboard'
+    ),
+    url(
+        r'^dashboard/qrcodes/$',
+        'app.views.dashboard.dashboard_qrcode'
     ),
     url(
         r'^offer/(?P<offer_id>[^/]+)/$',

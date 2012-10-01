@@ -438,6 +438,7 @@ def import_scans(cursor):
 
             Scan.objects.create(
                 qrcode=qrcode,
+                business=qrcode.business,
                 uri=uri,
                 pub_date=scan_date
             )

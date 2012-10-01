@@ -10,5 +10,5 @@ urlpatterns = patterns(
     url(
         r'^/scan/(?P<qrcode_id>[^/]+)/$',
         'scan'
-    ),
+    )
 )
