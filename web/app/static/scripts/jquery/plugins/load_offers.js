@@ -49,11 +49,11 @@
                 .attr('data-page', page);
             
             href = [
-                href.toLowerCase(),
-                business.toLowerCase(),
-                city.toLowerCase(),
-                neighborhood.toLowerCase(),
-                category.toLowerCase(),
+                href ? href.toLowerCase(): null,
+                business ? business.toLowerCase() : null,
+                city ? city.toLowerCase() : null,
+                neighborhood ? neighborhood.toLowerCase() : null,
+                category ? category.toLowerCase(): null,
                 premium ? premium.toLowerCase() : null,
                 page,
                 ''

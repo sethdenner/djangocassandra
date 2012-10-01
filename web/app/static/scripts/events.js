@@ -1262,20 +1262,21 @@ $(function() {
                 type = $this.attr('data-type'),
                 id = $this.attr('data-id');
 
-        $.post([server + "backend/graphic",id,type].join('/'), {},
-
-                function(data) {
-
-                    $('#graphic-' + id).replaceWith(data);
-
-
-                });
-
-            $(".graphic-buttoms-" + id +" li a").removeClass('active');
-
-            $(this).addClass('active');
-
-             return false;
+        $.ajax({
+            dataType: 'html',
+            url: [
+                '/charts/revenue',
+                type,
+                ''    
+            ].join('/'), 
+            success: function(data) {
+                $('#graphic-offers').html(data);
+            }
+        });
+        
+        $(".graphic-buttom").removeClass('active');
+        $(this).addClass('active');
+        return false;
 
     });
 

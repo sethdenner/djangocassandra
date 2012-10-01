@@ -60,7 +60,10 @@ def is_ipn_valid(request):
     if not custom_validation or len(custom_validation) != 2:
         return False
 
-    custom_validation.split('_')
+    custom_validation = custom_validation.split('_')
+    if 2 != len(custom_validation):
+        return False
+    
     ipn_hash = generate_ipn_hash(custom_validation[0])
     if ipn_hash != custom_validation[1]:
         return False
@@ -92,7 +95,7 @@ def buy_premium_service(request):
 
         Transaction.objects.create_transaction(
             user,
-            TransactionTypes.PURCHASE_KNOTIS_UNLIMITED,
+            TransactionTypes.PURCHASE,
             value=settings.PRICE_MERCHANT_MONTHLY,
             transcation_context=transaction_id
         )

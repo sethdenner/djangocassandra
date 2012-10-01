@@ -1,0 +1,60 @@
+<script type="text/javascript">
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'graphicOffers',
+                defaultSeriesType: 'area'
+            },
+            title: {
+                text: 'Sold'
+            },
+            xAxis: {
+                categories: [{% for category in categories %}
+                    '{{ category}}',{% endfor %}
+                ],
+                tickmarkPlacement: 'on',
+                title: {
+                    enabled: false
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Dollars'
+                },
+                labels: {
+                    formatter: function() {
+                        return this.value;
+                    }
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return '' +
+                            this.x + ': ' + Highcharts.numberFormat(this.y, 0, ',') + ' Dollars';
+                }
+            },
+            plotOptions: {
+                area: {
+                    stacking: 'normal',
+                    lineColor: '#666666',
+                    lineWidth: 1,
+                    marker: {
+                        lineWidth: 1,
+                        lineColor: '#666666'
+                    }
+                }
+            },
+            series: [
+                {
+                    name: 'Total Sold',
+                    data: [{% for item in data %}
+                        {{ item }},{% endfor %}
+                    ]
+                }
+            ]
+        });
+    });
+</script>
+<div class="graphic" id="graphicOffers">
+</div>

@@ -187,6 +187,7 @@ INSTALLED_APPS = (
     'knotis_maps',
     'knotis_contact',
     'knotis_happyhour',
+    'knotis_highchart',
     'knotis_events',
     'knotis_qrcodes',
     'legacy',

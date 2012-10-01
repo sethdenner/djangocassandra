@@ -1,6 +1,3 @@
-import logging
-import datetime
-import random
 import re
 
 from django.db.models import DateTimeField, IntegerField, \
@@ -575,7 +572,10 @@ class Offer(KnotisModel):
              self.id,
              ''
         ])
-
+        
+    def purchases(self):
+        pass
+    
     def update(
         self,
         title=None,

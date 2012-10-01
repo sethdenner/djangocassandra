@@ -306,11 +306,8 @@ def import_offer(cursor):
             else:
                 premium = False
 
-
-            if end_date <= datetime.datetime.now() or not published:
+            if end_date < datetime.datetime.now() or not published:
                 active = False
-            else:
-                active = True
 
             print 'Importing offer for business %s by user %s' % (business, user)
             new_offer = Offer.objects.create_offer(
@@ -332,7 +329,7 @@ def import_offer(cursor):
                 stock,
                 unlimited,
                 published,
-                premium=premium
+                premium
             )
             new_offer.active = active
             new_offer.save()
@@ -342,7 +339,7 @@ def import_offer(cursor):
             OfferIdMap.objects.create(
                 old_id=old_offer_id,
                 new_offer=new_offer
-                )
+            )
 
         except Exception as e:
             print 'Exception!: %s\n' % e,
@@ -537,11 +534,10 @@ def import_transactions(cursor):
 
             deal_id = transaction_table['dealId']
             offer = OfferIdMap.objects.get(old_id=deal_id).new_offer
-
             business = offer.business
             redeem = transaction_table['redeem']
             quantity = transaction_table['stock']
-            price = transaction_table['price']
+            price = transaction_table['price']   
             transaction_context = transaction_table['txn_id']
              
             transaction_type = TransactionTypes.REDEMPTION
@@ -558,8 +554,7 @@ def import_transactions(cursor):
                 offer,
                 quantity,
                 price,
-                transaction_context,
-                force_add=True
+                transaction_context
             )
             transaction.pub_date = date
             transaction.save()

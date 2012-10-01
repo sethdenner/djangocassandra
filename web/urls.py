@@ -55,6 +55,10 @@ urlpatterns = patterns('',
         include('facebook.urls')
     ),
     url(
+        r'^charts/',
+        include('knotis_highchart.urls')
+    ),
+    url(
         r'^(?P<login>login)?(/)*$',
         'app.views.home.index',
         name='home'

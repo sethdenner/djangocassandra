@@ -2,6 +2,8 @@
 
 {% block title %}Knotis - Dashboard{% endblock title %}
 
+{% load thumbnail %}
+
 {% block content %}
 <div id="content" class="back-offers">
     <div class="curve">
@@ -17,106 +19,49 @@
                     </ul>
                 </div>
                 <div class="offer_list_backend">
-                    {% if offers %}
-                    {% for offer in offers %}
-                    {% if offer.orders %}
                     <div class="premiumoffers_filter margin-up">
-                        <ul class="clear-fix graphic-buttoms-<?= $offer->id ?>">
-                            <li><a class="active graphic-buttom" href="#"  data-id="{{ offer.id }}" data-type="year">Monthly</a></li>
-                            <li><a href="#" class="graphic-buttom" data-id="{{ offer.id }}" data-type="week">Weekly</a></li>
-                            <li><a href="#" class="graphic-buttom" data-id="{{ offer.id }}" data-type="days">Daily</a></li>
+                        <ul class="clear-fix">
+                            <li><a class="active graphic-buttom" href="#" data-type="monthly">Monthly</a></li>
+                            <li><a href="#" class="graphic-buttom" data-type="weekly">Weekly</a></li>
+                            <li><a href="#" class="graphic-buttom" data-type="daily">Daily</a></li>
                         </ul>
                     </div>
-                    <div class="clear-fix" id="graphic-{{ offer.id }}">
-                        <script type="text/javascript">
-                            var chart;
-                            $(document).ready(function() {
-                                chart = new Highcharts.Chart({
-                                    chart: {
-                                        renderTo: 'graphic{{ offer.id }}',
-                                        defaultSeriesType: 'area'
-                                    },
-                                    title: {
-                                        text: 'Sold'
-                                    },
-                                    xAxis: {
-                                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ],
-                                        tickmarkPlacement: 'on',
-                                        title: {
-                                            enabled: false
-                                        }
-                                    },
-                                    yAxis: {
-                                        title: {
-                                            text: 'Dollars'
-                                        },
-                                        labels: {
-                                            formatter: function() {
-                                                return this.value;
-                                            }
-                                        }
-                                    },
-                                    tooltip: {
-                                        formatter: function() {
-                                            return '' +
-                                                    this.x + ': ' + Highcharts.numberFormat(this.y, 0, ',') + ' Dollars';
-                                        }
-                                    },
-                                    plotOptions: {
-                                        area: {
-                                            stacking: 'normal',
-                                            lineColor: '#666666',
-                                            lineWidth: 1,
-                                            marker: {
-                                                lineWidth: 1,
-                                                lineColor: '#666666'
-                                            }
-                                        }
-                                    },
-                                    series: [
-                                        {
-                                            name: 'Total Sold',
-                                            data: [
-                                                {% for revenue in monthly_revenue %}
-                                                {{ revenue }},
-                                                {% endfor %}
-                                            ]
-                                        }
-                                    ]
-                                });
-                            });
-                        </script>
-                        <div class="graphic" id="graphic{{ offer.id }}">
-                        </div>
+                    <div class="clear-fix" id="graphic-offers">
+                        {{ highchart }}
                     </div>
                     <ul class="information-dash ">
                         <li class="sold clear-fix radius-general">
                             <span class="left"><strong>Sold:</strong></span>
-                            <span class="right second">{{ offer.purchase }}</span>
+                            <span class="right second">{{ total_purchases }}</span>
                         </li>
                         <li class="revenue radius-general clear-fix">
                             <span class="left"><strong>Revenue:</strong></span>
-                            <span class="right second">${{ yearly_revenue }}</span>
+                            <span class="right second">${{ total_revenue }}</span>
                         </li>
                     </ul>
+                    {% if offer_purchase_map %}
+                    {% for offer, purchases in offer_purchase_map.items %}
                     <div class="offers-div line-bottom clear-fix">
                         <div class="not-offers clear-fix">
                             <div class="offers-image radius-general left relative">
                                 <div class="category food"></div>
                                 <img alt=""
-                                     src="{% if not offer.image %}images/layouts/knotis-offer-image.jpg{% else %}/images/thumb/72/72/{{ offer.image }}{% endif %}"
-                                     class="image-knotis-thumb"/>
+                                    {% thumbnail offer.image.image '72x72' as image %}
+                                    src="{{ image.url }}"
+                                    {% empty %}
+                                    src="{{ STATIC_URL }}images/layouts/knotis-offer-image.jpg"
+                                    {% endthumbnail %} />
                             </div>
                             <div class="offers-txt left">
-                                <h5><strong>{{ offer.title }}</strong></h5>
+                                <h5><strong>{{ offer.title_formatted }}</strong></h5>
                                 <ul class="date-dash clear-fix">
                                     <li>{{ offer.start_date }}</li>
                                     <li>{{ offer.end_date }}</li>
                                 </ul>
                                 <a class="txt-size margin-general clear-fix business"
-                                   alt="{{ offer.business.business_name }}"
-                                   title="{{ offer.business.business_name }}" target="_blank"
-                                   href="/business/{{ offer.business.backend_name }}/">{{ offer.business.business_name }}</a>
+                                   alt="{{ offer.business.business_name.value }}"
+                                   title="{{ offer.business.business_name.value }}" target="_blank"
+                                   href="/{{ offer.business.backend_name }}/">{{ offer.business.business_name.value }}</a>
                             </div>
                         </div>
                         <div class="not-offers left select-sort">
@@ -130,40 +75,38 @@
                 			  </select>
                         	</div>
                         </div>
+                        {% if purchases %}
                 	    <span class="not-offers right">
-                	      <a id="print-offers" href="./printoffers" target="_blank" > 
+                	      <a id="print-offers" href="/offers/print/{{ offer.id }}" target="_blank" > 
                 		    Print Unredeemed Offers <img class="print" src="{{ STATIC_URL }}images/layouts/print.png" />
                 		  </a>
                 		</span>
-                        {% if offer.orders %}
-                        {% for order in offer.orders %}
+                        {% for purchase in purchases %}
                         <div class="offer-div clear-fix clean reedem-code radius-general ">
                             <ul class="left txt-size">
-                                <li><strong>User:</strong> {{ order.user.username }}</li>
-                                <li><strong>Code:</strong>#{{ order.redemption_code }}</li>
-                                <li><strong>Purchase Date:</strong> {{ order.formatted_date }}</li>
+                                <li><strong>User:</strong> {{ purchase.user.username }}</li>
+                                <li><strong>Code:</strong>#{{ purchase.transaction_context }}</li>
+                                <li><strong>Purchase Date:</strong> {{ purchase.pub_date }}</li>
                               </ul>
                             <ul class="left txt-size" >
-                                <li><strong>Stock:</strong> {{ order.pending }}</li>
-                                <li><strong>Paid:</strong> ${{ order.price }}</li>
-                                <li class="redeem"><strong>Redeemed:</strong> {{ order.redeemed }}</li>
+                                <li><strong>Stock:</strong> {{ purchase.quantity }}</li>
+                                <li><strong>Paid:</strong> ${{ purchase.value }}</li>
+                                <li class="redeem"><strong>Redeemed:</strong> {{ purchase.redemptions }}</li>
                             </ul>
-                            <form class="backend-setting" method="post">
+                            <form class="backend-setting" method="post">{% csrf_token %}
                                 <div class="offers-action offers-action-dash radius-general left">
-                                    {% if order.redeemed != order.pending %}
-                                    <label class="number-redeem left">
-                                        <select name="stock_select">
-                                            {% for n in order.redeem_numbers %}
+                                    {% if purchase.redemptions != purchase.quantity %}
+                                    <span class="number-redeem left">
+                                        <select name="quantity">
+                                            {% for n in purchase.unredeemed_values %}
                                             <option value="{{forloop.counter}}">{{ forloop.counter }}</option>
                                             {% endfor %}
                                         </select>
-                                    </label>
+                                    </span>
                                     <input type="submit" class="button radius-general left"
-                                           value="Redeem"/>
-                                    <input type="hidden" value="{{ offer.id }}"
-                                           name="offerOrderid"/>
-                                    <input type="hidden" value="{{ order.redeemed }}"
-                                           name="redeem_actual"/>
+                                           value="redeem" name="redeem" />
+                                    <input type="hidden" value="{{ purchase.id }}"
+                                           name="transaction_id"/>
                                     {% endif %}
                                 </div>
                             </form>
@@ -171,7 +114,6 @@
                         {% endfor %}
                         {% endif %}
                     </div>
-                    {% endif %}
                     {% endfor %}
                     {% else %}
                     <p class="message-confirm message-info radius-general txt-size">No offers yet.</p>';
