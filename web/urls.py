@@ -134,6 +134,11 @@ urlpatterns = patterns('',
         name='offers'
     ),
     url(
+        '^offers/print_unredeemed',
+        'app.views.offer.print_unredeemed',
+        name='offers'
+    ),
+    url(
         r'^offers/get_offers_by_status/(?P<status>[a-zA-Z_-]+)/$',
         'app.views.offer.get_offers_by_status',
         name='offers'

@@ -7,6 +7,7 @@ from django.forms import ModelForm, CharField, ImageField, DateTimeField, \
     ValidationError
 from app.models.offers import Offer, OfferStatus, OfferSort
 from app.models.businesses import Business, BusinessSubscription
+from app.models.transactions import Transaction, TransactionTypes
 from app.models.categories import Category
 from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
@@ -348,6 +349,43 @@ def dashboard(request):
     return render(
         request,
         'offers_dashboard.html',
+        template_parameters
+    )
+
+
+@login_required
+def print_unredeemed(request):
+    template_parameters = ViewUtils.get_standard_template_parameters(request)
+
+    try:
+        business = Business.objects.get(user=request.user)
+
+        template_parameters['business'] = business
+        
+        offers = Offer.objects.filter(
+            business=business
+        )
+
+        purchases = Transaction.objects.filter(
+            business=business,
+            transaction_type=TransactionTypes.PURCHASE
+        )
+        
+        offer_purchase_map = {}
+        for offer in offers:
+            offer_purchase_map[offer] = []
+            for purchase in purchases:
+                if purchase.offer == offer:
+                    offer_purchase_map[offer].append(purchase)
+
+        template_parameters['offer_purchase_map'] = offer_purchase_map
+
+    except:
+        pass
+
+    return render(
+        request,
+        'print_unredeemed_offers.html',
         template_parameters
     )
 

@@ -1,4 +1,5 @@
 import re
+import datetime
 
 from django.db.models import DateTimeField, IntegerField, \
     FloatField, NullBooleanField, CharField, Manager
@@ -121,6 +122,11 @@ class OfferManager(Manager):
             value=address,
             primary=True,
         )
+        
+        if end_date < datetime.datetime.now() or not published:
+            active = False
+        else:
+            active = True
 
         offer = self.create(
             business=business,
@@ -140,7 +146,7 @@ class OfferManager(Manager):
             unlimited=unlimited,
             published=published,
             status=OfferStatus.CURRENT if published else OfferStatus.CREATED,
-            active=published,
+            active=active,
             premium=premium
         )
 
