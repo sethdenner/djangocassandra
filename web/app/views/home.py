@@ -29,7 +29,8 @@ def index(
         premium_offers = Offer.objects.get_available_offers(premium=True)[:4]
         template_parameters['premium_offers'] = premium_offers
     except:
-        pass
+        premium_offers = None
+        template_parameters['premium_offers'] = premium_offers
 
     offer_map = OfferMap(
         settings.GOOGLE_MAPS_API_KEY,

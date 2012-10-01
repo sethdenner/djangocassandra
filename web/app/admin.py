@@ -70,11 +70,12 @@ class BusinessForm(ModelForm):
 
 class BusinessAdmin(admin.ModelAdmin):
     form = BusinessForm
+    search_fields = ['backend_name']
 
     def __init__(self, model, admin_site):
         super(BusinessAdmin, self).__init__(model, admin_site)
-admin.site.register(Business, BusinessAdmin)
 
+admin.site.register(Business, BusinessAdmin)
 
 class ImageAdmin(admin.ModelAdmin):
     search_fields = ['related_object_id']
