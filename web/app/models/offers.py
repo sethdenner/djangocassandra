@@ -15,6 +15,8 @@ from app.models.neighborhoods import Neighborhood
 from app.models.categories import Category
 from app.models.media import Image
 
+from app.utils import View as ViewUtils
+
 
 class OfferTypes:
     NORMAL = 0
@@ -537,22 +539,15 @@ class Offer(KnotisModel):
         ]).replace('\n', ' ')
 
     def price_retail_formatted(self):
-        return ("%.2f" % round(
-            self.price_retail,
-            2
-        )).replace('.00', '')
+        return ViewUtils.format_currency(self.price_retail)
 
     def price_discount_formatted(self):
-        return ("%.2f" % round(
-            self.price_discount,
-            2
-        )).replace('.00', '')
+        return ViewUtils.format_currency(self.price_discount)
 
     def savings(self):
-        return ("%.2f" % round(
-            self.price_retail - self.price_discount,
-            2
-        )).replace('.00', '')
+        return ViewUtils.format_currency(
+            self.price_retail - self.price_discount
+        )
 
     def savings_percent(self):
         return '%.0f' % round(
@@ -572,10 +567,10 @@ class Offer(KnotisModel):
              self.id,
              ''
         ])
-        
+
     def purchases(self):
         pass
-    
+
     def update(
         self,
         title=None,
@@ -673,14 +668,14 @@ class Offer(KnotisModel):
         if None != image and (None == self.image or image != self.image.image):
             if self.image:
                 self.image.image = image
-                
+
             else:
                 self.image = Image.objects.create_image(
                     self.business.user,
                     image,
                     related_object_id=self.id
                 )
-                
+
             self.image.save()
 
         if None != category and category != self.category:

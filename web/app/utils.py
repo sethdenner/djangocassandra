@@ -48,7 +48,7 @@ class View:
 
             template_parameters['cities'] = City.objects.all()
             template_parameters['neighborhoods'] = Neighborhood.objects.all()
-            
+
             if request.user.is_authenticated():
                 knotis_user = User.objects.get(pk=request.user.id)
                 template_parameters['knotis_user'] = knotis_user
@@ -64,6 +64,13 @@ class View:
             pass
 
         return template_parameters
+
+    @staticmethod
+    def format_currency(value):
+        return ("%.2f" % round(
+            value,
+            2
+        )).replace('.00', '')
 
 
 class Email:

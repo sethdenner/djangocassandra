@@ -90,7 +90,7 @@
                               </ul>
                             <ul class="left txt-size" >
                                 <li><strong>Stock:</strong> {{ purchase.quantity }}</li>
-                                <li><strong>Paid:</strong> ${{ purchase.value }}</li>
+                                <li><strong>Paid:</strong> ${{ purchase.value_formatted }}</li>
                                 <li class="redeem"><strong>Redeemed:</strong> {{ purchase.redemptions }}</li>
                             </ul>
                             <form class="backend-setting" method="post">{% csrf_token %}
