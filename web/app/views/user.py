@@ -101,7 +101,7 @@ def profile(request):
         if 'change_password' in request.POST:
             password_form = KnotisPasswordChangeForm(request.user, request.POST)
             if password_form.is_valid():
-                password_form.save_password(request)
+                password_form.save_password()
         else:
             password_form = KnotisPasswordChangeForm(request.user)
 
