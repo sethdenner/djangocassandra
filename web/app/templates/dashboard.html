@@ -49,7 +49,7 @@
                                     {% thumbnail offer.image.image '72x72' as image %}
                                     src="{{ image.url }}"
                                     {% empty %}
-                                    src="{{ STATIC_URL }}images/layouts/knotis-offer-image.jpg"
+                                    src="{{ STATIC_URL }}images/layouts/knotis-offer-image.jpg" width="72" height="72"
                                     {% endthumbnail %} />
                             </div>
                             <div class="offers-txt left">
