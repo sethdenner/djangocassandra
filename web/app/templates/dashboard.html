@@ -86,7 +86,7 @@
                             <ul class="left txt-size">
                                 <li><strong>User:</strong> {{ purchase.user.username }}</li>
                                 <li><strong>Code:</strong>#{{ purchase.transaction_context }}</li>
-                                <li><strong>Purchase Date:</strong> {{ purchase.pub_date }}</li>
+                                <li><strong>Purchase Date:</strong> {{ purchase.pub_date|date:'m/d/Y' }}</li>
                               </ul>
                             <ul class="left txt-size" >
                                 <li><strong>Stock:</strong> {{ purchase.quantity }}</li>
@@ -94,17 +94,17 @@
                                 <li class="redeem"><strong>Redeemed:</strong> {{ purchase.redemptions }}</li>
                             </ul>
                             <form class="backend-setting" method="post">{% csrf_token %}
-                                <div class="offers-action offers-action-dash radius-general left">
+                                <div class="offers-action offers-action-dash radius-general right">
                                     {% if purchase.redemptions != purchase.quantity %}
-                                    <span class="number-redeem left">
-                                        <select name="quantity">
+                                    <input type="submit" class="button radius-general right"
+                                               value="Redeem" name="redeem" />
+                                    <label class="number-redeem right">
+                                        <select name="quantity" >
                                             {% for n in purchase.unredeemed_values %}
                                             <option value="{{forloop.counter}}">{{ forloop.counter }}</option>
                                             {% endfor %}
                                         </select>
-                                    </span>
-                                    <input type="submit" class="button radius-general left"
-                                           value="redeem" name="redeem" />
+                                    </label>
                                     <input type="hidden" value="{{ purchase.id }}"
                                            name="transaction_id"/>
                                     {% endif %}

@@ -4353,7 +4353,6 @@ input[type='password'],
 
 .backend-setting select,
 .contact select{
-    min-width:150px;
     font-size: 1.5em;
 }
 
