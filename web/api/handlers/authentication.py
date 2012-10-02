@@ -46,7 +46,6 @@ class AuthenticationHandler(AnonymousBaseHandler):
         except Exception as e:
             response['message'] = 'There was an error creating your account: ' + e.message
 
-
         return response
 
     @validate(SignUpForm)

@@ -159,6 +159,13 @@ def sign_up(request, account_type=AccountTypes.USER):
             for e in sign_up_form.errors:
                 error += strip_tags(e) + '<br/>'
 
+        if error:
+            response_data['message'] = error
+            return HttpResponse(
+                json.dumps(response_data),
+                mimetype='application/json'
+            )
+
         paypal_button = None
         if AccountTypes.BUSINESS_MONTHLY == user_profile.account_type:
             paypal_button = render_paypal_button({
@@ -240,7 +247,7 @@ def login(request):
 
         if username:
             username = username.lower()
-            
+
         user = authenticate(
             username=username,
             password=password
@@ -291,10 +298,10 @@ def _generate_facebook_password(facebook_id):
     ])
     password_hash = hashlib.md5(password)
     return password_hash.hexdigest()
-    
-    
+
+
 def _authenticate_facebook(
-    username, 
+    username,
     facebook_id
 ):
     password = ''.join([
@@ -307,7 +314,7 @@ def _authenticate_facebook(
         username=username,
         password=password_hash.hexdigest()
     )
-    
+
 
 def facebook_login(
     request,
@@ -340,12 +347,12 @@ def facebook_login(
                 facebook_id
             )
         )
-        
+
         return generate_response({
             'success': 'no',
             'message': 'Already authenticated.'
         })
-    
+
     user = None
     try:
         user = User.objects.get(username=email)
@@ -372,7 +379,7 @@ def facebook_login(
             Endpoint.objects.create_endpoint(
                 EndpointTypes.EMAIL,
                 user.username,
-                user, 
+                user,
                 True
             )
 
@@ -401,15 +408,15 @@ def facebook_login(
             request,
             authenticated_user
         )
-        
+
         request.session['fb_id'] = facebook_id
-        
+
         if account_type:
             data = {
                 'success': 'yes',
                 'user': account_type
             }
-            
+
             if AccountTypes.BUSINESS_MONTHLY == account_type:
                 paypal_button = None
                 if AccountTypes.BUSINESS_MONTHLY == user_profile.account_type:
@@ -422,7 +429,7 @@ def facebook_login(
                             generate_ipn_hash(user.id)
                         ])
                     })
-        
+
                 html = get_template('finish_registration.html')
                 context = Context({
                     'AccountTypes': AccountTypes,
@@ -430,7 +437,7 @@ def facebook_login(
                     'paypal_button': paypal_button,
                 })
                 data['message'] = html.render(context)
-                
+
 
             return generate_response(data)
 
