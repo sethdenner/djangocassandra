@@ -47,7 +47,8 @@ class Qrcode(KnotisModel):
             Scan.objects.create(
                 qrcode=self,
                 business=self.business,
-                uri=self.uri
+                uri=self.uri,
+                pub_date=self.pub_date
             )
 
             self.hits = self.hits + 1

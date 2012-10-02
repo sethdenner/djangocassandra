@@ -16,7 +16,6 @@ class AuthenticationHandler(AnonymousBaseHandler):
         email = post.get('email')
         password = post.get('password')
         account_type = post.get('account_type')
-        business = post.get('business')
 
         response = {
             'success': 'no',
@@ -28,22 +27,21 @@ class AuthenticationHandler(AnonymousBaseHandler):
                 last_name,
                 email,
                 password,
-                account_type,
-                business
+                account_type=AccountTypes.USER
             )
 
             response['success'] = 'yes'
 
-            if business:
+            if account_type == AccountTypes.USER:
+                response['user'] = AccountTypes.USER
+                response['message'] = 'Your Knotis account has been created.'
+            else:
                 if account_type == AccountTypes.BUSINESS_MONTHLY:
                     response['user'] = AccountTypes.BUSINESS_MONTHLY
                     response['message'] = ''
                 else:
                     response['user'] = AccountTypes.BUSINESS_FREE
                     response['message'] = 'Your Forever Free account has been created'
-            else:
-                response['user'] = AccountTypes.USER
-                response['message'] = 'Your Knotis account has been created.'
 
         except Exception as e:
             response['message'] = 'There was an error creating your account: ' + e.message

@@ -40,8 +40,7 @@ class UserManager(models.UserManager):
         last_name,
         email,
         password,
-        account_type=AccountTypes.USER,
-        business=False
+        account_type=AccountTypes.USER
     ):
         if email:
             email = email.lower()
@@ -56,8 +55,6 @@ class UserManager(models.UserManager):
         new_user.last_name = last_name
 
         new_user.save()
-
-        account_type = account_type if business else AccountTypes.USER
 
         user_profile = UserProfile.objects.create_profile(
             new_user,
