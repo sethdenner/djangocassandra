@@ -11,6 +11,8 @@ from app.models.transactions import Transaction, TransactionTypes
 from app.models.categories import Category
 from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
+from app.models.media import Image
+
 from knotis_auth.models import UserProfile
 
 from app.utils import View as ViewUtils
@@ -76,7 +78,7 @@ class OfferForm(ModelForm):
 
         except:
             raise ValidationError('Invalid city.')
-        
+
         return self.cleaned_data['city']
 
     def clean_neighborhood(self):
@@ -87,12 +89,17 @@ class OfferForm(ModelForm):
 
             except:
                 raise ValidationError('Invalid neighborhood')
-            
+
         else:
             self.cleaned_data['neighborhood'] = None
-        
+
         return self.cleaned_data['neighborhood']
-        
+
+    def clean_unlimited(self):
+        unlimited = self.data.get('unlimited')
+        self.cleaned_data['unlimited'] = unlimited != None
+        return self.cleaned_data['unlimited']
+
     def save_offer(
         self,
         request,
@@ -103,8 +110,19 @@ class OfferForm(ModelForm):
         published = 'publish' in request.POST
 
         if published and not self.cleaned_data.get('image_source'):
-            raise ValidationError('Offer image is required before publishing.')
-        
+            if offer:
+                try:
+                    offer_images = Image.objects.filter(related_object_id=offer.id)
+                except:
+                    offer_images = None
+            else:
+                offer_images = None
+
+            if not offer_images:
+                raise ValidationError(
+                    'Offer image is required before publishing.'
+                )
+
         if offer:
             offer.update(
                 self.cleaned_data['title_value'],
@@ -171,10 +189,10 @@ def offers(
                 'neighborhood',
                 None
             )
-            
+
         else:
             request.session['city'] = city
-    
+
         neighborhood = request.GET.get('neighborhood')
         if neighborhood:
             if neighborhood.lower() == 'all':
@@ -182,7 +200,7 @@ def offers(
                     'neighborhood',
                     None
                 )
-    
+
             else:
                 request.session['neighborhood'] = neighborhood
         else:
@@ -190,17 +208,17 @@ def offers(
                 'neighborhood',
                 None
             )
-        
+
     try:
         business_instance = None
         if business:
             business_instance = Business.objects.get(
                 backend_name=business.lower()
             )
-    
+
         neighborhood_instance = None
         if request.session.has_key('neighborhood'):
-            neighborhood = request.session.get('neighborhood') 
+            neighborhood = request.session.get('neighborhood')
             neighborhood_instance = Neighborhood.objects.get(
                 name_denormalized=neighborhood.title()
             )
@@ -209,7 +227,7 @@ def offers(
         if request.session.has_key('city'):
             city = request.session.get('city')
             city_instance = City.objects.get(name_denormalized=city.title())
-            
+
         category_instance = None
         if category:
             category_instance = Category.objects.get(
@@ -282,7 +300,7 @@ def offer(
     try:
         offer = Offer.objects.get(pk=offer_id)
         template_parameters['offer'] = offer
-        
+
     except:
         redirect(offers)
 
@@ -297,7 +315,7 @@ def offer(
 
         except Exception, e:
             pass
-    
+
     try:
         template_parameters['categories'] = Category.objects.all()
         template_parameters['total_active_offers'] = \
@@ -361,7 +379,7 @@ def print_unredeemed(request):
         business = Business.objects.get(user=request.user)
 
         template_parameters['business'] = business
-        
+
         offers = Offer.objects.filter(
             business=business
         )
@@ -370,7 +388,7 @@ def print_unredeemed(request):
             business=business,
             transaction_type=TransactionTypes.PURCHASE
         )
-        
+
         offer_purchase_map = {}
         for offer in offers:
             offer_purchase_map[offer] = []
@@ -425,7 +443,7 @@ def edit(request, offer_id=None):
                 feedback = 'The following fields are invalid:'
                 for message in e.messages:
                     feedback = '<br/>'.join([
-                        feedback,                                        
+                        feedback,
                         message
                     ])
 
@@ -656,7 +674,7 @@ def offer_map(
 
     except:
         pass
-    
+
     offer_map = OfferMap(
         settings.GOOGLE_MAPS_API_KEY,
         offers
