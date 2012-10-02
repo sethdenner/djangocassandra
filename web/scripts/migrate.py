@@ -444,12 +444,15 @@ def import_scans(cursor):
             print 'Importing qrcode scan: old_business_id = %s, qrcode_type = %s, uri = %s, qrcode_date = %s' \
                 % (old_business_id, scan_type, uri, scan_date)
 
-            Scan.objects.create(
+            scan = Scan.objects.create(
                 qrcode=qrcode,
                 business=qrcode.business,
                 uri=uri,
-                pub_date=scan_date
             )
+
+            scan.pub_date = scan_date
+            scan.save()
+
             qrcode.hits = qrcode.hits + 1
             if qrcode.last_hit < scan_date:
                 qrcode.last_hit = scan_date
