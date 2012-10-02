@@ -1160,8 +1160,9 @@ $(function() {
                 if (data.success == 'no') {
                     $('#createdP').hide();
                     $('#createP').show();
-                    $('#message-log').replaceWith(data.html);
-
+                    $('#message-log').replaceWith(
+                        '<p class="message-confirm message-error radius-general txt-size">' + data.message + '</p>'
+                    );
                 } else if (data.success == 'yes') {
                     $('.replace').replaceWith(data.html);
 
