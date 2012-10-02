@@ -730,6 +730,7 @@ $(function() {
         $.post('/profile/update/', {
                 'notify_offers': true
             }, function(data) {
+                $('html').append(data);
                 $('.notify').fadeOut();
             }
         );

@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.forms import Form
 from django.forms.fields import BooleanField, CharField, EmailField
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 
 from app.utils import View as ViewUtils
 
@@ -12,6 +12,7 @@ from app.models.endpoints import Endpoint, EndpointTypes
 
 from knotis_auth.views import KnotisPasswordChangeForm
 from knotis_auth.models import User, UserProfile, AccountTypes
+from knotis_feedback.views import render_feedback_popup
 
 
 class UserProfileForm(Form):
@@ -180,15 +181,25 @@ def profile_ajax(request):
             'notify_announcements': request.POST.get('notify_announcements'),
             'notify_offers': request.POST.get('notify_offers')
         })
-        if profile_form.is_valid():
-            profile_form.save_user_profile(request)
+
+        try:
+            if profile_form.is_valid():
+                profile_form.save_user_profile(request)
+                feedback = 'Your profile was successfully updated.'
+
+            else:
+                feedback = 'Your profile could not be updated (invalid parameters).'
+
+        except:
+            feedback = 'There was an error updating your profile.'
 
     else:
-        pass
+        return HttpResponseBadRequest()
 
     return HttpResponse(
-        json.dumps({
-            'status': '200'
-        }),
-        mimetype='application/json'
+        render_feedback_popup(
+            'Profile Update',
+            feedback
+        ),
+        mimetype='text/html'
     )

@@ -28,6 +28,7 @@ def index(
     try:
         premium_offers = Offer.objects.get_available_offers(premium=True)[:4]
         template_parameters['premium_offers'] = premium_offers
+
     except:
         premium_offers = None
         template_parameters['premium_offers'] = premium_offers
@@ -37,7 +38,7 @@ def index(
         premium_offers
     )
     template_parameters['google_map_api_script'] = offer_map.render_api_js()
-    template_parameters['map_script'] = offer_map.render() 
+    template_parameters['map_script'] = offer_map.render()
 
     return render(
         request,
