@@ -78,7 +78,7 @@
                 <div class="box-image-home relative">
                     <a href="/offer/{{ offer.id }}/" title="{{ offer.title_formatted }}"
                        alt="{{ offer.title_formatted }}">
-                       {% thumbnail offer.business.primary_image.image '222x111' crop='center' as image %}
+                       {% thumbnail offer.business.primary_image.image '222x112' crop='top' as image %}
                        <img alt="{{ offer.business.name }}" src="{{ image.url }}"/>
                        {% endthumbnail %}
                     </a>

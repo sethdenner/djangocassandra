@@ -75,15 +75,20 @@ def import_user(cursor):
             )
 
             facebook_id = user_table['facebook_id']
-            if facebook_id:
-                user.password = _generate_facebook_password(facebook_id)
-
-            else:
+            if password:
                 user.password = '$'.join([
                     'sha1',
                     salt,
                     password
                 ])
+
+            elif facebook_id:
+                user.password = _generate_facebook_password(facebook_id)
+
+            else:
+                raise Exception(
+                    'could not convert password for user %s' % email,
+                )
 
             old_user_id = user_table['id']
             UserIdMap.objects.create(
