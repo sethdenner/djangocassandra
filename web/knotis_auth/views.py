@@ -88,8 +88,7 @@ class SignUpForm(Form):
             self.cleaned_data['last_name'],
             self.cleaned_data['email'],
             self.cleaned_data['password'],
-            self.cleaned_data['account_type'],
-            self.cleaned_data['business']
+            self.cleaned_data['account_type']
         )
 
 

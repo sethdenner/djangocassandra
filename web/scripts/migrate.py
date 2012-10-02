@@ -51,20 +51,23 @@ def import_user(cursor):
             password = user_table['password']
             salt = user_table['salt']
 
-            account_type = None
+            # user-> account_type != 1 == subscription = yes.
+            # role -> role_id = 2 = business
+            # role -> role_id (3,4) = admin
+            # except ... it's busted so all merchants are on the paid account...
+                
+            # default is USER
+            account_type = AccountTypes.USER
             role = user_table['role_id']
             if role == 2:
-                account_type = AccountTypes.BUSINESS_FREE
-
-            else:
-                account_type = AccountTypes.USER
+                account_type = AccountTypes.BUSINESS_MONTHLY
 
             current_users = User.objects.filter(username=email)
             if current_users.count() > 0:
                 print 'User %s is already in the database.' % email
                 continue
 
-            print 'Importing user %s' % email
+            print 'Importing user %s with type %s' % ( email, account_type )
 
             user, user_profile = User.objects.create_user(
                 first_name,
@@ -441,12 +444,15 @@ def import_scans(cursor):
             print 'Importing qrcode scan: old_business_id = %s, qrcode_type = %s, uri = %s, qrcode_date = %s' \
                 % (old_business_id, scan_type, uri, scan_date)
 
-            Scan.objects.create(
+            scan = Scan.objects.create(
                 qrcode=qrcode,
                 business=qrcode.business,
                 uri=uri,
-                pub_date=scan_date
             )
+
+            scan.pub_date = scan_date
+            scan.save()
+
             qrcode.hits = qrcode.hits + 1
             if qrcode.last_hit < scan_date:
                 qrcode.last_hit = scan_date
@@ -637,15 +643,18 @@ if __name__ == '__main__':
 
     #host = options['host']
     host = '216.70.69.66'
+    host = '127.0.0.1'
 
     #user = options['user']
     user = 'cHAsTE2r'
+    user = 'root'
 
     #sqlDB = options['db']
     sqlDB = 'mclean_knotis'
 
     #password = getpass.getpass('Enter password:')
     password = 'pHUb9ge4'
+    password = '3rqpx5'
 
     try:
         db = MySQLdb.connect(
@@ -662,7 +671,6 @@ if __name__ == '__main__':
 
     c = db.cursor()
     print 'Migration Script!'
-
 
     #import os
     #os.system('./reset.sh')
