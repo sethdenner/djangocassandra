@@ -55,7 +55,7 @@ def import_user(cursor):
             # role -> role_id = 2 = business
             # role -> role_id (3,4) = admin
             # except ... it's busted so all merchants are on the paid account...
-                
+
             # default is USER
             account_type = AccountTypes.USER
             role = user_table['role_id']
@@ -67,7 +67,7 @@ def import_user(cursor):
                 print 'User %s is already in the database.' % email
                 continue
 
-            print 'Importing user %s with type %s' % ( email, account_type )
+            print 'Importing user %s with type %s' % (email, account_type)
 
             user, user_profile = User.objects.create_user(
                 first_name,
@@ -643,18 +643,15 @@ if __name__ == '__main__':
 
     #host = options['host']
     host = '216.70.69.66'
-    host = '127.0.0.1'
 
     #user = options['user']
     user = 'cHAsTE2r'
-    user = 'root'
 
     #sqlDB = options['db']
     sqlDB = 'mclean_knotis'
 
     #password = getpass.getpass('Enter password:')
     password = 'pHUb9ge4'
-    password = '3rqpx5'
 
     try:
         db = MySQLdb.connect(

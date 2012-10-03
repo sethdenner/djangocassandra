@@ -1,3 +1,5 @@
+import re
+
 from django.db.models import CharField, DateTimeField, URLField, Manager, \
     NullBooleanField
 from django.utils.http import urlquote
@@ -13,13 +15,20 @@ from app.models.endpoints import EndpointPhone, EndpointAddress, \
 from app.models.media import Image
 
 
-def clean_business_name(name):
-    return urlquote(
-        name.strip().lower().replace(
+def clean_business_backend_name(name):
+    backend_name = name.replace('&', 'and')
+    backend_name = urlquote(
+        backend_name.strip().lower().replace(
             ' ',
             '-'
         )
     )
+    backend_name = re.sub(
+        r'%[0-9a-fA-F]{2}',
+        '',
+        backend_name
+    )
+    return backend_name
 
 
 class BusinessManager(Manager):
@@ -35,7 +44,7 @@ class BusinessManager(Manager):
         facebook_uri,
         yelp_id
     ):
-        backend_name = clean_business_name(name)
+        backend_name = clean_business_backend_name(name)
 
         content_root = Content.objects.create(
             content_type=ContentTypes.BUSINESS_ROOT,
