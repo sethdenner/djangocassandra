@@ -1,7 +1,7 @@
 import urllib
 
 from app.models.businesses import Business, BusinessLink, \
-    BusinessSubscription, clean_business_name
+    BusinessSubscription, clean_business_backend_name
 from app.models.offers import Offer, OfferStatus
 from app.models.media import Image
 from app.utils import View as ViewUtils
@@ -42,7 +42,7 @@ class UpdateBusinessForm(Form):
 
     def clean_name(self):
         name = self.cleaned_data['name']
-        if clean_business_name(
+        if clean_business_backend_name(
             name
         ) in settings.BUSINESS_NAME_BLACKLIST:
             raise ValidationError('That business name is not allowed.')
@@ -70,32 +70,32 @@ def set_primary_image(
 
     except:
         business = None
-    
+
     if not business:
-        return HttpResponseNotFound('Business not found.')    
-    
+        return HttpResponseNotFound('Business not found.')
+
     if business.user_id != request.user.id:
         return HttpResponseBadRequest('Business does not belong to logged in user!')
-    
+
     try:
         image = Image.objects.get(pk=image_id)
 
     except:
         image = None
-        
+
     if not image:
         return HttpResponseNotFound('Image not found')
-    
+
     if business.id != image.related_object_id:
         return HttpResponseBadRequest('Image does not belong to business!')
-    
+
     business.primary_image = image
     try:
         business.save()
 
     except:
         return HttpResponseServerError('Could not save primary image')
-    
+
     return HttpResponse('OK')
 
 
@@ -107,28 +107,28 @@ def delete_image(
 ):
     if request.method.lower() != 'post':
         return HttpResponseBadRequest('Method must be post.')
-    
+
     try:
         business = Business.objects.get(pk=business_id)
 
     except:
         business = None
-    
+
     if not business:
-        return HttpResponseNotFound('Business not found.')    
-    
+        return HttpResponseNotFound('Business not found.')
+
     if business.user_id != request.user.id:
         return HttpResponseBadRequest('Business does not belong to logged in user!')
-    
+
     try:
         image = Image.objects.get(pk=image_id)
 
     except:
         image = None
-        
+
     if not image:
         return HttpResponseNotFound('Image not found')
-    
+
     if business.id != image.related_object_id:
         return HttpResponseBadRequest('Image does not belong to business!')
 
@@ -137,7 +137,7 @@ def delete_image(
 
     except Exception, error:
         return HttpResponseServerError(error)
-    
+
     return HttpResponse('OK')
 
 
@@ -200,7 +200,7 @@ def edit_profile(request):
                 'yelp_id': business.yelp_id.value.value if business.yelp_id else None
             }
             update_form = UpdateBusinessForm(business_values)
-            
+
         else:
             update_form = UpdateBusinessForm()
 
@@ -215,7 +215,7 @@ def edit_profile(request):
     template_parameters['link_form'] = link_form if link_form else AddBusinessLinkForm()
     template_parameters['do_upload'] = True
     template_parameters['gallery'] = True
-    
+
     try:
         template_parameters['images'] = Image.objects.filter(related_object_id=business.id)
     except:
@@ -259,16 +259,16 @@ def profile(request, backend_name):
         return redirect('/')
 
     template_parameters['business'] = business
-    
+
     if business.yelp_id and business.yelp_id.value.value:
         template_parameters['yelp_reviews'] = get_reviews_by_yelp_id(business.yelp_id.value.value)
-        
+
     if business.twitter_name and business.twitter_name.value.value:
-        template_parameters['twitter_feed'] =  get_twitter_feed_html(
+        template_parameters['twitter_feed'] = get_twitter_feed_html(
             business.twitter_name.value.value,
             2
         )
-        
+
     try:
         template_parameters['business_links'] = BusinessLink.objects.filter(business=business)
         subscriptions = BusinessSubscription.objects.filter(
@@ -289,10 +289,10 @@ def profile(request, backend_name):
         if not business.primary_image and len(business_images):
             business.primary_image = business_images[0]
             business.save()
-            
+
     except:
         pass
-    
+
     try:
         qrcode = Qrcode.objects.filter(business=business)[0]
 
@@ -301,7 +301,7 @@ def profile(request, backend_name):
 
         except Exception, e:
             id_map = None
-        
+
         if id_map:
             qrcode_uri = '/'.join([
                 settings.BASE_URL,
@@ -315,9 +315,9 @@ def profile(request, backend_name):
                 'qrcode',
                 qrcode.id
             ])
-            
+
         template_parameters['qrcode_uri'] = qrcode_uri
-        
+
     except Exception, e:
         pass
 
@@ -328,7 +328,7 @@ def profile(request, backend_name):
         )
     except:
         pass
-    
+
     template_parameters['gallery'] = True
 
     return render(
