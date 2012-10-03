@@ -8,7 +8,8 @@ from app.utils import View as ViewUtils
 from django.conf import settings
 from django.forms import Form, ModelForm, ModelChoiceField, CharField, \
     URLField, ValidationError
-from django.http import HttpResponseNotFound, HttpResponseBadRequest
+from django.http import HttpResponseNotFound, HttpResponseBadRequest, \
+    HttpResponseNotFound, HttpResponseServerError, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.http import urlquote
 from django.contrib.auth.decorators import login_required
@@ -53,6 +54,91 @@ class AddBusinessLinkForm(ModelForm):
     class Meta:
         model = BusinessLink
         exclude = ('business')
+
+
+@login_required
+def set_primary_image(
+    request,
+    business_id,
+    image_id
+):
+    if request.method.lower() != 'post':
+        return HttpResponseBadRequest('Method must be post.')
+
+    try:
+        business = Business.objects.get(pk=business_id)
+
+    except:
+        business = None
+    
+    if not business:
+        return HttpResponseNotFound('Business not found.')    
+    
+    if business.user_id != request.user.id:
+        return HttpResponseBadRequest('Business does not belong to logged in user!')
+    
+    try:
+        image = Image.objects.get(pk=image_id)
+
+    except:
+        image = None
+        
+    if not image:
+        return HttpResponseNotFound('Image not found')
+    
+    if business.id != image.related_object_id:
+        return HttpResponseBadRequest('Image does not belong to business!')
+    
+    business.primary_image = image
+    try:
+        business.save()
+
+    except:
+        return HttpResponseServerError('Could not save primary image')
+    
+    return HttpResponse('OK')
+
+
+@login_required
+def delete_image(
+    request,
+    business_id,
+    image_id
+):
+    if request.method.lower() != 'post':
+        return HttpResponseBadRequest('Method must be post.')
+    
+    try:
+        business = Business.objects.get(pk=business_id)
+
+    except:
+        business = None
+    
+    if not business:
+        return HttpResponseNotFound('Business not found.')    
+    
+    if business.user_id != request.user.id:
+        return HttpResponseBadRequest('Business does not belong to logged in user!')
+    
+    try:
+        image = Image.objects.get(pk=image_id)
+
+    except:
+        image = None
+        
+    if not image:
+        return HttpResponseNotFound('Image not found')
+    
+    if business.id != image.related_object_id:
+        return HttpResponseBadRequest('Image does not belong to business!')
+
+    try:
+        image.delete()
+
+    except Exception, error:
+        return HttpResponseServerError(error)
+    
+    return HttpResponse('OK')
 
 
 @login_required

@@ -238,6 +238,26 @@ urlpatterns = patterns('',
         name='business'
     ),
     url(
+        r''.join([
+            '^business/profile/set_primary_image/(?P<business_id>',
+            REGEX_UUID,
+            ')/(?P<image_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        'app.views.business.set_primary_image'
+    ),
+    url(
+        r''.join([
+            '^business/profile/delete_image/(?P<business_id>',
+            REGEX_UUID,
+            ')/(?P<image_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        'app.views.business.delete_image'
+    ),
+    url(
         r'^subscriptions/$',
         'app.views.business.subscriptions',
         name='subscriptions'

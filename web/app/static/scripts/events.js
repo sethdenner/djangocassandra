@@ -741,15 +741,21 @@ $(function() {
     $('.delete-image').live('click', function() {
 
         var $this = $(this),
-                id = $this.attr('data-id'),
-                cont = $this.attr('data-cont');
+                image_id = $this.attr('data-image-id'),
+                business_id = $this.attr('data-business-id');
 
-        $.post([server + "backend/delete_image",id].join('/'), {},
+        $.post([
+            '/business/profile/delete_image',
+            business_id,
+            image_id,
+            ''].join('/'), 
+            {},
+            function(data) {
+                if (data != 'OK') { return; }
+                    $this.parent().parent().fadeOut();
 
-                function(data) {
-
-                    $('.' + cont).fadeOut();
                 });
+
         return false;
 
     });
@@ -943,23 +949,32 @@ $(function() {
     $('.headimage').live('click', function() {
 
         var $this = $(this),
-                id = $this.attr('data-id');
+                image_id = $this.attr('data-image-id'),
+                business_id = $this.attr('data-business-id');
 
-        $.post([server + "backend/headimage",id].join('/'), {},
+        $.post([
+            '/business/profile/set_primary_image',
+            business_id,
+            image_id,
+            ''].join('/'), 
+            {},
             function(data) {
+                if (data != 'OK') { return; }
+                
                 if ($this.hasClass('noheadimage')) {
                     $this.removeClass('noheadimage')
                         .addClass('active');
+
                 } else if ($this.hasClass('active')) {
                      $('.headimage').removeClass('noheadimage')
                          .addClass('active');
                      $this.addClass('noheadimage')
                          .removeClass('active');
+
                 }
             });
 
         return false;
-
 
     });
 

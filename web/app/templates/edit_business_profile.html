@@ -156,7 +156,7 @@
             {% if images %}
             <ul class="link-name images-gallery">
                 {% for image in images %}
-                <ul class="link-name clear-fix radius-general {{ forloop.counter0 }}">
+                <ul class="link-name clear-fix radius-general">
                     <li class="radius-general active clear-fix">
                         <img
                             alt=""
@@ -164,10 +164,14 @@
                             src="{{ img.url }}"
                             {% endthumbnail %}
                             class="gallery" />
-                            <a class="right delete radius-general delete-image" href="#" data-id="{{ image.id }}"
-                               data-cont="{{ forloop.counter0 }}">delete</a>
-                            <a class="right {% if image.primary %}active{% else %}noheadimage{% endif %} principal delete radius-general headimage"
-                               data-id="{{ image.id }}" href="#">Primary</a>
+                            <a class="right delete radius-general delete-image" 
+                                href="#" 
+                                data-image-id="{{ image.id }}"
+                                data-business-id="{{ business.id }}" >delete</a>
+                            <a class="right{% if image == business.primary_image %} noheadimage{% else %} active{% endif %} principal delete radius-general headimage"
+                                data-image-id="{{ image.id }}"
+                                data-business-id="{{ business.id }}" 
+                                href="#">Primary</a>
                     </li>
                 </ul>
                 {% endfor %}
