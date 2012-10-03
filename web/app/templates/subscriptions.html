@@ -1,5 +1,7 @@
 {% extends 'master.html' %}
 
+{% load thumbnail %}
+
 {% block title %}Knotis - My Subscriptions{% endblock title %}
 
 {% block content %}
@@ -15,9 +17,11 @@
                     <div class="clear-fix">
                         <div class="offers-image radius-general left relative">
                             <div class="category food"></div>
-                            <img alt=""
-                                 src="/images/business/72/72/{ business.id }}"
-                                 class="image-knotis-thumb"/>
+                              {% thumbnail subscription.business.primary_image.image '72x72' crop='top' as image %}
+                              <img alt="{{ subscription.business.business_name.value }}" src="{{ image.url }}">
+                              {% empty %}
+                              <img src="{{ STATIC_URL }}images/no-image-business.png" width="72" height="72" alt="{{ subscription.business.business_name }}">
+                              {% endthumbnail %}
                         </div>
                         <div class="offers-txt left">
                             <h5><strong>{{ subscription.business.business_name.value }}</strong></h5>

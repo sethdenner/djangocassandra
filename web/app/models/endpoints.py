@@ -11,6 +11,8 @@ from app.models.knotis import KnotisModel
 from app.models.contents import Content, ContentTypes
 # from app.models.fields.permissions import PermissionsField
 
+from app.utils import Email as EmailUtils
+
 
 class EndpointManager(Manager):
     def create_endpoint(
@@ -194,14 +196,7 @@ class EndpointEmail(Endpoint): #-- the data for all these is the same, we want d
         Endpoint._value_string_to_content(kwargs)
 
         if kwargs.get('validation_key') is None:
-            key = uuid.uuid4().hex
-            kwargs['validation_key'] = "%s-%s-%s-%s-%s" % (
-                key[:8],
-                key[8:12],
-                key[12:16],
-                key[16:20],
-                key[20:]
-            )
+            kwargs['validation_key'] = EmailUtils.generate_validation_key() 
 
         super(EndpointEmail, self).__init__(*args, **kwargs)
 

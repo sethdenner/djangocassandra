@@ -1,3 +1,5 @@
+import uuid
+
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
@@ -10,7 +12,6 @@ from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
 
 class View:
-
     @staticmethod
     def get_boolean_from_request(request, key, method='POST'):
         " gets the value from request and returns it's boolean state "
@@ -74,6 +75,16 @@ class View:
 
 
 class Email:
+    @staticmethod
+    def generate_validation_key():
+        key = uuid.uuid4().hex
+        return "%s-%s-%s-%s-%s" % (
+            key[:8],
+            key[8:12],
+            key[12:16],
+            key[16:20],
+            key[20:]
+        )
 
     @staticmethod
     def generate_email(
