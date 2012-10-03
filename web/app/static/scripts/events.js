@@ -1100,7 +1100,27 @@ $(function() {
                 }
 
                 if (data.success == 'no') {
-                    $('#message-log').replaceWith('<p class="message-confirm message-error radius-general txt-size">' + data.message + '</p>');
+                    $('#message-log').replaceWith('<p id="message-log" class="message-confirm message-error radius-general txt-size">' + data.message + '</p>');
+                    $('#resend_validation_link').click(function(event){
+                        $.ajax({
+                            dataType: 'html',
+                            url: $(this).attr('href')
+                            
+                        }).done(function(data) {
+                            $('#message-log').replaceWith(
+                                '<p id="message-log" class="message-confirm radius-general txt-size">Check your email!</p>'
+                            );
+                            
+                        }).fail(function(jqxhr, status) {
+                            $('#message-log').replaceWith(
+                                '<p id="message-log" class="message-confirm message-error radius-general txt-size">There was an error sending your validation email.</p>'
+                            );
+                            
+                        });
+                        
+                        event.stopPropagation()
+                        return false; 
+                    });
                 }
 
             }

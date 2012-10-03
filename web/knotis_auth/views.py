@@ -9,8 +9,10 @@ from django.contrib.auth import authenticate, login as django_login, \
     logout as django_logout
 from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, \
+    HttpResponseNotFound
 from django.utils.html import strip_tags
+from django.utils.http import urlquote
 from django.template import Context
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse
@@ -21,8 +23,6 @@ from knotis_auth.models import User, UserProfile, AccountStatus, AccountTypes
 
 from app.utils import View as ViewUtils, Email as EmailUtils
 from app.models.endpoints import Endpoint, EndpointTypes
-
-
 
 
 class SignUpForm(Form):
@@ -92,6 +92,76 @@ class SignUpForm(Form):
         )
 
 
+def send_validation_email(
+    user_profile,
+    email_endpoint
+):
+    #TODO This should be handled by an async task
+    if user_profile.account_type == AccountTypes.BUSINESS_FREE:
+        subject = 'New Free Business Account in Knotis'
+
+    elif user_profile.account_type == AccountTypes.BUSINESS_MONTHLY:
+        subject = 'New Premium Business Account in Knotis'
+
+    else:
+        subject = 'New user Account in Knotis'
+
+    EmailUtils.generate_email(
+        'activate',
+        subject,
+        settings.EMAIL_HOST_USER,
+        [email_endpoint.value.value], {
+            'user_id': user_profile.user_id,
+            'validation_key': email_endpoint.validation_key,
+            'BASE_URL': settings.BASE_URL,
+            'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
+            'SERVICE_NAME': settings.SERVICE_NAME
+        }
+    ).send()
+
+
+def resend_validation_email(
+    request, 
+    username
+):
+    if request.method.lower() != 'get':
+        return HttpResponseBadRequest('Method must be GET')
+    
+    try:
+        user = User.objects.get(username=username)
+        user_profile = UserProfile.objects.get(user=user)
+
+    except:
+        user = None
+        user_profile = None
+        
+    if not user or not user_profile:
+        return HttpResponseNotFound('Could not find user')
+    
+    try:
+        user_endpoints = Endpoint.objects.filter(user=user)
+    
+    except:
+        user_endpoints = None
+        
+    if not user_endpoints:
+        return HttpResponseNotFound('Could not find email address')
+    
+    for endpoint in user_endpoints:
+        if endpoint.type == EndpointTypes.EMAIL and \
+            endpoint.value.value == username:
+            endpoint.validation_key = EmailUtils.generate_validation_key()
+            endpoint.save()
+
+            send_validation_email(
+                user_profile,
+                endpoint
+            )
+            break
+        
+    return HttpResponse('OK')
+    
+
 def sign_up(request, account_type=AccountTypes.USER):
     if request.method == 'POST':
         response_data = {
@@ -113,33 +183,11 @@ def sign_up(request, account_type=AccountTypes.USER):
                     user,
                     True
                 )
-
-                #TODO This should be handled by an async task
-                if user_profile.account_type == AccountTypes.BUSINESS_FREE:
-                    subject = 'New Free Business Account in Knotis'
-
-                elif user_profile.account_type == AccountTypes.BUSINESS_MONTHLY:
-                    subject = 'New Premium Business Account in Knotis'
-
-                else:
-                    subject = 'New user Account in Knotis'
-
-                try:
-                    EmailUtils.generate_email(
-                        'activate',
-                        subject,
-                        settings.EMAIL_HOST_USER,
-                        [email.value.value], {
-                            'user_id': user.id,
-                            'validation_key': email.validation_key,
-                            'BASE_URL': settings.BASE_URL,
-                            'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
-                            'SERVICE_NAME': settings.SERVICE_NAME
-                        }
-                    ).send()
-
-                except:
-                    pass
+                
+                send_validation_email(
+                    user_profile,
+                    email
+                )
 
                 response_data['success'] = 'yes'
                 response_data['user'] = user_profile.account_type
@@ -268,9 +316,21 @@ def login(request):
 
         if not user_profile or user_profile.account_status != AccountStatus.ACTIVE:
             # Message user about account deactivation.
+            
+            validation_link = ''.join([
+                '<a id="resend_validation_link" ',
+                'href="/auth/resend_validation_email/',
+                urlquote(username),
+                '/" >Click here</a> '
+            ])
+            
             return generate_response({
                 'success': 'no',
-                'message': 'This account is inactive. Please contact support.'
+                'message': ''.join([
+                    'This account still needs to be activated. ',
+                    validation_link,
+                    'to re-send your validation email.'
+                ])
             })
 
         django_login(
