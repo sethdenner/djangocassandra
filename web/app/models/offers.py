@@ -122,8 +122,8 @@ class OfferManager(Manager):
             value=address,
             primary=True,
         )
-        
-        if end_date < datetime.datetime.now() or not published:
+
+        if end_date <= datetime.datetime.now() or not published:
             active = False
         else:
             active = True
@@ -160,29 +160,8 @@ class OfferManager(Manager):
 
         offer.save()
 
-        if offer.active:
-            if None != category:
-                if not category.active_offer_count:
-                    category.active_offer_count = 1
-                else:
-                    category.active_offer_count = \
-                        category.active_offer_count + 1
-                category.save()
-
-            if None != city:
-                if not city.active_offer_count:
-                    city.active_offer_count = 1
-                else:
-                    city.active_offer_count = city.active_offer_count + 1
-                city.save()
-
-            if None != neighborhood:
-                if not neighborhood.active_offer_count:
-                    neighborhood.active_offer_count = 1
-                else:
-                    neighborhood.active_offer_count = \
-                        neighborhood.active_offer_count + 1
-                neighborhood.save()
+        if offer.available():
+            offer._update_offer_counts(1)
 
         return offer
 
@@ -254,37 +233,49 @@ class OfferManager(Manager):
 
         return results[slice_start:slice_end]
 
-    def get_available_offers(
+    def get_offers(
         self,
         business=None,
         city=None,
         neighborhood=None,
         category=None,
         premium=None,
+        active=None,
+        status=None,
+        published=None,
         page=None,
         query=None,
-        sort_by=OfferSort.NEWEST
+        sort_by=OfferSort.NEWEST,
     ):
         try:
-            results = self.filter(
-                published=True,
-                active=True,
-                status=OfferStatus.CURRENT
-            )
+            results = self.filter(deleted=False)
 
             if None != business:
                 results = results.filter(business=business)
+
             if None != city:
                 results = results.filter(city=city)
+
             if None != neighborhood:
                 results = results.filter(neighborhood=neighborhood)
+
             if None != category:
                 results = results.filter(category=category)
+
             if None != premium:
                 results = results.filter(premium=premium)
 
+            if None != active:
+                results = results.filter(active=active)
+
+            if None != status:
+                results = results.filter(status=status)
+
+            if None != published:
+                results = results.filter(published=published)
+
             if not len(results):
-                return None
+                return results
 
             if query:
                 query_words = query.split(' ')
@@ -340,6 +331,31 @@ class OfferManager(Manager):
 
         except Exception as e:
             return None
+
+    def get_available_offers(
+        self,
+        business=None,
+        city=None,
+        neighborhood=None,
+        category=None,
+        premium=None,
+        page=None,
+        query=None,
+        sort_by=OfferSort.NEWEST
+    ):
+        return self.get_offers(
+            business,
+            city,
+            neighborhood,
+            category,
+            premium,
+            True,
+            OfferStatus.CURRENT,
+            True,
+            page,
+            query,
+            sort_by
+        )
 
     def get_active_offer_count(self):
         offers = None
@@ -462,11 +478,93 @@ class Offer(KnotisModel):
     published = NullBooleanField(default=False)
     active = NullBooleanField(default=False, db_index=True)
     premium = NullBooleanField(default=False, db_index=True)
+    deleted = NullBooleanField(default=False, db_index=True)
 
     last_purchase = DateTimeField(null=True, blank=True, default=None)
     pub_date = DateTimeField(null=True, auto_now_add=True)
 
     objects = OfferManager()
+
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(Offer, self).__init__(
+            *args,
+            **kwargs
+        )
+
+        if self.end_date < datetime.datetime.utcnow() or \
+            self.purchased >= self.stock:
+            self.complete()
+
+    def _update_offer_counts(
+        self,
+        delta
+    ):
+        if self.city:
+            if self.city.active_offer_count:
+                self.city.active_offer_count = \
+                    self.city.active_offer_count + delta
+
+                if self.city.active_offer_count < 0:
+                    self.city.active_offer_count = 0
+
+            else:
+                self.city.active_offer_count = delta if delta > 0 else 0
+
+            self.city.save()
+
+        if self.neighborhood:
+            if self.neighborhood.active_offer_count:
+                self.neighborhood.active_offer_count = \
+                    self.neighborhood.active_offer_count + delta
+
+                if self.neighborhood.active_offer_count < 0:
+                    self.neighborhood.active_offer_count = 0
+
+            else:
+                self.neighborhood.active_offer_count = \
+                    delta if delta > 0 else 0
+
+            self.neighborhood.save()
+
+        if self.category:
+            if self.category.active_offer_count:
+                self.category.active_offer_count = \
+                    self.category.active_offer_count + delta
+
+                if self.category.active_offer_count < 0:
+                    self.category.active_offer_count = 0
+
+            else:
+                self.category.active_offer_count = delta if delta > 0 else 0
+
+            self.category.save()
+
+    def complete(self):
+        available = self.available()
+
+        self.status = OfferStatus.COMPLETE
+        self.save()
+
+        if available:
+            self._update_offer_counts(-1)
+
+    def delete(self):
+        available = self.available()
+
+        self.deleted = True
+        self.save()
+
+        if available:
+            self._update_offer_counts(-1)
+
+    def available(self):
+        return self.active and \
+            self.published and \
+            self.status == OfferStatus.CURRENT
 
     def title_formatted(self):
         if not self.title:
@@ -482,6 +580,7 @@ class Offer(KnotisModel):
                 ' at ',
                 self.business.business_name.value
             ])
+
         elif OfferTitleTypes.TITLE_2 == self.title_type:
             title_formatted = ''.join([
                 '$',
@@ -491,6 +590,7 @@ class Offer(KnotisModel):
                 ' at ',
                 self.business.business_name.value
             ])
+
         else:
             title_formatted = self.title.value
 
@@ -733,35 +833,14 @@ class Offer(KnotisModel):
             self.active = active
             is_self_dirty = True
 
-            delta = 1 if active else -1
-
-            if self.category:
-                if self.category.active_offer_count:
-                    self.category.active_offer_count = \
-                        self.category.active_offer_count + delta
-                elif delta:
-                    self.category.active_offer_count = 1
-                self.category.save()
-
-            if self.city:
-                if self.city.active_offer_count:
-                    self.city.active_offer_count = \
-                        self.city.active_offer_count + delta
-                elif delta:
-                    self.city.active_offer_count = 1
-                self.city.save()
-
-            if self.neighborhood:
-                if self.neighborhood.active_offer_count:
-                    self.neighborhood.active_offer_count = \
-                        self.neighborhood.active_offer_count + delta
-                elif delta:
-                    self.neighborhood.active_offer_count = 1
-                self.neighborhood.save()
-
         if None != premium and premium != self.premium:
             self.premium = premium
             is_self_dirty = True
 
         if is_self_dirty:
             self.save()
+
+        available = self.available()
+        if available:
+            delta = 1 if available else -1
+            self._update_offer_counts(delta)

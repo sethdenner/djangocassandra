@@ -686,14 +686,21 @@ $(function() {
 
     });
 
-
     $('#softDeleteClick').live('click', function() {
         var $this = $(this),
             id = $this.attr('data-id');
-        $.post([server + "backend/deletecompletedoffer",id].join('/'), {},
-                 function(data) {
-                     $('#completedOffersA').click();
-                });
+
+        $.post([
+                '/offer/delete',
+                id,
+                ''
+            ].join('/'), 
+            {}          
+        ).done(function(data){
+            $('#completedOffersA').click();
+            
+        });
+            
        return false;
     }); 
     

@@ -42,12 +42,10 @@
             <a class="print button margin-general"
                href="/business/offers/update/{{ offer.id }}/">Edit</a>
             {% endif %}
-            {% if offer.status != 'created' %}
             <div class="clear-fix ">
                 <a class="print button margin-general" target="_blank"
                    href="/offer/{{ offer.id }}/">View Offer</a>
             </div>
-            {% endif %}
             {% if offer.status == 'current' %}
             <div class="clear-fix margin-general">
                 <a class="{% if not offer.active %}play{% else %}pause{% endif %} relative playstop"

@@ -13,7 +13,7 @@
                         {% if user_profile.is_business_owner %}
                         <li class="txt-size"><a id="createdOffersA"  class="first active" href="#" data-filter="created">Created Offers</a></li>
                         <li class="txt-size"><a id="currentOffersA" href="#" data-filter="current">Current Offers</a></li>
-                        <li class="txt-size"><a id="completedOffersA" href="#" data-filter="completed">Completed Offers</a></li>
+                        <li class="txt-size"><a id="completedOffersA" href="#" data-filter="complete">Completed Offers</a></li>
                         {% endif %}
                         <li class="txt-size"><a  href="#" class="{% if not user_profile.is_business_owner %}first active{% endif %}" data-filter="purchased">Purchased</a></li>
                         <li class="txt-size"><a href="#" data-filter="redeemed">Used</a></li>

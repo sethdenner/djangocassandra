@@ -2,10 +2,11 @@ from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.html import strip_tags
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, \
+    HttpResponseNotFound, HttpResponseServerError
 from django.forms import ModelForm, CharField, ImageField, DateTimeField, \
     ValidationError
-from app.models.offers import Offer, OfferStatus, OfferSort
+from app.models.offers import Offer, OfferStatus, OfferSort, OfferTitleTypes
 from app.models.businesses import Business, BusinessSubscription
 from app.models.transactions import Transaction, TransactionTypes
 from app.models.categories import Category
@@ -41,7 +42,7 @@ class OfferForm(ModelForm):
             'pub_date',
         )
 
-    title_value = CharField(max_length=128)
+    title_value = CharField(max_length=128, required=False)
     description_value = CharField(max_length=1024)
     restrictions_value = CharField(max_length=1024)
     address_value = CharField(max_length=256)
@@ -71,6 +72,15 @@ class OfferForm(ModelForm):
             self.fields['address_value'].initial = instance.address.value.value
             self.fields['neighborhood'].initial = instance.neighborhood.id if instance.neighborhood else None
             self.fields['city'].initial = instance.city.id if instance.city else None
+
+    def clean_title_value(self):
+        title = self.cleaned_data.get('title_value')
+        title_type = self.cleaned_data.get('title_type')
+
+        if not title and title_type != OfferTitleTypes.TITLE_1:
+            raise ValidationError('Invalid title.')
+
+        return title
 
     def clean_city(self):
         try:
@@ -517,6 +527,35 @@ def update(request):
 
 
 @login_required
+def delete_offer(
+    request,
+    offer_id
+):
+    if request.method.lower() != 'post':
+        return HttpResponseBadRequest('Method needs to be POST')
+
+    try:
+        offer = Offer.objects.get(pk=offer_id)
+    except:
+        offer = None
+
+    if not offer:
+        return HttpResponseNotFound('Offer does not exist.')
+
+    if offer.business.user_id != request.user.id:
+        return HttpResponseBadRequest(
+            'Offer does not belong to logged in user.'
+        )
+
+    try:
+        offer.delete()
+    except Exception, error:
+        return HttpResponseServerError(error.message)
+
+    return HttpResponse('OK')
+
+
+@login_required
 def get_offers_by_status(
     request,
     status,
@@ -544,7 +583,7 @@ def get_offers_by_status(
             )
         template_parameters['business'] = business
 
-        template_parameters['offers'] = Offer.objects.filter(
+        template_parameters['offers'] = Offer.objects.get_offers(
             status=status,
             business=business
         )

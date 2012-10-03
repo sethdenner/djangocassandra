@@ -115,6 +115,14 @@ urlpatterns = patterns('',
         'app.views.dashboard.dashboard_qrcode'
     ),
     url(
+        r''.join([
+            '^offer/delete/(?P<offer_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        'app.views.offer.delete_offer'
+    ),
+    url(
         r'^offer/(?P<offer_id>[^/]+)/$',
         'app.views.offer.offer',
     ),

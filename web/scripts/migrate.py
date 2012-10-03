@@ -530,6 +530,7 @@ def import_images(cursor):
             if 'business' == asset_type:
                 if asset['headImage']:
                     business_map.new_business.primary_image = image_instance
+                    business_map.new_business.save()
 
         except Exception, e:
             print 'Exception!: %s\n' % e,
