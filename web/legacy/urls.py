@@ -4,6 +4,10 @@ from django.conf.urls.defaults import patterns, url
 urlpatterns = patterns(
     'legacy.views',
     url(
+        r'^deal/buy_paypal[/]?$',
+        'map_paypal_ipn'
+    ),
+    url(
         r'^deals/$',
         'map_redirect'
     ),

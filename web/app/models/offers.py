@@ -540,6 +540,10 @@ class Offer(KnotisModel):
 
             self.category.save()
 
+    def purchase(self):
+        self.purchased = self.purchased + 1
+        self.save()
+
     def complete(self):
         available = self.available()
 
@@ -705,7 +709,7 @@ class Offer(KnotisModel):
     ):
         is_self_dirty = False
         available = self.available()
-        
+
         if None != title:
             current_title = self.title.value if self.title else None
             if title != current_title:

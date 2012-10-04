@@ -4,6 +4,8 @@ from legacy.models import BusinessIdMap, OfferIdMap
 
 from knotis_qrcodes.models import Qrcode
 
+from paypal.views import ipn_callback
+
 LEGACY_URL_MAP = {
     '/deals/': '/offers/',
     '/category/contact/': '/contact/',
@@ -26,6 +28,10 @@ def map_redirect(request):
         LEGACY_URL_MAP[request.path],
         permanent=True
     )
+
+
+def map_paypal_ipn(request):
+    return ipn_callback(request)
 
 
 def offer_city_filter_redirect(

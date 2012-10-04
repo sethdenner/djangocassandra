@@ -121,12 +121,12 @@ def send_validation_email(
 
 
 def resend_validation_email(
-    request, 
+    request,
     username
 ):
     if request.method.lower() != 'get':
         return HttpResponseBadRequest('Method must be GET')
-    
+
     try:
         user = User.objects.get(username=username)
         user_profile = UserProfile.objects.get(user=user)
@@ -134,19 +134,19 @@ def resend_validation_email(
     except:
         user = None
         user_profile = None
-        
+
     if not user or not user_profile:
         return HttpResponseNotFound('Could not find user')
-    
+
     try:
         user_endpoints = Endpoint.objects.filter(user=user)
-    
+
     except:
         user_endpoints = None
-        
+
     if not user_endpoints:
         return HttpResponseNotFound('Could not find email address')
-    
+
     for endpoint in user_endpoints:
         if endpoint.type == EndpointTypes.EMAIL and \
             endpoint.value.value == username:
@@ -158,9 +158,9 @@ def resend_validation_email(
                 endpoint
             )
             break
-        
+
     return HttpResponse('OK')
-    
+
 
 def sign_up(request, account_type=AccountTypes.USER):
     if request.method == 'POST':
@@ -183,7 +183,7 @@ def sign_up(request, account_type=AccountTypes.USER):
                     user,
                     True
                 )
-                
+
                 send_validation_email(
                     user_profile,
                     email
@@ -219,7 +219,7 @@ def sign_up(request, account_type=AccountTypes.USER):
             paypal_button = render_paypal_button({
                 'hosted_button_id': settings.PAYPAL_PREMIUM_BUTTON_ID,
                 'notify_url': reverse('paypal.views.buy_premium_service'),
-                'item_1': 'subscription',
+                'item_name_1': 'Business Monthly Subscription',
                 'custom': '_'.join([
                     user.id,
                     generate_ipn_hash(user.id)
@@ -316,14 +316,14 @@ def login(request):
 
         if not user_profile or user_profile.account_status != AccountStatus.ACTIVE:
             # Message user about account deactivation.
-            
+
             validation_link = ''.join([
                 '<a id="resend_validation_link" ',
                 'href="/auth/resend_validation_email/',
                 urlquote(username),
                 '/" >Click here</a> '
             ])
-            
+
             return generate_response({
                 'success': 'no',
                 'message': ''.join([

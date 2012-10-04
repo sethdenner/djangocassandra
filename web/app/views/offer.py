@@ -119,7 +119,7 @@ class OfferForm(ModelForm):
         business = Business.objects.get(user=request.user)
 
         published = offer.published if offer else False
-        published = published or 'publish' in request.POST 
+        published = published or 'publish' in request.POST
 
         if published and not self.cleaned_data.get('image_source'):
             if offer:
@@ -736,20 +736,20 @@ def purchase(
 ):
     if request.method.lower() != 'post':
         return redirect('/offers/')
-    
+
     template_parameters = ViewUtils.get_standard_template_parameters(request)
-    
+
     try:
         offer = Offer.objects.get(pk=offer_id)
         template_parameters['offer'] = offer
-        
+
         ipn_key = ''.join([
             request.user.id,
             '_',
             generate_ipn_hash(request.user.id)
-        ]) 
+        ])
         template_parameters['custom_data'] = ipn_key
-        
+
         transaction = Transaction.objects.create_transaction(
             request.user,
             TransactionTypes.PURCHASE,
@@ -763,16 +763,15 @@ def purchase(
     except:
         offer = None
         transaction = None
-        
+
     if not offer:
         return HttpResponseNotFound('Could not find offer')
-    
+
     if not transaction:
         return HttpResponseServerError('Failed to create transaction')
-        
+
     return render(
         request,
         'offer_purchase.html',
         template_parameters
     )
-    
