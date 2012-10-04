@@ -228,7 +228,8 @@ ENVIRONMENT_NAME = 'dev'
 configs = {
     'dev': 'dev',
     'int': 'int',
-    'prod': 'prod'
+    'prod': 'prod',
+    'stage': 'stage'
 }
 
 # Import the configuration settings file - REPLACE projectname with your project
