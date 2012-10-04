@@ -18,6 +18,24 @@
         }
     },
     {
+        "pk": "6cc7cdbc-54e7-4632-acb5-fea56d6a1bb2",
+        "model": "auth.user",
+        "fields": {
+            "username": "__hamburgertime__",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2012-10-04 17:25:34",
+            "groups": [],
+            "user_permissions": [],
+            "password": "sha1$c1283$3372e8d22b398a0c6eb2e1991aac0c7339364380",
+            "email": "seth@knotis.com",
+            "date_joined": "2012-10-04 17:25:34"
+        }
+    },
+    {
         "pk": "0c7d8d59-318e-4d22-bd5d-6e146644339f",
         "model": "sites.site",
         "fields": {
