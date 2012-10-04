@@ -1,4 +1,6 @@
 import uuid
+import datetime
+import calendar
 
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
@@ -10,6 +12,17 @@ from knotis_auth.models import User, UserProfile
 from app.models.contents import Content
 from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
+
+
+class Time:
+    @staticmethod
+    def add_months(sourcedate,months):
+        month = sourcedate.month - 1 + months
+        year = sourcedate.year + month / 12
+        month = month % 12 + 1
+        day = min(sourcedate.day,calendar.monthrange(year,month)[1])
+        return datetime.date(year,month,day)
+
 
 class View:
     @staticmethod

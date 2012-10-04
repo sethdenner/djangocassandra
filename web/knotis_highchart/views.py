@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 
 from app.models.transactions import Transaction
 from app.models.businesses import Business
+from app.utils import Time as TimeUtils
 
 from knotis_qrcodes.models import Scan
 
@@ -117,8 +118,9 @@ def render_monthly_revenue_chart(
     month_delta = 1
     while month_delta <= 12:
         categories.append((
-                now + datetime.timedelta(
-                    weeks=month_delta * 4
+                TimeUtils.add_months(
+                    now, 
+                    month_delta
                 )
             ).strftime('%b')
         )
@@ -217,8 +219,9 @@ def render_monthly_qrcode_chart(
     month_delta = 1
     while month_delta <= 12:
         categories.append((
-                now + datetime.timedelta(
-                    weeks=month_delta * 4
+                TimeUtils.add_months(
+                    now, 
+                    month_delta
                 )
             ).strftime('%b')
         )
