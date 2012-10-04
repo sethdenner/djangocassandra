@@ -737,7 +737,7 @@ $(function() {
         $.post('/profile/update/', {
                 'notify_offers': true
             }, function(data) {
-                $('html').append(data);
+                $('.header-content').append(data);
                 $('.notify').fadeOut();
             }
         );

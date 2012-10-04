@@ -74,7 +74,8 @@ class OfferManager(Manager):
         stock,
         unlimited,
         published,
-        premium=False
+        premium=False,
+        active=True
     ):
         backend_name = \
             urlquote(('offer_' + business.backend_name + '_' + title)\
@@ -122,11 +123,6 @@ class OfferManager(Manager):
             value=address,
             primary=True,
         )
-
-        if end_date <= datetime.datetime.now() or not published:
-            active = False
-        else:
-            active = True
 
         offer = self.create(
             business=business,
@@ -703,7 +699,8 @@ class Offer(KnotisModel):
         premium=None
     ):
         is_self_dirty = False
-
+        available = self.available()
+        
         if None != title:
             current_title = self.title.value if self.title else None
             if title != current_title:
@@ -841,7 +838,6 @@ class Offer(KnotisModel):
         if is_self_dirty:
             self.save()
 
-        available = self.available()
-        if available:
-            delta = 1 if available else -1
+        if available != self.available():
+            delta = 1 if self.available() else -1
             self._update_offer_counts(delta)

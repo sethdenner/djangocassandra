@@ -313,9 +313,6 @@ def import_offer(cursor):
             else:
                 premium = False
 
-            if end_date < datetime.datetime.now() or not published:
-                active = False
-
             print 'Importing offer for business %s by user %s' % (business, user)
             new_offer = Offer.objects.create_offer(
                 user,
@@ -336,9 +333,9 @@ def import_offer(cursor):
                 stock,
                 unlimited,
                 published,
-                premium
+                premium,
+                active
             )
-            new_offer.update(active=active)
 
             old_offer_id = old_offer['id']
 

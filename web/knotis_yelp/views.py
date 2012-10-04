@@ -55,6 +55,6 @@ def get_reviews_by_yelp_id(yelp_id):
         finally:
             connection.close()
     except urllib2.HTTPError, error:
-        response = json.loads(error.read())
+        return {}
 
     return response.get('reviews')
