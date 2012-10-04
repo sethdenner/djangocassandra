@@ -117,7 +117,8 @@ class OfferForm(ModelForm):
     ):
         business = Business.objects.get(user=request.user)
 
-        published = 'publish' in request.POST
+        published = offer.published if offer else False
+        published = published or 'publish' in request.POST 
 
         if published and not self.cleaned_data.get('image_source'):
             if offer:

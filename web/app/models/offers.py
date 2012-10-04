@@ -495,7 +495,8 @@ class Offer(KnotisModel):
             **kwargs
         )
 
-        if self.end_date < datetime.datetime.utcnow() or \
+        # Could have no end date I guess so check for not None.
+        if (self.end_date and self.end_date < datetime.datetime.utcnow()) or \
             self.purchased >= self.stock:
             self.complete()
 

@@ -338,8 +338,7 @@ def import_offer(cursor):
                 published,
                 premium
             )
-            new_offer.active = active
-            new_offer.save()
+            new_offer.update(active=active)
 
             old_offer_id = old_offer['id']
 
