@@ -13,6 +13,9 @@
                 <div class="relative closeinfo">
                     <div class="message-confirm margin-general-25 radius-general ">QR Code url
                         -> {{ BASE_URL }}/qrcode/{{ qrcode.id }}/</div>
+                    <div class="qrcode-manage"><img
+                            src="https://chart.googleapis.com/chart?chs=197x197&cht=qr&chl={{ qrcode_uri }}/&choe=UTF-8"
+                            alt="QR code {{ business.business_name.value }}" title="QR code {{ business.business_name.value }}"/></div>
                 </div>
                 <div class="clean"></div>
                 <form class="backend-setting edit-offer" data-id="" method="post">{% csrf_token %}

@@ -10,6 +10,8 @@ from app.models.businesses import Business
 
 from knotis_qrcodes.models import Qrcode, QrcodeTypes, Scan
 
+from legacy.models import QrcodeIdMap
+
 
 def scan(request, qrcode_id):
     qrcode = None
@@ -88,6 +90,28 @@ def manage(request):
 
         except:
             pass
+
+        try:
+            id_map = QrcodeIdMap.objects.get(new_qrcode=qrcode)
+
+        except Exception, e:
+            id_map = None
+
+        if id_map:
+            qrcode_uri = '/'.join([
+                settings.BASE_URL,
+                'business',
+                unicode(id_map.old_id),
+            ])
+
+        else:
+            qrcode_uri = '/'.join([
+                settings.BASE_URL,
+                'qrcode',
+                qrcode.id
+            ])
+
+        template_parameters['qrcode_uri'] = qrcode_uri
 
     template_parameters['BASE_URL'] = settings.BASE_URL
 
