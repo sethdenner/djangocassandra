@@ -58,7 +58,7 @@
         <h4 class="margin-general">{% if offer %}{{ offer.summary.value }}{% endif %}</h4>
         <div class="clear-fix margin-general">
             <p class="price left"><span>$</span>{{ offer.price_discount_formatted }}</p>
-            <form method="post" action="/purchase/offer/">
+            <form method="post" action="/offer/buy/{{ offer.id }}/">{% csrf_token %}
                 <div class="button-offers-profile left">
                     <input class="button {% if not offer.active %}button-none{% endif %} radius-general left{% if user.is_anonymous %} log_in{% endif %}"
                         value="Buy Now" type="submit" name="Buy Now" {% if not offer.active %}disabled{% endif %} />

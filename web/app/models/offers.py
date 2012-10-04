@@ -671,8 +671,13 @@ class Offer(KnotisModel):
              ''
         ])
 
-    def purchases(self):
-        pass
+    def stock_values(self):
+        if self.unlimited:
+            return [i for i in range(1, 100)]
+
+        else:
+            stock_remaining = self.stock - self.purchased
+            return [i for i in range(1, stock_remaining + 1)]
 
     def update(
         self,

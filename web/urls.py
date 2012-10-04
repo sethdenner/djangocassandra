@@ -116,6 +116,14 @@ urlpatterns = patterns('',
     ),
     url(
         r''.join([
+            '^offer/buy/(?P<offer_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        'app.views.offer.purchase'
+    ),
+    url(
+        r''.join([
             '^offer/delete/(?P<offer_id>',
             REGEX_UUID,
             ')/$'

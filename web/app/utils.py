@@ -46,6 +46,7 @@ class View:
 
         template_parameters['FACEBOOK_APP_ID'] = settings.FACEBOOK_APP_ID
         template_parameters['session'] = request.session
+        template_parameters['settings'] = settings
 
         try:
             content = {}

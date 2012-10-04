@@ -20,6 +20,7 @@ from app.utils import View as ViewUtils
 from app.views.business import edit_profile
 
 from knotis_maps.views import OfferMap
+from paypal.views import generate_ipn_hash
 
 
 class OfferForm(ModelForm):
@@ -726,3 +727,52 @@ def offer_map(
         'offer_map.html',
         template_parameters
     )
+
+
+@login_required
+def purchase(
+    request,
+    offer_id
+):
+    if request.method.lower() != 'post':
+        return redirect('/offers/')
+    
+    template_parameters = ViewUtils.get_standard_template_parameters(request)
+    
+    try:
+        offer = Offer.objects.get(pk=offer_id)
+        template_parameters['offer'] = offer
+        
+        ipn_key = ''.join([
+            request.user.id,
+            '_',
+            generate_ipn_hash(request.user.id)
+        ]) 
+        template_parameters['custom_data'] = ipn_key
+        
+        transaction = Transaction.objects.create_transaction(
+            request.user,
+            TransactionTypes.PURCHASE,
+            offer.business,
+            offer,
+            None,
+            offer.price_discount,
+            ipn_key
+        )
+
+    except:
+        offer = None
+        transaction = None
+        
+    if not offer:
+        return HttpResponseNotFound('Could not find offer')
+    
+    if not transaction:
+        return HttpResponseServerError('Failed to create transaction')
+        
+    return render(
+        request,
+        'offer_purchase.html',
+        template_parameters
+    )
+    
