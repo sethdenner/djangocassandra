@@ -3,7 +3,7 @@ import re
 from django.db.models import CharField, DateTimeField, URLField, Manager, \
     NullBooleanField
 from django.utils.http import urlquote
-from django.contrib.auth.models import User
+from knotis_auth.models import User
 
 from foreignkeynonrel.models import ForeignKeyNonRel
 

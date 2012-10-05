@@ -493,7 +493,7 @@ class Offer(KnotisModel):
 
         # Could have no end date I guess so check for not None.
         if (self.end_date and self.end_date < datetime.datetime.utcnow()) or \
-            self.purchased >= self.stock:
+            (not self.unlimited and self.purchased >= self.stock):
             self.complete()
 
     def _update_offer_counts(
