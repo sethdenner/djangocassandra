@@ -6,6 +6,7 @@ from django.conf import settings
 from django.template import Context
 from django.template.loader import get_template
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 from app.models.transactions import Transaction, TransactionTypes
 from knotis_auth.models import User, UserProfile, AccountTypes
 from app.models.offers import Offer
@@ -129,6 +130,8 @@ def ipn_callback(request):
             Offer.objects.get(pk=item_number_1).purchase()
         except:
             pass
+
+    return HttpResponse('OK')
 
 
 def render_paypal_button(parameters):
