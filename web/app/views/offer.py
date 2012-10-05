@@ -587,8 +587,19 @@ def get_user_offers(
             transaction_type=transaction_type
         )
 
-        template_parameters['offers'] = [
-            transaction.offer for transaction in transactions
+        template_parameters['offers'] = [{
+                'id': transaction.offer_id,
+                'available': transaction.offer.available(),
+                'title_formatted': transaction.offer.title_formatted(),
+                'start_date': transaction.offer.start_date,
+                'end_date': transaction.offer.end_date,
+                'business': transaction.offer.business,
+                'purchase_date': transaction.pub_date,
+                'stock': transaction.unredeemed(),
+                'redeemed': transaction.redemptions(),
+                'image':{'image': transaction.offer.image},
+                'description_100': transaction.offer.description_100()
+            } for transaction in transactions
         ]
 
     except:
