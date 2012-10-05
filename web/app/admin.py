@@ -82,6 +82,13 @@ class ImageAdmin(admin.ModelAdmin):
 admin.site.register(Image, ImageAdmin)
 
 
+class TransactionAdmin(admin.ModelAdmin):
+    search_fields = [
+        'transaction_context'
+    ]
+admin.site.register(Transaction, TransactionAdmin)
+    
+    
 class GeneralAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Contact, GeneralAdmin)
@@ -90,7 +97,6 @@ admin.site.register(BusinessLink, GeneralAdmin)
 admin.site.register(BusinessSubscription, GeneralAdmin)
 admin.site.register(Scan, GeneralAdmin)
 admin.site.register(Qrcode, GeneralAdmin)
-admin.site.register(Transaction, GeneralAdmin)
 admin.site.register(City, GeneralAdmin)
 admin.site.register(Neighborhood, GeneralAdmin)
 admin.site.register(Category, GeneralAdmin)

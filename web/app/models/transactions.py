@@ -175,6 +175,17 @@ class Transaction(KnotisModel):
 
     objects = TransactionManager()
 
+    
+    def __unicode__(self):
+        return '/'.join([
+            self.user.username if self.user else 'None',
+            self.business.business_name.value if self.business else 'None',
+            self.offer.id if self.offer else 'None',
+            unicode(self.transaction_type),
+            self.transaction_context
+        ])
+
+    
     def value_formatted(self):
         return ViewUtils.format_currency(self.value)
 
