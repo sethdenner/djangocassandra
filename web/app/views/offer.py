@@ -826,13 +826,12 @@ def purchase(
             'currency_code': 'USD',
             'return': '/'.join([
                 settings.BASE_URL,
-                'dashboard/offers/'
+                'offers/dashboard/'
             ]),
             'notify_url': settings.PAYPAL_NOTIFY_URL,
             'rm': '2',
             'item_name_1': offer.title_formatted,
             'amount_1': offer.price_discount,
-            'handling_cart': settings.PAYPAL_TRANSACTION_PRICE,
             'item_number_1': offer.id,
             'custom': transaction.transaction_context
         }
