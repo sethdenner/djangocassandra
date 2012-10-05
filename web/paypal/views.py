@@ -5,6 +5,7 @@ import hashlib
 from django.conf import settings
 from django.template import Context
 from django.template.loader import get_template
+from django.views.decorators.csrf import csrf_exempt
 from app.models.transactions import Transaction, TransactionTypes
 from knotis_auth.models import User, UserProfile, AccountTypes
 from app.models.offers import Offer
@@ -72,6 +73,7 @@ def is_ipn_valid(request):
     return True
 
 
+@csrf_exempt
 def ipn_callback(request):
     if not is_ipn_valid(request):
         return
@@ -143,7 +145,7 @@ def render_paypal_button(parameters):
                 settings.BASE_URL,
                 notify_url
             ])
-            
+
     return_url = parameters.get('return')
     if return_url:
         if not return_url.startswith('http://'):
