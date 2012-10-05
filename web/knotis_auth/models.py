@@ -44,7 +44,7 @@ class UserManager(models.UserManager):
     ):
         if email:
             email = email.lower()
-            
+
         new_user = super(UserManager, self).create_user(
             email,
             email,
@@ -70,7 +70,7 @@ class User(models.User):
 
     objects = UserManager()
 
-    def check_pasword(
+    def check_password(
         self,
         raw_password
     ):
