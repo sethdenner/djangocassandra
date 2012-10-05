@@ -148,13 +148,16 @@ def edit_profile(request):
 
     business = None
     try:
-        business = Business.objects.get(user=request.user)
+        user = User.objects.get(pk=request.user.id)
+        business = Business.objects.get(user=user)
 
     except Business.DoesNotExist:
-        pass #fine
+        user = None
+        business = None
 
     except:
-        pass #fatal
+        user = None
+        business = None
 
     if request.method.lower() == 'post':
         if 'submit_profile' in request.POST:
@@ -167,7 +170,7 @@ def edit_profile(request):
 
                 else:
                     business = Business.objects.create_business(
-                        request.user,
+                        user,
                         **update_form.cleaned_data
                     )
                     # Create QR Code for business.
