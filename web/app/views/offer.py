@@ -558,6 +558,50 @@ def delete_offer(
 
 
 @login_required
+def get_user_offers(
+    request,
+    status
+):
+    template_parameters = {}
+
+    try:
+        template_parameters['user_profile'] = UserProfile.objects.get(
+            user=request.user
+        )
+
+    except:
+        pass
+
+    try:
+        if status == 'redeemed':
+            transaction_type = TransactionTypes.REDEMPTION
+
+        elif status == 'purchased':
+            transaction_type = TransactionTypes.PURCHASE
+
+        else:
+            transaction_type = None
+
+        transactions = Transaction.objects.filter(
+            user=request.user,
+            transaction_type=transaction_type
+        )
+
+        template_parameters['offers'] = [
+            transaction.offer for transaction in transactions
+        ]
+
+    except:
+        pass
+
+    return render(
+        request,
+        'offers_list_manage.html',
+        template_parameters
+    )
+
+
+@login_required
 def get_offers_by_status(
     request,
     status,
@@ -770,7 +814,7 @@ def purchase(
 
     if not transaction:
         return HttpResponseServerError('Failed to create transaction')
-    
+
     template_parameters['paypal_button'] = render_paypal_button({
         'button_text': 'Buy your offers',
         'button_class': 'button radius-general',
@@ -789,10 +833,10 @@ def purchase(
             'item_name_1': offer.title_formatted,
             'amount_1': offer.price_discount,
             'handling_cart': settings.PAYPAL_TRANSACTION_PRICE,
-            'item_number_1': offer.id,                  
-            'custom': transaction.transaction_context 
+            'item_number_1': offer.id,
+            'custom': transaction.transaction_context
         }
-    }) 
+    })
 
     return render(
         request,

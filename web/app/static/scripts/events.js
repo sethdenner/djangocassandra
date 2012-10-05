@@ -622,12 +622,27 @@ $(function() {
     $('.offerlist_backend li a').live('click', function() {
         var $this = $(this),
                 filter = $this.attr('data-filter');
+            
+        var url;    
+        if (filter == 'redeemed' || filter == 'purchased'){
+            url = '/offers/get_user_offers';
+        } else {
+            url = '/offers/get_offers_by_status';
+        }
 
-        $.get(['/offers/get_offers_by_status', filter, ''].join('/'), {}, function(data) {
-            $('.offer_list_backend').html(data);
-            $('.offerlist_backend li a').removeClass('active');
-            $this.addClass('active');
-        });
+        $.get([
+                url, 
+                filter, 
+                ''
+            ].join('/'), 
+            {}, 
+            function(data) {
+                $('.offer_list_backend').html(data);
+                $('.offerlist_backend li a').removeClass('active');
+                $this.addClass('active');
+
+            }
+        );
 
         return false;
     });
