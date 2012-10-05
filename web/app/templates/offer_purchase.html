@@ -37,22 +37,9 @@
                         </div>
                     </div>
                     <p class="margin-general"><label>
-                        <input class="button radius-general" type="submit" value="Buy your offers">
+                        {{ paypal_button }}
                         <input type="hidden" value="{{ offer.id }}" name="offerId"/>
                     </label></p>
-                    <input name="cmd" type="hidden" value="_cart" />
-                    <input name="upload" type="hidden" value="1" />
-                    <input name="business" type="hidden" value="{{ settings.PAYPAL_ACCOUNT }}" />
-                    <input name="shopping_url" type="hidden" value="{{ settings.BASE_URL }}" />
-                    <input name="currency_code" type="hidden" value="USD" />
-                    <input name="return" type="hidden" value="/dashboard/offers/" />
-                    <input name="notify_url" type="hidden" value="{{ settings.PAYPAL_NOTIFY_URL }}" />
-                    <input name="rm" type="hidden" value="2" />
-                    <input name="item_name_1" type="hidden" value="{{ offer.title_formatted }}" />
-                    <input name="amount_1" type="hidden" id="amount_1" value="{{ offer.price_discount }}" />
-                    <input type="hidden" name="handling_cart" value="{{ settings.PAYPAL_TRANSACTION_PRICE }}" />
-                    <input type="hidden" name="item_number_1" value="{{ offer.id }}" />
-                    <input type="hidden" name="custom" value="{{ custom_data }}" />
                 </form>
             </div>
             <div class="box-border colum-width right">

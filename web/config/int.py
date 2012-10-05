@@ -46,7 +46,7 @@ PAYPAL_URL = 'ssl://www.sandbox.paypal.com'
 PAYPAL_TEST_URL = 'ssl://www.sandbox.paypal.com'
 PAYPAL_NOTIFY_URL = ''.join([
     BASE_URL,
-    '/account/payment/'
+    '/paypal/ipn/'
 ])
 PAYPAL_OFFER_BUTTON_ID = 'DCV66T4VPMMXU'
 PAYPAL_PREMIUM_BUTTON_ID = 'YNYHC3S6TYB7W'

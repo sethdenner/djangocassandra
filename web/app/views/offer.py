@@ -14,13 +14,13 @@ from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
 from app.models.media import Image
 
-from knotis_auth.models import UserProfile
+from knotis_auth.models import User, UserProfile
 
 from app.utils import View as ViewUtils
 from app.views.business import edit_profile
 
 from knotis_maps.views import OfferMap
-from paypal.views import generate_ipn_hash
+from paypal.views import generate_ipn_hash, render_paypal_button
 
 
 class OfferForm(ModelForm):
@@ -750,9 +750,10 @@ def purchase(
         ])
         template_parameters['custom_data'] = ipn_key
 
+        user = User.objects.get(pk=request.user.id)
         transaction = Transaction.objects.create_transaction(
-            request.user,
-            TransactionTypes.PURCHASE,
+            user,
+            TransactionTypes.PENDING,
             offer.business,
             offer,
             None,
@@ -760,7 +761,7 @@ def purchase(
             ipn_key
         )
 
-    except:
+    except Exception, error:
         offer = None
         transaction = None
 
@@ -769,6 +770,29 @@ def purchase(
 
     if not transaction:
         return HttpResponseServerError('Failed to create transaction')
+    
+    template_parameters['paypal_button'] = render_paypal_button({
+        'button_text': 'Buy your offers',
+        'button_class': 'button radius-general',
+        'paypal_parameters': {
+            'cmd': '_cart',
+            'upload': '1',
+            'business': settings.PAYPAL_ACCOUNT,
+            'shopping_url': settings.BASE_URL,
+            'currency_code': 'USD',
+            'return': '/'.join([
+                settings.BASE_URL,
+                'dashboard/offers/'
+            ]),
+            'notify_url': settings.PAYPAL_NOTIFY_URL,
+            'rm': '2',
+            'item_name_1': offer.title_formatted,
+            'amount_1': offer.price_discount,
+            'handling_cart': settings.PAYPAL_TRANSACTION_PRICE,
+            'item_number_1': offer.id,                  
+            'custom': transaction.transaction_context 
+        }
+    }) 
 
     return render(
         request,

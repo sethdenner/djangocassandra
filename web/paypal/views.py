@@ -87,25 +87,23 @@ def ipn_callback(request):
         )
 
         purchased = False
-        completed = False
-        purchase = None
+        pending_transaction = None
         for transaction in transactions:
+            if transaction.transaction_type == TransactionTypes.PENDING:
+                pending_transaction = transaction
+
             if transaction.transaction_type == TransactionTypes.PURCHASE:
                 purchased = True
-                purchase = transaction
 
-            if transaction.transaction_type == TransactionTypes.COMPLETE:
-                completed = True
-
-        if purchased and not completed:
+        if pending_transaction and not purchased:
             Transaction.objects.create_transaction(
-                purchase.user,
-                TransactionTypes.COMPLETE,
-                purchase.business,
-                purchase.offer,
-                purchase.quantity,
+                pending_transaction.user,
+                TransactionTypes.PURCHASE,
+                pending_transaction.business,
+                pending_transaction.offer,
+                pending_transaction.quantity,
                 auth_amount,
-                purchase.transaction_context
+                pending_transaction.transaction_context
             )
 
     except:
@@ -126,19 +124,13 @@ def ipn_callback(request):
 
     elif item_number_1:
         try:
-            offer = Offer.objects.get(pk=item_number_1)
+            Offer.objects.get(pk=item_number_1).purchase()
         except:
-            offer = None
-
-        if not offer:
-            return
-
-        offer.purchase()
+            pass
 
 
 def render_paypal_button(parameters):
     default_parameters = {
-        'action': settings.PAYPAL_FORM_URL,
         'button_text': settings.PAYPAL_DEFAULT_BUTTON_TEXT,
     }
     default_parameters.update(parameters)
@@ -146,10 +138,18 @@ def render_paypal_button(parameters):
 
     notify_url = parameters.get('notify_url')
     if notify_url:
-        if not notify_url.startswith(settings.BASE_URL):
+        if not notify_url.startswith('http://'):
             parameters['notify_url'] = '/'.join([
                 settings.BASE_URL,
                 notify_url
+            ])
+            
+    return_url = parameters.get('return')
+    if return_url:
+        if not return_url.startswith('http://'):
+            parameters['return'] = '/'.join([
+                settings.BASE_URL,
+                return_url
             ])
 
     context = Context(parameters)

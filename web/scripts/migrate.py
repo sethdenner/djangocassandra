@@ -548,8 +548,9 @@ def import_transactions(cursor):
             price = transaction_table['price']
             transaction_context = transaction_table['txn_id']
 
-            transaction_type = TransactionTypes.REDEMPTION
-            if redeem != 1:
+            if redeem:
+                transaction_type = TransactionTypes.REDEMPTION
+            else:
                 transaction_type = TransactionTypes.PURCHASE
 
             date = transaction_table['date']

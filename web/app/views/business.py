@@ -9,7 +9,7 @@ from django.conf import settings
 from django.forms import Form, ModelForm, ModelChoiceField, CharField, \
     URLField, ValidationError
 from django.http import HttpResponseNotFound, HttpResponseBadRequest, \
-    HttpResponseNotFound, HttpResponseServerError, HttpResponse
+    HttpResponseServerError, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.http import urlquote
 from django.contrib.auth.decorators import login_required

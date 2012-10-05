@@ -43,7 +43,7 @@ PAYPAL_URL = 'ssl://www.paypal.com'
 PAYPAL_TEST_URL = 'ssl://www.sandbox.paypal.com'
 PAYPAL_NOTIFY_URL = ''.join([
     BASE_URL,
-    '/account/payment/'
+    '/paypal/ipn/'
 ])
 PAYPAL_HOSTED_BUTTON_ID = 'RGN2J9C8A4MY4'
 PAYPAL_DEFAULT_BUTTON_TEXT = 'Finish in Paypal'

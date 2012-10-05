@@ -13,13 +13,14 @@ from app.utils import View as ViewUtils
 
 
 class TransactionTypes:
-    PURCHASE = 0
-    REDEMPTION = 1
-    CANCEL = 2
-    REFUND = 3
-    COMPLETE = 4
+    PENDING = 'pending'
+    PURCHASE = 'purchase'
+    REDEMPTION = 'redemption'
+    CANCEL = 'cancel'
+    REFUND = 'refund'
 
     CHOICES = (
+        (PENDING, 'Pending'),
         (PURCHASE, 'Purchased'),
         (REDEMPTION, 'Redeemed'),
         (CANCEL, 'Cancelled'),
@@ -154,7 +155,8 @@ class Transaction(KnotisModel):
     user = ForeignKeyNonRel(User)
     business = ForeignKeyNonRel(Business)
     offer = ForeignKeyNonRel(Offer)
-    transaction_type = IntegerField(
+    transaction_type = CharField(
+        max_length=64,
         null=True,
         choices=TransactionTypes.CHOICES,
         db_index=True

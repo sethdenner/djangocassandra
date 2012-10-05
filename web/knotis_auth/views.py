@@ -217,13 +217,18 @@ def sign_up(request, account_type=AccountTypes.USER):
         paypal_button = None
         if AccountTypes.BUSINESS_MONTHLY == user_profile.account_type:
             paypal_button = render_paypal_button({
-                'hosted_button_id': settings.PAYPAL_PREMIUM_BUTTON_ID,
-                'notify_url': reverse('paypal.views.buy_premium_service'),
-                'item_name_1': 'Business Monthly Subscription',
-                'custom': '_'.join([
-                    user.id,
-                    generate_ipn_hash(user.id)
-                ]),
+                'button_text': 'Finish with PayPal',
+                'button_class': 'txt-center button-paypal clear-fix radius-general',
+                'paypal_parameters': {
+                    'cmd': '_s-xclick',
+                    'hosted_button_id': settings.PAYPAL_PREMIUM_BUTTON_ID,
+                    'notify_url': reverse('paypal.views.buy_premium_service'),
+                    'item_name_1': 'Business Monthly Subscription',
+                    'custom': '_'.join([
+                        user.id,
+                        generate_ipn_hash(user.id)
+                    ]),
+                }
             })
 
         html = get_template('finish_registration.html')
