@@ -7,6 +7,7 @@ from django.template import Context
 from django.template.loader import get_template
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from django.utils.http import urlquote
 from app.models.transactions import Transaction, TransactionTypes
 from knotis_auth.models import User, UserProfile, AccountTypes
 from app.models.offers import Offer
@@ -21,15 +22,16 @@ def generate_ipn_hash(value):
     ])).hexdigest()
 
 
+@csrf_exempt
 def is_ipn_valid(request):
     if request.method.lower() != 'post':
         return  # log something here
 
-    parameters = 'cmd=_notify-validata'
-    for key, value in request.POST:
+    parameters = 'cmd=_notify-validate'
+    for key, value in request.POST.items():
         parameters += '&%s=%s' % (
-            urllib.urlencode(key),
-            urllib.urlencode(value)
+            urlquote(key),
+            urlquote(value),
         )
 
     headers = {
@@ -47,14 +49,20 @@ def is_ipn_valid(request):
         parameters,
         headers
     )
+
     try:
         connection = urllib2.urlopen(request)
         try:
             response = connection.read()
+
         finally:
             connection.close()
+
     except urllib2.HTTPError, error:
         response = error.read()
+
+    except Exception, error:
+        response = error.message
 
     if response == 'VERIFIED':
         return True
