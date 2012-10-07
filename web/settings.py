@@ -1,11 +1,4 @@
 # Django settings for web project.
-
-# Set pythonpath to look at shared modules
-import os
-import sys
-PROJECT_ROOT = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(PROJECT_ROOT, "../share"))
-
 SERVICE_NAME = 'Knotis'
 
 PRICE_MERCHANT_MONTHLY = 14.
@@ -165,7 +158,6 @@ INSTALLED_APPS = (
     'piston',
     'djangotoolbox',
     'permission_backend_nonrel',
-    'background_task',
     'timezones',
     'sorl.thumbnail',
     # Django standard apps.
@@ -177,23 +169,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    # Knotis apps.
-    'manytomanynonrel',
-    'foreignkeynonrel',
-    'paypal',
-    'facebook',
-    'knotis_feedback',
-    'knotis_yelp',
-    'knotis_twitter',
-    'knotis_auth',
-    'knotis_maps',
-    'knotis_contact',
-    'knotis_happyhour',
-    'knotis_highchart',
-    'knotis_events',
-    'knotis_qrcodes',
-    'legacy',
-    'app',
+    'knotis'
 )
 
 LOGIN_REDIRECT_URL = '/'
