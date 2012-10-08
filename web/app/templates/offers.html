@@ -44,7 +44,7 @@
                     {% include 'offers_list.html' with offers=offers %}
                 </div>
             </div>
-                    <div class="box-border colum-width right {% if user_profile.notify_offers %}hide{% else %}notify{% endif %}">
+                    <div class="box-border colum-width right {% if user.is_anonymous or user_profile.notify_offers %}hide{% else %}notify{% endif %}">
                 <a class=" button clear-fix txt-center radius-general button-receive{% if not user %} log_in{% endif %}" href="#">
                     <span>Receive new offers via email</span>
                 </a>

@@ -103,6 +103,16 @@ def profile(request):
             password_form = KnotisPasswordChangeForm(request.user, request.POST)
             if password_form.is_valid():
                 password_form.save_password()
+                template_parameters['feedback'] = (
+                    'Your password has been updated.'
+                )
+                
+            else:
+                template_parameters['feedback'] = (
+                    'There was an error updating your profile.'
+                )
+                
+
         else:
             password_form = KnotisPasswordChangeForm(request.user)
 
@@ -110,14 +120,33 @@ def profile(request):
             email_form = EmailChangeForm(request.POST)
             if email_form.is_valid():
                 email_form.save_email(request)
+                template_parameters['feedback'] = (
+                    'Your profile was updated successfully.'
+                )
+
+            else:
+                template_parameters['feedback'] = (
+                    'There was an error updating your profile.'
+                )
+                
         else:
             email_form = EmailChangeForm()
 
         if 'activate_business' in request.POST:
             business_form = ActivateBusinessForm(request.POST)
             if business_form.is_valid():
-                template_parameters['user_profile'] = \
+                template_parameters['user_profile'] = (
                     business_form.activate_business(request)
+                )
+                template_parameters['feedback'] = (
+                    'Your Forever Free plan has been activated.'
+                )
+
+            else:
+                template_parameters['feedback'] = (
+                    'There was an error updating your profile.'
+                )
+                
         else:
             business_form = ActivateBusinessForm()
 
@@ -125,6 +154,15 @@ def profile(request):
             profile_form = UserProfileForm(request.POST)
             if profile_form.is_valid():
                 profile_form.save_user_profile(request)
+                template_parameters['feedback'] = (
+                    'Your profile was updated successfully.'
+                )
+
+            else:
+                template_parameters['feedback'] = (
+                    'There was an error updating your profile.'
+                )
+                
         else:
             user_profile = template_parameters['user_profile']
             profile_form = UserProfileForm({
