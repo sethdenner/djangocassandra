@@ -44,14 +44,14 @@ def is_ipn_valid(request):
     else:
         uri = settings.PAYPAL_URL
 
-    request = urllib2.Request(
+    validation_request = urllib2.Request(
         uri,
         parameters,
         headers
     )
 
     try:
-        connection = urllib2.urlopen(request)
+        connection = urllib2.urlopen(validation_request)
         try:
             response = connection.read()
 

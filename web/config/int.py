@@ -41,9 +41,8 @@ FACEBOOK_DEFAULT_SCOPE = 'email,user_about_me'
 FACEBOOK_API_URL = 'https://graph.facebook.com'
 
 PAYPAL_ACCOUNT = 'billing@knotis.com'
-PAYPAL_FORM_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
-PAYPAL_URL = 'ssl://www.sandbox.paypal.com'
-PAYPAL_TEST_URL = 'ssl://www.sandbox.paypal.com'
+PAYPAL_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
+PAYPAL_TEST_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
 PAYPAL_NOTIFY_URL = ''.join([
     BASE_URL,
     '/paypal/ipn/'
