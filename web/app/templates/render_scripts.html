@@ -1,3 +1,6 @@
+{% for script in scripts %}
+<script type="text/javascript" src="{{ STATIC_URL}}scripts/{{ script }}" ></script>
+{% endfor %}
 <script type="text/javascript" src="{{ STATIC_URL }}scripts/jquery/jquery.js"></script>
 <script type="application/javascript" src="{{ STATIC_URL }}scripts/jquery/plugins/load_offers.js" ></script>
 <script type="text/javascript" src="{{ STATIC_URL }}scripts/jquery/plugins/render_data.js"></script>

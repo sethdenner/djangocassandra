@@ -4,7 +4,7 @@
     <title>{% block title %}Knotis.com{% endblock %}</title>
     {% include 'meta.html' %}
     {% include 'styles.html' with maps=maps gallery=gallery do_upload=do_upload graphics=graphics %}
-    {% include 'render_scripts.html'  with maps=maps gallery=gallery do_upload=do_upload graphics=graphics %}
+    {% include 'render_scripts.html'  with maps=maps gallery=gallery do_upload=do_upload graphics=graphics scripts=render_scripts %}
 </head>
 <body>
     {% include 'header.html' with cities=cities %}
@@ -13,6 +13,6 @@
         {% endblock %}
     </div>
     {% include 'footer.html' %}
-    {% include 'scripts.html' with maps=maps gallery=gallery do_upload=do_upload graphics=graphics %}
+    {% include 'scripts.html' with maps=maps gallery=gallery do_upload=do_upload graphics=graphics scripts=scripts %}
 </body>
 </html>

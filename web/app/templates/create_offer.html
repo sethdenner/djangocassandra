@@ -84,7 +84,7 @@
                          <!--UNLIMITED CHECKBOX-->
                         <li class="seat-offer-column" style="width:100px">
                             <label>Unlimited<div id="ht-26" class="help-icon vertical-align-super" ></div></label>
-                                <input class="radius-general" value="unlimited" {% if offer.unlimited %}checked{% endif %}  
+                                <input id='check_unlimited' class="radius-general" value="unlimited" {% if offer.unlimited %}checked{% endif %}  
                                         type="checkbox" style="margin-right:5px" name="{{ offer_form.unlimited.html_name }}" /> 
                         </li>
                     </ul>

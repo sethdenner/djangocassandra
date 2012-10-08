@@ -491,6 +491,9 @@ def edit(request, offer_id=None):
     template_parameters['offer_form'] = form
     template_parameters['offer'] = offer
     template_parameters['feedback'] = feedback
+    template_parameters['scripts'] = [
+        'views/offer.edit.js'
+    ]
 
     return render(
         request,
