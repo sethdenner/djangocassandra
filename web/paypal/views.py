@@ -68,11 +68,11 @@ def is_ipn_valid(request):
         return True
 
     custom_validation = request.POST.get('custom')
-    if not custom_validation or len(custom_validation) != 2:
+    if not custom_validation:
         return False
 
-    custom_validation = custom_validation.split('_')
-    if 2 != len(custom_validation):
+    custom_validation = custom_validation.split('|')
+    if 3 != len(custom_validation):
         return False
 
     ipn_hash = generate_ipn_hash(custom_validation[0])
@@ -85,15 +85,19 @@ def is_ipn_valid(request):
 @csrf_exempt
 def ipn_callback(request):
     if not is_ipn_valid(request):
-        return
+        return HttpResponse('OK')
 
     transaction_context = request.POST.get('custom')
     auth_amount = request.POST.get('auth_amount')
     item_name_1 = request.POST.get('item_name_1')
     item_number_1 = request.POST.get('item_number_1')
+    quantity = request.POST.get('quantity')
+    context_parts = transaction_context.split('|')
+    user_id = context_parts[0]
 
     try:
         transactions = Transaction.objects.filter(
+            user_id=user_id,
             transaction_context=transaction_context
         )
 
@@ -112,7 +116,7 @@ def ipn_callback(request):
                 TransactionTypes.PURCHASE,
                 pending_transaction.business,
                 pending_transaction.offer,
-                pending_transaction.quantity,
+                int(quantity),
                 auth_amount,
                 pending_transaction.transaction_context
             )
@@ -122,8 +126,6 @@ def ipn_callback(request):
 
     if item_name_1 == 'Business Monthly Subscription':
         try:
-            context_parts = transaction_context.split('_')
-            user_id = context_parts[0]
             user = User.objects.get(pk=user_id)
             user_profile = UserProfile.objects.get(user=user)
 
@@ -136,6 +138,7 @@ def ipn_callback(request):
     elif item_number_1:
         try:
             Offer.objects.get(pk=item_number_1).purchase()
+
         except:
             pass
 

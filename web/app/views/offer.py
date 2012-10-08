@@ -1,3 +1,6 @@
+import random
+import string
+
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -830,12 +833,17 @@ def purchase(
         offer = Offer.objects.get(pk=offer_id)
         template_parameters['offer'] = offer
 
-        ipn_key = ''.join([
+        redemption_code = ''.join(
+            random.choice(
+                string.ascii_uppercase + string.digits
+            ) for _ in range(10)
+        )
+
+        transaction_context = '|'.join([
             request.user.id,
-            '_',
-            generate_ipn_hash(request.user.id)
+            generate_ipn_hash(request.user.id),
+            redemption_code
         ])
-        template_parameters['custom_data'] = ipn_key
 
         user = User.objects.get(pk=request.user.id)
         transaction = Transaction.objects.create_transaction(
@@ -845,7 +853,7 @@ def purchase(
             offer,
             None,
             offer.price_discount,
-            ipn_key
+            transaction_context
         )
 
     except Exception, error:

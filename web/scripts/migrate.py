@@ -1,5 +1,7 @@
 #from app.models.contentvs import Content
 import getpass
+import random
+import string
 import MySQLdb.cursors
 
 from django.contrib.auth import authenticate
@@ -15,6 +17,8 @@ from app.models.categories import Category
 from app.models.transactions import Transaction, TransactionTypes
 from app.models.endpoints import Endpoint, EndpointTypes
 from app.models.media import Image
+
+from paypal.views import generate_ipn_hash
 
 import datetime
 import sys
@@ -546,7 +550,13 @@ def import_transactions(cursor):
             redeem = transaction_table['redeem']
             quantity = transaction_table['stock']
             price = transaction_table['price']
-            transaction_context = transaction_table['txn_id']
+            code = transaction_table['code']
+
+            transaction_context = '|'.join([
+                user.id,
+                generate_ipn_hash(user.id),
+                code
+            ])
 
             if redeem:
                 transaction_type = TransactionTypes.REDEMPTION
