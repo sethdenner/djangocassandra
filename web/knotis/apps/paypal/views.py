@@ -9,7 +9,8 @@ from django.http import (
     HttpResponse,
     HttpResponseNotAllowed
 )
-from django.utils.http import urlquote
+from django.utils.http import urlencode
+from django.shortcuts import redirect
 
 from knotis.apps.transaction.models import (
     Transaction,
@@ -33,12 +34,12 @@ def generate_ipn_hash(value):
 
 
 def is_ipn_valid(post):
-    parameters = 'cmd=_notify-validate'
-    for key, value in post.items():
-        parameters += '&%s=%s' % (
-            urlquote(key),
-            urlquote(value),
-        )
+    data = post.copy()
+    data['cmd'] = '_notify-validate'
+    data = dict(
+        [(k, v.encode(post['charset'])) for k, v in post.items()]
+    )
+    parameters = urlencode(data)
 
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -89,7 +90,21 @@ def is_ipn_valid(post):
 
 
 @csrf_exempt
+def paypal_return(request):
+    if request.method.lower() != 'post':
+        return HttpResponseNotAllowed('POST')
+
+    next_url = request.GET.get('next')
+    url = next_url if next_url else '/offers/dashboard/'
+
+    return redirect(url)
+
+
+@csrf_exempt
 def ipn_callback(request):
+    if request.method.lower() != 'post':
+        return HttpResponseNotAllowed('POST')
+
     if not is_ipn_valid(request.POST):
         return HttpResponse('OK')
 
@@ -168,11 +183,15 @@ def render_paypal_button(parameters):
 
     return_url = parameters.get('return')
     if return_url:
-        if not return_url.startswith('http://'):
-            parameters['return'] = '/'.join([
-                settings.BASE_URL,
+        parameters['return'] = return_url = '/'.join([
+            settings.BASE_URL,
+            'paypal',
+            'return',
+            ''.join([
+                '?next=',
                 return_url
             ])
+        ])
 
     context = Context(parameters)
     template = get_template('paypal_button.html')

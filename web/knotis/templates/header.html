@@ -46,7 +46,7 @@
 		                    	{% for n in neighborhoods %}
 		                        {% if n.city.id == c.id and n.active_offer_count %}
 								<li class="txt-size">
-									<a href="/offers/?city={{ c.name_denormalized|lower }}&neighborhood={{ n.name_denormailized|lower }}">{{ n.name_denormalized }}</a>
+									<a href="/offers/?city={{ c.name_denormalized|lower }}&neighborhood={{ n.name.value|lower }}">{{ n.name.value }}</a>
 								</li>
 		                        {% endif %}
 		                    	{% endfor %}

@@ -9,5 +9,9 @@ urlpatterns = patterns(
     url(
         r'^ipn/$',
         'ipn_callback'
-    )
+    ),
+    url(
+        r'^return/$',
+        'paypal_return'
+    ),
 )
