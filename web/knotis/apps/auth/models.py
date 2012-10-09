@@ -14,6 +14,7 @@ from django.db.models import (
     OneToOneField
 )
 
+from knotis.apps.core.models import KnotisModel
 from knotis.apps.facebook.views import get_facebook_avatar
 from knotis.apps.gravatar.views import avatar as get_gravatar_avatar
 from knotis.apps.cassandra.models import ForeignKey
@@ -169,7 +170,7 @@ class UserProfileManager(Manager):
         user_profile.save()
 
 
-class UserProfile(Model):
+class UserProfile(KnotisModel):
     user = OneToOneField(KnotisUser, primary_key=True)
 
     account_type = CharField(
