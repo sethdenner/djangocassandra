@@ -23,6 +23,12 @@ BASE_URL = 'http://wow3.knotis.com' # NO TRAILING SLASH!!!
 STATIC_URL = '/static/'
 STATIC_URL_ABSOLUTE = BASE_URL + STATIC_URL
 
+# Absolute path to the directory static files should be collected to.
+# Don't put anything in this directory yourself; store your static files
+# in apps' "static/" subdirectories and in STATICFILES_DIRS.
+# Example: "/home/media/media.lawrence.com/static/"
+STATIC_ROOT = '/srv/knotis/static/'
+
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = '/srv/knotis/media/'
