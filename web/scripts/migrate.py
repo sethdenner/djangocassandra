@@ -7,7 +7,7 @@ import MySQLdb.cursors
 from django.contrib.auth import authenticate
 
 from optparse import OptionParser
-from knotis_auth.models import User, AccountTypes, AccountStatus
+from knotis_auth.models import KnotisUser, AccountTypes, AccountStatus
 from knotis_auth.views import _generate_facebook_password
 from app.models.businesses import Business, BusinessLink, BusinessSubscription
 from app.models.offers import Offer
@@ -66,14 +66,14 @@ def import_user(cursor):
             if role == 2:
                 account_type = AccountTypes.BUSINESS_MONTHLY
 
-            current_users = User.objects.filter(username=email)
+            current_users = KnotisUser.objects.filter(username=email)
             if current_users.count() > 0:
                 print 'User %s is already in the database.' % email
                 continue
 
             print 'Importing user %s with type %s' % (email, account_type)
 
-            user, user_profile = User.objects.create_user(
+            user, user_profile = KnotisUser.objects.create_user(
                 first_name,
                 last_name,
                 email,
@@ -153,7 +153,7 @@ def import_business(cursor):
             username = business_table['email'].decode('cp1252')
 
             user = None
-            user_objects = User.objects.filter(username=username)
+            user_objects = KnotisUser.objects.filter(username=username)
             if len(user_objects) > 0:
                 user = user_objects[0]
 
@@ -213,7 +213,7 @@ def import_offer(cursor):
             # Getting the user id for the new system.
             #old_user_id     = old_offer['usersId']
             username = old_offer['email'].decode('cp1252')
-            user = User.objects.get(username=username)
+            user = KnotisUser.objects.get(username=username)
 
             # Get the business for the new system.
             old_business_id = old_offer['merchantId']
@@ -542,7 +542,7 @@ def import_transactions(cursor):
     for transaction_table in all_transactions:
         try:
             username = transaction_table['email'].decode('cp1252')
-            user = User.objects.get(username=username)
+            user = KnotisUser.objects.get(username=username)
 
             deal_id = transaction_table['dealId']
             offer = OfferIdMap.objects.get(old_id=deal_id).new_offer

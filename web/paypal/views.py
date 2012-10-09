@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.utils.http import urlquote
 from app.models.transactions import Transaction, TransactionTypes
-from knotis_auth.models import User, UserProfile, AccountTypes
+from knotis_auth.models import KnotisUser, UserProfile, AccountTypes
 from app.models.offers import Offer
 
 
@@ -126,7 +126,7 @@ def ipn_callback(request):
 
     if item_name_1 == 'Business Monthly Subscription':
         try:
-            user = User.objects.get(pk=user_id)
+            user = KnotisUser.objects.get(pk=user_id)
             user_profile = UserProfile.objects.get(user=user)
 
             user_profile.account_type = AccountTypes.BUSINESS_MONTHLY

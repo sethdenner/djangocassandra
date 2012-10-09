@@ -17,7 +17,7 @@ from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
 from app.models.media import Image
 
-from knotis_auth.models import User, UserProfile
+from knotis_auth.models import KnotisUser, UserProfile
 
 from app.utils import View as ViewUtils
 from app.views.business import edit_profile
@@ -845,7 +845,7 @@ def purchase(
             redemption_code
         ])
 
-        user = User.objects.get(pk=request.user.id)
+        user = KnotisUser.objects.get(pk=request.user.id)
         transaction = Transaction.objects.create_transaction(
             user,
             TransactionTypes.PENDING,

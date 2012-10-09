@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib import contenttypes
 from django.forms import ModelForm
 
-from knotis_auth.models import User, UserProfile
+from knotis_auth.models import KnotisUser, UserProfile
 from knotis_contact.models import Contact
 
 from models.businesses import Business, BusinessLink, BusinessSubscription
@@ -25,7 +25,7 @@ admin.site.register(UserProfile, UserProfileAdmin)
 
 class UserAdmin(admin.ModelAdmin):
     search_fields = ['username']
-admin.site.register(User, UserAdmin)
+admin.site.register(KnotisUser, UserAdmin)
 
 class EndpointAdmin(admin.ModelAdmin):
     pass

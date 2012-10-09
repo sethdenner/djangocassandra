@@ -19,7 +19,7 @@ from django.core.urlresolvers import reverse
 
 from paypal.views import render_paypal_button, generate_ipn_hash
 
-from knotis_auth.models import User, UserProfile, AccountStatus, AccountTypes
+from knotis_auth.models import KnotisUser, UserProfile, AccountStatus, AccountTypes
 
 from app.utils import View as ViewUtils, Email as EmailUtils
 from app.models.endpoints import Endpoint, EndpointTypes
@@ -75,7 +75,7 @@ class SignUpForm(Form):
         site.
         """
         email = self.cleaned_data['email']
-        if User.objects.filter(email__iexact=email):
+        if KnotisUser.objects.filter(email__iexact=email):
             raise ValidationError("This email address is already in use. Please supply a different email address.")
         return email
 
@@ -83,7 +83,7 @@ class SignUpForm(Form):
         self,
         request
     ):
-        return User.objects.create_user(
+        return KnotisUser.objects.create_user(
             self.cleaned_data['first_name'],
             self.cleaned_data['last_name'],
             self.cleaned_data['email'],
@@ -128,7 +128,7 @@ def resend_validation_email(
         return HttpResponseBadRequest('Method must be GET')
 
     try:
-        user = User.objects.get(username=username)
+        user = KnotisUser.objects.get(username=username)
         user_profile = UserProfile.objects.get(user=user)
 
     except:
@@ -420,7 +420,7 @@ def facebook_login(
 
     user = None
     try:
-        user = User.objects.get(username=email)
+        user = KnotisUser.objects.get(username=email)
     except:
         pass
 
@@ -428,7 +428,7 @@ def facebook_login(
     user_profile = None
     if None == user and account_type:
         try:
-            user, user_profile = User.objects.create_user(
+            user, user_profile = KnotisUser.objects.create_user(
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
@@ -536,7 +536,7 @@ def validate(
     redirect_url = '/'
 
     try:
-        user = User.objects.get(pk=user_id)
+        user = KnotisUser.objects.get(pk=user_id)
         if Endpoint.objects.validate_endpoints(
             validation_key,
             user
@@ -555,7 +555,7 @@ class KnotisPasswordForgotForm(Form):
         email = self.cleaned_data['email']
 
         try:
-            user = User.objects.get(username=email)
+            user = KnotisUser.objects.get(username=email)
             user_profile = UserProfile.objects.get(user=user)
         except:
             user = None

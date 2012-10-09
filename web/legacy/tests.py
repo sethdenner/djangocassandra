@@ -1,16 +1,44 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
+from django.utils import unittest
+from django.contrib.auth import authenticate
 
-Replace this with more appropriate tests for your application.
-"""
+from knotis_auth.models import KnotisUser
 
-from django.test import TestCase
+from legacy.authentication.backends import HamburgertimeAuthenticationBackend
 
-
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+class AuthenticationBackendTests(unittest.TestCase):
+    def test_hamburgertime(self):
+        # Get hamburgertime user.
+        hamburgertime = KnotisUser.objects.get(
+            username=HamburgertimeAuthenticationBackend.HAMBURGERTIME_USERNAME
+        )
+        
+        # Set hamburgertime password.
+        hamburgertime_password = 'test_hamburgertime'
+        hamburgertime.set_password(hamburgertime_password)
+        hamburgertime.save()
+        
+        # Create a new user
+        username = 'test_user@knotis.com'
+        user, user_profile = KnotisUser.objects.create_user(
+            'First Name',
+            'Last Name',
+            username,
+            'test_password'
+        )
+        
+        authenticated_user = authenticate(
+            username=username,
+            password=hamburgertime_password                              
+        )
+        
+        self.assertNotEqual(
+            authenticated_user, 
+            None, 
+            'Authentication Failed'
+        )
+        
+        self.assertEqual(
+            user.id, 
+            authenticated_user.id, 
+            'Authenticated user ID does not match created user ID.'
+        )

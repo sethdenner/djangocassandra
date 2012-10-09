@@ -1,7 +1,7 @@
 from django.db.models import Model, IntegerField
 from app.models.businesses import Business
 from app.models.offers import Offer
-from knotis_auth.models import User
+from knotis_auth.models import KnotisUser
 from knotis_qrcodes.models import Qrcode
 from foreignkeynonrel.models import ForeignKeyNonRel
 
@@ -23,7 +23,7 @@ class UserIdMap(Model):
         default=None,
         db_index=True
     )
-    new_user = ForeignKeyNonRel(User)
+    new_user = ForeignKeyNonRel(KnotisUser)
     
 
 class QrcodeIdMap(Model):

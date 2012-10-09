@@ -11,7 +11,7 @@ from app.utils import View as ViewUtils
 from app.models.endpoints import Endpoint, EndpointTypes
 
 from knotis_auth.views import KnotisPasswordChangeForm
-from knotis_auth.models import User, UserProfile, AccountTypes
+from knotis_auth.models import KnotisUser, UserProfile, AccountTypes
 from knotis_feedback.views import render_feedback_popup
 
 
@@ -26,7 +26,7 @@ class UserProfileForm(Form):
         self,
         request
     ):
-        user = User.objects.get(pk=request.user.id)
+        user = KnotisUser.objects.get(pk=request.user.id)
         user.update(
             first_name=self.cleaned_data['first_name'],
             last_name=self.cleaned_data['last_name'],

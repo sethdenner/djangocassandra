@@ -7,7 +7,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
 
-from knotis_auth.models import User, UserProfile
+from knotis_auth.models import KnotisUser, UserProfile
 
 from app.models.contents import Content
 from app.models.cities import City
@@ -65,7 +65,7 @@ class View:
             template_parameters['neighborhoods'] = Neighborhood.objects.all()
 
             if request.user.is_authenticated():
-                knotis_user = User.objects.get(pk=request.user.id)
+                knotis_user = KnotisUser.objects.get(pk=request.user.id)
                 template_parameters['knotis_user'] = knotis_user
                 user_profile = UserProfile.objects.get(user=request.user)
                 template_parameters['user_profile'] = user_profile

@@ -3,8 +3,7 @@ import re
 from django.db.models import CharField, DateTimeField, URLField, Manager, \
     NullBooleanField
 from django.utils.http import urlquote
-from knotis_auth.models import User
-
+from knotis_auth.models import KnotisUser
 from foreignkeynonrel.models import ForeignKeyNonRel
 
 from app.models.knotis import KnotisModel
@@ -139,7 +138,7 @@ class Business(KnotisModel):
 
     backend_name = CharField(max_length=128, db_index=True)
 
-    user = ForeignKeyNonRel(User)
+    user = ForeignKeyNonRel(KnotisUser)
     content_root = ForeignKeyNonRel(
         Content,
         related_name='business_content_root'
@@ -331,7 +330,7 @@ class BusinessSubscriptionManager(Manager):
 
 
 class BusinessSubscription(KnotisModel):
-    user = ForeignKeyNonRel(User)
+    user = ForeignKeyNonRel(KnotisUser)
     business = ForeignKeyNonRel(Business)
     active = NullBooleanField(default=True, blank=True, db_index=True)
 
