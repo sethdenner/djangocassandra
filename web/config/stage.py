@@ -1,6 +1,3 @@
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
 DATABASES = {
     'default': {
         'ENGINE': 'django_cassandra.db', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.                                                     
@@ -20,8 +17,8 @@ BASE_URL = 'http://wow3.knotis.com' # NO TRAILING SLASH!!!
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
-STATIC_URL_ABSOLUTE = BASE_URL + STATIC_URL
+STATIC_URL = 'http://wow3.knotis.com/static/'
+STATIC_URL_ABSOLUTE = STATIC_URL
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
