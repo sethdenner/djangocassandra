@@ -1,7 +1,7 @@
 from django.conf import settings
 
 from knotis.apps.auth.models import (
-    User,
+    KnotisUser,
     UserProfile,
 )
 from knotis.apps.content.models import Content
@@ -54,7 +54,7 @@ def get_standard_template_parameters(request):
         template_parameters['neighborhoods'] = Neighborhood.objects.all()
 
         if request.user.is_authenticated():
-            knotis_user = User.objects.get(pk=request.user.id)
+            knotis_user = KnotisUser.objects.get(pk=request.user.id)
             template_parameters['knotis_user'] = knotis_user
             user_profile = UserProfile.objects.get(user=request.user)
             template_parameters['user_profile'] = user_profile

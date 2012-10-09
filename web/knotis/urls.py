@@ -1,8 +1,9 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
+from django.contrib import admin
 
-from app.models.offers import OfferSort
+from knotis.apps.offer.models import OfferSort
 
 
 REGEX_BACKEND_NAME = (
