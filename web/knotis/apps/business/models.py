@@ -4,7 +4,8 @@ from django.db.models import (
     Manager,
     URLField,
     CharField,
-    DateTimeField
+    DateTimeField,
+    NullBooleanField
 )
 from django.utils.http import urlquote
 

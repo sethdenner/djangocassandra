@@ -1,10 +1,23 @@
 import hashlib
 
-import django.contrib.auth.models as auth_models
-import django.db.models as django_models
-import knotis.views as knotis_views
-import knotis.apps.cassandra.models as cassandra_models
-import knotis.apps.math.models as math_models
+from django.contrib.auth.models import (
+    UserManager,
+    User as DjangoUser
+)
+from django.db.models import (
+    Manager,
+    Model,
+    CharField,
+    FloatField,
+    IntegerField,
+    NullBooleanField,
+    OneToOneField
+)
+
+from knotis.apps.facebook.views import get_facebook_avatar
+from knotis.apps.gravatar.views import avatar as get_gravatar_avatar
+from knotis.apps.cassandra.models import ForeignKey
+from knotis.apps.math.models import MatrixField
 
 
 class AccountTypes:
@@ -29,7 +42,7 @@ class AccountStatus:
     )
 
 
-class UserManager(auth_models.UserManager):
+class UserManager(UserManager):
     def create_user(
         self,
         first_name,
@@ -60,7 +73,7 @@ class UserManager(auth_models.UserManager):
         return new_user, user_profile
 
 
-class User(auth_models.User):
+class User(DjangoUser):
     class Meta:
         proxy = True
 
@@ -95,9 +108,9 @@ class User(auth_models.User):
         facebook_id=None
     ):
         if facebook_id:
-            return knotis_views.facebook.get_facebook_avatar(facebook_id)
+            return get_facebook_avatar(facebook_id)
         else:
-            return knotis_views.gravatar.avatar(
+            return get_gravatar_avatar(
                 self.username,
                 32,
                 'mm',
@@ -133,7 +146,7 @@ class User(auth_models.User):
             self.save()
 
 
-class UserProfileManager(django_models.Manager):
+class UserProfileManager(Manager):
     def create_profile(
         self,
         user,
@@ -156,26 +169,26 @@ class UserProfileManager(django_models.Manager):
         user_profile.save()
 
 
-class UserProfile(django_models.Model):
-    user = django_models.OneToOneField(User, primary_key=True)
+class UserProfile(Model):
+    user = OneToOneField(User, primary_key=True)
 
-    account_type = django_models.CharField(
+    account_type = CharField(
         max_length=32,
         null=True,
         choices=AccountTypes.CHOICES,
         default=AccountTypes.USER
     )
-    account_status = django_models.IntegerField(
+    account_status = IntegerField(
         null=True,
         choices=AccountStatus.CHOICES,
         default=AccountStatus.DISABLED
     )
 
-    notify_announcements = django_models.NullBooleanField(blank=True, default=False)
-    notify_offers = django_models.NullBooleanField(blank=True, default=False)
-    notify_events = django_models.NullBooleanField(blank=True, default=False)
+    notify_announcements = NullBooleanField(blank=True, default=False)
+    notify_offers = NullBooleanField(blank=True, default=False)
+    notify_events = NullBooleanField(blank=True, default=False)
 
-    password_reset_key = django_models.CharField(
+    password_reset_key = CharField(
         max_length=36,
         null=True,
         blank=True,
@@ -183,19 +196,19 @@ class UserProfile(django_models.Model):
         db_index=True
     )
 
-    reputation_mu = django_models.FloatField(
+    reputation_mu = FloatField(
         null=True,
         default=1.
     )
-    reputation_sigma = django_models.FloatField(
+    reputation_sigma = FloatField(
         null=True,
         default=0.
     )
-    reputation_total = django_models.FloatField(
+    reputation_total = FloatField(
         null=True,
         default=0.
     )
-    reputation_matrix = math_models.MatrixField(
+    reputation_matrix = MatrixField(
         null=True,
         blank=True,
         max_length=200
@@ -280,21 +293,21 @@ class CredentialsTypes:
     )
 
 
-class Credentials(django_models.Model):
-    user = cassandra_models.ForeignKey(User)
-    credentials_type = django_models.IntegerField(
+class Credentials(Model):
+    user = ForeignKey(User)
+    credentials_type = IntegerField(
         choices=CredentialsTypes.CHOICES,
         null=True,
         blank=True,
         default=CredentialsTypes.FACEBOOK
     )
-    user_identifier = django_models.CharField(
+    user_identifier = CharField(
         max_length=256,
         null=True,
         blank=True,
         default=None
     )
-    value = django_models.CharField(
+    value = CharField(
         max_length=256,
         null=True,
         blank=True,

@@ -8,13 +8,10 @@ from django.db.models import (
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib.auth.models import User
 
-from knotis.apps.cassandra.models import ForeignKey
-
+from knotis.utils.email import generate_validation_key
 from knotis.apps.core.models import KnotisModel
 from knotis.apps.content.models import Content, ContentTypes
-# from app.models.fields.permissions import PermissionsField
-
-from knotis.utils import Email as EmailUtils
+from knotis.apps.cassandra.models import ForeignKey
 
 
 class EndpointManager(Manager):
@@ -64,7 +61,9 @@ class EndpointManager(Manager):
         elif user:
             endpoint_set = self.filter(user=user)
         else:
-            raise ValueError('Could not validate endpoint. user and endpoints both None.')
+            raise ValueError(
+                'Could not validate endpoint. user and endpoints both None.'
+            )
 
         for endpoint in endpoint_set:
             if endpoint.validation_key == validation_key:
@@ -207,7 +206,7 @@ class EndpointEmail(Endpoint): #-- the data for all these is the same, we want d
         Endpoint._value_string_to_content(kwargs)
 
         if kwargs.get('validation_key') is None:
-            kwargs['validation_key'] = EmailUtils.generate_validation_key()
+            kwargs['validation_key'] = generate_validation_key()
 
         super(EndpointEmail, self).__init__(*args, **kwargs)
 
