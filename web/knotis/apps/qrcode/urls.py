@@ -1,14 +1,22 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls.defaults import (
+    patterns,
+    url
+)
 
+from knotis.utils.regex import REGEX_UUID
 
 urlpatterns = patterns(
-    'knotis_qrcodes.views',
+    'knotis.apps.qrcode.views',
     url(
-        r'^/qrcode/$',
-        'qrcode'
+        r''.join([
+            '^(?P<qrcode_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        'scan',
     ),
     url(
-        r'^/scan/(?P<qrcode_id>[^/]+)/$',
-        'scan'
-    )
+        r'^manage/$',
+        'manage',
+    ),
 )

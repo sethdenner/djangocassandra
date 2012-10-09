@@ -1,4 +1,3 @@
-import urllib
 import urllib2
 import hashlib
 
@@ -6,7 +5,10 @@ from django.conf import settings
 from django.template import Context
 from django.template.loader import get_template
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import (
+    HttpResponse,
+    HttpResponseNotAllowed
+)
 from django.utils.http import urlquote
 
 from knotis.apps.transaction.models import (
@@ -30,13 +32,9 @@ def generate_ipn_hash(value):
     ])).hexdigest()
 
 
-@csrf_exempt
-def is_ipn_valid(request):
-    if request.method.lower() != 'post':
-        return  # log something here
-
+def is_ipn_valid(post):
     parameters = 'cmd=_notify-validate'
-    for key, value in request.POST.items():
+    for key, value in post.items():
         parameters += '&%s=%s' % (
             urlquote(key),
             urlquote(value),
@@ -47,7 +45,7 @@ def is_ipn_valid(request):
         'Content-Length': len(parameters)
     }
 
-    if request.POST.get('test_ipn') == '1':
+    if post.get('test_ipn') == '1':
         uri = settings.PAYPAL_TEST_URL
     else:
         uri = settings.PAYPAL_URL
@@ -75,7 +73,7 @@ def is_ipn_valid(request):
     if response == 'VERIFIED':
         return True
 
-    custom_validation = request.POST.get('custom')
+    custom_validation = post.get('custom')
     if not custom_validation:
         return False
 
@@ -92,7 +90,7 @@ def is_ipn_valid(request):
 
 @csrf_exempt
 def ipn_callback(request):
-    if not is_ipn_valid(request):
+    if not is_ipn_valid(request.POST):
         return HttpResponse('OK')
 
     transaction_context = request.POST.get('custom')

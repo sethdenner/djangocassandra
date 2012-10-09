@@ -8,7 +8,7 @@
                     {% else %}Sign up{% endif %}{% endif %}{% endif %}</strong></h3>
                 <div class="close close_sig_in"></div>
             </div>
-            <form class="replace" action="/signup/" method="post" id="newuser">{% csrf_token %}
+            <form class="replace" action="/auth/signup/" method="post" id="newuser">{% csrf_token %}
                 <div class="clear-fix">
                     <div class="content-popup-left">
                         <ul>

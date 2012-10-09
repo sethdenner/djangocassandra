@@ -1,5 +1,6 @@
 from django.db.models import Model, Manager, IntegerField, CharField
 
+from knotis.apps.core.models import KnotisModel
 from knotis.apps.endpoint.models import (
     Endpoint,
     EndpointTypes
@@ -43,7 +44,7 @@ class ContactManager(Manager):
         )
 
 
-class Contact(Model):
+class Contact(KnotisModel):
     contact_type = IntegerField(
         choices=ContactType.CHOICES,
         null=True,

@@ -1,4 +1,7 @@
-from app.models.offers import Offer, OfferStatus
+from knotis.apps.offer.models import (
+    Offer,
+    OfferStatus
+)
 
 offers = Offer.objects.all()
 

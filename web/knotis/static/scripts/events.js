@@ -167,19 +167,19 @@ $(function() {
         var $this = $(this), type = $this.attr('data-type');
 
         if (type == 'user')
-            $("#fb-root").attr('data-sign-up-action', '/facebook/login/user/');
+            $("#fb-root").attr('data-sign-up-action', '/auth/login/facebook/user/');
 
         if (type == 'foreverfree')
-            $("#fb-root").attr('data-sign-up-action', '/facebook/login/foreverfree/');
+            $("#fb-root").attr('data-sign-up-action', '/auth/login/facebook/foreverfree/');
 
         if (type == 'premium')
-            $("#fb-root").attr('data-sign-up-action', '/facebook/login/premium/');
+            $("#fb-root").attr('data-sign-up-action', '/auth/login/facebook/premium/');
 
 
         $('.signup_popup').remove();
         $('.log_in_popup').remove();
 
-        $.get("/signup/" + type, {},
+        $.get("/auth/signup/" + type, {},
                 function(data) {
                     $(".header-content").append(data).fadeIn();
                     $("input:text").placeholder();
@@ -749,7 +749,7 @@ $(function() {
     });
 
     $('.notify').live('click', function(evt) {
-        $.post('/profile/update/', {
+        $.post('/auth/profile/update/', {
                 'notify_offers': true
             }, function(data) {
                 $('.header-content').append(data);

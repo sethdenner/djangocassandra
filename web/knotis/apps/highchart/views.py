@@ -14,7 +14,6 @@ from knotis.utils.time import add_months
 from knotis.apps.transaction.models import Transaction
 from knotis.apps.business.models import Business
 from knotis.apps.qrcode.models import Scan
-from app.models.businesses import Business
 
 
 def render_highchart(

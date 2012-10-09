@@ -1,31 +1,50 @@
 #from app.models.contentvs import Content
+import sys
 import getpass
-import random
-import string
 import MySQLdb.cursors
 
 from django.contrib.auth import authenticate
 
 from optparse import OptionParser
-from knotis_auth.models import KnotisUser, AccountTypes, AccountStatus
-from knotis_auth.views import _generate_facebook_password
-from app.models.businesses import Business, BusinessLink, BusinessSubscription
-from app.models.offers import Offer
-from app.models.cities import City
-from knotis_qrcodes.models import Qrcode, QrcodeTypes, Scan
-from app.models.categories import Category
-from app.models.transactions import Transaction, TransactionTypes
-from app.models.endpoints import Endpoint, EndpointTypes
-from app.models.media import Image
 
-from paypal.views import generate_ipn_hash
-
-import datetime
-import sys
-
-from app.models.neighborhoods import Neighborhood
-
-from legacy.models import UserIdMap, BusinessIdMap, OfferIdMap, QrcodeIdMap
+from knotis.apps.auth.models import (
+    KnotisUser,
+    AccountTypes,
+    AccountStatus
+)
+from knotis.apps.auth.views import _generate_facebook_password
+from knotis.apps.business.models import (
+    Business,
+    BusinessLink,
+    BusinessSubscription
+)
+from knotis.apps.offer.models import Offer
+from knotis.apps.category.models import (
+    Category,
+    City,
+    Neighborhood
+)
+from knotis.apps.qrcode.models import (
+    Qrcode,
+    QrcodeTypes,
+    Scan
+)
+from knotis.apps.transaction.models import (
+    Transaction,
+    TransactionTypes
+)
+from knotis.apps.endpoint.models import (
+    Endpoint,
+    EndpointTypes
+)
+from knotis.apps.media.models import Image
+from knotis.apps.paypal.views import generate_ipn_hash
+from knotis.apps.legacy.models import (
+    UserIdMap,
+    BusinessIdMap,
+    OfferIdMap,
+    QrcodeIdMap
+)
 
 """
 TODO:

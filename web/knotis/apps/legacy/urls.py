@@ -2,7 +2,7 @@ from django.conf.urls.defaults import patterns, url
 
 
 urlpatterns = patterns(
-    'legacy.views',
+    'knotis.apps.legacy.views',
     url(
         r'^deal/buy_paypal[/]?$',
         'map_paypal_ipn'

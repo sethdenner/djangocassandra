@@ -9,13 +9,13 @@ import knotis.apps.endpoint.models as endpoint
 import knotis.apps.event.models as event
 import knotis.apps.facebook.models as facebook
 import knotis.apps.feedback.models as feedback
-import knotis.apps.foreignkeynonrel.models as foreignkeynonrel
 import knotis.apps.gravatar.models as gravatar
 import knotis.apps.happyhour.models as happyhour
 import knotis.apps.highchart.models as highchart
 import knotis.apps.legacy.models as legacy
 import knotis.apps.maps.models as maps
 import knotis.apps.media.models as media
+import knotis.apps.offer.models as offer
 import knotis.apps.qrcode.models as qrcode
 import knotis.apps.transaction.models as transaction
 import knotis.apps.twitter.models as twitter

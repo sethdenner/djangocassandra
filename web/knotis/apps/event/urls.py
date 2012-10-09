@@ -1,9 +1,9 @@
 from django.conf.urls.defaults import patterns, url
 
 urlpatterns = patterns(
-    'knotis_events.views',
+    'knotis.apps.event.views',
     url(
-        r'^/',
+        r'^[/]?$',
         'index'
     )
 )

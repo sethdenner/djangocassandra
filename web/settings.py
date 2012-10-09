@@ -1,4 +1,8 @@
-# Django settings for web project.
+import os
+
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 SERVICE_NAME = 'Knotis'
 
 PRICE_MERCHANT_MONTHLY = 14.
@@ -123,7 +127,7 @@ SECRET_KEY = '$4kx&)iwyb22(kh=p0q(l&na6o!1-^vdzcy%j#n19^*l4(l#69'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    'knotis.template.loaders.app_directories.Loader'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -145,8 +149,8 @@ TEMPLATE_DIRS = (
 
 AUTHENTICATION_BACKENDS = (
     'permission_backend_nonrel.backends.NonrelPermissionBackend',
-    'legacy.authentication.backends.LegacyAuthenticationBackend',
-    'legacy.authentication.backends.HamburgertimeAuthenticationBackend'
+    'knotis.apps.legacy.authentication.backends.LegacyAuthenticationBackend',
+    'knotis.apps.legacy.authentication.backends.HamburgertimeAuthenticationBackend'
 )
 
 AUTOLOAD_SITECONF = 'dbindexer'
