@@ -13,6 +13,18 @@ from knotis.apps.offer.models import OfferSort
 urlpatterns = patterns(
     'knotis.apps.offer.views',
     url(
+        r's/create/$',
+        'edit',
+    ),
+    url(
+        r''.join([
+            's/update/(?P<offer_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        'edit',
+    ),
+    url(
         r''.join([
             'buy/(?P<offer_id>',
             REGEX_UUID,
@@ -80,10 +92,6 @@ urlpatterns = patterns(
         {'sort_by': OfferSort.EXPIRING},
     ),
     url(
-        r's/update/(?P<offer_id>[^/]+)/$',
-        'edit',
-    ),
-    url(
         r''.join([
             's/offer_map',
             REGEX_OFFER_FILTERING,
@@ -98,9 +106,5 @@ urlpatterns = patterns(
             '/$'
         ]),
         'offers',
-    ),
-    url(
-        r'create/$',
-        'edit',
     ),
 )
