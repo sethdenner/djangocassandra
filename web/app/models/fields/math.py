@@ -1,6 +1,8 @@
 from django.db import models
+
 from ast import literal_eval
 from numpy import matrix
+
 
 
 class MatrixField(models.CharField):

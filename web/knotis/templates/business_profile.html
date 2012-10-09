@@ -1,0 +1,206 @@
+{% extends 'master_profile.html' %}
+
+{% block title %}Knotis | {{ business.business_name.value }}{% endblock title%}
+
+{% load thumbnail %}
+
+{% block body %}
+<div id="header-backend">
+    <div class="wrapper clear-fix">
+        <div class="main-image-txt left">
+            <div class="main-image box-border left radius-general relative">
+                {% thumbnail business.primary_image.image '222x111' crop='top' as image %}
+                <img alt="{{ business.business_name }}" src="{{ image.url }}">
+                {% empty %}
+                <img src="{{ STATIC_URL }}images/no-image-business.png" alt="{{ business.business_name }}">
+                {% endthumbnail %}
+                <a class="gallery-zoom" href="#">
+                    <div class="zoom zoom-inactive"></div>
+                </a>
+            </div>
+            <div class="main-txt right">
+                <h2>{{ business.business_name.value }}</h2>
+                <p>{{ business.summary.value }}</p>
+            </div>
+        </div>
+        <div class="quick-contact">
+            <ul>
+                <li class="address txt-size"><a
+                        href="http://maps.google.com/maps?q={{ business.address.value.value }}"
+                        target="_blank">{{ business.address.value.value }}</a></li>
+                <li class="phone txt-size"><a href="callto:{{ business.phone.value }}"> {{ business.phone.value.value }}</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="content" class="content-business">
+    <div class="wrapper clear-fix">
+        <div class="column-left">
+            <div class="clear-fix margin-general-25">
+                <div class="icon info-icon"></div>
+                <div class="info-business box-border clear-fix">
+                    <ul class="left">
+                        <h3>Business Links</h3>
+                        {% for link in business_links %}
+                        <li class="txt-size feature">
+                            <a href="{{ link.uri }}" 
+                                target="_blank"
+                                alt="{{ link.title }}"
+                                title="{{ link.title }}">{{ link.title }}</a>
+                        </li>
+                        {% endfor %}
+                        <h3>Connect</h3>
+                        {% if business.twitter_name.value.value %}
+                        <li class="txt-size icon-twitter">
+                            <a href="http://twitter.com/{{ business.twitter_name.value.value }}" 
+                                target="_blank"
+                                alt="Twitter Profile" 
+                                title="Twitter Profile" 
+                                target="_blank" 
+                                title="Twitter">Twitter Profile</a>
+                        </li>
+                        {% endif %}
+                        {% if business.facebook_uri.value.value %}
+                        <li class="txt-size icon-facebook">
+                            <a href="{{ business.facebook_uri.value.value }}" 
+                                target="_blank" 
+                                title="Facebook">Facebook Profile</a>
+                        </li>
+                        {% endif %}
+                        {% if business.yelp_id.value.value %}
+                        <li class="txt-size icon-yelp">
+                            <a href="http://www.yelp.com/biz/{{ business.yelp_id.value.value }}" 
+                                target="_blank" 
+                                title="Yelp">Yelp Profile</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    <div class="more-about left">
+                        <h3>More About Us</h3>
+                        <div class="txt-size">{{ business.description.value }}</div>
+                    </div>
+                </div>
+            </div>
+            {% if business_images %}
+            <div class="clear-fix margin-general-25">
+                <div class="icon icon-photo"></div>
+                <div class="slider-business box-shadow clear-fix" id="rotator">
+                    <div class="image-slider" id="msgs">
+                        {% for business_image in business_images %}
+                        {% thumbnail business_image.image '465x219' as image %}
+                        <img src="{{ image.url }}" {% if forloop.counter0 %}style="display:none;"{% else %}class="active"{% endif %} />
+                        {% endthumbnail %}
+                        {% endfor %}
+                    </div>
+                    <div class="paginate" id="controller">
+                        <ul>
+                            <li class="knotis-slider-left"></li>
+                            {% for business_image in business_images %}
+                            <li class="knotis-slider-button"></li>
+                            {% endfor %}
+                            <li class="knotis-slider-right"></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% if twitter_feed %}
+            <div class="clear-fix">
+                <div class="icon icon-conversation"></div>
+                <div class="info-twitter clear-fix">
+                    <h3 class="margin-general"><strong>Twitter</strong></h3>
+                    <div class="clear-fix">
+                        {{ twitter_feed }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="clean margin-general-25"></div>
+            {% if yelp_reviews %}
+            <div class="clear-fix">
+                <div class="icon icon-conversation"></div>
+                <div class="info-twitter clear-fix">
+                    <h3 class="margin-general"><strong>Yelp</strong></h3>
+                    <div class="clear-fix">
+                        {% for review in yelp_reviews %}
+                        <div class="yelp-content">
+                            <div class="pop box-border radius-general relative margin-general-25 clear-fix">
+                                <div class="clear-fix">
+                                    <div class="image-follow radius-general left">
+                                        <img src="{{ review.user.image_url }}" width="32"/>
+                                    </div>
+                                    <p class="txt-size">{{ review.excerpt }}</p>
+                                </div>
+                                <ul class="star">
+                                    <li><img src="{{ review.rating_image_url }}" width="100"/></li>
+                                    <li><a href="http://www.yelp.com/biz/{{ business.yelp_id.value.value }}" target="_blank">More...</a> </li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% endfor %}    
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="column-right">
+            <div class="box-border radius-general pop clear-fix margin-general-25">
+                <p class="txt-size left"><strong>Tell your friends:</strong></p>
+                <div class="tell-facebook left">
+                    <a target="_blank"
+                        href="http://www.facebook.com/sharer.php?u={{ request.get_full_path }}" > </a>
+                </div>
+                <div class="tell-facebook tell-twitter left">
+                    <a href="http://twitter.com/home?status={{ business.business_name.value }}  {{ request.get_full_path }}"
+                        title="Click para enviar a Twitter!" 
+                        target="_blank"> </a>
+                </div>
+            </div>
+            <div class="box-border radius-general pop clear-fix margin-general-25">
+                <div class="qrcode"><img
+                        src="https://chart.googleapis.com/chart?chs=197x197&cht=qr&chl={{ qrcode_uri }}/&choe=UTF-8"
+                        alt="QR code {{ business.business_name.value }}" title="QR code {{ business.business_name.value }}"/></div>
+            </div>
+            <div class="box-border radius-general pop clear-fix margin-general-25"> 
+                <h3>Current Offers</h3>
+                {% if current_offers %}
+                {% for offer in current_offers %}
+                <br/>
+                <a class="txt-size feature" 
+                    style="text-decoration: underline; color:#B5D334" 
+                    target="_blank" 
+                    href="/offer/{{ offer.id }}">{{ offer.title.value }}</a><br/>
+                {% endfor %}
+                {% else %}
+                <br/>
+                <label class="txt-size feature" style="color:#B5D334"> no offers</label>        
+                {% endif %}
+            </div>
+            <div class="box-border radius-general pop clear-fix">
+                <div class="clear-fix margin-general">
+                    <div class="left">
+                        <strong class="number-follow"
+                                data-number="{{ subscriptions|length }}" >
+                            <span class="number-replace">{{ subscriptions|length }}</span></strong>
+                        <span class="clear-fix">SUBSCRIBERS</span>
+                    </div>
+                    <a class="button-follow right radius-general{% if not user.is_anonymous %}{% if user in subscribed_users %} unfollowme" data-idUser="{{ user.id }}"{% else %} followme"{% endif %} data-id="{{ business.id }}"{% else%}"{% endif %}
+                        href="{% if user.is_anonymous %}/login/{% else %}#{% endif %}"> {% if not user.is_anonymous %}{% if user in subscribed_users %}Unsubscribe{% else %}Subscribe{% endif %}{% else %}Subscribe{% endif %}</a>
+                </div>
+                <div class="clear-fix followers-list">
+                    {% for subscription in subscriptions %}
+                    <div class="image-follow radius-general left margin-general follow-{{ subscription.user_id }}">
+                        <img src="{{ subscription.user.avatar }}"/>
+                    </div>
+                    {% endfor %}
+                </div>        
+                <div class="clear-fix" >
+                  <h4>Why Subscribe?</h4> 
+                  <p>By subscribing to businesses you will be the first to know about the promotions they decide to publish. Great savings delivered right to you. When you subscribe you will only receive amazing promotions, no other spam or communication from any 3rd party.</p> 
+                </div>
+                <a href="/"><p class="powered">Powered by</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}

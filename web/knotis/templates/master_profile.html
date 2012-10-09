@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+    <title>{% block title %}Knotis.com{% endblock %}</title>
+    {% include 'meta.html' %}
+    {% include 'styles.html' with maps=maps gallery=gallery do_upload=do_upload graphics=graphics %}
+    {% include 'render_scripts.html' with maps=maps gallery=gallery do_upload=do_upload graphics=graphics %}
+</head>
+<body>
+    {% block body %}
+    {% endblock %}
+    {% include 'footer.html' %}
+    {% include 'scripts.html' with maps=maps gallery=gallery do_upload=do_upload graphics=graphics %}
+</body>
+</html>

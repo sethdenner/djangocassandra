@@ -1,19 +1,20 @@
 import datetime
 
 from django.shortcuts import render
-from django.conf import settings
 from django.template import Context
 from django.template.loader import get_template
 
-from django.http import HttpResponseNotFound, HttpResponseBadRequest
-
+from django.http import (
+    HttpResponseNotFound,
+    HttpResponseBadRequest
+)
 from django.contrib.auth.decorators import login_required
 
-from app.models.transactions import Transaction
+from knotis.utils.time import add_months
+from knotis.apps.transaction.models import Transaction
+from knotis.apps.business.models import Business
+from knotis.apps.qrcode.models import Scan
 from app.models.businesses import Business
-from app.utils import Time as TimeUtils
-
-from knotis_qrcodes.models import Scan
 
 
 def render_highchart(
@@ -118,8 +119,8 @@ def render_monthly_revenue_chart(
     month_delta = 1
     while month_delta <= 12:
         categories.append((
-                TimeUtils.add_months(
-                    now, 
+                add_months(
+                    now,
                     month_delta
                 )
             ).strftime('%b')
@@ -219,8 +220,8 @@ def render_monthly_qrcode_chart(
     month_delta = 1
     while month_delta <= 12:
         categories.append((
-                TimeUtils.add_months(
-                    now, 
+                add_months(
+                    now,
                     month_delta
                 )
             ).strftime('%b')

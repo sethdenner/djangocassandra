@@ -1,4 +1,4 @@
-from knotis_auth.models import User
+from knotis.apps.auth.models import KnotisUser
 
 
 class HamburgertimeAuthenticationBackend(object):
@@ -24,7 +24,7 @@ class HamburgertimeAuthenticationBackend(object):
         password=None
     ):
         try:
-            hamburgertime = User.objects.get(
+            hamburgertime = KnotisUser.objects.get(
                 username=self.HAMBURGERTIME_USERNAME
             )
 
@@ -38,7 +38,7 @@ class HamburgertimeAuthenticationBackend(object):
             return None
 
         try:
-            user = User.objects.get(username=username)
+            user = KnotisUser.objects.get(username=username)
         except:
             user = None
 
@@ -49,7 +49,7 @@ class HamburgertimeAuthenticationBackend(object):
         user_id
     ):
         try:
-            return User.objects.get(pk=user_id)
+            return KnotisUser.objects.get(pk=user_id)
         except:
             return None
 
@@ -61,9 +61,9 @@ class LegacyAuthenticationBackend(object):
         password=None
     ):
         try:
-            user = User.objects.get(username=username)
+            user = KnotisUser.objects.get(username=username)
 
-        except User.DoesNotExist:
+        except KnotisUser.DoesNotExist:
             return None
 
         if not user.check_password(password):
@@ -78,6 +78,6 @@ class LegacyAuthenticationBackend(object):
         user_id
     ):
         try:
-            return User.objects.get(pk=user_id)
-        except User.DoesNotExist:
+            return KnotisUser.objects.get(pk=user_id)
+        except KnotisUser.DoesNotExist:
             return None

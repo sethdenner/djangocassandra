@@ -1,0 +1,26 @@
+<div class="box-border colum-width-menu right no-padding ">
+    <ul class="list-backend">
+        <li class="search relative gradient-gray clear-fix">
+                <label class="left">
+                     <input class="" placeholder="Search offer titles" {% if query %}autofocus="autofocus"{% endif %} value="{{ query }}" id="search" type="text" href="">
+                </label>
+                    <a class="gradient-gray search-offers left" name="link" href="/offers/?query={{ query }}">Search</a>
+        </li>
+        <li class="relative All">
+            <a class="{% if not current_category and not offer %}active {% endif %}categories-filter" data-filter="actives"
+               data-category_name="All" href="/offers/" data-category="" href="#">All Categories ({{ total_active_offers }})</a>
+            {% if not current_category and not offer %}<div class="arrow arrow-All"></div>{% endif %}
+        </li>
+        {% for category in categories %}
+        {% if category.active_offer_count > 0 %}
+        <li class="relative {{ category.name_short|capfirst }}">
+            <a class="{% if category.name_short == current_category or category == offer.category %}active {% endif %}categories-filter" 
+            href="/offers/{{ category.name_short}}/" 
+            data-category="{{ category.name_short|capfirst }}">{{ category.name.value }} ({{ category.active_offer_count }})</a>
+            {% if category.name_short == current_category or category == offer.category %}<div class="arrow arrow-{{ category.name_short|capfirst }}"></div>
+            {% endif %}
+        </li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+</div>

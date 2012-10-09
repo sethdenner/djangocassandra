@@ -1,8 +1,10 @@
 from django.db.models import Model, Manager, IntegerField, CharField
 
-from app.models.endpoints import Endpoint, EndpointTypes
-
-from foreignkeynonrel.models import ForeignKeyNonRel
+from knotis.apps.endpoint.models import (
+    Endpoint,
+    EndpointTypes
+)
+from knotis.apps.cassandra.models import ForeignKey
 
 
 class ContactType:
@@ -12,7 +14,7 @@ class ContactType:
     OFFERS = 3
     DAILY = 4
     MONTHLY = 5
-    
+
     CHOICES = (
         (EVENTS, 'Events'),
         (HAPPY_HOUR, 'Happy Hours'),
@@ -21,7 +23,7 @@ class ContactType:
         (DAILY, 'Daily'),
         (MONTHLY, 'Monthly')
     )
-    
+
 
 class ContactManager(Manager):
     def create_contact(
@@ -38,27 +40,27 @@ class ContactManager(Manager):
             endpoint_value=endpoint.value.value,
             related_object_id=related_object_id,
             custom_context=custom_context
-        )    
+        )
 
-    
+
 class Contact(Model):
     contact_type = IntegerField(
         choices=ContactType.CHOICES,
         null=True,
         db_index=True
     )
-    endpoint = ForeignKeyNonRel(Endpoint)
+    endpoint = ForeignKey(Endpoint)
     endpoint_type = IntegerField(
-        choices=EndpointTypes.CHOICES, 
-        blank=True, 
+        choices=EndpointTypes.CHOICES,
+        blank=True,
         null=True,
         default=None,
         db_index=True
     )
     endpoint_value = CharField(
-        max_length=2048, 
-        null=True, 
-        blank=True, 
+        max_length=2048,
+        null=True,
+        blank=True,
         default=None
     )
     related_object_id = CharField(
@@ -74,5 +76,5 @@ class Contact(Model):
         null=True,
         default=None
     )
-    
+
     objects = ContactManager()

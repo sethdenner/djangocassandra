@@ -14,7 +14,7 @@ from django.shortcuts import render, redirect
 from django.utils.http import urlquote
 from django.contrib.auth.decorators import login_required
 
-from knotis_auth.models import User, UserProfile, AccountTypes
+from knotis_auth.models import KnotisUser, UserProfile, AccountTypes
 from knotis_qrcodes.models import Qrcode, QrcodeTypes
 from knotis_yelp.views import get_reviews_by_yelp_id
 from knotis_twitter.views import get_twitter_feed_html
@@ -23,7 +23,7 @@ from legacy.models import QrcodeIdMap
 
 
 class CreateBusinessForm(Form):
-    user = ModelChoiceField(label="User", queryset=User.objects.all())
+    user = ModelChoiceField(label="User", queryset=KnotisUser.objects.all())
     backend_name = CharField(label="Backend Name", max_length=100)
     business_name = CharField(label="Business Name", max_length=100, required=False)
     avatar = URLField(label="Avatar URI.", required=False)
@@ -148,7 +148,7 @@ def edit_profile(request):
 
     business = None
     try:
-        user = User.objects.get(pk=request.user.id)
+        user = KnotisUser.objects.get(pk=request.user.id)
         business = Business.objects.get(user=user)
 
     except Business.DoesNotExist:
@@ -361,7 +361,7 @@ def follow(
 
     knotis_user = None
     try:
-        knotis_user = User.objects.get(pk=request.user.id)
+        knotis_user = KnotisUser.objects.get(pk=request.user.id)
     except:
         pass
 

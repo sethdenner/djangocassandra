@@ -1,0 +1,163 @@
+<div id="header">
+    <div class="header-top">
+        <div class="wrapper solution clearfix  header-content">
+            {% if login %}
+            	<input type="hidden" id="auto_login" />
+        	{% endif %}
+            <div class="logo absolute">
+                <h1>
+                    <a href="/"><span>knotis</span></a>
+                </h1>
+            </div>
+            <div class="location radius-general left relative">
+                <div class="content-popup-list radius-general content-popup-header">
+                    <div class="arrow-popup"></div>
+                    <div class="content-popup-inset-list radius-general">
+                        <h3 class="txt-center margin-general"><strong>{{ header_browse }}</strong></h3>
+                        <p class="txt-size margin-general">
+                            {{ header_launch }}
+                            <a href="/contact/" title="{{ header_add_city }}"> {{ header_add_city }}</a>
+                        </p>
+                        <div class="clear-fix">
+                            <h4 class="circle left"><strong>{{ header_all_offers }}</strong></h4>
+                            <hr class="right">
+                        </div>
+                        <div class="clear-fix">
+                            <ul class="first ">
+                                <li class="txt-size margin-general">
+                                    <a class="all-cities gradient-gray radius-general"
+                                       href="/offers/?city=all">{{ header_all_offers_wa }}</a>
+                                </li>
+                            </ul>
+                        </div>
+	                    <div class="clear-fix">
+	                    	{% for c in cities %}
+							{% if c.active_offer_count %}
+	                        <h4 class="circle left"><strong>{{ c.name.value }}</strong></h4>
+	                        <hr class="right">
+	               		</div>
+	               		<div class="clear-fix">
+		                    <ul class="left first {margin-general">
+		                    	<li class="txt-size">
+		                    		<a class="all-cities gradient-gray radius-general" 
+		                    			href="/offers/?city={{ c.name_denormalized|lower }}">All of {{ c.name_denormalized }}</a>
+		                    	</li>
+		                    	{% if neighborhoods %}
+		                    	{% for n in neighborhoods %}
+		                        {% if n.city.id == c.id and n.active_offer_count %}
+								<li class="txt-size">
+									<a href="/offers/?city={{ c.name_denormalized|lower }}&neighborhood={{ n.name_denormailized|lower }}">{{ n.name_denormalized }}</a>
+								</li>
+		                        {% endif %}
+		                    	{% endfor %}
+		                    	{% endif %}
+		                   	</ul>
+		               	</div>
+		                <div class="clear-fix">
+		                </div>
+		    			<div class="clear-fix">
+							{% endif %}
+	                    	{% endfor %}
+                    	</div>
+                    </div>
+                </div>
+                <h4 class="circle shadow-white left clear-fix">
+                    <strong>
+                    	{% if session.city %}
+                    	{% if session.neighborhood %}
+                    	{{ session.neighborhood|capfirst }}
+                    	{% else%}
+                        {{ session.city|capfirst }}
+                    	{% endif %}
+                    	{% else %}
+                    	All Offers
+                    	{% endif %}
+                    </strong>
+               	</h4>
+                <div class="option-button button radius-general right">
+                	<img class="btn-header-location" alt="" src="{{ STATIC_URL }}images/layouts/knotis-arrow.png">
+                </div>
+            </div>
+            <ul class="nav clear-fix right">
+                <li>
+                	<a href="/offers/" {% if current_page == 'offers' %}class="active" {% endif %}>{{ header_offers }}</a>
+                </li>
+                <li>
+                	<a href="/events/" {% if current_page == 'events' %}class="active" {% endif %}>{{ header_events }}</a>
+                </li>
+                <li>
+                	<a href="/happyhours/" {% if current_page == 'happy_hours' %}class="active" {% endif %}>{{ header_happy_hour }}</a>
+				</li>
+                <li>
+                	<a href="/contact/" {% if current_page == 'contact' %}class="active" {% endif %}>{{ header_contact }}</a>
+				</li>
+            </ul>
+            {% if not user.is_authenticated %}
+            <ul class="login-signup absolute">
+                <li><a class="login txt-white log_in" href="/login/">{{ header_login }}</a></li>
+                <li><a class="sig_in signup txt-white" href="/plans/">{{ header_sign_up }}</a></li>
+            </ul>
+			{% else %}
+            <div class="name-user absolute radius-general clear-fix">
+                <div class="image left ">
+                	<img src="{{ avatar_uri }}"/>
+                </div>
+                <p class="txt-size-12 txt-white left clear-fix">
+                    <strong>{{ username_truncated }}</strong>
+                </p>
+                <div class="arrow-user right"></div>
+                <div class="option-user absolute radius-general">
+                    <div class="option-user-inset radius-general">
+                        <div class="arrow-popup arrow-popup02 arrow-popup-user"></div>
+                        <h3><strong>My stuff</strong></h3>
+						{% if not user.is_staff %}
+                        <ul class="menu-user">
+                            {% if user_profile.is_business_owner %}
+                            <li><a href="/dashboard/" >{{ header_dashboard }}</a></li>
+                            {% endif %}
+                            <li><a href="/offers/dashboard/">{{ header_offers }}</a></li>
+                        </ul>
+                        <ul class="menu-user">
+                            <li><a href="/profile/">{{ header_profile }}</a></li>
+                            <li><a href="/subscriptions/">{{ header_subscriptions }}</a></li>
+                            {% if user_profile.is_business_owner %}
+                            <li><a href="/business/profile/" >{{ header_business_profile }}</a></li>
+                            {% endif %}
+                        </ul>
+                        <ul class="face">
+                        	{% if session.fb_id %}
+                            <li>
+                               <fb:login-button autologoutlink="true"></fb:login-button>
+                            </li>
+							{% else %}
+                            <li>
+                            	<a href="/auth/logout/" >{{ header_sign_out }}</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+						{% else %}						
+                        <ul class="menu-user">
+                            <li><a href="/dynamic_pages/">{{ header_dynamic_pages }}</a>
+                            </li>
+                            <li><a href="/offers/premium/">{{ header_all_offers }}</a></li>
+                            <li><a href="/locations/">{{ header_cities }}</a></li>
+                        </ul>
+                        <ul>
+                            {% if logged_in_facebook %}
+                            <li>
+                                <fb:login-button autologoutlink="true"></fb:login-button>
+                            </li>
+                            {% else %}
+                            <li>
+                            	<a href="/auth/logout/" >{{ header_sign_out }}</a>
+                            </li>
+							{% endif %}
+                        </ul>
+						{% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

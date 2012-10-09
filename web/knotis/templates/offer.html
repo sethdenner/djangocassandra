@@ -1,0 +1,145 @@
+{% extends 'master.html' %}
+
+{% block title %}Knotis | {{ offer.title.value }}{% endblock title%}
+
+{% load thumbnail %}
+
+{% block content %}
+<div id="content" class="back-offers">
+<div class="curve">
+<div class="wrapper clear-fix">
+<div class="clear-fix right">
+    {% include 'offers_menu.html' with offer=offer categories=categories %}
+</div>
+<div class="box-offers box-border left margin-general-25">
+    <div class="offer-profile-left">
+        <div class="offers-image image radius-general relative">
+            {% if not offer.active %}
+            {% if not offer.stock and not offer.unlimited%}
+            <div class="exhausted absolute"></div>
+            {% else %}
+            <div class="expired absolute"></div>
+            {% endif %}
+            {% else %}
+            <div class="active absolute"></div>
+            {% endif %}
+            <a class="gallery-zoom"
+               href="{{ MEDIA_URL }}{{ offer.image.image }}"
+               title="{{ offer.title.value }}">
+               {% if offer.image %}
+               <div class="zoom zoom-inactive"></div>
+               {% endif %}
+            </a>
+            <img class="offer-image-profile" alt=""
+                {% thumbnail offer.image.image '190x192' as image %}
+                src="{{ image.url }}"
+                {% empty %}
+                src="{{ STATIC_URL }}images/layouts/knotis-offer-image.jpg"
+                {% endthumbnail %} />
+        </div>
+        <div class="clean"></div>
+        {% if offer.address %}
+        {{ map_script }}
+        <div id="map_canvas" class="offers-image-map content-map radius-general margin-general ">
+        </div>
+        <p class=" margin-general address radius-general"><strong>{{ offer.address.value.value }}</strong></p>
+        {% endif %}
+        <p class=" margin-general conditions radius-general"><a href="#" class="load_conditions">Universal Fine Print</a> </p>
+    </div>
+    <div class="offer-profile-right">
+        <h2 class="margin-general"><strong>
+            {{ offer.title_formatted }}
+        </strong></h2>
+        <p>
+            <a class="txt-size margin-general clear-fix business-buy business-link" alt="{{ offer.business.business_name.value }}"
+               title="{{ offer.business.business_name.value }}" target="_blank"
+               href="/{{ offer.business.backend_name }}/">{{ offer.business.business_name.value }}</a>
+        </p>
+        <h4 class="margin-general">{% if offer %}{{ offer.summary.value }}{% endif %}</h4>
+        <div class="clear-fix margin-general">
+            <p class="price left"><span>$</span>{{ offer.price_discount_formatted }}</p>
+            <form method="post" action="/offer/buy/{{ offer.id }}/">{% csrf_token %}
+                <div class="button-offers-profile left">
+                    <input class="button {% if not offer.active %}button-none{% endif %} radius-general left{% if user.is_anonymous %} log_in{% endif %}"
+                        value="Buy Now" type="submit" name="Buy Now" {% if not offer.active %}disabled{% endif %} />
+                </div>
+                <input type="hidden" name="offerId" value="{{ offer.id }}" />
+            </form>
+        </div>
+        <ul class="number clear-fix margin-general radius-general">
+            <li>
+                <p>{{ offer.savings_percent }}%</p>
+                <span class="txt-size">SAVINGS</span>
+            </li>
+            <li>
+                <p>{% if offer.unlimited %}Unlimited{% else %}{{ offer.stock }}{% endif %}</p>
+                <span class="txt-size">{% if offer.unlimited %}Stock{% else %}REMAINING{% endif %}</span>
+            </li>
+            <li>
+                <p>{{ offer.days_remaining }} Days</p>
+                <span class="txt-size">REMAINING</span>
+            </li>
+        </ul>
+        <p class="txt-size margin-general">{{ offer.description.value }}
+        <ul class="social clear-fix margin-general">
+            <li>
+                <a href="http://www.facebook.com/sharer.php?u={{ BASE_URL }}/offer/{{ offer.id}}/"
+                   target="_blank"><img src="{{ STATIC_URL }}images/layouts/shared-facebook.png"
+                                        title="Share Facebook" alt="Shared Facebook"/></a>
+            </li>
+            <li>
+                <a href="#"> <a target="_blank"
+                        href="http://twitter.com/intent/tweet?url={{ BASE_URL }}/offer/{{ offer.id }}/"><img
+                        src="{{ STATIC_URL }}images/layouts/shared-twitter.png" title="Shared Twitter"
+                        alt="Shared Twitter"/></a></a>
+            </li>
+            <li class="mail"><a
+                    href="mailto:?subject=Check out this offer on Knotis&body=Hi there,%0D%0A%0D%0AI saw this on Knotis and I liked it so much I wanted to share it with you.%0D%0A%0D%0A{{ BASE_URL }}/offer/{{ offer.id }}/ %0D%0A%0D%0A.">
+                E-mail</a></li>
+        </ul>
+        <p class="clear-fix">
+            <span class="left follow-offer ">
+            <a  data-id="{{ offer.business_id }}" class="button-follow right radius-general{% if not user.is_anonymous %}
+                {% if is_following %} unfollowme{% else %} followme{% endif %}"
+                href="{% if user.is_anonymous %}/login/{% else %}#{% endif %}">{% if is_following %}
+                Unsubscribe{% else %}Subscribe{% endif %}
+                {% else %}"> Subscribe{% endif %}
+            </a>
+            </span>
+            <span class="left txt-offer-follow">If you want to stay informed of all offers of this business</span>
+        </p>
+    </div>
+</div>
+{% if offers %}
+<div class="box-offers box-border left">
+    <h3 class="margin-general-25"><strong>Nearby deals</strong></h3>
+    {% for o in offers %}
+    {% if o.id != offer.id %}
+    <div class="nearby-content clear-fix margin-general-25 left">
+        <div class="offers-image image-nearby radius-general left">
+            <a class="clear-fix txt-size"
+               href="/offer/{{ o.id }}/" >
+                <img alt="{{ o.title_formatted }}" title="{{ o.title_formatted }}"
+                    {% thumbnail o.image.image '62x62' as image %}
+                    src="{{ image.url }}"
+                    {% empty %}
+                    src="{{ STATIC_URL }}images/layouts/knotis-deal-image.jpg"
+                    {% endthumbnail %}
+                    height="62" 
+                    width="62" />
+            </a>
+        </div>
+        <div class="txt-nearby left">
+            <a class="txt-size" href="/offer/{{ o.id }}/"><strong>
+                {{ o.title_formatted }}
+            </strong></a>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+</div>
+</div>
+</div>
+{% endblock content %}

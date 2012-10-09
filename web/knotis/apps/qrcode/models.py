@@ -1,13 +1,18 @@
 import datetime
 import itertools
 
-from django.db.models import URLField, IntegerField, CharField, DateTimeField, \
+from django.db.models import (
+    URLField,
+    IntegerField,
+    CharField,
+    DateTimeField,
     Manager
+)
 from django.shortcuts import redirect
 
-from knotis.models.abstract import KnotisModel
-from knotis.models.business import Business
-from knotis.models import ForeignKey
+from knotis.apps.core.models import KnotisModel
+from knotis.apps.business.models import Business
+from knotis.apps.cassandra.models import ForeignKey
 
 
 class QrcodeTypes:
@@ -100,7 +105,7 @@ class ScanManager(Manager):
             return week
 
         scan_values = [(scan.pub_date, scan.id) for scan in scans]
-        scan_values.sort(key=lambda (date, value):date)
+        scan_values.sort(key=lambda (date, value): date)
 
         weekly_scans = []
         week_count = 0
@@ -116,7 +121,7 @@ class ScanManager(Manager):
                 continue
 
             index = key - 1
-            for item in group:
+            for _ in group:
                 weekly_scans[index] = weekly_scans[index] + 1
 
         return weekly_scans

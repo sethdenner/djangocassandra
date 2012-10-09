@@ -1,0 +1,164 @@
+{
+  "en-us": {
+    "1": {
+      "title": "Username",
+      "text": "The username is the email address associated with your account. Hint: Use a generic email address for the business like info@knotis.com just in case other employees need to access your knotis account."        
+    },
+    "2": {
+        "title": "Password",
+        "text": "This is the password you've chosen for your business, remember it. Hint: If you forget your password, click on \"Forgot Password\" and then check your inbox for the email you used for your username."
+    },
+    "3": {
+        "title": "Purchase Offers",
+        "text": "With a Knotis account you can purchase any and all offers. Hint: Make sure to subscribe to your favorite local businesses to be the first to know about the promotions they offer."
+    },
+    "4": {
+        "title": "Subscribe to Business",
+        "text": "By subscribing to businesses you will be the first to know about the promotions they decide to publish - Great savings delivered right to you."
+    },
+    "5": {
+        "title": "Social Network",
+        "text": "Knotis is trully the first social platform geared for businesses that let's businesses take full control of creating incentives, promotions, and offers in order to engage customers and build brand loyalty. The Knotis social platform bridges your social media efforts on Facebook, Twitter, etc. and can convert those efforts into measurable ROI and revenue stream. Hint: Turn your existing Facebook and Twitter accounts into a marketing powerhouse by utilizing the Knotis point of sale. The cost is the same as using your credit card terminal."
+    },
+    "6": {
+        "title": "Knotis Page",
+        "text": "With a Knotis account you can build your own online platform without having to pay developers, server costs, etc. This page is dynamic and always changing with your most current information without anyadditional maintenance outside of initial set up. Hint: Building a page on Knotis has great benefits with SEO which will help you get Knotis'd."
+    },
+    "7": {
+        "title": "QR Code management",
+        "text": "With a Knotis account you are given a QR Code that you can manage at any given time and redirect visitors to where you think it is most appropriate. Hint: On your next print ad include your Knotis QR Code pointing to a promotion, your website, or Facebook page. With a few clicks you can instantly change where you want visitors to be sent - quick and easy."
+    },
+    "8": {
+        "title": "Subscription Plus",
+        "text": "Our subscription service helps you grow your subscriber base and in turn your revenue stream. Once you publish any promotion, your subscribers are the first to know about the special incentive. Best of all you can drop managing email lists and e-marketing campaigns. As soon as you publish a promotion all of your subscribers will receive an email announcing your promotion freeing up your time to focus on your core business. Hint: Create new enticing promotion on a daily, weekly or monthly basis to stay in the forefront of your customer base."
+    },
+    "9": {
+        "title": "Social Pro",
+        "text": "Sharing your offers just got  easier. With Social Pro, we allow you to connect your facebook and twitter accounts so that with one-click, your offers are distributed to your social followers. Hint: Make sure to share with your loyal followers to increase your repeat business."
+    },
+    "10": {
+        "title": "Analytics",
+        "text": "At Knotis we like to be accountable and ensure we are providing you with the best ROI. We want to make sure it is easy for you to track your sales and reach. The other Daily Offer sites bank on you focusing on revenue too much and not on maintaining relationships. We want you to take full credit for your services and we will never be a middle-man in your business. Track your most loyal customers and strengthen your relationships by keeping an eye on your Knotis analytics."
+    },
+    "11": {
+        "title": "Social Incentives",
+        "text": "Knotis allows you to create your own offers, discounts, events and happy hours specials, when it makes sense for you. The best part is, you have total control and we don't share your revenue."
+    },
+    "12": {
+        "title": "Name",
+        "text": "Input your Business Name in here e.g. Cupcake Royale (Capitol Hill) Hint: Location is not necessary but if you have multiple locations it's worth specifying. AVOID ALL CAPS."
+    },
+    "13": {
+        "title": "Summary",
+        "text": "Limit this to 140 characters, in other words, short. Be specific and clear with what it is your business is good at. Hint: Have more to say about yourself? Put all other info in the Description Section."
+    },
+    "14": {
+        "title": "Description",
+        "text": "Tell the world what your business is all about, its history, its personality and why people should drop in. Avoid long paragraphs and don't be affraid to start new paragraphs. Hint: Include your hours of operation at the end."
+    },
+    "15": {
+        "title": "Twitter",
+        "text": "Add your Twitter handle here. When you add your Twitter handle, your Business Profile will forever be updated with your last two Tweets to keep any visitors current on what is currently most important to you. Hint: Not on Twitter, not a problem, ask us how to take your Facebook posts and turn them into Tweets"
+    },
+    "16": {
+        "title": "",
+        "text": ""
+    },
+    "17": {
+        "title": "Facebook",
+        "text": "We link up your Facebook Page to your Business Profile so customers can easily access to your FB information. Hint: Make sure to share your Knotis promotions on Facebook to generate maximum visibility."
+    },
+    "18": {
+        "title": "Yelp ID",
+        "text": "Your Knotis profile pulls the last three Yelp reviews and publishes them on your Business Page and continually refreshes them. 87% of consumers are more likely to listen to a stranger than a business, did you know that? Hint: Remember that you need to only include your Yelp ID which is the last part of your Yelp URL."
+    },
+    "19": {
+        "title": "Other Info",
+        "text": "This section lets you link all your other online platforms to your Business Profile. This is the place to create a link to your website, blog, menu, calendar, etc. Hint: Add press and/or news paper articles."
+    },
+    "20": {
+        "title": "URL",
+        "text": "Paste the URL you'd like to send people to."
+    },
+    "21": {
+        "title": "URL Description",
+        "text": "Give a title to the URL, eg Website, Blog, or Calendar Hint: Keep it to a maximum of two words."
+    },
+    "22": {
+        "title": "Gallery",
+        "text": "Upload photos to showcase your business in a slide show manner. Your photos must be a rectangular image with a 2x1 dimension or more specifically 500x235 pixels. Make sure to upload at least two photos and a maximum of ten. Hint: After uploading your photos and clicking on Save Business make sure scroll back down and select a primary image. If you do not, your primary photo will remain blank."
+    },
+    "23": {
+        "title": "Discount Price",
+        "text": "Is the purchase value of a good or service that you are offering. This number is lower than the Retail Price since you are offering a good/service as a loss leader to incentivize customers to make a purchase at your business. Hint: Make your offer sticky and worthwhile to consider. If you wouldn't buy your promotion, chances are that neither would the general public."
+    },
+    "24": {
+        "title": "Retail Price",
+        "text": "Retail Price is the full retail value of the good that you are selling Hint: Don't over inflate this number and stick to what you have posted in your store, the consumer is smart."
+    },
+    "25": {
+        "title": "# of Units",
+        "text": "Knotis is the only platform that lets YOU set how many offers you are offering for sale. Everyone can see what you are promoting but only X number of customers can purchase allowing you to be in full control of your sales with no unforseen risks of breaking the bank. Hint: Keep the # of Units for sale small to create a sense of ugency and exclusivity. If someone misses your promotion they are more likely to subscribe to you not to miss a future promotion. You may re-run a offer with one click if you sell out but want more sales."
+    },
+    "26": {
+        "title": "Unlimited",
+        "text": "You have the choice to keep a promotion up as long as customers are buying. Hint: we recomend that you fully understand what the Unlimited button means to your business."
+    },
+    "27": {
+        "title": "Title",
+        "text": "Is the title of the promotion you are running. Make it clear and concise, it may be the first and only thing a potential customer reads so grab their attention. Hint: Make sure you click on the correct button if you have a custom title. Review your offer after it is published!"
+    },
+    "28": {
+        "title": "Start Date",
+        "text": "You get to decide and schedule when your offer goes live. You can set a specific date and time. Want to plan out your promotions for the next 6 months in one afternoon? You can do that with Knotis. Hint: There is no limit on how many offers you may offer on your Knotis platform as long as they are worthwhile promotions."
+    },
+    "29": {
+        "title": "End Date",
+        "text": "You may choose to make a promotion available for purchase just for a day, week, month, or any other increment of time. Remember that End Date does not mean that a buyer can only Redeem prior to the End Date, if your promotion must be redeemed before a certain date, make that absolutely clear in the Restrictions field. Hint: Keep your end dates no longer than a month after your start date to ensure a sense of ugency."
+    },
+    "30": {
+        "title": "Category",
+        "text": "Your promotion should fit in one of the pre created categories. Make sure to select the correct one. Hint: there are Knotis users who are subscribed to certain categories."
+    },
+    "31": {
+        "title": "Offer Description",
+        "text": "In this section you must describe what you are offering in full detail. Don't leave any room for the imagination. Hint: Set the expectations so that there are no communication break downs or \"he said, she said\" moments. Treat the description as a contract."
+    },
+    "32": {
+        "title": "Restrictions",
+        "text": "In this section you identify your \"fine print\". Make sure that you fully inform your potential customer what is NOT allowed when someone purchases this promotion. Hint: Take some time to think through all the restrictions that are necessary to ensure a smooth customer experience that still protects you."
+    },
+    "33": {
+        "title": "Offer Image",
+        "text": "Your offer is allowed one photo which must be a square image. Hint: Use an engaging photo. This is what will help sell your offer."
+    },
+    "34": {
+        "title": "Location of Offer",
+        "text": "Check whether the address below is correct."
+    },
+    "35": {
+        "title": "QR Code management",
+        "text": "If you ever have any print marketing material, being able to manage a QR Code plays a huge role in increasing your ROI. Printing in general can be more valuable to you by including a QR Code. Our QR Code management technology lets you control where visitors are being sent. There are four main option. Your Knotis QR Code is sent by default to your knotis Business Profile because it is geared towards mobile users. You may choose to send visitors anywhere with a URL, website, blog, Facebook Page etc. In addition you may take visitors directly to a video. The last option is most exciting of all because it is a call to action. The last option lets you take visitors directly to an incentive in hopes of converting a visitor into a paying customer right there and then. Successful businesses see the potential of utilizing this option as it has shown effective in generating Revenue and increasing Sales. Hint: You are free to alternate between options whenever you want."
+    },
+    "36": {
+        "title": "Business Profile Link",
+        "text": "It's the default location for your QR Code. Make sure to have your business profile filled out. Hint: Your Knotis profile helps your business with SEO."
+    },
+    "37": {
+        "title": "Link",
+        "text": "Click on the button, fill out the URL you'd like to send visitors to, and press Set QR Code Hint: You may direct people to your Twitter or Facebook pages in hopes to gain more Followers/Likes."
+    },
+    "38": {
+        "title": "Video",
+        "text": "Send visitors directly to a video that is online, just input URL. Hint: Videos are a fast and great way to get your message out to your customer base."
+    },
+    "39": {
+        "title": "Offers",
+        "text": "The Offers option is an excellent way to help incentivize customers to give you a shot. Offer great specials and something that will encourage a visitor to want to know more about you or about the goods that you are selling Hint: You may use this option whenever you are running an ad in the newspaper or magazine."
+    },
+    "40": {
+        "title": "My Subscriptions",
+        "text": "This is where you can view offers from the business that you have subscribed to."
+    }
+  }
+}

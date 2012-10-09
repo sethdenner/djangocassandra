@@ -9,7 +9,7 @@ from django.db.models import (
 )
 from django.utils.http import urlquote
 
-from knotis.apps.auth.models import User
+from knotis.apps.auth.models import KnotisUser
 from knotis.apps.cassandra.models import ForeignKey
 from knotis.apps.core.models import KnotisModel
 from knotis.apps.media.models import Image
@@ -150,7 +150,7 @@ class Business(KnotisModel):
 
     backend_name = CharField(max_length=128, db_index=True)
 
-    user = ForeignKey(User)
+    user = ForeignKey(KnotisUser)
     content_root = ForeignKey(
         Content,
         related_name='business_content_root'
@@ -342,7 +342,7 @@ class BusinessSubscriptionManager(Manager):
 
 
 class BusinessSubscription(KnotisModel):
-    user = ForeignKey(User)
+    user = ForeignKey(KnotisUser)
     business = ForeignKey(Business)
     active = NullBooleanField(default=True, blank=True, db_index=True)
 

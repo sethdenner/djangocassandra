@@ -1,15 +1,24 @@
 from django.conf import settings
 from django.shortcuts import render
 from django.forms import Form
-from django.forms.fields import CharField, EmailField, ChoiceField
+from django.forms.fields import (
+    CharField,
+    EmailField,
+    ChoiceField
+)
 
-from app.utils import View as ViewUtils, Email as EmailUtils
-from app.models.endpoints import Endpoint, EndpointTypes
-from knotis_contact.models import Contact
+from knotis.utils.view import get_standard_template_parameters
+from knotis.utils.email import generate_email
+from knotis.apps.endpoint.models import (
+    Endpoint,
+    EndpointTypes
+)
+from knotis.apps.contact.models import Contact
+
 
 class EmailListForm(Form):
     email = EmailField()
-    
+
     def __init__(
         self,
         contact_type,
@@ -21,27 +30,27 @@ class EmailListForm(Form):
             **kwargs
         )
         self.contact_type = contact_type
-    
+
     def save_email_list(
         self,
         request
     ):
         email = self.cleaned_data.get('email')
-        
+
         try:
             user = None
             if not request.user.is_anonymous():
                 user = request.user
-                    
+
             endpoint = Endpoint.objects.create_endpoint(
-                EndpointTypes.EMAIL, 
-                email, 
+                EndpointTypes.EMAIL,
+                email,
                 user,
-                False, 
-                None, 
+                False,
+                None,
                 False
             )
-            
+
             Contact.objects.create_contact(
                 self.contact_type,
                 endpoint,
@@ -50,16 +59,16 @@ class EmailListForm(Form):
             )
         except Exception as e:
             return False
-        
+
         return True
-    
+
 
 class ContactTopics:
     QUESTION = 0
     ISSUE = 1
     FEEDBACK = 2
     CITY = 3
-    
+
     CHOICES = (
         (QUESTION, 'Ask a question'),
         (ISSUE, 'Report a problem'),
@@ -85,10 +94,10 @@ class ContactForm(Form):
             *args,
             **kwargs
         )
-        
+
         if None != topic:
             self.fields['topic'].initial = topic
-    
+
     def send_message(self):
         email = self.cleaned_data.get('email')
 
@@ -98,9 +107,9 @@ class ContactForm(Form):
             if t[0] == topic_id:
                 topic = t[1]
                 break
-            
+
         try:
-            EmailUtils.generate_email(
+            generate_email(
                 'contact',
                 'Knotis Contact Form = ' + topic,
                 email,
@@ -116,7 +125,7 @@ class ContactForm(Form):
 
         except:
             return False
-        
+
         return True
 
 
@@ -129,7 +138,7 @@ def contact(
     contact_form = None
     if request.method.lower() == 'post':
         contact_form = ContactForm(
-            None, 
+            None,
             request.POST
         )
         if contact_form.is_valid():
@@ -141,17 +150,17 @@ def contact(
 
         else:
             feedback = 'Some of the information you entered is invalid'
-    
+
     else:
         contact_form = ContactForm(topic)
-            
-    template_parameters = ViewUtils.get_standard_template_parameters(request)
+
+    template_parameters = get_standard_template_parameters(request)
     template_parameters['current_page'] = 'contact'
     template_parameters['contact_form'] = contact_form
     template_parameters['feedback'] = feedback
     template_parameters['success'] = success
     template_parameters['ContactTopics'] = ContactTopics
-    
+
     return render(
         request,
         'contact.html',

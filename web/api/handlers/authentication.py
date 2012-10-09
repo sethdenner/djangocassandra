@@ -2,12 +2,12 @@ from piston.handler import AnonymousBaseHandler
 from piston.utils import validate
 
 from knotis_auth.views import SignUpForm
-from knotis_auth.models import User, AccountTypes
+from knotis_auth.models import KnotisUser, AccountTypes
 
 
 class AuthenticationHandler(AnonymousBaseHandler):
     allowed_methods = ('POST')
-    model = User
+    model = KnotisUser
 
     @staticmethod
     def create_user(post):
@@ -22,7 +22,7 @@ class AuthenticationHandler(AnonymousBaseHandler):
             'message': 'Unknown error.'
         }
         try:
-            User.objects.create_user(
+            KnotisUser.objects.create_user(
                 first_name,
                 last_name,
                 email,

@@ -177,7 +177,7 @@ class Transaction(KnotisModel):
 
     objects = TransactionManager()
 
-    
+
     def __unicode__(self):
         return '/'.join([
             self.user.username if self.user else 'None',
@@ -187,7 +187,7 @@ class Transaction(KnotisModel):
             self.transaction_context
         ])
 
-    
+
     def value_formatted(self):
         return ViewUtils.format_currency(self.value)
 
@@ -239,3 +239,13 @@ class Transaction(KnotisModel):
             values.append(index)
 
         return values
+
+    def redemption_code(self):
+        if not self.offer:
+            return None
+
+        context_parts = self.transaction_context.split('|')
+        if len(context_parts) != 3:
+            return None
+
+        return context_parts[2]

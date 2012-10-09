@@ -1,0 +1,20 @@
+{% extends 'master.html' %}
+
+{% block title %}Knotis.com - List Businesses{% endblock title %}
+
+{% block content %} 
+
+<div data-resourceuri="/api/businesses/" id="business_template" >
+    <p>
+        <span class="name"></span>
+        <span class="business_name-value"></span>
+    </p>
+</div>
+
+<script type="text/javascript" >
+    $(function(){
+        $('#business_template').render_data(); 
+    });
+</script>
+
+{% endblock content %}

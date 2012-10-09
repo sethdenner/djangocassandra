@@ -1,0 +1,80 @@
+{% extends 'master.html' %}
+
+{% block title %}Knotis - Plans{% endblock %}
+
+{% block content %}
+<div id="content" class="back-offers">
+    <div class="curve">
+    <div class="wrapper clear-fix">
+        <div class="box-offers box-border left">
+            <h2 class="margin-general account-user"><strong>{{ plans_consumer_header }}</strong></h2>
+            <ul class="account margin-general-25 clear-fix">
+                <li class="free info-txt user-general">
+                    <div class="colour-pro">
+                    <h2 class=""><strong>{{ plans_consumer_table_h1 }}</strong></h2></div>
+                    <h3 class=""><span>{{ plans_consumer_feature_1 }}</span><div id="ht-3" class="help-icon float-right" ></div></h3>
+                    <h3 class=""><span>{{ plans_consumer_feature_2 }}</span><div id="ht-4" class="help-icon float-right" ></div></h3>
+                </li>
+                <li class="plus user user-general">
+                    <div class="colour-plus colour-user">
+                    <h2 class="txt-center"><strong>{{ plans_consumer_table_h2 }}</strong></h2></div>
+                    <h3 class=" txt-center"><span> <img alt="" src="{{ STATIC_URL }}images/layouts/account-ok.png"></span></h3>
+                    <h3 class=" txt-center"><span> <img alt="" src="{{ STATIC_URL }}images/layouts/account-ok.png"></span></h3>
+                    <a class="button radius-general signup_pop" data-type="user" href="#">{{ plans_sign_up_button }}</a>
+                </li>
+            </ul>
+            <h2 class="margin-general account-business"><strong>{{ plans_business_header }}</strong></h2>
+            <ul class="account clear-fix">
+                <li class="free info-txt" style="height:350px">
+                    <div class="colour-pro ">
+                    <h2 class=""><strong>{{ plans_business_table_h1 }}</strong></h2></div>
+                    <h3 class=""><span>{{ plans_business_table_f1 }}</span><div id="ht-6" class="help-icon float-right" ></div></h3>
+                    <h3 class=""><span>{{ plans_business_table_f2 }}</span><div id="ht-7" class="help-icon float-right" ></div></h3>
+                    <h3 class=""><span>{{ plans_business_table_f3 }}</span><div id="ht-8" class="help-icon float-right" ></div></h3>
+                    <h3><span>{{ plans_business_table_f4 }}</span><div id="ht-9" class="help-icon float-right" ></div></h3>
+                    <h3><span>{{ plans_business_table_f5 }}</span><div id="ht-10" class="help-icon float-right" ></div></h3>
+                    <h3><span>{{ plans_business_table_f6 }}</span><div id="ht-11" class="help-icon float-right" ></div></h3>
+                </li>
+                <li class="free" style="height:350px">
+                   <div class="colour-free">
+                    <h2 class="txt-center"><strong>{{ plans_business_table_h2 }}</strong></h2></div>
+                    <h3 class=" txt-center"><span> <img alt="" src="{{ STATIC_URL }}images/layouts/account-ok.png"></span></h3>
+                    <h3 class=" txt-center"><span> <img alt="" src="{{ STATIC_URL }}images/layouts/account-ok.png"></span></h3>
+                    <h3 class=" txt-center"><span> <img alt="" src="{{ STATIC_URL }}images/layouts/account-ok.png"></span></h3>
+                    <h3 class=" txt-center"><span> <img alt="" src="{{ STATIC_URL }}images/layouts/account-ok.png"></span></h3>
+                    <h3 class=" txt-center"><span> {{ plans_business_table_basic }}</span></h3>
+                    <h3 class=" txt-center"><span> {{ plans_business_table_manual }}</span></h3>
+                    <a class="button radius-general signup_pop" data-type="foreverfree" href="#">{{ plans_choose_button }}</a>
+                </li>
+                <li class="plus relative" style="height:350px">
+                    <div class="colour-plus relative">
+                    <div class="ribbon-free"></div>
+                    <h2 class="txt-center"><strong>{{ plans_business_table_h3 }}</strong></h2></div>
+                    <h3 class=" txt-center"><span> <img alt="" src="{{ STATIC_URL }}images/layouts/account-ok.png"></span></h3>
+                    <h3 class=" txt-center"><span> <img alt="" src="{{ STATIC_URL }}images/layouts/account-ok.png"></span></h3>
+                    <h3 class=" txt-center"><span> <img alt="" src="{{ STATIC_URL }}images/layouts/account-ok.png"></span></h3>
+                    <h3 class=" txt-center"><span> <img alt="" src="{{ STATIC_URL }}images/layouts/account-ok.png"></span></h3>
+                    <h3 class=" txt-center"><span> {{ plans_business_table_advanced }}</span></h3>
+                    <h3 class=" txt-center"><span> {{ plans_business_table_auto }}</span></h3>
+                    <a class="button radius-general signup_pop" data-type="premium" href="#">{{ plans_choose_button }}</a>
+                </li>
+            </ul>
+        </div>
+         <div class="box-border colum-width right">
+            <div class="padding-contact">
+            <h3 class="margin-general"><strong>{{ plans_forever_free_header }}</strong></h3>
+            <p class="txt-size margin-general-25">{{ plans_forever_free_blurb }}</p>
+            </div>
+        </div>
+        <div class="box-border colum-width right">
+            <div class="padding-contact">
+            <h3 class="margin-general"><strong>{{ plans_forever_free_really }}</strong></h3>
+            <p class="txt-size margin-general-25">{{ plans_forever_free_reallyblurb }}</p>
+            <h3 class="margin-general"><strong>{{ plans_forever_free_upsell }}</strong></h3>
+            <p class="txt-size">{{ plans_forever_free_upsellblurb }}</p>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}

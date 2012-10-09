@@ -2,27 +2,61 @@ import hashlib
 import json
 import uuid
 
-from django.forms import CharField, EmailField, BooleanField, PasswordInput, \
-    HiddenInput, CheckboxInput, Form, ValidationError
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login as django_login, \
+from django.forms import (
+    CharField,
+    EmailField,
+    BooleanField,
+    PasswordInput,
+    HiddenInput,
+    CheckboxInput,
+    Form,
+    ValidationError
+)
+from django.shortcuts import (
+    render,
+    redirect
+)
+from django.contrib.auth import (
+    authenticate,
+    login as django_login,
     logout as django_logout
-from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
+)
+from django.contrib.auth.forms import (
+    AuthenticationForm,
+    SetPasswordForm
+)
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseBadRequest, \
+from django.http import (
+    HttpResponse,
+    HttpResponseBadRequest,
     HttpResponseNotFound
+)
 from django.utils.html import strip_tags
 from django.utils.http import urlquote
 from django.template import Context
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse
 
-from paypal.views import render_paypal_button, generate_ipn_hash
-
-from knotis_auth.models import User, UserProfile, AccountStatus, AccountTypes
-
-from app.utils import View as ViewUtils, Email as EmailUtils
-from app.models.endpoints import Endpoint, EndpointTypes
+from knotis.utils.view import get_standard_template_parameters
+from knotis.utils.email import (
+    generate_email,
+    generate_validation_key
+)
+from knotis.apps.paypal.views import (
+    render_paypal_button,
+    generate_ipn_hash
+)
+from knotis.apps.auth.models import (
+    KnotisUser,
+    UserProfile,
+    AccountStatus,
+    AccountTypes
+)
+from knotis.apps.endpoint.models import (
+    Endpoint,
+    EndpointTypes
+)
+from knotis.apps.content.models import Content
 
 
 class SignUpForm(Form):
@@ -75,15 +109,18 @@ class SignUpForm(Form):
         site.
         """
         email = self.cleaned_data['email']
-        if User.objects.filter(email__iexact=email):
-            raise ValidationError("This email address is already in use. Please supply a different email address.")
+        if KnotisUser.objects.filter(email__iexact=email):
+            raise ValidationError(
+                'This email address is already in use. '
+                'Please supply a different email address.'
+            )
         return email
 
     def create_user(
         self,
         request
     ):
-        return User.objects.create_user(
+        return KnotisUser.objects.create_user(
             self.cleaned_data['first_name'],
             self.cleaned_data['last_name'],
             self.cleaned_data['email'],
@@ -106,7 +143,7 @@ def send_validation_email(
     else:
         subject = 'New user Account in Knotis'
 
-    EmailUtils.generate_email(
+    generate_email(
         'activate',
         subject,
         settings.EMAIL_HOST_USER,
@@ -128,7 +165,7 @@ def resend_validation_email(
         return HttpResponseBadRequest('Method must be GET')
 
     try:
-        user = User.objects.get(username=username)
+        user = KnotisUser.objects.get(username=username)
         user_profile = UserProfile.objects.get(user=user)
 
     except:
@@ -150,7 +187,7 @@ def resend_validation_email(
     for endpoint in user_endpoints:
         if endpoint.type == EndpointTypes.EMAIL and \
             endpoint.value.value == username:
-            endpoint.validation_key = EmailUtils.generate_validation_key()
+            endpoint.validation_key = generate_validation_key()
             endpoint.save()
 
             send_validation_email(
@@ -420,7 +457,7 @@ def facebook_login(
 
     user = None
     try:
-        user = User.objects.get(username=email)
+        user = KnotisUser.objects.get(username=email)
     except:
         pass
 
@@ -428,7 +465,7 @@ def facebook_login(
     user_profile = None
     if None == user and account_type:
         try:
-            user, user_profile = User.objects.create_user(
+            user, user_profile = KnotisUser.objects.create_user(
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
@@ -536,7 +573,7 @@ def validate(
     redirect_url = '/'
 
     try:
-        user = User.objects.get(pk=user_id)
+        user = KnotisUser.objects.get(pk=user_id)
         if Endpoint.objects.validate_endpoints(
             validation_key,
             user
@@ -555,7 +592,7 @@ class KnotisPasswordForgotForm(Form):
         email = self.cleaned_data['email']
 
         try:
-            user = User.objects.get(username=email)
+            user = KnotisUser.objects.get(username=email)
             user_profile = UserProfile.objects.get(user=user)
         except:
             user = None
@@ -577,7 +614,7 @@ class KnotisPasswordForgotForm(Form):
             user_profile.password_reset_key = key
             user_profile.save()
 
-            EmailUtils.generate_email(
+            generate_email(
                 'password_forgot',
                 'Knotis.com - Change Password',
                 settings.EMAIL_HOST_USER,
@@ -594,7 +631,7 @@ class KnotisPasswordForgotForm(Form):
 
 
 def password_forgot(request):
-    template_parameters = ViewUtils.get_standard_template_parameters(request)
+    template_parameters = get_standard_template_parameters(request)
 
     if ('post' == request.method.lower()):
         forgot_form = KnotisPasswordForgotForm(request.POST)
@@ -656,7 +693,7 @@ def password_reset(
     request,
     validation_key
 ):
-    template_parameters = ViewUtils.get_standard_template_parameters(request)
+    template_parameters = get_standard_template_parameters(request)
 
     user = None
     user_profile = None
@@ -704,5 +741,23 @@ def password_reset(
     return render(
         request,
         'password_reset.html',
+        template_parameters
+    )
+
+
+def plans(request):
+    template_parameters = get_standard_template_parameters(request)
+
+    content = {}
+
+    content_set = Content.objects.get_template_content('plans')
+    for c in content_set:
+        content[c.name] = c.value
+
+    template_parameters.update(content)
+
+    return render(
+        request,
+        'plans.html',
         template_parameters
     )

@@ -1,16 +1,23 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import (
+    redirect,
+    render
+)
 from django.conf import settings
 
-from app.utils import View as ViewUtils
-from app.models.offers import Offer, OfferStatus
-
-from app.views.business import edit_profile
-from app.models.businesses import Business
-
-from knotis_qrcodes.models import Qrcode, QrcodeTypes, Scan
-
-from legacy.models import QrcodeIdMap
+from knotis.utils.view import get_standard_template_parameters
+from knotis.apps.offer.models import (
+    Offer,
+    OfferStatus
+)
+from knotis.apps.business.models import Business
+from knotis.apps.business.views import edit_profile
+from knotis.apps.qrcode.models import (
+    Qrcode,
+    QrcodeTypes,
+    Scan
+)
+from knotis.apps.legacy.models import QrcodeIdMap
 
 
 def scan(request, qrcode_id):
@@ -70,10 +77,10 @@ def manage(request):
                 ''
             ])
             qrcode.save()
-                
-    template_parameters = ViewUtils.get_standard_template_parameters(request)
+
+    template_parameters = get_standard_template_parameters(request)
     template_parameters['business'] = business
-    
+
     try:
         template_parameters['offers'] = Offer.objects.filter(
             business=business,

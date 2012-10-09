@@ -67,7 +67,8 @@ def dashboard(request):
         for offer in offers:
             offer_purchase_map[offer] = []
             for purchase in purchases:
-                if purchase.offer == offer:
+                if purchase.offer_id == offer.id and \
+                    purchase.transaction_type == TransactionTypes.PURCHASE:
                     offer_purchase_map[offer].append(purchase)
 
         template_parameters['offer_purchase_map'] = offer_purchase_map

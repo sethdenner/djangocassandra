@@ -1,19 +1,23 @@
-from django.db.models import Model, IntegerField
-from app.models.businesses import Business
-from app.models.offers import Offer
-from knotis_auth.models import User
-from knotis_qrcodes.models import Qrcode
-from foreignkeynonrel.models import ForeignKeyNonRel
+from django.db.models import (
+    Model,
+    IntegerField
+)
+
+from knotis.apps.business.models import Business
+from knotis.apps.offer.models import Offer
+from knotis.apps.auth.models import KnotisUser
+from knotis.apps.qrcode.models import Qrcode
+from knotis.apps.cassandra.models import ForeignKey
 
 
 class BusinessIdMap(Model):
     old_id = IntegerField(null=True, blank=True, default=None, db_index=True)
-    new_business = ForeignKeyNonRel(Business)
+    new_business = ForeignKey(Business)
 
 
 class OfferIdMap(Model):
     old_id = IntegerField(null=True, blank=True, default=None, db_index=True)
-    new_offer = ForeignKeyNonRel(Offer)
+    new_offer = ForeignKey(Offer)
 
 
 class UserIdMap(Model):
@@ -23,8 +27,8 @@ class UserIdMap(Model):
         default=None,
         db_index=True
     )
-    new_user = ForeignKeyNonRel(User)
-    
+    new_user = ForeignKey(KnotisUser)
+
 
 class QrcodeIdMap(Model):
     old_id = IntegerField(
@@ -33,4 +37,4 @@ class QrcodeIdMap(Model):
         default=None,
         db_index=True
     )
-    new_qrcode = ForeignKeyNonRel(Qrcode)
+    new_qrcode = ForeignKey(Qrcode)

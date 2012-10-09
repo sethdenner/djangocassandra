@@ -9,7 +9,7 @@ class GoogleMap(object):
         key
     ):
         self.key = key
-        
+
     def render_api_js(self):
         google_maps_api_script_html = get_template(
             'google_maps_api.html'
@@ -18,16 +18,16 @@ class GoogleMap(object):
             'key': self.key
         })
         return google_maps_api_script_html.render(context)
-        
-        
+
+
 class OfferMap(GoogleMap):
     def __init__(
         self,
         key,
         offers,
         center=(
-            47.602227802480606, 
-            -122.30203628540039
+            47.602227802480606,
+            - 122.30203628540039
         ),
         map_zoom=15,
         map_type='ROADMAP',
@@ -40,7 +40,7 @@ class OfferMap(GoogleMap):
             *args,
             **kwargs
         )
-        
+
         self.offers = offers
         self.center = center
         self.map_zoom = map_zoom
@@ -49,7 +49,7 @@ class OfferMap(GoogleMap):
 
     def center_lat(self):
         return self.center[0]
-    
+
     def center_lon(self):
         return self.center[1]
 
@@ -63,9 +63,8 @@ class OfferMap(GoogleMap):
             'map_element_id': self.map_element_id,
             'STATIC_URL': settings.STATIC_URL
         }
-        
+
     def render(self):
         map_script_html = get_template('knotis_map_offer.html')
         context = Context(self._get_map_parameters_dict())
-        return map_script_html.render(context) 
-    
+        return map_script_html.render(context)

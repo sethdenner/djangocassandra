@@ -1,11 +1,12 @@
 from django.shortcuts import render
 
-from app.utils import View as ViewUtils
-from knotis_contact.views import EmailListForm
-from knotis_contact.models import ContactType
+from knotis.utils.view import get_standard_template_parameters
+from knotis.apps.contact.views import EmailListForm
+from knotis.apps.contact.models import ContactType
+
 
 def index(request):
-    template_parameters = ViewUtils.get_standard_template_parameters(request)
+    template_parameters = get_standard_template_parameters(request)
 
     feedback = None
     success = False
@@ -31,7 +32,7 @@ def index(request):
 
     if not email_form:
         email_form = EmailListForm(ContactType.HAPPY_HOUR)
-        
+
     template_parameters['current_page'] = 'happy_hours'
     template_parameters['email_form'] = email_form
     template_parameters['feedback'] = feedback

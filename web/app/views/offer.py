@@ -1,3 +1,6 @@
+import random
+import string
+
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -14,7 +17,7 @@ from app.models.cities import City
 from app.models.neighborhoods import Neighborhood
 from app.models.media import Image
 
-from knotis_auth.models import User, UserProfile
+from knotis_auth.models import KnotisUser, UserProfile
 
 from app.utils import View as ViewUtils
 from app.views.business import edit_profile
@@ -71,8 +74,31 @@ class OfferForm(ModelForm):
             self.fields['restrictions_value'].initial = \
                 instance.restrictions.value
             self.fields['address_value'].initial = instance.address.value.value
-            self.fields['neighborhood'].initial = instance.neighborhood.id if instance.neighborhood else None
-            self.fields['city'].initial = instance.city.id if instance.city else None
+            self.fields['neighborhood'].initial = \
+                instance.neighborhood.id if instance.neighborhood else None
+            self.fields['city'].initial = \
+                instance.city.id if instance.city else None
+
+    def clean_price_discount(self):
+        price_discount = self.cleaned_data.get('price_discount')
+        price_retail = self.cleaned_data.get('price_retail')
+
+        if price_discount >= price_retail:
+            raise ValidationError(
+                'Discount price must be less than retail price.'
+            )
+
+        return price_discount
+
+    def clean_price_retail(self):
+        price_retail = self.cleaned_data.get('price_retail')
+
+        if price_retail <= 0.:
+            raise ValidationError(
+                'Retail price must be greater than zero.'
+            )
+
+        return price_retail
 
     def clean_title_value(self):
         title = self.cleaned_data.get('title_value')
@@ -85,7 +111,9 @@ class OfferForm(ModelForm):
 
     def clean_city(self):
         try:
-            self.cleaned_data['city'] = City.objects.get(pk=self.cleaned_data['city'])
+            self.cleaned_data['city'] = City.objects.get(
+                pk=self.cleaned_data['city']
+            )
 
         except:
             raise ValidationError('Invalid city.')
@@ -96,7 +124,9 @@ class OfferForm(ModelForm):
         neighborhood = self.cleaned_data.get('neighborhood')
         if neighborhood and '-1' != neighborhood:
             try:
-                self.cleaned_data['neighborhood'] = Neighborhood.objects.get(pk=neighborhood)
+                self.cleaned_data['neighborhood'] = Neighborhood.objects.get(
+                    pk=neighborhood
+                )
 
             except:
                 raise ValidationError('Invalid neighborhood')
@@ -124,7 +154,9 @@ class OfferForm(ModelForm):
         if published and not self.cleaned_data.get('image_source'):
             if offer:
                 try:
-                    offer_images = Image.objects.filter(related_object_id=offer.id)
+                    offer_images = Image.objects.filter(
+                        related_object_id=offer.id
+                    )
                 except:
                     offer_images = None
             else:
@@ -229,14 +261,14 @@ def offers(
             )
 
         neighborhood_instance = None
-        if request.session.has_key('neighborhood'):
+        if 'neighborhood' in request.session:
             neighborhood = request.session.get('neighborhood')
             neighborhood_instance = Neighborhood.objects.get(
                 name_denormalized=neighborhood.title()
             )
 
         city_instance = None
-        if request.session.has_key('city'):
+        if 'city' in request.session:
             city = request.session.get('city')
             city_instance = City.objects.get(name_denormalized=city.title())
 
@@ -491,6 +523,9 @@ def edit(request, offer_id=None):
     template_parameters['offer_form'] = form
     template_parameters['offer'] = offer
     template_parameters['feedback'] = feedback
+    template_parameters['scripts'] = [
+        'views/offer.edit.js'
+    ]
 
     return render(
         request,
@@ -798,14 +833,19 @@ def purchase(
         offer = Offer.objects.get(pk=offer_id)
         template_parameters['offer'] = offer
 
-        ipn_key = ''.join([
-            request.user.id,
-            '_',
-            generate_ipn_hash(request.user.id)
-        ])
-        template_parameters['custom_data'] = ipn_key
+        redemption_code = ''.join(
+            random.choice(
+                string.ascii_uppercase + string.digits
+            ) for _ in range(10)
+        )
 
-        user = User.objects.get(pk=request.user.id)
+        transaction_context = '|'.join([
+            request.user.id,
+            generate_ipn_hash(request.user.id),
+            redemption_code
+        ])
+
+        user = KnotisUser.objects.get(pk=request.user.id)
         transaction = Transaction.objects.create_transaction(
             user,
             TransactionTypes.PENDING,
@@ -813,7 +853,7 @@ def purchase(
             offer,
             None,
             offer.price_discount,
-            ipn_key
+            transaction_context
         )
 
     except Exception, error:

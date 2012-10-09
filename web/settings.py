@@ -146,7 +146,7 @@ TEMPLATE_DIRS = (
 AUTHENTICATION_BACKENDS = (
     'permission_backend_nonrel.backends.NonrelPermissionBackend',
     'legacy.authentication.backends.LegacyAuthenticationBackend',
-    # 'legacy.authentication.backends.HamburgertimeAuthenticationBackend'
+    'legacy.authentication.backends.HamburgertimeAuthenticationBackend'
 )
 
 AUTOLOAD_SITECONF = 'dbindexer'

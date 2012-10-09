@@ -1,0 +1,61 @@
+{% extends 'master.html' %}
+
+{% load thumbnail %}
+
+{% block title %}Knotis - My Subscriptions{% endblock title %}
+
+{% block content %}
+<div id="content" class="back-offers">
+    <div class="curve">
+        <div class="wrapper clear-fix relative">
+            {% include 'account_notifications.html' %}
+            <div class="box-offers box-border left">
+                <h2 class="backend"><strong>My Subscriptions</strong><div id="ht-40" class="help-icon vertical-align-baseline margin-sides" ></div></h2>
+                {% if subscriptions %}
+                {% for subscription in subscriptions %}
+                <div class="line-bottom clear-fix margin-general-25 follow-{{ forloop.counter0 }}">
+                    <div class="clear-fix">
+                        <div class="offers-image radius-general left relative">
+                            <div class="category food"></div>
+                              {% thumbnail subscription.business.primary_image.image '72x72' crop='top' as image %}
+                              <img alt="{{ subscription.business.business_name.value }}" src="{{ image.url }}">
+                              {% empty %}
+                              <img src="{{ STATIC_URL }}images/no-image-business.png" width="72" height="72" alt="{{ subscription.business.business_name }}">
+                              {% endthumbnail %}
+                        </div>
+                        <div class="offers-txt left">
+                            <h5><strong>{{ subscription.business.business_name.value }}</strong></h5>
+                            <a class="txt-size margin-general clear-fix" href="http://maps.google.com/maps?q={{ subscription.business.address.value.value }}" target="_blank">See location on map</a>
+                            <a class="more gradient-gray radius-general"
+                               href="/{{ subscription.business.backend_name }}"
+                               target="_blank" class="more radius-general">More info</a>
+                        </div>
+                        <div class=" radius-general right">
+                            <input class="print button margin-general btn-unfollow  radius-general"
+                                   type="button" target="_blank" data-cont="{{ forloop.counter0 }}"
+                                   data-id="{{ subscription.business_id }}"
+                                   value="Unsubscribe"/>
+                        </div>
+                    </div>
+                    {% for offer in business.offers %}
+                    <div class="clear-fix clean reedem-code radius-general ">
+                        <p class="txt-size offers-business"><a
+                                href="/offer/{{ offer.id }}"
+                                target="_blank">{{ offer.title }}</a></p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="relative closeinfo">
+                    <div class="close-message absolute"></div>
+                    <div class="message-confirm margin-general-25 radius-general ">You are not following any businesses.</div>
+                </div>
+                <div class="clean"></div>
+                {% endif %}
+            </div>
+            {% include 'dashboard_menu.html' with current_page='subscriptions' %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

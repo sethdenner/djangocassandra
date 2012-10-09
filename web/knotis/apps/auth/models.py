@@ -42,7 +42,7 @@ class AccountStatus:
     )
 
 
-class UserManager(UserManager):
+class KnotisUserManager(UserManager):
     def create_user(
         self,
         first_name,
@@ -54,7 +54,7 @@ class UserManager(UserManager):
         if email:
             email = email.lower()
 
-        new_user = super(UserManager, self).create_user(
+        new_user = super(KnotisUserManager, self).create_user(
             email,
             email,
             password
@@ -73,17 +73,17 @@ class UserManager(UserManager):
         return new_user, user_profile
 
 
-class User(DjangoUser):
+class KnotisUser(DjangoUser):
     class Meta:
         proxy = True
 
-    objects = UserManager()
+    objects = KnotisUserManager()
 
     def check_password(
         self,
         raw_password
     ):
-        if super(User, self).check_password(raw_password):
+        if super(KnotisUser, self).check_password(raw_password):
             return True
 
         algorithm, salt, digest = self.password.split('$')
@@ -170,7 +170,7 @@ class UserProfileManager(Manager):
 
 
 class UserProfile(Model):
-    user = OneToOneField(User, primary_key=True)
+    user = OneToOneField(KnotisUser, primary_key=True)
 
     account_type = CharField(
         max_length=32,
@@ -294,7 +294,7 @@ class CredentialsTypes:
 
 
 class Credentials(Model):
-    user = ForeignKey(User)
+    user = ForeignKey(KnotisUser)
     credentials_type = IntegerField(
         choices=CredentialsTypes.CHOICES,
         null=True,

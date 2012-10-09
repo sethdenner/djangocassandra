@@ -1,10 +1,11 @@
 from django.shortcuts import redirect
 
-from legacy.models import BusinessIdMap, OfferIdMap
-
-from knotis_qrcodes.models import Qrcode
-
-from paypal.views import ipn_callback
+from knotis.apps.legacy.models import (
+    BusinessIdMap,
+    OfferIdMap
+)
+from knotis.apps.qrcode.models import Qrcode
+from knotis.apps.paypal.views import ipn_callback
 
 LEGACY_URL_MAP = {
     '/deals/': '/offers/',
