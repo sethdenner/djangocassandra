@@ -1,18 +1,33 @@
 import re
 
-import django.db.models as django_models
-import django.utils as django_utils
-import knotis.apps.auth as auth
-import knotis.apps.cassandra as cassandra
-import knotis.apps.core as core
-import knotis.apps.content as content
-import knotis.apps.endpoint as endpoint
-import knotis.apps.media as media
+from django.db.models import (
+    Manager,
+    URLField,
+    CharField,
+    DateTimeField
+)
+from django.utils.http import urlquote
+
+from knotis.apps.auth.models import User
+from knotis.apps.cassandra.models import ForeignKey
+from knotis.apps.core.models import KnotisModel
+from knotis.apps.media.models import Image
+from knotis.apps.content.models import (
+    Content,
+    ContentTypes
+)
+from knotis.apps.endpoint.models import (
+    EndpointAddress,
+    EndpointPhone,
+    EndpointTwitter,
+    EndpointFacebook,
+    EndpointYelp
+)
 
 
 def clean_business_backend_name(name):
     backend_name = name.replace('&', 'and')
-    backend_name = django_utils.urlquote(
+    backend_name = urlquote(
         backend_name.strip().lower().replace(
             ' ',
             '-'
@@ -26,7 +41,7 @@ def clean_business_backend_name(name):
     return backend_name
 
 
-class BusinessManager(django_models.Manager):
+class BusinessManager(Manager):
     def create_business(
         self,
         user,
@@ -41,14 +56,14 @@ class BusinessManager(django_models.Manager):
     ):
         backend_name = clean_business_backend_name(name)
 
-        content_root = content.models.Content.objects.create(
-            content_type=content.models.ContentTypes.BUSINESS_ROOT,
+        content_root = Content.objects.create(
+            content_type=ContentTypes.BUSINESS_ROOT,
             user=user,
             name=backend_name
         )
 
-        content_business_name = content.models.Content.objects.create(
-            content_type=content.models.ContentTypes.BUSINESS_NAME,
+        content_business_name = Content.objects.create(
+            content_type=ContentTypes.BUSINESS_NAME,
             user=user,
             name=backend_name + '_name',
             parent=content_root,
@@ -57,8 +72,8 @@ class BusinessManager(django_models.Manager):
 
         content_summary = None
         if summary:
-            content_summary = content.models.Content.objects.create(
-                content_type=content.models.ContentTypes.BUSINESS_SUMMARY,
+            content_summary = Content.objects.create(
+                content_type=ContentTypes.BUSINESS_SUMMARY,
                 user=user,
                 name=backend_name + '_summary',
                 parent=content_root,
@@ -67,8 +82,8 @@ class BusinessManager(django_models.Manager):
 
         content_description = None
         if description:
-            content_description = content.models.Content.objects.create(
-                content_type=content.models.ContentTypes.BUSINESS_DESCRIPTION,
+            content_description = Content.objects.create(
+                content_type=ContentTypes.BUSINESS_DESCRIPTION,
                 user=user,
                 name=backend_name + '_description',
                 parent=content_root,
@@ -77,40 +92,40 @@ class BusinessManager(django_models.Manager):
 
         endpoint_address = None
         if address:
-            endpoint_address = endpoint.models.EndpointAddress.objects.create(
+            endpoint_address = EndpointAddress.objects.create(
                 user=user,
                 value=address
             )
 
         endpoint_phone = None
         if phone:
-            endpoint_phone = endpoint.models.EndpointPhone.objects.create(
+            endpoint_phone = EndpointPhone.objects.create(
                 user=user,
                 value=phone
             )
 
         endpoint_twitter = None
         if twitter_name:
-            endpoint_twitter = endpoint.models.EndpointTwitter.objects.create(
+            endpoint_twitter = EndpointTwitter.objects.create(
                 user=user,
                 value=twitter_name
             )
 
         endpoint_facebook = None
         if facebook_uri:
-            endpoint_facebook = endpoint.models.EndpointFacebook.objects.create(
+            endpoint_facebook = EndpointFacebook.objects.create(
                 user=user,
                 value=facebook_uri
             )
 
         endpoint_yelp = None
         if yelp_id:
-            endpoint_yelp = endpoint.models.EndpointYelp.objects.create(
+            endpoint_yelp = EndpointYelp.objects.create(
                 user=user,
                 value=yelp_id
             )
 
-        business = endpoint.models.Business.objects.create(
+        business = Business.objects.create(
             user=user,
             backend_name=backend_name,
             content_root=content_root,
@@ -127,38 +142,38 @@ class BusinessManager(django_models.Manager):
         return business
 
 
-class Business(core.models.KnotisModel):
-    class Meta(core.models.KnotisModel.Meta):
+class Business(KnotisModel):
+    class Meta(KnotisModel.Meta):
         verbose_name = "Business"
         verbose_name_plural = 'Businesses'
 
-    backend_name = django_models.CharField(max_length=128, db_index=True)
+    backend_name = CharField(max_length=128, db_index=True)
 
-    user = cassandra.models.ForeignKeyNonRel(User)
-    content_root = ForeignKeyNonRel(
+    user = ForeignKey(User)
+    content_root = ForeignKey(
         Content,
         related_name='business_content_root'
     )
-    business_name = ForeignKeyNonRel(
+    business_name = ForeignKey(
         Content, related_name='business_business_name'
     )
-    summary = ForeignKeyNonRel(
+    summary = ForeignKey(
         Content,
         related_name='business_summary'
     )
-    description = ForeignKeyNonRel(
+    description = ForeignKey(
         Content,
         related_name='business_description'
     )
 
-    address = ForeignKeyNonRel(EndpointAddress)
-    phone = ForeignKeyNonRel(EndpointPhone)
+    address = ForeignKey(EndpointAddress)
+    phone = ForeignKey(EndpointPhone)
 
-    twitter_name = ForeignKeyNonRel(EndpointTwitter)
-    facebook_uri = ForeignKeyNonRel(EndpointFacebook)
-    yelp_id = ForeignKeyNonRel(EndpointYelp)
+    twitter_name = ForeignKey(EndpointTwitter)
+    facebook_uri = ForeignKey(EndpointFacebook)
+    yelp_id = ForeignKey(EndpointYelp)
 
-    primary_image = ForeignKeyNonRel(Image)
+    primary_image = ForeignKey(Image)
 
     pub_date = DateTimeField('date published', auto_now_add=True)
 
@@ -295,7 +310,7 @@ class Business(core.models.KnotisModel):
 
 
 class BusinessLink(KnotisModel):
-    business = ForeignKeyNonRel(Business)
+    business = ForeignKey(Business)
     uri = URLField()
     title = CharField(max_length=64)
 
@@ -326,8 +341,8 @@ class BusinessSubscriptionManager(Manager):
 
 
 class BusinessSubscription(KnotisModel):
-    user = ForeignKeyNonRel(User)
-    business = ForeignKeyNonRel(Business)
+    user = ForeignKey(User)
+    business = ForeignKey(Business)
     active = NullBooleanField(default=True, blank=True, db_index=True)
 
     objects = BusinessSubscriptionManager()
