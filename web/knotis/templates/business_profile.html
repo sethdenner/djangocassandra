@@ -10,7 +10,7 @@
         <div class="main-image-txt left">
             <div class="main-image box-border left radius-general relative">
                 {% thumbnail business.primary_image.image '222x111' crop='top' as image %}
-                <img alt="{{ business.business_name }}" src="{{ image.url }}">
+                <img alt="{{ business.business_name.value }}" src="{{ image.url }}">
                 {% empty %}
                 <img src="{{ STATIC_URL }}images/no-image-business.png" alt="{{ business.business_name }}">
                 {% endthumbnail %}
@@ -157,9 +157,13 @@
                 </div>
             </div>
             <div class="box-border radius-general pop clear-fix margin-general-25">
-                <div class="qrcode"><img
-                        src="https://chart.googleapis.com/chart?chs=197x197&cht=qr&chl={{ qrcode_uri }}/&choe=UTF-8"
-                        alt="QR code {{ business.business_name.value }}" title="QR code {{ business.business_name.value }}"/></div>
+              <div class="qrcode">
+                <a href="{{ qrcode_uri }}"
+                  alt="QR code {{ business.business_name.value }}" title="QR code {{ business.business_name.value }}">
+                  <img
+                    src="https://chart.googleapis.com/chart?chs=197x197&cht=qr&chl={{ qrcode_uri }}/&choe=UTF-8"
+                    alt="QR code {{ business.business_name.value }}" title="QR code {{ business.business_name.value }}"/>
+              </a></div>
             </div>
             <div class="box-border radius-general pop clear-fix margin-general-25"> 
                 <h3>Current Offers</h3>
