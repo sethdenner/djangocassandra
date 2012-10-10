@@ -173,27 +173,47 @@ INSTALLED_APPS = (
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
+    'root': {
+        'level': 'DEBUG',
+        'handlers': [
+            'console',
+            'file'
+        ],
+    },
+    'formatters': {
+        'verbose': {
+            'format': (
+                '%(asctime)s|%(levelname)s|%(name)s.%(funcName)s|L%(lineno)s|%(message)s'
+            )
+        },
+    },
     'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler'
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'verbose',
+            'filename': '/var/log/knotis/web.log',
+            'maxBytes': 1024,
+            'backupCount': 10
         }
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
+            'level': 'DEBUG',
+            'handlers': [
+                'console',
+                'file'
+            ]
+        }
+    },
 }
 
 # Import additional settings.

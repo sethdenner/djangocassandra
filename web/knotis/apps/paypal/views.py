@@ -1,3 +1,4 @@
+import logging
 import urllib2
 import hashlib
 
@@ -24,6 +25,9 @@ from knotis.apps.auth.models import (
 from knotis.apps.offer.models import Offer
 
 
+logger = logging.getLogger(__name__)
+request_logger = logging.getLogger('django.request')
+
 def generate_ipn_hash(value):
     salt = '1@#%^&()_+HYjI'
     return hashlib.sha1(''.join([
@@ -34,12 +38,31 @@ def generate_ipn_hash(value):
 
 
 def is_ipn_valid(post):
+    post_formatted = '\n'.join([
+        '   key=%s, value=%s' % (k, v,) for k, v in post.items()
+    ])
+    logger.debug('\n'.join([
+        'validating ipn with post parameters:',
+        post_formatted
+    ]))
+    
     data = post.copy()
     data['cmd'] = '_notify-validate'
-    data = dict(
-        [(k, v.encode(post['charset'])) for k, v in post.items()]
-    )
+    charset = post.get('charset')
+    if charset:
+        data = dict(
+            [(k, v.encode(charset)) for k, v in post.items()]
+        )
     parameters = urlencode(data)
+    
+    parameters_formatted = '\n'.join([
+        '   key=%s, value=%s' % (k, v,) for k, v in post.items()
+    ])
+    logger.debug('\n'.join([
+        'request parameters:',
+        parameters_formatted
+    ]))
+
 
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -48,8 +71,11 @@ def is_ipn_valid(post):
 
     if post.get('test_ipn') == '1':
         uri = settings.PAYPAL_TEST_URL
+        logger.debug('using paypal test url: %s' % (uri,))
+
     else:
         uri = settings.PAYPAL_URL
+        logger.debug('using paypal live url: %s' % (uri,))
 
     validation_request = urllib2.Request(
         uri,
@@ -58,6 +84,7 @@ def is_ipn_valid(post):
     )
 
     try:
+        logger.debug('sending request')
         connection = urllib2.urlopen(validation_request)
         try:
             response = connection.read()
@@ -66,26 +93,34 @@ def is_ipn_valid(post):
             connection.close()
 
     except urllib2.HTTPError, error:
+        logger.exception('request failed')
         response = error.read()
 
     except Exception, error:
+        logger.exception('request failed')
         response = error.message
 
     if response == 'VERIFIED':
+        logger.debug('ipn verified')
         return True
 
+    logger.debug('ipn verification failed trying custom verification')
     custom_validation = post.get('custom')
     if not custom_validation:
+        logger.debug('no custom verification parameters')
         return False
 
     custom_validation = custom_validation.split('|')
     if 3 != len(custom_validation):
+        logger.debug('wrong number of verification parameters')
         return False
 
     ipn_hash = generate_ipn_hash(custom_validation[0])
     if ipn_hash != custom_validation[1]:
+        logger.debug('ipn hashes did not match')
         return False
 
+    logger.debug('ipn hashes match ipn verified')
     return True
 
 
@@ -102,12 +137,17 @@ def paypal_return(request):
 
 @csrf_exempt
 def ipn_callback(request):
+    request_logger.debug('ipn request', {'request': request})
+    
     if request.method.lower() != 'post':
+        logger.debug('method must be post')
         return HttpResponseNotAllowed('POST')
 
     if not is_ipn_valid(request.POST):
+        logger.debug('invalid ipn')
         return HttpResponse('OK')
 
+    logger.debug('ipn is valid')
     transaction_context = request.POST.get('custom')
     auth_amount = request.POST.get('auth_amount')
     item_name_1 = request.POST.get('item_name_1')
@@ -117,6 +157,7 @@ def ipn_callback(request):
     user_id = context_parts[0]
 
     try:
+        logger.debug('getting pending transaction')
         transactions = Transaction.objects.filter(
             user_id=user_id,
             transaction_context=transaction_context
@@ -126,12 +167,23 @@ def ipn_callback(request):
         pending_transaction = None
         for transaction in transactions:
             if transaction.transaction_type == TransactionTypes.PENDING:
+                logger.debug(
+                    'pending transaction found with id %s' % (transaction.id,)
+                )
                 pending_transaction = transaction
 
             if transaction.transaction_type == TransactionTypes.PURCHASE:
+                logger.debug(
+                    'existing purchase found with id %s' % (transaction.id,)
+                )
                 purchased = True
 
         if pending_transaction and not purchased:
+            logger.debug(
+                'creating purchase transaction with context %s' % (
+                    pending_transaction.transaction_context,
+                )
+            )
             Transaction.objects.create_transaction(
                 pending_transaction.user,
                 TransactionTypes.PURCHASE,
@@ -143,25 +195,34 @@ def ipn_callback(request):
             )
 
     except:
-        pass
+        logger.exception('failed to create transaction')
 
     if item_name_1 == 'Business Monthly Subscription':
+        logger.debug('paid business subscription purchase')
         try:
+            logger.debug('getting user with id %s' % (user_id,))
             user = KnotisUser.objects.get(pk=user_id)
+            logger.debug('user found')
             user_profile = UserProfile.objects.get(user=user)
+            logger.debug('user profile found')
 
+            logger.debug('upgrading account')
             user_profile.account_type = AccountTypes.BUSINESS_MONTHLY
             user_profile.save()
+            logger.debug('account upgraded')
 
         except:
-            pass
+            logger.exception('failed to upgrade user')
 
     elif item_number_1:
+        logger.debug('offer purchase')
         try:
+            logger.debug('getting offer with id %s' % (item_number_1,))
             Offer.objects.get(pk=item_number_1).purchase()
+            logger.debug('offer purchased')
 
         except:
-            pass
+            logger.exception('failed to purchase offer.')
 
     return HttpResponse('OK')
 

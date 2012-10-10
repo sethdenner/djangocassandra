@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render
 from django.conf import settings
 
@@ -6,11 +8,17 @@ from knotis.apps.content.models import Content
 from knotis.apps.offer.models import Offer
 from knotis.apps.maps.views import OfferMap
 
+logger = logging.getLogger(__name__)
 
 def index(
     request,
     login
 ):
+    logger.info(
+        'Request', { 
+            'request': request 
+        }
+    )
     template_parameters = get_standard_template_parameters(request)
 
     content = {}
