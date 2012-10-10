@@ -1,7 +1,7 @@
-import logging
 import urllib2
 import hashlib
 
+from django.utils.log import logging
 from django.conf import settings
 from django.template import Context
 from django.template.loader import get_template
@@ -24,9 +24,8 @@ from knotis.apps.auth.models import (
 )
 from knotis.apps.offer.models import Offer
 
-
 logger = logging.getLogger(__name__)
-request_logger = logging.getLogger('django.request')
+
 
 def generate_ipn_hash(value):
     salt = '1@#%^&()_+HYjI'
@@ -137,7 +136,7 @@ def paypal_return(request):
 
 @csrf_exempt
 def ipn_callback(request):
-    request_logger.debug('ipn request', {'request': request})
+    logger.debug('ipn request recieved')
     
     if request.method.lower() != 'post':
         logger.debug('method must be post')
