@@ -909,10 +909,7 @@ def purchase(
             'business': settings.PAYPAL_ACCOUNT,
             'shopping_url': settings.BASE_URL,
             'currency_code': 'USD',
-            'return': '/'.join([
-                settings.BASE_URL,
-                'offers/dashboard/'
-            ]),
+            'return': '/offers/dashboard/',
             'notify_url': settings.PAYPAL_NOTIFY_URL,
             'rm': '2',
             'item_name_1': offer.title_formatted,

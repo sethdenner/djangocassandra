@@ -151,7 +151,7 @@ def ipn_callback(request):
     auth_amount = request.POST.get('auth_amount')
     item_name_1 = request.POST.get('item_name_1')
     item_number_1 = request.POST.get('item_number_1')
-    quantity = request.POST.get('quantity')
+    quantity = request.POST.get('quantity_1')
     context_parts = transaction_context.split('|')
     user_id = context_parts[0]
 
@@ -189,7 +189,7 @@ def ipn_callback(request):
                 TransactionTypes.PURCHASE,
                 pending_transaction.business,
                 pending_transaction.offer,
-                int(quantity),
+                int(quantity) if quantity else None,
                 auth_amount,
                 pending_transaction.transaction_context
             )
