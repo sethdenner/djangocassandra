@@ -64,11 +64,11 @@ urlpatterns = patterns(
         'offer_city_filter_redirect'
     ),
     url(
-        r'^business/profile/(?P<legacy_business_id>[\d]+)/$',
+        r'^profile/(?P<legacy_business_id>[\d]+)/$',
         'business_profile_redirect'
     ),
     url(
-        r'^business/(?P<legacy_business_id>[\d]+)/$',
+        r'^business/(?P<legacy_qrcode_id>[\d]+)/$',
         'qrcode_redirect'
     ),
     url(

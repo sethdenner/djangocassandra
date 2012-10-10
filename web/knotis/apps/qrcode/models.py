@@ -59,8 +59,6 @@ class Qrcode(KnotisModel):
         except:
             pass
 
-        return redirect(self.uri)
-
 
 class ScanManager(Manager):
     def get_daily_scans(

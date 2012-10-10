@@ -2,7 +2,8 @@ from django.shortcuts import redirect
 
 from knotis.apps.legacy.models import (
     BusinessIdMap,
-    OfferIdMap
+    OfferIdMap,
+    QrcodeIdMap
 )
 from knotis.apps.qrcode.models import Qrcode
 from knotis.apps.paypal.views import ipn_callback
@@ -55,7 +56,7 @@ def business_profile_redirect(
     business = None
     try:
         id_map = BusinessIdMap.objects.get(old_id=legacy_business_id)
-        business = id_map.business
+        business = id_map.new_business
 
     except:
         pass
@@ -94,12 +95,12 @@ def offer_profile_redirect(
 
 def qrcode_redirect(
     request,
-    legacy_business_id
+    legacy_qrcode_id
 ):
     qrcode = None
     try:
-        id_map = BusinessIdMap.objects.get(old_id=legacy_business_id)
-        qrcode = Qrcode.objects.filter(business=id_map.business)[0]
+        id_map = QrcodeIdMap.objects.get(old_id=legacy_qrcode_id)
+        qrcode = id_map.new_qrcode
     except:
         pass
 
@@ -108,6 +109,6 @@ def qrcode_redirect(
         return redirect('/')
 
     return redirect(
-        'qrcode/%s/' % (qrcode.id),
+        '/qrcode/%s/' % (qrcode.id),
         premanent=True
     )

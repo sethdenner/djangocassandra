@@ -162,6 +162,7 @@ def import_business(cursor):
             twitter_name = business_table['twitter'].decode('cp1252')
             facebook_uri = business_table['facebook'].decode('cp1252')
             yelp_id = business_table['yelp'].decode('cp1252')
+            qrcode_id = business_table['qrcodeId']
 
             # Getting the user id for the new system.
             old_user_id = business_table['userId']
@@ -196,19 +197,32 @@ def import_business(cursor):
             )
 
             qrcode_legacy_type = business_table['qrcodeType']
-            qrcode_uri = business_table['qrcodeContent']
+            qrcode_content = business_table['qrcodeContent']
             if 'deal' == qrcode_legacy_type:
                 qrcode_type = QrcodeTypes.OFFER
+                qrcode_uri = '/'.join([
+                    '/deal/profile',
+                    qrcode_content
+                ])
 
             elif 'video' == qrcode_legacy_type:
                 qrcode_type = QrcodeTypes.VIDEO
+                qrcode_uri = qrcode_content
 
             elif 'link' == qrcode_legacy_type:
                 qrcode_type = QrcodeTypes.LINK
+                qrcode_uri = qrcode_content
 
             else:
                 qrcode_type = QrcodeTypes.PROFILE
+                qrcode_uri = '/'.join([
+                    '/profile',
+                    str(old_id)
+                ])
 
+            print 'qrcode uri = %s' % (
+                qrcode_uri,
+            )
             qrcode = Qrcode.objects.create(
                 business=new_business,
                 uri=qrcode_uri,
@@ -216,11 +230,12 @@ def import_business(cursor):
             )
 
             QrcodeIdMap.objects.create(
-                old_id=business_table['qrcodeId'],
+                old_id=qrcode_id,
                 new_qrcode=qrcode
             )
 
         except Exception as e:
+            raise
             print 'Exception!: %s\n' % e,
 
 #     import deal

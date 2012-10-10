@@ -30,7 +30,12 @@ def scan(request, qrcode_id):
     if not qrcode:
         return redirect('/')
 
-    return qrcode.scan()
+    qrcode.scan()
+    
+    return redirect(
+        qrcode.uri,
+        permanent=True
+    )
 
 
 @login_required

@@ -157,8 +157,9 @@ def ipn_callback(request):
 
     try:
         logger.debug('getting pending transaction')
+        user = KnotisUser.objects.get(pk=user_id)
         transactions = Transaction.objects.filter(
-            user_id=user_id,
+            user=user,
             transaction_context=transaction_context
         )
 
