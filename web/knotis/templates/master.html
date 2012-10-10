@@ -14,5 +14,6 @@
     </div>
     {% include 'footer.html' %}
     {% include 'scripts.html' with maps=maps gallery=gallery do_upload=do_upload graphics=graphics scripts=scripts %}
+    {% if request.is_mobile %}<div class="hide" id="is-mobile" data-value="true" ></div>{% endif %}
 </body>
 </html>
