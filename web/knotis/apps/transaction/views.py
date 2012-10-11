@@ -26,9 +26,9 @@ def print_transaction(
         
     except:
         logger.exception('could not get offer')
-        offer = None
+        transaction = None
         
-    if not offer:
+    if not transaction:
         return HttpResponseNotFound('Could not get offer')
     
     try:
