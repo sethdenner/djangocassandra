@@ -269,6 +269,9 @@ def sign_up(request, account_type=AccountTypes.USER):
                     ]),
                 }
             })
+            # Downgrade user until they pay
+            user_profile.account_type = AccountTypes.BUSINESS_FREE
+            user_profile.save()
 
         html = get_template('finish_registration.html')
         context = Context({
