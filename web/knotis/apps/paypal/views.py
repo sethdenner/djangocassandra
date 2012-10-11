@@ -141,10 +141,10 @@ def ipn_callback(request):
 
     logger.debug('ipn is valid')
     transaction_context = request.POST.get('custom')
-    auth_amount = request.POST.get('auth_amount')
-    item_name_1 = request.POST.get('item_name1')
-    item_number_1 = request.POST.get('item_number1')
-    quantity = request.POST.get('quantity1')
+    mc_gross = request.POST.get('mc_gross')
+    item_name1 = request.POST.get('item_name1')
+    item_number1 = request.POST.get('item_number1')
+    quantity1 = request.POST.get('quantity1')
     context_parts = transaction_context.split('|')
     user_id = context_parts[0]
 
@@ -182,8 +182,8 @@ def ipn_callback(request):
                 TransactionTypes.PURCHASE,
                 pending_transaction.business,
                 pending_transaction.offer,
-                int(quantity) if quantity else None,
-                auth_amount,
+                int(quantity1) if quantity1 else None,
+                mc_gross,
                 pending_transaction.transaction_context
             )
             
@@ -194,7 +194,7 @@ def ipn_callback(request):
         logger.exception('failed to create transaction')
         transaction = None
 
-    if item_name_1 == 'Business Monthly Subscription':
+    if item_name1 == 'Business Monthly Subscription':
         logger.debug('paid business subscription purchase')
         try:
             logger.debug('getting user with id %s' % (user_id,))
@@ -211,11 +211,11 @@ def ipn_callback(request):
         except:
             logger.exception('failed to upgrade user')
 
-    elif item_number_1:
+    elif item_number1:
         logger.debug('offer purchase')
         try:
-            logger.debug('getting offer with id %s' % (item_number_1,))
-            Offer.objects.get(pk=item_number_1).purchase()
+            logger.debug('getting offer with id %s' % (item_number1,))
+            Offer.objects.get(pk=item_number1).purchase()
             logger.debug('offer purchased')
 
             logger.debug('sending offer purchase email')            
