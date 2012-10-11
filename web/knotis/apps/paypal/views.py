@@ -194,8 +194,8 @@ def ipn_callback(request):
         logger.exception('failed to create transaction')
         transaction = None
 
-    if item_name1.lower() == 'business monthly subscription' or \
-        item_name.lower() == 'knotis premium':
+    if (item_name1 and item_name1.lower() == 'business monthly subscription') or \
+        (item_name and item_name.lower() == 'knotis premium'):
         logger.debug('paid business subscription purchase')
         try:
             logger.debug('getting user with id %s' % (user_id,))
