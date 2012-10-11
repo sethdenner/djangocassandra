@@ -21,6 +21,8 @@ from django.forms import (
     DateTimeField,
     ValidationError
 )
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
 
 from knotis.utils.view import (
     get_standard_template_parameters,
@@ -624,61 +626,6 @@ def delete_offer(
         return HttpResponseServerError(error.message)
 
     return HttpResponse('OK')
-
-
-@login_required
-def get_user_offers(
-    request,
-    status
-):
-    template_parameters = {}
-
-    try:
-        template_parameters['user_profile'] = UserProfile.objects.get(
-            user=request.user
-        )
-
-    except:
-        pass
-
-    try:
-        if status == 'redeemed':
-            transaction_type = TransactionTypes.REDEMPTION
-
-        elif status == 'purchased':
-            transaction_type = TransactionTypes.PURCHASE
-
-        else:
-            transaction_type = None
-
-        transactions = Transaction.objects.filter(
-            user=request.user,
-            transaction_type=transaction_type
-        )
-
-        template_parameters['offers'] = [{
-                'id': transaction.offer_id,
-                'available': transaction.offer.available(),
-                'title_formatted': transaction.offer.title_formatted(),
-                'start_date': transaction.offer.start_date,
-                'end_date': transaction.offer.end_date,
-                'business': transaction.offer.business,
-                'purchase_date': transaction.pub_date,
-                'stock': transaction.unredeemed(),
-                'redeemed': transaction.redemptions(),
-                'image':{'image': transaction.offer.image},
-                'description_100': transaction.offer.description_100()
-            } for transaction in transactions
-        ]
-
-    except:
-        pass
-
-    return render(
-        request,
-        'offers_list_manage.html',
-        template_parameters
-    )
 
 
 @login_required

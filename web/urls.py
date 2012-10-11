@@ -25,6 +25,10 @@ urlpatterns = patterns(
         include('knotis.apps.business.urls')
     ),
     url(
+        r'',
+        include('knotis.apps.transaction.urls')
+    ),
+    url(
         r'^offer',
         include('knotis.apps.offer.urls')
     ),

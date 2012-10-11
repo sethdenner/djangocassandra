@@ -57,10 +57,6 @@ urlpatterns = patterns(
         'print_unredeemed',
     ),
     url(
-        r's/get_user_offers/(?P<status>[\D]+)/$',
-        'get_user_offers'
-    ),
-    url(
         r's/get_offers_by_status/(?P<status>[a-zA-Z_-]+)/$',
         'get_offers_by_status',
     ),
