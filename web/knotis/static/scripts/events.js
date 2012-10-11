@@ -148,6 +148,7 @@ $(function() {
                         $("#password").require();
                     });
                     $("input:text").placeholder();
+                    $('#email').focus();
                 });
         return false;
     });

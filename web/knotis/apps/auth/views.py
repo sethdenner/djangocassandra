@@ -387,11 +387,16 @@ def login(request):
             user
         )
         
+        if AccountTypes.USER == user_profile.account_type:
+            default_url = '/offers/'
+        else:
+            default_url = '/dashboard/'
+            
         next_url = request.POST.get('next')
 
         return generate_response({
             'success': 'yes',
-            'redirect': next_url if next_url else 1
+            'redirect': next_url if next_url else default_url
         })
 
     else:
