@@ -14,11 +14,15 @@
 <div class="box-offers box-border left margin-general-25">
     <div class="offer-profile-left">
         <div class="offers-image image radius-general relative">
-            {% if not offer.active %}
-            {% if not offer.stock and not offer.unlimited%}
+            {% if not offer.available %}
+            {% if not offer.published %}
+            <div class="inactive absolute"></div>
+            {% else %}
+            {% if not offer.unlimited%}
             <div class="exhausted absolute"></div>
             {% else %}
             <div class="expired absolute"></div>
+            {% endif %}
             {% endif %}
             {% else %}
             <div class="active absolute"></div>
@@ -60,8 +64,8 @@
             <p class="price left"><span>$</span>{{ offer.price_discount_formatted }}</p>
             <form method="post" action="/offer/buy/{{ offer.id }}/">{% csrf_token %}
                 <div class="button-offers-profile left">
-                    <input class="button {% if not offer.active %}button-none{% endif %} radius-general left{% if user.is_anonymous %} log_in{% endif %}"
-                        value="Buy Now" type="submit" name="Buy Now" {% if not offer.active %}disabled{% endif %} />
+                    <input class="button {% if not offer.available %}button-none{% endif %} radius-general left{% if user.is_anonymous %} log_in{% endif %}"
+                        value="Buy Now" type="submit" name="Buy Now" {% if not offer.available %}disabled{% endif %} />
                 </div>
                 <input type="hidden" name="offerId" value="{{ offer.id }}" />
             </form>

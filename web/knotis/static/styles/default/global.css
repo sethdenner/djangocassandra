@@ -1615,6 +1615,14 @@ ul.offer-buy li span.padd {
     background: url("../../images/layouts/expired.png") no-repeat;
 }
 
+.offers-image .inactive {
+    width:108px;
+    height:64px;
+    left:-4px;
+    top:-4px;
+    background: url("../../images/layouts/ribbon-inactive-backend.png") no-repeat;
+}
+
 .offers-image .active {
     width:110px;
     height:67px;
