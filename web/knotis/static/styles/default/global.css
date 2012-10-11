@@ -635,7 +635,7 @@ STRUCTURE
 
 .content-popup,
 .content-popup-list{
-    width: 515px;
+    width: 325px;
     padding: 5px;
     background: url("../../images/layouts/knotis-transparence.png") repeat;
 
@@ -4595,7 +4595,6 @@ label.number-redeem {
 	border-radius: 5px;
 }
 
-
 .static-content p {
 	margin-bottom: 15px;
 }
@@ -4604,13 +4603,17 @@ label.number-redeem {
 	font-weight: bold;
 	margin-bottom: 15px;
 }
- 
+
 .toggle-if-business .checkbox {
 	z-index: 99999;
 }
 
+.toggle-if-business label {
+    font-size: 0.9em;
+}
+
 .toggle-if-business {
-    width:170px;
+    padding-right: 70px;
 }
 
 ul.list-backend li {

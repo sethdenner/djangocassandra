@@ -33,9 +33,17 @@
                                     {{ form.password }}
                                 </label>
                                 {% if account_type != 'user' %}
+                                <div class="toggle-if-business right">
+                                    {{ form.business }}
+                                    <label for="business">I am a Business Owner</label>
+                                    {% if account_type == 'premium' %}
+                                    <label class="clear-fix" >First month for free!</label>
+                                    {% endif %}
+            					</div>
                                 <span class="arrow-hand"><img
                                         src="{{ STATIC_URL }}/images/layouts/arrow-hand.png"
                                         title="Loading" alt="loading"/></span>
+
                                 {% endif %}
                             </li>
                             <div class="clean"></div>
@@ -50,20 +58,6 @@
                             <img src="{{ STATIC_URL }}/images/lightbox-ico-loading.gif" title="Loading" alt="loading"/>
                         </p>
                     </div>
-					<div id="facebook-login-container" class="box-facebook radius-general margin-general">
-                        <p class="txt-size txt-center"><strong>Create your account with Facebook</strong></p>
-                        <fb:login-button scope="email,user_about_me" autologoutlink="false">Sign up</fb:login-button>
-                        <script type="text/javascript">if(typeof(FB)!="undefined") { FB.XFBML.parse(); }</script>
-                    </div>
-                    {% if account_type != 'user' %}
-                    <div class="right toggle-if-business">
-                        {{ form.business }}
-                        <label class="txt-size" for="business"><strong>I am a Business Owner</strong></label>
-                        {% if account_type == 'premium' %}
-                        <label class="txt-size user-ticket clear-fix " ><strong>First month for free!</strong></label>
-                        {% endif %}
-					</div>
-					{% endif %}
                 </div>
                 <div class="clean relative">
                     <div id="ajaxBusy" class="absolute"><img src="{{ STATIC_URL }}/images/ajaxloading.gif" title="Loading" alt="loading"/> </div>  

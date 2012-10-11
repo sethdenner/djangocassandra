@@ -29,10 +29,6 @@ urlpatterns = patterns(
         include('knotis.apps.offer.urls')
     ),
     url(
-        r'^facebook/',
-        include('knotis.apps.facebook.urls')
-    ),
-    url(
         r'^charts/',
         include('knotis.apps.highchart.urls')
     ),

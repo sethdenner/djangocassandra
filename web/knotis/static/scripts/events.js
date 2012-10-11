@@ -19,10 +19,6 @@ $(function() {
         scrollTo: true    
     });
    
-      
-    // private vars
-    var facebookAppId = $('#fb-root').attr('data-app-id');
-
     // Ajax loading
     $("#ajaxBusy").ajaxStart(function() {
         $(this).show();
@@ -165,16 +161,6 @@ $(function() {
     $('.signup_pop').live('click', function() {
 
         var $this = $(this), type = $this.attr('data-type');
-
-        if (type == 'user')
-            $("#fb-root").attr('data-sign-up-action', '/auth/login/facebook/user/');
-
-        if (type == 'foreverfree')
-            $("#fb-root").attr('data-sign-up-action', '/auth/login/facebook/foreverfree/');
-
-        if (type == 'premium')
-            $("#fb-root").attr('data-sign-up-action', '/auth/login/facebook/premium/');
-
 
         $('.signup_popup').remove();
         $('.log_in_popup').remove();
@@ -1385,108 +1371,8 @@ $(function() {
         return false;
     
     });
-
-
-
-
-
-
-// For external iframe in business
-
-
-    //START Facebook js integration
-
-    window.fbAsyncInit = function() {
-        var handleSession = function(response, canLogout) {
-            if (response.status === "connected") {
-                // For now check to see if link account button exists, if does assume using that otherwise its login
-                var action = $('#fb-root').attr("data-sign-up-action");
-                var lock = false;
-                FB.api('/me', function(user) {
-                    if (lock) { return; }
-                    lock = true;
-                    
-                    $.post(
-                        action, {
-                            'data' : { 
-                                'response': response, 
-                                'user' : user
-                             }
-                         }, 
-                         function(data) {
-                            if (data.success == 'yes') {
-                                if (data.user) {
-                                    if (data.user == 'premium') {
-                                        $('.replace').replaceWith(data.message);
-                                    
-                                    }
     
-                                    if (data.user == 'foreverfree') {
-                                        window.location = '/business/profile/';
-                                        
-                                    }
-    
-                                    if (data.user == 'user') {
-                                        window.location = '/offers/';
-                                        
-                                    }
-                                    
-                                } else {
-                                    window.location = '/offers/';
-                                    
-                                }
-            
-                            }
-                            if (data.success == 'no') {
-                                $('#message-log').replaceWith('<p class="message-confirm message-error radius-general txt-size">' + data.message + '</p>');
-            
-                            }
-
-                            if (data.success == 'reload') {
-                                window.location.reload(true);
-            
-                            }
-                            lock = false;
-                        }, 
-                        'json'
-                    );
-                });
-
-            } else if (canLogout) {
-               var location = "/auth/logout/";
-               window.location = location;
-
-            }
-
-        };
-
-        FB.init({
-            appId: facebookAppId,
-            status: true,
-            cookie: true,
-            xfbml: true,
-            oauth: true,
-            channelUrl: window.location.protocol + '//' + window.location.host + '/facebook/channel/'
-        });
-        
-        FB.Event.subscribe('auth.authResponseChange', function(response) {
-            handleSession(response, true);
-        });
-
-        FB.Canvas.setAutoGrow();
-    };
-
-    (function(d){
-       var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-       js = d.createElement('script'); js.id = id; js.async = true;
-       js.src = "//connect.facebook.net/en_US/all.js";
-       d.getElementsByTagName('head')[0].appendChild(js);
-    }(document));
-
-    //END Facebook js integration
-
-})
-        ;
+});
 
 function showImg() {
     var imgActive = $('#rotator img.active');
