@@ -1,0 +1,21 @@
+New deals buy in knotis!
+Ticket Number:
+# {{ transaction.redemption_code }}
+Title:
+{{ transaction.offer.title_formatted }}
+Description:
+{{ transaction.offer.description.value }}
+Restrictions:
+{{ transaction.offer.restrictions.value }}
+Purchase date: {{ transaction.pub_date }}
+Quantity: {{ transaction.quantity }}
+For: {{ transaction.user.username }}
+Redeem:
+{{ transaction.business.business_name.value }}
+{{ transaction.business.address.value.value }}
+{{ transaction.business.business_name.value }}
+{{ transaction.business.phone.value.value }}
+Total Paid:
+${{ transaction.value_formatted }}
+
+Still need more help? Email us at support@knotis.com

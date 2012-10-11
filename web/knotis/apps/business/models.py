@@ -156,7 +156,8 @@ class Business(KnotisModel):
         related_name='business_content_root'
     )
     business_name = ForeignKey(
-        Content, related_name='business_business_name'
+        Content, 
+        related_name='business_business_name'
     )
     summary = ForeignKey(
         Content,

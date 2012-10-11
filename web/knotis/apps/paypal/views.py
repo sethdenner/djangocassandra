@@ -13,6 +13,7 @@ from django.http import (
 from django.utils.http import urlencode
 from django.shortcuts import redirect
 
+from knotis.utils.email import generate_email
 from knotis.apps.transaction.models import (
     Transaction,
     TransactionTypes
@@ -184,7 +185,7 @@ def ipn_callback(request):
                     pending_transaction.transaction_context,
                 )
             )
-            Transaction.objects.create_transaction(
+            transaction = Transaction.objects.create_transaction(
                 pending_transaction.user,
                 TransactionTypes.PURCHASE,
                 pending_transaction.business,
@@ -193,9 +194,13 @@ def ipn_callback(request):
                 auth_amount,
                 pending_transaction.transaction_context
             )
-
+            
+        else:
+            transaction = None
+        
     except:
         logger.exception('failed to create transaction')
+        transaction = None
 
     if item_name_1 == 'Business Monthly Subscription':
         logger.debug('paid business subscription purchase')
@@ -220,6 +225,22 @@ def ipn_callback(request):
             logger.debug('getting offer with id %s' % (item_number_1,))
             Offer.objects.get(pk=item_number_1).purchase()
             logger.debug('offer purchased')
+
+            logger.debug('sending offer purchase email')            
+            generate_email(
+                'offer_purchase',
+                transaction.offer.title_formatted(),
+                settings.EMAIL_HOST_USER,
+                [transaction.user.username], {
+                    'transaction': transaction,
+                    'BASE_URL': settings.BASE_URL,
+                    'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE
+                }
+            ).send()
+            logger.debug('email sent to %s' % (
+                transaction.user.username
+            ))
+
 
         except:
             logger.exception('failed to purchase offer.')
