@@ -45,7 +45,7 @@ def is_ipn_valid(post):
         'validating ipn with post parameters:',
         post_formatted
     ]))
-    
+
     data = post.copy()
     data['cmd'] = '_notify-validate'
 
@@ -103,8 +103,8 @@ def is_ipn_valid(post):
         return False
 
     custom_validation = custom_validation.split('|')
-    if 3 != len(custom_validation):
-        logger.debug('wrong number of verification parameters')
+    if 2 > len(custom_validation):
+        logger.debug('not enough verification parameters')
         return False
 
     ipn_hash = generate_ipn_hash(custom_validation[0])
@@ -118,9 +118,6 @@ def is_ipn_valid(post):
 
 @csrf_exempt
 def paypal_return(request):
-    if request.method.lower() != 'post':
-        return HttpResponseNotAllowed('POST')
-
     next_url = request.GET.get('next')
     url = next_url if next_url else '/offers/dashboard/'
 
@@ -130,7 +127,7 @@ def paypal_return(request):
 @csrf_exempt
 def ipn_callback(request):
     logger.debug('ipn request recieved')
-    
+
     if request.method.lower() != 'post':
         logger.debug('method must be post')
         return HttpResponseNotAllowed('POST')
@@ -186,10 +183,10 @@ def ipn_callback(request):
                 mc_gross,
                 pending_transaction.transaction_context
             )
-            
+
         else:
             transaction = None
-        
+
     except:
         logger.exception('failed to create transaction')
         transaction = None
@@ -218,7 +215,7 @@ def ipn_callback(request):
             Offer.objects.get(pk=item_number1).purchase()
             logger.debug('offer purchased')
 
-            logger.debug('sending offer purchase email')            
+            logger.debug('sending offer purchase email')
             generate_email(
                 'offer_purchase',
                 transaction.offer.title_formatted(),

@@ -232,6 +232,7 @@ def sign_up(request, account_type=AccountTypes.USER):
 
                 response_data['success'] = 'yes'
                 response_data['user'] = user_profile.account_type
+                account_type = user_profile.account_type
 
                 if True == sign_up_form.cleaned_data['business']:
                     if user_profile.account_type == AccountTypes.BUSINESS_FREE:
@@ -263,9 +264,14 @@ def sign_up(request, account_type=AccountTypes.USER):
                 'paypal_parameters': {
                     'cmd': '_s-xclick',
                     'hosted_button_id': settings.PAYPAL_PREMIUM_BUTTON_ID,
-                    'notify_url': reverse('knotis.apps.paypal.views.buy_premium_service'),
+                    'notify_url': '/'.join([
+                        settings.BASE_URL,
+                        'paypal',
+                        'ipn',
+                        ''
+                    ]),
                     'item_name_1': 'Business Monthly Subscription',
-                    'custom': '_'.join([
+                    'custom': '|'.join([
                         user.id,
                         generate_ipn_hash(user.id)
                     ]),
@@ -277,8 +283,9 @@ def sign_up(request, account_type=AccountTypes.USER):
 
         html = get_template('finish_registration.html')
         context = Context({
+            'settings': settings,
             'AccountTypes': AccountTypes,
-            'account_type': user_profile.account_type,
+            'account_type': account_type,
             'paypal_button': paypal_button,
             'feedback': feedback,
             'error': error
@@ -386,12 +393,12 @@ def login(request):
             request,
             user
         )
-        
+
         if AccountTypes.USER == user_profile.account_type:
             default_url = '/offers/'
         else:
             default_url = '/dashboard/'
-            
+
         next_url = request.POST.get('next')
 
         return generate_response({
@@ -595,7 +602,7 @@ def validate(
             user_profile = UserProfile.objects.get(user=user)
             if AccountStatus.NEW == user_profile.account_status:
                 user_profile.activate()
-                            
+
             redirect_url = settings.LOGIN_URL
 
     except:

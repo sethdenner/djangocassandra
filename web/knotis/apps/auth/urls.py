@@ -39,7 +39,7 @@ urlpatterns = patterns(
         'validate',
     ),
     url(
-        r'^auth/forgotpassword/$',
+        r'^forgotpassword/$',
         'password_forgot',
     ),
     url(

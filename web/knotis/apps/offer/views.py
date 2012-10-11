@@ -12,7 +12,7 @@ from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
     HttpResponseNotFound,
-    HttpResponseServerError
+    HttpResponseServerError,
 )
 from django.forms import (
     ModelForm,
@@ -21,6 +21,7 @@ from django.forms import (
     DateTimeField,
     ValidationError
 )
+from django.utils.http import urlquote
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
@@ -269,12 +270,31 @@ def offers(
                 None
             )
             request.session.pop(
+                'city_truncated',
+                None
+            )
+            request.session.pop(
                 'neighborhood',
+                None
+            )
+            request.session.pop(
+                'neighborhood_truncated',
                 None
             )
 
         else:
             request.session['city'] = city
+
+            if len(city) > 14:
+                city_truncated = city[:12]
+                ''.join([
+                    city.strip(),
+                    urlquote('...')
+                ])
+                request.session['city_truncated'] = city_truncated
+
+            else:
+                request.session['city_truncated'] = city
 
         neighborhood = request.GET.get('neighborhood')
         if neighborhood:
@@ -283,12 +303,34 @@ def offers(
                     'neighborhood',
                     None
                 )
+                request.session.pop(
+                    'neighborhood_truncated',
+                    None
+                )
 
             else:
                 request.session['neighborhood'] = neighborhood
+
+                if len(neighborhood) > 14:
+                    neighborhood_truncated = neighborhood[:12]
+                    ''.join([
+                        city.strip(),
+                        urlquote('...')
+                    ])
+                    request.session['neighborhood_truncated'] = (
+                        neighborhood_truncated
+                    )
+
+                else:
+                    request.session['neighborhood_truncated'] = neighborhood
+
         else:
             request.session.pop(
                 'neighborhood',
+                None
+            )
+            request.session.pop(
+                'neighborhood_truncated',
                 None
             )
 
@@ -493,7 +535,7 @@ def print_unredeemed(request):
 
 @login_required
 def edit(
-    request, 
+    request,
     offer_id=None,
     rerun=False
 ):
@@ -521,7 +563,7 @@ def edit(
         if form.is_valid():
             try:
                 form.save_offer(
-                    request, 
+                    request,
                     offer,
                     rerun
                 )
@@ -548,11 +590,11 @@ def edit(
 
     else:
         form = OfferForm(instance=offer)
-        
+
     template_parameters = get_standard_template_parameters(request)
 
     if rerun:
-        template_parameters['rerun'] = True 
+        template_parameters['rerun'] = True
 
     template_parameters['cities'] = cities = City.objects.all()
     template_parameters['cities'] = cities

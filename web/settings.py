@@ -5,8 +5,6 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 SERVICE_NAME = 'Knotis'
 
-PRICE_MERCHANT_MONTHLY = 14.
-
 BUSINESS_NAME_BLACKLIST = (
     'facebook',
     'login',
@@ -131,7 +129,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'knotis.apps.mobile.middleware.MobileDetectionMiddleware'                
+    'knotis.apps.mobile.middleware.MobileDetectionMiddleware'
 )
 
 ROOT_URLCONF = 'urls'
