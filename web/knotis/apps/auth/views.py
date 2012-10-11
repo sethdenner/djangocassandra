@@ -34,6 +34,8 @@ from django.http import (
 )
 from django.utils.html import strip_tags
 from django.utils.http import urlquote
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
 from django.template import Context
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse
@@ -584,10 +586,15 @@ def validate(
         if Endpoint.objects.validate_endpoints(
             validation_key,
             user
-        ) and UserProfile.objects.activate_profile(user):
+        ):
+            user_profile = UserProfile.objects.get(user=user)
+            if AccountStatus.NEW == user_profile.account_status:
+                user_profile.activate()
+                            
             redirect_url = settings.LOGIN_URL
+
     except:
-        pass
+        logger.exception('exception while validating endpoint')
 
     return redirect(redirect_url)
 

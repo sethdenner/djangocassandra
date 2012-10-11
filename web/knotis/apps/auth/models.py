@@ -34,12 +34,16 @@ class AccountTypes:
 
 
 class AccountStatus:
-    DISABLED = 0
+    NEW = 0
     ACTIVE = 1
+    DISABLED = 2
+    BANNED = 3
 
     CHOICES = (
+        (NEW, 'New'),
+        (ACTIVE, 'Active'),
         (DISABLED, 'Disabled'),
-        (ACTIVE, 'Active')
+        (BANNED, 'Banned')
     )
 
 
@@ -166,8 +170,7 @@ class UserProfileManager(Manager):
         user
     ):
         user_profile = self.get(pk=user)
-        user_profile.account_status = AccountStatus.ACTIVE
-        user_profile.save()
+        user_profile.activate()
 
 
 class UserProfile(KnotisModel):
@@ -182,7 +185,7 @@ class UserProfile(KnotisModel):
     account_status = IntegerField(
         null=True,
         choices=AccountStatus.CHOICES,
-        default=AccountStatus.DISABLED
+        default=AccountStatus.NEW
     )
 
     notify_announcements = NullBooleanField(blank=True, default=False)
@@ -222,6 +225,10 @@ class UserProfile(KnotisModel):
 
     def is_business_owner(self):
         return self.account_type != AccountTypes.USER
+    
+    def activate(self):
+        self.account_status = AccountStatus.ACTIVE
+        self.save()
 
     def update(
         self,
