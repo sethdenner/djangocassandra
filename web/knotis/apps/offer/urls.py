@@ -26,6 +26,17 @@ urlpatterns = patterns(
     ),
     url(
         r''.join([
+            's/rerun/(?P<offer_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        'edit', {
+            'rerun': True
+        }
+    ),
+
+    url(
+        r''.join([
             'buy/(?P<offer_id>',
             REGEX_UUID,
             ')/$'

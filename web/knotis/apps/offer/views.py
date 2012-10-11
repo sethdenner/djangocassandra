@@ -180,21 +180,24 @@ class OfferForm(ModelForm):
     def save_offer(
         self,
         request,
-        offer=None
+        offer=None,
+        rerun=False
     ):
         business = Business.objects.get(user=request.user)
 
-        published = offer.published if offer else False
+        published = offer.published if not rerun and offer else False
         published = published or 'publish' in request.POST
 
         if published and not self.cleaned_data.get('image_source'):
-            if offer:
+            if not rerun and offer:
                 try:
                     offer_images = Image.objects.filter(
                         related_object_id=offer.id
                     )
+
                 except:
                     offer_images = None
+
             else:
                 offer_images = None
 
@@ -203,7 +206,7 @@ class OfferForm(ModelForm):
                     'Offer image is required before publishing.'
                 )
 
-        if offer:
+        if not rerun and offer:
             offer.update(
                 self.cleaned_data['title_value'],
                 self.cleaned_data['title_type'],
@@ -489,7 +492,11 @@ def print_unredeemed(request):
 
 
 @login_required
-def edit(request, offer_id=None):
+def edit(
+    request, 
+    offer_id=None,
+    rerun=False
+):
     try:
         Business.objects.get(user=request.user)
 
@@ -513,7 +520,11 @@ def edit(request, offer_id=None):
 
         if form.is_valid():
             try:
-                form.save_offer(request, offer)
+                form.save_offer(
+                    request, 
+                    offer,
+                    rerun
+                )
                 return redirect('/offers/dashboard/')
 
             except ValueError, e:
@@ -537,8 +548,11 @@ def edit(request, offer_id=None):
 
     else:
         form = OfferForm(instance=offer)
-
+        
     template_parameters = get_standard_template_parameters(request)
+
+    if rerun:
+        template_parameters['rerun'] = True 
 
     template_parameters['cities'] = cities = City.objects.all()
     template_parameters['cities'] = cities

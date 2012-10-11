@@ -12,15 +12,15 @@
     <div class="box-offers box-border left">
         <!--PAGE TITLE-->
         <h2 class="backend">
-            <strong>{% if offer %}Edit Offer{% else %}New Offer{% endif %}</strong> 
-            {% if offer and offer.published %}
+            <strong>{% if rerun %}Rerun Offer{% else %}{% if offer %}Edit Offer{% else %}New Offer{% endif %}{% endif %}</strong> 
+            {% if not rerun and offer and offer.published %}
             <a href="/offer/{{ offer.id }}" target="_blank">View Offer</a>
             {% endif %}
         </h2>
         <!--Show Notification div is any info exists to show-->
         {% include 'feedback.html' with feedback=feedback %}
         <!--Show option to share offer if offer already exists -->
-        {% if offer and offer.published %}
+        {% if not rerun and offer and offer.published %}
         <ul class="social offer-helper clear-fix margin-general">
                 <li class="offer-social-helper">Ready to promote this offer? Select Facebook, Twitter or Email to share this offer now.</li>
                 <li>
@@ -59,7 +59,7 @@
                          <!--PRICE-->
                         <li class="seat-offer-column">
                             <label>Discount Price<div id="ht-23" class="help-icon vertical-align-super" ></div></label>
-                            <input {% if offer.purchased > 0 %}disabled{% endif %} class="radius-general first" id="price_offer_input" 
+                            <input {% if not rerun and offer.purchased > 0 %}disabled{% endif %} class="radius-general first" id="price_offer_input" 
                                 value="{% firstof offer_form.price_discount.value '' %}" type="text" name="{{ offer_form.price_discount.html_name }}" placeholder="0.00"/>
                         </li>
                        <!--DISCOUNT-->
@@ -76,7 +76,7 @@
                         <!--UNITS-->
                         <li class="seat-offer-column">
                             <label># Units<div id="ht-25" class="help-icon vertical-align-super" ></div></label>
-                            <input class="radius-general" name="{{ offer_form.stock.html_name }}" id="stock" value="{% firstof offer_form.stock.value %}" placeholder="Units" type="text"/>
+                            <input class="radius-general" name="{{ offer_form.stock.html_name }}" id="stock" value="{% firstof offer_form.stock.value %}" placeholder="{% if offer.unlimited %}Unlimited{% else %}Units{% endif %}" type="text"/>
                         </li>
                         <li class="seat-offer-column" style="width:50px">
                             <label style="text-align:center">OR</label>
@@ -93,11 +93,11 @@
                 <li class="clear-fix">
                     <label class="left-side txt-size">Title<div id="ht-27" class="help-icon float-right vertical-align-bottom" ></div></label>
                     <div class="title-set">
-                        <input {% if offer.purchased > 0 %}disabled{% endif %} class="radius-general card" value="{% firstof offer_form.title_value.value '' %}" placeholder="Offer Title" type="text" name="{{ offer_form.title_value.html_name }}" id="title_offer_input"/>
+                        <input {% if not rerun and offer.purchased > 0 %}disabled{% endif %} class="radius-general card" value="{% firstof offer_form.title_value.value '' %}" placeholder="Offer Title" type="text" name="{{ offer_form.title_value.html_name }}" id="title_offer_input"/>
                         <p class="generated-titles">Create your offer title above (or try one of the titles below)</p>
                         <!-- First Title Suggestion-->
                         <div class="seat-offer-02 clear-fix margin-general">
-                            <input {% if offer.purchased > 0 %}disabled{% endif %} class="radius-general" value="1" placeholder="Title" {% if not offer or offer_form.title_type.value == 1 %}checked{% endif %} type="radio" name="{{ offer_form.title_type.html_name }}">
+                            <input {% if not rerun and offer.purchased > 0 %}disabled{% endif %} class="radius-general" value="1" placeholder="Title" {% if not offer or offer_form.title_type.value == 1 %}checked{% endif %} type="radio" name="{{ offer_form.title_type.html_name }}">
                             <p id="price_offer_radio" class="left label-new price_offer_radio">{% if offer %}{{ offer_form.price_discount.value }}{% else %}$20{% endif %}</p>
                             <p class="left label-new price_offer_radio">for</p>
                             <p id="old_offer_radio" class="left label-new">{% if offer %}{{ offer_form.price_retail.value }}{% else %}$40{% endif %}</p>
@@ -106,7 +106,7 @@
                         </div>
                         <!--Second Title Suggestion-->
                         <div class="seat-offer-02 clear-fix margin-general">
-                            <input {% if offer.purchased > 0 %}disabled{% endif %} class="radius-general" {% if offer_form.title_type.value == 2 %}checked{% endif %} value="2" placeholder="Title" type="radio" name="{{ offer_form.title_type.html_name }}">
+                            <input {% if not rerun and offer.purchased > 0 %}disabled{% endif %} class="radius-general" {% if offer_form.title_type.value == 2 %}checked{% endif %} value="2" placeholder="Title" type="radio" name="{{ offer_form.title_type.html_name }}">
                             <p id="price_offer_radio2" class="left label-new price_offer_radio">{% firstof offer_form.price_discount.value '$20' %}</p>
                             <p class="left label-new price_offer_radio">for</p>
                             <p id="title_offer_radio2" class="left label-new">{% if offer %}{{ offer_form.title_value.value }}{% else %}Food and Drinks{% endif %}</p>
@@ -114,7 +114,7 @@
                         </div>
                         <!--Third Title Suggestion-->
                         <div class="seat-offer-02 clear-fix margin-general">
-                            <input id="title_offer_radio3_input" {% if offer.purchased > 0 %}disabled{% endif %}  class="radius-general" {% if offer_form.title_type.value == 3 %}checked{% endif %} value="3" placeholder="Title" type="radio" name="{{ offer_form.title_type.html_name }}">
+                            <input id="title_offer_radio3_input" {% if not rerun and offer.purchased > 0 %}disabled{% endif %}  class="radius-general" {% if offer_form.title_type.value == 3 %}checked{% endif %} value="3" placeholder="Title" type="radio" name="{{ offer_form.title_type.html_name }}">
                             <p id="title_offer_radio3" class="left label-new">{% if offer %}{{ offer_form.title_value.value }}{% else %}Food and Drinks{% endif %}</p>
                         </div>
                     </div>
@@ -123,8 +123,8 @@
                 <li class="left title-set">
                     <label>
                         <span class="txt-size">Start Date<div id="ht-28" class="help-icon float-right vertical-align-bottom" ></div></span>
-                        <input {% if offer.purchased > 0 %}disabled{% endif %} class="date radius-general left"
-                            value="{% firstof offer_form.start_date.value|date:'m/d/Y i:s' '' %}"
+                        <input {% if not rerun and offer.purchased > 0 %}disabled{% endif %} class="date radius-general left"
+                            {% if not rerun %}value="{% firstof offer_form.start_date.value|date:'m/d/Y i:s' '' %}"{% endif %}
                             type="text" name="{{ offer_form.start_date.html_name }}" placeholder="Start Date"
                             id="startdate">
                     </label>
@@ -133,8 +133,8 @@
                 <li class="left">
                     <label>
                         <span class="txt-size">End Date<div id="ht-29" class="help-icon float-right vertical-align-bottom" ></div></span>
-                        <input {% if offer.purchased > 0 %}disabled{% endif %} class="date radius-general"
-                            value="{% firstof offer_form.end_date.value|date:'m/d/Y i:s' '' %}"
+                        <input {% if not rerun and offer.purchased > 0 %}disabled{% endif %} class="date radius-general"
+                            {% if not rerun %}value="{% firstof offer_form.end_date.value|date:'m/d/Y i:s' '' %}"{% endif %}
                             type="text" name="{{ offer_form.end_date.html_name }}" placeholder="Finish Date"
                             id="enddate">
                     </label>
@@ -172,8 +172,7 @@
                         </p>
                     </div>
                     <ul>
-                        <input type="hidden" name="image" value="{{ offer.image }}"/>
-                        {% if offer.image %}
+                        {% if not rerun and offer.image %}
                         <ul class="link-name images-gallery">
                             <ul class="link-name clear-fix radius-general">
                                 <li class=" radius-general active clear-fix">
@@ -268,10 +267,10 @@
             <ul class="pass-user">  
                 <li class="margin-general">
                         <input class="button radius-general" type="submit" value="Save Offer" name="update"/>
-                        {% if not offer.published %}
+                        {% if rerun or not offer.published %}
                         <input style="margin-left:5px" class="button radius-general" type="submit" value="Publish" name="publish"/>
                         {% endif %}
-                        {% if offer.purchased == 0 %}
+                        {% if not rerun and offer.purchased == 0 %}
                         <input class="button radius-general right" type="submit" value="Delete" name="delete"/>
                         {% endif %}
                 </li>
