@@ -202,7 +202,7 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
             'filename': '/var/log/knotis/web.log',
-            'maxBytes': 1024,
+            'maxBytes': 1048576,
             'backupCount': 10
         }
     },
