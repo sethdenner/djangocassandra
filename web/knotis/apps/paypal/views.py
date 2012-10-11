@@ -71,7 +71,7 @@ def is_ipn_valid(post):
 
     validation_request = urllib2.Request(
         uri,
-        data,
+        urlencode(data),
         headers
     )
 
@@ -138,7 +138,9 @@ def ipn_callback(request):
 
     logger.debug('ipn is valid')
     transaction_context = request.POST.get('custom')
+    ammount3 = request.POST.get('ammount3')
     mc_gross = request.POST.get('mc_gross')
+    item_name = request.POST.get('item_name')
     item_name1 = request.POST.get('item_name1')
     item_number1 = request.POST.get('item_number1')
     quantity1 = request.POST.get('quantity1')
@@ -174,13 +176,14 @@ def ipn_callback(request):
                     pending_transaction.transaction_context,
                 )
             )
+            value = mc_gross if mc_gross else ammount3
             transaction = Transaction.objects.create_transaction(
                 pending_transaction.user,
                 TransactionTypes.PURCHASE,
                 pending_transaction.business,
                 pending_transaction.offer,
                 int(quantity1) if quantity1 else None,
-                mc_gross,
+                value,
                 pending_transaction.transaction_context
             )
 
@@ -191,7 +194,8 @@ def ipn_callback(request):
         logger.exception('failed to create transaction')
         transaction = None
 
-    if item_name1 == 'Business Monthly Subscription':
+    if item_name1.lower() == 'business monthly subscription' or \
+        item_name.lower() == 'knotis premium':
         logger.debug('paid business subscription purchase')
         try:
             logger.debug('getting user with id %s' % (user_id,))
@@ -229,7 +233,6 @@ def ipn_callback(request):
             logger.debug('email sent to %s' % (
                 transaction.user.username
             ))
-
 
         except:
             logger.exception('failed to purchase offer.')
