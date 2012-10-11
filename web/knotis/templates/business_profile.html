@@ -87,7 +87,7 @@
                 <div class="slider-business box-shadow clear-fix" id="rotator">
                     <div class="image-slider" id="msgs">
                         {% for business_image in business_images %}
-                        {% thumbnail business_image.image '460x219' crop='top' as image %}
+                        {% thumbnail business_image.image '460x260' crop='top' as image %}
                         <img src="{{ image.url }}" {% if forloop.counter0 %}style="display:none;"{% else %}class="active"{% endif %} />
                         {% endthumbnail %}
                         {% endfor %}
