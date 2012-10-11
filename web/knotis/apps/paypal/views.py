@@ -150,9 +150,9 @@ def ipn_callback(request):
     logger.debug('ipn is valid')
     transaction_context = request.POST.get('custom')
     auth_amount = request.POST.get('auth_amount')
-    item_name_1 = request.POST.get('item_name_1')
-    item_number_1 = request.POST.get('item_number_1')
-    quantity = request.POST.get('quantity_1')
+    item_name_1 = request.POST.get('item_name1')
+    item_number_1 = request.POST.get('item_number1')
+    quantity = request.POST.get('quantity1')
     context_parts = transaction_context.split('|')
     user_id = context_parts[0]
 
