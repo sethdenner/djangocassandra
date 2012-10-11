@@ -116,7 +116,7 @@ class TransactionManager(Manager):
             purchase_values,
             key=lambda (date, value): week(date)
         ):
-            if key < 0:
+            if key < 1:
                 continue
 
             index = key - 1

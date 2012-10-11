@@ -126,8 +126,6 @@
 </div>
 <script type="text/javascript" >
 	$(function(){
-	  $('#print-offers').help
-	  
 	  var sortOffers = function($offers, index) {
 	      var $rows = $('.offer-div',$offers);
 	      $rows.sort(function(a, b){
@@ -135,18 +133,27 @@
 	          var keyB = $.trim($('ul li:eq(' + index + ')',b).remove('strong').text().toLowerCase());
 	          if (keyA === keyB) { return 0; }
 	          return (keyA > keyB) ? 1 : -1;
+
 	      });
 	      $.each($rows, function(index, row){
 	        $offers.append(row);
+
 	      });
-	  }
+
+	  };
+
 	  var $offers = $('.offers-div').remove('.not-offers');
-	  sortOffers($offers, 0);
-	  
-	  $('#sortby').change(function(event) {
-	  	event.preventDefault();
-	  	sortOffers($offers, $(this).val());
+	  $offers.each(function(){
+	      $this = $(this);
+          sortOffers($(this), 0);
+          $this.find('#sortby').change(function(event) {
+    	      event.preventDefault();
+    	  	  sortOffers($this, $(this).val());
+
+    	  });
+    	  
 	  });
+	  
 	});
 </script>
 {% endblock content%}
