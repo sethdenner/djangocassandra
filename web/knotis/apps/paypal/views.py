@@ -137,6 +137,7 @@ def ipn_callback(request):
         return HttpResponse('OK')
 
     logger.debug('ipn is valid')
+    txn_type = request.POST.get('txn_type')
     transaction_context = request.POST.get('custom')
     ammount3 = request.POST.get('ammount3')
     mc_gross = request.POST.get('mc_gross')
@@ -176,16 +177,22 @@ def ipn_callback(request):
                     pending_transaction.transaction_context,
                 )
             )
-            value = mc_gross if mc_gross else ammount3
-            transaction = Transaction.objects.create_transaction(
-                pending_transaction.user,
-                TransactionTypes.PURCHASE,
-                pending_transaction.business,
-                pending_transaction.offer,
-                int(quantity1) if quantity1 else None,
-                value,
-                pending_transaction.transaction_context
-            )
+
+            if txn_type == 'subscr_cancel':
+                pending_transaction.transaction_type = TransactionTypes.CANCEL
+                pending_transaction.save()
+
+            else:
+                value = mc_gross if mc_gross else ammount3
+                transaction = Transaction.objects.create_transaction(
+                    pending_transaction.user,
+                    TransactionTypes.PURCHASE,
+                    pending_transaction.business,
+                    pending_transaction.offer,
+                    int(quantity1) if quantity1 else None,
+                    value,
+                    pending_transaction.transaction_context
+                )
 
         else:
             transaction = None
