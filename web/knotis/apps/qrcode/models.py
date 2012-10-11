@@ -107,14 +107,14 @@ class ScanManager(Manager):
         weekly_scans = []
         week_count = 0
         while week_count < 7:
-            weekly_scans.append(0.)
+            weekly_scans.append(0)
             week_count = week_count + 1
 
         for key, group in itertools.groupby(
             scan_values,
             key=lambda (date, value): week(date)
         ):
-            if key < 0:
+            if key < 1:
                 continue
 
             index = key - 1
