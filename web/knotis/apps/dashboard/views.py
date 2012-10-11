@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
 
 from knotis.utils.view import get_standard_template_parameters
 from knotis.apps.business.models import Business
@@ -87,7 +89,7 @@ def dashboard(request):
         )).replace('.00', '')
 
     except:
-        pass
+        logger.exception('failed rendering transaction data')
 
     template_parameters['graphics'] = True
     template_parameters['highchart'] = render_monthly_revenue_chart(business)

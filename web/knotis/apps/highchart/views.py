@@ -9,6 +9,8 @@ from django.http import (
     HttpResponseBadRequest
 )
 from django.contrib.auth.decorators import login_required
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
 
 from knotis.utils.time import add_months
 from knotis.apps.transaction.models import Transaction
@@ -111,6 +113,7 @@ def render_monthly_revenue_chart(
         data = Transaction.objects.get_monthly_revenue(business)
 
     except:
+        logger.exception('exception while getting monthly revenue data')
         data = None
 
     categories = []

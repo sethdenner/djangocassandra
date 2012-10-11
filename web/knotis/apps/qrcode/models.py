@@ -8,7 +8,6 @@ from django.db.models import (
     DateTimeField,
     Manager
 )
-from django.shortcuts import redirect
 
 from knotis.apps.core.models import KnotisModel
 from knotis.apps.business.models import Business
