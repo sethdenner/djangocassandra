@@ -48,25 +48,17 @@ def is_ipn_valid(post):
     
     data = post.copy()
     data['cmd'] = '_notify-validate'
-    charset = post.get('charset')
-    if charset:
-        data = dict(
-            [(k, v.encode(charset)) for k, v in post.items()]
-        )
-    parameters = urlencode(data)
-    
+
     parameters_formatted = '\n'.join([
-        '   key=%s, value=%s' % (k, v,) for k, v in post.items()
+        '   key=%s, value=%s' % (k, v,) for k, v in data.items()
     ])
     logger.debug('\n'.join([
         'request parameters:',
         parameters_formatted
     ]))
 
-
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': len(parameters)
     }
 
     if post.get('test_ipn') == '1':
@@ -79,7 +71,7 @@ def is_ipn_valid(post):
 
     validation_request = urllib2.Request(
         uri,
-        parameters,
+        data,
         headers
     )
 
