@@ -1080,34 +1080,50 @@ $(function() {
         intervalgallery = setInterval("showImg()", 5000);
     });
 
+    var get_query_parameter = function(key) {
+        key = key.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+        var regexS = "[\\?&]"+key+"=([^&#]*)";
+        var regex = new RegExp( regexS );
+        var results = regex.exec( window.location.href );
+        if( results == null )
+            return "";
+        else
+            return results[1];        
+    };
 
     // For the login form
     $('#login').live('submit', function() {
+        next_url = get_query_parameter('next');
+        data = [
+            $(this).serialize(),
+            '&next=',
+            next_url
+        ].join('');
         $.ajax({
             type: 'POST',
             url: $(this).attr('action'),
             dataType: "json",
-            data: $(this).serialize(),
+            data: data,
             success: function(data) {
 
                 if (data.success == 'yes') {
                     if (data.redirect == 1) {
                         window.location = '/';
-                    }
 
-                    if (data.redirect == 5) {
+                    } else if (data.redirect == 5) {
                         window.location = server + "home";
-                    }
 
-                    if (data.redirect == 2) {
+                    } else if (data.redirect == 2) {
                         window.location = server + "backend/dashboard";
 
-                    }
-
-                    if (data.redirect == 4) {
+                    } else if (data.redirect == 4) {
                         window.location = server + "backend/premiumOffers";
 
+                    } else {
+                        window.location = data.redirect;
+                        
                     }
+                
                 }
 
                 if (data.success == 'no') {

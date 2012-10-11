@@ -381,10 +381,12 @@ def login(request):
             request,
             user
         )
+        
+        next_url = request.POST.get('next')
 
         return generate_response({
             'success': 'yes',
-            'redirect': 1
+            'redirect': next_url if next_url else 1
         })
 
     else:
