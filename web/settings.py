@@ -144,6 +144,7 @@ TEMPLATE_DIRS = (
 
 AUTHENTICATION_BACKENDS = (
     'permission_backend_nonrel.backends.NonrelPermissionBackend',
+    'knotis.apps.auth.authentication.backends.EndpointValidationAuthenticationBackend',
     'knotis.apps.legacy.authentication.backends.LegacyAuthenticationBackend',
     'knotis.apps.legacy.authentication.backends.HamburgertimeAuthenticationBackend'
 )
