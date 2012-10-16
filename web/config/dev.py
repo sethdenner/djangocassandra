@@ -12,6 +12,7 @@ DATABASES = {
     }
 }
 
+EMAIL_BILLING_USER = 'knotis.dev+billing@gmail.com'
 EMAIL_HOST_USER = 'knotis.dev@gmail.com'
 EMAIL_HOST_PASSWORD = 'wheeling and dealing'
 
