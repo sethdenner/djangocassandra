@@ -7,6 +7,8 @@ SERVICE_NAME = 'Knotis'
 
 PRICE_MERCHANT_MONTHLY = 14.
 
+EMAIL_COMPLETED_OFFERS_INTERVAL_DAYS = 7
+
 BUSINESS_NAME_BLACKLIST = (
     'facebook',
     'login',
@@ -131,7 +133,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'knotis.apps.mobile.middleware.MobileDetectionMiddleware'                
+    'knotis.apps.mobile.middleware.MobileDetectionMiddleware'
 )
 
 ROOT_URLCONF = 'urls'
@@ -144,6 +146,7 @@ TEMPLATE_DIRS = (
 
 AUTHENTICATION_BACKENDS = (
     'permission_backend_nonrel.backends.NonrelPermissionBackend',
+    'knotis.apps.auth.authentication.backends.EndpointValidationAuthenticationBackend',
     'knotis.apps.legacy.authentication.backends.LegacyAuthenticationBackend',
     'knotis.apps.legacy.authentication.backends.HamburgertimeAuthenticationBackend'
 )

@@ -17,7 +17,7 @@
                     </li>
                 </ul>
                 {% if user_profile.account_type != AccountTypes.BUSINESS_MONTHLY %}
-                <form action="{{ PAYPAL_URL }}" method="post">
+                <form action="{{ settings.PAYPAL_URL }}" method="post">
                     <fieldset>
                         <h3 class="margin-general"><strong>Change Service</strong></h3>
                         <ul class="pass-user">
@@ -31,17 +31,10 @@
                             </li>
                             <div class="clean"></div>
                             <li class="clear-fix">
-                                <input class="button radius-general" type="submit" name="saverol"
-                                       value="Buy Subcription">
+                                {{ paypal_button }}
                             </li>
                         </ul>
                     </fieldset>
-                    <input type='hidden' name='cmd' value='_s-xclick' />
-                    <input type='hidden' name='hosted_button_id' value='RGN2J9C8A4MY4' />
-                    <input name="return" type="hidden" value="{{ BASE_URL }}/business/tickets/" />
-                    <input name='notify_url' type='hidden' value='{{ BASE_URL }}/business/subscriptions/buy/' />
-                    <input name='item_name_1' type='hidden' value='subcription'>
-                    <input type='hidden' name='custom' value='{{ user.id }}'/>
                 </form>
                 {% endif %}
             </div>

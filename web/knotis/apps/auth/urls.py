@@ -39,15 +39,15 @@ urlpatterns = patterns(
         'validate',
     ),
     url(
-        r'^auth/forgotpassword/$',
+        r'^forgotpassword/$',
         'password_forgot',
     ),
     url(
-        r'^auth/passwordreset/(?P<validation_key>[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/$',
+        r'^passwordreset/(?P<validation_key>[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/$',
         'password_reset',
     ),
     url(
-        r'^auth/passwordreset/$',
+        r'^passwordreset/$',
         'password_reset',
     ),
     url(

@@ -13,13 +13,13 @@
                 <div class="content-popup-list radius-general content-popup-header">
                     <div class="arrow-popup"></div>
                     <div class="content-popup-inset-list radius-general">
-                        <h3 class="txt-center margin-general"><strong>{{ header_browse }}</strong></h3>
+                        <h3 class="txt-center margin-general"><strong>{{ header_browse|title }}</strong></h3>
                         <p class="txt-size margin-general">
                             {{ header_launch }}
                             <a href="/contact/" title="{{ header_add_city }}"> {{ header_add_city }}</a>
                         </p>
                         <div class="clear-fix">
-                            <h4 class="circle left"><strong>{{ header_all_offers }}</strong></h4>
+                            <h4 class="circle left"><strong>{{ header_all_offers|title }}</strong></h4>
                             <hr class="right">
                         </div>
                         <div class="clear-fix">
@@ -33,20 +33,20 @@
 	                    <div class="clear-fix">
 	                    	{% for c in cities %}
 							{% if c.active_offer_count %}
-	                        <h4 class="circle left"><strong>{{ c.name.value }}</strong></h4>
+	                        <h4 class="circle left"><strong>{{ c.name.value|title }}</strong></h4>
 	                        <hr class="right">
 	               		</div>
 	               		<div class="clear-fix">
 		                    <ul class="left first {margin-general">
 		                    	<li class="txt-size">
 		                    		<a class="all-cities gradient-gray radius-general" 
-		                    			href="/offers/?city={{ c.name_denormalized|lower }}">All of {{ c.name_denormalized }}</a>
+		                    			href="/offers/?city={{ c.name_denormalized|lower }}">All of {{ c.name_denormalized|title }}</a>
 		                    	</li>
 		                    	{% if neighborhoods %}
 		                    	{% for n in neighborhoods %}
 		                        {% if n.city.id == c.id and n.active_offer_count %}
 								<li class="txt-size">
-									<a href="/offers/?city={{ c.name_denormalized|lower }}&neighborhood={{ n.name.value|lower }}">{{ n.name.value }}</a>
+									<a href="/offers/?city={{ c.name_denormalized|lower }}&neighborhood={{ n.name.value|lower }}">{{ n.name.value|title }}</a>
 								</li>
 		                        {% endif %}
 		                    	{% endfor %}
@@ -65,9 +65,9 @@
                     <strong>
                     	{% if session.city %}
                     	{% if session.neighborhood %}
-                    	{{ session.neighborhood|capfirst }}
-                    	{% else%}
-                        {{ session.city|capfirst }}
+                    	{{ session.neighborhood_truncated|title }}
+                    	{% else %}
+                        {{ session.city_truncated|title }}
                     	{% endif %}
                     	{% else %}
                     	All Offers

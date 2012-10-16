@@ -20,7 +20,10 @@ from django.shortcuts import (
 from django.utils.http import urlquote
 from django.contrib.auth.decorators import login_required
 
-from knotis.utils.view import get_standard_template_parameters
+from knotis.utils.view import (
+    get_standard_template_parameters,
+    format_currency
+)
 from knotis.apps.business.models import (
     Business,
     BusinessLink,
@@ -43,6 +46,11 @@ from knotis.apps.qrcode.models import (
 )
 from knotis.apps.yelp.views import get_reviews_by_yelp_id
 from knotis.apps.twitter.views import get_twitter_feed_html
+from knotis.apps.paypal.views import (
+    render_paypal_button,
+    generate_ipn_hash
+)
+
 from knotis.apps.legacy.models import QrcodeIdMap
 
 
@@ -259,12 +267,33 @@ def edit_profile(request):
 def services(request):
     template_parameters = get_standard_template_parameters(request)
 
-    template_parameters['user_profile'] = UserProfile.objects.get(user=request.user)
+    template_parameters['user_profile'] = UserProfile.objects.get(
+        user=request.user
+    )
     template_parameters['AccountTypes'] = AccountTypes
-    template_parameters['subscription_price'] = ("%.2f" % round(
-            settings.PRICE_MERCHANT_MONTHLY,
-            2
-        )).replace('.00', '')
+    template_parameters['subscription_price'] = format_currency(
+        settings.PRICE_MERCHANT_MONTHLY
+    )
+
+    template_parameters['paypal_button'] = render_paypal_button({
+        'button_text': 'Buy Subscription',
+        'button_class': 'button radius-general',
+        'paypal_parameters': {
+            'cmd': '_s-xclick',
+            'hosted_button_id': settings.PAYPAL_PREMIUM_BUTTON_ID,
+            'notify_url': '/'.join([
+                settings.BASE_URL,
+                'paypal',
+                'ipn',
+                ''
+            ]),
+            'item_name_1': 'Business Monthly Subscription',
+            'custom': '|'.join([
+                request.user.id,
+                generate_ipn_hash(request.user.id)
+            ]),
+        }
+    })
 
     return render(
         request,

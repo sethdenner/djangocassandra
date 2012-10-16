@@ -4,11 +4,12 @@ DATABASES = {
         'NAME': 'knotis', # Or path to database file if using sqlite3.
         'USER': '', # Not used with sqlite3.
         'PASSWORD': '', # Not used with sqlite3.
-        'HOST': '', # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '', # Set to empty string for default. Not used with sqlite3.
+        'HOST': '74.121.189.162', # Set to empty string for localhost. Not used with sqlite3.                                                                           
+        'PORT': '5551', # Set to empty string for default. Not used with sqlite3.                                                                                       
     }
 }
 
+EMAIL_BILLING_USER = 'billing@knotis.com'
 EMAIL_HOST_USER = 'support@knotis.com'
 EMAIL_HOST_PASSWORD = 'p0tent1al!'
 
@@ -49,7 +50,9 @@ PAYPAL_NOTIFY_URL = ''.join([
     BASE_URL,
     '/paypal/ipn/'
 ])
-PAYPAL_HOSTED_BUTTON_ID = 'RGN2J9C8A4MY4'
+PAYPAL_PREMIUM_BUTTON_ID = 'RGN2J9C8A4MY4'
 PAYPAL_DEFAULT_BUTTON_TEXT = 'Finish in Paypal'
 PAYPAL_ITEM_SUBSCRIPTION = 'subscription'
 PAYPAL_TRANSACTION_PRICE = 0.45
+
+PRICE_MERCHANT_MONTHLY = 14.

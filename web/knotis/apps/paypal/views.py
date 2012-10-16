@@ -45,7 +45,7 @@ def is_ipn_valid(post):
         'validating ipn with post parameters:',
         post_formatted
     ]))
-    
+
     data = post.copy()
     data['cmd'] = '_notify-validate'
 
@@ -71,7 +71,7 @@ def is_ipn_valid(post):
 
     validation_request = urllib2.Request(
         uri,
-        data,
+        urlencode(data),
         headers
     )
 
@@ -103,8 +103,8 @@ def is_ipn_valid(post):
         return False
 
     custom_validation = custom_validation.split('|')
-    if 3 != len(custom_validation):
-        logger.debug('wrong number of verification parameters')
+    if 2 > len(custom_validation):
+        logger.debug('not enough verification parameters')
         return False
 
     ipn_hash = generate_ipn_hash(custom_validation[0])
@@ -118,9 +118,6 @@ def is_ipn_valid(post):
 
 @csrf_exempt
 def paypal_return(request):
-    if request.method.lower() != 'post':
-        return HttpResponseNotAllowed('POST')
-
     next_url = request.GET.get('next')
     url = next_url if next_url else '/offers/dashboard/'
 
@@ -130,7 +127,7 @@ def paypal_return(request):
 @csrf_exempt
 def ipn_callback(request):
     logger.debug('ipn request recieved')
-    
+
     if request.method.lower() != 'post':
         logger.debug('method must be post')
         return HttpResponseNotAllowed('POST')
@@ -140,8 +137,11 @@ def ipn_callback(request):
         return HttpResponse('OK')
 
     logger.debug('ipn is valid')
+    txn_type = request.POST.get('txn_type')
     transaction_context = request.POST.get('custom')
+    ammount3 = request.POST.get('ammount3')
     mc_gross = request.POST.get('mc_gross')
+    item_name = request.POST.get('item_name')
     item_name1 = request.POST.get('item_name1')
     item_number1 = request.POST.get('item_number1')
     quantity1 = request.POST.get('quantity1')
@@ -177,24 +177,32 @@ def ipn_callback(request):
                     pending_transaction.transaction_context,
                 )
             )
-            transaction = Transaction.objects.create_transaction(
-                pending_transaction.user,
-                TransactionTypes.PURCHASE,
-                pending_transaction.business,
-                pending_transaction.offer,
-                int(quantity1) if quantity1 else None,
-                mc_gross,
-                pending_transaction.transaction_context
-            )
-            
+
+            if txn_type == 'subscr_cancel':
+                pending_transaction.transaction_type = TransactionTypes.CANCEL
+                pending_transaction.save()
+
+            else:
+                value = mc_gross if mc_gross else ammount3
+                transaction = Transaction.objects.create_transaction(
+                    pending_transaction.user,
+                    TransactionTypes.PURCHASE,
+                    pending_transaction.business,
+                    pending_transaction.offer,
+                    int(quantity1) if quantity1 else None,
+                    value,
+                    pending_transaction.transaction_context
+                )
+
         else:
             transaction = None
-        
+
     except:
         logger.exception('failed to create transaction')
         transaction = None
 
-    if item_name1 == 'Business Monthly Subscription':
+    if (item_name1 and item_name1.lower() == 'business monthly subscription') or \
+        (item_name and item_name.lower() == 'knotis premium'):
         logger.debug('paid business subscription purchase')
         try:
             logger.debug('getting user with id %s' % (user_id,))
@@ -218,7 +226,7 @@ def ipn_callback(request):
             Offer.objects.get(pk=item_number1).purchase()
             logger.debug('offer purchased')
 
-            logger.debug('sending offer purchase email')            
+            logger.debug('sending offer purchase email')
             generate_email(
                 'offer_purchase',
                 transaction.offer.title_formatted(),
@@ -232,7 +240,6 @@ def ipn_callback(request):
             logger.debug('email sent to %s' % (
                 transaction.user.username
             ))
-
 
         except:
             logger.exception('failed to purchase offer.')

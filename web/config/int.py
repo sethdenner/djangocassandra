@@ -12,6 +12,7 @@ DATABASES = {
     }
 }
 
+EMAIL_BILLING_USER = 'knotis.int+billing@gmail.com'
 EMAIL_HOST_USER = 'knotis.int@gmail.com'
 EMAIL_HOST_PASSWORD = 'wheeling and dealing'
 
@@ -52,8 +53,9 @@ PAYPAL_NOTIFY_URL = ''.join([
     BASE_URL,
     '/paypal/ipn/'
 ])
-PAYPAL_OFFER_BUTTON_ID = 'DCV66T4VPMMXU'
 PAYPAL_PREMIUM_BUTTON_ID = 'YNYHC3S6TYB7W'
 PAYPAL_DEFAULT_BUTTON_TEXT = 'Finish in Paypal'
 PAYPAL_ITEM_SUBSCRIPTION = 'subscription'
 PAYPAL_TRANSACTION_PRICE = 0.45
+
+PRICE_MERCHANT_MONTHLY = 14.
