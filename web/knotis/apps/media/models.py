@@ -1,4 +1,8 @@
-from django.db.models import CharField, Manager
+from django.db.models import (
+    CharField, 
+    IntegerField,
+    Manager
+)
 from django.contrib.auth.models import User
 from sorl.thumbnail import ImageField
 
@@ -51,6 +55,36 @@ class Image(KnotisModel):
         default=None,
         null=True,
         blank=True
+    )
+    crop_left = IntegerField(
+        null=True,
+        blank=True,
+        default=None
+    )
+    crop_top = IntegerField(
+        null=True,
+        blank=True,
+        default=None
+    )
+    crop_right = IntegerField(
+        null=True,
+        blank=True,
+        default=None
+    )
+    crop_bottom = IntegerField(
+        null=True,
+        blank=True,
+        default=None
+    )
+    crop_width = IntegerField(
+        null=True,
+        blank=True,
+        default=None
+    )
+    crop_height = IntegerField(
+        null=True,
+        blank=True,
+        default=None
     )
 
     def update(
