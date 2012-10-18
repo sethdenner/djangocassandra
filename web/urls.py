@@ -10,6 +10,10 @@ urlpatterns = patterns(
     '',
     url(
         r'',
+        include('knotis.apps.media.urls')
+    ),
+    url(
+        r'',
         include('knotis.apps.auth.urls')
     ),
     url(
@@ -55,10 +59,6 @@ urlpatterns = patterns(
     url(
         r'^qrcode/',
         include('knotis.apps.qrcode.urls')
-    ),
-    url(
-        r'^media/',
-        include('knotis.apps.media.urls')
     ),
     url(
         r'^category/',
