@@ -209,7 +209,7 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'dev'
+ENVIRONMENT_NAME = 'prod'
 
 # You can key the configurations off of anything - I use project path.
 configs = {
