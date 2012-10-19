@@ -66,7 +66,8 @@ def render_daily_revenue_chart(
             'categories': categories,
             'chart_title': 'Sold',
             'y_axis_title': 'Dollars',
-            'series_title': 'Total Sold'
+            'series_title': 'Total Sold',
+            'tooltip_text': 'Dollars'
         },
         request
     )
@@ -99,7 +100,8 @@ def render_weekly_revenue_chart(
             'categories': categories,
             'chart_title': 'Sold',
             'y_axis_title': 'Dollars',
-            'series_title': 'Total Sold'
+            'series_title': 'Total Sold',
+            'tooltip_text': 'Dollars'
         },
         request
     )
@@ -134,7 +136,8 @@ def render_monthly_revenue_chart(
             'categories': categories,
             'chart_title': 'Sold',
             'y_axis_title': 'Dollars',
-            'series_title': 'Total Sold'
+            'series_title': 'Total Sold',
+            'tooltip_text': 'Dollars'
         },
         request
     )
@@ -168,7 +171,8 @@ def render_daily_qrcode_chart(
             'categories': categories,
             'chart_title': 'Qrcode Scans',
             'y_axis_title': 'Scans',
-            'series_title': 'Total Scans'
+            'series_title': 'Total Scans',
+            'tooltip_text': 'Scans'
         },
         request
     )
@@ -201,7 +205,8 @@ def render_weekly_qrcode_chart(
             'categories': categories,
             'chart_title': 'Qrcode Scans',
             'y_axis_title': 'Scans',
-            'series_title': 'Total Scans'
+            'series_title': 'Total Scans',
+            'tooltip_text': 'Scans'
         },
         request
     )
@@ -235,7 +240,8 @@ def render_monthly_qrcode_chart(
             'categories': categories,
             'chart_title': 'Qrcode Scans',
             'y_axis_title': 'Scans',
-            'series_title': 'Total Scans'
+            'series_title': 'Total Scans',
+            'tooltip_text': 'Scans'
         },
         request
     )
