@@ -7,8 +7,8 @@ DATABASES = {
         'NAME': 'knotis', # Or path to database file if using sqlite3.                                                                                                  
         'USER': '', # Not used with sqlite3.                                                                                                                            
         'PASSWORD': '', # Not used with sqlite3.                                                                                                                        
-        'HOST': '74.121.189.162', # Set to empty string for localhost. Not used with sqlite3.                                                                           
-        'PORT': '5551', # Set to empty string for default. Not used with sqlite3.                                                                                       
+        'HOST': '', # Set to empty string for localhost. Not used with sqlite3.                                                                           
+        'PORT': '', # Set to empty string for default. Not used with sqlite3.                                                                                       
     }
 }
 
@@ -17,11 +17,11 @@ EMAIL_HOST_USER = 'knotis.int@gmail.com'
 EMAIL_HOST_PASSWORD = 'wheeling and dealing'
 
 # Base url for external access
-BASE_URL = 'http://wow3.knotis.com' # NO TRAILING SLASH!!!
+BASE_URL = 'http://next.knotis.com' # NO TRAILING SLASH!!!
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = 'http://wow3.knotis.com/static/'
+STATIC_URL = 'http://next.knotis.com/static/'
 STATIC_URL_ABSOLUTE = STATIC_URL
 
 # Absolute path to the directory static files should be collected to.
@@ -37,7 +37,7 @@ MEDIA_ROOT = '/srv/knotis/media/'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = 'http://wow3.knotis.com/media/'
+MEDIA_URL = 'http://next.knotis.com/media/'
 
 GOOGLE_MAPS_API_KEY = 'AIzaSyBrsdJdU3pwYc5Rsbg7f25yOGNYaOmaFnk'
 
@@ -46,7 +46,7 @@ FACEBOOK_API_SECRET = 'c38d6b546822e6142d958d4e6f7c940d'
 FACEBOOK_DEFAULT_SCOPE = 'email,user_about_me'
 FACEBOOK_API_URL = 'https://graph.facebook.com'
 
-PAYPAL_ACCOUNT = 'billing@knotis.com'
+PAYPAL_ACCOUNT = 'knotis.int+billing@knotis.com'
 PAYPAL_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
 PAYPAL_TEST_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
 PAYPAL_NOTIFY_URL = ''.join([
