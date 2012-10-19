@@ -626,7 +626,7 @@ def edit(
     )
 
 
-def update(request):
+def activate(request):
     if request.method.lower() != 'post':
         return HttpResponseBadRequest()
 

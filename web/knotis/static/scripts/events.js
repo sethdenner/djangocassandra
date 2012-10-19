@@ -717,7 +717,7 @@ $(function() {
   
         active = active.toLowerCase() == 'true' ? false : true;
         $.post(
-            '/offers/update/', {
+            '/offer/activate/', {
                 'offer_id': id,
                 'active': active
             }, function(data) {
