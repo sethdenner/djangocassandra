@@ -166,7 +166,7 @@ def render_daily_qrcode_chart(
     return render_highchart({
             'data': data,
             'categories': categories,
-            'chart_title': 'Qrcode Scans',
+            'chart_title': 'QR Code Scans',
             'y_axis_title': 'Scans',
             'series_title': 'Total Scans'
         },
@@ -199,7 +199,7 @@ def render_weekly_qrcode_chart(
     return render_highchart({
             'data': data,
             'categories': categories,
-            'chart_title': 'Qrcode Scans',
+            'chart_title': 'QR Code Scans',
             'y_axis_title': 'Scans',
             'series_title': 'Total Scans'
         },
@@ -233,7 +233,7 @@ def render_monthly_qrcode_chart(
     return render_highchart({
             'data': data,
             'categories': categories,
-            'chart_title': 'Qrcode Scans',
+            'chart_title': 'QR Code Scans',
             'y_axis_title': 'Scans',
             'series_title': 'Total Scans'
         },
