@@ -9,7 +9,7 @@
     <div class="wrapper clear-fix">
         <div class="main-image-txt left">
             <div class="main-image box-border left radius-general relative">
-                {% thumbnail business.primary_image.image '221x125' crop='top' as image %}
+                {% thumbnail business.primary_image.image '221x125' crop=business.primary_image.crop as image %}
                 <img alt="{{ business.business_name.value }}" src="{{ image.url }}">
                 {% empty %}
                 <img src="{{ STATIC_URL }}images/no-image-business.png" alt="{{ business.business_name }}">
@@ -87,7 +87,7 @@
                 <div class="slider-business box-shadow clear-fix" id="rotator">
                     <div class="image-slider" id="msgs">
                         {% for business_image in business_images %}
-                        {% thumbnail business_image.image '460x260' crop='top' as image %}
+                        {% thumbnail business_image.image '460x260' crop=business_image.crop as image %}
                         <img src="{{ image.url }}" {% if forloop.counter0 %}style="display:none;"{% else %}class="active"{% endif %} />
                         {% endthumbnail %}
                         {% endfor %}

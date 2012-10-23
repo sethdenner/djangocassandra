@@ -159,11 +159,11 @@
                 <ul class="link-name clear-fix radius-general">
                     <li class="radius-general active clear-fix">
                         <img
-                            alt=""
-                            {% thumbnail image.image '32x32' as img %}
+                            alt="{{ image.crop }} {{ image.geometry }}"
+                            {% thumbnail image.image '33x19' crop=image.crop as img %}
                             src="{{ img.url }}"
                             {% endthumbnail %}
-                            class="gallery" />
+                            class="business-gallery" />
                             <a class="right delete radius-general delete-image" 
                                 href="#" 
                                 data-image-id="{{ image.id }}"
@@ -187,17 +187,23 @@
         </noscript>
     </div>
     <script>
-    	$(function(){
-            var uploader = new qq.FileUploader({
-                element: document.getElementById('file-uploader'),
-                action: '/media/ajax/',
-                debug: true,
-                params: {
-                    'id': '{{ business.id }}',
-                    'type': 'image',
+        $('#file-uploader').sickle({
+            aspect: 221.0/125.0,
+            params: {
+                id: '{{ business.id }}',
+                type: 'image'
+            },
+            done: function(data) {
+                if (data.status == 'success') {
+                    
+                } else if (data.status == 'failure') {
+                    
+                } else {
+                    // Invalid Status
                 }
-            });
-     	});
+            }
+
+        });
     </script>
 </form>
 {% endif %}

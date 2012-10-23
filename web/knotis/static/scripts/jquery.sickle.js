@@ -8,9 +8,9 @@
  * 
  *      https://github.com/valums/file-uploader
  * 
- * We also rely on shadowbox jQuery plugin to render the cropping window:
+ * We also rely on colorbox jQuery plugin to render the cropping window:
  * 
- *      http://www.shadowbox-js.com/
+ *      https://github.com/jackmoore/colorbox/
  * 
  * And then, of course, we use jCrop for the actual cropping functionality:
  * 
@@ -83,8 +83,11 @@
                                     type: 'POST',
                                     data: $(this).serialize(),
                                     dataType: 'json'
-                                }).done(_options.done)
-                                    .fail(_options.fail)
+                                }).done(function(data) {
+                                    $.colorbox.close();
+                                    _options.done(data);
+                                    
+                                }).fail(_options.fail)
                                     .always(_options.always);
                                 
                                 event.preventDefault();
