@@ -69,6 +69,10 @@ urlpatterns = patterns(
         include('knotis.apps.paypal.urls')
     ),
     url(
+        r'',
+        include('knotis.apps.sickle.urls')
+    ),
+    url(
         r'^admin/doc/',
         include('django.contrib.admindocs.urls')
     ),
