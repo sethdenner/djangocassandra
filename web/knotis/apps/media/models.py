@@ -1,6 +1,8 @@
+import math
+
 from django.db.models import (
     CharField, 
-    IntegerField,
+    FloatField,
     Manager
 )
 from django.contrib.auth.models import User
@@ -56,36 +58,48 @@ class Image(KnotisModel):
         null=True,
         blank=True
     )
-    crop_left = IntegerField(
+    crop_left = FloatField(
         null=True,
         blank=True,
         default=None
     )
-    crop_top = IntegerField(
+    crop_top = FloatField(
         null=True,
         blank=True,
         default=None
     )
-    crop_right = IntegerField(
+    crop_right = FloatField(
         null=True,
         blank=True,
         default=None
     )
-    crop_bottom = IntegerField(
+    crop_bottom = FloatField(
         null=True,
         blank=True,
         default=None
     )
-    crop_width = IntegerField(
+    crop_width = FloatField(
         null=True,
         blank=True,
         default=None
     )
-    crop_height = IntegerField(
+    crop_height = FloatField(
         null=True,
         blank=True,
         default=None
     )
+        
+    def crop(self):
+        return ''.join([
+            str(int(math.floor(self.crop_left))),
+            'px ',
+            str(int(math.floor(self.crop_top))),
+            'px ',
+            str(int(math.floor(self.crop_width))),
+            'px ',
+            str(int(math.floor(self.crop_height))),
+            'px'
+        ])
 
     def update(
         self,
