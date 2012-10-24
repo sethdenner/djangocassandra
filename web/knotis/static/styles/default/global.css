@@ -3707,8 +3707,13 @@ li.categoryselect div.selector select {
 }
 
 .gallery {
-     height: 19px;
+    height: 19px;
     width:19px;
+}
+
+.business-gallery {
+    height: 19px;
+    width: 35px;
 }
 
 .twitter-content img,

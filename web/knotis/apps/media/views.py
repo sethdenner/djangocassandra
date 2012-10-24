@@ -65,6 +65,7 @@ def _upload(request):
         image.save()
 
         response['success'] = 'true'
+        response['image_id'] = image.id
 
     except Exception, error:
         response['success'] = 'false'
