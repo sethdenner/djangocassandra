@@ -1,0 +1,28 @@
+{% load thumbnail %}
+{% if images %}
+<ul class="link-name images-gallery">
+    {% for image in images %}
+    <ul class="link-name clear-fix radius-general">
+        <li class="radius-general active clear-fix">
+            <img
+                alt="{% if image.caption %}{{ image.caption.value }}{% else %}{{ business.business_name.value }}{% endif %}"
+                {% thumbnail image.image dimensions crop=image.crop as img %}
+                src="{{ img.url }}"
+                {% endthumbnail %}
+                class="business-gallery" />
+                <a class="right delete radius-general delete-image" 
+                    href="#" 
+                    data-image-id="{{ image.id }}"
+                    data-business-id="{{ business.id }}" >delete</a>
+                <a class="right crop radius-general" 
+                    href="#" 
+                    data-image-id="{{ image.id }}" >crop</a>
+                <a class="right{% if image == business.primary_image %} noheadimage{% else %} active{% endif %} principal delete radius-general headimage"
+                    data-image-id="{{ image.id }}"
+                    data-business-id="{{ business.id }}" 
+                    href="#">Primary</a>
+        </li>
+    </ul>
+    {% endfor %}
+</ul>
+{% endif %}

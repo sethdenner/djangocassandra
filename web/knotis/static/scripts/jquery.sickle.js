@@ -23,84 +23,100 @@
     var _options = null;
     
     $.fn.sickle = function(options) {
-        _options = $.extend({
-            action: '/media/ajax/',
+        var _options = $.extend({
+            action: '/image/ajax/',
             crop_form_url: '/image/crop/',
             params: {},
             close: function() {},
             done: function(data) {},
             fail: function(xhr, status) {},
             always: function(xhr, status) {},
-            aspect: null
+            aspect: null,
+            image_id: null
         }, options);
         
-        return this.each(function() {
-            id = $(this).attr('data-id')
-            uploader = new qq.FileUploader({
-                element: this,
-                action: _options.action,
-                debug: true,
-                params: _options.params,
-                onComplete: function(
-                    id,
-                    name,
-                    response
-                ){
-                    $.colorbox({
-                        href: [
-                            _options.crop_form_url,
-                            response.image_id,
-                            '/'
-                        ].join(''),
-                        transition: 'fade',
-                        scrolling: false,
-                        overlayClose: false,
-                        maxHeight: '100%',
-                        maxWidth: '100%',
-                        onClose: _options.close,
-                        onComplete: function() {
-                            $image = $('#sickle_image');
-                            $image.Jcrop({
-                                aspectRatio: _options.aspect,
-                                onChange: function(coordinates) {
-                                    $content = $('#sickle_content');
-                                    $content.find('#id_crop_left').val(coordinates.x);
-                                    $content.find('#id_crop_top').val(coordinates.y);
-                                    $content.find('#id_crop_bottom').val(coordinates.y2);
-                                    $content.find('#id_crop_right').val(coordinates.x2);
-                                    $content.find('#id_crop_width').val(coordinates.w);
-                                    $content.find('#id_crop_height').val(coordinates.h);
-                                }
-                            });
-                            
-                            $.colorbox.resize({
-                                innerWidth: $image.width()
-                            });
-                            
-                            $('#sickle_form').submit(function(event) {
-                                $.ajax({
-                                    url: $(this).attr('action'),
-                                    type: 'POST',
-                                    data: $(this).serialize(),
-                                    dataType: 'json'
-                                }).done(function(data) {
-                                    $.colorbox.close();
-                                    _options.done(data);
-                                    
-                                }).fail(_options.fail)
-                                    .always(_options.always);
-                                
-                                event.preventDefault();
-                                return false; 
-
-                            });
-                        
+        var _crop = function(image_id) {
+            $.colorbox({
+                href: [
+                    _options.crop_form_url,
+                    image_id,
+                    '/'
+                ].join(''),
+                transition: 'fade',
+                scrolling: false,
+                overlayClose: false,
+                maxHeight: '100%',
+                maxWidth: '100%',
+                onClose: _options.close,
+                onComplete: function() {
+                    $image = $('#sickle_image');
+                    $image.Jcrop({
+                        aspectRatio: _options.aspect,
+                        onChange: function(coordinates) {
+                            $content = $('#sickle_content');
+                            $content.find('#id_crop_left').val(coordinates.x);
+                            $content.find('#id_crop_top').val(coordinates.y);
+                            $content.find('#id_crop_bottom').val(coordinates.y2);
+                            $content.find('#id_crop_right').val(coordinates.x2);
+                            $content.find('#id_crop_width').val(coordinates.w);
+                            $content.find('#id_crop_height').val(coordinates.h);
                         }
+                    });
+                    
+                    $.colorbox.resize({
+                        innerWidth: $image.width()
+                    });
+                    
+                    $('#sickle_form').submit(function(event) {
+                        $.ajax({
+                            url: $(this).attr('action'),
+                            type: 'POST',
+                            data: $(this).serialize(),
+                            dataType: 'json'
+                        }).done(function(data) {
+                            $.colorbox.close();
+                            _options.done(data);
+                            
+                        }).fail(_options.fail)
+                            .always(_options.always);
                         
-                    })
+                        event.preventDefault();
+                        return false; 
 
+                    });
+                
                 }
-            });
+                
+            })
+
+        };
+        
+        return this.each(function() {
+            if (true == _options.do_upload) {
+                uploader = new qq.FileUploader({
+                    element: this,
+                    action: _options.action,
+                    debug: true,
+                    params: _options.params,
+                    onComplete: function(
+                        id,
+                        name,
+                        response
+                    ){
+                        _crop(response.image_id);
+                    }
+                });
+                
+             } else {
+                 $(this).unbind('click.sickle').bind('click.sickle', function(event){
+                    _crop($(this).attr('data-image-id'));
+                    
+                    event.stopPropagation();
+                    return false;
+                                         
+                 });
+                 
+             }
             
         });
         
