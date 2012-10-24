@@ -1,5 +1,8 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import (
+    render,
+    redirect
+)
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
@@ -57,6 +60,9 @@ def dashboard(request):
         business = Business.objects.get(user=request.user)
     except:
         business = None
+        
+    if not business:
+        return redirect('/business/profile/')
 
     try:
         offers = Offer.objects.filter(

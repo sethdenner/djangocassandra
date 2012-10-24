@@ -1661,7 +1661,6 @@ ul.offer-buy li span.padd {
 .push {
     width:64px;
     height:74px;
-    z-index:999;
     position:absolute;
     background: url("../../images/layouts/push.png") no-repeat;
     left:200px;
@@ -1679,7 +1678,7 @@ img.thumb {
     background:#333;
     top:38px;
     right:-8px;
-    z-index:1000;
+    z-index:910;
 }
 
 .push-Tra {
@@ -1736,7 +1735,7 @@ img.thumb {
 
 .push-info {
     width:165px;
-    z-index:800;
+    z-index:920;
     position:absolute;
     box-shadow:1px 1px 4px rgba(0, 0, 0, 0.5);
     -moz-box-shadow:1px 1px 4px rgba(0, 0, 0, 0.5);

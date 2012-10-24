@@ -184,7 +184,6 @@ def edit_profile(request):
         business = Business.objects.get(user=user)
 
     except Business.DoesNotExist:
-        user = None
         business = None
 
     except:

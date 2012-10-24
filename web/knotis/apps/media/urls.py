@@ -8,11 +8,11 @@ from django.conf.urls.defaults import (
 urlpatterns = patterns(
     'knotis.apps.media.views',
     url(
-        r'ajax/',
+        r'^image/ajax/',
         'ajax'
     ),
     url(
-        r'(?P<path>.+)/$',
+        r'^media/(?P<path>.+)/$',
         'xsendfileserve', {
             'document_root': settings.MEDIA_ROOT
         },
