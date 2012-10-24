@@ -3,6 +3,12 @@ import urllib
 import os
 import json
 
+from django.shortcuts import render
+from django.template import Context
+from django.template.loader import get_template
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
+
 from django.conf import settings
 from django.views.static import serve
 from django.forms import (
@@ -11,11 +17,89 @@ from django.forms import (
 )
 from django.http import (
     HttpResponse,
+    HttpResponseNotFound,
     HttpResponseRedirect
 )
 from django.core.files.base import ContentFile
 
 from knotis.apps.media.models import Image
+from knotis.apps.business.models import Business
+
+
+def render_image_list(
+    options,
+    request=None
+):
+    default_options = {
+        'dimensions': '35x19'
+    }
+    default_options.update(options)
+    options = default_options
+
+    if request:
+        return render(
+            request,
+            'image_list.html',
+            options
+        )
+        
+    else:
+        context = Context(options)
+        image_list = get_template('image_list.html')
+        return image_list.render(context)
+    
+
+def get_image_row(
+    request,
+    image_id
+):
+    try:
+        image = Image.objects.get(pk=image_id)
+    
+    except:
+        logger.exception('failed to get image')
+        
+    if not image:
+        return HttpResponseNotFound(
+            'Could not find image with id %s' % (image_id, )
+        )
+        
+    return render_image_list(
+        {'images': [image]},
+        request
+    )
+
+def get_image_list(
+    request,
+    related_object_id
+):
+    try: 
+        images = Image.objects.filter(related_object_id=related_object_id)
+        
+    except:
+        logger.exception()
+        
+    if not images:
+        return HttpResponseNotFound(
+            'No images found for related_object_id %s' % (related_object_id, )
+        )
+        
+    try:
+        related_object = Business.objects.get(pk=related_object_id)
+        
+    except:
+        logger.exception()
+        related_object = None
+        
+    options = {
+        'images': images,
+        'business': related_object
+    }
+        
+    return render_image_list(
+        options,
+        request
+    )
 
 
 class ImageModelForm(ModelForm):

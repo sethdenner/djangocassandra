@@ -1,3 +1,6 @@
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
+
 from django.conf import settings
 from django.forms import (
     Form,
@@ -35,6 +38,7 @@ from knotis.apps.offer.models import (
     OfferStatus
 )
 from knotis.apps.media.models import Image
+from knotis.apps.media.views import render_image_list
 from knotis.apps.auth.models import (
     KnotisUser,
     UserProfile,
@@ -251,9 +255,15 @@ def edit_profile(request):
     template_parameters['gallery'] = True
 
     try:
-        template_parameters['images'] = Image.objects.filter(related_object_id=business.id)
+        images = Image.objects.filter(related_object_id=business.id)
+        options = {
+            'images': images,
+            'business': business,
+            'dimensions': '35x19'
+        }
+        template_parameters['image_list'] = render_image_list(options)
     except:
-        pass
+        logger.exception('rending image list failed')
 
     return render(
         request,
