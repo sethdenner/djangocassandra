@@ -24,7 +24,7 @@
     
     $.fn.sickle = function(options) {
         _options = $.extend({
-            action: '/media/ajax/',
+            action: '/image/ajax/',
             crop_form_url: '/image/crop/',
             params: {},
             close: function() {},
