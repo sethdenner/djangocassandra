@@ -90,17 +90,26 @@ class Image(KnotisModel):
     )
         
     def crop(self):
-        return ''.join([
-            str(int(math.floor(self.crop_left))),
-            'px ',
-            str(int(math.floor(self.crop_top))),
-            'px ',
-            str(int(math.floor(self.crop_width))),
-            'px ',
-            str(int(math.floor(self.crop_height))),
-            'px'
-        ])
-
+        if (
+            self.crop_left and
+            self.crop_top and
+            self.crop_width and
+            self.crop_height
+        ):
+            return ''.join([
+                str(int(math.floor(self.crop_left))),
+                'px ',
+                str(int(math.floor(self.crop_top))),
+                'px ',
+                str(int(math.floor(self.crop_width))),
+                'px ',
+                str(int(math.floor(self.crop_height))),
+                'px'
+            ])
+        
+        else:
+            return 'noop'
+    
     def update(
         self,
         image=None,

@@ -171,24 +171,19 @@
                             One image per offer. For best results, please upload a square image no larger than 600 x 600 pixels.
                         </p>
                     </div>
-                    <ul>
+                    <ul id="image-list">
                         {% if not rerun and offer.image %}
-                        <ul class="link-name images-gallery">
-                            <ul class="link-name clear-fix radius-general">
-                                <li class=" radius-general active clear-fix">
-                                    {% thumbnail offer.image.image '30x30' as image %}
-                                    <img alt="" src="{{ image.url }}" class="gallery"/>
-                                    {% endthumbnail %}
-                                    <a class="right delete radius-general delete-image-offer" href="#" data-id="{{ offer.id }}" data-cont="0">delete</a>
-                                </li>
-                            </ul>
-                        </ul>
-                        {% endif %}
+                        {{ image_list }}
+                        {% else %}
+                        <div id="file-uploader">
+                            <noscript>
+                                <p>Please enable JavaScript to use file uploader.</p>
+                            </noscript>
+                        </div>
                         <div class="clean"></div>
+                        {% endif %}
                     </ul>
-                    <div id="uploader">
-                        <input class="uploader radius-general" type="file" name="{{ offer_form.image_source.html_name }}" value="Upload Image"/>
-                    </div>
+                    <input id="image-id" name="{{ offer_form.image_id.html_name }}" type="hidden" value="{{ offer_form.image_id.value }}" />
                     <div class="clean"></div>
                 </fieldset>
                 <!--Location-->

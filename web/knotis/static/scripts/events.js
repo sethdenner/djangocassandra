@@ -757,8 +757,7 @@ $(function() {
                 business_id = $this.attr('data-business-id');
 
         $.post([
-            '/business/profile/delete_image',
-            business_id,
+            '/image/delete',
             image_id,
             ''].join('/'), 
             {},
@@ -768,23 +767,6 @@ $(function() {
 
                 });
 
-        return false;
-
-    });
-
-
-    $('.delete-image-offer').live('click', function() {
-
-        var $this = $(this),
-                id = $this.attr('data-id'),
-                cont = $this.attr('data-cont');
-
-        $.post([server + "backend/delete_image_offer",id].join('/'), {},
-
-                function(data) {
-
-                    $('.' + cont).fadeOut();
-                });
         return false;
 
     });

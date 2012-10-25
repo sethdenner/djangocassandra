@@ -64,7 +64,7 @@ def crop(
         saved = False
         if form.is_valid():
             try:
-                form.save()
+                image = form.save()
                 saved = True
             
             except:
@@ -72,7 +72,10 @@ def crop(
             
         if saved:    
             return HttpResponse(
-                json.dumps({'status': 'success'}),
+                json.dumps({
+                    'status': 'success',
+                    'image_id': image.id
+                }),
                 mimetype='application/json'
             )
         
