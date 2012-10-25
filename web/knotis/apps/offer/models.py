@@ -146,6 +146,7 @@ class OfferManager(Manager):
             city=city,
             neighborhood=neighborhood,
             address=endpoint_address,
+            image=image,
             category=category,
             price_retail=price_retail,
             price_discount=price_discount,
@@ -158,16 +159,9 @@ class OfferManager(Manager):
             active=active,
             premium=premium
         )
-
-        if image:
-            model_image = Image.objects.create(
-                user=user,
-                related_object_id=offer.id,
-                image=image,
-            )
-            offer.image = model_image
-
-        offer.save()
+        
+        image.related_object_id = offer.id
+        image.save()
 
         if offer.available():
             offer._update_offer_counts(1)
@@ -792,18 +786,9 @@ class Offer(KnotisModel):
                     is_self_dirty = True
 
         if None != image and (None == self.image or image != self.image.image):
-            if self.image:
-                self.image.image = image
-
-            else:
-                self.image = Image.objects.create_image(
-                    self.business.user,
-                    image,
-                    related_object_id=self.id
-                )
-
-            self.image.save()
-
+            self.image = image
+            is_self_dirty=True
+        
         if None != category and category != self.category:
             self.category = category
             is_self_dirty = True

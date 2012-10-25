@@ -3,6 +3,7 @@ import urllib
 import os
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.template import Context
 from django.template.loader import get_template
@@ -18,12 +19,15 @@ from django.forms import (
 from django.http import (
     HttpResponse,
     HttpResponseNotFound,
-    HttpResponseRedirect
+    HttpResponseRedirect,
+    HttpResponseBadRequest,
+    HttpResponseServerError
 )
 from django.core.files.base import ContentFile
 
 from knotis.apps.media.models import Image
 from knotis.apps.business.models import Business
+from knotis.apps.offer.models import Offer
 
 
 def render_image_list(
@@ -64,8 +68,16 @@ def get_image_row(
             'Could not find image with id %s' % (image_id, )
         )
         
-    return render_image_list(
-        {'images': [image]},
+    try:
+        business = Business.objects.get(pk=image.related_object_id)
+        
+    except:
+        business = None
+
+    return render_image_list({
+            'images': [image],
+            'business': business
+        },
         request
     )
 
@@ -77,29 +89,58 @@ def get_image_list(
         images = Image.objects.filter(related_object_id=related_object_id)
         
     except:
-        logger.exception()
+        logger.exception('failed to get images')
         
     if not images:
         return HttpResponseNotFound(
             'No images found for related_object_id %s' % (related_object_id, )
         )
         
+        
     try:
-        related_object = Business.objects.get(pk=related_object_id)
+        business = Business.objects.get(pk=related_object_id)
         
     except:
-        logger.exception()
-        related_object = None
-        
+        business = None
+
     options = {
         'images': images,
-        'business': related_object
+        'business': business
     }
         
     return render_image_list(
         options,
         request
     )
+
+
+@login_required
+def delete_image(
+    request,
+    image_id
+):
+    if request.method.lower() != 'post':
+        return HttpResponseBadRequest('Method must be post.')
+
+    try:
+        image = Image.objects.get(pk=image_id)
+
+    except:
+        image = None
+
+    if not image:
+        return HttpResponseNotFound('Image not found')
+
+    if image.user.id != request.user.id:
+        return HttpResponseBadRequest('Image does not belong to user!')
+
+    try:
+        image.delete()
+
+    except Exception, error:
+        return HttpResponseServerError(error)
+
+    return HttpResponse('OK')
 
 
 class ImageModelForm(ModelForm):

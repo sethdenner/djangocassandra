@@ -152,9 +152,8 @@
             <p class="message-confirm margin-general-25 radius-general ">Be careful, for correct visibility on the
                 business profile, the images must be sized at 500 x 235</p>
         </div>
-        <ul>
+        <ul id="image-list" >
             {{ image_list }}
-            <div class="clean"></div>
         </ul>
     </fieldset>
     <div id="file-uploader">
@@ -184,23 +183,28 @@
     
             });
             
-            $('.crop').sickle({
-                aspect: 221.0/125.0,
-                done: function(data) {
-                    if (data.status == 'success') {
-                        $.get('/image/get_list/{{ business.id }}/', function(data){
-                            $('.images-gallery').replaceWith(data);
-
-                        })
-                        
-                    } else if (data.status == 'failure') {
-                        
-                    } else {
-                        // Invalid Status
+            var init_cropping = function() {
+                $('.crop').sickle({
+                    aspect: 221.0/125.0,
+                    done: function(data) {
+                        if (data.status == 'success') {
+                            $.get('/image/get_list/{{ business.id }}/', function(data){
+                                $('#image-list').html(data);
+                                init_cropping();    
+                            
+                            })
+                            
+                        } else if (data.status == 'failure') {
+                            
+                        } else {
+                            // Invalid Status
+                        }
                     }
-                }
+                    
+                });
                 
-            });
+            };
+            init_cropping();
 
         })
     </script>

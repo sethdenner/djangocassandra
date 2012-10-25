@@ -29,6 +29,14 @@ urlpatterns = patterns(
         'get_image_row'
     ),
     url(
+        r''.join([
+            '^image/delete/(?P<image_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        'delete_image'
+    ),
+    url(
         r'^media/(?P<path>.+)/$',
         'xsendfileserve', {
             'document_root': settings.MEDIA_ROOT
