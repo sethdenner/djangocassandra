@@ -136,48 +136,6 @@ def set_primary_image(
 
 
 @login_required
-def delete_image(
-    request,
-    business_id,
-    image_id
-):
-    if request.method.lower() != 'post':
-        return HttpResponseBadRequest('Method must be post.')
-
-    try:
-        business = Business.objects.get(pk=business_id)
-
-    except:
-        business = None
-
-    if not business:
-        return HttpResponseNotFound('Business not found.')
-
-    if business.user_id != request.user.id:
-        return HttpResponseBadRequest('Business does not belong to logged in user!')
-
-    try:
-        image = Image.objects.get(pk=image_id)
-
-    except:
-        image = None
-
-    if not image:
-        return HttpResponseNotFound('Image not found')
-
-    if business.id != image.related_object_id:
-        return HttpResponseBadRequest('Image does not belong to business!')
-
-    try:
-        image.delete()
-
-    except Exception, error:
-        return HttpResponseServerError(error)
-
-    return HttpResponse('OK')
-
-
-@login_required
 def edit_profile(request):
     update_form = None
     link_form = None
@@ -257,9 +215,11 @@ def edit_profile(request):
     try:
         images = Image.objects.filter(related_object_id=business.id)
         options = {
+            'alt_text': business.business_name.value,
             'images': images,
             'business': business,
-            'dimensions': '35x19'
+            'dimensions': '35x19',
+            'image_class': 'business-gallery'
         }
         template_parameters['image_list'] = render_image_list(options)
     except:
