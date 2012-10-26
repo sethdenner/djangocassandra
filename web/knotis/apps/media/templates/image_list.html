@@ -18,6 +18,7 @@
                     data-image-id="{{ image.id }}" >crop</a>
                 {% if business %}
                 <a class="right{% if image == business.primary_image %} noheadimage{% else %} active{% endif %} principal delete radius-general headimage"
+                    data-business-id="{{ business.id }}"                
                     data-image-id="{{ image.id }}"
                     href="#">Primary</a>
                 {% endif %}
