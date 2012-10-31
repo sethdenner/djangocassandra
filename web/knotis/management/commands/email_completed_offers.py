@@ -21,9 +21,15 @@ from knotis.apps.offer.models import (
 
 
 class Command(BaseCommand):
+    args = '<days>'
+    help = (
+        'Send an email containing all of the transaction for expired offers '
+        'for the past <days> days.'
+    )
+    
     def handle(
         self,
-        * args,
+        *args,
         **options
     ):
         logger.info('start sending of completed offers to billing')
@@ -38,39 +44,53 @@ class Command(BaseCommand):
 
         data = {}
         transaction_count = 0
-        transaction_min_date = (
-            datetime.datetime.utcnow() - datetime.timedelta(
-                days=settings.EMAIL_COMPLETED_OFFERS_INTERVAL_DAYS
-            )
-        )
+        now = datetime.datetime.utcnow()
+        
+        if not args:
+            days = settings.EMAIL_COMPLETED_OFFERS_INTERVAL_DAYS
+        
+        else:
+            days = int(args[0]) 
+        
+        offer_min_date = (now - datetime.timedelta(days=days))
+        
+        logger.debug('retrieving offers since %s' % offer_min_date, )
         for offer in offers:
-            try:
-                transactions = Transaction.objects.filter(
-                    offer=offer,
-                    transaction_type=TransactionTypes.PURCHASE
-                )
-
-            except:
-                raise CommandError('Transaction retrieval failed')
-
-            if not transactions:
-                continue
-
-            for transaction in transactions:
-                if transaction.pub_date < transaction_min_date:
+            if (
+                not offer.end_date or 
+                not offer.start_date or 
+                not offer.last_purchase or 
+                not offer.stock or 
+                not offer.purchased
+            ):
+                continue 
+            
+            if (offer.end_date > offer_min_date and offer.end_date < now) or \
+                (offer.purchased >=  offer.stock and offer.last_purchase and offer.last_purchase > offer_min_date):
+                try:
+                    transactions = Transaction.objects.filter(
+                        offer=offer,
+                        transaction_type=TransactionTypes.PURCHASE
+                    )
+    
+                except:
+                    raise CommandError('Transaction retrieval failed')
+    
+                if not transactions:
                     continue
-                
-                if not data.get(transaction.business):
-                    data[transaction.business] = {}
-
-                if not data.get(transaction.business).get(transaction.offer):
-                    data[transaction.business][transaction.offer] = []
-
-                data[transaction.business][transaction.offer].append(
-                    transaction
-                )
-                
-                transaction_count += 1
+    
+                for transaction in transactions:
+                    if not data.get(transaction.business):
+                        data[transaction.business] = {}
+    
+                    if not data.get(transaction.business).get(transaction.offer):
+                        data[transaction.business][transaction.offer] = []
+    
+                    data[transaction.business][transaction.offer].append(
+                        transaction
+                    )
+                    
+                    transaction_count += 1
 
         if 0 == transaction_count:
             logger.info('no new transactions')
@@ -117,11 +137,17 @@ class Command(BaseCommand):
                         '\n'
                     ])
                     total += transaction.value
-                    
+            
+            fee = total * .03
+            grand_total = total - fee
             email_body = ''.join([
                 email_body,
                 '\nSub Total: $',
                 format_currency(total),
+                '\n3% Processing Fee: $',
+                format_currency(fee),
+                '\nGrand Total: $',
+                format_currency(grand_total),
                 '\n'
             ])
 
