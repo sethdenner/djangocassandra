@@ -41,7 +41,7 @@ def is_ipn_valid(post):
     post_formatted = '\n'.join([
         '   key=%s, value=%s' % (k, v,) for k, v in post.items()
     ])
-    logger.debug('\n'.join([
+    logger.info('\n'.join([
         'validating ipn with post parameters:',
         post_formatted
     ]))
@@ -93,26 +93,26 @@ def is_ipn_valid(post):
         response = error.message
 
     if response == 'VERIFIED':
-        logger.debug('ipn verified')
+        logger.info('ipn verified')
         return True
 
-    logger.debug('ipn verification failed trying custom verification')
+    logger.error('ipn verification failed trying custom verification')
     custom_validation = post.get('custom')
     if not custom_validation:
-        logger.debug('no custom verification parameters')
+        logger.error('no custom verification parameters')
         return False
 
     custom_validation = custom_validation.split('|')
     if 2 > len(custom_validation):
-        logger.debug('not enough verification parameters')
+        logger.error('not enough verification parameters')
         return False
 
     ipn_hash = generate_ipn_hash(custom_validation[0])
     if ipn_hash != custom_validation[1]:
-        logger.debug('ipn hashes did not match')
+        logger.error('ipn hashes did not match')
         return False
 
-    logger.debug('ipn hashes match ipn verified')
+    logger.info('ipn hashes match ipn verified')
     return True
 
 

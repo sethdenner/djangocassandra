@@ -17,6 +17,10 @@ urlpatterns = patterns(
         'edit',
     ),
     url(
+        'activate/$',
+        'activate'
+    ),
+    url(
         r''.join([
             's/update/(?P<offer_id>',
             REGEX_UUID,
