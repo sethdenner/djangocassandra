@@ -548,8 +548,15 @@ class Offer(KnotisModel):
             self.category.save()
 
     def purchase(self):
+        if not self.available():
+            raise Exception('Could not purchase offer {%s}. Offer is not available' % (self.id, ))
+        
         self.purchased = self.purchased + 1
+        self.last_purchase = datetime.datetime.utcnow()
         self.save()
+        
+        if self.purchased == self.stock:
+            self.complete()
 
     def complete(self):
         available = self.available()
@@ -570,9 +577,14 @@ class Offer(KnotisModel):
             self._update_offer_counts(-1)
 
     def available(self):
+        now = datetime.datetime.utcnow()
+   
         return self.active and \
             self.published and \
-            self.status == OfferStatus.CURRENT
+            self.status == OfferStatus.CURRENT and \
+            self.start_date < now and \
+            self.end_date > now and \
+            self.purchased < self.stock
 
     def title_formatted(self):
         if not self.title:
