@@ -16,6 +16,10 @@
  * 
  *      https://github.com/tapmodo/Jcrop
  * 
+ * And the knotis fork of sorl-thumbnail to serve the cropped images:
+ * 
+ *      https://github.com/knotis/sorl-thumbnail
+ * 
  * Make sure these scripts are included on your page before Sickle jQuery.
  * 
  *****************************************************************************/
@@ -32,16 +36,29 @@
             fail: function(xhr, status) {},
             always: function(xhr, status) {},
             aspect: null,
-            image_id: null
+            image_id: null,
+            image_max_width: null,
+            image_max_height: null
         }, options);
         
         var _crop = function(image_id) {
-            $.colorbox({
-                href: [
-                    _options.crop_form_url,
-                    image_id,
+            href = [
+                _options.crop_form_url,
+                image_id,
+                '/'
+            ].join('');
+            if (_options.image_max_width && _options.image_max_height) {
+                href = [
+                    href,
+                    _options.image_max_width,
+                    '/',
+                    _options.image_max_height,
                     '/'
-                ].join(''),
+                ].join('');
+            }
+            
+            $.colorbox({
+                href: href,
                 transition: 'fade',
                 scrolling: false,
                 overlayClose: false,

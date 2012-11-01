@@ -14,7 +14,12 @@ $(function() {
         }
     });
 
-    offer_id = $('#update_offer').attr('data-id');
+    var window_width = $(window).width();
+    var window_height = $(window).height();
+    var image_max_width = window_width - 120;
+    var image_max_height = window_height - 120;
+        
+    var offer_id = $('#update_offer').attr('data-id');
     var init_file_uploader = function() {
         $('#file-uploader').sickle({
             do_upload: true,
@@ -40,7 +45,9 @@ $(function() {
                 } else {
                     // Invalid Status
                 }
-            }
+            },
+            image_max_width: image_max_width,
+            image_max_height: image_max_height
     
         });
     };
@@ -65,7 +72,9 @@ $(function() {
                 } else {
                     // Invalid Status
                 }
-            }
+            },
+            image_max_width: image_max_width,
+            image_max_height: image_max_height
             
         });
         
