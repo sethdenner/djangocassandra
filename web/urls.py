@@ -10,6 +10,10 @@ urlpatterns = patterns(
     '',
     url(
         r'',
+        include('knotis.apps.media.urls')
+    ),
+    url(
+        r'',
         include('knotis.apps.auth.urls')
     ),
     url(
@@ -57,16 +61,16 @@ urlpatterns = patterns(
         include('knotis.apps.qrcode.urls')
     ),
     url(
-        r'^media/',
-        include('knotis.apps.media.urls')
-    ),
-    url(
         r'^category/',
         include('knotis.apps.category.urls')
     ),
     url(
         r'^paypal/',
         include('knotis.apps.paypal.urls')
+    ),
+    url(
+        r'',
+        include('knotis.apps.sickle.urls')
     ),
     url(
         r'^admin/doc/',

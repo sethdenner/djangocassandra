@@ -1661,7 +1661,6 @@ ul.offer-buy li span.padd {
 .push {
     width:64px;
     height:74px;
-    z-index:999;
     position:absolute;
     background: url("../../images/layouts/push.png") no-repeat;
     left:200px;
@@ -1679,7 +1678,7 @@ img.thumb {
     background:#333;
     top:38px;
     right:-8px;
-    z-index:1000;
+    z-index:910;
 }
 
 .push-Tra {
@@ -1736,7 +1735,7 @@ img.thumb {
 
 .push-info {
     width:165px;
-    z-index:800;
+    z-index:920;
     position:absolute;
     box-shadow:1px 1px 4px rgba(0, 0, 0, 0.5);
     -moz-box-shadow:1px 1px 4px rgba(0, 0, 0, 0.5);
@@ -3288,6 +3287,15 @@ a.delete{
     font-size:12px;
 }
 
+a.crop{
+    background:#df9638;
+    color:#fff;
+    padding:3px 10px;
+    text-decoration:none;
+    font-size:12px;
+    margin-right:5px;
+}
+
 a.play_status{
     background:#439C2C;
     color:#fff;
@@ -3326,6 +3334,10 @@ p.offers-business a.active {
 
 .link-name a.delete:hover {
     background: #a21212;
+}
+
+.link-name a.crop:hover {
+    background: #acca2c;
 }
 
 .link-name a.principal:hover{
@@ -3707,8 +3719,13 @@ li.categoryselect div.selector select {
 }
 
 .gallery {
-     height: 19px;
+    height: 19px;
     width:19px;
+}
+
+.business-gallery {
+    height: 19px;
+    width: 35px;
 }
 
 .twitter-content img,

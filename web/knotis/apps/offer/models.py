@@ -146,6 +146,7 @@ class OfferManager(Manager):
             city=city,
             neighborhood=neighborhood,
             address=endpoint_address,
+            image=image,
             category=category,
             price_retail=price_retail,
             price_discount=price_discount,
@@ -158,16 +159,9 @@ class OfferManager(Manager):
             active=active,
             premium=premium
         )
-
-        if image:
-            model_image = Image.objects.create(
-                user=user,
-                related_object_id=offer.id,
-                image=image,
-            )
-            offer.image = model_image
-
-        offer.save()
+        
+        image.related_object_id = offer.id
+        image.save()
 
         if offer.available():
             offer._update_offer_counts(1)
@@ -554,8 +548,15 @@ class Offer(KnotisModel):
             self.category.save()
 
     def purchase(self):
+        if not self.available():
+            raise Exception('Could not purchase offer {%s}. Offer is not available' % (self.id, ))
+        
         self.purchased = self.purchased + 1
+        self.last_purchase = datetime.datetime.utcnow()
         self.save()
+        
+        if self.purchased == self.stock:
+            self.complete()
 
     def complete(self):
         available = self.available()
@@ -576,9 +577,14 @@ class Offer(KnotisModel):
             self._update_offer_counts(-1)
 
     def available(self):
+        now = datetime.datetime.utcnow()
+   
         return self.active and \
             self.published and \
-            self.status == OfferStatus.CURRENT
+            self.status == OfferStatus.CURRENT and \
+            self.start_date < now and \
+            self.end_date > now and \
+            self.purchased < self.stock
 
     def title_formatted(self):
         if not self.title:
@@ -792,18 +798,9 @@ class Offer(KnotisModel):
                     is_self_dirty = True
 
         if None != image and (None == self.image or image != self.image.image):
-            if self.image:
-                self.image.image = image
-
-            else:
-                self.image = Image.objects.create_image(
-                    self.business.user,
-                    image,
-                    related_object_id=self.id
-                )
-
-            self.image.save()
-
+            self.image = image
+            is_self_dirty=True
+        
         if None != category and category != self.category:
             self.category = category
             is_self_dirty = True

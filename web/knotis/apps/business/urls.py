@@ -33,16 +33,6 @@ urlpatterns = patterns(
         'set_primary_image'
     ),
     url(
-        r''.join([
-            '^business/profile/delete_image/(?P<business_id>',
-            REGEX_UUID,
-            ')/(?P<image_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        'delete_image'
-    ),
-    url(
         r'^subscriptions/$',
         'subscriptions',
     ),

@@ -1,4 +1,10 @@
-from django.db.models import CharField, Manager
+import math
+
+from django.db.models import (
+    CharField, 
+    FloatField,
+    Manager
+)
 from django.contrib.auth.models import User
 from sorl.thumbnail import ImageField
 
@@ -52,7 +58,58 @@ class Image(KnotisModel):
         null=True,
         blank=True
     )
-
+    crop_left = FloatField(
+        null=True,
+        blank=True,
+        default=None
+    )
+    crop_top = FloatField(
+        null=True,
+        blank=True,
+        default=None
+    )
+    crop_right = FloatField(
+        null=True,
+        blank=True,
+        default=None
+    )
+    crop_bottom = FloatField(
+        null=True,
+        blank=True,
+        default=None
+    )
+    crop_width = FloatField(
+        null=True,
+        blank=True,
+        default=None
+    )
+    crop_height = FloatField(
+        null=True,
+        blank=True,
+        default=None
+    )
+        
+    def crop(self):
+        if (
+            self.crop_left and
+            self.crop_top and
+            self.crop_width and
+            self.crop_height
+        ):
+            return ''.join([
+                str(int(math.floor(self.crop_left))),
+                'px ',
+                str(int(math.floor(self.crop_top))),
+                'px ',
+                str(int(math.floor(self.crop_width))),
+                'px ',
+                str(int(math.floor(self.crop_height))),
+                'px'
+            ])
+        
+        else:
+            return 'noop'
+    
     def update(
         self,
         image=None,
