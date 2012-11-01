@@ -5,7 +5,7 @@
     <div class="line-bottom clear-fix">
         <div class="offers-image radius-general left relative">
             <div class="ribbon-backend{% if not transaction.offer.available %}-inactive{% endif %}" ></div>
-            <div class="category food"></div>
+            <div class="category{% if transaction.offer.category %} cat-{{ transaction.offer.category.short_name|title }}{% endif %}"></div>
             <img alt=""
                  {% thumbnail transaction.offer.image.image '72x72' as image %}
                  src="{{ image.url }}"

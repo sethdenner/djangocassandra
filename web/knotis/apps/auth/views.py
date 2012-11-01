@@ -396,6 +396,7 @@ def login(request):
 
         if AccountTypes.USER == user_profile.account_type:
             default_url = '/offers/'
+        
         else:
             default_url = '/dashboard/'
 
@@ -594,16 +595,38 @@ def validate(
     redirect_url = '/'
 
     try:
-        user = KnotisUser.objects.get(pk=user_id)
-        if Endpoint.objects.validate_endpoints(
-            validation_key,
-            user
-        ):
-            user_profile = UserProfile.objects.get(user=user)
-            if AccountStatus.NEW == user_profile.account_status:
-                user_profile.activate()
-
-            redirect_url = settings.LOGIN_URL
+        authenticated_user = authenticate(
+            user_id=user_id,
+            validation_key=validation_key
+        )
+        
+        if not authenticated_user:
+            user = KnotisUser.objects.get(pk=user_id)
+            
+            if Endpoint.objects.validate_endpoints(
+                validation_key,
+                user
+            ):
+                user_profile = UserProfile.objects.get(user=user)
+                if AccountStatus.NEW == user_profile.account_status:
+                    user_profile.activate()
+                                
+                redirect_url = settings.LOGIN_URL
+        
+        else:
+            user_profile = UserProfile.objects.get(user=authenticated_user)
+            user_profile.activate()
+            
+            django_login(
+                request,
+                authenticated_user
+            )
+            
+            if AccountTypes.USER == user_profile.account_type:
+                redirect_url = '/offers/'
+            
+            else:
+                redirect_url = '/dashboard/'
 
     except:
         logger.exception('exception while validating endpoint')

@@ -3287,6 +3287,15 @@ a.delete{
     font-size:12px;
 }
 
+a.crop{
+    background:#df9638;
+    color:#fff;
+    padding:3px 10px;
+    text-decoration:none;
+    font-size:12px;
+    margin-right:5px;
+}
+
 a.play_status{
     background:#439C2C;
     color:#fff;
@@ -3325,6 +3334,10 @@ p.offers-business a.active {
 
 .link-name a.delete:hover {
     background: #a21212;
+}
+
+.link-name a.crop:hover {
+    background: #acca2c;
 }
 
 .link-name a.principal:hover{
@@ -3706,8 +3719,13 @@ li.categoryselect div.selector select {
 }
 
 .gallery {
-     height: 19px;
+    height: 19px;
     width:19px;
+}
+
+.business-gallery {
+    height: 19px;
+    width: 35px;
 }
 
 .twitter-content img,

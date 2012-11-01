@@ -31,7 +31,7 @@
                         profile: 0,
                         url_var: '/offer/{{ offer.id }}/',
                         position: results[0].geometry.location,
-                        {% thumbnail offer.image.image '49x49' as image %}
+                        {% thumbnail offer.image.image '49x49' crop=offer.image.crop as image %}
                         icon: '{{ image.url }}'
                         {% empty %}
                         icon: '{{ STATIC_URL }}images/layouts/knotis-icon-rounded-map.png'

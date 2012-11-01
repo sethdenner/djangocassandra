@@ -9,6 +9,7 @@ DATABASES = {
     }
 }
 
+EMAIL_BILLING_USER = 'billing@knotis.com'
 EMAIL_HOST_USER = 'support@knotis.com'
 EMAIL_HOST_PASSWORD = 'p0tent1al!'
 

@@ -52,6 +52,7 @@ from knotis.apps.category.models import (
     Neighborhood
 )
 from knotis.apps.media.models import Image
+from knotis.apps.media.views import render_image_list
 from knotis.apps.auth.models import (
     KnotisUser,
     UserProfile
@@ -89,7 +90,7 @@ class OfferForm(ModelForm):
     address_value = CharField(max_length=256)
     start_date = DateTimeField()
     end_date = DateTimeField()
-    image_source = ImageField(required=False)
+    image_id = CharField(max_length=128, required=False)
     neighborhood = CharField(max_length=128, required=False)
     city = CharField(max_length=128)
 
@@ -189,7 +190,14 @@ class OfferForm(ModelForm):
         published = offer.published if not rerun and offer else False
         published = published or 'publish' in request.POST
 
-        if published and not self.cleaned_data.get('image_source'):
+        image_id = self.cleaned_data.get('image_id')
+        try:
+            offer_image = Image.objects.get(pk=image_id)
+        
+        except:
+            offer_image = None
+            
+        if published and not offer_image:
             if not rerun and offer:
                 try:
                     offer_images = Image.objects.filter(
@@ -216,7 +224,7 @@ class OfferForm(ModelForm):
                 self.cleaned_data['city'],
                 self.cleaned_data['neighborhood'],
                 self.cleaned_data['address_value'],
-                self.cleaned_data['image_source'],
+                offer_image,
                 self.cleaned_data['category'],
                 self.cleaned_data['price_retail'],
                 self.cleaned_data['price_discount'],
@@ -239,7 +247,7 @@ class OfferForm(ModelForm):
                 self.cleaned_data['city'],
                 self.cleaned_data['neighborhood'],
                 self.cleaned_data['address_value'],
-                self.cleaned_data['image_source'],
+                offer_image,
                 self.cleaned_data['category'],
                 self.cleaned_data['price_retail'],
                 self.cleaned_data['price_discount'],
@@ -480,7 +488,8 @@ def dashboard(request):
         try:
             template_parameters['offers'] = Offer.objects.filter(
                 business=business,
-                status=OfferStatus.CREATED
+                status=OfferStatus.CREATED,
+                deleted=False
             )
         except:
             pass
@@ -555,6 +564,11 @@ def edit(
 
     feedback = None
     if request.method == 'POST':
+        delete = 'delete' in request.POST
+        if delete:
+            offer.delete()
+            return redirect('/offers/dashboard')
+        
         form = OfferForm(
             request.POST,
             request.FILES
@@ -610,7 +624,17 @@ def edit(
     else:
         template_parameters['neighborhoods'] = None
 
-    template_parameters['business'] = Business.objects.get(user=request.user)
+    business = Business.objects.get(user=request.user)
+    template_parameters['business'] = business
+    template_parameters['do_upload'] = True
+    if offer and offer.image:
+        options = {
+            'alt_text': offer.title_formatted(),
+            'images': [offer.image],
+            'dimensions': '19x19',
+            'image_class': 'gallery'
+        }
+        template_parameters['image_list'] = render_image_list(options)
     template_parameters['categories'] = Category.objects.all()
     template_parameters['offer_form'] = form
     template_parameters['offer'] = offer
