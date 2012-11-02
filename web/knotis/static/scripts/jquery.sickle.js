@@ -80,9 +80,25 @@
                         }
                     });
                     
-                    $.colorbox.resize({
-                        innerWidth: $image.width()
-                    });
+                    var resize_box = function() {
+                        $image = $('#sickle_image');
+                        image_width = $image.width();
+                        image_height = $image.height();
+                        if (image_height > image_width) {
+                            $.colorbox.resize({
+                                innerHeight: image_height
+                            });
+    
+                        } else {
+                            $.colorbox.resize({
+                                innerWidth: image_width
+                            });
+                            
+                        }
+                        
+                    };
+                    resize_box();
+                    setTimeout(resize_box, 500);
                     
                     $('#sickle_form').submit(function(event) {
                         $.ajax({
