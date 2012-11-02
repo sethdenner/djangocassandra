@@ -24,6 +24,7 @@ from knotis.apps.endpoint.models import (
     EndpointFacebook,
     EndpointYelp
 )
+from knotis.utils.view import sanitize_input_html
 
 
 def clean_business_backend_name(name):
@@ -156,7 +157,7 @@ class Business(KnotisModel):
         related_name='business_content_root'
     )
     business_name = ForeignKey(
-        Content, 
+        Content,
         related_name='business_business_name'
     )
     summary = ForeignKey(
@@ -309,6 +310,14 @@ class Business(KnotisModel):
 
         if is_self_dirty:
             self.save()
+
+    def description_formatted_html(self):
+        return sanitize_input_html(
+            self.description.value.replace(
+                '\n',
+                '<br/>'
+            )
+        )
 
 
 class BusinessLink(KnotisModel):
