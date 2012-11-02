@@ -185,14 +185,12 @@ $(function() {
 
     });
 
-    if ($('#is-mobile').length == 0) {
-        $("#search").keyup(function(event) {
-            if (event.keyCode == 13) {
-                var string = $("#search").val();
-                window.location = server +"offers/?query=" + string;
-            }
-        });
-    }
+    $("#search").keyup(function(event) {
+        if (event.keyCode == 13) {
+            var string = $("#search").val();
+            window.location = "offers/?query=" + string;
+        }
+    });
     
     $('.link-search').click(function(event) {
        window.location = [
@@ -515,19 +513,22 @@ $(function() {
         );
     }
 
-    $search = $('#search');
-
-    if ($('#is-mobile').length == 0) {
-        $search.live('keyup', function(evt){
-            searchOffers($search.val());
-            return cancelEvent(evt);
-        });
-    }
+    $search_ajax = $('#search_ajax');
 
     $('.search-offers').live('click', function(evt){
-        searchOffers($search.val());        
+        searchOffers($search_ajax.val());        
         return cancelEvent(evt);
-    })
+
+    });
+    
+    $('#search_ajax').live('keyup', function(evt) {
+        if (evt.keyCode == 13) {
+            searchOffers($search_ajax.val());        
+            return cancelEvent(evt);
+
+        }
+
+    });
 
     $('.searchtag').live('click', function() {
         var $this = $(this),
