@@ -14,13 +14,13 @@ class ContentManager(Manager):
         FIXME: Inefficient. We should find some way to reduce this to one
         query instead of 2 through denormalization.
         """
-        qset = super(ContentManager, self).get_query_set().filter(
+        qset = self.get_query_set().filter(
                 content_type='1.1',
                 name=template_name
             )
 
         if not len(qset):
-            return None
+            return self.none()
 
         parent = qset[0]
 
