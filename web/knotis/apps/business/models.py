@@ -178,6 +178,17 @@ class Business(KnotisModel):
     primary_image = ForeignKey(Image)
 
     pub_date = DateTimeField('date published', auto_now_add=True)
+    
+    def summary_140(self):
+        if not self.summary or not self.summary.value:
+            return '';
+        
+        elipsis = len(self.summary.value) > 110
+            
+        return ''.join([
+            self.summary.value[:110],
+            '...'if elipsis else ''
+        ])
 
     def __unicode__(self):
         return self.backend_name
