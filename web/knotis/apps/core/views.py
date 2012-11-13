@@ -6,6 +6,7 @@ from django.conf import settings
 from knotis.utils.view import get_standard_template_parameters
 from knotis.apps.content.models import Content
 from knotis.apps.business.models import Business
+from knotis.apps.business.views import render_business_rows
 
 logger = logging.getLogger(__name__)
 
@@ -31,28 +32,14 @@ def index(
     if 'login' == login:
         template_parameters['login'] = True
 
-    try:
-        init = 0
-        rows = 4
-        bpr = 3
+    query = request.GET.get('query')
+    if query:
+        template_parameters['query'] = query
         
-        businesses = []
-        for backend_name in settings.PRIORITY_BUSINESS_NAMES[init:init + rows*bpr]:
-            try:
-                businesses.append(Business.objects.get(backend_name=backend_name))
-                
-            except:
-                continue
-            
-        business_rows = [[
-                business for business in businesses[x*bpr:x*bpr + bpr]
-            ] for x in range(0, rows)
-        ]
-        
-        template_parameters['business_rows'] = business_rows
-
-    except:
-        businesses = None
+    template_parameters['business_rows'] = render_business_rows(query=query)
+    template_parameters['scripts'] = [
+        'views/core.index.js'
+    ]
 
     return render(
         request,

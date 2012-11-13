@@ -49,7 +49,7 @@ BUSINESS_NAME_BLACKLIST = (
 PRIORITY_BUSINESS_NAMES = [
     'cupcake-royale-captiol-hill',
     'brooks-brothers',
-    'via-tribunali-fremont',
+    'via-tribunali---capitol-hill',
     'caffe-vita-capitol-hill',
     'paramount-theatre',
     'teatro-zinzanni',
@@ -58,7 +58,23 @@ PRIORITY_BUSINESS_NAMES = [
     'macrina-bakery',
     'paseo-caribbean-restaurant',
     'easy-street-records',
-    'verbovski-photography'
+    'verbovski-photography',
+    'zpizza',
+    'mountain-to-sound-outfitters',
+    'calico-healthy-skin-and-waxing',
+    'blue-highway-games',
+    'throwbacks-northwest',
+    'lab5-fitness',
+    'sugarpill',
+    'homestreet-bank',
+    'cactus-madison-park',
+    'pirkko',
+    'umi-sake-house',
+    'scraps-dog-bakery-and-boutique',
+    'cherry-consignment',
+    'dr.-peter-h.-yi-dds-ps',
+    'green-leaf-belltown',
+    'ipic-theaters'
 ]
 
 ADMINS = (

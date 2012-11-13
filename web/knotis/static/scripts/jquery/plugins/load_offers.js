@@ -1,6 +1,7 @@
 (function($) {
     var _default_options = {
-        'page_size': 20
+        'page_size': 20,
+        'items_per_row': 1
     };
     var _options = _default_options;
     
@@ -147,8 +148,8 @@
                         
                         if (!href) { return; }
                         
-                        rows = $content.children().children();
-                        if (rows.length < _options.page_size * current_page) { return; }
+                        var $items = $content.find('.auto-load-item');
+                        if ($items.length < _options.page_size * current_page) { return; }
                         
                         $content.load_offers(
                             'load', 

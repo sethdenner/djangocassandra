@@ -179,6 +179,27 @@ class Business(KnotisModel):
 
     pub_date = DateTimeField('date published', auto_now_add=True)
     
+
+    def search(
+        self,
+        query
+    ):
+        query = query.lower()
+        
+        if self.business_name and self.business_name.value:
+            if query in self.business_name.value.lower():
+                return True
+        
+        if self.summary and self.summary.value:
+            if query in self.summary.value.lower():
+                return True
+                    
+        if self.description and self.description.value:
+            if query in self.description.value.lower():
+                return True
+
+        return False
+    
     def summary_140(self):
         if not self.summary or not self.summary.value:
             return '';
