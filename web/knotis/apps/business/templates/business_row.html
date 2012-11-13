@@ -1,0 +1,72 @@
+{% load thumbnail %}
+{% if business_rows %}
+{% for row in business_rows %}
+<div class="business-row wrapper clear-fix">
+    {% if render_about and forloop.counter == 1 %}
+    <div class="box" style="width:222px">
+        <div class="box-bottom box-border">
+            <div class="box-info" style="height: 342px;">
+                <h5>
+                    <strong>About Knotis</strong>
+                </h5>
+                <h6 class="clean" style="margin-bottom: 8px;">
+                    Powering Your Business; Empowering Your Customers. 
+                </h6>
+                <p class="txt-size clean" style="margin-bottom: 8px;">
+                    Knotis is the small business toolkit linking local merchants to their local customers - 
+                    with more cool features on the way to help your business be Knotis'd!  In the meantime, 
+                    buying or selling, stay in the Kno' about your favorite local places. Free to Plug & Play!                                
+                </p>    
+            </div>
+        </div>                    
+    </div>
+    {% else %}
+    <div class="box" style="width:222px">&nbsp;</div>
+    {% endif %}
+    {% for business in row %}
+    <div class="box auto-load-item" style="width:222px">
+        <div class="box-bottom box-border">
+            <div class="box-image-home">
+                <a href="/{{ business.backend_name }}/" title="{{ business.business_name.value }}"
+                   alt="{{ offer.title_formatted }}">
+                   {% thumbnail business.primary_image.image '222x112' crop='top' as image %}
+                   <img alt="{{ business.name }}" src="{{ image.url }}"/>
+                   {% empty %}
+                   <img alt="{{ business.name }}" src="{{ STATIC_URL }}images/no-image-business.png" />
+                   {% endthumbnail %}
+                </a>
+            </div>
+            <div class="box-info">
+                <h5>
+                    <strong><a href="/{{ business.backend_name }}/" >
+                    <strong><a href="/{{ business.backend_name }}/" >
+                        {{ business.business_name.value }}
+                    </a></strong>
+                    </a></strong>
+                </h5>
+                <p class="txt-size clean" style="margin-bottom: 16px;">
+                    {% if business.summary %}
+                    {{ business.summary_140 }}
+                    {% endif %}
+                </p>    
+                {% if business.address or business.phone %}
+                <div class="quick-contact" style="float: none;">
+                    <ul>
+                        {% if business.address %}
+                        <li class="address txt-size"><a
+                                href="http://maps.google.com/maps?q={{ business.address.value.value }}"
+                                target="_blank">{{ business.address.value.value }}</a></li>
+                        {% endif %}
+                        {% if business.phone %}
+                        <li class="phone txt-size"><a href="callto:{{ business.phone.value }}"> {{ business.phone.value.value }}</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+{% endif %}

@@ -567,7 +567,7 @@ STRUCTURE
 
 .header-bottom {
     /*height: 390px;*/
-    background: url("../../images/layouts/knotis-back-header-bottom.png") repeat-x;
+    background: url("../../images/layouts/knotis-back-header-bottom.png") repeat-x #f8f8f8;
 
 }
 
@@ -867,7 +867,6 @@ STRUCTURE
 }
 
 .content-home {
-    background: url("../../images/layouts/knotis-back-content_home.png") repeat;
     padding-top: 20px;
 }
 
@@ -2020,6 +2019,11 @@ h4.circle {
     margin-bottom: 8px;
 }
 
+.box-info h6 {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
 .offers-action-top p {
     text-transform: uppercase;
     color: #697a1e;
@@ -2471,6 +2475,14 @@ a.button-lead:active,
 }
 
 
+.business-search-home {
+    padding: 0 0 0 440px;
+}
+
+.business-row {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 
 .offers-txt a,
 .business-buy{

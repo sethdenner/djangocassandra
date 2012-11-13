@@ -40,4 +40,8 @@ urlpatterns = patterns(
         r'^business/services/$',
         'services',
     ),
+    url(
+        r'^businesses/as_rows/((?P<page>[\d]+)/)?$',
+        'get_business_rows'
+    ),
 )

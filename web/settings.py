@@ -46,6 +46,37 @@ BUSINESS_NAME_BLACKLIST = (
     'neighborhood',
 )
 
+PRIORITY_BUSINESS_NAMES = [
+    'cupcake-royale-captiol-hill',
+    'brooks-brothers',
+    'via-tribunali---capitol-hill',
+    'caffe-vita-capitol-hill',
+    'paramount-theatre',
+    'teatro-zinzanni',
+    'lunch-box-laboratory-south-lake-union',
+    'elysian-brewing-co.-capitol-hill',
+    'macrina-bakery',
+    'paseo-caribbean-restaurant',
+    'easy-street-records',
+    'verbovski-photography',
+    'zpizza',
+    'mountain-to-sound-outfitters',
+    'calico-healthy-skin-and-waxing',
+    'blue-highway-games',
+    'throwbacks-northwest',
+    'lab5-fitness',
+    'sugarpill',
+    'homestreet-bank',
+    'cactus-madison-park',
+    'pirkko',
+    'umi-sake-house',
+    'scraps-dog-bakery-and-boutique',
+    'cherry-consignment',
+    'dr.-peter-h.-yi-dds-ps',
+    'green-leaf-belltown',
+    'ipic-theaters'
+]
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )

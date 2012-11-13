@@ -184,20 +184,11 @@ $(function() {
         return false;
 
     });
-
-    if ($('#is-mobile').length == 0) {
-        $("#search").keyup(function(event) {
-            if (event.keyCode == 13) {
-                var string = $("#search").val();
-                window.location = server +"offers/?query=" + string;
-            }
-        });
-    }
     
     $('.link-search').click(function(event) {
        window.location = [
-           '/offers/?query=',
-           $('#search').val()
+           '/?query=',
+           $('#business-search').val()
        ].join('');
        event.stopPropagation();
        return false;
@@ -206,8 +197,8 @@ $(function() {
     
     $('#search_form').submit(function(event){
        window.location = [
-           '/offers/?query=',
-           $('#search').val()
+           '/?query=',
+           $('#business-search').val()
        ].join('');
        event.stopPropagation();
        return false;
@@ -516,13 +507,6 @@ $(function() {
     }
 
     $search = $('#search');
-
-    if ($('#is-mobile').length == 0) {
-        $search.live('keyup', function(evt){
-            searchOffers($search.val());
-            return cancelEvent(evt);
-        });
-    }
 
     $('.search-offers').live('click', function(evt){
         searchOffers($search.val());        
