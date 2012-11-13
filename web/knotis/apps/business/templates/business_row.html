@@ -5,18 +5,20 @@
     {% if render_about and forloop.counter == 1 %}
     <div class="box" style="width:222px">
         <div class="box-bottom box-border">
-            <div class="box-info" style="height: 342px;">
+            <div class="box-info business-info" style="height: 342px;">
                 <h5>
-                    <strong>About Knotis</strong>
+                    <strong>Powering Your Business; Empowering Your Customers.</strong> 
                 </h5>
-                <h6 class="clean" style="margin-bottom: 8px;">
-                    Powering Your Business; Empowering Your Customers. 
-                </h6>
-                <p class="txt-size clean" style="margin-bottom: 8px;">
+                <p class="txt-size clean" style="padding: 8px; margin: 18px 5px 0 5px;">
                     Knotis is the small business toolkit linking local merchants to their local customers - 
                     with more cool features on the way to help your business be Knotis'd!  In the meantime, 
                     buying or selling, stay in the Kno' about your favorite local places. Free to Plug & Play!                                
                 </p>    
+                <div class="column-text">
+                    <div class="box-border sig_in sign-in-business">
+                        <a href="/plans/" title="Sign Up &amp; Discover Great Offers" class="button radius-general clear-fix">Feature your business!</a>
+                    </div>                
+                </div>
             </div>
         </div>                    
     </div>
@@ -36,7 +38,7 @@
                    {% endthumbnail %}
                 </a>
             </div>
-            <div class="box-info">
+            <div class="box-info business-info">
                 <h5>
                     <strong><a href="/{{ business.backend_name }}/" >
                     <strong><a href="/{{ business.backend_name }}/" >

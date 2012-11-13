@@ -28,12 +28,11 @@
             <div class="active absolute"></div>
             {% endif %}
             <a class="gallery-zoom"
-                {% thumbnail offer.image.image '600x600' as image %}
+                {% thumbnail offer.image.image '600x600' crop=offer.image.crop as image %}
                 href="{{ image.url }}"
                 {% empty %}
                 href="{{ STATIC_URL }}images/layouts/knotis-offer-image.jpg"
-                {% endthumbnail %} />
-               title="{{ offer.title.value }}">
+                {% endthumbnail %} title="{{ offer.title.value }}" > </a>
                {% if offer.image %}
                <div class="zoom zoom-inactive"></div>
                {% endif %}
