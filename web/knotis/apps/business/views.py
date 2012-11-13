@@ -505,38 +505,29 @@ def render_business_rows(
     priority_businesses = []
     total_priority_businesses = 0
     
-    if query:
-        for name in settings.PRIORITY_BUSINESS_NAMES:
-            try:
-                business = Business.objects.get(backend_name=name)
-                if business.search(query):
-                    priority_businesses.append(business)
-                    total_priority_businesses = total_priority_businesses + 1
+    for name in settings.PRIORITY_BUSINESS_NAMES:
+        try:
+            business = Business.objects.get(backend_name=name)
+            valid = True
+            if query:
+                valid = business.search(query)
             
-            except:
-                continue
-                    
-        priority_businesses = priority_businesses[init:init + rows*bpr]
-        
-    else:
-        priority_business_names = settings.PRIORITY_BUSINESS_NAMES[init:init + rows*bpr]
-        total_priority_businesses = len(settings.PRIORITY_BUSINESS_NAMES)
-        
-        for backend_name in priority_business_names:
-            try:
-                priority_businesses.append(
-                    Business.objects.get(backend_name=backend_name)
-                )
+            if valid:
+                priority_businesses.append(business)
+                total_priority_businesses = total_priority_businesses + 1
+
+        except:
+            continue
                 
-            except:
-                continue
-        
-        
+    priority_businesses = priority_businesses[init:init + rows*bpr]
+            
     if len(priority_businesses):
         init = 0
     
     else:
         init = init - total_priority_businesses
+        
+    logger.debug('init: %s' % init, )
                 
     vacant_slots = rows*bpr - len(priority_businesses)
     businesses = []
