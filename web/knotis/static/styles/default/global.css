@@ -572,8 +572,8 @@ STRUCTURE
 }
 
 .column-text {
-    width: 303px;
-    padding-top: 70px;
+    width: 100%;
+    padding-top: 20px;
 }
 
 .column-text span {
@@ -2024,6 +2024,12 @@ h4.circle {
     font-weight: bold;
 }
 
+.business-info h5 {
+    color: #3395a8;
+    text-align: center;
+    height: 45px;
+}
+
 .offers-action-top p {
     text-transform: uppercase;
     color: #697a1e;
@@ -2471,7 +2477,7 @@ a.button-lead:active,
 /* content */
 .box-info h5 a {
     text-decoration: none;
-    color:#444444;
+    color: #3395a8;
 }
 
 
