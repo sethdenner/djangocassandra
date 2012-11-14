@@ -20,6 +20,8 @@ from django.shortcuts import (
     render,
     redirect
 )
+from django.template import Context
+from django.template.loader import get_template
 from django.utils.http import urlquote
 from django.contrib.auth.decorators import login_required
 
@@ -451,3 +453,127 @@ def subscriptions(request):
         'subscriptions.html',
         template_parameters
     )
+    
+    
+def get_business_rows(
+    request,
+    page='1',
+    count='12',
+):
+    page = int(page)
+    count = int(count)
+    
+    page = page - 1
+    if page < 0:
+        page = 0
+        
+    bpr = 3
+    options = {
+        'init': page*count,
+        'rows': count/bpr,
+        'bpr': bpr
+    }
+    
+    query = request.GET.get('query')
+    
+    return render_business_rows(
+        options,
+        request,
+        query
+    )
+    
+    
+def render_business_rows(
+    options=None, 
+    request=None,
+    query=None
+):
+    default_options = {
+        'init': 0,
+        'rows': 4,
+        'bpr': 3
+    }
+    if options:
+        default_options.update(options)
+        
+    options = default_options
+
+    init = options['init']
+    rows = options['rows']
+    bpr = options['bpr']
+    
+    priority_businesses = []
+    total_priority_businesses = 0
+    
+    for name in settings.PRIORITY_BUSINESS_NAMES:
+        try:
+            business = Business.objects.get(backend_name=name)
+            valid = True
+            if query:
+                valid = business.search(query)
+            
+            if valid:
+                priority_businesses.append(business)
+                total_priority_businesses = total_priority_businesses + 1
+
+        except:
+            continue
+                
+    priority_businesses = priority_businesses[init:init + rows*bpr]
+            
+    if len(priority_businesses):
+        init = 0
+    
+    else:
+        init = init - total_priority_businesses
+        
+    logger.debug('init: %s' % init, )
+                
+    vacant_slots = rows*bpr - len(priority_businesses)
+    businesses = []
+    if vacant_slots:
+        try:
+            if query:
+                all_businesses = Business.objects.all()
+                business_results = []
+                for business in all_businesses:
+                    if business.search(query):
+                        business_results.append(business)
+                        
+                
+                businesses += business_results[init:init + vacant_slots]
+            
+            else:
+                businesses += Business.objects.all()[init:init + vacant_slots]
+        
+        except:
+            pass
+        
+    businesses = priority_businesses + businesses
+    if not businesses:
+        if request:
+            return HttpResponse('')
+        
+        else:
+            return ''
+        
+    business_rows = [[
+            business for business in businesses[x*bpr:x*bpr + bpr]
+        ] for x in range(0, rows)
+    ]
+
+    options['business_rows'] = business_rows 
+    options['render_about'] = None == request
+    options['STATIC_URL'] = settings.STATIC_URL
+
+    if request:
+        return render(
+            request,
+            'business_row.html',
+            options
+        )
+
+    else:
+        context = Context(options)
+        business_row = get_template('business_row.html')
+        return business_row.render(context)
