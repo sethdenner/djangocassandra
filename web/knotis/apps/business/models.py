@@ -344,6 +344,9 @@ class Business(KnotisModel):
             self.save()
 
     def description_formatted_html(self):
+        if not self.description or not self.description.value:
+            return ''
+        
         return sanitize_input_html(
             self.description.value.replace(
                 '\n',
