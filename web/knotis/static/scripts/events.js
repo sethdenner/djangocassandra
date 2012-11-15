@@ -194,8 +194,8 @@ $(function() {
     
     $('.link-search').click(function(event) {
        window.location = [
-           '/offers/?query=',
-           $('#search').val()
+           '/?query=',
+           $('#business-search').val()
        ].join('');
        event.stopPropagation();
        return false;
@@ -204,8 +204,8 @@ $(function() {
     
     $('#search_form').submit(function(event){
        window.location = [
-           '/offers/?query=',
-           $('#search').val()
+           '/?query=',
+           $('#business-search').val()
        ].join('');
        event.stopPropagation();
        return false;

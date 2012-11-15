@@ -6,107 +6,31 @@
 {% block content %} 
 <div class="header-bottom">
     <div class="curve curve01 curve02">
-        <div class="wrapper back-curve clear-fix">
-            <div class="column-text left">
-                <h2 class="txt-white"><strong>{{ home_heading }}</strong></h2>
-                <p>{{ home_blurb }}</p>
-                {% if not user.is_authenticated %}
-                <div class="box-border sig_in margin-general">
-                    <a class="button radius-general clear-fix" title="{{ home_sign_up }}"
-                       href="/plans/">{{ home_sign_up }}</a>
-                </div>
-                <div class="box-border sig_in sign-in-business">
-                    <a class="button radius-general clear-fix" title="Sign Up &amp; Discover Great Offers"
-                       href="/plans/">{{ home_feature }}</a>
-                </div>
-                {% endif %}
-            </div>
-            <div class="column-map right">
-                <form class="principal" action="/offers/" method="get" id="search_form">
+        <div class="business-search-home">
+            <div class="column-map">
+                <form id="search_form" method="get" action="/offers/" class="principal">
                     <ul class="clear-fix">
                         <li class="radius-general">
-                            <div class="suggestionsBox" id="suggestions" style="display: none;">
-                                <div class="suggestionList" id="autoSuggestionsList">
+                            <div style="display: none;" id="suggestions" class="suggestionsBox">
+                                <div id="autoSuggestionsList" class="suggestionList">
                                     &nbsp;
                                 </div>
                             </div>
                             <label>
-                                <input id="search" type="text" class="search radius-general" placeholder="{{ home_search_text }}" value="">
+                                <input type="text" value="{{ query }}" placeholder="search local businesses" class="search radius-general" id="business-search">
                             </label>
                         </li>
                         <li class="radius-general">
-                            <a class="button radius-general txt-size link-search" name="link" href="">Search</a>
+                            <a href="" name="link" class="button radius-general txt-size link-search">Search</a>
                         </li>
                     </ul>
                 </form>
-                <div class="map box-border">
-                    {{ map_script }}
-                    <span class="radius-general span-map" id="map_canvas">
-                    </span>
-                </div>
             </div>
+        </div>
+        <div id="content" class="content-home" data-href="/businesses/as_rows/" data-page="1"{% if query %} data-query="{{ query }}"{% endif %} >
+            {{ business_rows }}
         </div>
     </div>
 </div>
 
-<div id="content" class="content-home">
-    <div class="wrapper">
-        <h3 class="txt-center shadow-white divider">
-            <strong><span>{{ home_special_offers }}</span></strong>
-        </h3>
-    </div>
-    <div class="wrapper clear-fix">
-        {% if premium_offers %}
-        {% for offer in premium_offers %}
-        <div class="box relative" style="width:222px">
-            <div class="category cat-{{ offer.category.name_short|capfirst }}"></div>
-            <div class="ribbon-price"><p>{{ offer.savings_percent }}%</p></div>
-            <h4 class="circle shadow-white">
-                <strong>
-                    {% if user.city_name %}
-                    {% if user.neighbourhood_name %}
-                    {{ user.neighbourhood_name }}
-                    {% else %}
-                    {{ user.city_name}}
-                    {% endif %}
-                    {% else %}
-                    ALL
-                    {% endif %}
-                </strong>
-            </h4>
-            <div class="box-bottom box-border">
-                <div class="box-image-home relative">
-                    <a href="/offer/{{ offer.id }}/" title="{{ offer.title_formatted }}"
-                       alt="{{ offer.title_formatted }}">
-                       {% thumbnail offer.business.primary_image.image '222x112' crop='top' as image %}
-                       <img alt="{{ offer.business.name }}" src="{{ image.url }}"/>
-                       {% endthumbnail %}
-                    </a>
-                </div>
-                <div class="box-info">
-                    <h5>
-                        <strong><a href="/offer/{{ offer.id }}/">
-                        <strong><a href="/offer/{{ offer.id }}/">
-                            {{ offer.title_formatted }}
-                        </a></strong>
-                        </a></strong>
-                    </h5>
-                    <p>
-                        <a class="txt-size margin-general clear-fix business-link business-buy" title="{{ offer.business.business_name.value }}"
-                            href="/{{ offer.business.backend_name }}/" >
-                            {{ offer.business.business_name.value }}
-                        </a>
-                    </p>
-                    <p class="txt-size clean">
-                        {% if offer.description %}
-                        {{ offer.description.value }}
-                        {% endif %}
-                    </p>    
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-        {% endif %}
-    </div>
-</div>
 {% endblock content %}
