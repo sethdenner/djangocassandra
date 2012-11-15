@@ -6,29 +6,30 @@
 {% block content %} 
 <div class="header-bottom">
     <div class="curve curve01 curve02">
-        <div class="business-search-home">
-            <div class="column-map">
-                <form id="search_form" method="get" action="/offers/" class="principal">
-                    <ul class="clear-fix">
-                        <li class="radius-general">
-                            <div style="display: none;" id="suggestions" class="suggestionsBox">
-                                <div id="autoSuggestionsList" class="suggestionList">
-                                    &nbsp;
+        <div class="wrapper back-curve clear-fix" >
+            <div class="business-search-home">
+                <div class="column-map right">
+                    <form id="search_form" method="get" action="/offers/" class="principal">
+                        <ul class="clear-fix">
+                            <li class="radius-general">
+                                <div style="display: none;" id="suggestions" class="suggestionsBox">
+                                    <div id="autoSuggestionsList" class="suggestionList">
+                                        &nbsp;
+                                    </div>
                                 </div>
-                            </div>
-                            <label>
                                 <input type="text" value="{{ query }}" placeholder="search local businesses" class="search radius-general" id="business-search">
-                            </label>
-                        </li>
-                        <li class="radius-general">
-                            <a href="" name="link" class="button radius-general txt-size link-search">Search</a>
-                        </li>
-                    </ul>
-                </form>
+                            </li>
+                            <li class="radius-general">
+                                <a href="" name="link" class="button radius-general txt-size link-search">Search</a>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
             </div>
-        </div>
-        <div id="content" class="content-home" data-href="/businesses/as_rows/" data-page="1"{% if query %} data-query="{{ query }}"{% endif %} >
-            {{ business_rows }}
+            <div class="clear-fix">&nbsp;</div>
+            <div id="content" class="content-home" data-href="/businesses/as_rows/" data-page="1"{% if query %} data-query="{{ query }}"{% endif %} >
+                {{ business_rows }}
+            </div>
         </div>
     </div>
 </div>
