@@ -288,7 +288,11 @@ def profile(request, backend_name):
     template_parameters['business'] = business
 
     if business.yelp_id and business.yelp_id.value.value:
-        template_parameters['yelp_reviews'] = get_reviews_by_yelp_id(business.yelp_id.value.value)
+        try:
+            template_parameters['yelp_reviews'] = get_reviews_by_yelp_id(business.yelp_id.value.value)
+        
+        except:
+            logger.exception('exception while getting yelp reviews')
 
     if business.twitter_name and business.twitter_name.value.value:
         template_parameters['twitter_feed'] = get_twitter_feed_html(
