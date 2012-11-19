@@ -62,7 +62,7 @@
                title="{{ offer.business.business_name.value }}" target="_blank"
                href="/{{ offer.business.backend_name }}/">{{ offer.business.business_name.value }}</a>
         </p>
-        <h4 class="margin-general">{% if offer %}{{ offer.summary.value }}{% endif %}</h4>
+        <h4 class="margin-general">{% if offer %}{{ offer.description_formatted_html|safe }}{% endif %}</h4>
         <div class="clear-fix margin-general">
             <p class="price left"><span>$</span>{{ offer.price_discount_formatted }}</p>
             <form method="post" action="/offer/buy/{{ offer.id }}/">{% csrf_token %}
@@ -87,7 +87,7 @@
                 <span class="txt-size">REMAINING</span>
             </li>
         </ul>
-        <p class="txt-size margin-general">{{ offer.description.value }}
+        <p class="txt-size margin-general">{{ offer.restrictions_formatted_html|safe }}
         <ul class="social clear-fix margin-general">
             <li>
                 <a href="http://www.facebook.com/sharer.php?u={{ BASE_URL }}/offer/{{ offer.id}}/"

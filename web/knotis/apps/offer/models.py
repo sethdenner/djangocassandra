@@ -12,7 +12,10 @@ from django.db.models import (
 from django.utils.http import urlquote
 from django.conf import settings
 
-from knotis.utils.view import format_currency
+from knotis.utils.view import (
+    format_currency,
+    sanitize_input_html
+)
 from knotis.apps.cassandra.models import ForeignKey
 from knotis.apps.core.models import KnotisModel
 from knotis.apps.content.models import (
@@ -585,6 +588,29 @@ class Offer(KnotisModel):
             self.start_date < now and \
             self.end_date > now and \
             self.purchased < self.stock
+
+
+    def description_formatted_html(self):
+        if not self.description or not self.description.value:
+            return ''
+        
+        return sanitize_input_html(
+            self.description.value.replace(
+                '\n',
+                '<br/>'
+            )
+        )
+        
+    def restrictions_formatted_html(self):
+        if not self.restrictions or not self.restrictions.value:
+            return ''
+        
+        return sanitize_input_html(
+            self.restrictions.value.replace(
+                '\n',
+                '<br/>'
+            )
+        )
 
     def title_formatted(self):
         if not self.title:
