@@ -98,9 +98,9 @@
                         <fieldset>
                             <h3 class="margin-general"><strong>History</strong></h3>
                             {% if scans %}
-                            {% for scan in scans %}<br />
+                            {% for scan in scans %}
                                 <div class="relative closeinfo">
-                                    <div class="message-confirm margin-general-25 radius-general ">{{ scan.uri }} ({{ scan.pub_date }})</div>
+                                    <div class="message-confirm radius-general ">{{ scan.uri }} ({{ scan.pub_date }})</div>
                                 </div>
                                 <div class="clean"></div>
                             {% endfor%}
