@@ -3714,6 +3714,8 @@ li.categoryselect div.selector select {
 
 .main-image-txt img {
     margin: 6px 0 0 6px;
+    width: 221px;
+    height: 125px;
 }
 
 /* content */
