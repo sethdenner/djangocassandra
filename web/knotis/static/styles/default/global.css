@@ -2487,14 +2487,11 @@ a.button-lead:active,
 }
 
 #scroll-to-top {
-    color: #444444;
-    font-weight: bold;
-    position: fixed;
-    top: 0px;
-    right: 140px;
-    text-decoration: underline;
+    left: 950px;
+    position: relative;
     z-index: 100;
     display: none;
+    padding: 5px;
 }
 
 .more-results {

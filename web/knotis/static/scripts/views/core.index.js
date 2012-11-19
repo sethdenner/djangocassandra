@@ -46,6 +46,10 @@ $(function(){
                 $to_top.hide();
                 
             }
+            $to_top.offset({
+                top: $window.scrollTop() + 5
+                
+            });
             
         });
         
