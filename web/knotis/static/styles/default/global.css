@@ -857,10 +857,6 @@ STRUCTURE
 
 /* content */
 
-#content {
-    padding-bottom: 30px;
-}
-
 #page .section {
     padding-bottom:0;
 
@@ -2488,6 +2484,12 @@ a.button-lead:active,
 .business-row {
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.more-results {
+    margin-bottom: 20px;
+    padding-left: 242px;
+    width: 702px;    
 }
 
 .offers-txt a,
