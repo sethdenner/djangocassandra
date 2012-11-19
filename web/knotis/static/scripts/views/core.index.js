@@ -27,6 +27,27 @@ $(function(){
             );
         };
         load_scroll();
+
+        var $to_top = $('#scroll-to-top'); 
+        $to_top.click(function(evt){
+            window.scrollTo(0, 0);
+           
+            evt.stopPropagation();
+            return false; 
+
+        });
+        
+        $(document).scroll(function(evt){
+            $window = $(window);
+            if ($window.scrollTop() > 500) {
+                $to_top.show();
+            
+            } else {
+                $to_top.hide();
+                
+            }
+            
+        });
         
         $('.load_more_results').click(function(evt){
             if (load_count >= load_max){
