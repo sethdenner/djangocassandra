@@ -46,12 +46,12 @@ def render_image_list(
             'image_list.html',
             options
         )
-        
+
     else:
         context = Context(options)
         image_list = get_template('image_list.html')
         return image_list.render(context)
-    
+
 
 def get_image_row(
     request,
@@ -59,18 +59,18 @@ def get_image_row(
 ):
     try:
         image = Image.objects.get(pk=image_id)
-    
+
     except:
         logger.exception('failed to get image')
-        
+
     if not image:
         return HttpResponseNotFound(
-            'Could not find image with id %s' % (image_id, )
+            'Could not find image with id %s' % (image_id,)
         )
-        
+
     try:
         business = Business.objects.get(pk=image.related_object_id)
-        
+
     except:
         business = None
 
@@ -81,25 +81,25 @@ def get_image_row(
         request
     )
 
+
 def get_image_list(
     request,
     related_object_id
 ):
-    try: 
+    try:
         images = Image.objects.filter(related_object_id=related_object_id)
-        
+
     except:
         logger.exception('failed to get images')
-        
+
     if not images:
         return HttpResponseNotFound(
-            'No images found for related_object_id %s' % (related_object_id, )
+            'No images found for related_object_id %s' % (related_object_id,)
         )
-        
-        
+
     try:
         business = Business.objects.get(pk=related_object_id)
-        
+
     except:
         business = None
 
@@ -107,7 +107,7 @@ def get_image_list(
         'images': images,
         'business': business
     }
-        
+
     return render_image_list(
         options,
         request

@@ -80,12 +80,11 @@ $(function() {
         
         $('.delete-image').unbind('click').bind('click', function() {
             var $this = $(this),
-                    image_id = $this.attr('data-image-id'),
-                    business_id = $this.attr('data-business-id');
+                    offer_id = $this.attr('data-context');
     
             $.post([
-                '/image/delete',
-                image_id,
+                '/offer/image/delete',
+                offer_id,
                 ''].join('/'), 
                 {},
                 function(data) {

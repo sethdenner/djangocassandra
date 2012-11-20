@@ -162,9 +162,10 @@ class OfferManager(Manager):
             active=active,
             premium=premium
         )
-        
-        image.related_object_id = offer.id
-        image.save()
+
+        if image:
+            image.related_object_id = offer.id
+            image.save()
 
         if offer.available():
             offer._update_offer_counts(1)
@@ -552,12 +553,12 @@ class Offer(KnotisModel):
 
     def purchase(self):
         if not self.available():
-            raise Exception('Could not purchase offer {%s}. Offer is not available' % (self.id, ))
-        
+            raise Exception('Could not purchase offer {%s}. Offer is not available' % (self.id,))
+
         self.purchased = self.purchased + 1
         self.last_purchase = datetime.datetime.utcnow()
         self.save()
-        
+
         if self.purchased == self.stock:
             self.complete()
 
@@ -581,7 +582,7 @@ class Offer(KnotisModel):
 
     def available(self):
         now = datetime.datetime.utcnow()
-   
+
         return self.active and \
             self.published and \
             self.status == OfferStatus.CURRENT and \
@@ -589,22 +590,21 @@ class Offer(KnotisModel):
             self.end_date > now and \
             self.purchased < self.stock
 
-
     def description_formatted_html(self):
         if not self.description or not self.description.value:
             return ''
-        
+
         return sanitize_input_html(
             self.description.value.replace(
                 '\n',
                 '<br/>'
             )
         )
-        
+
     def restrictions_formatted_html(self):
         if not self.restrictions or not self.restrictions.value:
             return ''
-        
+
         return sanitize_input_html(
             self.restrictions.value.replace(
                 '\n',
@@ -825,8 +825,8 @@ class Offer(KnotisModel):
 
         if None != image and (None == self.image or image != self.image.image):
             self.image = image
-            is_self_dirty=True
-        
+            is_self_dirty = True
+
         if None != category and category != self.category:
             self.category = category
             is_self_dirty = True
