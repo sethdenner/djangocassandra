@@ -17,7 +17,6 @@ from django.http import (
 from django.forms import (
     ModelForm,
     CharField,
-    ImageField,
     DateTimeField,
     ValidationError
 )
@@ -193,10 +192,10 @@ class OfferForm(ModelForm):
         image_id = self.cleaned_data.get('image_id')
         try:
             offer_image = Image.objects.get(pk=image_id)
-        
+
         except:
             offer_image = None
-            
+
         if published and not offer_image:
             if not rerun and offer:
                 try:
@@ -566,9 +565,10 @@ def edit(
     if request.method == 'POST':
         delete = 'delete' in request.POST
         if delete:
+            logger.debug('DELETE OFFER')
             offer.delete()
             return redirect('/offers/dashboard')
-        
+
         form = OfferForm(
             request.POST,
             request.FILES
@@ -632,7 +632,8 @@ def edit(
             'alt_text': offer.title_formatted(),
             'images': [offer.image],
             'dimensions': '19x19',
-            'image_class': 'gallery'
+            'image_class': 'gallery',
+            'context': offer.id
         }
         template_parameters['image_list'] = render_image_list(options)
     template_parameters['categories'] = Category.objects.all()
@@ -677,6 +678,38 @@ def activate(request):
         pass
 
     return HttpResponse()
+
+
+@login_required
+def delete_offer_image(
+    request,
+    offer_id
+):
+    if request.method.lower() != 'post':
+        return HttpResponseBadRequest('Method must be post.')
+
+    try:
+        offer = Offer.objects.get(pk=offer_id)
+
+    except:
+        offer = None
+
+    if not offer:
+        return HttpResponseNotFound('Offer not found')
+
+    if offer.business.user.id != request.user.id:
+        return HttpResponseBadRequest('Offer does not belong to user!')
+
+    try:
+        offer.image.image.delete()
+        offer.image.delete()
+        offer.image = None
+        offer.save()
+
+    except Exception, error:
+        return HttpResponseServerError(error)
+
+    return HttpResponse('OK')
 
 
 @login_required
