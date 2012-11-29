@@ -57,7 +57,8 @@ from knotis.apps.auth.models import (
 )
 from knotis.apps.endpoint.models import (
     Endpoint,
-    EndpointTypes
+    EndpointTypes,
+    EndpointEmail
 )
 from knotis.apps.content.models import Content
 from knotis.apps.feedback.views import render_feedback_popup
@@ -848,29 +849,42 @@ class UserProfileForm(Form):
 
 class EmailChangeForm(Form):
     email = EmailField(label='New')
+    
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        try:
+            user = KnotisUser.objects.get(username=email)
+        
+        except:
+            user = None
+         
+        if user:
+            raise ValidationError('That email address is already in use.')
+        
+        return email
 
     def save_email(
         self,
         request
     ):
-        emails = Endpoint.objects.filter(
-            user=request.user,
-            type=EndpointTypes.EMAIL
-        )
-
-        primary_email = None
-        for email in emails:
-            if email.value.value == request.user.username:
-                primary_email = email
-                break
-
-        if not primary_email:
-            return  # FUCKED! No Primary Email.
-
         new_email = self.cleaned_data['email']
-        primary_email.update(new_email)
-        request.user.username = new_email
-        request.user.save()
+        endpoint = EndpointEmail(
+            user=request.user,
+            value=new_email
+        )
+        endpoint.save()
+        generate_email(
+            'change_email',
+            'Knotis - Change Email Address Request',
+            settings.EMAIL_HOST_USER,
+            [new_email], {
+                'user_id': request.user.id,
+                'validation_key': endpoint.validation_key,
+                'BASE_URL': settings.BASE_URL,
+                'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
+                'SERVICE_NAME': settings.SERVICE_NAME
+            }
+        ).send()
 
 
 class ActivateBusinessForm(Form):
@@ -917,9 +931,11 @@ def profile(request):
             email_form = EmailChangeForm(request.POST)
             if email_form.is_valid():
                 email_form.save_email(request)
-                template_parameters['feedback'] = (
-                    'Your profile was updated successfully.'
-                )
+                template_parameters['feedback'] = ''.join([
+                    'Instructions on how to change your email have been sent to ',
+                    email_form.cleaned_data['email'],
+                    '.'
+                ])
 
             else:
                 template_parameters['feedback'] = (

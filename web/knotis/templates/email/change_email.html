@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>{{ SERVICE_NAME }}</title>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+</head>
+<body style="background-image: url('{{ STATIC_URL_ABSOLUTE }}images/email/bg-email-circle.jpg'); 
+        background-repeat: no-repeat; background-position: top center;">
+    <div style=" margin-left:auto; width:630px; margin-right: auto; 
+         background:#fff; margin-top: 20px;
+         border: 1px solid #bbb; border-radius:15px;">
+    <table style="margin-left:auto; width:550px; margin-right:auto; margin-top:20px" >
+    <tr >
+        <td>
+        <img style="float:left" alt="" src="{{ STATIC_URL_ABSOLUTE }}images/logo.png">
+        <label style="float:left; margin-top:30px; color: #4c545b; font-family: Arial, Helvetica, sans-serif; font-size: 32px; font-weight: bold;">{{ SERVICE_NAME }}</label>
+        </td>
+    </tr>
+    <tr>
+        <td height="30" colspan="2"
+            style=" text-align:left; color: #6f6f6f;
+            font-family: Arial, Helvetica, sans-serif;; font-size: 21px; font-weight:bold;  
+            border-bottom: 1px dashed #c1c1c1; padding-bottom:10px; padding-top:15px;">
+            New email confirmation</td>
+    </tr>
+    <tr>
+         <td class="copy" valign="top" style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #6f6f6f; line-height: 22px;">
+             <p style="text-align:center; font-size: 18px;">You have changed your email address for Knotis.<br />
+                 Follow this link to confirm your new email address:</p>
+		</td>
+	</tr>
+        <tr>
+            <td valign="top" 
+                style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; 
+                    color: #6f6f6f; line-height: 22px; display:block;  padding:15px; 
+                    background:#009FC3; margin-top:20px; ">
+                <p style="margin-top:6px; margin-bottom:0; text-align:center; font-size: 30px; color:#6DA745;">
+                    <a style="text-decoration: underline; color:#fff" target="_blank" href="<?php echo site_url('/user/reset_email/'.$user_id.'/'.$new_email_key); ?>">click to confirm your new email</a>
+                </p>
+            </td>
+        </tr>
+        <tr>
+         	<td class="copy" valign="top" style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #6f6f6f; line-height: 22px;">
+                                    <p style="text-align:center; font-size: 18px;">Link doesn't work? Copy the following link to your browser address bar:<br />
+<nobr><a href="{{ BASE_URL }}/auth/validate/{{ user_id }}/{{ validation_key }}/" style="color: #3366cc;">{{ BASE_URL }}/auth/validate/{{ user_id }}/{{ validation_key }}/</a></nobr><br />
+<br />
+<br />
+<br />
+<br />
+You received this email, because it was requested by a <a href="{{ BASE_URL }}" style="color: #B5D334;">{{ SERVICE_NAME }}</a> user. If you have received this by mistake, please DO NOT click the confirmation link, and simply delete this email. After a short time, the request will be removed from the system.</p>
+		</td>
+	</tr>
+       
+    <!--Footer-->
+    <tr>
+        <td valign="top"
+            style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #6f6f6f; line-height: 20px;">
+            <p style="text-align:center; margin-top: 20px;">Need help? <a
+                    style="text-decoration: underline; color: #B5D334" href="http://knotis.com/category/contact" target="_blank">Contact Us!</a>
+            </p>
+        </td>
+    </tr> 
+</table>
+        </div>
+</body>
+</html>
