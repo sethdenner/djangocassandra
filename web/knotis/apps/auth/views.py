@@ -588,6 +588,20 @@ def logout(request):
     return redirect('/')
 
 
+def send_new_user_email(username):
+    generate_email(
+        'newuser',
+        'Knotis.com - New User',
+        settings.EMAIL_HOST_USER,
+        [settings.EMAIL_HOST_USER], {
+            'username': username,
+            'BASE_URL': settings.BASE_URL,
+            'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
+            'SERVICE_NAME': settings.SERVICE_NAME
+        }
+    ).send()
+
+
 def validate(
     request,
     user_id,
@@ -610,13 +624,15 @@ def validate(
             ):
                 user_profile = UserProfile.objects.get(user=user)
                 if AccountStatus.NEW == user_profile.account_status:
-                    user_profile.activate()
+                    if user_profile.activate():
+                        send_new_user_email(user.username)
                                 
                 redirect_url = settings.LOGIN_URL
         
         else:
             user_profile = UserProfile.objects.get(user=authenticated_user)
-            user_profile.activate()
+            if user_profile.activate():
+                send_new_user_email(authenticated_user.username)
             
             django_login(
                 request,
