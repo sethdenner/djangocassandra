@@ -14,4 +14,5 @@ if [[ -d /srv/knotis/app/web ]] ; then
 
 fi
 
-cp ${1} /srv/knotis/app/web
+mkdir -p /srv/knotis/app 2> /dev/null
+cp -rf ${1} /srv/knotis/app/web

@@ -14,9 +14,6 @@ rm -rf /tmp/knotis 2> /dev/null
 mkdir -p /tmp/knotis
 cd /tmp/knotis
 
-# install virtual environment
-pip install virtualenv
-
 mkdir -p /srv/knotis /srv/knotis/logs /srv/knotis/run/eggs 2> /dev/null
 virtualenv /srv/knotis/venv
 

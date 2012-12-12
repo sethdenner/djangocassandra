@@ -201,7 +201,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
-            'filename': '/var/log/knotis/web.log',
+            'filename': '/srv/knotis/logs/web.log',
             'maxBytes': 1048576,
             'backupCount': 10
         }
@@ -211,14 +211,15 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'dev'
+ENVIRONMENT_NAME = 'seth'
 
 # You can key the configurations off of anything - I use project path.
 configs = {
     'dev': 'dev',
     'int': 'int',
     'prod': 'prod',
-    'stage': 'stage'
+    'stage': 'stage',
+    'seth': 'seth'
 }
 
 # Import the configuration settings file - REPLACE projectname with your project
