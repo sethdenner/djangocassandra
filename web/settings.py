@@ -7,6 +7,8 @@ SERVICE_NAME = 'Knotis'
 
 PRICE_MERCHANT_MONTHLY = 14.
 
+EMAIL_COMPLETED_OFFERS_INTERVAL_DAYS = 7
+
 BUSINESS_NAME_BLACKLIST = (
     'facebook',
     'login',
@@ -43,6 +45,37 @@ BUSINESS_NAME_BLACKLIST = (
     'paypal',
     'neighborhood',
 )
+
+PRIORITY_BUSINESS_NAMES = [
+    'cupcake-royale-captiol-hill',
+    'brooks-brothers',
+    'via-tribunali---capitol-hill',
+    'caffe-vita-capitol-hill',
+    'paramount-theatre',
+    'teatro-zinzanni',
+    'lunch-box-laboratory-south-lake-union',
+    'elysian-brewing-co.-capitol-hill',
+    'macrina-bakery',
+    'paseo-caribbean-restaurant',
+    'easy-street-records',
+    'verbovski-photography',
+    'zpizza',
+    'mountain-to-sound-outfitters',
+    'calico-healthy-skin-and-waxing',
+    'blue-highway-games',
+    'throwbacks-northwest',
+    'lab5-fitness',
+    'sugarpill',
+    'homestreet-bank',
+    'cactus-madison-park',
+    'pirkko',
+    'umi-sake-house',
+    'scraps-dog-bakery-and-boutique',
+    'cherry-consignment',
+    'dr.-peter-h.-yi-dds-ps',
+    'green-leaf-belltown',
+    'ipic-theaters'
+]
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -131,7 +164,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'knotis.apps.mobile.middleware.MobileDetectionMiddleware'                
+    'knotis.apps.mobile.middleware.MobileDetectionMiddleware'
 )
 
 ROOT_URLCONF = 'urls'
@@ -144,6 +177,7 @@ TEMPLATE_DIRS = (
 
 AUTHENTICATION_BACKENDS = (
     'permission_backend_nonrel.backends.NonrelPermissionBackend',
+    'knotis.apps.auth.authentication.backends.EndpointValidationAuthenticationBackend',
     'knotis.apps.legacy.authentication.backends.LegacyAuthenticationBackend',
     'knotis.apps.legacy.authentication.backends.HamburgertimeAuthenticationBackend'
 )

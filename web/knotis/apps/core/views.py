@@ -5,8 +5,8 @@ from django.conf import settings
 
 from knotis.utils.view import get_standard_template_parameters
 from knotis.apps.content.models import Content
-from knotis.apps.offer.models import Offer
-from knotis.apps.maps.views import OfferMap
+from knotis.apps.business.models import Business
+from knotis.apps.business.views import render_business_rows
 
 logger = logging.getLogger(__name__)
 
@@ -32,20 +32,14 @@ def index(
     if 'login' == login:
         template_parameters['login'] = True
 
-    try:
-        premium_offers = Offer.objects.get_available_offers(premium=True)[:4]
-        template_parameters['premium_offers'] = premium_offers
-
-    except:
-        premium_offers = None
-        template_parameters['premium_offers'] = premium_offers
-
-    offer_map = OfferMap(
-        settings.GOOGLE_MAPS_API_KEY,
-        premium_offers
-    )
-    template_parameters['google_map_api_script'] = offer_map.render_api_js()
-    template_parameters['map_script'] = offer_map.render()
+    query = request.GET.get('query')
+    if query:
+        template_parameters['query'] = query
+        
+    template_parameters['business_rows'] = render_business_rows(query=query)
+    template_parameters['scripts'] = [
+        'views/core.index.js'
+    ]
 
     return render(
         request,

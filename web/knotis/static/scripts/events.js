@@ -185,19 +185,17 @@ $(function() {
 
     });
 
-    if ($('#is-mobile').length == 0) {
-        $("#search").keyup(function(event) {
-            if (event.keyCode == 13) {
-                var string = $("#search").val();
-                window.location = server +"offers/?query=" + string;
-            }
-        });
-    }
+    $("#search").keyup(function(event) {
+        if (event.keyCode == 13) {
+            var string = $("#search").val();
+            window.location = "offers/?query=" + string;
+        }
+    });
     
     $('.link-search').click(function(event) {
        window.location = [
-           '/offers/?query=',
-           $('#search').val()
+           '/?query=',
+           $('#business-search').val()
        ].join('');
        event.stopPropagation();
        return false;
@@ -206,8 +204,8 @@ $(function() {
     
     $('#search_form').submit(function(event){
        window.location = [
-           '/offers/?query=',
-           $('#search').val()
+           '/?query=',
+           $('#business-search').val()
        ].join('');
        event.stopPropagation();
        return false;
@@ -515,19 +513,22 @@ $(function() {
         );
     }
 
-    $search = $('#search');
-
-    if ($('#is-mobile').length == 0) {
-        $search.live('keyup', function(evt){
-            searchOffers($search.val());
-            return cancelEvent(evt);
-        });
-    }
+    $search_ajax = $('#search_ajax');
 
     $('.search-offers').live('click', function(evt){
-        searchOffers($search.val());        
+        searchOffers($search_ajax.val());        
         return cancelEvent(evt);
-    })
+
+    });
+    
+    $('#search_ajax').live('keyup', function(evt) {
+        if (evt.keyCode == 13) {
+            searchOffers($search_ajax.val());        
+            return cancelEvent(evt);
+
+        }
+
+    });
 
     $('.searchtag').live('click', function() {
         var $this = $(this),
@@ -717,7 +718,7 @@ $(function() {
   
         active = active.toLowerCase() == 'true' ? false : true;
         $.post(
-            '/offers/update/', {
+            '/offer/activate/', {
                 'offer_id': id,
                 'active': active
             }, function(data) {
@@ -757,8 +758,7 @@ $(function() {
                 business_id = $this.attr('data-business-id');
 
         $.post([
-            '/business/profile/delete_image',
-            business_id,
+            '/image/delete',
             image_id,
             ''].join('/'), 
             {},
@@ -768,23 +768,6 @@ $(function() {
 
                 });
 
-        return false;
-
-    });
-
-
-    $('.delete-image-offer').live('click', function() {
-
-        var $this = $(this),
-                id = $this.attr('data-id'),
-                cont = $this.attr('data-cont');
-
-        $.post([server + "backend/delete_image_offer",id].join('/'), {},
-
-                function(data) {
-
-                    $('.' + cont).fadeOut();
-                });
         return false;
 
     });

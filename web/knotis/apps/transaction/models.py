@@ -44,7 +44,7 @@ class TransactionManager(Manager):
         value=0.,
         transaction_context=None
     ):
-        return self.create(
+        transaction =  self.create(
             user=user,
             business=business,
             offer=offer,
@@ -53,6 +53,11 @@ class TransactionManager(Manager):
             value=value,
             transaction_context=transaction_context
         )
+        
+        if offer and transaction_type == TransactionTypes.PURCHASE:
+            offer.purchase()
+            
+        return transaction
 
     def get_daily_revenue(
         self,

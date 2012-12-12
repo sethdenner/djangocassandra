@@ -1,0 +1,12 @@
+{% load thumbnail %}
+<div id="sickle_content" >
+    {% thumbnail image.image image_dimension as image %}
+    <img id="sickle_image" src="{{ image.url }}" />
+    {% endthumbnail %}
+    <form id="sickle_form" method="post" action="{{ post_url }}" >{% csrf_token %}
+        {{ form.as_p }}
+        <p> 
+            <input id="sickle_crop_image" type="submit" value="{{ button_text }}"{% if button_class %}class="{{ button_class }}" {% endif %} />
+        </p>
+    </form>
+</div>

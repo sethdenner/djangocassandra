@@ -1,3 +1,6 @@
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
+
 from django.conf import settings
 from django.forms import (
     Form,
@@ -17,10 +20,15 @@ from django.shortcuts import (
     render,
     redirect
 )
+from django.template import Context
+from django.template.loader import get_template
 from django.utils.http import urlquote
 from django.contrib.auth.decorators import login_required
 
-from knotis.utils.view import get_standard_template_parameters
+from knotis.utils.view import (
+    get_standard_template_parameters,
+    format_currency
+)
 from knotis.apps.business.models import (
     Business,
     BusinessLink,
@@ -32,6 +40,7 @@ from knotis.apps.offer.models import (
     OfferStatus
 )
 from knotis.apps.media.models import Image
+from knotis.apps.media.views import render_image_list
 from knotis.apps.auth.models import (
     KnotisUser,
     UserProfile,
@@ -43,6 +52,11 @@ from knotis.apps.qrcode.models import (
 )
 from knotis.apps.yelp.views import get_reviews_by_yelp_id
 from knotis.apps.twitter.views import get_twitter_feed_html
+from knotis.apps.paypal.views import (
+    render_paypal_button,
+    generate_ipn_hash
+)
+
 from knotis.apps.legacy.models import QrcodeIdMap
 
 
@@ -124,48 +138,6 @@ def set_primary_image(
 
 
 @login_required
-def delete_image(
-    request,
-    business_id,
-    image_id
-):
-    if request.method.lower() != 'post':
-        return HttpResponseBadRequest('Method must be post.')
-
-    try:
-        business = Business.objects.get(pk=business_id)
-
-    except:
-        business = None
-
-    if not business:
-        return HttpResponseNotFound('Business not found.')
-
-    if business.user_id != request.user.id:
-        return HttpResponseBadRequest('Business does not belong to logged in user!')
-
-    try:
-        image = Image.objects.get(pk=image_id)
-
-    except:
-        image = None
-
-    if not image:
-        return HttpResponseNotFound('Image not found')
-
-    if business.id != image.related_object_id:
-        return HttpResponseBadRequest('Image does not belong to business!')
-
-    try:
-        image.delete()
-
-    except Exception, error:
-        return HttpResponseServerError(error)
-
-    return HttpResponse('OK')
-
-
-@login_required
 def edit_profile(request):
     update_form = None
     link_form = None
@@ -176,7 +148,6 @@ def edit_profile(request):
         business = Business.objects.get(user=user)
 
     except Business.DoesNotExist:
-        user = None
         business = None
 
     except:
@@ -244,9 +215,17 @@ def edit_profile(request):
     template_parameters['gallery'] = True
 
     try:
-        template_parameters['images'] = Image.objects.filter(related_object_id=business.id)
+        images = Image.objects.filter(related_object_id=business.id)
+        options = {
+            'alt_text': business.business_name.value,
+            'images': images,
+            'business': business,
+            'dimensions': '35x19',
+            'image_class': 'business-gallery'
+        }
+        template_parameters['image_list'] = render_image_list(options)
     except:
-        pass
+        logger.exception('rending image list failed')
 
     return render(
         request,
@@ -259,12 +238,33 @@ def edit_profile(request):
 def services(request):
     template_parameters = get_standard_template_parameters(request)
 
-    template_parameters['user_profile'] = UserProfile.objects.get(user=request.user)
+    template_parameters['user_profile'] = UserProfile.objects.get(
+        user=request.user
+    )
     template_parameters['AccountTypes'] = AccountTypes
-    template_parameters['subscription_price'] = ("%.2f" % round(
-            settings.PRICE_MERCHANT_MONTHLY,
-            2
-        )).replace('.00', '')
+    template_parameters['subscription_price'] = format_currency(
+        settings.PRICE_MERCHANT_MONTHLY
+    )
+
+    template_parameters['paypal_button'] = render_paypal_button({
+        'button_text': 'Buy Subscription',
+        'button_class': 'button radius-general',
+        'paypal_parameters': {
+            'cmd': '_s-xclick',
+            'hosted_button_id': settings.PAYPAL_PREMIUM_BUTTON_ID,
+            'notify_url': '/'.join([
+                settings.BASE_URL,
+                'paypal',
+                'ipn',
+                ''
+            ]),
+            'item_name_1': 'Business Monthly Subscription',
+            'custom': '|'.join([
+                request.user.id,
+                generate_ipn_hash(request.user.id)
+            ]),
+        }
+    })
 
     return render(
         request,
@@ -453,3 +453,127 @@ def subscriptions(request):
         'subscriptions.html',
         template_parameters
     )
+    
+    
+def get_business_rows(
+    request,
+    page='1',
+    count='12',
+):
+    page = int(page)
+    count = int(count)
+    
+    page = page - 1
+    if page < 0:
+        page = 0
+        
+    bpr = 3
+    options = {
+        'init': page*count,
+        'rows': count/bpr,
+        'bpr': bpr
+    }
+    
+    query = request.GET.get('query')
+    
+    return render_business_rows(
+        options,
+        request,
+        query
+    )
+    
+    
+def render_business_rows(
+    options=None, 
+    request=None,
+    query=None
+):
+    default_options = {
+        'init': 0,
+        'rows': 4,
+        'bpr': 3
+    }
+    if options:
+        default_options.update(options)
+        
+    options = default_options
+
+    init = options['init']
+    rows = options['rows']
+    bpr = options['bpr']
+    
+    priority_businesses = []
+    total_priority_businesses = 0
+    
+    for name in settings.PRIORITY_BUSINESS_NAMES:
+        try:
+            business = Business.objects.get(backend_name=name)
+            valid = True
+            if query:
+                valid = business.search(query)
+            
+            if valid:
+                priority_businesses.append(business)
+                total_priority_businesses = total_priority_businesses + 1
+
+        except:
+            continue
+                
+    priority_businesses = priority_businesses[init:init + rows*bpr]
+            
+    if len(priority_businesses):
+        init = 0
+    
+    else:
+        init = init - total_priority_businesses
+        
+    logger.debug('init: %s' % init, )
+                
+    vacant_slots = rows*bpr - len(priority_businesses)
+    businesses = []
+    if vacant_slots:
+        try:
+            if query:
+                all_businesses = Business.objects.all()
+                business_results = []
+                for business in all_businesses:
+                    if business.search(query):
+                        business_results.append(business)
+                        
+                
+                businesses += business_results[init:init + vacant_slots]
+            
+            else:
+                businesses += Business.objects.all()[init:init + vacant_slots]
+        
+        except:
+            pass
+        
+    businesses = priority_businesses + businesses
+    if not businesses:
+        if request:
+            return HttpResponse('')
+        
+        else:
+            return ''
+        
+    business_rows = [[
+            business for business in businesses[x*bpr:x*bpr + bpr]
+        ] for x in range(0, rows)
+    ]
+
+    options['business_rows'] = business_rows 
+    options['render_about'] = None == request
+    options['STATIC_URL'] = settings.STATIC_URL
+
+    if request:
+        return render(
+            request,
+            'business_row.html',
+            options
+        )
+
+    else:
+        context = Context(options)
+        business_row = get_template('business_row.html')
+        return business_row.render(context)

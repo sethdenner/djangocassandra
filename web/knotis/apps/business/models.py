@@ -24,6 +24,7 @@ from knotis.apps.endpoint.models import (
     EndpointFacebook,
     EndpointYelp
 )
+from knotis.utils.view import sanitize_input_html
 
 
 def clean_business_backend_name(name):
@@ -156,7 +157,7 @@ class Business(KnotisModel):
         related_name='business_content_root'
     )
     business_name = ForeignKey(
-        Content, 
+        Content,
         related_name='business_business_name'
     )
     summary = ForeignKey(
@@ -178,6 +179,38 @@ class Business(KnotisModel):
     primary_image = ForeignKey(Image)
 
     pub_date = DateTimeField('date published', auto_now_add=True)
+    
+
+    def search(
+        self,
+        query
+    ):
+        query = query.lower()
+        
+        if self.business_name and self.business_name.value:
+            if query in self.business_name.value.lower():
+                return True
+        
+        if self.summary and self.summary.value:
+            if query in self.summary.value.lower():
+                return True
+                    
+        if self.description and self.description.value:
+            if query in self.description.value.lower():
+                return True
+
+        return False
+    
+    def summary_140(self):
+        if not self.summary or not self.summary.value:
+            return '';
+        
+        elipsis = len(self.summary.value) > 110
+            
+        return ''.join([
+            self.summary.value[:110],
+            '...'if elipsis else ''
+        ])
 
     def __unicode__(self):
         return self.backend_name
@@ -309,6 +342,14 @@ class Business(KnotisModel):
 
         if is_self_dirty:
             self.save()
+
+    def description_formatted_html(self):
+        return sanitize_input_html(
+            self.description.value.replace(
+                '\n',
+                '<br/>'
+            )
+        )
 
 
 class BusinessLink(KnotisModel):
