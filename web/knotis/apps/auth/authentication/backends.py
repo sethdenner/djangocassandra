@@ -41,6 +41,13 @@ class EndpointValidationAuthenticationBackend(object):
             # Only authenticate unvalidated endpoints.
             if not endpoint.validated:
                 if endpoint.validate(validation_key):
+                    '''
+                    TODO: This should be changed/removed when
+                    we add support for multiple email addresses
+                    '''
+                    user.username = endpoint.value.value
+                    user.save()
+                    
                     validated = True
                     break
                 

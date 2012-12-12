@@ -49,6 +49,14 @@ urlpatterns = patterns(
     ),
     url(
         r''.join([
+            'image/delete/(?P<offer_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        'delete_offer_image'
+    ),
+    url(
+        r''.join([
             'delete/(?P<offer_id>',
             REGEX_UUID,
             ')/$'

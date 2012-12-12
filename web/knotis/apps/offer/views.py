@@ -17,7 +17,6 @@ from django.http import (
 from django.forms import (
     ModelForm,
     CharField,
-    ImageField,
     DateTimeField,
     ValidationError
 )
@@ -29,6 +28,7 @@ from knotis.utils.view import (
     get_standard_template_parameters,
     get_boolean_from_request
 )
+from knotis.utils.email import generate_email
 from knotis.apps.offer.models import (
     Offer,
     OfferStatus,
@@ -64,6 +64,42 @@ from knotis.apps.paypal.views import (
 from knotis.apps.maps.views import OfferMap
 
 
+def send_subscriber_notification(
+    business,
+    offers
+):
+    try:
+        subscriptions = BusinessSubscription.objects.filter(
+            business=business,
+            active=True
+        )
+
+    except: 
+        subscriptions = None
+        
+        logger.exception('failed to get subscriptions')
+        
+    if not subscriptions:
+        return
+    
+    mail_list = [s.user.username for s in subscriptions]
+    
+    logger.debug('sending subscriber emails')
+    generate_email(
+        'subscription_offers',
+        'Knotis - New offers available to you',
+        settings.EMAIL_HOST_USER,
+        mail_list, {
+            'offers': offers,
+            'SERVICE_NAME': settings.SERVICE_NAME,
+            'BASE_URL': settings.BASE_URL,
+            'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE
+        }
+    ).send()
+    logger.debug('email sent to %s users' % (
+        len(mail_list)
+    ))
+    
 class OfferForm(ModelForm):
     class Meta:
         model = Offer
@@ -193,10 +229,10 @@ class OfferForm(ModelForm):
         image_id = self.cleaned_data.get('image_id')
         try:
             offer_image = Image.objects.get(pk=image_id)
-        
+
         except:
             offer_image = None
-            
+
         if published and not offer_image:
             if not rerun and offer:
                 try:
@@ -216,47 +252,59 @@ class OfferForm(ModelForm):
                 )
 
         if not rerun and offer:
-            offer.update(
-                self.cleaned_data['title_value'],
-                self.cleaned_data['title_type'],
-                self.cleaned_data['description_value'],
-                self.cleaned_data['restrictions_value'],
-                self.cleaned_data['city'],
-                self.cleaned_data['neighborhood'],
-                self.cleaned_data['address_value'],
-                offer_image,
-                self.cleaned_data['category'],
-                self.cleaned_data['price_retail'],
-                self.cleaned_data['price_discount'],
-                self.cleaned_data['start_date'],
-                self.cleaned_data['end_date'],
-                self.cleaned_data['stock'],
-                self.cleaned_data['unlimited'],
-                published,
-                OfferStatus.CURRENT if published else None,
-                active=published
-            )
+            try:
+                offer.update(
+                    self.cleaned_data['title_value'],
+                    self.cleaned_data['title_type'],
+                    self.cleaned_data['description_value'],
+                    self.cleaned_data['restrictions_value'],
+                    self.cleaned_data['city'],
+                    self.cleaned_data['neighborhood'],
+                    self.cleaned_data['address_value'],
+                    offer_image,
+                    self.cleaned_data['category'],
+                    self.cleaned_data['price_retail'],
+                    self.cleaned_data['price_discount'],
+                    self.cleaned_data['start_date'],
+                    self.cleaned_data['end_date'],
+                    self.cleaned_data['stock'],
+                    self.cleaned_data['unlimited'],
+                    published,
+                    OfferStatus.CURRENT if published else None,
+                    active=published
+                )
+                
+            except:
+                logger.exception('failed to update offer')
+                
         else:
-            Offer.objects.create_offer(
-                request.user,
-                business,
-                self.cleaned_data['title_value'],
-                self.cleaned_data['title_type'],
-                self.cleaned_data['description_value'],
-                self.cleaned_data['restrictions_value'],
-                self.cleaned_data['city'],
-                self.cleaned_data['neighborhood'],
-                self.cleaned_data['address_value'],
-                offer_image,
-                self.cleaned_data['category'],
-                self.cleaned_data['price_retail'],
-                self.cleaned_data['price_discount'],
-                self.cleaned_data['start_date'],
-                self.cleaned_data['end_date'],
-                self.cleaned_data['stock'],
-                self.cleaned_data['unlimited'],
-                published
-            )
+            try:
+                Offer.objects.create_offer(
+                    request.user,
+                    business,
+                    self.cleaned_data['title_value'],
+                    self.cleaned_data['title_type'],
+                    self.cleaned_data['description_value'],
+                    self.cleaned_data['restrictions_value'],
+                    self.cleaned_data['city'],
+                    self.cleaned_data['neighborhood'],
+                    self.cleaned_data['address_value'],
+                    offer_image,
+                    self.cleaned_data['category'],
+                    self.cleaned_data['price_retail'],
+                    self.cleaned_data['price_discount'],
+                    self.cleaned_data['start_date'],
+                    self.cleaned_data['end_date'],
+                    self.cleaned_data['stock'],
+                    self.cleaned_data['unlimited'],
+                    published
+                )
+                
+                if published:
+                    send_subscriber_notification(business)
+                
+            except:
+                logger.exception('failed to create offer')
 
 
 def offers(
@@ -566,9 +614,10 @@ def edit(
     if request.method == 'POST':
         delete = 'delete' in request.POST
         if delete:
+            logger.debug('DELETE OFFER')
             offer.delete()
             return redirect('/offers/dashboard')
-        
+
         form = OfferForm(
             request.POST,
             request.FILES
@@ -632,7 +681,8 @@ def edit(
             'alt_text': offer.title_formatted(),
             'images': [offer.image],
             'dimensions': '19x19',
-            'image_class': 'gallery'
+            'image_class': 'gallery',
+            'context': offer.id
         }
         template_parameters['image_list'] = render_image_list(options)
     template_parameters['categories'] = Category.objects.all()
@@ -677,6 +727,38 @@ def activate(request):
         pass
 
     return HttpResponse()
+
+
+@login_required
+def delete_offer_image(
+    request,
+    offer_id
+):
+    if request.method.lower() != 'post':
+        return HttpResponseBadRequest('Method must be post.')
+
+    try:
+        offer = Offer.objects.get(pk=offer_id)
+
+    except:
+        offer = None
+
+    if not offer:
+        return HttpResponseNotFound('Offer not found')
+
+    if offer.business.user.id != request.user.id:
+        return HttpResponseBadRequest('Offer does not belong to user!')
+
+    try:
+        offer.image.image.delete()
+        offer.image.delete()
+        offer.image = None
+        offer.save()
+
+    except Exception, error:
+        return HttpResponseServerError(error)
+
+    return HttpResponse('OK')
 
 
 @login_required

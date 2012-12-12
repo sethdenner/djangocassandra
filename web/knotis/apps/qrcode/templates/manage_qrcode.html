@@ -52,7 +52,7 @@
                                 </label>
                             </li>
                         </fieldset>
-                        <fieldset>type
+                        <fieldset>
                             <h3 class="margin-general"><strong>Video</strong><div id="ht-38" class="help-icon vertical-align-baseline margin-sides" ></div></h3>
                             <li class="clear-fix margin-general">
                                 <label>
@@ -95,12 +95,12 @@
                                 <input class="button radius-general" type="submit" name="saveQrcode" value="Set QR Link"/>
                             </label>
                         </li>
-                        <fieldset>
+                        <fieldset style="margin-top: 35px;" >
                             <h3 class="margin-general"><strong>History</strong></h3>
                             {% if scans %}
-                            {% for scan in scans %}<br />
+                            {% for scan in scans %}
                                 <div class="relative closeinfo">
-                                    <div class="message-confirm margin-general-25 radius-general ">{{ scan.uri }} ({{ scan.pub_date }})</div>
+                                    <div class="message-confirm radius-general ">{{ scan.uri }} ({{ scan.pub_date }})</div>
                                 </div>
                                 <div class="clean"></div>
                             {% endfor%}
