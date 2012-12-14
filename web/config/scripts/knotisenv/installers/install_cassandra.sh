@@ -1,6 +1,17 @@
 #!/bin/bash
-my_dir="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+if [[ -z ${cassandra_config} ]] ; then
+    if [[ $# -eq 1 ]] ; then
+        cassandra_config="${1}"
 
+    else
+        echo "error installing cassandra. no configuration file specified."
+        exit 1
+
+    fi
+
+fi
+
+my_dir="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # setup cassandra source
 apt_sources=/etc/apt/sources.list
 cassandra_deb='deb http://www.apache.org/dist/cassandra/debian 10x main'
@@ -18,4 +29,4 @@ apt-get update
 apt-get install cassandra
 
 cp -f /etc/cassandra/cassandra.yaml /etc/cassandra/cassandra.yaml.backup
-cp -f ${my_dir}../configuration/cassandra/cassandra.yaml /etc/cassandra/cassandra.yaml
+cp -f ${cassandra_config} /etc/cassandra/cassandra.yaml

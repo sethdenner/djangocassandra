@@ -1,9 +1,19 @@
 #!/bin/bash
 
 # run with su privs
+if [[ ! $# -eq 3 ]] ; then
+    echo "invalid arguments!"
+    echo "usage: ./initialize_environment.sh <apache2_config> <modwsgi_script> <cassandra_config>"
+    exit 1
+
+fi
+
+export apache2_config="${1}"
+export modwsgi_script="${2}"
+export cassandra_config="${3}"
+
 
 installer_dir="$(pwd)/installers"
-
 
 # install required packages
 apt-get -y install python python-dev python-setuptools
