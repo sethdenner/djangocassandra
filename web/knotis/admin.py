@@ -27,8 +27,6 @@ from knotis.apps.qrcode.models import (
 )
 from knotis.apps.contact.models import Contact
 
-from piston.models import Consumer
-
 
 class UserProfileAdmin(admin.ModelAdmin):
     pass
@@ -43,11 +41,6 @@ admin.site.register(KnotisUser, UserAdmin)
 class EndpointAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Endpoint, EndpointAdmin)
-
-
-class OAuthAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(Consumer, OAuthAdmin)
 
 
 class ContentAdmin(admin.ModelAdmin):
