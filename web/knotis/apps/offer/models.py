@@ -728,6 +728,14 @@ class Offer(KnotisModel):
             stock_remaining = self.stock - self.purchased
             return [i for i in range(1, stock_remaining + 1)]
 
+    def income_gross(self):
+        return (self.purchased * self.price_discount)
+    
+    def income_net_formatted(self):
+        gross = self.income_gross()
+        our_cut = gross * .03
+        return format_currency(gross - our_cut)
+        
     def update(
         self,
         title=None,

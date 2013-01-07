@@ -1,5 +1,8 @@
 import hashlib
 
+from django.utils import log
+logger = log.getLogger(__name__)
+
 from django.contrib.auth.models import (
     UserManager,
     User as DjangoUser
@@ -227,8 +230,16 @@ class UserProfile(KnotisModel):
         return self.account_type != AccountTypes.USER
     
     def activate(self):
-        self.account_status = AccountStatus.ACTIVE
-        self.save()
+        if AccountStatus.NEW == self.account_status:
+            self.account_status = AccountStatus.ACTIVE
+            try:
+                self.save()
+                return True
+
+            except:
+                logger.exception('failed to activate user')
+                
+        return False
 
     def update(
         self,
