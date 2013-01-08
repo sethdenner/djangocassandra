@@ -67,6 +67,15 @@ class CreateBusinessForm(Form):
     avatar = URLField(label="Avatar URI.", required=False)
     hours = CharField(label="Business Hours", max_length=100, required=False)
 
+    def clean_business_name(self):
+        name = self.cleaned_data['name']
+        if clean_business_backend_name(
+            name
+        ) in settings.BUSINESS_NAME_BLACKLIST:
+            raise ValidationError('That business name is not allowed.')
+
+        return name
+
 
 class UpdateBusinessForm(Form):
     name = CharField(label='Name')

@@ -28,7 +28,14 @@ from knotis.utils.view import sanitize_input_html
 
 
 def clean_business_backend_name(name):
-    backend_name = name.replace('&', 'and')
+    backend_name = name.replace(
+        '&',
+        'and'
+    ).replace(
+        '/',
+        '-'
+    )
+
     backend_name = urlquote(
         backend_name.strip().lower().replace(
             ' ',
@@ -40,6 +47,7 @@ def clean_business_backend_name(name):
         '',
         backend_name
     )
+
     return backend_name
 
 
@@ -241,7 +249,7 @@ class Business(KnotisModel):
 
         if None != name:
             if name != self.business_name.value:
-                backend_name = urlquote(name.strip().lower().replace(' ', '-'))
+                backend_name = clean_business_backend_name(name)
                 self.backend_name = backend_name
                 self.business_name = self.business_name.update(name)
                 is_self_dirty = True
