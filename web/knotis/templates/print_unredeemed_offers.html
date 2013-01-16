@@ -13,7 +13,7 @@
         		  </a>
         	    </span>
                 <div class="print-only break" >
-                    <h1>Un-redeemed Offers for {{ business.business_name }}</h1>
+                    <h1>Un-redeemed Offers for {{ business.business_name.value }}</h1>
                     <p>
                         The following list is a printable version of the most recent Un-Redeemed offers for your business. Please provide this list to the appropriate staff members or near your service stations for tracking how many Knotis vouchers are brought into your business location.
                     </p>
@@ -53,7 +53,7 @@
                               <td>{{ purchase.user.last_name }}</td>
                               <td>{{ purchase.user.first_name }}</td>
                               <td>{{ purchase.user.username }}</td>
-                              <td>{{ purchase.transaction_context }}</td>
+                              <td>#{{ purchase.redemption_code }}</td>
                               <td class="initials"></td>
                             </tr>                  
                             {% endif %}
