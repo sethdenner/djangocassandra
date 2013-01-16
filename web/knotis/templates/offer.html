@@ -79,7 +79,7 @@
                 <span class="txt-size">SAVINGS</span>
             </li>
             <li>
-                <p>{% if offer.unlimited %}Unlimited{% else %}{{ offer.stock }}{% endif %}</p>
+                <p>{% if offer.unlimited %}Unlimited{% else %}{{ offer.stock_remaining }}{% endif %}</p>
                 <span class="txt-size">{% if offer.unlimited %}Stock{% else %}REMAINING{% endif %}</span>
             </li>
             <li>
