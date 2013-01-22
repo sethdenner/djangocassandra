@@ -85,10 +85,12 @@ def dashboard(request):
         template_parameters['offer_purchase_map'] = offer_purchase_map
 
         total_revenue = 0.
+        total_purchases = 0
         for purchase in purchases:
-            total_revenue = total_revenue + purchase.value
+            total_revenue += purchase.value
+            total_purchases += purchase.quantity
 
-        template_parameters['total_purchases'] = len(purchases)
+        template_parameters['total_purchases'] = total_purchases
         template_parameters['total_revenue'] = ("%.2f" % round(
             total_revenue,
             2

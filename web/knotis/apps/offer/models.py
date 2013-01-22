@@ -709,8 +709,11 @@ class Offer(KnotisModel):
         )
 
     def days_remaining(self):
-        delta = self.end_date - self.start_date
+        delta = self.end_date - datetime.datetime.utcnow()
         return delta.days
+
+    def stock_remaining(self):
+        return self.stock - self.purchased
 
     def public_url(self):
         return '/'.join([

@@ -32,9 +32,9 @@
                 <a href="/{{ business.backend_name }}/" title="{{ business.business_name.value }}"
                    alt="{{ offer.title_formatted }}">
                    {% thumbnail business.primary_image.image '222x112' crop='top' as image %}
-                   <img alt="{{ business.name }}" src="{{ image.url }}"/>
+                   <img alt="{{ business.business_name }}" src="{{ image.url }}"/>
                    {% empty %}
-                   <img alt="{{ business.name }}" src="{{ STATIC_URL }}images/no-image-business.png" />
+                   <img alt="{{ business.business_name }}" src="{{ STATIC_URL }}images/no-image-business.png" />
                    {% endthumbnail %}
                 </a>
             </div>

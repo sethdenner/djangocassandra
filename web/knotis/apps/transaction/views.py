@@ -19,28 +19,45 @@ def print_transaction(
     transaction_id
 ):
     template_parameters = get_standard_template_parameters(request)
-    
+
     try:
         transaction = Transaction.objects.get(pk=transaction_id)
         template_parameters['purchase'] = transaction
-        
+
     except:
         logger.exception('could not get offer')
         transaction = None
-        
+
     if not transaction:
         return HttpResponseNotFound('Could not get offer')
-    
+
     try:
         transactions = Transaction.objects.filter(
             user=request.user,
             transaction_type=TransactionTypes.PURCHASE
         )
         template_parameters['purchases'] = transactions
-    
+        vouchers = []
+        for t in transactions:
+            for i in range(t.quantity):
+                voucher = {
+                    'redemption_code': '-'.join([
+                        t.redemption_code(),
+                        str(i)
+                    ]),
+                    'offer': t.offer,
+                    'business': t.business,
+                    'purchase_date': t.pub_date,
+                    'value': t.value_formatted()
+                }
+                vouchers.append(voucher)
+
+        template_parameters['vouchers'] = vouchers
+
     except:
+        logger.exception('failed to render vouchers')
         transactions = None
-        
+
     return render(
         request,
         'transaction_print.html',

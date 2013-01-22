@@ -9,6 +9,14 @@ from knotis.utils.regex import REGEX_UUID
 urlpatterns = patterns(
     'knotis.apps.business.views',
     url(
+        r''.join([
+            '^business/link/delete/(?P<link_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        'delete_link'
+    ),
+    url(
         r'^business/follow/$',
         'follow',
         {'subscribe': True},

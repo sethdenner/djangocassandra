@@ -199,7 +199,10 @@ class Transaction(KnotisModel):
         ])
 
     def value_formatted(self):
-        return format_currency(self.value)
+        if 0 == self.quantity:
+            return format_currency(0.)
+
+        return format_currency(self.value / self.quantity)
 
     def purchases(self):
         try:

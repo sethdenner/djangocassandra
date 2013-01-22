@@ -67,6 +67,15 @@ class CreateBusinessForm(Form):
     avatar = URLField(label="Avatar URI.", required=False)
     hours = CharField(label="Business Hours", max_length=100, required=False)
 
+    def clean_business_name(self):
+        name = self.cleaned_data['name']
+        if clean_business_backend_name(
+            name
+        ) in settings.BUSINESS_NAME_BLACKLIST:
+            raise ValidationError('That business name is not allowed.')
+
+        return name
+
 
 class UpdateBusinessForm(Form):
     name = CharField(label='Name')
@@ -92,6 +101,35 @@ class AddBusinessLinkForm(ModelForm):
     class Meta:
         model = BusinessLink
         exclude = ('business')
+
+
+@login_required
+def delete_link(
+        request,
+        link_id
+):
+    if request.method.lower() != 'post':
+        return HttpResponseBadRequest('Method must be post.')
+
+    try:
+        link = BusinessLink.objects.get(id=link_id)
+
+    except:
+        link = None
+
+    if not link:
+        return HttpResponseNotFound('Could not find business link.')
+
+    if link.business.user_id != request.user.id:
+        return HttpResponseBadRequest('Business link does not belong to user.')
+
+    try:
+        link.delete()
+        return HttpResponse('OK')
+
+    except:
+        logger.exception('failed to delete business link.')
+        return HttpResponseServerError('failed to delete business link')
 
 
 @login_required
@@ -213,6 +251,9 @@ def edit_profile(request):
     template_parameters['link_form'] = link_form if link_form else AddBusinessLinkForm()
     template_parameters['do_upload'] = True
     template_parameters['gallery'] = True
+    template_parameters['scripts'] = [
+        'views/business.profile.js'
+    ]
 
     try:
         images = Image.objects.filter(related_object_id=business.id)
