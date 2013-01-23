@@ -6,19 +6,19 @@ from django.core.management.base import (
     CommandError
 )
 
-from knotis.apps.auth.models import (
+from knotis.contrib.auth.models import (
     KnotisUser,
     UserProfile
 )
-from knotis.apps.business.models import (
+from knotis.contrib.business.models import (
     Business,
     BusinessSubscription
 )
-from knotis.apps.content.models import Content
-from knotis.apps.endpoint.models import Endpoint 
-from knotis.apps.transaction.models import Transaction
-from knotis.apps.legacy.models import UserIdMap
-from knotis.apps.media.models import Image
+from knotis.contrib.content.models import Content
+from knotis.contrib.endpoint.models import Endpoint 
+from knotis.contrib.transaction.models import Transaction
+from knotis.contrib.legacy.models import UserIdMap
+from knotis.contrib.media.models import Image
 
 class Command(BaseCommand):
     args = ''

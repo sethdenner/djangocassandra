@@ -2,30 +2,30 @@ from django.contrib import admin
 from django.contrib import contenttypes
 from django.forms import ModelForm
 
-from knotis.apps.auth.models import (
+from knotis.contrib.auth.models import (
     KnotisUser,
     UserProfile
 )
-from knotis.apps.content.models import Content
-from knotis.apps.business.models import (
+from knotis.contrib.content.models import Content
+from knotis.contrib.business.models import (
     Business,
     BusinessLink,
     BusinessSubscription
 )
-from knotis.apps.endpoint.models import Endpoint
-from knotis.apps.offer.models import Offer
-from knotis.apps.media.models import Image
-from knotis.apps.category.models import (
+from knotis.contrib.endpoint.models import Endpoint
+from knotis.contrib.offer.models import Offer
+from knotis.contrib.media.models import Image
+from knotis.contrib.category.models import (
     Category,
     City,
     Neighborhood
 )
-from knotis.apps.transaction.models import Transaction
-from knotis.apps.qrcode.models import (
+from knotis.contrib.transaction.models import Transaction
+from knotis.contrib.qrcode.models import (
     Qrcode,
     Scan
 )
-from knotis.apps.contact.models import Contact
+from knotis.contrib.contact.models import Contact
 
 
 class UserProfileAdmin(admin.ModelAdmin):

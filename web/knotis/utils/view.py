@@ -5,12 +5,12 @@ from BeautifulSoup import (
 
 from django.conf import settings
 
-from knotis.apps.auth.models import (
+from knotis.contrib.auth.models import (
     KnotisUser,
     UserProfile,
 )
-from knotis.apps.content.models import Content
-from knotis.apps.category.models import (
+from knotis.contrib.content.models import Content
+from knotis.contrib.category.models import (
     City,
     Neighborhood,
 )

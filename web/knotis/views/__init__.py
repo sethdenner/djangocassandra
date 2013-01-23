@@ -1,2 +1,2 @@
-import knotis.apps.gravatar.views as gravatar
-import knotis.apps.facebook.views as facebook
+import knotis.contrib.gravatar.views as gravatar
+import knotis.contrib.facebook.views as facebook

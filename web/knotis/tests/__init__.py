@@ -1,2 +1,2 @@
-from knotis.apps.auth.tests import *
-from knotis.apps.legacy.tests import *
+from knotis.contrib.auth.tests import *
+from knotis.contrib.legacy.tests import *

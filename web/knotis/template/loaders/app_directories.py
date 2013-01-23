@@ -7,7 +7,7 @@ from django.template.loaders.app_directories import Loader as AppLoader
 
 
 fs_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
-knotis_app_path = 'knotis/apps/'
+knotis_app_path = 'knotis.contrib/'
 app_template_dirs = []
 for app in os.listdir(os.path.join(
     settings.PROJECT_ROOT,

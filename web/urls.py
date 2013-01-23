@@ -10,67 +10,67 @@ urlpatterns = patterns(
     '',
     url(
         r'',
-        include('knotis.apps.media.urls')
+        include('knotis.contrib.media.urls')
     ),
     url(
         r'',
-        include('knotis.apps.auth.urls')
+        include('knotis.contrib.auth.urls')
     ),
     url(
         r'',
-        include('knotis.apps.core.urls')
+        include('knotis.contrib.core.urls')
     ),
     url(
         r'',
-        include('knotis.apps.legacy.urls')
+        include('knotis.contrib.legacy.urls')
     ),
     url(
         r'',
-        include('knotis.apps.business.urls')
+        include('knotis.contrib.business.urls')
     ),
     url(
         r'',
-        include('knotis.apps.transaction.urls')
+        include('knotis.contrib.transaction.urls')
     ),
     url(
         r'^offer',
-        include('knotis.apps.offer.urls')
+        include('knotis.contrib.offer.urls')
     ),
     url(
         r'^charts/',
-        include('knotis.apps.highchart.urls')
+        include('knotis.contrib.highchart.urls')
     ),
     url(
         r'^contact/',
-        include('knotis.apps.contact.urls'),
+        include('knotis.contrib.contact.urls'),
     ),
     url(
         r'^events/',
-        include('knotis.apps.event.urls'),
+        include('knotis.contrib.event.urls'),
     ),
     url(
         r'^happyhours/',
-        include('knotis.apps.happyhour.urls'),
+        include('knotis.contrib.happyhour.urls'),
     ),
     url(
         r'^dashboard/',
-        include('knotis.apps.dashboard.urls')
+        include('knotis.contrib.dashboard.urls')
     ),
     url(
         r'^qrcode/',
-        include('knotis.apps.qrcode.urls')
+        include('knotis.contrib.qrcode.urls')
     ),
     url(
         r'^category/',
-        include('knotis.apps.category.urls')
+        include('knotis.contrib.category.urls')
     ),
     url(
         r'^paypal/',
-        include('knotis.apps.paypal.urls')
+        include('knotis.contrib.paypal.urls')
     ),
     url(
         r'',
-        include('knotis.apps.sickle.urls')
+        include('knotis.contrib.sickle.urls')
     ),
     url(
         r'^admin/doc/',
@@ -82,11 +82,11 @@ urlpatterns = patterns(
     ),
     url(
         r'^api/',
-        include('knotis.apps.api.urls')
+        include('knotis.contrib.api.urls')
     ),
     url(
         r'^(?P<backend_name>[^/]+)/$',
-        'knotis.apps.business.views.profile',
+        'knotis.contrib.business.views.profile',
     ),
 )
 

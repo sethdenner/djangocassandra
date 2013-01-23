@@ -8,8 +8,8 @@ from django.core.management.base import (
     CommandError
 )
 
-from knotis.apps.auth.models import KnotisUser
-from knotis.apps.business.models import Business
+from knotis.contrib.auth.models import KnotisUser
+from knotis.contrib.business.models import Business
 
 class Command(BaseCommand):
     args = '<json_file>'

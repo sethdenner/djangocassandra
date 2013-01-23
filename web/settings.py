@@ -164,7 +164,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'knotis.apps.mobile.middleware.MobileDetectionMiddleware'
+    'knotis.contrib.mobile.middleware.MobileDetectionMiddleware'
 )
 
 ROOT_URLCONF = 'urls'
@@ -177,9 +177,9 @@ TEMPLATE_DIRS = (
 
 AUTHENTICATION_BACKENDS = (
     'permission_backend_nonrel.backends.NonrelPermissionBackend',
-    'knotis.apps.auth.authentication.backends.EndpointValidationAuthenticationBackend',
-    'knotis.apps.legacy.authentication.backends.LegacyAuthenticationBackend',
-    'knotis.apps.legacy.authentication.backends.HamburgertimeAuthenticationBackend'
+    'knotis.contrib.auth.authentication.backends.EndpointValidationAuthenticationBackend',
+    'knotis.contrib.legacy.authentication.backends.LegacyAuthenticationBackend',
+    'knotis.contrib.legacy.authentication.backends.HamburgertimeAuthenticationBackend'
 )
 
 AUTOLOAD_SITECONF = 'dbindexer'
@@ -203,7 +203,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'knotis',
-    'knotis.apps.bootstrap',
+    'knotis.contrib.bootstrap',
 )
 
 LOGIN_REDIRECT_URL = '/'
