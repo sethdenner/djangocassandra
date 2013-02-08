@@ -1,5 +1,5 @@
 from django.utils import unittest
-from knotis.apps.identity.models import (
+from knotis.contrib.identity.models import (
     Identity,
     IdentityType
 )

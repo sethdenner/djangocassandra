@@ -1,11 +1,11 @@
 from django.test import unittest
 
-from knotis.apps.identity.models import (
+from knotis.contrib.identity.models import (
     Identity,
     IdentityType
 )
 
-from knotis.apps.relation.models import (
+from knotis.contrib.relation.models import (
     Relation,
     RelationType
 )
