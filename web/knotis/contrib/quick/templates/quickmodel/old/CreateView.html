@@ -1,0 +1,12 @@
+{% extends 'master.html' %}
+{% load i18n %}
+
+{% block title %}Knotis.com - Home{% endblock title %}
+{% block content %}
+<h1> {{ViewName }} -- {{ ModelName }}</h1>
+<a href="/{{ ModelName|lower }}/">{% trans "List" %}</a>
+<a href="/{{ ModelName|lower }}/{{ object.id }}/">{% trans "Details" %}</a>
+<a href="/{{ ModelName|lower }}/{{ object.id }}/?method=delete">{% trans "Delete" %}</a>
+{% load crispy_forms_tags %}
+{% crispy form %}
+{% endblock content %}

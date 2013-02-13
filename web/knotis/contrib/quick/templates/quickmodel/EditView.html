@@ -1,0 +1,30 @@
+{% load i18n %}
+
+<div class="hero-unit">
+  <h2>{{ViewName}} - {{ ModelName }} </h2>
+  <p>
+  <a class="btn btn-primary btn-large" href="/{{ ModelName|lower }}/">{% trans "List" %}</a>
+  <!--<a class="btn btn-primary btn-large" href="/{{ ModelName|lower }}/{{ object.pk }}/">{% trans "Details" %}</a>
+  <a class="btn btn-primary btn-large" href="/{{ ModelName|lower }}/{{ object.pk }}/?method=delete">{% trans "Delete" %}</a>-->
+  </p>
+</div>
+<div class="row-fluid">
+  <div id="wookmarkcontainer" style="position:relative;overflow:hidden">
+      {% load crispy_forms_tags %}
+      {% crispy form form.form.helper %}
+    </div>
+  </div>
+</div>
+
+<script>
+function startWookmark() {
+  container = $("#wookmarkcontainer");
+  boxes = $(".wookmarkbox");
+  boxes.width('300').css({'padding':0,'margin':0});
+  boxes.wookmark({container:container, itemWidth:300,offset:5,autoResize:true});
+  //lv.children().wookmark({container:lv, itemWidth:300,offset:5,autoResize:true});
+}
+$(document).ready(startWookmark);
+
+</script>
+

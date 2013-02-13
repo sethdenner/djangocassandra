@@ -1,0 +1,43 @@
+{% extends 'master.html' %}
+
+{% load i18n %}
+{% load view %}
+
+{% block title %}Knotis.com - Home{% endblock title %}
+{% block content %}
+
+<div class="row-fluid">
+  <div id="wookmarkcontainer_details" style="position:relative;overflow:hidden">
+    <div class="well wookmarkbox_details">
+      grooss soo gross
+    </div>
+    <div class="well wookmarkbox_details">
+
+      <h1>{{ViewName}} - {{ ModelName }} </h1>
+      <a href="/{{ ModelName|lower }}/">{% trans "List" %}</a>
+      <a href="/{{ ModelName|lower }}/?method=put&new=1">{% trans "Create" %}</a>
+      <a href="/{{ ModelName|lower }}/{{ object.id }}/?method=put">{% trans "Edit" %}</a>
+      <a href="/{{ ModelName|lower }}/{{ object.id }}/?method=delete">{% trans "Delete" %}</a>
+      <table>
+        {% for value in object.get_fields_values %}
+        <tr>
+          <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  function startWookmarkDetails() {
+    container = $("#wookmarkcontainer_details");
+    boxes = $(".wookmarkbox_details");
+    boxes.width('300').css({'padding':0,'margin':0});
+    boxes.wookmark({container:container, itemWidth:300,offset:5,autoResize:true});
+  }
+  $(document).ready(startWookmark);
+
+</script>
+
+{% endblock content %}
