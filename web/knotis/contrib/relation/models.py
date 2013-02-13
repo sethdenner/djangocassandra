@@ -1,29 +1,63 @@
 from django.utils.translation import ugettext_lazy as _
-#from django.db import models
+from django.contrib.contenttypes.models import ContentType
 
-from quick.models import QuickModel
-from quick.fields import QuickCharField, QuickDateTimeField, QuickFloatField, QuickTextField, QuickIntegerField, QuickImageField
-# Create your models here.
+from knotis.contrib.quick.models import QuickModel
+from knotis.contrib.quick.fields import (
+    QuickCharField,
+    QuickDateTimeField,
+    QuickFloatField,
+    QuickTextField,
+    QuickIntegerField,
+    QuickImageField,
+    QuickForeignKey,
+    QuickUUIDField,
+    QuickGenericForeignKey,
+)
+
+__models__ = ( 'Relation', 'RelationOwner', 'RelationManager', 'RelationEmployee')
+__all__ = __models__ + ('IdentityTypes',)
 
 class RelationTypes:
+    """ 
+        There should be a good way to map type number to the actual type.
+        There should be a way to specify the class.
+        Types could be inferred from the models list.
+    """
     UNDEFINED = -1
-    NORMAL = 0
-    PREMIUM = 1
-    PERIODIC = 2
+    OWNER = 'Owner'
+    MANAGER = 'Manager'
+    EMPLOYEE = 'Employee'
+    FOLLOWING = 'Following'
+    LIKES = 'Likes'
+    CUSTOMER = 'Customer'
+    CONTRIBUTOR = 'Contributor'
 
-    CHOICES = (
-        (UNDEFINED, 'Undefined'),
-        (NORMAL, 'Relation'),
-        (PREMIUM, 'Premium'),
-        (PERIODIC, 'Periodic'),
-    )
+    CHOICES = ( 
+            (UNDEFINED, UNDEFINED),
+            (OWNER, OWNER),
+            (MANAGER, MANAGER),
+            (EMPLOYEE, EMPLOYEE),
+            (FOLLOWING, FOLLOWING),
+            (LIKES, LIKES),
+            (CUSTOMER, CUSTOMER),
+            )
 
 class Relation(QuickModel):
-    relation_type = QuickIntegerField(
+    relation_type = QuickCharField(
         choices=RelationTypes.CHOICES,
         default=RelationTypes.UNDEFINED,
-        #null=True,blank=True,
+        max_length=25,
     )
+
+    #owner_limit = models.Q(app_label = 'quick', model = 'Identity') | models.Q(app_label = 'auth', model = 'User')
+    owner_content_type = QuickForeignKey(ContentType, related_name='relation_owner_set') #, limit_choices_to = owner_limit)
+    owner_object_id = QuickUUIDField()
+    owner = QuickGenericForeignKey('owner_content_type', 'owner_object_id')
+
+    #subject_limit = models.Q(app_label = 'quick', model = 'Identity') | models.Q(app_label = 'quick', model = 'Product')
+    subject_content_type = QuickForeignKey(ContentType, related_name='relation_subject_set') #, limit_choices_to = subject_limit)
+    subject_object_id = QuickUUIDField()
+    subject = QuickGenericForeignKey('subject_content_type','subject_object_id')
 
     #user = ForeignKey(User)
     name = QuickCharField(max_length= 80, db_index=True, verbose_name=_("Subject"), required=True)
@@ -32,6 +66,8 @@ class Relation(QuickModel):
     
     class Quick(QuickModel.Quick): 
         exclude = () #('period',)
+        #permissions = {'create': self.check_create}
+        types = RelationTypes
 
     def __unicode__(self):
         if (self.name):
@@ -50,38 +86,38 @@ class Relation(QuickModel):
     #Quick = copy.deepcopy(QuickModel.Quick)
     #Quick.exclude = None
 
-class RelationNormal(Relation):
+class RelationOwner(Relation):
     class Quick(Relation.Quick): 
-        exclude = ('relation_type','period')
-        filters = {'relation_type': RelationTypes.NORMAL}
+        exclude = ('relation_type',)
+        filters = {'relation_type': RelationTypes.OWNER}
 
     class Meta:
         proxy = True
 
     def clean(self): 
-        print ("what the fuck this even called?")
-        self.relation_type = RelationTypes.NORMAL
+        self.relation_type = RelationTypes.OWNER
 
-class RelationPremium(Relation):
-    class Meta:
-        proxy = True
-
-    class Quick(Relation.Quick): 
-        exclude = ('relation_type','period')
-        filters = {'relation_type': RelationTypes.PREMIUM}
-
-    def clean(self): 
-        print ("premium clean")
-        self.relation_type = RelationTypes.PREMIUM
-
-class RelationPeriodic(Relation):
+class RelationFollowing(Relation):
     class Meta:
         proxy = True
 
     class Quick(Relation.Quick): 
         exclude = ('relation_type',)
-        filters = {'relation_type': RelationTypes.PERIODIC}
+        filters = {'relation_type': RelationTypes.FOLLOWING}
 
     def clean(self): 
-        self.relation_type = RelationTypes.PERIODIC
+        print ("premium clean")
+        self.relation_type = RelationTypes.FOLLOWING
 
+class RelationEmployee(Relation):
+    class Meta:
+        proxy = True
+
+    class Quick(Relation.Quick): 
+        exclude = ('relation_type',)
+        filters = {'relation_type': RelationTypes.EMPLOYEE}
+        #permissions = { 'create': request.session['identity'].relations_set.filter( relation_type = RelationTypes.OWNER, subject = subject)
+        #        }
+
+    def clean(self): 
+        self.relation_type = RelationTypes.EMPLOYEE

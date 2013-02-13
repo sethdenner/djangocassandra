@@ -1,8 +1,8 @@
-import quick.views
+from knotis.contrib.quick import views as quick_views 
 import django.db.models as models
 import polymodels.models
 import polymodels.managers
-from quick.fields import QuickCharField, QuickDateTimeField, QuickFloatField, QuickBooleanField
+from knotis.contrib.quick.fields import QuickCharField, QuickDateTimeField, QuickFloatField, QuickBooleanField
 
 class QuickManager(polymodels.managers.PolymorphicManager):
     def get_query_set(self):
@@ -24,8 +24,6 @@ def get_form_class(model, extra=0):
     ModelFormSet = modelformset_factory(model, form=QuickForm, extra = extra)
     return ModelFormSet
 
-import proxy
-
 class QuickModelBase(object):
 
     class Quick:
@@ -36,7 +34,7 @@ class QuickModelBase(object):
                 'list': 'quick/ListView.html',
                 'edit': 'quick/EditView.html'
         }
-        view = quick.views.QuickView
+        view = quick_views.QuickView
         
         form_class = get_form_class
 
@@ -88,6 +86,10 @@ class QuickModel(QuickModelBase, polymodels.models.PolymorphicModel ): #models.M
     deleted = QuickBooleanField(default=False)
     pub_date = QuickDateTimeField('date published', auto_now_add=True)
     objects = QuickManager()
+
+    # looks at polymodels and generates a choice field based arround all the proxy classes of this class.	
+    # types = QuickSubTypeField() 
+
     class Meta:
         abstract = True
         app_label = "quick"

@@ -190,6 +190,7 @@ INSTALLED_APPS = (
     'dbindexer',
     'piston',
     'djangotoolbox',
+    'django_extensions',
     'permission_backend_nonrel',
     'timezones',
     'sorl.thumbnail',
@@ -204,6 +205,9 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'knotis',
     'knotis.contrib.bootstrap',
+    'knotis.contrib.quick',
+    'knotis.contrib.identity',
+    'knotis.contrib.relation',
 )
 
 LOGIN_REDIRECT_URL = '/'

@@ -8,9 +8,9 @@ from django import http
 
 import django.db.models as models
 
-from quick.util import quick_models
-from quick.forms import quick_modelform_factory
-import quick.errors
+from knotis.contrib.quick.util import quick_models
+from knotis.contrib.quick.forms import quick_modelform_factory
+import knotis.contrib.quick.errors
 
 """
 Same as before except:

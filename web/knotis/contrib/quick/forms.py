@@ -4,7 +4,7 @@ from crispy_forms import layout
 
 from string import Template
 from django.utils.safestring import mark_safe
-import quick
+import knotis.contrib.quick as quick
 
 
 """
@@ -79,6 +79,12 @@ class QuickModelForm(ExtendedMetaModelForm):
         #FIX ME - only set this enc type if we have image fields.
         self.helper.enctype="multipart/form-data"
         self.helper.add_input(layout.Submit('submit', 'Submit'))
+
+    def validate(self, *args, **kwargs):
+        new_type = request.POST[model.Quick.type_name] 
+        new_model = self.model.Quick.types.CLASSES[new_type]
+
+        self.model.Quick.permissions['create'](*args, **kwargs)
 
     def save(self, commit=True):
         if self.instance.pk is None:
