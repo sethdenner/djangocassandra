@@ -164,7 +164,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'knotis.contrib.mobile.middleware.MobileDetectionMiddleware'
+    'knotis.contrib.mobile.middleware.MobileDetectionMiddleware',
+    'knotis.contrib.activity.middleware.ActivityMiddleware'
 )
 
 ROOT_URLCONF = 'urls'
@@ -204,6 +205,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'knotis',
     'knotis.contrib.bootstrap',
+    'knotis.contrib.activity'
 )
 
 LOGIN_REDIRECT_URL = '/'
