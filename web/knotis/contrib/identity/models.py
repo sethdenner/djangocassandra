@@ -1,4 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import Manager
 
 from knotis.contrib.quick.models import QuickModel
 from knotis.contrib.quick.fields import (
@@ -6,6 +7,11 @@ from knotis.contrib.quick.fields import (
     QuickTextField,
     QuickIntegerField,
     QuickImageField,
+)
+
+from knotis.contrib.relation.models import (
+    Relation,
+    RelationTypes
 )
 
 __models__ = (
@@ -31,6 +37,27 @@ class IdentityTypes:
     )
 
 
+class IdentityManager(Manager):
+    def create(
+        owner=None,
+        *args,
+        **kwargs
+    ):
+        identity = Manager.create(
+            *args,
+            **kwargs
+        )
+
+        if owner:
+            relation_type = RelationTypes.OWNER
+
+            Relation.objects.create(
+                subject=owner,
+                related=identity,
+                relation_type=relation_type
+            )
+
+
 class Identity(QuickModel):
     identity_type = QuickIntegerField(
         choices=IdentityTypes.CHOICES,
@@ -51,6 +78,8 @@ class Identity(QuickModel):
         default="http://placehold.it/200x200.jpg&text=N/A"
     )
 
+    objects = IdentityManager()
+
     class Quick(QuickModel.Quick):
         exclude = ()
         pass
@@ -66,17 +95,32 @@ class IdentityIndividual(Identity):
         exclude = ('identity_type',)
         filters = {'identity_type': IdentityTypes.INDIVIDUAL}
         name = 'individual'
+        field_overrides = {'name': {'verbose_name': _('User Name')}}
 
     class Meta:
         proxy = True
-        field_overrides = {'name': {'verbose_name': _('User Name')}}
 
     def clean(self):
         print ("Cleaning IdentityIndividual")
         self.identity_type = IdentityTypes.INDIVIDUAL
 
 
+class IdentityBusinessManager(IdentityManager):
+    def create(
+        *args,
+        **kwargs
+    ):
+        kwargs['identity_type'] = IdentityTypes.BUSINESS
+        IdentityManager.create(
+            *args,
+            **kwargs
+        )
+
+
 class IdentityBusiness(Identity):
+    class Meta:
+        proxy = True
+
     class Quick(Identity.Quick):
         exclude = ('identity_type',)
         filters = {'identity_type': IdentityTypes.BUSINESS}
@@ -88,8 +132,7 @@ class IdentityBusiness(Identity):
         'detail': 'identitybusiness/DetailView.html'
     })
 
-    class Meta:
-        proxy = True
+    objects = IdentityBusinessManager()
 
     def clean(self):
         print ("Cleaning IdentityBusiness")

@@ -14,13 +14,19 @@ from django.db.models import (
     IntegerField,
 )
 
-from kontis.contrib.core.models import KnotisModel
+from knotis.contrib.core.models import KnotisModel
 from knotis.contrib.facebook.views import get_facebook_avatar
 from knotis.contrib.gravatar.views import avatar as get_gravatar_avatar
 from knotis.contrib.cassandra.models import ForeignKey
+from knotis.contrib.endpoint.models import Endpoint
 from knotis.contrib.identity.models import (
+    Identity,
     IdentityIndividual,
     IdentityTypes
+)
+from knotis.contrib.relation.models import (
+    Relation,
+    RelationTypes
 )
 
 
@@ -73,12 +79,18 @@ class KnotisUserManager(UserManager):
 
         new_user.save()
 
-        user_profile = UserProfile.objects.create_profile(
-            new_user,
-            account_type
+        identity = Identity.objects.create(
+            name=' '.join([first_name, last_name]),
+            identity_type=IdentityTypes.INDIVIDUAL
         )
 
-        return new_user, user_profile
+        Relation.objects.create(
+            owner=new_user,
+            subject=identity,
+            relation_type=RelationTypes.OWNER
+        )
+
+        return new_user, identity
 
 
 class KnotisUser(DjangoUser):
@@ -217,7 +229,7 @@ class Credentials(Model):
 
 
 class PasswordReset(KnotisModel):
-    endpoint = ForiegnKey(Endpoint)
+    endpoint = ForeignKey(Endpoint)
     password_reset_key = CharField(
         max_length=36,
         null=True,

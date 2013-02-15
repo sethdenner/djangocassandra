@@ -51,7 +51,7 @@ class QuickField(models.Field):
         if hasattr(field_extras, 'verbose_name'):
             return field_extras['verbose_name']
 
-        return super(QuickField, self).verbose_name
+        return models.Field.verbose_name
 
     @verbose_name.setter
     def verbose_name(self, value):
@@ -60,7 +60,7 @@ class QuickField(models.Field):
             self.Quick.field_extras['verbose_name'] = value
 
         else:
-            super(QuickField, self).verbose_name = value
+            models.Field.verbose_name = value
 
     def field_extras(self):
         if (
