@@ -263,7 +263,10 @@ configs = {
     'seth': 'seth'
 }
 
-# Import the configuration settings file - REPLACE projectname with your project
+"""
+Import the configuration settings file
+REPLACE projectname with your project
+"""
 config_module = __import__(
     'config.%s' % configs[ENVIRONMENT_NAME],
     globals(),
