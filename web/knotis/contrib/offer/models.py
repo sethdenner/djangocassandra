@@ -11,7 +11,14 @@ from django.db.models import (
 )
 from django.utils.http import urlquote
 from django.conf import settings
-
+from knotis.contrib.quick.models import (
+    QuickModel,
+    QuickForeignKey,
+    QuickDateTimeField,
+    QuickIntegerField,
+    QuickCharField,
+    QuickFloatField
+)
 from knotis.utils.view import (
     format_currency,
     sanitize_input_html
@@ -27,12 +34,10 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes,
     EndpointAddress
 )
-from knotis.contrib.category.models import (
-    City,
-    Neighborhood,
-    Category
-)
 from knotis.contrib.media.models import Image
+from knotis.contrib.category.models import Category
+from knotis.contrib.product.models import Product
+from knotis.contrib.inventory.models import Inventory
 
 
 class OfferTypes:
@@ -441,7 +446,6 @@ class OfferTitleTypes:
 
 
 class Offer(KnotisModel):
-    business = ForeignKey(Business)
     offer_type = IntegerField(
         default=OfferTypes.NORMAL,
         choices=OfferTypes.CHOICES,
@@ -456,20 +460,13 @@ class Offer(KnotisModel):
         null=True
     )
     description = ForeignKey(Content, related_name='offer_description')
-    restrictions = ForeignKey(Content, related_name='offer_restrictions')
-
-    city = ForeignKey(City)
-    neighborhood = ForeignKey(Neighborhood)
-    address = ForeignKey(EndpointAddress)
 
     image = ForeignKey(Image)
     category = ForeignKey(Category)
 
     price_retail = FloatField(default=0., blank=True, null=True)
     price_discount = FloatField(default=0., blank=True, null=True)
-
-    start_date = DateTimeField(null=True, db_index=True)
-    end_date = DateTimeField(null=True, db_index=True)
+    currency = ForeignKey(Product)
 
     status = CharField(
         max_length=32,
@@ -477,17 +474,12 @@ class Offer(KnotisModel):
         db_index=True,
         default=OfferStatus.CREATED
     )
-    stock = IntegerField(default=0, blank=True, null=True)
-    purchased = IntegerField(default=0, blank=True, null=True)
     redeemed = IntegerField(default=0, blank=True, null=True)
-    unlimited = NullBooleanField(default=False)
-
     published = NullBooleanField(default=False)
     active = NullBooleanField(default=False, db_index=True)
     premium = NullBooleanField(default=False, db_index=True)
     deleted = NullBooleanField(default=False, db_index=True)
 
-    last_purchase = DateTimeField(null=True, blank=True, default=None)
     pub_date = DateTimeField(null=True, auto_now_add=True)
 
     objects = OfferManager()
@@ -718,9 +710,9 @@ class Offer(KnotisModel):
     def public_url(self):
         return '/'.join([
             settings.BASE_URL,
-             'offer',
-             self.id,
-             ''
+            'offer',
+            self.id,
+            ''
         ])
 
     def stock_values(self):
@@ -733,12 +725,12 @@ class Offer(KnotisModel):
 
     def income_gross(self):
         return (self.purchased * self.price_discount)
-    
+
     def income_net_formatted(self):
         gross = self.income_gross()
         our_cut = gross * .03
         return format_currency(gross - our_cut)
-        
+
     def update(
         self,
         title=None,
@@ -897,3 +889,46 @@ class Offer(KnotisModel):
         if available != self.available():
             delta = 1 if self.available() else -1
             self._update_offer_counts(delta)
+
+
+class OfferRestrictionTypes:
+    UNDEFINED = 'undefined'
+
+    CHOICES = (
+        (UNDEFINED, 'Undefined')
+    )
+
+
+class OfferRestriction(QuickModel):
+    offer = QuickForeignKey(Offer)
+    restriction_type = QuickCharField(
+        max_length=16,
+        choices=OfferRestrictionTypes.CHOICES
+    )
+    description = QuickCharField(
+        max_length=1024
+    )
+    stock = QuickIntegerField(
+        default=0,
+        blank=True,
+        null=True
+    )
+    purchased = QuickIntegerField(
+        default=0,
+        blank=True,
+        null=True
+    )
+    last_purchase = QuickDateTimeField(
+        null=True,
+        blank=True,
+        default=None
+    )
+    start_date = QuickDateTimeField()
+    end_date = QuickDateTimeField()
+
+
+class OfferItem(QuickModel):
+    offer = QuickForeignKey(Offer)
+    product = QuickForeignKey(Product)
+    inventory = QuickForeignKey(Inventory)
+    price_discount = QuickFloatField()
