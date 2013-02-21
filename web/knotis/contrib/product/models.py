@@ -2,7 +2,7 @@ from knotis.contrib.quick.models import (
     QuickModel,
     QuickBooleanField,
     QuickCharField,
-    QuickForigenKey
+    QuickForeignKey
 )
 from knotis.contrib.media.models import (
     Image
@@ -17,7 +17,7 @@ class Product(QuickModel):
     description = QuickCharField(
         max_length=140
     )
-    primary_image = QuickForigenKey(Image)
+    primary_image = QuickForeignKey(Image)
     public = QuickBooleanField()
     sku = QuickCharField(
         max_length=32
