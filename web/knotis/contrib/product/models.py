@@ -1,5 +1,7 @@
 from knotis.contrib.quick.models import (
-    QuickModel,
+    QuickModel
+)
+from knotis.contrib.quick.fields import (
     QuickBooleanField,
     QuickCharField,
     QuickForeignKey

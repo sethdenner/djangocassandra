@@ -1,7 +1,7 @@
 from django.utils import unittest
 from knotis.contrib.identity.models import (
     Identity,
-    IdentityType
+    IdentityTypes
 )
 
 
@@ -10,7 +10,7 @@ class IdentityTestCase(unittest.TestCase):
         pass
 
     def test_identity_creation(self):
-        identity_type = IdentityType.INDIVIDUAL
+        identity_type = IdentityTypes.INDIVIDUAL
         name = 'Test Identity'
         description = 'Test Description'
 

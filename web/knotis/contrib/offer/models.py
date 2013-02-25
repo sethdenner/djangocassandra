@@ -9,10 +9,11 @@ from django.db.models import (
     CharField,
     Manager
 )
-from django.utils.http import urlquote
 from django.conf import settings
 from knotis.contrib.quick.models import (
-    QuickModel,
+    QuickModel
+)
+from knotis.contrib.quick.fields import (
     QuickForeignKey,
     QuickDateTimeField,
     QuickIntegerField,
@@ -25,17 +26,14 @@ from knotis.utils.view import (
 )
 from knotis.contrib.cassandra.models import ForeignKey
 from knotis.contrib.core.models import KnotisModel
-from knotis.contrib.content.models import (
-    Content,
-    ContentTypes
-)
 from knotis.contrib.business.models import Business
-from knotis.contrib.endpoint.models import (
-    EndpointTypes,
-    EndpointAddress
-)
 from knotis.contrib.media.models import Image
-from knotis.contrib.category.models import Category
+from knotis.contrib.category.models import (
+    Category,
+    City,
+    Neighborhood
+)
+from knotis.contrib.identity.models import Identity
 from knotis.contrib.product.models import Product
 from knotis.contrib.inventory.models import Inventory
 
@@ -77,96 +75,60 @@ class OfferSort:
 class OfferManager(Manager):
     def create_offer(
         self,
-        user,
-        business,
+        owner,
         title,
         title_type,
         description,
         restrictions,
         city,
         neighborhood,
-        address,
         image,
         category,
         price_retail,
         price_discount,
+        currency,
         start_date,
         end_date,
         stock,
         unlimited,
         published,
         premium=False,
-        active=True
+        active=True,
+        inventory=[]
     ):
-        backend_name = \
-            urlquote(('offer_' + business.backend_name + '_' + title)\
-                .strip()\
-                .lower()\
-                .replace(
-                    ' ',
-                    '-'
-                )
-            )
-
-        content_root = Content.objects.create(
-            content_type=ContentTypes.OFFER,
-            user=user,
-            name=backend_name
-        )
-
-        content_title = Content.objects.create(
-            content_type=ContentTypes.OFFER_TITLE,
-            user=user,
-            name=backend_name,
-            parent=content_root,
-            value=title
-        )
-
-        content_description = Content.objects.create(
-            content_type=ContentTypes.OFFER_DESCRIPTION,
-            user=user,
-            name=backend_name,
-            parent=content_root,
-            value=description
-        )
-
-        content_restrictions = Content.objects.create(
-            content_type=ContentTypes.OFFER_RESTRICTIONS,
-            user=user,
-            name=backend_name,
-            parent=content_root,
-            value=restrictions
-        )
-
-        endpoint_address = EndpointAddress.objects.create(
-            type=EndpointTypes.ADDRESS,
-            user=user,
-            value=address,
-            primary=True,
-        )
-
-        offer = self.create(
-            business=business,
-            title=content_title,
+        offer = Offer(
+            owner=owner,
+            title=title,
             title_type=title_type,
-            description=content_description,
-            restrictions=content_restrictions,
-            city=city,
-            neighborhood=neighborhood,
-            address=endpoint_address,
+            description=description,
             image=image,
             category=category,
+            city=city,
+            neighborhood=neighborhood,
             price_retail=price_retail,
             price_discount=price_discount,
-            start_date=start_date,
-            end_date=end_date,
-            stock=stock,
-            unlimited=unlimited,
+            currency=currency,
             published=published,
             status=OfferStatus.CURRENT if published else OfferStatus.CREATED,
             active=active,
-            premium=premium
+            premium=premium,
+            restrictions=restrictions,
+            stock=stock,
+            unlimited=unlimited,
+            start_date=start_date,
+            end_date=end_date
         )
+        offer.visable = offer.is_visable()
+        offer.searchable = offer.is_searchable()
+        offer.purchasable = offer.is_purchaseable()
+        offer.save()
+
+        for i in inventory:
+            OfferItem.objects.create(
+                offer=offer,
+                inventory=i,
+                price_discount=price_discount
+            )
 
         if image:
             image.related_object_id = offer.id
@@ -247,44 +209,14 @@ class OfferManager(Manager):
 
     def get_offers(
         self,
-        business=None,
-        city=None,
-        neighborhood=None,
-        category=None,
-        premium=None,
-        active=None,
-        status=None,
-        published=None,
+        filters={},
         page=None,
         query=None,
         sort_by=OfferSort.NEWEST,
     ):
         try:
-            results = self.filter(deleted=False)
-
-            if None != business:
-                results = results.filter(business=business)
-
-            if None != city:
-                results = results.filter(city=city)
-
-            if None != neighborhood:
-                results = results.filter(neighborhood=neighborhood)
-
-            if None != category:
-                results = results.filter(category=category)
-
-            if None != premium:
-                results = results.filter(premium=premium)
-
-            if None != active:
-                results = results.filter(active=active)
-
-            if None != status:
-                results = results.filter(status=status)
-
-            if None != published:
-                results = results.filter(published=published)
+            filters['deleted'] = False
+            results = self.filter(filters)
 
             if not len(results):
                 return results
@@ -341,32 +273,25 @@ class OfferManager(Manager):
                 page
             )
 
-        except Exception as e:
+        except Exception:
             return None
 
     def get_available_offers(
         self,
-        business=None,
-        city=None,
-        neighborhood=None,
-        category=None,
-        premium=None,
+        filters={},
         page=None,
         query=None,
         sort_by=OfferSort.NEWEST
     ):
+        filters['active'] = True
+        filters['status'] = OfferStatus.CURRENT
+        filters['published'] = True
+
         return self.get_offers(
-            business,
-            city,
-            neighborhood,
-            category,
-            premium,
-            True,
-            OfferStatus.CURRENT,
-            True,
-            page,
-            query,
-            sort_by
+            filters=filters,
+            page=page,
+            query=query,
+            sort_by=sort_by
         )
 
     def get_active_offer_count(self):
@@ -446,6 +371,7 @@ class OfferTitleTypes:
 
 
 class Offer(KnotisModel):
+    owner = ForeignKey(Identity)
     offer_type = IntegerField(
         default=OfferTypes.NORMAL,
         choices=OfferTypes.CHOICES,
@@ -453,16 +379,28 @@ class Offer(KnotisModel):
         blank=True
     )
 
-    title = ForeignKey(Content, related_name='offer_title')
+    title = CharField(
+        null=True,
+        blank=True,
+        default=None,
+        max_length=140
+    )
     title_type = IntegerField(
         choices=OfferTitleTypes.CHOICES,
         blank=True,
         null=True
     )
-    description = ForeignKey(Content, related_name='offer_description')
+    description = CharField(
+        null=True,
+        blank=True,
+        default=None,
+        max_length=1024
+    )
 
     image = ForeignKey(Image)
     category = ForeignKey(Category)
+    city = ForeignKey(City)
+    neighborhood = ForeignKey(Neighborhood)
 
     price_retail = FloatField(default=0., blank=True, null=True)
     price_discount = FloatField(default=0., blank=True, null=True)
@@ -480,9 +418,39 @@ class Offer(KnotisModel):
     premium = NullBooleanField(default=False, db_index=True)
     deleted = NullBooleanField(default=False, db_index=True)
 
+    restrictions = QuickCharField(
+        max_length=1024
+    )
+    stock = QuickIntegerField(
+        default=0,
+        blank=True,
+        null=True
+    )
+    unlimited = NullBooleanField(
+        default=False,
+        blank=True,
+        null=True
+    )
+    purchased = QuickIntegerField(
+        default=0,
+        blank=True,
+        null=True
+    )
+    last_purchase = QuickDateTimeField(
+        null=True,
+        blank=True,
+        default=None
+    )
+    start_date = QuickDateTimeField()
+    end_date = QuickDateTimeField()
+
     pub_date = DateTimeField(null=True, auto_now_add=True)
 
     objects = OfferManager()
+
+    visable = NullBooleanField()
+    searchable = NullBooleanField()
+    purchasable = NullBooleanField()
 
     def __init__(
         self,
@@ -495,8 +463,11 @@ class Offer(KnotisModel):
         )
 
         # Could have no end date I guess so check for not None.
-        if (self.end_date and self.end_date < datetime.datetime.utcnow()) or \
-            (not self.unlimited and self.purchased >= self.stock):
+        if (
+            self.end_date and self.end_date < datetime.datetime.utcnow()
+        ) or (
+            not self.unlimited and self.purchased >= self.stock
+        ):
             self.complete()
 
     def _update_offer_counts(
@@ -505,8 +476,9 @@ class Offer(KnotisModel):
     ):
         if self.city:
             if self.city.active_offer_count:
-                self.city.active_offer_count = \
+                self.city.active_offer_count = (
                     self.city.active_offer_count + delta
+                )
 
                 if self.city.active_offer_count < 0:
                     self.city.active_offer_count = 0
@@ -518,15 +490,17 @@ class Offer(KnotisModel):
 
         if self.neighborhood:
             if self.neighborhood.active_offer_count:
-                self.neighborhood.active_offer_count = \
+                self.neighborhood.active_offer_count = (
                     self.neighborhood.active_offer_count + delta
+                )
 
                 if self.neighborhood.active_offer_count < 0:
                     self.neighborhood.active_offer_count = 0
 
             else:
-                self.neighborhood.active_offer_count = \
+                self.neighborhood.active_offer_count = (
                     delta if delta > 0 else 0
+                )
 
             self.neighborhood.save()
 
@@ -543,9 +517,22 @@ class Offer(KnotisModel):
 
             self.category.save()
 
+    def is_visable(self):
+        return True
+
+    def is_searchable(self):
+        return True
+
+    def is_purchasable(self):
+        return True
+
     def purchase(self):
         if not self.available():
-            raise Exception('Could not purchase offer {%s}. Offer is not available' % (self.id,))
+            raise Exception(
+                'Could not purchase offer {%s}. Offer is not available' % (
+                    self.id,
+                )
+            )
 
         self.purchased = self.purchased + 1
         self.last_purchase = datetime.datetime.utcnow()
@@ -583,22 +570,22 @@ class Offer(KnotisModel):
             self.purchased < self.stock
 
     def description_formatted_html(self):
-        if not self.description or not self.description.value:
+        if not self.description:
             return ''
 
         return sanitize_input_html(
-            self.description.value.replace(
+            self.description.replace(
                 '\n',
                 '<br/>'
             )
         )
 
     def restrictions_formatted_html(self):
-        if not self.restrictions or not self.restrictions.value:
+        if not self.restrictions:
             return ''
 
         return sanitize_input_html(
-            self.restrictions.value.replace(
+            self.restrictions.replace(
                 '\n',
                 '<br/>'
             )
@@ -624,13 +611,13 @@ class Offer(KnotisModel):
                 '$',
                 self.price_discount_formatted(),
                 ' for ',
-                self.title.value,
+                self.title,
                 ' at ',
                 self.business.business_name.value
             ])
 
         else:
-            title_formatted = self.title.value
+            title_formatted = self.title
 
         return title_formatted.replace('\n', ' ')
 
@@ -638,7 +625,7 @@ class Offer(KnotisModel):
         if not self.description:
             return ''
 
-        return self.description.value.replace(
+        return self.description.replace(
             '\'',
             '\\\''
         ).replace(
@@ -653,7 +640,7 @@ class Offer(KnotisModel):
         if not self.title:
             return ''
 
-        return self.title.value.replace(
+        return self.title.replace(
             '\'',
             '\\\''
         ).replace(
@@ -678,7 +665,7 @@ class Offer(KnotisModel):
             return ''
 
         return ''.join([
-            self.description.value[:97],
+            self.description[:97],
             '...'
         ]).replace('\n', ' ')
 
@@ -695,9 +682,8 @@ class Offer(KnotisModel):
 
     def savings_percent(self):
         return '%.0f' % round(
-            (self.price_retail - self.price_discount) / \
-                self.price_retail * 100,
-            0
+            (self.price_retail - self.price_discount) /
+            self.price_retail * 100, 0
         )
 
     def days_remaining(self):
@@ -731,204 +717,8 @@ class Offer(KnotisModel):
         our_cut = gross * .03
         return format_currency(gross - our_cut)
 
-    def update(
-        self,
-        title=None,
-        title_type=None,
-        description=None,
-        restrictions=None,
-        city=None,
-        neighborhood=None,
-        address=None,
-        image=None,
-        category=None,
-        price_retail=None,
-        price_discount=None,
-        start_date=None,
-        end_date=None,
-        stock=None,
-        unlimited=None,
-        published=None,
-        status=None,
-        purchased=None,
-        redeemed=None,
-        active=None,
-        premium=None
-    ):
-        is_self_dirty = False
-        available = self.available()
-
-        if None != title:
-            current_title = self.title.value if self.title else None
-            if title != current_title:
-                if self.title:
-                    self.title = self.title.update(title)
-                else:
-                    self.title = Content.objects.create(
-                        content_type=ContentTypes.OFFER_TITLE,
-                        user=self.business.user,
-                        name=self.content_root.name,
-                        parent=self.content_root,
-                        value=title
-                    )
-                is_self_dirty = True
-
-        if None != description:
-            current_description = \
-                self.description.value if self.description else None
-            if description != current_description:
-                if self.description:
-                    self.description = self.description.update(description)
-                else:
-                    self.description = Content.objects.create(
-                        content_type=ContentTypes.OFFER_DESCRIPTION,
-                        user=self.business.user,
-                        name=self.content_root.name,
-                        parent=self.content_root,
-                        value=description
-                    )
-                is_self_dirty = True
-
-        if None != restrictions:
-            current_restrictions = \
-                self.restrictions.value if self.restrictions else None
-            if restrictions != current_restrictions:
-                if self.restrictions:
-                    self.restrictions = self.restrictions.update(restrictions)
-                else:
-                    self.restricitons = Content.objects.create(
-                        content_type=ContentTypes.OFFER_RESTRICTIONS,
-                        user=self.business.user,
-                        name=self.content_root.name,
-                        parent=self.content_root,
-                        value=restrictions
-                    )
-                is_self_dirty = True
-
-        if None != city and city != self.city:
-            self.city = city
-            is_self_dirty = True
-
-        if None != neighborhood and neighborhood != self.neighborhood:
-            self.neighborhood = neighborhood
-            is_self_dirty = True
-
-        if None != address:
-            current_address = \
-                self.address.value.value if self.address else None
-            if address != current_address:
-                if self.address:
-                    self.address.update(address)
-                else:
-                    self.address = EndpointAddress.objects.create(
-                        user=self.business.user,
-                        value=address
-                    )
-                    is_self_dirty = True
-
-        if None != image and (None == self.image or image != self.image.image):
-            self.image = image
-            is_self_dirty = True
-
-        if None != category and category != self.category:
-            self.category = category
-            is_self_dirty = True
-
-        if None != price_retail and price_retail != self.price_retail:
-            self.price_retail = price_retail
-            is_self_dirty = True
-
-        if None != price_discount and price_discount != self.price_discount:
-            self.price_discount = price_discount
-            is_self_dirty = True
-
-        if None != start_date and start_date != self.start_date:
-            self.start_date = start_date
-            is_self_dirty = True
-
-        if None != end_date and end_date != self.end_date:
-            self.end_date = end_date
-            is_self_dirty = True
-
-        if None != stock and stock != self.stock:
-            self.stock = stock
-            is_self_dirty = True
-
-        if None != unlimited and unlimited != self.unlimited:
-            self.unlimited = unlimited
-            is_self_dirty = True
-
-        # Don't allow to unpublish
-        if published:
-            self.published = published
-            is_self_dirty = True
-
-        if None != status and status != self.status:
-            self.status = status
-            is_self_dirty = True
-
-        if None != purchased and purchased != self.purchased:
-            self.purchased = purchased
-            is_self_dirty = True
-
-        if None != redeemed and redeemed != self.redeemed:
-            self.redeemed = redeemed
-            is_self_dirty = True
-
-        if None != active and active != self.active:
-            self.active = active
-            is_self_dirty = True
-
-        if None != premium and premium != self.premium:
-            self.premium = premium
-            is_self_dirty = True
-
-        if is_self_dirty:
-            self.save()
-
-        if available != self.available():
-            delta = 1 if self.available() else -1
-            self._update_offer_counts(delta)
-
-
-class OfferRestrictionTypes:
-    UNDEFINED = 'undefined'
-
-    CHOICES = (
-        (UNDEFINED, 'Undefined')
-    )
-
-
-class OfferRestriction(QuickModel):
-    offer = QuickForeignKey(Offer)
-    restriction_type = QuickCharField(
-        max_length=16,
-        choices=OfferRestrictionTypes.CHOICES
-    )
-    description = QuickCharField(
-        max_length=1024
-    )
-    stock = QuickIntegerField(
-        default=0,
-        blank=True,
-        null=True
-    )
-    purchased = QuickIntegerField(
-        default=0,
-        blank=True,
-        null=True
-    )
-    last_purchase = QuickDateTimeField(
-        null=True,
-        blank=True,
-        default=None
-    )
-    start_date = QuickDateTimeField()
-    end_date = QuickDateTimeField()
-
 
 class OfferItem(QuickModel):
     offer = QuickForeignKey(Offer)
-    product = QuickForeignKey(Product)
     inventory = QuickForeignKey(Inventory)
     price_discount = QuickFloatField()

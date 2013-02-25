@@ -1,4 +1,3 @@
-import knotis.contrib.auth.models as auth
 import knotis.contrib.business.models as business
 import knotis.contrib.cassandra.models as cassandra
 import knotis.contrib.category.models as category

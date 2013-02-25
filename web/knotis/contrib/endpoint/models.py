@@ -196,7 +196,7 @@ class EndpointPhone(Endpoint):
         super(EndpointPhone, self).__init__(*args, **kwargs)
 
 
-class EndpointEmail(Endpoint): #-- the data for all these is the same, we want different actual
+class EndpointEmail(Endpoint):
     class Meta:
         proxy = True
 
@@ -223,8 +223,10 @@ class EndpointEmail(Endpoint): #-- the data for all these is the same, we want d
                 from_email,
                 recipient_list
             )
-        except BadHeaderError as e:
+
+        except BadHeaderError:
             pass
+
         except:
             pass
 
