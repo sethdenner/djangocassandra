@@ -2,11 +2,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from knotis.contrib.quick.models import QuickModel
 from knotis.contrib.quick.fields import (
+    QuickForeignKey,
     QuickCharField,
     QuickTextField,
-    QuickIntegerField,
-    QuickImageField
+    QuickIntegerField
 )
+
+from knotis.contrib.media.models import Image
 
 __models__ = (
     'Identity',
@@ -47,7 +49,7 @@ class Identity(QuickModel):
         verbose_name=_("Describe the Identity"),
         required=True
     )
-    image = QuickImageField(default="http://placehold.it/200x200.jpg&text=N/A")
+    primary_image = QuickForeignKey(Image)
 
     class Quick(QuickModel.Quick):
         exclude = ()

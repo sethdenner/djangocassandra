@@ -25,6 +25,3 @@ class IdentityTestCase(unittest.TestCase):
         self.assertEqual(selected.name, name)
         self.assertEqual(selected.description, description)
         self.assertEqual(selected.identity_type, identity_type)
-
-    def test_get_identity_images(self):
-        self.assertTrue(False)
