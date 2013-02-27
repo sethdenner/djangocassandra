@@ -5,7 +5,11 @@ temp_dir="./tmp-${rand[0]}"
 
 mkdir "${temp_dir}" 2> /dev/null
 
-git clone https://github.com/vaterlaus/django_cassandra_backend.git ${temp_dir}
+git clone https://github.com/sethdenner/django_cassandra_backend.git ${temp_dir}
+(
+    cd ${temp_dir}
+    git checkout knotis
+)
 
 django_cassandra_dir="$(find ${temp_dir} -name django_cassandra)"
 
