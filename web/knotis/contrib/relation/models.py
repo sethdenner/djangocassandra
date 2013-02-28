@@ -51,14 +51,6 @@ class Relation(QuickModel):
         default=RelationTypes.UNDEFINED,
         max_length=25,
     )
-
-    owner_content_type = QuickForeignKey(
-        ContentType,
-        related_name='relation_owner_set'
-    )
-    owner_object_id = QuickUUIDField()
-    owner = QuickGenericForeignKey('owner_content_type', 'owner_object_id')
-
     subject_content_type = QuickForeignKey(
         ContentType,
         related_name='relation_subject_set'
@@ -68,7 +60,15 @@ class Relation(QuickModel):
         'subject_content_type',
         'subject_object_id'
     )
-
+    related_content_type = QuickForeignKey(
+        ContentType,
+        related_name='relation_related_set'
+    )
+    related_object_id = QuickUUIDField()
+    related = QuickGenericForeignKey(
+        'related_content_type',
+        'related_object_id'
+    )
     name = QuickCharField(
         max_length=80,
         db_index=True,
@@ -81,8 +81,8 @@ class Relation(QuickModel):
     )
 
     class Quick(QuickModel.Quick):
-        exclude = ()  # ('period',)
-        #permissions = {'create': self.check_create}
+        exclude = ()
+        # permissions = {'create': self.check_create}
         types = RelationTypes
 
     def __unicode__(self):
