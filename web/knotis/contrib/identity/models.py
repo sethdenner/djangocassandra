@@ -108,11 +108,12 @@ class IdentityIndividual(Identity):
 
 class IdentityBusinessManager(IdentityManager):
     def create(
+        self,
         *args,
         **kwargs
     ):
         kwargs['identity_type'] = IdentityTypes.BUSINESS
-        IdentityManager.create(
+        return super(IdentityBusinessManager, self).create(
             *args,
             **kwargs
         )

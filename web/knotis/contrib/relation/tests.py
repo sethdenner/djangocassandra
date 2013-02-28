@@ -27,8 +27,8 @@ class RelationTestCase(unittest.TestCase):
 
     def test_following(self):
         kwargs = {
-            'owner': self.individual,
-            'subject': self.business,
+            'subject': self.individual,
+            'related': self.business,
             'relation_type': RelationTypes.FOLLOWING
         }
         created = Relation.objects.create(**kwargs)
