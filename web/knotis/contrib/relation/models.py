@@ -16,7 +16,7 @@ __models__ = (
     'RelationManager',
     'RelationEmployee'
 )
-__all__ = __models__ + ('IdentityTypes',)
+__all__ = __models__ + ('RelationTypes',)
 
 
 class RelationTypes:
@@ -72,11 +72,9 @@ class Relation(QuickModel):
     name = QuickCharField(
         max_length=80,
         db_index=True,
-        verbose_name=_("Subject"),
         required=True
     )
     description = QuickTextField(
-        verbose_name=_("Relation Body!"),
         required=True
     )
 

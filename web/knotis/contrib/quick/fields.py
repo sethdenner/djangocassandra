@@ -13,7 +13,7 @@ class QuickFieldDefaultMixin(object):
         super(QuickFieldDefaultMixin, self).__init__(*args, **kwargs)
 
 
-class QuickField(models.Field):
+class QuickField(object):
     def __init__(
         self,
         *args,
@@ -40,38 +40,12 @@ class QuickField(models.Field):
         super(QuickField, self).__init__(*args, **kwargs)
 
     def clean(self, *args, **kwargs):
+        #print "field cleaning" + str(self.__class__)
         return super(QuickField, self).clean(*args, **kwargs)
 
     def validate(self, *args, **kwargs):
+        #print "field validateing" + str(self.__class__)
         return super(QuickField, self).validate(*args, **kwargs)
-
-    @property
-    def verbose_name(self):
-        field_extras = self.field_extras()
-        if hasattr(field_extras, 'verbose_name'):
-            return field_extras['verbose_name']
-
-        return models.Field.verbose_name
-
-    @verbose_name.setter
-    def verbose_name(self, value):
-        field_extras = self.field_extras()
-        if field_extras:
-            self.Quick.field_extras['verbose_name'] = value
-
-        else:
-            models.Field.verbose_name = value
-
-    def field_extras(self):
-        if (
-            hasattr(self, 'model') and
-            hasattr(self.model, 'Quick') and
-            hasattr(self.model.Quick, 'field_extras')
-        ):
-            return self.Quick.field_extras.get(self.name, {})
-
-        else:
-            return None
 
 
 class QuickBooleanField(QuickField, models.BooleanField):
@@ -88,9 +62,9 @@ class QuickCharField(QuickField, QuickFieldDefaultMixin, models.CharField):
 
 
 class QuickDateTimeField(
-    QuickField,
-    QuickFieldDefaultMixin,
-    models.DateTimeField
+        QuickField,
+        QuickFieldDefaultMixin,
+        models.DateTimeField
 ):
     pass
 
@@ -119,9 +93,9 @@ class QuickImageField(QuickField, QuickFieldDefaultMixin, models.ImageField):
 
 
 class QuickIntegerField(
-    QuickField,
-    QuickFieldDefaultMixin,
-    models.IntegerField
+        QuickField,
+        QuickFieldDefaultMixin,
+        models.IntegerField
 ):
     pass
 
@@ -159,12 +133,14 @@ class QuickForeignKey(QuickField, QuickFieldDefaultMixin, models.ForeignKey):
     def db_type(self, connection):
         return 'ForeignKeyNonRel'
 
+
 from django.contrib.contenttypes import generic
 
 
 class QuickGenericForeignKey(QuickField, generic.GenericForeignKey):
     def __init__(self, *args, **kwargs):
         super(QuickField, self).__init__(*args, **kwargs)
+
 
 from django_extensions.db.fields import UUIDField
 

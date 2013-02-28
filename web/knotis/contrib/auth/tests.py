@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
+from django.contrib.contenttypes.models import ContentType
+
 from knotis.contrib.auth.models import (
     KnotisUser,
     UserProfile
@@ -11,6 +13,15 @@ from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
 )
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityTypes
+)
+from knotis.contrib.relation.models import (
+    Relation,
+    RelationTypes
+)
+
 
 class AuthenticationBackendTests(unittest.TestCase):
     def test_endpoint_validation(self):
@@ -23,7 +34,7 @@ class AuthenticationBackendTests(unittest.TestCase):
                 username,
                 'test_password'
             )
-            
+
             # Create endpoint.
             endpoint = Endpoint.objects.create_endpoint(
                 EndpointTypes.EMAIL,
@@ -31,60 +42,90 @@ class AuthenticationBackendTests(unittest.TestCase):
                 user,
                 True
             )
-            
+
             # Attempt authentication.
             authenticated_user = authenticate(
                 user_id=user.id,
                 validation_key=endpoint.validation_key
             )
-            
+
             self.assertNotEqual(
                 authenticated_user,
                 None,
                 'Authentication Failed'
             )
-            
+
             validated_endpoint = Endpoint.objects.get(pk=endpoint.id)
-            
+
             self.assertEqual(
                 validated_endpoint.validated,
                 True,
                 'Endpoint Was Not Validated'
             )
-            
+
             # Make sure the same credentials don't auth again.
             authenticated_user = authenticate(
                 user_id=user.id,
                 validation_key=endpoint.validation_key
             )
-            
+
             self.assertEqual(
                 authenticated_user,
                 None,
                 'Validation Credentials Did Not Expire.'
             )
-        
+
         except:
             logger.exception()
             user = None
-        
+
         finally:
             #clean up after ourselves.
             if user:
                 try:
                     profile = UserProfile.objects.get(user=user)
                     profile.delete()
-                    
+
                 except:
                     pass
-                
+
                 try:
                     endpoints = Endpoint.objects.filter(user=user)
                     for endpoint in endpoints:
                         endpoint.delete()
-                        
+
                 except:
                     pass
-                
+
                 user.delete()
-        
+
+
+class UserCreationTests(unittest.TestCase):
+    def test_create_user(self):
+        username = 'test_user@example.com'
+        user, identity = KnotisUser.objects.create_user(
+            'First Name',
+            'Last Name',
+            username,
+            'test_password'
+        )
+
+        self.assertIsNotNone(user)
+        self.assertIsNotNone(identity)
+
+        user_type = ContentType.objects.get_for_model(user)
+        relations = Relation.objects.filter(
+            subject_content_type__pk=user_type.id,
+            subject_object_id=user.id
+        )
+
+        self.assertEqual(1, relations.count())
+
+        relation = relations[0]
+
+        self.assertEqual(relation.relation_type, RelationTypes.OWNER)
+        self.assertTrue(isinstance(relation.related, Identity))
+        self.assertEqual(
+            relation.related.identity_type,
+            IdentityTypes.INDIVIDUAL
+        )

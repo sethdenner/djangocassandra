@@ -40,11 +40,12 @@ class IdentityTypes:
 
 class IdentityManager(Manager):
     def create(
+        self,
         owner=None,
         *args,
         **kwargs
     ):
-        identity = Manager.create(
+        identity = super(IdentityManager, self).create(
             *args,
             **kwargs
         )
@@ -57,6 +58,8 @@ class IdentityManager(Manager):
                 related=identity,
                 relation_type=relation_type
             )
+
+        return identity
 
 
 class Identity(QuickModel):
