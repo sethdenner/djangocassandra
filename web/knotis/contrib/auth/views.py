@@ -1,13 +1,12 @@
-import hashlib
 import json
 import uuid
+import datetime
 
 from django.forms import (
     CharField,
     EmailField,
     BooleanField,
     PasswordInput,
-    HiddenInput,
     CheckboxInput,
     Form,
     ValidationError
@@ -38,22 +37,23 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 from django.template import Context
 from django.template.loader import get_template
-from django.core.urlresolvers import reverse
 
 from knotis.utils.view import get_standard_template_parameters
 from knotis.utils.email import (
     generate_email,
     generate_validation_key
 )
-from knotis.contrib.paypal.views import (
-    render_paypal_button,
-    generate_ipn_hash
-)
 from knotis.contrib.auth.models import (
     KnotisUser,
-    UserProfile,
-    AccountStatus,
-    AccountTypes
+    PasswordReset
+)
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityTypes
+)
+from knotis.contrib.relation.models import (
+    Relation,
+    RelationTypes
 )
 from knotis.contrib.endpoint.models import (
     Endpoint,
@@ -69,13 +69,9 @@ class SignUpForm(Form):
     last_name = CharField(label='Last Name')
     email = EmailField(label='Email Address')
     password = CharField(widget=PasswordInput, label='Password')
-    account_type = CharField(widget=HiddenInput)
     business = BooleanField(widget=CheckboxInput, required=False)
 
     def __init__(self, *args, **kwargs):
-        account_type = kwargs.pop('account_type') \
-            if 'account_type' in kwargs else 0
-
         super(SignUpForm, self).__init__(*args, **kwargs)
 
         self.fields['first_name'].widget.attrs = {
@@ -97,10 +93,6 @@ class SignUpForm(Form):
         self.fields['password'].widget.attrs = {
             'class': 'radius-general',
             'placeholder': 'Password',
-        }
-
-        self.fields['account_type'].widget.attrs = {
-            'value': account_type
         }
 
         self.fields['business'].widget.attrs = {
@@ -130,30 +122,20 @@ class SignUpForm(Form):
             self.cleaned_data['last_name'],
             self.cleaned_data['email'],
             self.cleaned_data['password'],
-            self.cleaned_data['account_type']
         )
 
 
 def send_validation_email(
-    user_profile,
+    user_id,
     email_endpoint
 ):
-    #TODO This should be handled by an async task
-    if user_profile.account_type == AccountTypes.BUSINESS_FREE:
-        subject = 'New Free Business Account in Knotis'
-
-    elif user_profile.account_type == AccountTypes.BUSINESS_MONTHLY:
-        subject = 'New Premium Business Account in Knotis'
-
-    else:
-        subject = 'New user Account in Knotis'
-
+    subject = 'Welcome to Knotis!'
     generate_email(
         'activate',
         subject,
         settings.EMAIL_HOST_USER,
         [email_endpoint.value.value], {
-            'user_id': user_profile.user_id,
+            'user_id': user_id,
             'validation_key': email_endpoint.validation_key,
             'BASE_URL': settings.BASE_URL,
             'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
@@ -171,13 +153,11 @@ def resend_validation_email(
 
     try:
         user = KnotisUser.objects.get(username=username)
-        user_profile = UserProfile.objects.get(user=user)
 
     except:
         user = None
-        user_profile = None
 
-    if not user or not user_profile:
+    if not user:
         return HttpResponseNotFound('Could not find user')
 
     try:
@@ -190,13 +170,15 @@ def resend_validation_email(
         return HttpResponseNotFound('Could not find email address')
 
     for endpoint in user_endpoints:
-        if endpoint.type == EndpointTypes.EMAIL and \
-            endpoint.value.value == username:
+        if (
+            endpoint.type == EndpointTypes.EMAIL and
+            endpoint.value.value == username
+        ):
             endpoint.validation_key = generate_validation_key()
             endpoint.save()
 
             send_validation_email(
-                user_profile,
+                user.id,
                 endpoint
             )
             break
@@ -204,7 +186,7 @@ def resend_validation_email(
     return HttpResponse('OK')
 
 
-def sign_up(request, account_type=AccountTypes.USER):
+def sign_up(request):
     if request.method == 'POST':
         response_data = {
             'success': 'no',
@@ -214,36 +196,38 @@ def sign_up(request, account_type=AccountTypes.USER):
 
         sign_up_form = SignUpForm(request.POST)
         user = None
-        user_profile = None
         if sign_up_form.is_valid():
             try:
-                user, user_profile = sign_up_form.create_user(request)
+                user, identity = sign_up_form.create_user(request)
 
                 email = Endpoint.objects.create_endpoint(
                     EndpointTypes.EMAIL,
                     user.username,
-                    user,
+                    identity,
                     True
                 )
 
                 send_validation_email(
-                    user_profile,
+                    user.id,
                     email
                 )
 
                 response_data['success'] = 'yes'
-                response_data['user'] = user_profile.account_type
-                account_type = user_profile.account_type
-
-                if True == sign_up_form.cleaned_data['business']:
-                    if user_profile.account_type == AccountTypes.BUSINESS_FREE:
-                        feedback = 'Your Forever Free account has been created'
-
-                else:
-                    feedback = 'Your free Knotis account has been created.'
+                """
+                This is a stopgap to not break
+                the existing web UI. This code
+                should be removed when the UI
+                has been modified not to care
+                differentiate between different
+                users types of users.
+                """
+                response_data['user'] = 'user'
+                feedback = 'Your Knotis account has been created.'
 
             except Exception as e:
-                error = 'There was an error creating your account: ' + e.message
+                error = (
+                    'There was an error creating your account: ' + e.message
+                )
 
         else:
             error = 'The following fields are invalid: '
@@ -257,37 +241,9 @@ def sign_up(request, account_type=AccountTypes.USER):
                 mimetype='application/json'
             )
 
-        paypal_button = None
-        if AccountTypes.BUSINESS_MONTHLY == user_profile.account_type:
-            paypal_button = render_paypal_button({
-                'button_text': 'Finish with PayPal',
-                'button_class': 'txt-center button-paypal clear-fix radius-general',
-                'paypal_parameters': {
-                    'cmd': '_s-xclick',
-                    'hosted_button_id': settings.PAYPAL_PREMIUM_BUTTON_ID,
-                    'notify_url': '/'.join([
-                        settings.BASE_URL,
-                        'paypal',
-                        'ipn',
-                        ''
-                    ]),
-                    'item_name_1': 'Business Monthly Subscription',
-                    'custom': '|'.join([
-                        user.id,
-                        generate_ipn_hash(user.id)
-                    ]),
-                }
-            })
-            # Downgrade user until they pay
-            user_profile.account_type = AccountTypes.BUSINESS_FREE
-            user_profile.save()
-
         html = get_template('finish_registration.html')
         context = Context({
             'settings': settings,
-            'AccountTypes': AccountTypes,
-            'account_type': account_type,
-            'paypal_button': paypal_button,
             'feedback': feedback,
             'error': error
         })
@@ -299,13 +255,13 @@ def sign_up(request, account_type=AccountTypes.USER):
         )
 
     else:
-        form = SignUpForm(account_type=account_type)
+        form = SignUpForm()
         return render(
             request,
             'sign_up.html', {
-            'form': form,
-            'account_type': account_type,
-        })
+                'form': form,
+            }
+        )
 
 
 class KnotisAuthenticationForm(AuthenticationForm):
@@ -365,13 +321,16 @@ def login(request):
                 'message': 'Login failed. Please try again.'
             })
 
-        user_profile = None
-        try:
-            user_profile = UserProfile.objects.get(user=user)
-        except:
-            pass
+        user_emails = Endpoint.objects.filter(
+            endpoint_type=EndpointTypes.EMAIL,
+            user=user
+        )
+        primary_email = None
+        for email in user_emails:
+            if email.primary or email.value == username:
+                primary_email = email
 
-        if not user_profile or user_profile.account_status != AccountStatus.ACTIVE:
+        if not primary_email.validated:
             # Message user about account deactivation.
 
             validation_link = ''.join([
@@ -395,11 +354,7 @@ def login(request):
             user
         )
 
-        if AccountTypes.USER == user_profile.account_type:
-            default_url = '/offers/'
-        
-        else:
-            default_url = '/dashboard/'
+        default_url = '/dashboard/'
 
         next_url = request.POST.get('next')
 
@@ -410,177 +365,6 @@ def login(request):
 
     else:
         return generate_response(None)
-
-
-FACEBOOK_PASSWORD_SALT = '@#^#$@FBb9xc8cy'
-
-
-def _generate_facebook_password(facebook_id):
-    password = ''.join([
-        FACEBOOK_PASSWORD_SALT,
-        facebook_id,
-        FACEBOOK_PASSWORD_SALT
-    ])
-    password_hash = hashlib.md5(password)
-    return password_hash.hexdigest()
-
-
-def _authenticate_facebook(
-    username,
-    facebook_id
-):
-    password = ''.join([
-        FACEBOOK_PASSWORD_SALT,
-        facebook_id,
-        FACEBOOK_PASSWORD_SALT
-    ])
-    password_hash = hashlib.md5(password)
-    return authenticate(
-        username=username,
-        password=password_hash.hexdigest()
-    )
-
-
-def facebook_login(
-    request,
-    account_type=None
-):
-    def generate_response(data):
-        return HttpResponse(
-            json.dumps(data),
-            content_type='application/json'
-        )
-
-    if request.method.lower() != 'post':
-        return HttpResponseBadRequest('Only POST is supported.')
-
-    try:
-        facebook_id = request.POST.get('data[response][authResponse][userID]')
-        email = request.POST.get('data[user][email]')
-        first_name = request.POST.get('data[user][first_name]')
-        last_name = request.POST.get('data[user][last_name]')
-
-    except:
-        return HttpResponseBadRequest('No data returned from facebook')
-        pass
-
-    if request.session.get('fb_id') == facebook_id:
-        django_login(
-            request,
-            _authenticate_facebook(
-                email,
-                facebook_id
-            )
-        )
-
-        return generate_response({
-            'success': 'no',
-            'message': 'Already authenticated.'
-        })
-
-    user = None
-    try:
-        user = KnotisUser.objects.get(username=email)
-    except:
-        pass
-
-    message = None
-    user_profile = None
-    if None == user and account_type:
-        try:
-            user, user_profile = KnotisUser.objects.create_user(
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-                password=_generate_facebook_password(facebook_id)
-            )
-            user.active = True
-            user.save()
-
-            user_profile.status = AccountStatus.ACTIVE
-            user_profile.account_type = account_type
-            user_profile.save()
-
-            Endpoint.objects.create_endpoint(
-                EndpointTypes.EMAIL,
-                user.username,
-                user,
-                True
-            )
-
-        except Exception as e:
-            message = str(e)
-
-    if None == user:
-        return generate_response({
-            'success': 'no',
-            'message': (
-                'Failed to associate your Facebook account '
-                'with your Knotis account. Please try again. %s'
-            ) % message,
-        })
-
-    if None == user_profile:
-        user_profile = UserProfile.objects.get(user=user)
-
-    authenticated_user = _authenticate_facebook(
-        user.username,
-        facebook_id
-    )
-
-    if authenticated_user:
-        django_login(
-            request,
-            authenticated_user
-        )
-
-        request.session['fb_id'] = facebook_id
-
-        if account_type:
-            data = {
-                'success': 'yes',
-                'user': account_type
-            }
-
-            if AccountTypes.BUSINESS_MONTHLY == account_type:
-                paypal_button = None
-                if AccountTypes.BUSINESS_MONTHLY == user_profile.account_type:
-                    paypal_button = render_paypal_button({
-                        'hosted_button_id': settings.PAYPAL_PREMIUM_BUTTON_ID,
-                        'notify_url': reverse('knotis.contrib.paypal.views.buy_premium_service'),
-                        'item_1': 'subscription',
-                        'custom': '_'.join([
-                            user.id,
-                            generate_ipn_hash(user.id)
-                        ])
-                    })
-
-                html = get_template('finish_registration.html')
-                context = Context({
-                    'AccountTypes': AccountTypes,
-                    'account_type': user_profile.account_type,
-                    'paypal_button': paypal_button,
-                })
-                data['message'] = html.render(context)
-
-
-            return generate_response(data)
-
-        else:
-            return generate_response({
-                'success': 'yes',
-                'message': 'Authentication successful.'
-            })
-    elif user:
-        return generate_response({
-            'success': 'no',
-            'message': 'You already have an account on Knotis. Please login with your Knotis credentials.'
-        })
-    else:
-        return generate_response({
-            'success': 'no',
-            'message': 'Failed to authenticate facebook user.'
-        })
 
 
 def logout(request):
@@ -614,36 +398,24 @@ def validate(
             user_id=user_id,
             validation_key=validation_key
         )
-        
+
         if not authenticated_user:
             user = KnotisUser.objects.get(pk=user_id)
-            
+
             if Endpoint.objects.validate_endpoints(
                 validation_key,
                 user
             ):
-                user_profile = UserProfile.objects.get(user=user)
-                if AccountStatus.NEW == user_profile.account_status:
-                    if user_profile.activate():
-                        send_new_user_email(user.username)
-                                
                 redirect_url = settings.LOGIN_URL
-        
+
         else:
-            user_profile = UserProfile.objects.get(user=authenticated_user)
-            if user_profile.activate():
-                send_new_user_email(authenticated_user.username)
-            
+            send_new_user_email(authenticated_user.username)
             django_login(
                 request,
                 authenticated_user
             )
-            
-            if AccountTypes.USER == user_profile.account_type:
-                redirect_url = '/offers/'
-            
-            else:
-                redirect_url = '/dashboard/'
+
+            redirect_url = '/dashboard/'
 
     except:
         logger.exception('exception while validating endpoint')
@@ -659,13 +431,23 @@ class KnotisPasswordForgotForm(Form):
 
         try:
             user = KnotisUser.objects.get(username=email)
-            user_profile = UserProfile.objects.get(user=user)
         except:
             user = None
-            user_profile = None
 
-        if not user_profile:
-            return False
+        if not user:
+            raise Exception('no user with that email address found')
+
+        try:
+            primary_email = Endpoint.objects.get_primary_endpoint(
+                user=user,
+                endpoint_type=EndpointTypes.EMAIL
+            )
+
+        except:
+            primary_email = None
+
+        if not primary_email:
+            raise Exception('user has no primary email.')
 
         digest = uuid.uuid4().hex
         key = "%s-%s-%s-%s-%s" % (
@@ -677,8 +459,13 @@ class KnotisPasswordForgotForm(Form):
         )
 
         try:
-            user_profile.password_reset_key = key
-            user_profile.save()
+            PasswordReset.objects.create(
+                endpoint=primary_email,
+                password_reset_key=key,
+                expires=datetime.datetime.utcnow() + datetime.timedelta(
+                    minutes=settings.PASSWORD_RESET_EXPIRE_MINUTES
+                )
+            )
 
             generate_email(
                 'password_forgot',
@@ -693,6 +480,7 @@ class KnotisPasswordForgotForm(Form):
             ).send()
             return True
         except:
+            logger.exception('failed to initiate password reset')
             return False
 
 
@@ -703,14 +491,16 @@ def password_forgot(request):
         forgot_form = KnotisPasswordForgotForm(request.POST)
         if forgot_form.is_valid():
             if forgot_form.send_reset_instructions():
-                template_parameters['feedback'] = \
+                template_parameters['feedback'] = (
                     "Instructions on resetting your password have been sent to %s." % (
                         forgot_form.cleaned_data['email'],
                     )
+                )
 
             else:
-                template_parameters['feedback'] = \
+                template_parameters['feedback'] = (
                     "There was an error sending your instructions. Please try again."
+                )
 
         else:
             template_parameters['feedback'] = \
@@ -761,19 +551,17 @@ def password_reset(
 ):
     template_parameters = get_standard_template_parameters(request)
 
-    user = None
-    user_profile = None
     try:
-        user_profile = UserProfile.objects.get(
+        password_reset = PasswordReset.objects.get(
             password_reset_key=validation_key
         )
-        user = user_profile.user
+        user = KnotisUser.objects.get(password_reset.endpoint.value)
+
     except:
-        pass
+        password_reset = None
+        user = None
 
     if user:
-        template_parameters['user_profile'] = user_profile
-
         if 'post' == request.method.lower():
             reset_form = KnotisPasswordResetForm(
                 user,
@@ -783,14 +571,14 @@ def password_reset(
                 if reset_form.is_valid():
                     reset_form.save()
                     user = authenticate(
-                       username=user.username,
-                       password=reset_form.cleaned_data['new_password1']
+                        username=user.username,
+                        password=reset_form.cleaned_data['new_password1']
                     )
                     django_login(
                         request,
                         user
                     )
-                    return redirect('/offers/')
+                    return redirect('/dashboard/')
             except ValidationError:
                 template_parameters['feedback'] = \
                     'The passwords you entered are invalid or do not match.'
@@ -846,11 +634,9 @@ class UserProfileForm(Form):
             last_name=self.cleaned_data['last_name'],
         )
 
-        user_profile = None
-        try:
-            user_profile = UserProfile.objects.get(user=request.user)
-        except:
-            pass
+        """
+        What does this stuff mean and how is it represented
+        in the new system?
 
         if user_profile:
             notify_announcements = self.cleaned_data.get('notify_announcements')
@@ -861,22 +647,26 @@ class UserProfileForm(Form):
                 notify_offers=notify_offers if notify_offers else False,
                 notify_events=notify_events if notify_events else False
             )
+        """
 
 
 class EmailChangeForm(Form):
     email = EmailField(label='New')
-    
+
     def clean_email(self):
         email = self.cleaned_data['email']
         try:
-            user = KnotisUser.objects.get(username=email)
-        
+            existing_email = Endpoint.objects.get(
+                endpoint_type=EndpointTypes.EMAIL,
+                value=email
+            )
+
         except:
-            user = None
-         
-        if user:
+            existing_email = None
+
+        if existing_email:
             raise ValidationError('That email address is already in use.')
-        
+
         return email
 
     def save_email(
@@ -884,8 +674,11 @@ class EmailChangeForm(Form):
         request
     ):
         new_email = self.cleaned_data['email']
+
+        user = KnotisUser.objects.get(id=request.user.id)
+        identity = user.identity_relation.get()
         endpoint = EndpointEmail(
-            user=request.user,
+            identity=identity,
             value=new_email
         )
         endpoint.save()
@@ -903,23 +696,9 @@ class EmailChangeForm(Form):
         ).send()
 
 
-class ActivateBusinessForm(Form):
-    business_owner = BooleanField(required=False)
-
-    def activate_business(
-        self,
-        request
-    ):
-        user_profile = UserProfile.objects.get(user=request.user)
-        user_profile.account_type = AccountTypes.BUSINESS_FREE
-        user_profile.save()
-        return user_profile
-
-
 @login_required
 def profile(request):
     profile_form = None
-    business_form = None
     email_form = None
     password_form = None
 
@@ -927,7 +706,10 @@ def profile(request):
 
     if request.method == 'POST':
         if 'change_password' in request.POST:
-            password_form = KnotisPasswordChangeForm(request.user, request.POST)
+            password_form = KnotisPasswordChangeForm(
+                request.user,
+                request.POST
+            )
             if password_form.is_valid():
                 password_form.save_password()
                 template_parameters['feedback'] = (
@@ -938,7 +720,6 @@ def profile(request):
                 template_parameters['feedback'] = (
                     'There was an error updating your profile.'
                 )
-
 
         else:
             password_form = KnotisPasswordChangeForm(request.user)
@@ -960,24 +741,6 @@ def profile(request):
 
         else:
             email_form = EmailChangeForm()
-
-        if 'activate_business' in request.POST:
-            business_form = ActivateBusinessForm(request.POST)
-            if business_form.is_valid():
-                template_parameters['user_profile'] = (
-                    business_form.activate_business(request)
-                )
-                template_parameters['feedback'] = (
-                    'Your Forever Free plan has been activated.'
-                )
-
-            else:
-                template_parameters['feedback'] = (
-                    'There was an error updating your profile.'
-                )
-
-        else:
-            business_form = ActivateBusinessForm()
 
         if 'save_profile' in request.POST:
             profile_form = UserProfileForm(request.POST)
@@ -1012,12 +775,10 @@ def profile(request):
             'notify_events': user_profile.notify_events
         })
 
-        business_form = ActivateBusinessForm()
         email_form = EmailChangeForm()
         password_form = KnotisPasswordChangeForm(request.user)
 
     template_parameters['profile_form'] = profile_form
-    template_parameters['business_form'] = business_form
     template_parameters['email_form'] = email_form
     template_parameters['password_form'] = password_form
     template_parameters['user_avatar'] = template_parameters['knotis_user'].avatar(

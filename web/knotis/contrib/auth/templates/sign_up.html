@@ -32,22 +32,8 @@
                                 <label>
                                     {{ form.password }}
                                 </label>
-                                {% if account_type != 'user' %}
-                                <div class="toggle-if-business right">
-                                    {{ form.business }}
-                                    <label for="business">I am a Business Owner</label>
-                                    {% if account_type == 'premium' %}
-                                    <label class="clear-fix" >First month for free!</label>
-                                    {% endif %}
-            					</div>
-                                <span class="arrow-hand"><img
-                                        src="{{ STATIC_URL }}/images/layouts/arrow-hand.png"
-                                        title="Loading" alt="loading"/></span>
-
-                                {% endif %}
                             </li>
                             <div class="clean"></div>
-                            {{ form.account_type }}
                         </ul>
                         <p class="txt-size margin-general">By creating an account you agree to our Terms &amp; Conditions and Privacy Policy</p>
                         <p id="createP">

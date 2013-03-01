@@ -6,12 +6,11 @@ from django.db.models import (
     Manager
 )
 from django.core.mail import send_mail, BadHeaderError
-from django.contrib.auth.models import User
 
 from knotis.utils.email import generate_validation_key
 from knotis.contrib.core.models import KnotisModel
-from knotis.contrib.content.models import Content, ContentTypes
 from knotis.contrib.cassandra.models import ForeignKey
+from knotis.contrib.identity.models import Identity
 
 
 class EndpointManager(Manager):
@@ -19,7 +18,7 @@ class EndpointManager(Manager):
         self,
         endpoint_type,
         value,
-        user=None,
+        identity=None,
         primary=False,
         validation_key=None,
         disabled=False
@@ -41,7 +40,7 @@ class EndpointManager(Manager):
             class_type = Endpoint
 
         endpoint = class_type.objects.create(
-            user=user,
+            identity=identity,
             primary=primary,
             value=value,
             validation_key=validation_key,
@@ -53,16 +52,17 @@ class EndpointManager(Manager):
     def validate_endpoints(
         self,
         validation_key,
-        user=None,
+        identity=None,
         endpoints=[]
     ):
         if endpoints:
             endpoint_set = endpoints
-        elif user:
-            endpoint_set = self.filter(user=user)
+        elif identity:
+            endpoint_set = self.filter(identity=identity)
         else:
             raise ValueError(
-                'Could not validate endpoint. user and endpoints both None.'
+                'Could not validate endpoint. identity and '
+                'endpoints both None.'
             )
 
         for endpoint in endpoint_set:
@@ -70,6 +70,21 @@ class EndpointManager(Manager):
                 return endpoint.validate(validation_key)
 
         return False
+
+    def get_primary_endpoint(
+        identity,
+        endpoint_type
+    ):
+        endpoints = Endpoint.objects.filter(
+            endpoint_type=endpoint_type,
+            identity=identity
+        )
+
+        for endpoint in endpoints:
+            if endpoint.primary:
+                return endpoint
+
+        return None
 
 
 class EndpointTypes:
@@ -93,13 +108,17 @@ class EndpointTypes:
 
 
 class Endpoint(KnotisModel):
-    type = IntegerField(
+    endpoint_type = IntegerField(
         choices=EndpointTypes.CHOICES,
-        default=EndpointTypes.UNDEFINED
+        default=EndpointTypes.UNDEFINED,
+        db_index=True
     )
 
-    user = ForeignKey(User)
-    value = ForeignKey(Content)
+    identity = ForeignKey(Identity)
+    value = CharField(
+        max_length=256,
+        db_index=True
+    )
 
     primary = BooleanField(default=False)
     validated = BooleanField(default=False)
@@ -125,63 +144,11 @@ class Endpoint(KnotisModel):
 
         return self.validated
 
-    def update(
-        self,
-        value=None,
-        primary=None,
-        disabled=None
-    ):
-        if None != value:
-            current_value = self.value.value if self.value else None
-            if value != current_value:
-                if self.value:
-                    self.value = self.value.update(value)
-                else:
-                    self.value = Content.objects.create(
-
-                    )
-
-                self.save()
-
-    @staticmethod
-    def _value_string_to_content(kwargs):
-        value = kwargs.get('value')
-
-        if None == value or isinstance(value, Content):
-            return
-
-        if not isinstance(value, basestring):
-            raise ValueError('value must be type <Content> or type <basestring>.')
-
-        endpoint_type = kwargs.get('type')
-        if endpoint_type == EndpointTypes.EMAIL:
-            content_type = ContentTypes.ENDPOINT_EMAIL
-        elif endpoint_type == EndpointTypes.PHONE:
-            content_type = ContentTypes.ENDPOINT_PHONE
-        elif endpoint_type == EndpointTypes.ADDRESS:
-            content_type = ContentTypes.ENDPOINT_ADDRESS
-        elif endpoint_type == EndpointTypes.FACEBOOK:
-            content_type = ContentTypes.ENDPOINT_FACEBOOK
-        elif endpoint_type == EndpointTypes.TWITTER:
-            content_type = ContentTypes.ENDPOINT_TWITTER
-        elif endpoint_type == EndpointTypes.YELP:
-            content_type = ContentTypes.ENDPOINT_YELP
-        else:
-            content_type = ContentTypes.ENDPOINT
-
-        content = Content(
-            content_type=content_type,
-            user=kwargs.get('user'),
-            name=value,
-            value=value,
-        )
-        content.save()
-
-        kwargs['value'] = content
-
     def send_message(self, **kwargs):
-        raise NotImplementedError('send_message was not implemented in derived \
-            class ' + self.__class__.__name__ + '.')
+        raise NotImplementedError(
+            'send_message was not implemented in derived class ' +
+            self.__class__.__name__ + '.'
+        )
 
 
 class EndpointPhone(Endpoint):
@@ -189,9 +156,7 @@ class EndpointPhone(Endpoint):
         proxy = True
 
     def __init__(self, *args, **kwargs):
-        kwargs['type'] = 1
-
-        Endpoint._value_string_to_content(kwargs)
+        kwargs['endpoint_type'] = EndpointTypes.PHONE
 
         super(EndpointPhone, self).__init__(*args, **kwargs)
 
@@ -201,9 +166,8 @@ class EndpointEmail(Endpoint):
         proxy = True
 
     def __init__(self, *args, **kwargs):
-        kwargs['type'] = EndpointTypes.EMAIL  # Always override the type to email (0).
-
-        Endpoint._value_string_to_content(kwargs)
+        # Always override the type to email (0).
+        kwargs['endpoint_type'] = EndpointTypes.EMAIL
 
         if kwargs.get('validation_key') is None:
             kwargs['validation_key'] = generate_validation_key()
@@ -236,9 +200,7 @@ class EndpointTwitter(Endpoint):
         proxy = True
 
     def __init__(self, *args, **kwargs):
-        kwargs['type'] = EndpointTypes.TWITTER
-
-        Endpoint._value_string_to_content(kwargs)
+        kwargs['endpoint_type'] = EndpointTypes.TWITTER
 
         super(EndpointTwitter, self).__init__(*args, **kwargs)
 
@@ -248,9 +210,7 @@ class EndpointFacebook(Endpoint):
         proxy = True
 
     def __init__(self, *args, **kwargs):
-        kwargs['type'] = EndpointTypes.FACEBOOK
-
-        Endpoint._value_string_to_content(kwargs)
+        kwargs['endpoint_type'] = EndpointTypes.FACEBOOK
 
         super(EndpointFacebook, self).__init__(*args, **kwargs)
 
@@ -260,9 +220,7 @@ class EndpointYelp(Endpoint):
         proxy = True
 
     def __init__(self, *args, **kwargs):
-        kwargs['type'] = EndpointTypes.YELP
-
-        Endpoint._value_string_to_content(kwargs)
+        kwargs['endpoint_type'] = EndpointTypes.YELP
 
         super(EndpointYelp, self).__init__(*args, **kwargs)
 
@@ -272,8 +230,6 @@ class EndpointAddress(Endpoint):
         proxy = True
 
     def __init__(self, *args, **kwargs):
-        kwargs['type'] = EndpointTypes.ADDRESS
-
-        Endpoint._value_string_to_content(kwargs)
+        kwargs['endpoint_type'] = EndpointTypes.ADDRESS
 
         super(EndpointAddress, self).__init__(*args, **kwargs)

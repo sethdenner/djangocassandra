@@ -1,4 +1,3 @@
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
 from knotis.contrib.quick.models import QuickModel

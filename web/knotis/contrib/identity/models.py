@@ -1,7 +1,9 @@
 from django.utils.translation import ugettext_lazy as _
-from django.db.models import Manager
 
-from knotis.contrib.quick.models import QuickModel
+from knotis.contrib.quick.models import (
+    QuickModel,
+    QuickManager
+)
 from knotis.contrib.quick.fields import (
     QuickForeignKey,
     QuickCharField,
@@ -38,7 +40,7 @@ class IdentityTypes:
     )
 
 
-class IdentityManager(Manager):
+class IdentityManager(QuickManager):
     def create(
         self,
         owner=None,
