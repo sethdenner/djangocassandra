@@ -9,12 +9,11 @@ from django.contrib.auth.models import (
 )
 from django.db.models import (
     Model,
+    Manager,
     CharField,
     IntegerField,
     DateTimeField
 )
-from django.contrib.contenttypes.generic import GenericRelation
-from knotis.contrib.relation.models import Relation
 
 from knotis.contrib.core.models import KnotisModel
 from knotis.contrib.facebook.views import get_facebook_avatar
@@ -93,12 +92,6 @@ class KnotisUser(DjangoUser):
 
     objects = KnotisUserManager()
 
-    identity_relation = GenericRelation(
-        Relation,
-        content_type_field='subject_content_type',
-        object_id_field='subject_object_id'
-    )
-
     def check_password(
         self,
         raw_password
@@ -164,6 +157,73 @@ class KnotisUser(DjangoUser):
 
         if is_self_dirty:
             self.save()
+
+
+class UserInformationManager(Manager):
+    pass
+
+
+from django.db.models import Field
+
+
+class DenormalizedField(Field):
+    def __init__(
+        self,
+        related_model_class,
+        related_field_name,
+        *args,
+        **kwargs
+    ):
+        self.related_model_class = related_model_class
+        self.related_field_name = related_field_name
+
+        super(DenormalizedField, self).__init__(
+            *args,
+            **kwargs
+        )
+
+    def __get__(
+        self,
+        instance,
+        owner
+    ):
+        pass
+
+    def __set__(
+        self,
+        instance,
+        value
+    ):
+        pass
+
+    def contribute_to_class(
+        self,
+        cls,
+        name
+    ):
+        super(DenormalizedField, self).contribute_to_class(
+            cls,
+            name
+        )
+
+    def get_value(
+        self,
+        cached=True
+    ):
+        if not cached or not self._cached_value:
+            self._cached_value = getattr(
+                self.related_model_class.objects.get(pk=self.value),
+                self.related_field_name
+            )
+
+        return self._cached_value
+
+
+class UserInformation(KnotisModel):
+    username = DenormalizedField(
+        KnotisUser,
+        'username'
+    )
 
 
 class CredentialsTypes:

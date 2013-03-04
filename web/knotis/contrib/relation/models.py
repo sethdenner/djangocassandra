@@ -1,6 +1,9 @@
 from django.contrib.contenttypes.models import ContentType
 
-from knotis.contrib.quick.models import QuickModel
+from knotis.contrib.quick.models import (
+    QuickModel,
+    QuickManager
+)
 from knotis.contrib.quick.fields import (
     QuickCharField,
     QuickTextField,
@@ -44,6 +47,10 @@ class RelationTypes:
     )
 
 
+class RelationManager(QuickManager):
+    pass
+
+
 class Relation(QuickModel):
     relation_type = QuickCharField(
         choices=RelationTypes.CHOICES,
@@ -76,6 +83,8 @@ class Relation(QuickModel):
     description = QuickTextField(
         required=True
     )
+
+    objects = RelationManager()
 
     class Quick(QuickModel.Quick):
         exclude = ()

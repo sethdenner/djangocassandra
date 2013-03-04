@@ -1,10 +1,7 @@
 from django.utils import unittest
 from django.contrib.auth import authenticate
 
-from knotis.contrib.auth.models import (
-    KnotisUser,
-    UserProfile
-)
+from knotis.contrib.auth.models import KnotisUser
 from knotis.contrib.endpoint.models import Endpoint
 from knotis.contrib.legacy.authentication.backends import (
     HamburgertimeAuthenticationBackend
@@ -57,13 +54,6 @@ class LegacyAuthenticationBackendTests(unittest.TestCase):
         finally:
             #clean up after ourselves.
             if user:
-                try:
-                    profile = UserProfile.objects.get(user=user)
-                    profile.delete()
-                    
-                except:
-                    pass
-                
                 try:
                     endpoints = Endpoint.objects.filter(user=user)
                     for endpoint in endpoints:

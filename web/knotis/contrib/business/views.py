@@ -42,9 +42,7 @@ from knotis.contrib.offer.models import (
 from knotis.contrib.media.models import Image
 from knotis.contrib.media.views import render_image_list
 from knotis.contrib.auth.models import (
-    KnotisUser,
-    UserProfile,
-    AccountTypes
+    KnotisUser
 )
 from knotis.contrib.qrcode.models import (
     Qrcode,
@@ -279,10 +277,6 @@ def edit_profile(request):
 def services(request):
     template_parameters = get_standard_template_parameters(request)
 
-    template_parameters['user_profile'] = UserProfile.objects.get(
-        user=request.user
-    )
-    template_parameters['AccountTypes'] = AccountTypes
     template_parameters['subscription_price'] = format_currency(
         settings.PRICE_MERCHANT_MONTHLY
     )

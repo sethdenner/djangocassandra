@@ -1,14 +1,11 @@
-from django.utils import unittest
+from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from django.contrib.contenttypes.models import ContentType
 
-from knotis.contrib.auth.models import (
-    KnotisUser,
-    UserProfile
-)
+from knotis.contrib.auth.models import KnotisUser
 from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
@@ -23,7 +20,7 @@ from knotis.contrib.relation.models import (
 )
 
 
-class AuthenticationBackendTests(unittest.TestCase):
+class AuthenticationBackendTests(TestCase):
     def test_endpoint_validation(self):
         try:
             # Create a test user.
@@ -83,13 +80,6 @@ class AuthenticationBackendTests(unittest.TestCase):
             #clean up after ourselves.
             if user:
                 try:
-                    profile = UserProfile.objects.get(user=user)
-                    profile.delete()
-
-                except:
-                    pass
-
-                try:
                     endpoints = Endpoint.objects.filter(user=user)
                     for endpoint in endpoints:
                         endpoint.delete()
@@ -100,7 +90,7 @@ class AuthenticationBackendTests(unittest.TestCase):
                 user.delete()
 
 
-class UserCreationTests(unittest.TestCase):
+class UserCreationTests(TestCase):
     def test_create_user(self):
         username = 'test_user@example.com'
         user, identity = KnotisUser.objects.create_user(
@@ -129,3 +119,26 @@ class UserCreationTests(unittest.TestCase):
             relation.related.identity_type,
             IdentityTypes.INDIVIDUAL
         )
+
+
+class AuthenticationViewTests(TestCase):
+    def setUp(self):
+        self.user, self.identity = KnotisUser.objects.create_user(
+            'First Name',
+            'Last Name',
+            'first.last@example.com',
+            'test_password'
+        )
+
+    def test_login(self):
+        response = self.client.get('/auth/login/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_resend_validation_email(self):
+        response = self.client.get(''.join([
+            '/auth/resend_validation_email/',
+            self.user.username,
+            '/'
+        ]))
+
+        self.assertEqual(response.status_code, 200)

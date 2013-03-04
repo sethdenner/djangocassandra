@@ -2,10 +2,7 @@ from django.contrib import admin
 from django.contrib import contenttypes
 from django.forms import ModelForm
 
-from knotis.contrib.auth.models import (
-    KnotisUser,
-    UserProfile
-)
+from knotis.contrib.auth.models import KnotisUser
 from knotis.contrib.content.models import Content
 from knotis.contrib.business.models import (
     Business,
@@ -26,11 +23,6 @@ from knotis.contrib.qrcode.models import (
     Scan
 )
 from knotis.contrib.contact.models import Contact
-
-
-class UserProfileAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(UserProfile, UserProfileAdmin)
 
 
 class UserAdmin(admin.ModelAdmin):

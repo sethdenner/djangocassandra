@@ -4,16 +4,15 @@ from BeautifulSoup import (
 )
 
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 
-from knotis.contrib.auth.models import (
-    KnotisUser,
-    UserProfile,
-)
+from knotis.contrib.auth.models import KnotisUser
 from knotis.contrib.content.models import Content
 from knotis.contrib.category.models import (
     City,
-    Neighborhood,
+    Neighborhood
 )
+from knotis.contrib.relation.models import Relation
 
 
 valid_html_tags = 'p i strong b u a h1 h2 h3 pre br img'.split()
@@ -91,10 +90,18 @@ def get_standard_template_parameters(request):
         if request.user.is_authenticated():
             knotis_user = KnotisUser.objects.get(pk=request.user.id)
             template_parameters['knotis_user'] = knotis_user
-            user_profile = UserProfile.objects.get(user=request.user)
-            template_parameters['user_profile'] = user_profile
-            template_parameters['username_truncated'] = \
+
+            user_content_type = ContentType.objects.get_for_model(knotis_user)
+            user_identity_relation = Relation.objects.get(
+                subject_content_type__pk=user_content_type.id,
+                subject_object_id=knotis_user.id
+            )
+            identity = user_identity_relation.related
+            template_parameters['identity'] = identity
+
+            template_parameters['username_truncated'] = (
                 knotis_user.username_12()
+            )
             template_parameters['avatar_uri'] = knotis_user.avatar(
                 request.session.get('fb_id')
             )
