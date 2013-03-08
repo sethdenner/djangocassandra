@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from knotis.contrib.denormalize.models import (
+from models import (
     TestDenormalizeModelA,
     TestDenormalizeModelB,
     TestDenormalizedModel
