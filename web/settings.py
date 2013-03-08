@@ -207,6 +207,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'knotis',
+    'knotis.contrib.denormalize',
     'knotis.contrib.auth',
     'knotis.contrib.bootstrap',
     'knotis.contrib.quick',
