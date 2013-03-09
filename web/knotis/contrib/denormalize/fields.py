@@ -1,13 +1,52 @@
 import copy
+import re
 
 from django.db.models import Field
 from django.db.models.fields.related import add_lazy_relation
 from django.db.models.signals import post_save
+from django.db.models.loading import get_model
 from django_extensions.db.fields import UUIDField
 
 
 class DenormalizedField(Field):
     denormalized_field_names_attr_name  = '_denormalized_field_names'
+
+    @staticmethod
+    def update_origin_fields(
+        signal,
+        sender,
+        instance,
+        created,
+        raw,
+        using
+    ):
+        for field in sender._meta.fields:
+            if re.match(
+                '^_denormalized_.*_pk$',
+                field.name
+            ):
+                name_parts = field.name.split('_')
+                origin_app_label = name_parts[2]
+                origin_model_name = name_parts[3]
+                origin_field_name = '_'.join(name_parts[4:-1])
+                origin_model = get_model(
+                    origin_app_label,
+                    origin_model_name
+                )
+                origin_instance = origin_model.objects.get(
+                    pk=instance.__dict__[field.name]
+                )
+
+                denormalized_field_name = field.name[:-3]
+                origin_value = origin_instance.__dict__[origin_field_name]
+                denormalized_value = instance.__dict__[denormalized_field_name]
+                if origin_value == denormalized_value:
+                    continue
+
+                origin_instance.__dict__[
+                    origin_field_name
+                ] = denormalized_value
+                origin_instance.save()
 
     @staticmethod
     def update_denormalized_fields(
@@ -24,23 +63,11 @@ class DenormalizedField(Field):
 
         for model, field_names in denormalized_model_field_names.iteritems():
             for field_name in field_names:
-                def get_original_field_name(denormalized_field_name):
-                    split_field = field_name.split('_')
-                    is_rest_name = False
-                    original_name = ''
-                    for part in split_field:
-                        if is_rest_name:
-                            original_name = '_'.join([
-                                original_name,
-                                part
-                            ])
+                def get_origin_field_name(denormalized_field_name):
+                    split_field_name = field_name.split('_')
+                    return '_'.join(split_field_name[4:])
 
-                        if sender.__name__ == part:
-                            is_rest_name = True
-
-                    return original_name.strip('_')
-
-                original_field_name = get_original_field_name(
+                origin_field_name = get_origin_field_name(
                     field_name
                 )
                 object_filter = {}
@@ -51,13 +78,13 @@ class DenormalizedField(Field):
                 rows = model.objects.filter(**object_filter)
                 for row in rows:
                     if row.__dict__[field_name] == instance.__dict__[
-                        original_field_name
+                        origin_field_name
                     ]:
                         continue
 
                     else:
                         row.__dict__[field_name] = instance.__dict__[
-                            original_field_name
+                            origin_field_name
                         ]
                         row.save()
 
@@ -65,6 +92,7 @@ class DenormalizedField(Field):
         self,
         related_model,
         related_field_name=None,
+        auto_update=True,
         *args,
         **kwargs
     ):
@@ -75,6 +103,7 @@ class DenormalizedField(Field):
 
         self.related_model = related_model
         self.related_field_name = related_field_name
+        self.auto_update = auto_update
 
     def contribute_to_class(
         self,
@@ -97,8 +126,15 @@ class DenormalizedField(Field):
                 'on related model.'
             ]))
 
+        """
+        make related field null=True to avoid
+        errors during initialization
+        """
+        self.related_field.null = True
+
         self.denormalized_field_name = '_'.join([
             '_denormalized',
+            self.related_model._meta.app_label,
             self.related_model.__name__,
             self.related_field_name
         ])
@@ -122,6 +158,16 @@ class DenormalizedField(Field):
                 self.denormalized_field_name
             )
         )
+
+        if self.auto_update:
+            post_save.connect(
+                DenormalizedField.update_origin_fields,
+                sender=cls,
+                dispatch_uid='_'.join([
+                    'origin_update',
+                    cls.__name__
+                ]),
+            )
 
         def resolve_related_class(
             field,
@@ -183,15 +229,15 @@ class DenormalizedField(Field):
                 denormalized_fields
             )
 
-        post_save.connect(
-            DenormalizedField.update_denormalized_fields,
-            sender=other,
-            weak=False,
-            dispatch_uid='_'.join([
-                'denormalize_update',
-                other.__name__
-            ]),
-        )
+        if self.auto_update:
+            post_save.connect(
+                DenormalizedField.update_denormalized_fields,
+                sender=other,
+                dispatch_uid='_'.join([
+                    'denormalize_update',
+                    other.__name__
+                ]),
+            )
 
 
 class DenormalizedFieldDescriptor(object):
