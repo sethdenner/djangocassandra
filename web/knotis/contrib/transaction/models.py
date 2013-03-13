@@ -1,63 +1,112 @@
 import datetime
 import itertools
 
-from django.db.models import (
-    IntegerField,
-    FloatField,
-    DateTimeField,
-    Manager,
-    CharField
-)
-
 from knotis.utils.view import format_currency
-from knotis.contrib.auth.models import KnotisUser
-from knotis.contrib.core.models import KnotisModel
-from knotis.contrib.cassandra.models import ForeignKey
-from knotis.contrib.business.models import Business
+from knotis.contrib.quick.models import (
+    QuickModel,
+    QuickManager
+)
+from knotis.contrib.quick.fields import (
+    QuickCharField,
+    QuickFloatField,
+    QuickForeignKey
+)
+from knotis.contrib.identity.models import Identity
+from knotis.contirb.inventory.models import Inventory
 from knotis.contrib.offer.models import Offer
 
 
 class TransactionTypes:
-    PENDING = 'pending'
     PURCHASE = 'purchase'
+    PURCHASE_COMPLETED = 'purchase_completed'
+    SALE = 'sale'
+    SALE_PENDING = 'sale_pending'
     REDEMPTION = 'redemption'
-    CANCEL = 'cancel'
+    CANCEL = 'cancelation'
     REFUND = 'refund'
 
     CHOICES = (
-        (PENDING, 'Pending'),
-        (PURCHASE, 'Purchased'),
+        (PURCHASE, 'Purchase'),
+        (PURCHASE_COMPLETED, 'Purchase Completed'),
+        (SALE, 'Sale'),
+        (SALE_PENDING, 'Pending Sale'),
         (REDEMPTION, 'Redeemed'),
         (CANCEL, 'Cancelled'),
         (REFUND, 'Refunded')
     )
 
 
-class TransactionManager(Manager):
-    def create_transaction(
+class TransactionManager(QuickManager):
+    """
+    Nice dude.
+    Code reviewed and approved.
+    Thanks - Josie 3-12-2013
+    """
+    def create_purchase(
         self,
-        user,
-        transaction_type,
-        business=None,
-        offer=None,
-        quantity=1,
-        value=0.,
-        transaction_context=None
+        **kwargs
     ):
-        transaction =  self.create(
-            user=user,
-            business=business,
-            offer=offer,
-            transaction_type=transaction_type,
-            quantity=quantity,
-            value=value,
-            transaction_context=transaction_context
-        )
-        
-        if offer and transaction_type == TransactionTypes.PURCHASE:
-            offer.purchase()
-            
+        kwargs['transaction_type'] = TransactionTypes.PURCHASE
+        transaction = super(TransactionManager, self).create(**kwargs)
         return transaction
+
+    def create_purchase_completed(
+        self,
+        **kwargs
+    ):
+        kwargs['transaction_type'] = TransactionTypes.PURCHASE_COMPLETED
+        transaction = super(TransactionManager, self).create(**kwargs)
+        return transaction
+
+    def crete_sale(
+        self,
+        **kwargs
+    ):
+        kwargs['transaction_type'] = TransactionTypes.SALE
+        transaction = super(TransactionManager, self).create(**kwargs)
+        return transaction
+
+    def create_sale_pending(
+        self,
+        **kwargs
+    ):
+        kwargs['transaction_type'] = TransactionTypes.SALE_PENDING
+        transaction = super(TransactionManager, self).create(**kwargs)
+        return transaction
+
+    def create_redemption(
+        self,
+        **kwargs
+    ):
+        kwargs['transaction_type'] = TransactionTypes.REDEMPTION
+        transaction = super(TransactionManager, self).create(**kwargs)
+        return transaction
+
+    def create_cancelation(
+        self,
+        **kwargs
+    ):
+        kwargs['transaction_type'] = TransactionTypes.CANCEL
+        transaction = super(TransactionManager, self).create(**kwargs)
+        return transaction
+
+    def create_refund(
+        self,
+        **kwargs
+    ):
+        kwargs['transaction_type'] = TransactionTypes.REFUND
+        transaction = super(TransactionManager, self).create(**kwargs)
+        return transaction
+
+    def create(
+        self,
+        **kwargs
+    ):
+        create_methods = {}
+        for transaction_type in TransactionTypes.choices:
+            create_methods[transaction_type] = 'create_' + transaction_type
+
+        create_methods[transaction_type](**kwargs)
 
     def get_daily_revenue(
         self,
@@ -164,26 +213,29 @@ class TransactionManager(Manager):
 
 
 class Transaction(KnotisModel):
-    user = ForeignKey(KnotisUser)
-    business = ForeignKey(Business)
-    offer = ForeignKey(Offer)
-    transaction_type = CharField(
+    owner = QuickForeignKey(Identity)
+    other = QuickForeignKey(Identity)
+
+    transaction_type = QuickCharField(
         max_length=64,
         null=True,
         choices=TransactionTypes.CHOICES,
         db_index=True
     )
-    quantity = IntegerField(null=True)
-    value = FloatField(blank=True, null=True, default=0.)
-    transaction_context = CharField(
+
+    offer = QuickForeignKey(Offer)
+
+    sent = QuickForeignKey(Inventory)
+    sent_value = QuickFloatField()
+
+    recieved = QuickForeignKey(Inventory)
+    recieved_value = QuickFloatField()
+
+    transaction_context = QuickCharField(
         max_length=1024,
         null=True,
         blank=True,
         default=None,
-        db_index=True
-    )
-    pub_date = DateTimeField(
-        auto_now_add=True,
         db_index=True
     )
 
