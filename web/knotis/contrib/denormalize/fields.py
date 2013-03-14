@@ -26,6 +26,10 @@ class DenormalizedField(Field):
                 '^_denormalized_.*_pk$',
                 field.name
             ):
+                origin_pk = instance.__dict__[field.name]
+                if not origin_pk:
+                    continue
+
                 name_parts = field.name.split('_')
                 origin_app_label = name_parts[2]
                 origin_model_name = name_parts[3]
