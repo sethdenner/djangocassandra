@@ -148,7 +148,7 @@ class DenormalizedField(Field):
             cls,
             self.denormalized_field_name
         )
-        UUIDField(db_index=True).contribute_to_class(
+        UUIDField(auto=False, db_index=True).contribute_to_class(
             cls,
             '_'.join([
                 self.denormalized_field_name,
