@@ -18,7 +18,8 @@ class DenormalizedField(Field):
         instance,
         created,
         raw,
-        using
+        using,
+        **kwargs
     ):
         for field in sender._meta.fields:
             if re.match(
@@ -55,7 +56,8 @@ class DenormalizedField(Field):
         instance,
         created,
         raw,
-        using
+        using,
+        **kwargs
     ):
         denormalized_model_field_names = sender.__dict__[
             DenormalizedField.denormalized_field_names_attr_name
