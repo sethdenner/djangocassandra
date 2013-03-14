@@ -1,3 +1,6 @@
+import urllib
+
+from django.core.files import File
 from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.utils.log import logging
@@ -5,7 +8,11 @@ logger = logging.getLogger(__name__)
 
 from django.contrib.contenttypes.models import ContentType
 
-from knotis.contrib.auth.models import KnotisUser
+from knotis.contrib.media.models import Image
+from knotis.contrib.auth.models import (
+    KnotisUser,
+    UserInformation
+)
 from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
@@ -102,6 +109,37 @@ class UserCreationTests(TestCase):
 
         self.assertIsNotNone(user)
         self.assertIsNotNone(identity)
+
+        result = urllib.urlretrieve('http://placehold.it/1x1')
+
+        identity_primary_image = Image.objects.create_image(
+            user,
+            File(open(result[0])),
+            related_object_id=identity.id
+        )
+
+        identity.primary_image = identity_primary_image
+        identity.save()
+
+        user_information = UserInformation.objects.get(pk=user.id)
+        user_information.default_identity_image = identity_primary_image
+        user_information.save()
+
+        self.assertIsNotNone(user_information)
+        self.assertEqual(username, user_information.username)
+        self.assertEqual(identity.id, user_information.default_identity.id)
+        self.assertEqual(
+            identity.identity_type,
+            user_information.default_identity_type
+        )
+        self.assertEqual(
+            identity.name,
+            user_information.default_identity_name
+        )
+        self.assertEqual(
+            identity.primary_image.image.url,
+            user_information.default_identity_image.url
+        )
 
         user_type = ContentType.objects.get_for_model(user)
         relations = Relation.objects.filter(

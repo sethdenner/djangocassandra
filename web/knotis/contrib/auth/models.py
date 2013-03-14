@@ -14,12 +14,15 @@ from django.db.models import (
     IntegerField,
     DateTimeField
 )
+from django_extensions.db.fields import UUIDField
 
 from knotis.contrib.core.models import KnotisModel
+from knotis.contrib.denormalize.models import DenormalizedField
 from knotis.contrib.facebook.views import get_facebook_avatar
 from knotis.contrib.gravatar.views import avatar as get_gravatar_avatar
 from knotis.contrib.cassandra.models import ForeignKey
 from knotis.contrib.endpoint.models import Endpoint
+from knotis.contrib.media.models import Image
 from knotis.contrib.identity.models import (
     Identity,
     IdentityTypes
@@ -83,6 +86,11 @@ class KnotisUserManager(UserManager):
             identity_type=IdentityTypes.INDIVIDUAL
         )
 
+        UserInformation.objects.create(
+            new_user,
+            identity
+        )
+
         return new_user, identity
 
 
@@ -132,98 +140,36 @@ class KnotisUser(DjangoUser):
                 {}
             )
 
-    def update(
-        self,
-        username=None,
-        first_name=None,
-        last_name=None,
-    ):
-        is_self_dirty = False
-
-        if username:
-            if username != self.username:
-                self.username = username
-                is_self_dirty = True
-
-        if first_name:
-            if first_name != self.first_name:
-                self.first_name = first_name
-                is_self_dirty = True
-
-        if last_name:
-            if last_name != self.last_name:
-                self.last_name = last_name
-                is_self_dirty = True
-
-        if is_self_dirty:
-            self.save()
-
 
 class UserInformationManager(Manager):
-    pass
-
-
-from django.db.models import Field
-
-
-class DenormalizedField(Field):
-    def __init__(
+    def create(
         self,
-        related_model_class,
-        related_field_name,
-        *args,
-        **kwargs
+        user,
+        default_identity
     ):
-        self.related_model_class = related_model_class
-        self.related_field_name = related_field_name
-
-        super(DenormalizedField, self).__init__(
-            *args,
-            **kwargs
-        )
-
-    def __get__(
-        self,
-        instance,
-        owner
-    ):
-        pass
-
-    def __set__(
-        self,
-        instance,
-        value
-    ):
-        pass
-
-    def contribute_to_class(
-        self,
-        cls,
-        name
-    ):
-        super(DenormalizedField, self).contribute_to_class(
-            cls,
-            name
-        )
-
-    def get_value(
-        self,
-        cached=True
-    ):
-        if not cached or not self._cached_value:
-            self._cached_value = getattr(
-                self.related_model_class.objects.get(pk=self.value),
-                self.related_field_name
+        user_information = UserInformation()
+        user_information.id = user.id
+        user_information.username = user
+        user_information.default_identity = default_identity
+        user_information.default_identity_type = default_identity
+        user_information.default_identity_name = default_identity
+        if default_identity.primary_image:
+            user_information.default_identity_image = (
+                default_identity.primary_image
             )
-
-        return self._cached_value
+        user_information.save()
+        return user_information
 
 
 class UserInformation(KnotisModel):
-    username = DenormalizedField(
-        KnotisUser,
-        'username'
-    )
+    id = UUIDField(primary_key=True)
+    username = DenormalizedField(KnotisUser)
+    default_identity = ForeignKey(Identity)
+    default_identity_type = DenormalizedField(Identity, 'identity_type')
+    default_identity_name = DenormalizedField(Identity, 'name')
+    default_identity_image = DenormalizedField(Image, 'image')
+
+    objects = UserInformationManager()
 
 
 class CredentialsTypes:

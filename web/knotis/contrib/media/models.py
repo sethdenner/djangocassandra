@@ -1,7 +1,7 @@
 import math
 
 from django.db.models import (
-    CharField, 
+    CharField,
     FloatField,
     Manager
 )
@@ -88,7 +88,7 @@ class Image(KnotisModel):
         blank=True,
         default=None
     )
-        
+
     def crop(self):
         if (
             self.crop_left and
@@ -106,10 +106,10 @@ class Image(KnotisModel):
                 str(int(math.floor(self.crop_height))),
                 'px'
             ])
-        
+
         else:
             return 'noop'
-    
+
     def update(
         self,
         image=None,
