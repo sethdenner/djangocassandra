@@ -18,13 +18,18 @@ class DenormalizedField(Field):
         instance,
         created,
         raw,
-        using
+        using,
+        **kwargs
     ):
         for field in sender._meta.fields:
             if re.match(
                 '^_denormalized_.*_pk$',
                 field.name
             ):
+                origin_pk = instance.__dict__[field.name]
+                if not origin_pk:
+                    continue
+
                 name_parts = field.name.split('_')
                 origin_app_label = name_parts[2]
                 origin_model_name = name_parts[3]
@@ -55,7 +60,8 @@ class DenormalizedField(Field):
         instance,
         created,
         raw,
-        using
+        using,
+        **kwargs
     ):
         denormalized_model_field_names = sender.__dict__[
             DenormalizedField.denormalized_field_names_attr_name
@@ -142,7 +148,7 @@ class DenormalizedField(Field):
             cls,
             self.denormalized_field_name
         )
-        UUIDField(db_index=True).contribute_to_class(
+        UUIDField(auto=False, db_index=True).contribute_to_class(
             cls,
             '_'.join([
                 self.denormalized_field_name,
