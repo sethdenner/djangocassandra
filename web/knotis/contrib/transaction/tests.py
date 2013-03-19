@@ -2,84 +2,52 @@ import datetime
 
 from django.test import TestCase
 
-from knotis.contrib.auth.models import KnotisUser
-from knotis.contrib.identity.models import (
-    Identity,
-    IdentityTypes
-)
-from knotis.contrib.offer.models import (
-    Offer,
-    OfferTitleTypes
-)
-from knotis.contrib.product.models import Product
-from knotis.contrib.inventory.models import Inventory
+from knotis.contrib.auth.tests import UserCreationTests
+from knotis.contrib.identity.tests import IdentityTests
+from knotis.contirb.product.tests import ProductTests
+from knotis.contrib.inventory.tests import InventoryTests
+from knotis.contrib.offer.tests import OfferTests
 
 from models import Transaction
 
 
 class TransactionTests(TestCase):
     def setUp(self):
-        self.consumer, self.consumer_identity = KnotisUser.objects.create_user(
-            'Test',
-            'Consumer',
-            'test_consumer@example.com',
-            'test_password'
+        (
+            self.consumer,
+            self.consumer_identity
+        ) = UserCreationTests.create_test_user(
+            last_name='Consumer',
+            email='test_consumer@example.com',
         )
 
-        self.merchant, self.merchant_identity = KnotisUser.objects.create_user(
-            'Test',
-            'Merchant',
-            'test_merchant@example.com',
-            'test_password'
+        (
+            self.merchant,
+            self.merchant_identity
+        ) = UserCreationTests.create_test_user(
+            last_name='Merchant',
+            email='test_merchant@example.com',
         )
 
-        self.business = Identity.objects.create(
-            owner=self.merchant_identity,
-            identity_type=IdentityTypes.BUSINESS,
-            name='Test Business',
-            description='Test business description.'
+        self.business = IdentityTests.create_test_business(
+            owner=self.merchant_identity
         )
 
-        self.establishment = Identity.objects.create(
+        self.establishment = IdentityTests.create_test_establishment(
             owner=self.business,
-            identity_type=IdentityTypes.ESTABLISHMENT,
-            name='Test Establishment',
             description='Test Business\'s primary location.'
         )
 
-        self.product = Product.objects.create(
-            title='Test Product',
-            description='Test product description.',
-            public=True,
-            sku='00000000000'
-        )
+        self.product = ProductTests.create_test_product()
 
-        self.establishment_inventory = Inventory.objects.create(
+        self.establishment_inventory = InventoryTests.create_test_inventory(
             product=self.product,
             owner=self.establishment,
             supplier=self.establishment,
-            stock=10,
-            retail_price=10.
         )
 
-        self.establishment_offer = Offer.objects.create_offer(
+        self.establishment_offer = OfferTests.create_test_offer(
             self.establishment,
-            'Test Offer',
-            OfferTitleTypes.TITLE_1,
-            'Test offer description.',
-            'Test offer restrictions.',
-            None,
-            None,
-            None,
-            None,
-            10.,
-            1.,
-            None,
-            datetime.datetime.utcnow(),
-            datetime.datetime.utcnow() + datetime.timedelta(days=1),
-            10,
-            False,
-            True,
             inventory=[self.establishment_inventory]
         )
 

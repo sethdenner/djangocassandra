@@ -397,7 +397,7 @@ class Offer(KnotisModel):
         max_length=1024
     )
 
-    image = ForeignKey(Image)
+    default_image = ForeignKey(Image)
     category = ForeignKey(Category)
     city = ForeignKey(City)
     neighborhood = ForeignKey(Neighborhood)

@@ -92,7 +92,6 @@ class QuickModel(QuickModelBase, polymodels.models.PolymorphicModel ): #models.M
 
     class Meta:
         abstract = True
-        app_label = "quick"
 
     def clean(self, *args, **kwargs):
         return super(QuickModel,self).clean(*args, **kwargs)
