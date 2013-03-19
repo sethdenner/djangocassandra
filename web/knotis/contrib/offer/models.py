@@ -120,7 +120,7 @@ class OfferManager(Manager):
         )
         offer.visable = offer.is_visable()
         offer.searchable = offer.is_searchable()
-        offer.purchasable = offer.is_purchaseable()
+        offer.purchasable = offer.is_purchasable()
         offer.save()
 
         for i in inventory:

@@ -213,7 +213,11 @@ INSTALLED_APPS = (
     'knotis.contrib.quick',
     'knotis.contrib.identity',
     'knotis.contrib.relation',
-    'knotis.contrib.activity'
+    'knotis.contrib.activity',
+    'knotis.contrib.offer',
+    'knotis.contrib.transaction',
+    'knotis.contrib.inventory',
+    'knotis.contrib.product'
 )
 
 LOGIN_REDIRECT_URL = '/'

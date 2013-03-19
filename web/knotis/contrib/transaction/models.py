@@ -12,7 +12,7 @@ from knotis.contrib.quick.fields import (
     QuickForeignKey
 )
 from knotis.contrib.identity.models import Identity
-from knotis.contirb.inventory.models import Inventory
+from knotis.contrib.inventory.models import Inventory
 from knotis.contrib.offer.models import Offer
 
 
@@ -212,9 +212,15 @@ class TransactionManager(QuickManager):
         return monthly_revenue
 
 
-class Transaction(KnotisModel):
-    owner = QuickForeignKey(Identity)
-    other = QuickForeignKey(Identity)
+class Transaction(QuickModel):
+    owner = QuickForeignKey(
+        Identity,
+        related_name='transaction_owner'
+    )
+    other = QuickForeignKey(
+        Identity,
+        related_name='transaction_other'
+    )
 
     transaction_type = QuickCharField(
         max_length=64,
@@ -225,10 +231,16 @@ class Transaction(KnotisModel):
 
     offer = QuickForeignKey(Offer)
 
-    sent = QuickForeignKey(Inventory)
+    sent = QuickForeignKey(
+        Inventory,
+        related_name='transaction_sent'
+    )
     sent_value = QuickFloatField()
 
-    recieved = QuickForeignKey(Inventory)
+    recieved = QuickForeignKey(
+        Inventory,
+        related_name='transaction_recieved'
+    )
     recieved_value = QuickFloatField()
 
     transaction_context = QuickCharField(

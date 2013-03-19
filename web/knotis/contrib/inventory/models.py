@@ -17,7 +17,13 @@ from knotis.contrib.product.models import (
 
 class Inventory(QuickModel):
     product = QuickForeignKey(Product)
-    owner = QuickForeignKey(Identity, related_name='identity_owner')
-    supplier = QuickForeignKey(Identity, related_name='identity_supplier')
+    owner = QuickForeignKey(
+        Identity,
+        related_name='inventory_owner'
+    )
+    supplier = QuickForeignKey(
+        Identity,
+        related_name='inventory_supplier'
+    )
     stock = QuickIntegerField()
     retail_price = QuickFloatField()
