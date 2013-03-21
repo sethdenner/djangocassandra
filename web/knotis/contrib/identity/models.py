@@ -127,7 +127,7 @@ class IdentityIndividualManager(IdentityManager):
         **kwargs
     ):
         kwargs['identity_type'] = IdentityTypes.INDIVIDUAL
-        return super(IdentityIndividual, self).create(
+        return super(IdentityIndividualManager, self).create(
             *args,
             **kwargs
         )

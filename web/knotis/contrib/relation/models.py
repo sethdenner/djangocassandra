@@ -48,7 +48,16 @@ class RelationTypes:
 
 
 class RelationManager(QuickManager):
-    pass
+    def get_user_identity(
+        self,
+        user
+    ):
+        user_type = ContentType.objects.get_for_model(user)
+        relation = Relation.objects.get(
+            subject_content_type__pk=user_type.id,
+            subject_object_id=user.id
+        )
+        return relation.related
 
 
 class Relation(QuickModel):

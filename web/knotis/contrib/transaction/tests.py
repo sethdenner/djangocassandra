@@ -1,10 +1,8 @@
-import datetime
-
 from django.test import TestCase
 
 from knotis.contrib.auth.tests import UserCreationTests
 from knotis.contrib.identity.tests import IdentityTests
-from knotis.contirb.product.tests import ProductTests
+from knotis.contrib.product.tests import ProductTests
 from knotis.contrib.inventory.tests import InventoryTests
 from knotis.contrib.offer.tests import OfferTests
 
@@ -47,16 +45,20 @@ class TransactionTests(TestCase):
         )
 
         self.establishment_offer = OfferTests.create_test_offer(
-            self.establishment,
+            owner=self.establishment,
             inventory=[self.establishment_inventory]
         )
 
     def test_create_purchase(self):
-        transaction = Transaction.objects.create_purchase(
-            owner=self.establishment,
-            other=self.consumer_identity,
-            offer=self.establishment_offer)
-        self.assertIsNotNone(transaction)
+        (
+            transaction_buyer,
+            transaction_seller,
+            inventory
+        ) = Transaction.objects.create_purchase(
+            self.establishment_offer,
+            self.consumer_identity
+        )
 
-        for key, value in transaction.__dict__.iteritems():
-            print '%s=%s' % (key, value)
+        self.assertIsNotNone(transaction_buyer)
+        self.assertIsNotNone(transaction_seller)
+        self.assertIsNotNone(inventory)

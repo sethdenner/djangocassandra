@@ -117,6 +117,3 @@ class IdentityTests(unittest.TestCase):
             user_identity.id,
             owner.subject.id
         )
-
-    def test_get_identity_images(self):
-        self.assertTrue(False)

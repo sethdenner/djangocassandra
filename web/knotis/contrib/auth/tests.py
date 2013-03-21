@@ -5,6 +5,8 @@ logger = logging.getLogger(__name__)
 
 from django.contrib.contenttypes.models import ContentType
 
+from knotis.contrib.endpoint.tests import EndpointTests
+
 from knotis.contrib.auth.models import KnotisUser
 from knotis.contrib.endpoint.models import (
     Endpoint,
@@ -21,73 +23,47 @@ from knotis.contrib.relation.models import (
 
 
 class AuthenticationBackendTests(TestCase):
+    def setUp(self):
+        self.user, self.user_identity = UserCreationTests.create_test_user()
+
     def test_endpoint_validation(self):
-        try:
-            # Create a test user.
-            username = 'test_user@knotis.com'
-            user, _ = KnotisUser.objects.create_user(
-                'First Name',
-                'Last Name',
-                username,
-                'test_password'
-            )
+        endpoint = EndpointTests.create_test_endpoint(
+            endpoint_type=EndpointTypes.EMAIL,
+            value=self.user.username,
+            identity=self.user_identity
+        )
 
-            # Create endpoint.
-            endpoint = Endpoint.objects.create_endpoint(
-                EndpointTypes.EMAIL,
-                username,
-                user,
-                True
-            )
+        # Attempt authentication.
+        authenticated_user = authenticate(
+            user_id=self.user.id,
+            validation_key=endpoint.validation_key
+        )
 
-            # Attempt authentication.
-            authenticated_user = authenticate(
-                user_id=user.id,
-                validation_key=endpoint.validation_key
-            )
+        self.assertNotEqual(
+            authenticated_user,
+            None,
+            'Authentication Failed'
+        )
 
-            self.assertNotEqual(
-                authenticated_user,
-                None,
-                'Authentication Failed'
-            )
+        validated_endpoint = Endpoint.objects.get(pk=endpoint.id)
 
-            validated_endpoint = Endpoint.objects.get(pk=endpoint.id)
+        self.assertEqual(
+            validated_endpoint.validated,
+            True,
+            'Endpoint Was Not Validated'
+        )
 
-            self.assertEqual(
-                validated_endpoint.validated,
-                True,
-                'Endpoint Was Not Validated'
-            )
+        # Make sure the same credentials don't auth again.
+        authenticated_user = authenticate(
+            user_id=self.user.id,
+            validation_key=endpoint.validation_key
+        )
 
-            # Make sure the same credentials don't auth again.
-            authenticated_user = authenticate(
-                user_id=user.id,
-                validation_key=endpoint.validation_key
-            )
-
-            self.assertEqual(
-                authenticated_user,
-                None,
-                'Validation Credentials Did Not Expire.'
-            )
-
-        except:
-            logger.exception()
-            user = None
-
-        finally:
-            #clean up after ourselves.
-            if user:
-                try:
-                    endpoints = Endpoint.objects.filter(user=user)
-                    for endpoint in endpoints:
-                        endpoint.delete()
-
-                except:
-                    pass
-
-                user.delete()
+        self.assertEqual(
+            authenticated_user,
+            None,
+            'Validation Credentials Did Not Expire.'
+        )
 
 
 class UserCreationTests(TestCase):
@@ -143,7 +119,7 @@ class AuthenticationViewTests(TestCase):
             first_name='First Name',
             last_name='Last Name',
             email='first.last@example.com',
-            pasword='test_password'
+            password='test_password'
         )
 
     def test_login(self):

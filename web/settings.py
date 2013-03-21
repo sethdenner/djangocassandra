@@ -209,6 +209,7 @@ INSTALLED_APPS = (
     'knotis',
     'knotis.contrib.denormalize',
     'knotis.contrib.auth',
+    'knotis.contrib.endpoint',
     'knotis.contrib.bootstrap',
     'knotis.contrib.quick',
     'knotis.contrib.identity',
