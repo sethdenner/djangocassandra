@@ -13,6 +13,7 @@ from knotis.contrib.auth.models import (
     KnotisUser,
     UserInformation
 )
+from knotis.contrib.endpoint.tests import EndpointTests
 from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
@@ -28,83 +29,73 @@ from knotis.contrib.relation.models import (
 
 
 class AuthenticationBackendTests(TestCase):
+    def setUp(self):
+        self.user, self.user_identity = UserCreationTests.create_test_user()
+
     def test_endpoint_validation(self):
-        try:
-            # Create a test user.
-            username = 'test_user@knotis.com'
-            user, _ = KnotisUser.objects.create_user(
-                'First Name',
-                'Last Name',
-                username,
-                'test_password'
-            )
+        endpoint = EndpointTests.create_test_endpoint(
+            endpoint_type=EndpointTypes.EMAIL,
+            value=self.user.username,
+            identity=self.user_identity
+        )
 
-            # Create endpoint.
-            endpoint = Endpoint.objects.create_endpoint(
-                EndpointTypes.EMAIL,
-                username,
-                user,
-                True
-            )
+        # Attempt authentication.
+        authenticated_user = authenticate(
+            user_id=self.user.id,
+            validation_key=endpoint.validation_key
+        )
 
-            # Attempt authentication.
-            authenticated_user = authenticate(
-                user_id=user.id,
-                validation_key=endpoint.validation_key
-            )
+        self.assertNotEqual(
+            authenticated_user,
+            None,
+            'Authentication Failed'
+        )
 
-            self.assertNotEqual(
-                authenticated_user,
-                None,
-                'Authentication Failed'
-            )
+        validated_endpoint = Endpoint.objects.get(pk=endpoint.id)
 
-            validated_endpoint = Endpoint.objects.get(pk=endpoint.id)
+        self.assertEqual(
+            validated_endpoint.validated,
+            True,
+            'Endpoint Was Not Validated'
+        )
 
-            self.assertEqual(
-                validated_endpoint.validated,
-                True,
-                'Endpoint Was Not Validated'
-            )
+        # Make sure the same credentials don't auth again.
+        authenticated_user = authenticate(
+            user_id=self.user.id,
+            validation_key=endpoint.validation_key
+        )
 
-            # Make sure the same credentials don't auth again.
-            authenticated_user = authenticate(
-                user_id=user.id,
-                validation_key=endpoint.validation_key
-            )
-
-            self.assertEqual(
-                authenticated_user,
-                None,
-                'Validation Credentials Did Not Expire.'
-            )
-
-        except:
-            logger.exception()
-            user = None
-
-        finally:
-            #clean up after ourselves.
-            if user:
-                try:
-                    endpoints = Endpoint.objects.filter(user=user)
-                    for endpoint in endpoints:
-                        endpoint.delete()
-
-                except:
-                    pass
-
-                user.delete()
+        self.assertEqual(
+            authenticated_user,
+            None,
+            'Validation Credentials Did Not Expire.'
+        )
 
 
 class UserCreationTests(TestCase):
+    @staticmethod
+    def create_test_user(**kwargs):
+        if not kwargs.get('first_name'):
+            kwargs['first_name'] = 'Test'
+
+        if not kwargs.get('last_name'):
+            kwargs['last_name'] = 'User'
+
+        if not kwargs.get('email'):
+            kwargs['email'] = 'test_user@example.com'
+
+        if not kwargs.get('password'):
+            kwargs['password'] = 'test_password'
+
+        return KnotisUser.objects.create_user(**kwargs)
+
     def test_create_user(self):
         username = 'test_user@example.com'
-        user, identity = KnotisUser.objects.create_user(
-            'First Name',
-            'Last Name',
-            username,
-            'test_password'
+        user, identity = UserCreationTests.create_test_user(
+            first_name='First Name',
+            last_name='Last Name',
+            email=username,
+            password='test_password'
         )
 
         self.assertIsNotNone(user)
@@ -161,11 +152,11 @@ class UserCreationTests(TestCase):
 
 class AuthenticationViewTests(TestCase):
     def setUp(self):
-        self.user, self.identity = KnotisUser.objects.create_user(
-            'First Name',
-            'Last Name',
-            'first.last@example.com',
-            'test_password'
+        self.user, self.identity = UserCreationTests.create_test_user(
+            first_name='First Name',
+            last_name='Last Name',
+            email='first.last@example.com',
+            password='test_password'
         )
 
     def test_login(self):

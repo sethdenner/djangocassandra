@@ -8,7 +8,9 @@ from knotis.contrib.auth.models import (
 from knotis.contrib.identity.models import (
     Identity,
     IdentityTypes,
-    IdentityBusiness
+    IdentityIndividual,
+    IdentityBusiness,
+    IdentityEstablishment
 )
 
 from knotis.contrib.relation.models import (
@@ -17,13 +19,43 @@ from knotis.contrib.relation.models import (
 )
 
 
-class IdentityTestCase(unittest.TestCase):
+class IdentityTests(unittest.TestCase):
+    @staticmethod
+    def create_test_individual(**kwargs):
+        if not kwargs.get('name'):
+            kwargs['name'] = 'Test Individual'
+
+        if not kwargs.get('description'):
+            kwargs['description'] = 'Test Individual description.'
+
+        return IdentityIndividual.objects.create(**kwargs)
+
+    @staticmethod
+    def create_test_business(**kwargs):
+        if not kwargs.get('name'):
+            kwargs['name'] = 'Test Business'
+
+        if not kwargs.get('description'):
+            kwargs['description'] = 'Test Business description.'
+
+        return IdentityBusiness.objects.create(**kwargs)
+
+    @staticmethod
+    def create_test_establishment(**kwargs):
+        if not kwargs.get('name'):
+            kwargs['name'] = 'Test Establishment'
+
+        if not kwargs.get('description'):
+            kwargs['description'] = 'Test Establishment description.'
+
+        return IdentityEstablishment.objects.create(**kwargs)
+
     def __init__(
         self,
         *args,
         **kwargs
     ):
-        super(IdentityTestCase, self).__init__(
+        super(IdentityTests, self).__init__(
             *args,
             **kwargs
         )
@@ -85,6 +117,3 @@ class IdentityTestCase(unittest.TestCase):
             user_identity.id,
             owner.subject.id
         )
-
-    def test_get_identity_images(self):
-        self.assertTrue(False)

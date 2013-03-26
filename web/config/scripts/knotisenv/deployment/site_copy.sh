@@ -16,3 +16,4 @@ fi
 
 mkdir -p /srv/knotis/app 2> /dev/null
 cp -rf ${1} /srv/knotis/app/web
+chown -R knotis:knotis /srv/knotis

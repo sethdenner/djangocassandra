@@ -67,6 +67,20 @@ class QuickModelBase(object):
     def get_fields_values(self):
         return [field.value_to_string(self) for field in type(self)._meta.fields]
 
+    @classmethod
+    def get_arg_value_by_name(
+        cls,
+        field_name,
+        *args,
+        **kwargs
+    ):
+        i = 0
+        for field in cls._meta.fields:
+            if field.name == field_name:
+                break
+
+        return args[i] if len(args) > i else kwargs.get(field_name)
+
     def get_absolute_url(self):
         root = "/"+type(self).__name__.lower()
         try:
@@ -92,7 +106,6 @@ class QuickModel(QuickModelBase, polymodels.models.PolymorphicModel ): #models.M
 
     class Meta:
         abstract = True
-        app_label = "quick"
 
     def clean(self, *args, **kwargs):
         return super(QuickModel,self).clean(*args, **kwargs)

@@ -12,7 +12,6 @@ from knotis.contrib.quick.fields import (
     QuickIntegerField
 )
 
-from knotis.contrib.media.models import Image
 from knotis.contrib.relation.models import (
     Relation,
     RelationTypes
@@ -107,7 +106,7 @@ class Identity(QuickModel):
         verbose_name=_("Describe the Identity"),
         required=True
     )
-    primary_image = QuickForeignKey(Image)
+    primary_image = QuickForeignKey('media.Image')
 
     objects = IdentityManager()
 
@@ -121,6 +120,19 @@ class Identity(QuickModel):
         return str(self.id)
 
 
+class IdentityIndividualManager(IdentityManager):
+    def create(
+        self,
+        *args,
+        **kwargs
+    ):
+        kwargs['identity_type'] = IdentityTypes.INDIVIDUAL
+        return super(IdentityIndividualManager, self).create(
+            *args,
+            **kwargs
+        )
+
+
 class IdentityIndividual(Identity):
     class Quick(Identity.Quick):
         exclude = ('identity_type',)
@@ -130,6 +142,8 @@ class IdentityIndividual(Identity):
 
     class Meta:
         proxy = True
+
+    objects = IdentityIndividualManager()
 
     def clean(self):
         print ("Cleaning IdentityIndividual")
@@ -171,6 +185,19 @@ class IdentityBusiness(Identity):
         self.identity_type = IdentityTypes.BUSINESS
 
 
+class IdentityEstablishmentManager(IdentityManager):
+    def create(
+        self,
+        *args,
+        **kwargs
+    ):
+        kwargs['identity_type'] = IdentityTypes.ESTABLISHMENT
+        return super(IdentityEstablishmentManager, self).create(
+            *args,
+            **kwargs
+        )
+
+
 class IdentityEstablishment(Identity):
     class Quick(Identity.Quick):
         exclude = ('identity_type',)
@@ -179,6 +206,8 @@ class IdentityEstablishment(Identity):
 
     class Meta:
         proxy = True
+
+    objects = IdentityEstablishmentManager()
 
     def clean(self):
         print ("Cleaning IdentityEstablishment")

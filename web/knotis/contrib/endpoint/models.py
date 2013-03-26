@@ -14,38 +14,44 @@ from knotis.contrib.identity.models import Identity
 
 
 class EndpointManager(Manager):
-    def create_endpoint(
+    def create(
         self,
-        endpoint_type,
-        value,
-        identity=None,
-        primary=False,
-        validation_key=None,
-        disabled=False
+        *args,
+        **kwargs
     ):
+        if 'endpoint_type' in kwargs:
+            endpoint_type = kwargs.get('endpoint_type')
+
+        elif len(args):
+            endpoint_type = args[0]
+
+        else:
+            endpoint_type = EndpointTypes.UNDEFINED
+
         class_type = Endpoint
         if EndpointTypes.EMAIL == endpoint_type:
             class_type = EndpointEmail
+
         elif EndpointTypes.ADDRESS == endpoint_type:
             class_type = EndpointAddress
+
         elif EndpointTypes.PHONE == endpoint_type:
             class_type = EndpointPhone
+
         elif EndpointTypes.FACEBOOK == endpoint_type:
             class_type = EndpointFacebook
+
         elif EndpointTypes.TWITTER == endpoint_type:
             class_type = EndpointTwitter
+
         elif EndpointTypes.YELP == endpoint_type:
             class_type = EndpointYelp
+
         else:
             class_type = Endpoint
 
-        endpoint = class_type.objects.create(
-            identity=identity,
-            primary=primary,
-            value=value,
-            validation_key=validation_key,
-            disabled=disabled
-        )
+        endpoint = class_type(**kwargs)
+        endpoint.save()
 
         return endpoint
 

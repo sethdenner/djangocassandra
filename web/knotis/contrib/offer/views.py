@@ -53,10 +53,7 @@ from knotis.contrib.category.models import (
 )
 from knotis.contrib.media.models import Image
 from knotis.contrib.media.views import render_image_list
-from knotis.contrib.auth.models import (
-    KnotisUser,
-    UserProfile
-)
+from knotis.contrib.auth.models import KnotisUser
 from knotis.contrib.paypal.views import (
     generate_ipn_hash,
     render_paypal_button
@@ -542,7 +539,7 @@ def dashboard(request):
         except:
             pass
 
-    template_parameters['user_profile'] = UserProfile.objects.get(
+    template_parameters['identity'] = Identity.objects.UserProfile.objects.get(
         user=request.user
     )
 

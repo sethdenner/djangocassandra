@@ -1,31 +1,23 @@
 import re
 import datetime
 
-from django.db.models import (
-    DateTimeField,
-    IntegerField,
-    FloatField,
-    NullBooleanField,
-    CharField,
-    Manager
-)
 from django.conf import settings
 from knotis.contrib.quick.models import (
-    QuickModel
+    QuickModel,
+    QuickManager
 )
 from knotis.contrib.quick.fields import (
     QuickForeignKey,
     QuickDateTimeField,
     QuickIntegerField,
     QuickCharField,
-    QuickFloatField
+    QuickFloatField,
+    QuickBooleanField
 )
 from knotis.utils.view import (
     format_currency,
     sanitize_input_html
 )
-from knotis.contrib.cassandra.models import ForeignKey
-from knotis.contrib.core.models import KnotisModel
 from knotis.contrib.business.models import Business
 from knotis.contrib.media.models import Image
 from knotis.contrib.category.models import (
@@ -72,55 +64,42 @@ class OfferSort:
     )
 
 
-class OfferManager(Manager):
-    def create_offer(
+class OfferManager(QuickManager):
+    def create(
         self,
-        owner,
-        title,
-        title_type,
-        description,
-        restrictions,
-        city,
-        neighborhood,
-        image,
-        category,
-        price_retail,
-        price_discount,
-        currency,
-        start_date,
-        end_date,
-        stock,
-        unlimited,
-        published,
-        premium=False,
-        active=True,
-        inventory=[]
+        inventory=[],
+        *args,
+        **kwargs
     ):
-        offer = Offer(
-            owner=owner,
-            title=title,
-            title_type=title_type,
-            description=description,
-            image=image,
-            category=category,
-            city=city,
-            neighborhood=neighborhood,
-            price_retail=price_retail,
-            price_discount=price_discount,
-            currency=currency,
-            published=published,
-            status=OfferStatus.CURRENT if published else OfferStatus.CREATED,
-            active=active,
-            premium=premium,
-            restrictions=restrictions,
-            stock=stock,
-            unlimited=unlimited,
-            start_date=start_date,
-            end_date=end_date
+        status = Offer.get_arg_value_by_name(
+            'status',
+            *args,
+            **kwargs
         )
-        offer.visable = offer.is_visable()
-        offer.searchable = offer.is_searchable()
-        offer.purchasable = offer.is_purchaseable()
+        published = Offer.get_arg_value_by_name(
+            'published',
+            *args,
+            **kwargs
+        )
+        price_discount = Offer.get_arg_value_by_name(
+            'price_discount',
+            *args,
+            **kwargs
+        )
+        image = Offer.get_arg_value_by_name(
+            'image',
+            *args,
+            **kwargs
+        )
+
+        if not status:
+            status = OfferStatus.CURRENT if published else OfferStatus.CREATED
+            kwargs['status'] = status
+
+        offer = Offer(
+            *args,
+            **kwargs
+        )
         offer.save()
 
         for i in inventory:
@@ -370,87 +349,56 @@ class OfferTitleTypes:
     )
 
 
-class Offer(KnotisModel):
-    owner = ForeignKey(Identity)
-    offer_type = IntegerField(
+class Offer(QuickModel):
+    owner = QuickForeignKey(Identity)
+    offer_type = QuickIntegerField(
         default=OfferTypes.NORMAL,
         choices=OfferTypes.CHOICES,
-        null=True,
-        blank=True
     )
 
-    title = CharField(
-        null=True,
-        blank=True,
-        default=None,
+    title = QuickCharField(
         max_length=140
     )
-    title_type = IntegerField(
+    title_type = QuickIntegerField(
         choices=OfferTitleTypes.CHOICES,
-        blank=True,
-        null=True
     )
-    description = CharField(
-        null=True,
-        blank=True,
-        default=None,
+    description = QuickCharField(
         max_length=1024
     )
 
-    image = ForeignKey(Image)
-    category = ForeignKey(Category)
-    city = ForeignKey(City)
-    neighborhood = ForeignKey(Neighborhood)
+    default_image = QuickForeignKey(Image)
+    category = QuickForeignKey(Category)
+    city = QuickForeignKey(City)
+    neighborhood = QuickForeignKey(Neighborhood)
 
-    price_retail = FloatField(default=0., blank=True, null=True)
-    price_discount = FloatField(default=0., blank=True, null=True)
-    currency = ForeignKey(Product)
+    price_retail = QuickFloatField(default=0., blank=True, null=True)
+    price_discount = QuickFloatField(default=0., blank=True, null=True)
+    currency = QuickForeignKey(Product)
 
-    status = CharField(
+    status = QuickCharField(
         max_length=32,
         choices=OfferStatus.CHOICES,
         db_index=True,
         default=OfferStatus.CREATED
     )
-    redeemed = IntegerField(default=0, blank=True, null=True)
-    published = NullBooleanField(default=False)
-    active = NullBooleanField(default=False, db_index=True)
-    premium = NullBooleanField(default=False, db_index=True)
-    deleted = NullBooleanField(default=False, db_index=True)
+    redeemed = QuickIntegerField(default=0, blank=True, null=True)
+    published = QuickBooleanField(default=False)
+    active = QuickBooleanField(default=False, db_index=True)
+    premium = QuickBooleanField(default=False, db_index=True)
 
     restrictions = QuickCharField(
         max_length=1024
     )
     stock = QuickIntegerField(
         default=0,
-        blank=True,
-        null=True
     )
-    unlimited = NullBooleanField(
-        default=False,
-        blank=True,
-        null=True
-    )
-    purchased = QuickIntegerField(
-        default=0,
-        blank=True,
-        null=True
-    )
-    last_purchase = QuickDateTimeField(
-        null=True,
-        blank=True,
-        default=None
-    )
+    unlimited = QuickBooleanField(default=False)
+    purchased = QuickIntegerField(default=0)
+    last_purchase = QuickDateTimeField(default=None)
     start_date = QuickDateTimeField()
     end_date = QuickDateTimeField()
 
-    pub_date = DateTimeField(null=True, auto_now_add=True)
-
     objects = OfferManager()
-
-    visable = NullBooleanField()
-    searchable = NullBooleanField()
-    purchasable = NullBooleanField()
 
     def __init__(
         self,
@@ -462,6 +410,7 @@ class Offer(KnotisModel):
             **kwargs
         )
 
+        # Check whether offer should be completed on instansiation.
         # Could have no end date I guess so check for not None.
         if (
             self.end_date and self.end_date < datetime.datetime.utcnow()
