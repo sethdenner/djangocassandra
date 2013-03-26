@@ -63,14 +63,6 @@
         }
     },
     {
-        "pk": "d630a63e-5cc6-4c21-aa47-4d6159e76b6c",
-        "model": "sites.site",
-        "fields": {
-            "domain": "test.knotis.com",
-            "name": "Knotis Web Frontend - Test"
-        }
-    },
-    {
         "pk": "5ce2ccf6-d1f1-4c94-9768-fa04b5b9559f",
         "model": "knotis.content",
         "fields": {

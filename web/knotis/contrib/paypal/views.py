@@ -18,12 +18,10 @@ from knotis.contrib.transaction.models import (
     Transaction,
     TransactionTypes
 )
-from knotis.contrib.auth.models import (
-    KnotisUser,
-    UserProfile,
-    AccountTypes
-)
+from knotis.contrib.auth.models import KnotisUser
 from knotis.contrib.offer.models import Offer
+from knotis.contrib.identity.models import Identity
+
 
 logger = logging.getLogger(__name__)
 
@@ -201,48 +199,29 @@ def ipn_callback(request):
         logger.exception('failed to create transaction')
         transaction = None
 
-    if (item_name1 and item_name1.lower() == 'business monthly subscription') or \
-        (item_name and item_name.lower() == 'knotis premium'):
-        logger.debug('paid business subscription purchase')
-        try:
-            logger.debug('getting user with id %s' % (user_id,))
-            user = KnotisUser.objects.get(pk=user_id)
-            logger.debug('user found')
-            user_profile = UserProfile.objects.get(user=user)
-            logger.debug('user profile found')
+    logger.debug('offer purchase')
+    try:
+        logger.debug('getting offer with id %s' % (item_number1,))
+        Offer.objects.get(pk=item_number1).purchase()
+        logger.debug('offer purchased')
 
-            logger.debug('upgrading account')
-            user_profile.account_type = AccountTypes.BUSINESS_MONTHLY
-            user_profile.save()
-            logger.debug('account upgraded')
+        logger.debug('sending offer purchase email')
+        generate_email(
+            'offer_purchase',
+            transaction.offer.title_formatted(),
+            settings.EMAIL_HOST_USER,
+            [transaction.user.username], {
+                'transaction': transaction,
+                'BASE_URL': settings.BASE_URL,
+                'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE
+            }
+        ).send()
+        logger.debug('email sent to %s' % (
+            transaction.user.username
+        ))
 
-        except:
-            logger.exception('failed to upgrade user')
-
-    elif item_number1:
-        logger.debug('offer purchase')
-        try:
-            logger.debug('getting offer with id %s' % (item_number1,))
-            Offer.objects.get(pk=item_number1).purchase()
-            logger.debug('offer purchased')
-
-            logger.debug('sending offer purchase email')
-            generate_email(
-                'offer_purchase',
-                transaction.offer.title_formatted(),
-                settings.EMAIL_HOST_USER,
-                [transaction.user.username], {
-                    'transaction': transaction,
-                    'BASE_URL': settings.BASE_URL,
-                    'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE
-                }
-            ).send()
-            logger.debug('email sent to %s' % (
-                transaction.user.username
-            ))
-
-        except:
-            logger.exception('failed to purchase offer.')
+    except:
+        logger.exception('failed to purchase offer.')
 
     return HttpResponse('OK')
 
