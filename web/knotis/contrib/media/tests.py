@@ -3,7 +3,7 @@ import urllib
 from django.test import TestCase
 from django.core.files import File
 
-from knotis.contrib.identity.tests import IdentityTests
+from knotis.contrib.identity.tests import IdentityModelTests
 
 from knotis.contrib.media.models import Image
 
@@ -12,7 +12,7 @@ class MediaTests(TestCase):
     @staticmethod
     def create_test_image(**kwargs):
         if not kwargs.get('owner'):
-            kwargs['owner'] = IdentityTests.create_test_individual()
+            kwargs['owner'] = IdentityModelTests.create_test_individual()
 
         if not kwargs.get('related_object_id'):
             kwargs['related_object_id'] = kwargs['owner'].id

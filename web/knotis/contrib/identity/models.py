@@ -63,7 +63,18 @@ class IdentityManager(QuickManager):
 
         return identity
 
-    def get_for_user(
+    def get_individual(
+        self,
+        user
+    ):
+        user_type = ContentType.objects.get_for_model(user)
+        relation = Relation.objects.get(
+            subject_content_type__pk=user_type.id,
+            subject_object_id=user.id
+        )
+        return relation.related
+
+    def get_available(
         self,
         user
     ):
@@ -81,6 +92,7 @@ class IdentityManager(QuickManager):
             user_identity
         )
         identity_relations = Relation.objects.filter(
+            relation_type=RelationTypes.MANAGER,
             subject_content_type__pk=identity_content_type.id,
             subject_object_id=user_identity.id,
             related_content_type=identity_content_type.id

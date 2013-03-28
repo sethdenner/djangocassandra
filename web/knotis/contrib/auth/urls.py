@@ -4,18 +4,6 @@ from django.conf.urls.defaults import (
 )
 
 
-'''
-
-Here's the old facebook auth urls in case we ever want to hook this back up.
-
--Seth
-                       
-url(
-    r'^auth/login/facebook(/(?P<account_type>[^/]+))?/$',
-    'facebook_login',
-),
-
-'''
 urlpatterns = patterns(
     'knotis.contrib.auth.views',
     url(

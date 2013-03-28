@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from knotis.contrib.identity.tests import IdentityTests
+from knotis.contrib.identity.tests import IdentityModelTests
 
 from models import (
     Endpoint,
@@ -15,7 +15,7 @@ class EndpointTests(TestCase):
             kwargs['endpoint_type'] = EndpointTypes.EMAIL
 
         if not kwargs.get('identity'):
-            kwargs['identity'] = IdentityTests.create_test_individual()
+            kwargs['identity'] = IdentityModelTests.create_test_individual()
 
         if not kwargs.get('value'):
             kwargs['value'] = 'test@example.com'

@@ -1,16 +1,8 @@
-from django.utils import unittest
+from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 
 from knotis.contrib.auth.models import (
     KnotisUser
-)
-
-from knotis.contrib.identity.models import (
-    Identity,
-    IdentityTypes,
-    IdentityIndividual,
-    IdentityBusiness,
-    IdentityEstablishment
 )
 
 from knotis.contrib.relation.models import (
@@ -18,8 +10,16 @@ from knotis.contrib.relation.models import (
     RelationTypes
 )
 
+from models import (
+    Identity,
+    IdentityTypes,
+    IdentityIndividual,
+    IdentityBusiness,
+    IdentityEstablishment
+)
 
-class IdentityTests(unittest.TestCase):
+
+class IdentityModelTests(TestCase):
     @staticmethod
     def create_test_individual(**kwargs):
         if not kwargs.get('name'):
@@ -55,7 +55,7 @@ class IdentityTests(unittest.TestCase):
         *args,
         **kwargs
     ):
-        super(IdentityTests, self).__init__(
+        super(IdentityModelTests, self).__init__(
             *args,
             **kwargs
         )
@@ -117,3 +117,26 @@ class IdentityTests(unittest.TestCase):
             user_identity.id,
             owner.subject.id
         )
+
+
+class IdentityViewTests(TestCase):
+    def setUp(self):
+        self.user_email = 'test@example.com'
+        self.user_password = 'test_password'
+        self.user, self.user_identity = KnotisUser.objects.create_user(
+            'Test',
+            'User',
+            self.user_email,
+            self.user_password
+        )
+
+    def test_identity_switcher_view(self):
+        self.client.login(
+            username=self.user_email,
+            password=self.user_password
+        )
+        response = self.client.get('/identity/switcher/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_identity_switcher_fragment(self):
+        pass

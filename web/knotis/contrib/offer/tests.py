@@ -2,7 +2,7 @@ import datetime
 
 from django.test import TestCase
 
-from knotis.contrib.identity.tests import IdentityTests
+from knotis.contrib.identity.tests import IdentityModelTests
 from knotis.contrib.media.tests import MediaTests
 
 from knotis.contrib.product.models import (
@@ -23,7 +23,7 @@ class OfferTests(TestCase):
         **kwargs
     ):
         if not kwargs.get('owner'):
-            kwargs['owner'] = IdentityTests.create_test_establishment()
+            kwargs['owner'] = IdentityModelTests.create_test_establishment()
 
         if not kwargs.get('offer_type'):
             kwargs['offer_type'] = OfferTypes.NORMAL

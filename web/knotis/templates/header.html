@@ -1,3 +1,4 @@
+{% load render_template_fragment %}
 <div id="header">
     <div class="header-top">
         <div class="wrapper solution clearfix  header-content">
@@ -98,7 +99,7 @@
                 <li><a class="sig_in signup txt-white" href="/plans/">{{ header_sign_up }}</a></li>
             </ul>
 			{% else %}
-            {{ identity_switcher }}
+            {% render_fragment identity_switcher %}
             {% endif %}
         </div>
     </div>

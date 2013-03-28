@@ -11,7 +11,7 @@ from knotis.contrib.transaction.models import (
     Transaction,
     TransactionTypes,
 )
-from knotis.contrib.auth.models import UserProfile
+
 
 @login_required
 def print_transaction(
@@ -71,14 +71,6 @@ def get_user_transactions(
     status
 ):
     template_parameters = {}
-
-    try:
-        template_parameters['user_profile'] = UserProfile.objects.get(
-            user=request.user
-        )
-
-    except:
-        pass
 
     try:
         if status == 'redeemed':

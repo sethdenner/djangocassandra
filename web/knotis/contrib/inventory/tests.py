@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from knotis.contrib.auth.tests import UserCreationTests
 from knotis.contrib.product.tests import ProductTests
-from knotis.contrib.identity.tests import IdentityTests
+from knotis.contrib.identity.tests import IdentityModelTests
 
 from models import Inventory
 
@@ -14,7 +14,7 @@ class InventoryTests(TestCase):
             kwargs['product'] = ProductTests.create_test_product()
 
         if not kwargs.get('provider'):
-            kwargs['provider'] = IdentityTests.create_test_establishment()
+            kwargs['provider'] = IdentityModelTests.create_test_establishment()
 
         if not kwargs.get('recipient'):
             kwargs['recipient'] = kwargs['provider']
@@ -42,11 +42,11 @@ class InventoryTests(TestCase):
             last_name='Merchant'
         )
 
-        self.business = IdentityTests.create_test_business(
+        self.business = IdentityModelTests.create_test_business(
             owner=self.merchant_identity
         )
 
-        self.establishment = IdentityTests.create_test_establishment(
+        self.establishment = IdentityModelTests.create_test_establishment(
             owner=self.business
         )
 

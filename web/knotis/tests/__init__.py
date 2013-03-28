@@ -1,3 +1,4 @@
+from tests import *
 from knotis.contrib.denormalize.tests import *
 from knotis.contrib.auth.tests import *
 from knotis.contrib.identity.tests import *

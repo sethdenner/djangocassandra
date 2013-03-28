@@ -1,9 +1,11 @@
 from django.conf.urls.defaults import (
-    url, 
+    url,
     patterns
 )
 
 from knotis.utils.regex import REGEX_UUID
+
+from views import TransactionApiView
 
 urlpatterns = patterns(
     'knotis.contrib.transaction.views',
@@ -19,4 +21,5 @@ urlpatterns = patterns(
         r'^offers/get_user_offers/(?P<status>[\D]+)/$',
         'get_user_transactions'
     ),
+    TransactionApiView.urls()
 )

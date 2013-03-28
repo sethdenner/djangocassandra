@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from knotis.contrib.auth.tests import UserCreationTests
-from knotis.contrib.identity.tests import IdentityTests
+from knotis.contrib.identity.tests import IdentityModelTests
 from knotis.contrib.product.tests import ProductTests
 from knotis.contrib.inventory.tests import InventoryTests
 from knotis.contrib.offer.tests import OfferTests
@@ -27,11 +27,11 @@ class TransactionTests(TestCase):
             email='test_merchant@example.com',
         )
 
-        self.business = IdentityTests.create_test_business(
+        self.business = IdentityModelTests.create_test_business(
             owner=self.merchant_identity
         )
 
-        self.establishment = IdentityTests.create_test_establishment(
+        self.establishment = IdentityModelTests.create_test_establishment(
             owner=self.business,
             description='Test Business\'s primary location.'
         )

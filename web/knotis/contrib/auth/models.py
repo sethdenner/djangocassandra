@@ -58,10 +58,11 @@ class KnotisUserManager(UserManager):
             identity_type=IdentityTypes.INDIVIDUAL
         )
 
-        UserInformation.objects.create(
-            new_user,
-            identity
-        )
+        user_info = UserInformation()
+        user_info.user = new_user
+        user_info.username = new_user
+        user_info.default_identity = identity
+        user_info.save()
 
         return new_user, identity
 
@@ -118,6 +119,7 @@ class UserInformationManager(QuickManager):
 
 
 class UserInformation(QuickModel):
+    user = QuickForeignKey(KnotisUser)
     username = DenormalizedField(
         KnotisUser,
         'username'

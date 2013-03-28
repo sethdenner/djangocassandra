@@ -1,6 +1,11 @@
 from django.conf.urls.defaults import patterns, include, url
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
+
+# This code is required for template fragments
+# to find the corresponding views
+
+from knotis.views.mixins import RenderTemplateFragmentMixin
+RenderTemplateFragmentMixin.register_template_fragment_views()
 
 
 admin.autodiscover()
@@ -8,6 +13,10 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
+    url(
+        r'',
+        include('knotis.contrib.identity.urls')
+    ),
     url(
         r'',
         include('knotis.contrib.media.urls')
@@ -78,7 +87,7 @@ urlpatterns = patterns(
     ),
     url(
         r'^admin/',
-        include(admin.site.urls)
+        include('admin.site.urls')
     ),
     url(
         r'^api/',
@@ -89,6 +98,3 @@ urlpatterns = patterns(
         'knotis.contrib.business.views.profile',
     ),
 )
-
-
-# urlpatterns += staticfiles_urlpatterns()
