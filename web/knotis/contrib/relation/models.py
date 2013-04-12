@@ -23,14 +23,16 @@ __all__ = __models__ + ('RelationTypes',)
 
 class RelationTypes:
     """
-        There should be a good way to map type number to the actual type.
-        There should be a way to specify the class.
-        Types could be inferred from the models list.
+    There should be a good way to map type number to the actual type.
+    There should be a way to specify the class.
+    Types could be inferred from the models list.
     """
     UNDEFINED = 'undefined'
-    OWNER = 'owner'
+    INDIVIDUAL = 'individual'
+    PROPRIETOR = 'proprietor'
     MANAGER = 'manager'
     EMPLOYEE = 'employee'
+    ESTABLISHMENT = 'establishment'
     FOLLOWING = 'following'
     LIKES = 'likes'
     CUSTOMER = 'customer'
@@ -38,9 +40,11 @@ class RelationTypes:
 
     CHOICES = (
         (UNDEFINED, 'Undefined'),
-        (OWNER, 'Owner'),
+        (INDIVIDUAL, 'Individual'),
+        (PROPRIETOR, 'Proprietor'),
         (MANAGER, 'Manager'),
         (EMPLOYEE, 'Employee'),
+        (ESTABLISHMENT, 'Establishment'),
         (FOLLOWING, 'Following'),
         (LIKES, 'Likes'),
         (CUSTOMER, 'Customer')
@@ -48,7 +52,125 @@ class RelationTypes:
 
 
 class RelationManager(QuickManager):
-    pass
+    def create_individual(
+        self,
+        user,
+        individual
+    ):
+        return self.create(
+            relation_type=RelationTypes.INDIVIDUAL,
+            subject=user,
+            related=individual,
+            description=''.join([
+                'The identity of ',
+                user.first_name,
+                ' ',
+                user.last_name,
+                '.'
+            ])
+        )
+
+    def get_individual(
+        self,
+        user
+    ):
+        user_type = ContentType.objects.get_for_model(user)
+        return Relation.objects.get(
+            subject_content_type__pk=user_type.id,
+            subject_object_id=user.id
+        )
+
+    def create_manager(
+        self,
+        manager,
+        related
+    ):
+        return self.create(
+            relation_type=RelationTypes.MANAGER,
+            subject=manager,
+            related=related,
+            description=''.join([
+                manager.name,
+                ' is a manager of ',
+                related.name
+            ])
+        )
+
+    def get_managers(
+        self,
+        related
+    ):
+        related_type = ContentType.objects.get_for_model(related)
+        return self.filter(
+            related_content_type__pk=related_type.id,
+            related_object_id=related.id,
+            relation_type=RelationTypes.MANAGER
+        )
+
+    def get_managed(
+        self,
+        manager
+    ):
+        manager_type = ContentType.objects.get_for_model(manager)
+        return self.filter(
+            subject_content_type__pk=manager_type.id,
+            subject_object_id=manager.id,
+            relation_type=RelationTypes.MANAGER
+        )
+
+    def create_establishment(
+        self,
+        business,
+        establishment
+    ):
+        return self.create(
+            relation_type=RelationTypes.ESTABLISHMENT,
+            subject=business,
+            related=establishment,
+            description=''.join([
+                establishment.name,
+                ' is a establishment of ',
+                business.name
+            ])
+        )
+
+    def get_establishments(
+        self,
+        business
+    ):
+        business_type = ContentType.objects.get_for_model(business)
+        return self.filter(
+            subject_content_type__pk=business_type.id,
+            subject_object_id=business.id,
+            relation_type=RelationTypes.ESTABLISHMENT
+        )
+
+    def create_following(
+        self,
+        follower,
+        related
+    ):
+        return self.create(
+            relation_type=RelationTypes.FOLLOWING,
+            subject=follower,
+            related=related,
+            description=''.join([
+                follower.name,
+                ' is following ',
+                related.name
+            ])
+        )
+
+    def get_following(
+        self,
+        follower
+    ):
+        follower_type = ContentType.objects.get_for_model(follower)
+        return  self.filter(
+            subject_content_type__pk=follower_type.id,
+            subject_object_id=follower.id,
+            relation_type=RelationTypes.FOLLOWING
+        )
 
 
 class Relation(QuickModel):
@@ -75,11 +197,6 @@ class Relation(QuickModel):
         'related_content_type',
         'related_object_id'
     )
-    name = QuickCharField(
-        max_length=80,
-        db_index=True,
-        required=True
-    )
     description = QuickTextField(
         required=True
     )
@@ -97,16 +214,16 @@ class Relation(QuickModel):
         return str(self.id)
 
 
-class RelationOwner(Relation):
+class RelationProprietor(Relation):
     class Quick(Relation.Quick):
         exclude = ('relation_type',)
-        filters = {'relation_type': RelationTypes.OWNER}
+        filters = {'relation_type': RelationTypes.PROPRIETOR}
 
     class Meta:
         proxy = True
 
     def clean(self):
-        self.relation_type = RelationTypes.OWNER
+        self.relation_type = RelationTypes.PROPRIETOR
 
 
 class RelationFollowing(Relation):

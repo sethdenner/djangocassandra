@@ -31,19 +31,25 @@ class InventoryManager(QuickManager):
         if master.provider_id != master.recipient_id:
             raise Exception('can not stack onto unstacked inventory')
 
-        if slave.recipient_id != master.recipient_id:
-            raise Exception('can not stack inventory unless recipients match')
+        if (
+            slave.recipient_id != master.recipient_id and
+            slave.provider_id != master.recipient_id
+        ):
+            raise Exception(
+                'can not stack inventory unless participants match'
+            )
 
         if slave.product_id != master.product_id:
             raise Exception('can not stack inventory unless products match')
 
-        master.stock += slave.stock
-        master.save()
+        # if slave inventory is perishable don't stack it.
+        # That inventory is no longer tracked by our system.
+        if not slave.perishable:
+            master.stock += slave.stock
+            master.save()
 
         slave.deleted = True
         slave.save()
-
-        return master
 
     def split(
         self,
@@ -53,7 +59,7 @@ class InventoryManager(QuickManager):
         force=False
     ):
         if inventory.provider_id != inventory.recipient_id:
-            raise Exception('can not split unowned inventory')
+            raise Exception('can not split unstacked inventory')
 
         if not force:
             if quantity > inventory.stock:
@@ -69,18 +75,19 @@ class InventoryManager(QuickManager):
         inventory.stock -= quantity
         inventory.save()
 
-        return inventory, split
+        return split
 
     def create_stack_from_product(
         self,
         identity,
-        product
+        product,
+        stock=0.
     ):
         return Inventory.objects.create(
             product=product,
             provider=identity,
             recipient=identity,
-            stock=0.
+            stock=stock
         )
 
     def create_stack_from_inventory(
@@ -95,89 +102,64 @@ class InventoryManager(QuickManager):
 
     def get_stack(
         self,
-        product,
         identity,
-        offer=None
+        product,
+        create_empty=False
     ):
-        inventory_stacks = self.objects.filter(
+        inventory_stacks = self.filter(
             product=product,
             provider=identity,
             recipient=identity
         )
 
         inventory_stack = None
-        inventory_stack_offerless = None
         for stack in inventory_stacks:
-            offer_items = stack.offer_item_set.all()
-            if (
-                not inventory_stack_offerless
-                and not offer_items.count()
-            ):
-                inventory_stack_offerless = stack
-                if offer:
-                    continue
+            offer_items = stack.offeritem_set.all()
+            if offer_items.count():
+                continue
 
-                else:
-                    break
-
-            if offer:
-                for offer_item in offer_items:
-                    if offer_item.offer_id == offer.id:
-                        inventory_stack = offer_item.inventory
-                        break
-
-            if inventory_stack:
+            if stack.product_id == product.id:
+                inventory_stack = stack
                 break
 
-        if not inventory_stack:
-            if inventory_stack_offerless:
-                inventory_stack = inventory_stack_offerless
-
-            else:
-                inventory_stack = (
-                    Inventory.objects.create_stack_from_product(
-                        identity,
-                        product
-                    )
+        if not inventory_stack and create_empty:
+            inventory_stack = (
+                Inventory.objects.create_stack_from_product(
+                    identity,
+                    product
                 )
+            )
 
         return inventory_stack
 
     def get_provider_stack(
         self,
-        inventory,
-        offer=None
+        inventory
     ):
         return self.get_stack(
-            inventory,
             inventory.provider,
-            offer=offer
+            inventory.product
         )
 
     def get_recipient_stack(
         self,
-        inventory,
-        offer=None
+        inventory
     ):
         return self.get_stack(
-            inventory,
             inventory.recipient,
-            offer=offer
+            inventory.product
         )
 
     def get_participating_stacks(
         self,
-        inventory,
-        offer=None
+        inventory
     ):
         return (
             self.get_provider_stack(
-                inventory,
-                offer=offer
+                inventory
             ),
             self.get_recipient_stack(
-                inventory,
-                offer=offer
+                inventory
             )
         )
 
@@ -193,8 +175,6 @@ class Inventory(QuickModel):
         related_name='inventory_recipient'
     )
     stock = QuickFloatField()
+    perishable = QuickBooleanField()
 
     objects = InventoryManager()
-
-    def is_perishable(self):
-        return False

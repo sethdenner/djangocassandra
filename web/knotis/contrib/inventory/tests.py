@@ -22,9 +22,6 @@ class InventoryTests(TestCase):
         if not kwargs.get('stock'):
             kwargs['stock'] = 10
 
-        if not kwargs.get('retail_price'):
-            kwargs['retail_price'] = 10.
-
         return Inventory.objects.create(**kwargs)
 
     def setUp(self):
@@ -59,7 +56,7 @@ class InventoryTests(TestCase):
             provider=self.establishment,
             stock=10
         )
-        inventory, split = Inventory.objects.split(
+        split = Inventory.objects.split(
             inventory,
             self.consumer_identity,
             quantity=5
@@ -81,7 +78,7 @@ class InventoryTests(TestCase):
             stock=5
         )
 
-        inventory = Inventory.objects.stack(
+        Inventory.objects.stack(
             incoming,
             inventory
         )

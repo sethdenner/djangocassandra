@@ -41,39 +41,6 @@ class IdentityTypes:
 
 
 class IdentityManager(QuickManager):
-    def create(
-        self,
-        owner=None,
-        *args,
-        **kwargs
-    ):
-        identity = super(IdentityManager, self).create(
-            *args,
-            **kwargs
-        )
-
-        if owner:
-            relation_type = RelationTypes.OWNER
-
-            Relation.objects.create(
-                subject=owner,
-                related=identity,
-                relation_type=relation_type
-            )
-
-        return identity
-
-    def get_individual(
-        self,
-        user
-    ):
-        user_type = ContentType.objects.get_for_model(user)
-        relation = Relation.objects.get(
-            subject_content_type__pk=user_type.id,
-            subject_object_id=user.id
-        )
-        return relation.related
-
     def get_available(
         self,
         user
@@ -101,6 +68,138 @@ class IdentityManager(QuickManager):
             identities.add(relation.related)
 
         return identities
+
+
+class IdentityIndividualManager(IdentityManager):
+    def create(
+        self,
+        user,
+        *args,
+        **kwargs
+    ):
+        individual = super(IdentityIndividualManager, self).create(
+            identity_type=IdentityTypes.INDIVIDUAL,
+            name=user.full_name(),
+            *args,
+            **kwargs
+        )
+
+        Relation.objects.create_individual(
+            user,
+            individual
+        )
+
+        return individual
+
+    def get_individual(
+        self,
+        user
+    ):
+        relation = Relation.objects.get_individual(
+            user
+        )
+        return relation.related
+
+    def get_query_set(self):
+        return super(QuickManager, self).get_query_set().filter(
+            identity_type=IdentityTypes.INDIVIDUAL
+        )
+
+
+class IdentityBusinessManager(IdentityManager):
+    def create(
+        self,
+        manager,
+        *args,
+        **kwargs
+    ):
+        business = super(IdentityBusinessManager, self).create(
+            identity_type=IdentityTypes.BUSINESS,
+            *args,
+            **kwargs
+        )
+
+        Relation.objects.create_manager(
+            manager,
+            business
+        )
+
+        return business
+
+    def get_businesses(
+        self,
+        manager
+    ):
+        managed = Relation.objects.get_managed(manager)
+
+        businesses = []
+        for relation in managed:
+            if relation.related.identity_type == IdentityTypes.BUSINESS:
+                businesses.append(relation.related)
+
+        return businesses
+
+    def get_query_set(self):
+        return super(QuickManager, self).get_query_set().filter(
+            identity_type=IdentityTypes.BUSINESS
+        )
+
+
+class IdentityEstablishmentManager(IdentityManager):
+    def create(
+        self,
+        business,
+        *args,
+        **kwargs
+    ):
+        establishment = super(IdentityEstablishmentManager, self).create(
+            identity_type=IdentityTypes.ESTABLISHMENT,
+            *args,
+            **kwargs
+        )
+
+        Relation.objects.create_establishment(
+            business,
+            establishment
+        )
+
+        return establishment
+
+    def get_establishments(
+        self,
+        identity
+    ):
+        if identity.identity_type == IdentityTypes.INDIVIDUAL:
+            relations = Relation.objects.get_managed(identity)
+
+        elif identity.identity_type == IdentityTypes.BUSINESS:
+            relations = Relation.objects.get_establishments(identity)
+
+        else:
+            raise Exception(
+                'can only get establishments by manager or by business'
+            )
+
+        establishments = []
+        for relation in relations:
+            if not hasattr(relation.related, 'identity_type'):
+                continue
+
+            if relation.related.identity_type == IdentityTypes.BUSINESS:
+                establishments += self.get_establishments(relation.related)
+
+            elif relation.related.identity_type == IdentityTypes.ESTABLISHMENT:
+                establishments.append(relation.related)
+
+            else:
+                continue
+
+        return establishments
+
+    def get_query_set(self):
+        return super(QuickManager, self).get_query_set().filter(
+            identity_type=IdentityTypes.ESTABLISHMENT
+        )
 
 
 class Identity(QuickModel):
@@ -132,19 +231,6 @@ class Identity(QuickModel):
         return str(self.id)
 
 
-class IdentityIndividualManager(IdentityManager):
-    def create(
-        self,
-        *args,
-        **kwargs
-    ):
-        kwargs['identity_type'] = IdentityTypes.INDIVIDUAL
-        return super(IdentityIndividualManager, self).create(
-            *args,
-            **kwargs
-        )
-
-
 class IdentityIndividual(Identity):
     class Quick(Identity.Quick):
         exclude = ('identity_type',)
@@ -160,19 +246,6 @@ class IdentityIndividual(Identity):
     def clean(self):
         print ("Cleaning IdentityIndividual")
         self.identity_type = IdentityTypes.INDIVIDUAL
-
-
-class IdentityBusinessManager(IdentityManager):
-    def create(
-        self,
-        *args,
-        **kwargs
-    ):
-        kwargs['identity_type'] = IdentityTypes.BUSINESS
-        return super(IdentityBusinessManager, self).create(
-            *args,
-            **kwargs
-        )
 
 
 class IdentityBusiness(Identity):
@@ -195,19 +268,6 @@ class IdentityBusiness(Identity):
     def clean(self):
         print ("Cleaning IdentityBusiness")
         self.identity_type = IdentityTypes.BUSINESS
-
-
-class IdentityEstablishmentManager(IdentityManager):
-    def create(
-        self,
-        *args,
-        **kwargs
-    ):
-        kwargs['identity_type'] = IdentityTypes.ESTABLISHMENT
-        return super(IdentityEstablishmentManager, self).create(
-            *args,
-            **kwargs
-        )
 
 
 class IdentityEstablishment(Identity):

@@ -1,18 +1,7 @@
 from django.test import TestCase
-from django.contrib.contenttypes.models import ContentType
 
-from knotis.contrib.auth.models import (
-    KnotisUser
-)
-
-from knotis.contrib.relation.models import (
-    Relation,
-    RelationTypes
-)
-
+from knotis.contrib.auth.tests import UserCreationTests
 from models import (
-    Identity,
-    IdentityTypes,
     IdentityIndividual,
     IdentityBusiness,
     IdentityEstablishment
@@ -31,108 +20,132 @@ class IdentityModelTests(TestCase):
         return IdentityIndividual.objects.create(**kwargs)
 
     @staticmethod
-    def create_test_business(**kwargs):
+    def create_test_business(
+        manager,
+        **kwargs
+    ):
         if not kwargs.get('name'):
             kwargs['name'] = 'Test Business'
 
         if not kwargs.get('description'):
             kwargs['description'] = 'Test Business description.'
 
-        return IdentityBusiness.objects.create(**kwargs)
+        return IdentityBusiness.objects.create(
+            manager,
+            **kwargs
+        )
 
     @staticmethod
-    def create_test_establishment(**kwargs):
+    def create_test_establishment(
+        business,
+        **kwargs
+    ):
         if not kwargs.get('name'):
             kwargs['name'] = 'Test Establishment'
 
         if not kwargs.get('description'):
             kwargs['description'] = 'Test Establishment description.'
 
-        return IdentityEstablishment.objects.create(**kwargs)
-
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
-        super(IdentityModelTests, self).__init__(
-            *args,
+        return IdentityEstablishment.objects.create(
+            business,
             **kwargs
         )
 
-        self.user = None
-        self.user_password = 'test_password'
-        self.user_email = 'fake@example.com'
-
-        self.business_name = 'Fake Business'
-
     def setUp(self):
-        pass
-
-    def test_identity_creation(self):
-        identity_type = IdentityTypes.INDIVIDUAL
-        name = 'Test Identity'
-        description = 'Test Description'
-
-        created = Identity.objects.create(
-            identity_type=identity_type,
-            name=name,
-            description=description,
-            primary_image=None
+        (
+            self.user_consumer,
+            self.identity_consumer
+        ) = UserCreationTests.create_test_user(
+            first_name='Test',
+            last_name='Consumer',
+            email='testconsumer@example.com'
         )
 
-        selected = Identity.objects.get(pk=created.id)
-        self.assertEqual(selected.name, name)
-        self.assertEqual(selected.description, description)
-        self.assertEqual(selected.identity_type, identity_type)
-
-    def test_business_creation(self):
-        user, user_identity = KnotisUser.objects.create_user(
-            'Test',
-            'User',
-            self.user_email,
-            self.user_password
+        (
+            self.user_merchant,
+            self.identity_merchant
+        ) = UserCreationTests.create_test_user(
+            first_name='Test',
+            last_name='Merchant',
+            email='testmerchant@example.com'
         )
 
-        business = IdentityBusiness.objects.create(
-            user_identity,
-            name=self.business_name
+        self.business = IdentityBusiness.objects.create(
+            self.identity_merchant,
+            name='Test Business'
         )
 
-        relation_type = ContentType.objects.get_for_model(business)
-        relations = Relation.objects.filter(
-            related_content_type=relation_type,
-            related_object_id=business.id
+        self.establishment = IdentityEstablishment.objects.create(
+            self.business,
+            name='Test Establishment'
         )
 
-        owner = None
-
-        for relation in relations:
-            if relation.relation_type == RelationTypes.OWNER:
-                owner = relation
-                break
-
-        self.assertIsNotNone(owner)
+    def test_individual(self):
+        individual = IdentityIndividual.objects.get_individual(
+            self.user_consumer
+        )
         self.assertEqual(
-            user_identity.id,
-            owner.subject.id
+            individual.name,
+            self.identity_consumer.name
+        )
+        self.assertEqual(
+            individual.description,
+            self.identity_consumer.description
+        )
+        self.assertEqual(
+            individual.identity_type,
+            self.identity_consumer.identity_type
+        )
+
+    def test_business(self):
+        businesses = IdentityBusiness.objects.get_businesses(
+            self.identity_merchant
+        )
+
+        self.assertEqual(1, len(businesses))
+        business = businesses[0]
+        self.assertEqual(business.id, self.business.id)
+
+    def test_establishment(self):
+        establishments_by_manager = (
+            IdentityEstablishment.objects.get_establishments(
+                self.identity_merchant
+            )
+        )
+        establishments_by_business = (
+            IdentityEstablishment.objects.get_establishments(
+                self.business
+            )
+        )
+
+        self.assertEqual(
+            1,
+            len(establishments_by_manager)
+        )
+        self.assertEqual(
+            1,
+            len(establishments_by_business)
+        )
+        self.assertEqual(
+            self.establishment.id,
+            establishments_by_manager[0].id,
+        )
+        self.assertEqual(
+            self.establishment.id,
+            establishments_by_business[0].id
         )
 
 
 class IdentityViewTests(TestCase):
     def setUp(self):
-        self.user_email = 'test@example.com'
         self.user_password = 'test_password'
-        self.user, self.user_identity = KnotisUser.objects.create_user(
-            'Test',
-            'User',
-            self.user_email,
-            self.user_password
+        self.user, self.user_identity = UserCreationTests.create_test_user(
+            password=self.user_password
         )
 
     def test_identity_switcher_view(self):
         self.client.login(
-            username=self.user_email,
+            username=self.user.username,
             password=self.user_password
         )
         response = self.client.get('/identity/switcher/')

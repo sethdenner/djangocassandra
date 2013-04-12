@@ -20,10 +20,9 @@ from knotis.contrib.denormalize.models import DenormalizedField
 from knotis.contrib.facebook.views import get_facebook_avatar
 from knotis.contrib.gravatar.views import avatar as get_gravatar_avatar
 from knotis.contrib.endpoint.models import Endpoint
-from knotis.contrib.media.models import Image
 from knotis.contrib.identity.models import (
     Identity,
-    IdentityTypes
+    IdentityIndividual
 )
 
 
@@ -49,13 +48,8 @@ class KnotisUserManager(UserManager):
 
         new_user.save()
 
-        identity = Identity.objects.create(
-            owner=new_user,
-            name=' '.join([
-                first_name,
-                last_name
-            ]),
-            identity_type=IdentityTypes.INDIVIDUAL
+        identity = IdentityIndividual.objects.create(
+            new_user
         )
 
         user_info = UserInformation()
@@ -90,6 +84,12 @@ class KnotisUser(DjangoUser):
         reverse_sha.update(salt)
 
         return digest == unicode(reverse_sha.hexdigest())
+
+    def full_name(self):
+        return ' '.join([
+            self.first_name,
+            self.last_name
+        ]).strip()
 
     def username_12(self):
         return ''.join([

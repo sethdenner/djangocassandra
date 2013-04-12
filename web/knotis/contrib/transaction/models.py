@@ -29,7 +29,6 @@ from knotis.contrib.product.models import (
 
 class TransactionTypes:
     PURCHASE = 'purchase'
-    PURCHASE_COMPLETED = 'purchase_completed'
     REDEMPTION = 'redemption'
     CANCELATION = 'cancelation'
     RETURN = 'return'
@@ -38,7 +37,6 @@ class TransactionTypes:
 
     CHOICES = (
         (PURCHASE, 'Purchase'),
-        (PURCHASE_COMPLETED, 'Purchase Completed'),
         (REDEMPTION, 'Redemption'),
         (CANCELATION, 'Cancelation'),
         (RETURN, 'Return'),
@@ -52,6 +50,7 @@ class TransactionManager(QuickManager):
         self,
         offer,
         buyer,
+        quantity,
         currency,
         transaction_context=None
     ):
@@ -61,196 +60,241 @@ class TransactionManager(QuickManager):
             transaction_context = uuid.uuid4().hex
 
         try:
-            transaction_buyer = super(TransactionManager, self).create(
-                owner=buyer,
-                other=offer.owner,
-                transaction_type=TransactionTypes.PURCHASE,
-                offer=offer,
-                transaction_context=transaction_context
+            currency_seller_stack = Inventory.objects.get_stack(
+                offer.owner,
+                currency.product
             )
-            transaction_seller = super(TransactionManager, self).create(
-                owner=offer.owner,
-                other=buyer,
-                transaction_type=TransactionTypes.PURCHASE,
-                offer=offer,
-                transaction_context=transaction_context
-            )
+            if not currency_seller_stack:
+                raise Exception('this seller does not accept this currency')
 
         except:
-            logger.exception('failed to create transactions')
-            raise
-
-        currency, split_currency = Inventory.objects.split(
-            currency,
-            offer.owner,
-            offer.price_discount
-        )
-
-        try:
-            TransactionItem.objects.create(
-                transaction_seller,
-                split_currency
-            )
-            TransactionItem.objects.create(
-                transaction_buyer,
-                split_currency
-            )
-
-        except:
-            logger.exception('Failed to create transaction items')
-            raise
-
-        return transaction_buyer, transaction_seller, split_currency
-
-    def create_purchase_completed(
-        self,
-        offer,
-        buyer,
-        transaction_context
-    ):
-        try:
-            transaction_buyer_purchase = Transaction.objects.get(
-                owner=buyer,
-                transaction_type=TransactionTypes.PURCHASE,
-                offer=offer,
-                transaction_context=transaction_context
-            )
-
-        except:
-            logger.exception('failed to retrieve purchase transaction')
+            logger.exception('failed to get seller currency')
             raise
 
         try:
-            transaction_buyer = super(TransactionManager, self).create(
-                owner=buyer,
-                other=offer.owner,
-                transaction_type=TransactionTypes.PURCHASE_COMPLETED,
-                offer=offer,
-                transaction_context=transaction_context
+            offer_items = OfferItem.objects.filter(
+                offer=offer
             )
-            transaction_seller = super(TransactionManager, self).create(
-                owner=offer.owner,
-                other=buyer,
-                transaction_type=TransactionTypes.PURCHASE_COMPLETED,
-                offer=offer,
-                transaction_context=transaction_context
+
+        except:
+            logger.exception('failed to get offer items')
+            raise
+
+        participants = [offer.owner, buyer]
+
+        def add_participant(
+            participant,
+            participants
+        ):
+            exists = False
+            for p in participants:
+                if p.id == participant.id:
+                    exists = True
+                    return
+
+            if not exists:
+                participants.append(participant)
+
+        for item in offer_items:
+            add_participant(
+                item.inventory.provider,
+                participants
             )
+
+        try:
+            transactions = []
+            for participant in participants:
+                transaction = super(TransactionManager, self).create(
+                    owner=participant,
+                    transaction_type=TransactionTypes.PURCHASE,
+                    offer=offer,
+                    transaction_context=transaction_context
+                )
+                transactions.append(transaction)
 
         except:
             logger.exception('failed to create transactions')
             raise
 
         try:
-            transaction_items = TransactionItem.objects.filter(
-                transaction=transaction_buyer_purchase
+            currency_owner = Inventory.objects.split(
+                currency,
+                offer.owner,
+                offer.price_discount
             )
 
-            for transaction_item in transaction_items:
-                currency_buyer = transaction_item.inventory
-                currency_seller_stack = Inventory.objects.get_recipient_stack(
-                    currency_buyer
-                )
-                currency_seller_stack = Inventory.objects.stack(
-                    currency_buyer,
-                    currency_seller_stack
+            currencies_thrid_party = []
+            for item in offer_items:
+                if item.inventory.provider_id != offer.owner_id:
+                    split_currency = Inventory.objects.split(
+                        currency_owner,
+                        item.inventory.provider,
+                        item.price_discount
+                    )
+                    currencies_thrid_party.append(split_currency)
+
+                provider_stack = Inventory.objects.get_provider_stack(
+                    item.inventory
                 )
 
-        except:
-            logger.exception('failed to stack purchase currency')
-            raise
+                if provider_stack.stock < item.inventory.stock:
+                    inventory = item.inventory
 
-        try:
-            inventory = []
-            offer_items = OfferItem.objects.filter(offer=offer)
-            for offer_item in offer_items:
+                else:
+                    inventory = provider_stack
+
                 inventory_transaction = Inventory.objects.split(
-                    offer_item.inventory,
+                    inventory,
                     buyer,
-                    offer_item.stock
+                    item.inventory.stock
                 )
 
-                inventory.append(inventory_transaction)
+                for transaction in transactions:
+                    TransactionItem.objects.create(
+                        transaction,
+                        inventory_transaction
+                    )
 
+            for transaction in transactions:
                 TransactionItem.objects.create(
-                    transaction_seller,
-                    inventory_transaction
+                    transaction,
+                    currency_owner
                 )
-                TransactionItem.objects.create(
-                    transaction_buyer,
-                    inventory_transaction
-                )
+                for c in currencies_thrid_party:
+                    TransactionItem.objects.create(
+                        transaction,
+                        c
+                    )
 
         except:
-            logger.exception('failed to split inventory for transaction')
+            logger.exception('failed to create transaction items')
             raise
 
-        return transaction_buyer, transaction_seller, inventory
+        return transactions
 
     def create_redemption(
         self,
         offer,
         buyer,
+        inventory,
         transaction_context
     ):
         try:
-            transaction_buyer_purchase_completed = Transaction.objects.get(
+            purchase_buyer = Transaction.objects.get(
                 owner=buyer,
-                transaction_type=TransactionTypes.PURCHASE_COMPLETED,
+                transaction_type=TransactionTypes.PURCHASE,
                 offer=offer,
                 transaction_context=transaction_context
             )
 
         except:
             logger.exception(
-                'failed to retrieve purchase completed transaction'
+                'failed to retrieve purchase transaction'
             )
             raise
 
         try:
-            transaction_buyer = super(TransactionManager, self).create(
-                owner=buyer,
-                other=offer.owner,
-                transaction_type=TransactionTypes.REDEMPTION,
-                offer=offer,
-                transaction_context=transaction_context
+            purchase_items = TransactionItem.objects.filter(
+                transaction=purchase_buyer
             )
-            transaction_seller = super(TransactionManager, self).create(
-                owner=offer.owner,
-                other=buyer,
-                transaction_type=TransactionTypes.REDEMPTION,
-                offer=offer,
-                transaction_context=transaction_context
+
+            participants = [offer.owner, buyer]
+
+            def add_participant(
+                participant,
+                participants
+            ):
+                exists = False
+                for p in participants:
+                    if p.id == participant.id:
+                        exists = True
+                        return
+
+                if not exists:
+                    participants.append(participant)
+
+            inventory_redeem = []
+            for i in inventory:
+                for item in purchase_items:
+                    if (
+                        i.id == item.inventory_id and
+                        buyer.id == item.inventory.recipient_id
+                    ):
+                        inventory_redeem.append(i)
+                        add_participant(
+                            item.inventory.provider,
+                            participants
+                        )
+
+            if len(inventory_redeem) != len(inventory):
+                raise Exception(
+                    ', '.join((
+                        'The following inventories do not belong to this '
+                        'transaction or they have already been redeemed'
+                    ), [
+                        i.id for i in list(
+                            set(inventory) - set(inventory_redeem)
+                        )
+                    ])
+                )
+
+        except:
+            logger.exception(
+                'failed to get redemption participants'
             )
+            raise
+
+        try:
+            transactions = []
+            for participant in participants:
+                transaction = super(TransactionManager, self).create(
+                    owner=participant,
+                    transaction_type=TransactionTypes.REDEMPTION,
+                    offer=offer,
+                    transaction_context=transaction_context
+                )
+                transactions.append(transaction)
 
         except:
             logger.exception('failed to create transactions')
             raise
 
         try:
-            # if inventory is perishable don't bother creating
-            # an inventory for the user. That inventory is no
-            # longer tracked by our system.
-            transaction_items = TransactionItem.objects.filter(
-                transaction=transaction_buyer_purchase_completed
-            )
-            for transaction_item in transaction_items:
-                inventory = transaction_item.inventory
-
-                if not inventory.is_perishable():
-                    buyer_stack = Inventory.objects.get_stack(
-                        inventory.product,
-                        buyer
-                    )
-                    buyer_stack = Inventory.objects.stack(
-                        inventory,
-                        buyer_stack
-                    )
+            for i in inventory_redeem:
+                recipient_stack = Inventory.objects.get_stack(
+                    i.recipient,
+                    i.product,
+                    create_empty=True
+                )
+                Inventory.objects.stack(
+                    i,
+                    recipient_stack
+                )
 
         except:
             logger.exception('failed to stack redemed inventory')
             raise
 
-        return transaction_buyer, transaction_seller, buyer_stack
+        try:
+            for item in purchase_items:
+                currency = item.inventory
+                if currency.product.product_type != ProductTypes.CURRENCY:
+                    continue
+
+                currency_recipient = Inventory.objects.get_stack(
+                    currency.recipient,
+                    currency.product
+                )
+                Inventory.objects.stack(
+                    currency,
+                    currency_recipient
+                )
+
+        except:
+            logger.exception('failed to stack provider currency')
+            raise
+
+        return transactions
 
     def create_cancelation(
         self,
@@ -259,161 +303,219 @@ class TransactionManager(QuickManager):
         transaction_context
     ):
         try:
-            transaction_buyer = super(TransactionManager, self).create(
-                owner=buyer,
-                other=offer.owner,
-                transaction_type=TransactionTypes.CANCELATION,
-                offer=offer,
+            transactions_buyer = self.filter(
                 transaction_context=transaction_context
             )
-            transaction_seller = super(TransactionManager, self).create(
-                owner=offer.owner,
-                other=buyer,
-                transaction_type=TransactionTypes.CANCELATION,
-                offer=offer,
-                transaction_context=transaction_context
+
+        except:
+            logger.exception('failed to get previous transactions')
+            raise
+
+        try:
+            offer_items = OfferItem.objects.filter(
+                offer=offer
             )
+
+        except:
+            logger.exception('failed to get offer items')
+            raise
+
+        try:
+            def add_participant(
+                participant,
+                participants
+            ):
+                exists = False
+                for p in participants:
+                    if p.id == participant.id:
+                        exists = True
+                        return
+
+                if not exists:
+                    participants.append(participant)
+
+            participants = [buyer, offer.owner]
+
+            for item in offer_items:
+                add_participant(
+                    item.inventory.provider,
+                    participants
+                )
+
+            transactions = []
+            for participant in participants:
+                transaction = super(TransactionManager, self).create(
+                    owner=buyer,
+                    transaction_type=TransactionTypes.CANCELATION,
+                    offer=offer,
+                    transaction_context=transaction_context
+                )
+                transactions.append(transaction)
 
         except:
             logger.exception('failed to create transactions')
             raise
 
         try:
-            transactions_buyer_previous = Transaction.objects.filter(
-                owner=buyer,
-                offer=offer,
-                transaction_context=transaction_context
-            )
-
-            for transaction in transactions_buyer_previous:
+            for transaction in transactions_buyer:
                 transaction.revert()
 
         except:
-            logger.exception('failed to revert transactions')
+            logger.exception('failed to revert tranactions')
             raise
 
-        return transaction_buyer, transaction_seller
+        return transactions
 
-    def create_return(
+    def _return_refund_refactor(
         self,
+        offer,
         buyer,
-        inventory=[],
-        refund=None,
-        offer=None,
-        transaction_context=None
+        inventory,
+        transaction_context,
+        transaction_type
     ):
-        if offer and transaction_context:
-            try:
-                transaction_buyer_redemption = Transaction.objects.get(
-                    owner=buyer,
-                    other=offer.owner,
-                    offer=offer,
-                    transaction_context=transaction_context,
-                    transaction_type=TransactionTypes.REDEMPTION
-                )
+        try:
+            purchase_buyer = Transaction.objects.get(
+                owner=buyer,
+                transaction_context=transaction_context,
+                transaction_type=TransactionTypes.PURCHASE
+            )
 
-            except:
-                logger.exception('failed to get previous redemption')
-                raise
-
-        elif not transaction_context:
-            transaction_buyer_redemption = None
-            transaction_context = uuid.uuid4().hex
+        except:
+            logger.exception('failed to get purchase')
+            raise
 
         try:
-            if transaction_buyer_redemption:
-                transaction_items = TransactionItem.objects.filter(
-                    transaction_context=transaction_context
-                )
-                for transaction_item in transaction_items:
-                    if (
-                        transaction_item.inventory.product.product_type !=
-                        ProductTypes.CURRENCY
-                    ):
-                        inventory.append(transaction_item.inventory)
+            Transaction.objects.get(
+                owner=buyer,
+                transaction_context=transaction_context,
+                transaction_type=TransactionTypes.REDEMPTION
+            )
+
+        except:
+            logger.exception('failed to get redemption')
+            raise
+
+        try:
+            transaction_items = TransactionItem.objects.filter(
+                transaction=purchase_buyer
+            )
 
         except:
             logger.exception('failed to get transaction items')
             raise
 
-        if not inventory:
+        participants = [offer.owner, buyer]
+
+        def add_participant(
+            participant,
+            participants
+        ):
+            exists = False
+            for p in participants:
+                if p.id == participant.id:
+                    exists = True
+                    return
+
+            if not exists:
+                participants.append(participant)
+
+        inventory_cancelation = []
+        for i in inventory:
+            for item in transaction_items:
+                if (
+                    i.product_id == item.inventory.product_id and
+                    i.recipient_id == item.inventory.provider_id and
+                    i.stock <= item.inventory.stock
+                ):
+                    inventory_cancelation.append(i)
+                    add_participant(
+                        i.provider,
+                        participants
+                    )
+
+        if len(inventory_cancelation) != len(inventory):
+            raise Exception(
+                ', '.join((
+                    'The following inventories do not belong to this '
+                    'transaction or they have already been returned'
+                ), [
+                    i.id for i in list(
+                        set(inventory) - set(inventory_cancelation)
+                    )
+                ])
+            )
+
+        if not inventory_cancelation:
             raise Exception('could not determine inventory for return')
 
         try:
-            transaction_buyer = super(TransactionManager, self).create(
-                owner=buyer,
-                other=offer.owner,
-                transaction_type=TransactionTypes.RETURN,
-                offer=offer,
-                transaction_context=transaction_context
-            )
-            transaction_seller = super(TransactionManager, self).create(
-                owner=offer.owner,
-                other=buyer,
-                transaction_type=TransactionTypes.RETURN,
-                offer=offer,
-                transaction_context=transaction_context
-            )
+            transactions = []
+            for participant in participants:
+                transaction = super(TransactionManager, self).create(
+                    owner=participant,
+                    transaction_type=transaction_type,
+                    offer=offer,
+                    transaction_context=transaction_context
+                )
+                transactions.append(transaction)
 
         except:
             logger.exception('failed to create transactions')
             raise
 
-        if offer and offer.end_date < datetime.datetime.utcnow():
-            offer_items = OfferItem.objects.get(offer=offer)
-            for i in inventory:
-                for offer_item in offer_items:
-                    if i.product_id == offer_item.inventory.product_id:
-                        Inventory.objects.stack(
-                            i,
-                            offer_item.inventory
-                        )
-                        break
+        try:
+            for i in inventory_cancelation:
+                for transaction in transactions:
+                    TransactionItem.objects.create(
+                        transaction,
+                        i
+                    )
 
-        else:
-            for i in inventory:
                 stack = Inventory.objects.get_stack(
-                    i.product,
-                    offer.owner
+                    i.recipient,
+                    i.product
                 )
                 Inventory.objects.stack(
                     i,
                     stack
                 )
 
-        # Take some money off of the business stack and send it to the buyer
-        currency_seller_stack = Inventory.objects.get_stack(
-            Product.currency.get(CurrencyCodes.USD),
-            offer.owner
-        )
-        currency_seller_stack, currency_buyer = Inventory.objects.split(
-            currency_seller_stack,
-            buyer,
-            offer.price_discount
-        )
-
-        try:
-            TransactionItem.objects.create(
-                transaction_seller,
-                split_currency
-            )
-            TransactionItem.objects.create(
-                transaction_buyer,
-                split_currency
-            )
-
         except:
-            logger.exception('Failed to create transaction items')
+            logger.exception('failed to create transaction items')
             raise
 
-        return transaction_buyer, transaction_seller, split_currency
+        return transactions
+
+    def create_return(
+        self,
+        offer,
+        buyer,
+        inventory,
+        transaction_context
+    ):
+        return self._return_refund_refactor(
+            offer,
+            buyer,
+            inventory,
+            transaction_context,
+            TransactionTypes.RETURN
+        )
 
     def create_refund(
         self,
         offer,
-        buyer
+        buyer,
+        currency,
+        transaction_context
     ):
-        pass
+        return self._return_refund_refactor(
+            offer,
+            buyer,
+            currency,
+            transaction_context,
+            TransactionTypes.REFUND
+        )
 
     def create(
         self,
@@ -530,24 +632,14 @@ class TransactionManager(QuickManager):
 
 
 class Transaction(QuickModel):
-    owner = QuickForeignKey(
-        Identity,
-        related_name='transaction_owner'
-    )
-    other = QuickForeignKey(
-        Identity,
-        related_name='transaction_other'
-    )
-
+    owner = QuickForeignKey(Identity)
     transaction_type = QuickCharField(
         max_length=64,
         null=True,
         choices=TransactionTypes.CHOICES,
         db_index=True
     )
-
     offer = QuickForeignKey(Offer)
-
     transaction_context = QuickCharField(
         max_length=1024,
         db_index=True
@@ -557,18 +649,9 @@ class Transaction(QuickModel):
 
     objects = TransactionManager()
 
-    def __unicode__(self):
-        return '/'.join([
-            self.user.username if self.user else 'None',
-            self.business.business_name.value if self.business else 'None',
-            self.offer.id if self.offer else 'None',
-            unicode(self.transaction_type),
-            self.transaction_context
-        ])
-
     def revert(self):
         if self.reverted:
-            return
+            return None
 
         transaction_items = TransactionItem.objects.filter(
             transaction=self
@@ -579,26 +662,26 @@ class Transaction(QuickModel):
                 provider_stack,
                 recipient_stack
             ) = Inventory.objects.get_participating_stacks(
-                transaction_item.inventory,
-                offer=self.offer
+                transaction_item.inventory
             )
 
-            provider_stack += transaction_item.inventory.stock
-            recipient_stack  -= transaction_item.inventory.stock
-            provider_stack.save()
-            recipient_stack.save()
+            if not transaction_item.inventory.deleted:
+                Inventory.objects.stack(
+                    transaction_item.inventory,
+                    provider_stack
+                )
 
         self.reverted = True
         self.save()
 
-        transaction_other = Transaction.objects.get(
-            owner=self.other,
-            other=self.owner,
+        transaction_others = Transaction.objects.filter(
             transaction_context=self.transaction_context,
             transaction_type=self.transaction_type
         )
-        transaction_other.reverted = True
-        transaction_other.save()
+
+        for transaction in transaction_others:
+            transaction.reverted = True
+            transaction.save()
 
     def value_formatted(self):
         if 0 == self.quantity:
