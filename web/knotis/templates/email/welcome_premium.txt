@@ -1,0 +1,13 @@
+Welcome to {{ SERVICE_NAME }} premium!!,
+
+- Social Network
+
+- Email
+
+- Knotis Website
+
+- Knotis web
+
+- Knotis mobile (coming soon...)
+
+Still need more help? Email us at support@knotis.com

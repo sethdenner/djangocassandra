@@ -1,0 +1,11 @@
+You have changed your email address for {{ SERVICE_NAME }}.
+Follow this link to confirm your new email address:
+
+
+{{ BASE_URL }}/auth/validate/{{ user_id }}/{{ validation_key }}/
+
+
+You received this email, because it was requested by a Knotis user. If you have received this by mistake, please DO NOT click the confirmation link, and simply delete this email. After a short time, the request will be removed from the system.
+
+Thank you,
+The {{ SERVICE_NAME }} Team

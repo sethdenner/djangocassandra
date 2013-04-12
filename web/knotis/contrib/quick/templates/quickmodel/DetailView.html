@@ -1,0 +1,28 @@
+{% load i18n %}
+{% load view %}
+{% load include_select %}
+
+<div class="row-fluid">
+  <div id="wookmarkcontainer_details" style="position:relative;overflow:hidden">
+    <div class="well wookmarkbox_details">
+      <p>
+      <a href="/{{ ModelName|lower }}/">{% trans "List" %}</a>
+      <a href="/{{ ModelName|lower }}/?method=put&new=1">{% trans "Create" %}</a>
+      <a href="/{{ ModelName|lower }}/{{ object.pk }}/?method=put">{% trans "Edit" %}</a>
+      <a href="/{{ ModelName|lower }}/{{ object.pk }}/?method=delete">{% trans "Delete" %}</a>
+      </p>
+      {% include_select 'boxed.html' %}
+    </div>
+  </div>
+</div>
+
+<script>
+  function startWookmarkDetails() {
+    container = $("#wookmarkcontainer_details");
+    boxes = $(".wookmarkbox_details");
+    boxes.width('300').css({'padding':0,'margin':0});
+    boxes.wookmark({container:container, itemWidth:300,offset:5,autoResize:true});
+  }
+  $(document).ready(startWookmark);
+
+</script>

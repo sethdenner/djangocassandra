@@ -10,11 +10,11 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from knotis.utils.view import format_currency
-from knotis.apps.transaction.models import (
+from knotis.contrib.transaction.models import (
     Transaction,
     TransactionTypes
 )
-from knotis.apps.offer.models import (
+from knotis.contrib.offer.models import (
     Offer,
     OfferStatus
 )

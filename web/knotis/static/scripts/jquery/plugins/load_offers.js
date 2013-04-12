@@ -117,7 +117,10 @@
             this.unbind('scroll.load_scroll');
         },
          
-        'load_scroll': function(content_selector) {
+        'load_scroll': function(
+            content_selector,
+            callback
+        ) {
             var throttled = false;
             
             this.unbind('scroll.load_scroll').bind(
@@ -160,6 +163,13 @@
                             ) {
                                 throttled = false;            
                                 $content.append(data);
+                                if (callback) {
+                                    callback(
+                                        data,
+                                        jqxhr,
+                                        status
+                                    );
+                                }
                             }, 
                             href,
                             business,

@@ -7,39 +7,39 @@ from django.contrib.auth import authenticate
 
 from optparse import OptionParser
 
-from knotis.apps.auth.models import (
+from knotis.contrib.auth.models import (
     KnotisUser,
     AccountTypes,
     AccountStatus
 )
-from knotis.apps.auth.views import _generate_facebook_password
-from knotis.apps.business.models import (
+from knotis.contrib.auth.views import _generate_facebook_password
+from knotis.contrib.business.models import (
     Business,
     BusinessLink,
     BusinessSubscription
 )
-from knotis.apps.offer.models import Offer
-from knotis.apps.category.models import (
+from knotis.contrib.offer.models import Offer
+from knotis.contrib.category.models import (
     Category,
     City,
     Neighborhood
 )
-from knotis.apps.qrcode.models import (
+from knotis.contrib.qrcode.models import (
     Qrcode,
     QrcodeTypes,
     Scan
 )
-from knotis.apps.transaction.models import (
+from knotis.contrib.transaction.models import (
     Transaction,
     TransactionTypes
 )
-from knotis.apps.endpoint.models import (
+from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
 )
-from knotis.apps.media.models import Image
-from knotis.apps.paypal.views import generate_ipn_hash
-from knotis.apps.legacy.models import (
+from knotis.contrib.media.models import Image
+from knotis.contrib.paypal.views import generate_ipn_hash
+from knotis.contrib.legacy.models import (
     UserIdMap,
     BusinessIdMap,
     OfferIdMap,

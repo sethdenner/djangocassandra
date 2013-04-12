@@ -1,0 +1,8 @@
+Welcome to {{ SERVICE_NAME }},
+
+Thanks for joining {{ SERVICE_NAME }}. Follow this link to login on the site:
+
+{{ BASE_URL }}/login/
+
+Have fun!
+The {{ SERVICE_NAME }} Team

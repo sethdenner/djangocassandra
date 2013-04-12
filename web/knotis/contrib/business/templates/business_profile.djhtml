@@ -1,0 +1,6 @@
+{% include 'master.html' %}
+
+<div class="this is some shit" >
+  yeah nig how you doin?
+
+</div>

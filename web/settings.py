@@ -9,6 +9,8 @@ PRICE_MERCHANT_MONTHLY = 14.
 
 EMAIL_COMPLETED_OFFERS_INTERVAL_DAYS = 7
 
+PASSWORD_RESET_EXPIRE_MINUTES = 10080
+
 BUSINESS_NAME_BLACKLIST = (
     'facebook',
     'login',
@@ -144,7 +146,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -157,6 +159,15 @@ TEMPLATE_LOADERS = (
     'knotis.template.loaders.app_directories.Loader'
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.contrib.messages.context_processors.messages'
+)
+
 MIDDLEWARE_CLASSES = (
     'autoload.middleware.AutoloadMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -164,7 +175,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'knotis.apps.mobile.middleware.MobileDetectionMiddleware'
+    'knotis.contrib.mobile.middleware.MobileDetectionMiddleware',
+    'knotis.contrib.activity.middleware.ActivityMiddleware'
 )
 
 ROOT_URLCONF = 'urls'
@@ -177,9 +189,9 @@ TEMPLATE_DIRS = (
 
 AUTHENTICATION_BACKENDS = (
     'permission_backend_nonrel.backends.NonrelPermissionBackend',
-    'knotis.apps.auth.authentication.backends.EndpointValidationAuthenticationBackend',
-    'knotis.apps.legacy.authentication.backends.LegacyAuthenticationBackend',
-    'knotis.apps.legacy.authentication.backends.HamburgertimeAuthenticationBackend'
+    'knotis.contrib.endpoint.authentication.backends.EndpointValidationAuthenticationBackend',
+    'knotis.contrib.legacy.authentication.backends.LegacyAuthenticationBackend',
+    'knotis.contrib.legacy.authentication.backends.HamburgertimeAuthenticationBackend'
 )
 
 AUTOLOAD_SITECONF = 'dbindexer'
@@ -190,6 +202,7 @@ INSTALLED_APPS = (
     'dbindexer',
     'piston',
     'djangotoolbox',
+    'django_extensions',
     'permission_backend_nonrel',
     'timezones',
     'sorl.thumbnail',
@@ -202,7 +215,21 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'knotis'
+    # knotis apps
+    'knotis',
+    'knotis.contrib.denormalize',
+    'knotis.contrib.auth',
+    'knotis.contrib.endpoint',
+    'knotis.contrib.bootstrap',
+    'knotis.contrib.quick',
+    'knotis.contrib.identity',
+    'knotis.contrib.relation',
+    'knotis.contrib.activity',
+    'knotis.contrib.offer',
+    'knotis.contrib.transaction',
+    'knotis.contrib.inventory',
+    'knotis.contrib.product',
+    'knotis.contrib.media'
 )
 
 LOGIN_REDIRECT_URL = '/'
@@ -235,7 +262,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
-            'filename': '/var/log/knotis/web.log',
+            'filename': '/srv/knotis/logs/web.log',
             'maxBytes': 1048576,
             'backupCount': 10
         }
@@ -245,17 +272,21 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'int'
+ENVIRONMENT_NAME = 'seth'
 
 # You can key the configurations off of anything - I use project path.
 configs = {
     'dev': 'dev',
     'int': 'int',
     'prod': 'prod',
-    'stage': 'stage'
+    'stage': 'stage',
+    'seth': 'seth'
 }
 
-# Import the configuration settings file - REPLACE projectname with your project
+"""
+Import the configuration settings file
+REPLACE projectname with your project
+"""
 config_module = __import__(
     'config.%s' % configs[ENVIRONMENT_NAME],
     globals(),

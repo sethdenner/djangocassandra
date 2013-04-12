@@ -1,0 +1,12 @@
+<p class="clear-fix">
+     <span class="left follow-offer ">
+     <a  data-id="{{ offer.business_id }}" class="button-follow right radius-general{% if not user.is_anonymous %}
+	 {% if object %} unfollowme{% else %} followme{% endif %}"
+	 href="{% if user.is_anonymous %}/login/{% else %}#{% endif %}">{% if is_following %}
+	 Unsubscribe{% else %}Subscribe{% endif %}
+	 {% else %}"> Subscribe{% endif %}
+     </a>
+     </span>
+     <span class="left txt-offer-follow">If you want to stay informed of all offers of this business</span>
+ </p>
+

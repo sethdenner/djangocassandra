@@ -1,5 +1,23 @@
 [
     {
+        "pk": "a4b51e95-25f1-4d9e-9562-1a85d0362494", 
+        "model": "product.product", 
+        "fields": {
+            "sku": "usd", 
+            "product_type": "currency", 
+            "description": "United States Dollars ($)", 
+            "title": "USD", 
+            "deleted": false, 
+            "content_type": [
+                "product", 
+                "product"
+            ], 
+            "pub_date": "2013-03-18 22:20:13", 
+            "public": false, 
+            "primary_image": null
+        }
+    },
+    {
         "pk": "5f8ce1a1-7f97-4041-8243-d3a7ce34e485",
         "model": "auth.user",
         "fields": {
@@ -41,14 +59,6 @@
         "fields": {
             "domain": "knotis.com",
             "name": "Knotis Web Frontend"
-        }
-    },
-    {
-        "pk": "d630a63e-5cc6-4c21-aa47-4d6159e76b6c",
-        "model": "sites.site",
-        "fields": {
-            "domain": "test.knotis.com",
-            "name": "Knotis Web Frontend - Test"
         }
     },
     {
