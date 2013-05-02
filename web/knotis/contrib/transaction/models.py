@@ -20,11 +20,7 @@ from knotis.contrib.offer.models import (
     Offer,
     OfferItem
 )
-from knotis.contrib.product.models import (
-    Product,
-    ProductTypes,
-    CurrencyCodes
-)
+from knotis.contrib.product.models import ProductTypes
 
 
 class TransactionTypes:
