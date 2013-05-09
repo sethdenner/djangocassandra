@@ -200,7 +200,6 @@ INSTALLED_APPS = (
     # Third party Django apps.
     'autoload',
     'dbindexer',
-    'piston',
     'djangotoolbox',
     'django_extensions',
     'permission_backend_nonrel',
@@ -280,7 +279,8 @@ configs = {
     'int': 'int',
     'prod': 'prod',
     'stage': 'stage',
-    'seth': 'seth'
+    'seth': 'seth',
+    'dev1': 'dev1'
 }
 
 """

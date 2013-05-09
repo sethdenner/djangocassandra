@@ -17,8 +17,8 @@ quick_install wget ${thrift_tarball} make
 rand=$(date | md5sum)
 rand=(${rand})
 temp_dir="./cassandra-${rand[0]}"
-cassandra_tarball=apache-cassandra-1.2.2-bin.tar.gz
-cassandra_tarball_uri=http://www.linuxtourist.com/apache/cassandra/1.2.2/${cassandra_tarball}
+cassandra_tarball=apache-cassandra-1.2.4-bin.tar.gz
+cassandra_tarball_uri=http://www.trieuvan.com/apache/cassandra/1.2.4/${cassandra_tarball}
 wget ${cassandra_tarball_uri} -P ${temp_dir}
 (
     cd ${temp_dir}
