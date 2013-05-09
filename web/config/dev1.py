@@ -17,7 +17,7 @@ EMAIL_HOST_PASSWORD = 'wheeling and dealing'
 
 # Base url for external access
 # NO TRAILING SLASH!!!
-BASE_URL = 'http://seth.knotis.com'
+BASE_URL = 'http://dev1.knotis.com'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"

@@ -40,6 +40,6 @@ cp ${modwsgi_script} /srv/knotis/app/conf/apache/
 cp ${apache2_config} /etc/apache2/sites-available/
 
 a2dissite default
-a2ensite seth.knotis.com
+a2ensite $(basename ${apache2_config})
 
 service apache2 restart
