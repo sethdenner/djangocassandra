@@ -205,6 +205,7 @@ INSTALLED_APPS = (
     'permission_backend_nonrel',
     'timezones',
     'sorl.thumbnail',
+    'crispy_forms',
     # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -216,6 +217,8 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     # knotis apps
     'knotis',
+    'knotis.contrib.layout',
+    'knotis.contrib.search',
     'knotis.contrib.denormalize',
     'knotis.contrib.auth',
     'knotis.contrib.endpoint',
@@ -271,7 +274,7 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'seth'
+ENVIRONMENT_NAME = 'dev1'
 
 # You can key the configurations off of anything - I use project path.
 configs = {

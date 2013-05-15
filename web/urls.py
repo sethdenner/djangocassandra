@@ -15,6 +15,10 @@ urlpatterns = patterns(
     '',
     url(
         r'',
+        include('knotis.contrib.layout.urls')
+    ),
+    url(
+        r'',
         include('knotis.contrib.identity.urls')
     ),
     url(
@@ -80,18 +84,6 @@ urlpatterns = patterns(
     url(
         r'',
         include('knotis.contrib.sickle.urls')
-    ),
-    url(
-        r'^admin/doc/',
-        include('django.contrib.admindocs.urls')
-    ),
-    url(
-        r'^admin/',
-        include('admin.site.urls')
-    ),
-    url(
-        r'^api/',
-        include('knotis.contrib.api.urls')
     ),
     url(
         r'^(?P<backend_name>[^/]+)/$',

@@ -1,0 +1,14 @@
+{% load render_template_fragment %}
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">knotis</a>
+      {% render_fragment search_bar %}
+      <ul class="nav">
+	<li><a href="#">About</a></li>
+	<li><a href="#">Sign Up</a></li>
+	<li><a href="#">Login</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
