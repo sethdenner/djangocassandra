@@ -27,7 +27,10 @@ class IndexView(View):
         **kwargs
     ):
         context = {
-            'styles': ['layout/css/header.css']
+            'styles': [
+                'layout/css/header.css',
+                'navigation/css/nav_top.css'
+            ]
         }
 
         return render(

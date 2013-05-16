@@ -18,7 +18,7 @@ class NavigationTopView(View, RenderTemplateFragmentMixin):
             menu_name='nav_top'
         )
 
-        super(
+        return super(
             NavigationTopView,
             cls
         ).render_template_fragment(context)
@@ -37,7 +37,7 @@ class NavigationSideView(View, RenderTemplateFragmentMixin):
             menu_name='nav_side'
         )
 
-        super(
+        return super(
             NavigationSideView,
             cls
         ).render_template_fragment(context)
