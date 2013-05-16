@@ -219,6 +219,7 @@ INSTALLED_APPS = (
     'knotis',
     'knotis.contrib.layout',
     'knotis.contrib.search',
+    'knotis.contrib.navigation',
     'knotis.contrib.denormalize',
     'knotis.contrib.auth',
     'knotis.contrib.endpoint',
