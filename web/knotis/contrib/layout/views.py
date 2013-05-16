@@ -26,8 +26,12 @@ class IndexView(View):
         *args,
         **kwargs
     ):
+        context = {
+            'styles': ['layout/css/header.css']
+        }
+
         return render(
             request,
             'layout/index.html',
-            {}
+            context
         )

@@ -1,14 +1,24 @@
 {% load render_template_fragment %}
-<div class="navbar">
+<div class="navbar navbar-static-top">
   <div class="navbar-inner">
     <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+	<span class="icon-bar"></span>
+	<span class="icon-bar"></span>
+	<span class="icon-bar"></span>
+	<span class="icon-bar"></span>
+      </button>
       <a class="brand" href="/">knotis</a>
-      {% render_fragment search_bar %}
-      <ul class="nav">
-	<li><a href="#">About</a></li>
-	<li><a href="#">Sign Up</a></li>
-	<li><a href="#">Login</a></li>
-      </ul>
+      <div class="nav-collapse collapse">
+	<div class="search-bar span8">
+	  {% render_fragment search_bar %}
+	</div>
+	<ul class="nav pull-right">
+	  <li><a href="#">About</a></li>
+	  <li><a href="#">Sign Up</a></li>
+	  <li><a href="#">Login</a></li>
+	</ul>
+      </div>
     </div>
   </div>
 </div>

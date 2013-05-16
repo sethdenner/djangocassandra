@@ -29,7 +29,7 @@ class SearchForm(Form):
         
         self.helper = FormHelper()
         self.helper.form_id = 'id-searchForm'
-        self.helper.form_class = 'navbar-form pull-left'
+        self.helper.form_class = 'navbar-form'
         self.helper.form_method = 'get'
         self.helper.form_action = 'search_results'
         self.helper.layout = Layout(
@@ -37,12 +37,11 @@ class SearchForm(Form):
                 Field(
                     'search_input',
                     id='search-input',
-                    css_class='span5'
+                    css_class='span4'
                 ),
                 Submit(
                     'search',
                     'Search'
-                ),
-                css_class='span6'
+                )
             )
         )

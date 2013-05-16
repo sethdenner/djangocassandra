@@ -11,14 +11,15 @@ class ViewNode(Node):
         self.kwargs = kwargs
 
     def render(self, context):
-
         if 'request' not in context:
             return ""
+
         request = context['request']
 
         url_or_view = self.url_or_view
         try:
             view, args, kwargs = urlresolvers.resolve(url_or_view)
+
         except Exception as err:
             view = urlresolvers.get_callable(url_or_view, True)
 
@@ -37,9 +38,11 @@ class ViewNode(Node):
                 v.render()
                 return v.content
             raise "%r is not callable" % view
+
         except:
             if settings.TEMPLATE_DEBUG:
                 raise
+
         return ""
 
 
@@ -93,14 +96,17 @@ def do_view(parser, token):
     if len(tokens)<2:
         raise TemplateSyntaxError, ("%r tag requires one or more arguments" %
                                     token.contents.split()[0])
+
     tag_name = tokens.pop(0)
     url_or_view = tokens.pop(0)
     for token in tokens:
         equals = token.find("=")
         if equals == -1:
             args.append(token)
+
         else:
             kwargs[str(token[:equals])] = token[equals+1:]
+
     return ViewNode(url_or_view, args, kwargs)
 
 register.tag('view', do_view)

@@ -3,15 +3,18 @@
   {% spaceless %}
   <head>
     <title>{% block title %}{% endblock title %}</title>
-    {% block head %}{% endblock head %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
+    {% for style in styles %}
+    <link href="{{ STATIC_URL }}{{ style }}" rel="stylesheet" />
+    {% endfor %}
+    {% block head %}{% endblock head %}
   </head>
   <body>
     {% block first %}{% endblock first %}
     {% block header %}{% endblock header %}
-    <div id="content">
-      {% block content %}{% endblock content %}
-    </div>
+    {% block content %}{% endblock content %}
     {% block footer %}{% endblock footer %}
     {% block last %}{% endblock last %}
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
