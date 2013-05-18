@@ -1,0 +1,91 @@
+@media (min-width: 1200px) {
+    div.grid{
+	margin-top: 6px;
+    }
+
+    div.grid .grid-mixed .thumbnail {
+	margin-bottom: 6px;
+    }
+
+    div.grid .grid-mixed > .span5 > .thumbnail {
+	width: 460px;
+	height: 522.6px;
+    }
+
+    div.grid .grid-mixed > .span5 > .row > .thumbnail {
+	width: 222.3px;
+	height: 253.6px;
+	float: left;
+	margin-left: 6px;
+    }
+}
+
+@media (min-width: 979px) and (max-width: 1200px) {
+    div.grid{
+	margin-top: 5px;
+    }
+
+    div.grid .grid-mixed .thumbnail {
+	margin-bottom: 5px;
+    }
+
+    div.grid .grid-mixed > .span5 > .thumbnail {
+	width: 370px;
+	height: 421px;
+    }
+
+    div.grid .grid-mixed > .span5 > .row > .thumbnail {
+	width: 179px;
+	height: 203px;
+	float: left;
+	margin-left: 5px;
+    }
+}
+
+
+@media (min-width: 768px) and (max-width: 979px) {
+    div.grid{
+	margin-top: 4px;
+    }
+
+    div.grid .grid-mixed .thumbnail {
+	margin-bottom: 4px;
+    }
+
+    div.grid .grid-mixed > .span5 > .thumbnail {
+	width: 280px;
+	height: 328px;
+    }
+
+    div.grid .grid-mixed > .span5 > .row > .thumbnail {
+	width: 137px;
+	height: 157px;
+	float: left;
+	margin-left: 4px;
+    }
+}
+
+@media (min-width: 570px) and (max-width: 767px) {
+    div.grid{
+	margin-top: 4px;
+    }
+
+    div.grid .grid-mixed .thumbnail {
+	margin-bottom: 4px;
+    }
+
+    div.grid .grid-mixed > .span5 > .thumbnail {
+	width: 280px;
+	height: 328px;
+    }
+
+    div.grid .grid-mixed > .span5 > .row > .thumbnail {
+	width: 137px;
+	height: 157px;
+	float: left;
+	margin-left: 4px;
+    }
+}
+
+@media (max-width: 570px) {
+}

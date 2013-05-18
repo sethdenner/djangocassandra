@@ -64,21 +64,6 @@ from django.views.generic import View
 from knotis.views.mixins import RenderTemplateFragmentMixin
 
 
-class OfferGridView(View, RenderTemplateFragmentMixin):
-    template_name = 'offer/grid_view.html'
-    view_name = 'offer_grid'
-
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        return super(
-            OfferGridView,
-            cls
-        ).render_template_fragment(context)
-
-
 def send_subscriber_notification(
     business,
     offers

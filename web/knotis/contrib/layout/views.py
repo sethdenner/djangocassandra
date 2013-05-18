@@ -29,6 +29,7 @@ class IndexView(View):
         context = {
             'styles': [
                 'layout/css/header.css',
+                'layout/css/grid.css',
                 'navigation/css/nav_top.css'
             ]
         }
@@ -38,3 +39,19 @@ class IndexView(View):
             'layout/index.html',
             context
         )
+
+class GridMixedView(View, RenderTemplateFragmentMixin):
+    template_name = 'layout/grid_mixed.html'
+    view_name = 'grid_mixed'
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        return super(
+            GridMixedView,
+            cls
+        ).render_template_fragment(context)
+
+

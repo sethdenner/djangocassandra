@@ -1,6 +1,6 @@
 {% extends 'layout/master.html' %}
 {% load render_template_fragment %}
-{% block title %}{% endblock title %}
+{% block title %}Knotis - Be in the kno!{% endblock title %}
 {% block first %}{% endblock first %}
 {% block header %}
   {% render_fragment header %}
@@ -8,12 +8,12 @@
 {% endblock header %}
 {% block content %}
 <div class="container">
-  <div class="row-fluid">
+  <div class="row">
     <div class="span2">
       {% render_fragment nav_side %}
     </div>
     <div class="span10">
-      {% render_fragment offer_grid %}
+      {% render_fragment grid_mixed %}
     </div>
   </div>
 </div>
