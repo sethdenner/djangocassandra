@@ -31,6 +31,9 @@ class IndexView(View):
                 'layout/css/header.css',
                 'layout/css/grid.css',
                 'navigation/css/nav_top.css'
+            ],
+            'scripts': [
+                'navigation/js/navigation.js'
             ]
         }
 

@@ -33,8 +33,8 @@ class NavigationSideView(View, RenderTemplateFragmentMixin):
         cls,
         context
     ):
-        context['navigation_items'] = NavigationItem.objects.filter(
-            menu_name='nav_side'
+        context['navigation_items'] = NavigationItem.objects.filter_ordered(
+            menu_name='default'
         )
 
         return super(
