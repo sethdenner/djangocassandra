@@ -20,7 +20,7 @@
     }
 }
 
-@media (min-width: 979px) and (max-width: 1200px) {
+@media (min-width: 980px) and (max-width: 1200px) {
     div.grid{
 	margin-top: 5px;
     }
@@ -65,7 +65,7 @@
     }
 }
 
-@media (min-width: 570px) and (max-width: 767px) {
+@media (min-width: 557px) and (max-width: 767px) {
     div.grid{
 	margin-top: 4px;
     }
@@ -85,7 +85,15 @@
 	float: left;
 	margin-left: 4px;
     }
+
+    div.grid .grid-mixed > [class*="span"] {
+	float: left;
+	width: auto;
+    }
 }
 
-@media (max-width: 570px) {
+@media (max-width: 638px) {
+    div.grid .grid-mixed > .span5 > .row > .thumbnail {
+	margin-left: 0;
+    }
 }
