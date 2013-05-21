@@ -1,6 +1,7 @@
+from django.db.models import Manager
+
 from knotis.contrib.quick.models import (
-    QuickModel,
-    QuickManager
+    QuickModel
 )
 from knotis.contrib.quick.fields import (
     QuickForeignKey,
@@ -20,10 +21,10 @@ class NavigationTypes:
         (DIVIDER, 'Divider'),
     )
 
-class NavigationManager(QuickManager):
+class NavigationManager(Manager):
     def all_ordered(self):
         return sorted(
-            self.all(),
+            super(NavigationManager, self).all(),
             key=lambda item: item.order
         )
 
@@ -33,7 +34,7 @@ class NavigationManager(QuickManager):
         **kwargs
     ):
         return sorted(
-            self.filter(
+            super(NavigationManager, self).filter(
                 *args,
                 **kwargs
             ),
@@ -48,15 +49,19 @@ class NavigationItem(QuickModel):
     title = QuickCharField(
         max_length=32
     )
-    uri = QuickURLField(verify_exists=False)
+    uri = QuickURLField()
     menu_name = QuickCharField(
         max_length=32
     )
 
     order = QuickIntegerField()
-    parent = QuickForeignKey('self')
+    parent = QuickForeignKey(
+        'self',
+        related_name='children'
+    )
 
     objects = NavigationManager()
 
     def has_children(self):
-        return self.navigationitem_set.count() > 0
+        return self.children.count() > 0
+

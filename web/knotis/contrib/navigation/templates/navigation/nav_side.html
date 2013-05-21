@@ -7,15 +7,15 @@
     {% else %}
     {{ item.title }}
     {% endif %}
+    {% if item.has_children %}
+    <ul id="{{ item.id }}" class="collapse" >
+    {% for sub_item in item.children.all_ordered %}
+    {% if sub_item.item_type == NAVIGATION_TYPES.LINK %}
+      <li><a href="{{ sub_item.uri }}">{{ sub_item.title }}</a></li>
+    {% endif %}
+    {% endfor %}
+    </ul>
+    {% endif %}
   </li>
-  {% if item.has_children%}
-  <ul id="{{ item.id }}" class="collapse" >
-  {% for sub_item in item.navigationitem_set.all_ordered %}
-  {% if sub_item.item_type == NAVIGATION_TYPES.LINK %}
-    <li><a href="{{ sub_item.uri }}">{{ sub_item.title }}</a></li>
-  {% endif %}
-  {% endfor %}
-  </ul>
-  {% endif %}
   {% endfor %}
 </ul>

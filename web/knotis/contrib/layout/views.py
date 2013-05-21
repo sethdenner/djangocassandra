@@ -30,7 +30,8 @@ class IndexView(View):
             'styles': [
                 'layout/css/header.css',
                 'layout/css/grid.css',
-                'navigation/css/nav_top.css'
+                'navigation/css/nav_top.css',
+                'navigation/css/nav_side.css'
             ],
             'scripts': [
                 'navigation/js/navigation.js'

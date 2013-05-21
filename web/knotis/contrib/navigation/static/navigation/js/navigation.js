@@ -1,11 +1,11 @@
 (function($) {
-    $("#accordian-nav > li[data-target]").parent('li').hover(
+    $("#accordion-nav > li[data-target]").hover(
         function() { 
-            target = $(this).children('li[data-target]').data('target');
+            target = $(this).data('target');
             $(target).collapse('show') 
         },
         function() { 
-            target = $(this).children('li[data-target]').data('target'); 
+            target = $(this).data('target'); 
             $(target).collapse('hide');
         }
     );

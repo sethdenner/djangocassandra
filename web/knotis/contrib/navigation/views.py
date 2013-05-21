@@ -3,7 +3,10 @@ from django.shortcuts import render
 
 from knotis.views.mixins import RenderTemplateFragmentMixin
 
-from models import NavigationItem
+from models import (
+    NavigationItem,
+    NavigationTypes
+)
 
 class NavigationTopView(View, RenderTemplateFragmentMixin):
     template_name = 'navigation/nav_top.html'
@@ -33,6 +36,8 @@ class NavigationSideView(View, RenderTemplateFragmentMixin):
         cls,
         context
     ):
+
+        context['NAVIGATION_TYPES'] = NavigationTypes
         context['navigation_items'] = NavigationItem.objects.filter_ordered(
             menu_name='default'
         )
