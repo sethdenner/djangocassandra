@@ -15,10 +15,6 @@ urlpatterns = patterns(
     '',
     url(
         r'',
-        include('knotis.contrib.layout.urls')
-    ),
-    url(
-        r'',
         include('knotis.contrib.identity.urls')
     ),
     url(
@@ -89,4 +85,8 @@ urlpatterns = patterns(
         r'^(?P<backend_name>[^/]+)/$',
         'knotis.contrib.business.views.profile',
     ),
+    url(
+        r'',
+        include('knotis.contrib.layout.urls')
+    )
 )

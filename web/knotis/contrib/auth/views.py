@@ -63,7 +63,30 @@ from knotis.contrib.endpoint.models import (
 from knotis.contrib.content.models import Content
 from knotis.contrib.feedback.views import render_feedback_popup
 
+from django.views.generic import View
+from knotis.views.mixins import RenderTemplateFragmentMixin
 
+from forms import SignUpForm
+
+class SignUpView(View, RenderTemplateFragmentMixin):
+    template_name = 'knotis/auth/sign_up.html'
+    view_name = 'sign_up'
+
+    def get(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        return render(
+            request,
+            self.template_name, {
+                'signup_form': SignUpForm()
+            }
+        )
+
+
+'''
 class SignUpForm(Form):
     first_name = CharField(label='First Name')
     last_name = CharField(label='Last Name')
@@ -123,7 +146,7 @@ class SignUpForm(Form):
             self.cleaned_data['email'],
             self.cleaned_data['password'],
         )
-
+'''
 
 def send_validation_email(
     user_id,

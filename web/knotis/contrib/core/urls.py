@@ -7,10 +7,6 @@ from django.conf.urls.defaults import (
 urlpatterns = patterns(
     'knotis.contrib.core.views',
     url(
-        r'^(?P<login>login)?[/]?$',
-        'index',
-    ),
-    url(
         r'^about/$',
         'about',
     ),

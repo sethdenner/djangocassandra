@@ -3,6 +3,7 @@ from django.conf.urls.defaults import (
     url
 )
 
+from views import SignUpView
 
 urlpatterns = patterns(
     'knotis.contrib.auth.views',
@@ -20,7 +21,7 @@ urlpatterns = patterns(
     ),
     url(
         r'^auth/signup/(?P<account_type>[^/]+)*$',
-        'sign_up',
+        SignUpView.as_view()
     ),
     url(
         r'^auth/validate/(?P<user_id>[^/]+)/(?P<validation_key>[^/]+)',

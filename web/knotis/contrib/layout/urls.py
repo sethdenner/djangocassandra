@@ -8,7 +8,7 @@ from views import IndexView
 urlpatterns = patterns(
     'knotis.contrib.layout.views',
     url(
-        r'',
+        r'^[/]?$',
         IndexView.as_view()
     )
 )
