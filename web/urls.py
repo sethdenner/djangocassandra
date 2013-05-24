@@ -10,7 +10,6 @@ RenderTemplateFragmentMixin.register_template_fragment_views()
 
 admin.autodiscover()
 
-
 urlpatterns = patterns(
     '',
     url(

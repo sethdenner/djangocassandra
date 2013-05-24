@@ -3,6 +3,7 @@ from django.shortcuts import render
 
 from knotis.views.mixins import RenderTemplateFragmentMixin
 
+
 class HeaderView(View, RenderTemplateFragmentMixin):
     template_name = 'layout/header.html'
     view_name = 'header'
@@ -18,6 +19,7 @@ class HeaderView(View, RenderTemplateFragmentMixin):
             self.template_name,
             {}
         )
+
 
 class IndexView(View):
     def get(
@@ -45,6 +47,7 @@ class IndexView(View):
             context
         )
 
+
 class GridMixedView(View, RenderTemplateFragmentMixin):
     template_name = 'layout/grid_mixed.html'
     view_name = 'grid_mixed'
@@ -58,5 +61,3 @@ class GridMixedView(View, RenderTemplateFragmentMixin):
             GridMixedView,
             cls
         ).render_template_fragment(context)
-
-

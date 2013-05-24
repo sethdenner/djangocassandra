@@ -45,11 +45,12 @@ class ApiView(View):
             raise Exception('must define a model for ApiView')
 
         return url(
-            '/'.join(
-                '/api',
-                ApiView.api_version,
+            '/'.join([
+                '^api',
+                cls.api_version,
+                cls.model._meta.app_label,
                 cls.model.__name__.lower(),
                 ''
-            ),
+            ]),
             cls.as_view()
         )

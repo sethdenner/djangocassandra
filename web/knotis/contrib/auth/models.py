@@ -29,8 +29,6 @@ from knotis.contrib.identity.models import (
 class KnotisUserManager(UserManager):
     def create_user(
         self,
-        first_name,
-        last_name,
         email,
         password
     ):
@@ -43,14 +41,6 @@ class KnotisUserManager(UserManager):
             password
         )
 
-        new_user.first_name = first_name
-        new_user.last_name = last_name
-
-        new_user.save()
-
-        identity = IdentityIndividual.objects.create(
-            new_user
-        )
 
         user_info = UserInformation()
         user_info.user = new_user

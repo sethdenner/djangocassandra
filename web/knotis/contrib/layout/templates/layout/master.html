@@ -19,6 +19,8 @@
     <div id="modal-box" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
     {% block last %}{% endblock last %}
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="{{ STATIC_URL }}jquery.cookie/jquery.cookie.js"></script>
+    <script src="{{ STATIC_URL }}knotis/api/js/api.js"></script>
     <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
     {% for script in scripts %}
     <script src="{{ STATIC_URL }}{{ script }}"></script>

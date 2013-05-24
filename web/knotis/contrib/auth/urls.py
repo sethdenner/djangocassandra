@@ -4,9 +4,11 @@ from django.conf.urls.defaults import (
 )
 
 from views import SignUpView
+from api import AuthUserApi
 
 urlpatterns = patterns(
     'knotis.contrib.auth.views',
+    AuthUserApi.urls(),
     url(
         r'^auth/login/$',
         'login',

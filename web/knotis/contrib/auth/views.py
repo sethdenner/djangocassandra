@@ -7,7 +7,6 @@ from django.forms import (
     EmailField,
     BooleanField,
     PasswordInput,
-    CheckboxInput,
     Form,
     ValidationError
 )
@@ -29,7 +28,8 @@ from django.conf import settings
 from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
-    HttpResponseNotFound
+    HttpResponseNotFound,
+    HttpResponseServerError
 )
 from django.utils.html import strip_tags
 from django.utils.http import urlquote
@@ -68,6 +68,7 @@ from knotis.views.mixins import RenderTemplateFragmentMixin
 
 from forms import SignUpForm
 
+
 class SignUpView(View, RenderTemplateFragmentMixin):
     template_name = 'knotis/auth/sign_up.html'
     view_name = 'sign_up'
@@ -85,68 +86,14 @@ class SignUpView(View, RenderTemplateFragmentMixin):
             }
         )
 
-
-'''
-class SignUpForm(Form):
-    first_name = CharField(label='First Name')
-    last_name = CharField(label='Last Name')
-    email = EmailField(label='Email Address')
-    password = CharField(widget=PasswordInput, label='Password')
-    business = BooleanField(widget=CheckboxInput, required=False)
-
-    def __init__(self, *args, **kwargs):
-        super(SignUpForm, self).__init__(*args, **kwargs)
-
-        self.fields['first_name'].widget.attrs = {
-            'class': 'radius-general',
-            'placeholder': 'First Name',
-            'autofocus': None,
-        }
-
-        self.fields['last_name'].widget.attrs = {
-            'class': 'radius-general',
-            'placeholder': 'Last Name',
-        }
-
-        self.fields['email'].widget.attrs = {
-            'class': 'radius-general',
-            'placeholder': 'Email',
-        }
-
-        self.fields['password'].widget.attrs = {
-            'class': 'radius-general',
-            'placeholder': 'Password',
-        }
-
-        self.fields['business'].widget.attrs = {
-            'checked': None,
-            'value': '1'
-        }
-
-    def clean_email(self):
-        """
-        Validate that the supplied email address is unique for the
-        site.
-        """
-        email = self.cleaned_data['email']
-        if KnotisUser.objects.filter(email__iexact=email):
-            raise ValidationError(
-                'This email address is already in use. '
-                'Please supply a different email address.'
-            )
-        return email
-
-    def create_user(
+    def post(
         self,
-        request
+        request,
+        *args,
+        **kwargs
     ):
-        return KnotisUser.objects.create_user(
-            self.cleaned_data['first_name'],
-            self.cleaned_data['last_name'],
-            self.cleaned_data['email'],
-            self.cleaned_data['password'],
-        )
-'''
+        return HttpResponseServerError('Not Implemented')
+
 
 def send_validation_email(
     user_id,
