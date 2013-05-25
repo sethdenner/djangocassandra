@@ -2,7 +2,8 @@ from django.forms import (
     ModelForm,
     CharField,
     EmailField,
-    PasswordInput
+    PasswordInput,
+    ValidationError
 )
 
 from crispy_forms.helper import FormHelper
@@ -55,7 +56,7 @@ class SignUpForm(ModelForm):
         self.helper = FormHelper()
         self.helper.form_id = 'id-signup-form'
         self.helper.form_method = 'post'
-        self.helper.form_action = '/api/v1/auth/knotisuser/'
+        self.helper.form_action = '/api/v1/auth/user/'
         self.helper.layout = Layout(
             Div(
                 Field(
@@ -92,8 +93,7 @@ class SignUpForm(ModelForm):
         email = self.cleaned_data['email'].lower()
         if KnotisUser.objects.filter(email__iexact=email):
             raise ValidationError(
-                'This email address is already in use. '
-                'Please supply a different email address.'
+                'Email address is already in use.'
             )
         return email
 

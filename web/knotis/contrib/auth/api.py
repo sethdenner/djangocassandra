@@ -13,6 +13,7 @@ from models import KnotisUser
 
 class AuthUserApi(ApiView):
     model = KnotisUser
+    model_name = 'user'
 
     def post(
         self,
