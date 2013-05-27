@@ -1,7 +1,10 @@
 from django import http
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView
+from django.views.generic import (
+    View,
+    ListView
+)
 from django.shortcuts import render
 from django.utils import log
 logger = log.getLogger(__name__)
@@ -10,6 +13,26 @@ from knotis.views.mixins import RenderTemplateFragmentMixin
 
 from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.identity.models import Identity
+
+from forms import FirstIdentityForm
+
+
+class FirstIdentityView(View, RenderTemplateFragmentMixin):
+    template_name = 'knotis/identity/first.html'
+    view_name = 'identity_edit'
+
+    def get(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        return render(
+            request,
+            self.template_name, {
+                'identity_form': FirstIdentityForm()
+            }
+        )
 
 
 class IdentitySwitcherView(ListView, RenderTemplateFragmentMixin):

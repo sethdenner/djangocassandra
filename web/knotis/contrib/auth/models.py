@@ -41,14 +41,12 @@ class KnotisUserManager(UserManager):
             password
         )
 
-
         user_info = UserInformation()
         user_info.user = new_user
         user_info.username = new_user
-        user_info.default_identity = identity
         user_info.save()
 
-        return new_user, identity
+        return new_user, user_info
 
 
 class KnotisUser(DjangoUser):

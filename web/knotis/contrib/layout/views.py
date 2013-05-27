@@ -36,6 +36,7 @@ class IndexView(View):
                 'navigation/css/nav_side.css'
             ],
             'scripts': [
+                'knotis/layout/js/layout.js',
                 'layout/js/header.js',
                 'navigation/js/navigation.js'
             ]

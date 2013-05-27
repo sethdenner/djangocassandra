@@ -22,12 +22,18 @@
                             '<span class="help-inline">' + message + '</span>'
                         );
                         $input.parent().parent().addClass('error');
-                    })
-                }
+
+                    });
+
+                 } else {
+                     window.location = '/';
+
+                 }
             },
             'json'
         ).fail(function(jqxhr, status, error) {
             alert(status);
+
         });
 
     });

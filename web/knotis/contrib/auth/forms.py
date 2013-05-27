@@ -2,7 +2,9 @@ from django.forms import (
     ModelForm,
     CharField,
     EmailField,
+    BooleanField,
     PasswordInput,
+    HiddenInput,
     ValidationError
 )
 
@@ -42,6 +44,10 @@ class SignUpForm(ModelForm):
         label='',
         widget=PasswordInput()
     )
+    authenticate = BooleanField(
+        initial=True,
+        widget=HiddenInput()
+    )
 
     def __init__(
         self,
@@ -68,6 +74,9 @@ class SignUpForm(ModelForm):
                     'password',
                     id='password-input',
                     placeholder='Password'
+                ),
+                Field(
+                    'authenticate'
                 ),
                 css_class='modal-body'
             ),
@@ -101,23 +110,22 @@ class SignUpForm(ModelForm):
         self,
         commit=True
     ):
-        user = super(SignUpForm, self).save(
-            commit=False
+        if self.instance.pk is None:
+            fail_message = 'created'
+
+        else:
+            fail_message = 'saved'
+
+        if self.errors:
+            raise ValueError(
+                'The %s could not be %s because '
+                'the data didn\'t validate.' % (
+                    self.instance._meta.object_name,
+                    fail_message
+                )
+            )
+
+        return KnotisUser.objects.create_user(
+            self.cleaned_data['email'],
+            self.cleaned_data['password']
         )
-
-        user.username = user.email
-
-        identity = IdentityIndividual.objects.create(
-            user
-        )
-
-        user_info = UserInformation()
-        user_info.user = user
-        user_info.username = user
-        user_info.default_identity = identity
-
-        if commit:
-            user.save()
-            user_info.save()
-
-        return user, user_info

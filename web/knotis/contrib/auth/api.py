@@ -3,6 +3,7 @@ import json
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
+from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 
 from knotis.views import ApiView
@@ -26,7 +27,7 @@ class AuthUserApi(ApiView):
         errors = {}
 
         try:
-            user, info = form.save()
+            user, identity = form.save()
 
         except ValueError, e:
             logger.exception(
@@ -41,6 +42,26 @@ class AuthUserApi(ApiView):
             logger.exception(
                 'An Exception occurred during account creation'
             )
+
+        if request.POST.get('authenticate', 'false').lower == 'true':
+            user = authenticate(
+                request.POST.get('username'),
+                request.POST.get('password')
+            )
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+
+                else:
+                    errors['no-field'] = (
+                        'Could not authenticate user. ',
+                        'User is inactive.'
+                    )
+
+            else:
+                errors['no-field'] = (
+                    'User authentication failed.'
+                )
 
         response_data = {}
 
