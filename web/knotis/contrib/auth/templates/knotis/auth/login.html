@@ -1,0 +1,7 @@
+{% load crispy_forms_tags %}
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+  <h3>Login to access Knotis!</h3>
+</div>
+{% crispy login_form %}
+<script src="{{ STATIC_URL }}knotis/auth/js/login.js"></script>

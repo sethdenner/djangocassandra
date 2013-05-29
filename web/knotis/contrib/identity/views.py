@@ -14,7 +14,7 @@ from knotis.views.mixins import RenderTemplateFragmentMixin
 from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.identity.models import Identity
 
-from forms import FirstIdentityForm
+from forms import IdentityFirstForm
 
 
 class FirstIdentityView(View, RenderTemplateFragmentMixin):
@@ -30,7 +30,7 @@ class FirstIdentityView(View, RenderTemplateFragmentMixin):
         return render(
             request,
             self.template_name, {
-                'identity_form': FirstIdentityForm()
+                'identity_form': IdentityFirstForm()
             }
         )
 

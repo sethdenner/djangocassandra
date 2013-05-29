@@ -63,9 +63,7 @@ class RelationManager(QuickManager):
             related=individual,
             description=''.join([
                 'The identity of ',
-                user.first_name,
-                ' ',
-                user.last_name,
+                individual.name,
                 '.'
             ])
         )
@@ -202,16 +200,6 @@ class Relation(QuickModel):
     )
 
     objects = RelationManager()
-
-    class Quick(QuickModel.Quick):
-        exclude = ()
-        # permissions = {'create': self.check_create}
-        types = RelationTypes
-
-    def __unicode__(self):
-        if (self.name):
-            return str(self.name)
-        return str(self.id)
 
 
 class RelationProprietor(Relation):

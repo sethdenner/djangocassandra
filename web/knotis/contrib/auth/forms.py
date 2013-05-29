@@ -1,4 +1,7 @@
+from django.utils.http import urlquote
+from django.contrib.auth.forms import AuthenticationForm
 from django.forms import (
+    Form,
     ModelForm,
     CharField,
     EmailField,
@@ -18,14 +21,99 @@ from crispy_forms.layout import (
     Submit
 )
 
-from knotis.contrib.identity.models import (
-    IdentityIndividual
+from knotis.contrib.endpoint.models import (
+    Endpoint,
+    EndpointTypes
+)
+from knotis.contrib.relation.models import (
+    Relation
 )
 
-from models import (
-    KnotisUser,
-    UserInformation
-)
+from models import KnotisUser
+
+
+class LoginForm(AuthenticationForm):
+    username = CharField(
+        label='',
+        max_length=30,
+        required=True
+    )
+    password = CharField(
+        label='',
+        widget=PasswordInput,
+        required=True
+    )
+
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(LoginForm, self).__init__(
+            *args,
+            **kwargs
+        )
+
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-login-form'
+        self.helper.form_method = 'post'
+        self.helper.form_action = '/api/v1/auth/auth/'
+        self.helper.layout = Layout(
+            Div(
+                Field(
+                    'username',
+                    id='email-input',
+                    placeholder='Email Address',
+                ),
+                Field(
+                    'password',
+                    id='password-input',
+                    placeholder='Password'
+                ),
+                css_class='modal-body'
+            ),
+            ButtonHolder(
+                Submit(
+                    'login',
+                    'Login'
+                ),
+                HTML(
+                    '<button class="btn" data-dismiss="modal" '
+                    'aria-hidden="true">Cancel</button>'
+                ),
+                css_class='modal-footer'
+            )
+        )
+
+    def clean(self):
+        cleaned_data = super(LoginForm, self).clean()
+
+        user = self.get_user()
+        if user:
+            user_identity = Relation.objects.get_individual(self.get_user())
+            primary_email = Endpoint.objects.get_primary_endpoint(
+                user_identity,
+                EndpointTypes.EMAIL
+            )
+
+            if not primary_email.validated:
+                self.user_cache = None
+
+                # Message user about account deactivation.
+                validation_link = ''.join([
+                    '<a id="resend_validation_link" ',
+                    'href="/auth/resend_validation_email/',
+                    urlquote(cleaned_data['username']),
+                    '/" >Click here</a> '
+                ])
+
+                raise ValidationError(''.join([
+                    'This account still needs to be activated. ',
+                    validation_link,
+                    'to re-send your validation email.'
+                ]))
+
+        return cleaned_data
 
 
 class SignUpForm(ModelForm):

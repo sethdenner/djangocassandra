@@ -1,11 +1,8 @@
 from django.forms import (
     ModelForm,
     CharField,
-    EmailField,
-    BooleanField,
-    PasswordInput,
-    HiddenInput,
-    ValidationError
+    IntegerField,
+    HiddenInput
 )
 
 from crispy_forms.helper import FormHelper
@@ -14,14 +11,18 @@ from crispy_forms.layout import (
     HTML,
     Div,
     Field,
+    Hidden,
     ButtonHolder,
     Submit
 )
 
-from models import Identity
+from models import (
+    Identity,
+    IdentityTypes
+)
 
 
-class FirstIdentityForm(ModelForm):
+class IdentityFirstForm(ModelForm):
     class Meta:
         model = Identity
         fields = [
@@ -29,12 +30,22 @@ class FirstIdentityForm(ModelForm):
             'identity_type'
         ]
 
+    name = CharField(
+        max_length=80,
+        label=''
+    )
+
+    identity_type = IntegerField(
+        initial=IdentityTypes.INDIVIDUAL,
+        widget=HiddenInput
+    )
+
     def __init__(
         self,
         *args,
         **kwargs
     ):
-        super(FirstIdentityForm, self).__init__(
+        super(IdentityFirstForm, self).__init__(
             *args,
             **kwargs
         )
@@ -53,7 +64,11 @@ class FirstIdentityForm(ModelForm):
                 Field(
                     'name',
                     id='name-input',
-                    placeholder='Identity Name',
+                    placeholder='Your Name',
+                ),
+                Field(
+                    'identity_type',
+                    id='identity-type-input',
                 ),
                 HTML(
                     '<span class="help-block">This is '

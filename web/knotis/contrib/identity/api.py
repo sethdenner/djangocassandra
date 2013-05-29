@@ -6,9 +6,9 @@ logger = logging.getLogger(__name__)
 from django.http import HttpResponse
 
 from knotis.views import ApiView
-
+from knotis.contrib.relation.models import Relation
 from models import Identity
-from forms import IdentityForm
+from forms import IdentityFirstForm
 
 
 class IdentityApi(ApiView):
@@ -20,12 +20,17 @@ class IdentityApi(ApiView):
         *args,
         **kwargs
     ):
-        form = IdentityForm(request.POST)
+        form = IdentityFirstForm(request.POST)
 
         errors = {}
 
+        identity = None
         try:
             identity = form.save()
+            Relation.objects.create_individual(
+                request.user,
+                identity
+            )
 
         except ValueError, e:
             logger.exception(
@@ -40,6 +45,9 @@ class IdentityApi(ApiView):
                 'An Exception occurred during identity creation'
             )
             errors['no-field'] = e.message
+
+            if identity:
+                identity.delete()
 
         response_data = {}
 

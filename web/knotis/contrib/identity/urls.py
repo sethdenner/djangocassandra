@@ -3,7 +3,11 @@ from django.conf.urls.defaults import (
     url
 )
 
-from views import IdentitySwitcherView
+from api import IdentityApi
+from views import (
+    IdentitySwitcherView,
+    FirstIdentityView
+)
 
 urlpatterns = patterns(
     'knotis.contrib.identity.views',
@@ -11,4 +15,9 @@ urlpatterns = patterns(
         r'^identity/switcher/$',
         IdentitySwitcherView.as_view()
     ),
+    url(
+        r'^identity/first/$',
+        FirstIdentityView.as_view()
+    ),
+    IdentityApi.urls()
 )

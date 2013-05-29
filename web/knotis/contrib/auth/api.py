@@ -3,20 +3,79 @@ import json
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
+from django.contrib.auth import (
+    authenticate,
+    login
+)
 
 from knotis.views import ApiView
 
-from forms import SignUpForm
+from forms import (
+    LoginForm,
+    SignUpForm
+)
 from models import KnotisUser
+
+
+class AuthenticationApi(ApiView):
+    model = KnotisUser
+    model_name = 'auth'
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        def generate_response(data):
+            return HttpResponse(
+                json.dumps(data),
+                content_type='application/json'
+            )
+
+        form = LoginForm(
+            request,
+            request.POST
+        )
+
+        errors = {}
+
+        if not form.is_valid():
+            if form.errors:
+                for field, messages in form.errors.iteritems():
+                    errors[field] = [messages for message in messages]
+
+            non_field_errors = form.non_field_errors()
+            if non_field_errors:
+                errors['no-field'] = non_field_errors
+
+            # Message user about failed login attempt.
+            return generate_response({
+                'message': 'Login failed. Please try again.',
+                'errors': errors
+            })
+
+        login(
+            request,
+            form.get_user()
+        )
+
+        default_url = '/'
+
+        next_url = request.POST.get('next')
+
+        return generate_response({
+            'success': 'yes',
+            'redirect': next_url if next_url else default_url
+        })
 
 
 class AuthUserApi(ApiView):
     model = KnotisUser
     model_name = 'user'
 
-    def post(
+    def create(
         self,
         request,
         *args,

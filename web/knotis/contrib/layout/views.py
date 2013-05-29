@@ -3,6 +3,8 @@ from django.shortcuts import render
 
 from knotis.views.mixins import RenderTemplateFragmentMixin
 
+from knotis.contrib.identity.models import IdentityIndividual
+
 
 class HeaderView(View, RenderTemplateFragmentMixin):
     template_name = 'layout/header.html'
@@ -28,18 +30,34 @@ class IndexView(View):
         *args,
         **kwargs
     ):
+        styles = [
+            'layout/css/header.css',
+            'layout/css/grid.css',
+            'navigation/css/nav_top.css',
+            'navigation/css/nav_side.css'
+        ]
+
+        scripts = [
+            'knotis/layout/js/layout.js',
+            'layout/js/header.js',
+            'navigation/js/navigation.js'
+        ]
+
+        if request.user.is_authenticated():
+            try:
+                individual = IdentityIndividual.objects.get_individual(
+                    request.user
+                )
+
+            except Exception:
+                individual = None
+
+            if not individual:
+                scripts.append('knotis/identity/js/first.js')
+
         context = {
-            'styles': [
-                'layout/css/header.css',
-                'layout/css/grid.css',
-                'navigation/css/nav_top.css',
-                'navigation/css/nav_side.css'
-            ],
-            'scripts': [
-                'knotis/layout/js/layout.js',
-                'layout/js/header.js',
-                'navigation/js/navigation.js'
-            ]
+            'styles': styles,
+            'scripts': scripts
         }
 
         return render(

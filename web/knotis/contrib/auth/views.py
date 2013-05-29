@@ -66,7 +66,29 @@ from knotis.contrib.feedback.views import render_feedback_popup
 from django.views.generic import View
 from knotis.views.mixins import RenderTemplateFragmentMixin
 
-from forms import SignUpForm
+from forms import (
+    SignUpForm,
+    LoginForm
+)
+
+
+class LoginView(View, RenderTemplateFragmentMixin):
+    template_name = 'knotis/auth/login.html'
+    view_name = 'login'
+
+    def get(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        request.session.set_test_cookie()
+        return render(
+            request,
+            self.template_name, {
+                'login_form': LoginForm()
+            }
+        )
 
 
 class SignUpView(View, RenderTemplateFragmentMixin):
@@ -85,14 +107,6 @@ class SignUpView(View, RenderTemplateFragmentMixin):
                 'signup_form': SignUpForm()
             }
         )
-
-    def post(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        return HttpResponseServerError('Not Implemented')
 
 
 def send_validation_email(
