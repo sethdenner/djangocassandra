@@ -7,12 +7,13 @@ from django.http import HttpResponse
 
 from knotis.views import ApiView
 from knotis.contrib.relation.models import Relation
-from models import Identity
+from models import IdentityIndividual
 from forms import IdentityFirstForm
 
 
 class IdentityApi(ApiView):
-    model = Identity
+    model = IdentityIndividual
+    model_name = 'identity'
 
     def post(
         self,
@@ -20,17 +21,22 @@ class IdentityApi(ApiView):
         *args,
         **kwargs
     ):
-        form = IdentityFirstForm(request.POST)
+        try:
+            relation_individual = Relation.objects.get_individual(
+                request.user
+
+            )
+
+            individual = relation_individual.related
+
+        except Exception:
+            individual = None
+
+        form = IdentityFirstForm(request.POST, instance=individual)
 
         errors = {}
-
-        identity = None
         try:
-            identity = form.save()
-            Relation.objects.create_individual(
-                request.user,
-                identity
-            )
+            individual = form.save()
 
         except ValueError, e:
             logger.exception(
@@ -46,9 +52,6 @@ class IdentityApi(ApiView):
             )
             errors['no-field'] = e.message
 
-            if identity:
-                identity.delete()
-
         response_data = {}
 
         if errors:
@@ -59,8 +62,8 @@ class IdentityApi(ApiView):
 
         else:
             response_data['data'] = {
-                'identityid': identity.id,
-                'identityname': identity.name
+                'identityid': individual.id,
+                'identityname': individual.name
             }
             response_data['message'] = 'Identity created successfully'
 

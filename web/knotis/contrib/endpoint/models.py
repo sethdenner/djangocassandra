@@ -78,6 +78,7 @@ class EndpointManager(Manager):
         return False
 
     def get_primary_endpoint(
+        self,
         identity,
         endpoint_type
     ):

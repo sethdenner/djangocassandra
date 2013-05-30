@@ -1,7 +1,6 @@
 from django.utils.http import urlquote
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms import (
-    Form,
     ModelForm,
     CharField,
     EmailField,
@@ -25,9 +24,9 @@ from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
 )
-from knotis.contrib.relation.models import (
-    Relation
-)
+from knotis.contrib.endpoint.views import send_validation_email
+from knotis.contrib.identity.models import IdentityIndividual
+from knotis.contrib.relation.models import Relation
 
 from models import KnotisUser
 
@@ -90,7 +89,10 @@ class LoginForm(AuthenticationForm):
 
         user = self.get_user()
         if user:
-            user_identity = Relation.objects.get_individual(self.get_user())
+            user_identity_relation = Relation.objects.get_individual(
+                self.get_user()
+            )
+            user_identity = user_identity_relation.related
             primary_email = Endpoint.objects.get_primary_endpoint(
                 user_identity,
                 EndpointTypes.EMAIL
@@ -213,7 +215,41 @@ class SignUpForm(ModelForm):
                 )
             )
 
-        return KnotisUser.objects.create_user(
-            self.cleaned_data['email'],
-            self.cleaned_data['password']
+        user = user_info = individual = email = None
+        try:
+            user, user_info = KnotisUser.objects.create_user(
+                self.cleaned_data['email'],
+                self.cleaned_data['password']
+            )
+
+            individual = IdentityIndividual.objects.create(
+                user
+            )
+
+            email = Endpoint.objects.create(
+                endpoint_type=EndpointTypes.EMAIL,
+                value=user.email,
+                identity=individual,
+                primary=True
+            )
+
+        except:
+            rollback = [
+                user,
+                user_info,
+                individual,
+                email
+            ]
+
+            for item in rollback:
+                if item:
+                    item.delete()
+
+            raise
+
+        send_validation_email(
+            user.id,
+            email
         )
+
+        return user, individual

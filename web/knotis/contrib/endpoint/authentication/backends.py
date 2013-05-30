@@ -31,7 +31,8 @@ class EndpointValidationAuthenticationBackend(object):
             return None
 
         try:
-            identity = Relation.objects.get_user_identity(user)
+            identity_relation = Relation.objects.get_individual(user)
+            identity = identity_relation.related
 
         except:
             logger.exception('failed to retrieve user identity')

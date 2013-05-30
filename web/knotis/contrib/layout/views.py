@@ -39,6 +39,7 @@ class IndexView(View):
 
         scripts = [
             'knotis/layout/js/layout.js',
+            'knotis/layout/js/forms.js',
             'layout/js/header.js',
             'navigation/js/navigation.js'
         ]
@@ -52,7 +53,10 @@ class IndexView(View):
             except Exception:
                 individual = None
 
-            if not individual:
+            if (
+                not individual or
+                individual.name == IdentityIndividual.DEFAULT_NAME
+            ):
                 scripts.append('knotis/identity/js/first.js')
 
         context = {

@@ -28,8 +28,7 @@ from django.conf import settings
 from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
-    HttpResponseNotFound,
-    HttpResponseServerError
+    HttpResponseNotFound
 )
 from django.utils.html import strip_tags
 from django.utils.http import urlquote
@@ -47,19 +46,13 @@ from knotis.contrib.auth.models import (
     KnotisUser,
     PasswordReset
 )
-from knotis.contrib.identity.models import (
-    Identity,
-    IdentityTypes
-)
-from knotis.contrib.relation.models import (
-    Relation,
-    RelationTypes
-)
+
 from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes,
     EndpointEmail
 )
+from knotis.contrib.endpoint.views import send_validation_email
 from knotis.contrib.content.models import Content
 from knotis.contrib.feedback.views import render_feedback_popup
 
@@ -107,25 +100,6 @@ class SignUpView(View, RenderTemplateFragmentMixin):
                 'signup_form': SignUpForm()
             }
         )
-
-
-def send_validation_email(
-    user_id,
-    email_endpoint
-):
-    subject = 'Welcome to Knotis!'
-    generate_email(
-        'activate',
-        subject,
-        settings.EMAIL_HOST_USER,
-        [email_endpoint.value.value], {
-            'user_id': user_id,
-            'validation_key': email_endpoint.validation_key,
-            'BASE_URL': settings.BASE_URL,
-            'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
-            'SERVICE_NAME': settings.SERVICE_NAME
-        }
-    ).send()
 
 
 def resend_validation_email(

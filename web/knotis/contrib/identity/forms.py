@@ -11,20 +11,19 @@ from crispy_forms.layout import (
     HTML,
     Div,
     Field,
-    Hidden,
     ButtonHolder,
     Submit
 )
 
 from models import (
-    Identity,
+    IdentityIndividual,
     IdentityTypes
 )
 
 
 class IdentityFirstForm(ModelForm):
     class Meta:
-        model = Identity
+        model = IdentityIndividual
         fields = [
             'name',
             'identity_type'

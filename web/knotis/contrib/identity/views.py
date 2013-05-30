@@ -13,6 +13,7 @@ from knotis.views.mixins import RenderTemplateFragmentMixin
 
 from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.identity.models import Identity
+from knotis.contrib.relation.models import Relation
 
 from forms import IdentityFirstForm
 

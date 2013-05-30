@@ -77,9 +77,11 @@ class IdentityIndividualManager(IdentityManager):
         *args,
         **kwargs
     ):
+        name = kwargs.get('name', IdentityIndividual.DEFAULT_NAME)
+
         individual = super(IdentityIndividualManager, self).create(
             identity_type=IdentityTypes.INDIVIDUAL,
-            name=user.full_name(),
+            name=name,
             *args,
             **kwargs
         )
@@ -232,6 +234,8 @@ class Identity(QuickModel):
 
 
 class IdentityIndividual(Identity):
+    DEFAULT_NAME = 'New User'
+
     class Quick(Identity.Quick):
         exclude = ('identity_type',)
         filters = {'identity_type': IdentityTypes.INDIVIDUAL}

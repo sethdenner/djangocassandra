@@ -1,5 +1,28 @@
 {% load crispy_forms_tags %}
-<div class="modal-header">
-  <h3>Welcome to Knotis!</h3>
+<div id="first-carousel" class="carousel slide" data-interval="">
+  <div class="carousel-inner">
+    <div class="active item">
+      <div class="modal-header">
+        <h3>Welcome to Knotis!</h3>
+      </div>
+      {% crispy identity_form %}
+    </div>
+    <div class="item">
+      <div class="modal-header">
+        <h3>What would you like to do next?</h3>
+      </div>
+      <div class="modal-body">
+        <p>
+          <button class="btn btn-large btn-success btn-block" type="button">
+            I am a business owner and would like to create a merchant profile.
+          </button>
+        </p>
+        <p>
+          <button class="btn btn-large btn-primary btn-block" type="button">
+            Just show me what local merchants are offering.
+          </button>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
-{% crispy identity_form %}

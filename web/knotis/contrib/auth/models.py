@@ -20,10 +20,7 @@ from knotis.contrib.denormalize.models import DenormalizedField
 from knotis.contrib.facebook.views import get_facebook_avatar
 from knotis.contrib.gravatar.views import avatar as get_gravatar_avatar
 from knotis.contrib.endpoint.models import Endpoint
-from knotis.contrib.identity.models import (
-    Identity,
-    IdentityIndividual
-)
+from knotis.contrib.identity.models import Identity
 
 
 class KnotisUserManager(UserManager):
