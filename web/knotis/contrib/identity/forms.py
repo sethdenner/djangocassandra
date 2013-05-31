@@ -16,16 +16,18 @@ from crispy_forms.layout import (
 )
 
 from models import (
-    IdentityIndividual,
-    IdentityBusiness,
-    IdentityEstablishment,
+    Identity,
     IdentityTypes
 )
 
 
-class IdentityFirstForm(ModelForm):
+class IdentityForm(ModelForm):
     class Meta:
-        model = IdentityIndividual
+        model = Identity
+
+
+class IdentitySimpleForm(IdentityForm):
+    class Meta(IdentityForm.Meta):
         fields = [
             'name',
             'identity_type'
@@ -36,156 +38,83 @@ class IdentityFirstForm(ModelForm):
         label=''
     )
 
-    identity_type = IntegerField(
-        initial=IdentityTypes.INDIVIDUAL,
-        widget=HiddenInput
-    )
-
     def __init__(
         self,
+        form_id='id-identity-form',
+        form_method='post',
+        form_action='/api/v1/identity/identity/',
+        identity_type=None,
+        description_text=None,
+        help_text=None,
         *args,
         **kwargs
     ):
-        super(IdentityFirstForm, self).__init__(
+        super(IdentitySimpleForm, self).__init__(
             *args,
             **kwargs
         )
 
+        if identity_type:
+            self.fields['identity_type'].initial = identity_type
+            self.fields['identity_type'].widget = HiddenInput()
+
+            if identity_type == IdentityTypes.INDIVIDUAL:
+                placeholder_name = 'Your Name'
+
+            elif identity_type == IdentityTypes.BUSINESS:
+                placeholder_name = 'Business Name'
+
+            elif identity_type == IdentityTypes.ESTABLISHMENT:
+                placeholder_name = 'Establishment Name'
+
+            else:
+                placeholder_name = ''
+
+        else:
+            placeholder_name = ''
+
         self.helper = FormHelper()
-        self.helper.form_id = 'id-identity-form'
-        self.helper.form_method = 'post'
-        self.helper.form_action = '/api/v1/identity/identity/'
-        self.helper.layout = Layout(
-            Div(
-                HTML(
-                    '<p>First thing\'s first. Tell us '
-                    'your name so we can personalize '
-                    'your Knotis account.</p>'
-                ),
-                Field(
-                    'name',
-                    id='name-input',
-                    placeholder='Your Name',
-                ),
-                Field(
-                    'identity_type',
-                    id='identity-type-input',
-                ),
-                HTML(
-                    '<span class="help-block">This is '
-                    'the name that will be displayed '
-                    'publicly in Knotis services.</span>'
-                ),
-                css_class='modal-body'
-            ),
-            ButtonHolder(
-                Submit(
-                    'save-identity',
-                    'Continue'
-                ),
-                css_class='modal-footer'
+        self.helper.form_id = form_id
+        self.helper.form_method = form_method
+        self.helper.form_action = form_action
+
+        if description_text:
+            element_description_text = HTML(
+                ''.join([
+                    '<p>',
+                    description_text,
+                    '</p>'
+                ])
             )
-        )
 
+        else:
+            element_description_text = None
 
-class BusinessFirstForm(ModelForm):
-    class Meta:
-        model = IdentityBusiness
-        fields = [
-            'name',
-            'identity_type'
-        ]
-
-    name = CharField(
-        max_length=80,
-        label=''
-    )
-
-    identity_type = IntegerField(
-        initial=IdentityTypes.Business,
-        widget=HiddenInput
-    )
-
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
-        super(IdentityFirstForm, self).__init__(
-            *args,
-            **kwargs
-        )
-
-        self.helper = FormHelper()
-        self.helper.form_id = 'id-business-form'
-        self.helper.form_method = 'post'
-        self.helper.form_action = '/api/v1/identity/identity/'
-        self.helper.layout = Layout(
-            Div(
-                Field(
-                    'name',
-                    id='name-input',
-                    placeholder='Business Name',
-                ),
-                Field(
-                    'identity_type',
-                    id='identity-type-input',
-                ),
-                css_class='modal-body'
-            ),
-            ButtonHolder(
-                Submit(
-                    'save-identity',
-                    'Continue'
-                ),
-                css_class='modal-footer'
+        if help_text:
+            element_help_text = HTML(
+                ''.join([
+                    '<span class="help-block">',
+                    help_text,
+                    '</span>'
+                ])
             )
-        )
 
+        else:
+            element_help_text = None
 
-class EstablishmentForm(ModelForm):
-    class Meta:
-        model = IdentityEstablishment
-        fields = [
-            'name',
-            'identity_type'
-        ]
-
-    name = CharField(
-        max_length=80,
-        label=''
-    )
-
-    identity_type = IntegerField(
-        initial=IdentityTypes.Business,
-        widget=HiddenInput
-    )
-
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
-        super(IdentityFirstForm, self).__init__(
-            *args,
-            **kwargs
-        )
-
-        self.helper = FormHelper()
-        self.helper.form_id = 'id-establishment-form'
-        self.helper.form_method = 'post'
-        self.helper.form_action = '/api/v1/identity/identity/'
         self.helper.layout = Layout(
             Div(
+                element_description_text,
                 Field(
                     'name',
                     id='name-input',
-                    placeholder='Business Name',
+                    placeholder=placeholder_name,
                 ),
                 Field(
                     'identity_type',
                     id='identity-type-input',
                 ),
+                element_help_text,
                 css_class='modal-body'
             ),
             ButtonHolder(

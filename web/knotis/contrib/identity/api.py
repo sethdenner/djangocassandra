@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from knotis.views import ApiView
 from knotis.contrib.relation.models import Relation
 from models import IdentityIndividual
-from forms import IdentityFirstForm
+from forms import IdentitySimpleForm
 
 
 class IdentityApi(ApiView):
@@ -32,7 +32,7 @@ class IdentityApi(ApiView):
         except Exception:
             individual = None
 
-        form = IdentityFirstForm(request.POST, instance=individual)
+        form = IdentitySimpleForm(request.POST, instance=individual)
 
         errors = {}
         try:

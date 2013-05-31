@@ -12,10 +12,12 @@ logger = log.getLogger(__name__)
 from knotis.views.mixins import RenderTemplateFragmentMixin
 
 from knotis.contrib.auth.models import UserInformation
-from knotis.contrib.identity.models import Identity
-from knotis.contrib.relation.models import Relation
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityTypes
+)
 
-from forms import IdentityFirstForm
+from forms import IdentitySimpleForm
 
 
 class FirstIdentityView(View, RenderTemplateFragmentMixin):
@@ -31,7 +33,23 @@ class FirstIdentityView(View, RenderTemplateFragmentMixin):
         return render(
             request,
             self.template_name, {
-                'identity_form': IdentityFirstForm()
+                'individual_form': IdentitySimpleForm(
+                    form_id='id-individual-form',
+                    identity_type=IdentityTypes.INDIVIDUAL,
+                    description_text=(
+                        'First thing\'s first. Tell us '
+                        'your name so we can personalize '
+                        'your Knotis account.'
+                    ),
+                    help_text=(
+                        'This is the name that will be displayed '
+                        'publicly in Knotis services.'
+                    )
+                ),
+                'business_form': IdentitySimpleForm(
+                    form_id='id-business-form',
+                    identity_type=IdentityTypes.BUSINESS,
+                ),
             }
         )
 

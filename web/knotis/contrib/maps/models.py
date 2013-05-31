@@ -13,8 +13,8 @@ from knotis.contrib.quick.fields import (
 class Location(QuickModel):
     latitude = QuickFloatField()
     longitude = QuickFloatField()
-    short_name = QuickCharField()
-    long_name = QuickCharField()
+    short_name = QuickCharField(max_length=32)
+    long_name = QuickCharField(max_length=128)
 
 
 class LocationItem(QuickModel):
