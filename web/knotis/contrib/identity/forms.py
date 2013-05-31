@@ -17,6 +17,8 @@ from crispy_forms.layout import (
 
 from models import (
     IdentityIndividual,
+    IdentityBusiness,
+    IdentityEstablishment,
     IdentityTypes
 )
 
@@ -73,6 +75,116 @@ class IdentityFirstForm(ModelForm):
                     '<span class="help-block">This is '
                     'the name that will be displayed '
                     'publicly in Knotis services.</span>'
+                ),
+                css_class='modal-body'
+            ),
+            ButtonHolder(
+                Submit(
+                    'save-identity',
+                    'Continue'
+                ),
+                css_class='modal-footer'
+            )
+        )
+
+
+class BusinessFirstForm(ModelForm):
+    class Meta:
+        model = IdentityBusiness
+        fields = [
+            'name',
+            'identity_type'
+        ]
+
+    name = CharField(
+        max_length=80,
+        label=''
+    )
+
+    identity_type = IntegerField(
+        initial=IdentityTypes.Business,
+        widget=HiddenInput
+    )
+
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(IdentityFirstForm, self).__init__(
+            *args,
+            **kwargs
+        )
+
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-business-form'
+        self.helper.form_method = 'post'
+        self.helper.form_action = '/api/v1/identity/identity/'
+        self.helper.layout = Layout(
+            Div(
+                Field(
+                    'name',
+                    id='name-input',
+                    placeholder='Business Name',
+                ),
+                Field(
+                    'identity_type',
+                    id='identity-type-input',
+                ),
+                css_class='modal-body'
+            ),
+            ButtonHolder(
+                Submit(
+                    'save-identity',
+                    'Continue'
+                ),
+                css_class='modal-footer'
+            )
+        )
+
+
+class EstablishmentForm(ModelForm):
+    class Meta:
+        model = IdentityEstablishment
+        fields = [
+            'name',
+            'identity_type'
+        ]
+
+    name = CharField(
+        max_length=80,
+        label=''
+    )
+
+    identity_type = IntegerField(
+        initial=IdentityTypes.Business,
+        widget=HiddenInput
+    )
+
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(IdentityFirstForm, self).__init__(
+            *args,
+            **kwargs
+        )
+
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-establishment-form'
+        self.helper.form_method = 'post'
+        self.helper.form_action = '/api/v1/identity/identity/'
+        self.helper.layout = Layout(
+            Div(
+                Field(
+                    'name',
+                    id='name-input',
+                    placeholder='Business Name',
+                ),
+                Field(
+                    'identity_type',
+                    id='identity-type-input',
                 ),
                 css_class='modal-body'
             ),

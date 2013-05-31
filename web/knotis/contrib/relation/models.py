@@ -164,7 +164,7 @@ class RelationManager(QuickManager):
         follower
     ):
         follower_type = ContentType.objects.get_for_model(follower)
-        return  self.filter(
+        return self.filter(
             subject_content_type__pk=follower_type.id,
             subject_object_id=follower.id,
             relation_type=RelationTypes.FOLLOWING

@@ -13,16 +13,28 @@
       </div>
       <div class="modal-body">
         <p>
-          <button class="btn btn-large btn-success btn-block" type="button">
+          <button id="id-button-business" class="btn btn-large btn-success btn-block" type="button">
             I am a business owner and would like to create a merchant profile.
           </button>
         </p>
         <p>
-          <button class="btn btn-large btn-primary btn-block" type="button">
+          <button  id="id-button-offers" class="btn btn-large btn-primary btn-block" type="button">
             Just show me what local merchants are offering.
           </button>
         </p>
       </div>
+    </div>
+    <div class="item">
+      <div class"modal-header">
+        <h3>What is the name of your business?</h3>
+      </div>
+      {% crispy busines_name_form %}
+    </div>
+    <div class="item">
+      <div class="modal-header">
+        <h3>Where is your establishment located?</h3>
+      </div>
+      {% crispy establishment_location_form %}
     </div>
   </div>
 </div>

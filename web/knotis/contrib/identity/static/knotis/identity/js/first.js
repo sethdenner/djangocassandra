@@ -27,6 +27,18 @@
                 }
             });
 
+            $('#first-carousel button#id-button-business').click(function(event) {
+                event.preventDefault();
+                $('#first-carousel').carousel('next');
+                
+            });
+
+            $('#first-carousel button#id-button-offers').click(function(event) {
+                event.preventDefault();
+                $('#modal-box').modal('hide');
+
+            });
+
         }
 
     );
