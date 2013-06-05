@@ -12,12 +12,15 @@ logger = log.getLogger(__name__)
 from knotis.views.mixins import RenderTemplateFragmentMixin
 
 from knotis.contrib.auth.models import UserInformation
-from knotis.contrib.identity.models import (
-    Identity,
-    IdentityTypes
-)
+from knotis.contrib.identity.models import Identity
 
-from forms import IdentitySimpleForm
+from models import IdentityIndividual
+
+from forms import (
+    IdentityIndividualSimpleForm,
+    IdentityBusinessSimpleForm,
+    IdentityEstablishmentSimpleForm
+)
 
 
 class FirstIdentityView(View, RenderTemplateFragmentMixin):
@@ -30,12 +33,19 @@ class FirstIdentityView(View, RenderTemplateFragmentMixin):
         *args,
         **kwargs
     ):
+        try:
+            individual = IdentityIndividual.objects.get_individual(
+                request.user
+            )
+
+        except:
+            individual = None
+
         return render(
             request,
             self.template_name, {
-                'individual_form': IdentitySimpleForm(
+                'individual_form': IdentityIndividualSimpleForm(
                     form_id='id-individual-form',
-                    identity_type=IdentityTypes.INDIVIDUAL,
                     description_text=(
                         'First thing\'s first. Tell us '
                         'your name so we can personalize '
@@ -44,12 +54,15 @@ class FirstIdentityView(View, RenderTemplateFragmentMixin):
                     help_text=(
                         'This is the name that will be displayed '
                         'publicly in Knotis services.'
-                    )
+                    ),
+                    instance=individual
                 ),
-                'business_form': IdentitySimpleForm(
-                    form_id='id-business-form',
-                    identity_type=IdentityTypes.BUSINESS,
+                'business_form': IdentityBusinessSimpleForm(
+                    form_id='id-business-form'
                 ),
+                'establishment_form': IdentityEstablishmentSimpleForm(
+                    form_id='id-establishment-form'
+                )
             }
         )
 

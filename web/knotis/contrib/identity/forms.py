@@ -29,13 +29,27 @@ class IdentityForm(ModelForm):
 class IdentitySimpleForm(IdentityForm):
     class Meta(IdentityForm.Meta):
         fields = [
+            'id',
             'name',
             'identity_type'
         ]
 
+    id = CharField(
+        max_length=36,
+        initial=None,
+        label='',
+        widget=HiddenInput()
+    )
+
     name = CharField(
         max_length=80,
         label=''
+    )
+
+    subject_id = CharField(
+        max_length=36,
+        label='',
+        widget=HiddenInput()
     )
 
     def __init__(
@@ -43,8 +57,8 @@ class IdentitySimpleForm(IdentityForm):
         form_id='id-identity-form',
         form_method='post',
         form_action='/api/v1/identity/identity/',
-        identity_type=None,
         description_text=None,
+        placeholder_text=None,
         help_text=None,
         *args,
         **kwargs
@@ -53,25 +67,6 @@ class IdentitySimpleForm(IdentityForm):
             *args,
             **kwargs
         )
-
-        if identity_type:
-            self.fields['identity_type'].initial = identity_type
-            self.fields['identity_type'].widget = HiddenInput()
-
-            if identity_type == IdentityTypes.INDIVIDUAL:
-                placeholder_name = 'Your Name'
-
-            elif identity_type == IdentityTypes.BUSINESS:
-                placeholder_name = 'Business Name'
-
-            elif identity_type == IdentityTypes.ESTABLISHMENT:
-                placeholder_name = 'Establishment Name'
-
-            else:
-                placeholder_name = ''
-
-        else:
-            placeholder_name = ''
 
         self.helper = FormHelper()
         self.helper.form_id = form_id
@@ -106,13 +101,21 @@ class IdentitySimpleForm(IdentityForm):
             Div(
                 element_description_text,
                 Field(
+                    'id',
+                    id='id-input'
+                ),
+                Field(
                     'name',
                     id='name-input',
-                    placeholder=placeholder_name,
+                    placeholder=placeholder_text
                 ),
                 Field(
                     'identity_type',
-                    id='identity-type-input',
+                    id='identity-type-input'
+                ),
+                Field(
+                    'subject_id',
+                    id='identity-subject-input'
                 ),
                 element_help_text,
                 css_class='modal-body'
@@ -124,4 +127,58 @@ class IdentitySimpleForm(IdentityForm):
                 ),
                 css_class='modal-footer'
             )
+        )
+
+
+class IdentityIndividualSimpleForm(IdentitySimpleForm):
+    identity_type = IntegerField(
+        initial=IdentityTypes.INDIVIDUAL,
+        widget=HiddenInput()
+    )
+
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(IdentityIndividualSimpleForm, self).__init__(
+            placeholder_text='Your Name',
+            *args,
+            **kwargs
+        )
+
+
+class IdentityBusinessSimpleForm(IdentitySimpleForm):
+    identity_type = IntegerField(
+        initial=IdentityTypes.BUSINESS,
+        widget=HiddenInput()
+    )
+
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(IdentityBusinessSimpleForm, self).__init__(
+            placeholder_text='Business Name',
+            *args,
+            **kwargs
+        )
+
+
+class IdentityEstablishmentSimpleForm(IdentitySimpleForm):
+    identity_type = IntegerField(
+        initial=IdentityTypes.ESTABLISHMENT,
+        widget=HiddenInput()
+    )
+
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(IdentityEstablishmentSimpleForm, self).__init__(
+            placeholder_text='Establishment Name',
+            *args,
+            **kwargs
         )

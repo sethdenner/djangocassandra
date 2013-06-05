@@ -10,7 +10,7 @@
         function(data, status, jqxhr) {
             $('#modal-box').html(data);
 
-            $('#id-identity-form').ajaxform({
+            $('#id-individual-form').ajaxform({
                 done: function(data, status, jqxhr) {
                     if (!data.errors) {
                         $('#first-carousel')
@@ -21,6 +21,28 @@
                             backdrop: true,
                             keyboard: true
                         });
+
+                    }
+
+                }
+            });
+
+            $('#id-business-form').ajaxform({
+                done: function(data, status, jqxhr) {
+                    if (!data.errors) {
+                        $('#first-carousel')
+                            .carousel({interval: false})
+                            .carousel('next');
+
+                    }
+
+                }
+            });
+
+            $('#id-establishment-form').ajaxform({
+                done: function(data, status, jqxhr) {
+                    if (!data.errors) {
+                        $('#modal-box').modal('hide');
 
                     }
 

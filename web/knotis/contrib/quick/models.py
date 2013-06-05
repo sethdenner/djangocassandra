@@ -47,9 +47,6 @@ class QuickManager(polymodels.managers.PolymorphicManager):
             **kwargs
         )
 
-    def all(self):
-        return self.select_subclasses()
-
 
 @staticmethod
 def get_form_class(model, extra=0):

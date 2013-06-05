@@ -1,3 +1,6 @@
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
+
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
@@ -205,6 +208,10 @@ class IdentityEstablishmentManager(IdentityManager):
 
 
 class Identity(QuickModel):
+    class Quick(QuickModel.Quick):
+        exclude = ()
+        pass
+
     identity_type = QuickIntegerField(
         choices=IdentityTypes.CHOICES,
         default=IdentityTypes.UNDEFINED
@@ -223,9 +230,44 @@ class Identity(QuickModel):
 
     objects = IdentityManager()
 
-    class Quick(QuickModel.Quick):
-        exclude = ()
-        pass
+    def save(
+        self,
+        subject=None,
+        *args,
+        **kwargs
+    ):
+        super(Identity, self).save(
+            *args,
+            **kwargs
+        )
+
+        if subject:
+            try:
+                if IdentityTypes.INDIVIDUAL == self.identity_type:
+                    Relation.objects.create_individual(
+                        subject,
+                        self
+                    )
+
+                elif IdentityTypes.BUSINESS == self.identity_type:
+                    Relation.objects.create_manager(
+                        subject,
+                        self
+                    )
+
+                elif IdentityTypes.ESTABLISHMENT == self.identity_type:
+                    Relation.objects.create_establishment(
+                        subject,
+                        self
+                    )
+
+            except Exception:
+                logger.exception('Relation  creation failed')
+
+                # Clean up orphan Identity.
+                self.delete()
+
+                raise
 
     def __unicode__(self):
         if (self.name):
