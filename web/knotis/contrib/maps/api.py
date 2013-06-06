@@ -7,16 +7,17 @@ from django.http import HttpResponse
 
 from knotis.views import ApiView
 from knotis.contrib.auth.models import KnotisUser
+
+from forms import GeocompleteForm
 from models import (
-    Identity,
-    IdentityTypes
+    Location,
+    LocationItem
 )
-from forms import IdentitySimpleForm
 
 
-class IdentityApi(ApiView):
-    model = Identity
-    model_name = 'identity'
+class LocationApi(ApiView):
+    model = Location
+    model_name = 'location'
 
     def create(
         self,

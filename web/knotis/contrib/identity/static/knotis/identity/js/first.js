@@ -34,15 +34,23 @@
                             .carousel({interval: false})
                             .carousel('next');
 
+                        $('#id-location-form #address-input #id_address').geocomplete({
+                            map: '.map_canvas',
+                            location: 'Seattle, WA, USA',
+                            details: '#id-location-form',
+                            detailsAttribute: 'data-geo'
+                        });
+
                     }
 
                 }
             });
 
-            $('#id-establishment-form').ajaxform({
+            $('#id-location-form').ajaxform({
                 done: function(data, status, jqxhr) {
                     if (!data.errors) {
                         $('#modal-box').modal('hide');
+                        window.location = '/merchants/' + data.establishment_name
 
                     }
 

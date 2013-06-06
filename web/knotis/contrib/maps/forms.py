@@ -1,53 +1,73 @@
 from django.forms import (
     ModelForm,
     CharField,
-    IntegerField,
-    HiddenInput
+    HiddenInput,
+    TextInput
 )
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import (
     Layout,
-    HTML,
-    Div,
     Field,
-    ButtonHolder,
-    Submit
+    Submit,
+    HTML
+)
+from crispy_forms.bootstrap import (
+    FieldWithButtons,
+    StrictButton,
+    FormActions
 )
 
-from models import (
-    Location,
-    LocationItem
-)
+from models import Location
 
 
-class LocationForm(ModelForm):
+class GeocompleteForm(ModelForm):
     class Meta:
         model = Location
         widgets = {
             'latitude': HiddenInput(),
-            'longitude': HiddenInput(),
-            'short_name': HiddenInput(),
-            'long_name': HiddenInput()
+            'longitude': HiddenInput()
         }
+
+    address = CharField(
+        max_length=256,
+        label=''
+    )
 
     def __init__(
         self,
+        form_id='id-location-form',
+        form_action='/api/v1/location/location/',
         *args,
         **kwargs
     ):
-        super(LocationForm, self).__init__(
+        super(GeocompleteForm, self).__init__(
             *args,
             **kwargs
         )
 
         self.helper = FormHelper()
-        self.helper.form_id = 'id-location-form'
+        self.helper.form_id = form_id
         self.helper.form_method = 'post'
-        self.helper.form_action = '/api/v1/location/location/'
+        self.helper.form_action = form_action
         self.helper.layout = Layout(
-            Field('latitude', id='latitude-input'),
-            Field('longitude', id='longitude-input'),
-            Field('short_name', id='short-name-input'),
-            Field('long_name', id='long-name-input')
+            FieldWithButtons(
+                'address',
+                StrictButton('Search'),
+                id='address-input',
+                placeholder='Enter An Address',
+                data_geo='address_formatted'
+            ),
+            Field(
+                'latitude',
+                id='latitude-input',
+                data_geo='lat'
+            ),
+            Field(
+                'longitude',
+                id='longitude-input',
+                data_geo='lng'
+            ),
+            HTML('<div class="map_canvas"></div>'),
+            FormActions(Submit('save', 'This Location Is Correct'))
         )

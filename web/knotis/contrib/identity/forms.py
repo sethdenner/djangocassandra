@@ -38,6 +38,7 @@ class IdentitySimpleForm(IdentityForm):
         max_length=36,
         initial=None,
         label='',
+        required=False,
         widget=HiddenInput()
     )
 
@@ -49,6 +50,7 @@ class IdentitySimpleForm(IdentityForm):
     subject_id = CharField(
         max_length=36,
         label='',
+        required=False,
         widget=HiddenInput()
     )
 
@@ -63,6 +65,13 @@ class IdentitySimpleForm(IdentityForm):
         *args,
         **kwargs
     ):
+        instance = kwargs.get('instance')
+        initial = kwargs.get('initial', {})
+        if instance:
+            if instance.is_name_default():
+                initial.update({'name': ''})
+                kwargs['initial'] = initial
+
         super(IdentitySimpleForm, self).__init__(
             *args,
             **kwargs

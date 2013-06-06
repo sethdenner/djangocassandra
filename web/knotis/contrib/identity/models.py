@@ -103,7 +103,8 @@ class IdentityIndividualManager(IdentityManager):
         relation = Relation.objects.get_individual(
             user
         )
-        return relation.related
+
+        return self.get(pk=relation.related_object_id)
 
     def get_query_set(self):
         return super(QuickManager, self).get_query_set().filter(
@@ -212,6 +213,8 @@ class Identity(QuickModel):
         exclude = ()
         pass
 
+    DEFAULT_NAME = 'New Identity'
+
     identity_type = QuickIntegerField(
         choices=IdentityTypes.CHOICES,
         default=IdentityTypes.UNDEFINED
@@ -229,6 +232,9 @@ class Identity(QuickModel):
     primary_image = QuickForeignKey('media.Image')
 
     objects = IdentityManager()
+
+    def is_name_default(self):
+        return self.DEFAULT_NAME == self.name
 
     def save(
         self,

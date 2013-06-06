@@ -1,9 +1,11 @@
+from django.conf import settings
 from django.views.generic import View
 from django.shortcuts import render
 
 from knotis.views.mixins import RenderTemplateFragmentMixin
 
 from knotis.contrib.identity.models import IdentityIndividual
+from knotis.contrib.maps.views import GoogleMap
 
 
 class HeaderView(View, RenderTemplateFragmentMixin):
@@ -37,7 +39,10 @@ class IndexView(View):
             'navigation/css/nav_side.css'
         ]
 
-        scripts = [
+        pre_scripts = []
+
+        post_scripts = [
+            'geocomplete/jquery.geocomplete.min.js',
             'knotis/layout/js/layout.js',
             'knotis/layout/js/forms.js',
             'layout/js/header.js',
@@ -57,11 +62,17 @@ class IndexView(View):
                 not individual or
                 individual.name == IdentityIndividual.DEFAULT_NAME
             ):
-                scripts.append('knotis/identity/js/first.js')
+                post_scripts.append('knotis/identity/js/first.js')
+                styles.append('knotis/identity/css/first.css')
+
+        maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
+        maps_scripts = maps.render_api_js()
 
         context = {
             'styles': styles,
-            'scripts': scripts
+            'pre_scripts': pre_scripts,
+            'post_scripts': post_scripts,
+            'maps_scripts': maps_scripts
         }
 
         return render(

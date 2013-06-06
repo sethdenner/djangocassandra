@@ -13,13 +13,13 @@ from knotis.views.mixins import RenderTemplateFragmentMixin
 
 from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.identity.models import Identity
+from knotis.contrib.maps.forms import GeocompleteForm
 
 from models import IdentityIndividual
 
 from forms import (
     IdentityIndividualSimpleForm,
-    IdentityBusinessSimpleForm,
-    IdentityEstablishmentSimpleForm
+    IdentityBusinessSimpleForm
 )
 
 
@@ -58,11 +58,10 @@ class FirstIdentityView(View, RenderTemplateFragmentMixin):
                     instance=individual
                 ),
                 'business_form': IdentityBusinessSimpleForm(
-                    form_id='id-business-form'
+                    form_id='id-business-form',
+                    initial={'subject_id': individual.id}
                 ),
-                'establishment_form': IdentityEstablishmentSimpleForm(
-                    form_id='id-establishment-form'
-                )
+                'location_form': GeocompleteForm()
             }
         )
 
