@@ -1,8 +1,7 @@
 from django.forms import (
     ModelForm,
     CharField,
-    HiddenInput,
-    TextInput
+    HiddenInput
 )
 
 from crispy_forms.helper import FormHelper
@@ -34,10 +33,16 @@ class GeocompleteForm(ModelForm):
         label=''
     )
 
+    related_id = CharField(
+        max_length=36,
+        label='',
+        widget=HiddenInput()
+    )
+
     def __init__(
         self,
         form_id='id-location-form',
-        form_action='/api/v1/location/location/',
+        form_action='/api/v1/maps/location/',
         *args,
         **kwargs
     ):
@@ -67,6 +72,10 @@ class GeocompleteForm(ModelForm):
                 'longitude',
                 id='longitude-input',
                 data_geo='lng'
+            ),
+            Field(
+                'related_id',
+                id='related-id-input'
             ),
             HTML('<div class="map_canvas"></div>'),
             FormActions(Submit('save', 'This Location Is Correct'))

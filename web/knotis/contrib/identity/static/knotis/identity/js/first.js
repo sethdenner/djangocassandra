@@ -40,6 +40,8 @@
                             details: '#id-location-form',
                             detailsAttribute: 'data-geo'
                         });
+                        
+                        $('form#id-location-form input#related-id-input').val(data.data.identityid);
 
                     }
 

@@ -11,7 +11,12 @@ from models import (
     Identity,
     IdentityTypes
 )
-from forms import IdentitySimpleForm
+from forms import (
+    IdentitySimpleForm,
+    IdentityIndividualSimpleForm,
+    IdentityBusinessSimpleForm,
+    IdentityEstablishmentSimpleForm
+)
 
 
 class IdentityApi(ApiView):
@@ -43,10 +48,29 @@ class IdentityApi(ApiView):
         else:
             instance = None
 
-        form = IdentitySimpleForm(
-            data=request.POST,
-            instance=instance
-        )
+        if IdentityTypes.INDIVIDUAL == identity_type:
+            form = IdentityIndividualSimpleForm(
+                data=request.POST,
+                instance=instance
+            )
+
+        elif IdentityTypes.BUSINESS == identity_type:
+            form = IdentityBusinessSimpleForm(
+                data=request.POST,
+                instance=instance
+            )
+
+        elif IdentityTypes.ESTABLISHMENT == identity_type:
+            form = IdentityEstablishmentSimpleForm(
+                data=request.POST,
+                instance=instance
+            )
+
+        else:
+            form = IdentitySimpleForm(
+                data=request.POST,
+                instance=instance
+            )
 
         subject_id = request.POST.get('subject_id')
         if subject_id:
@@ -62,7 +86,7 @@ class IdentityApi(ApiView):
         if form.is_valid():
             try:
                 instance = form.save(commit=False)
-                instance.save(subject=subject)
+                instance.save(subject)
                 form.save_m2m()
 
             except Exception, e:

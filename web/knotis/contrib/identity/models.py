@@ -152,25 +152,6 @@ class IdentityBusinessManager(IdentityManager):
 
 
 class IdentityEstablishmentManager(IdentityManager):
-    def create(
-        self,
-        business,
-        *args,
-        **kwargs
-    ):
-        establishment = super(IdentityEstablishmentManager, self).create(
-            identity_type=IdentityTypes.ESTABLISHMENT,
-            *args,
-            **kwargs
-        )
-
-        Relation.objects.create_establishment(
-            business,
-            establishment
-        )
-
-        return establishment
-
     def get_establishments(
         self,
         identity
@@ -236,45 +217,6 @@ class Identity(QuickModel):
     def is_name_default(self):
         return self.DEFAULT_NAME == self.name
 
-    def save(
-        self,
-        subject=None,
-        *args,
-        **kwargs
-    ):
-        super(Identity, self).save(
-            *args,
-            **kwargs
-        )
-
-        if subject:
-            try:
-                if IdentityTypes.INDIVIDUAL == self.identity_type:
-                    Relation.objects.create_individual(
-                        subject,
-                        self
-                    )
-
-                elif IdentityTypes.BUSINESS == self.identity_type:
-                    Relation.objects.create_manager(
-                        subject,
-                        self
-                    )
-
-                elif IdentityTypes.ESTABLISHMENT == self.identity_type:
-                    Relation.objects.create_establishment(
-                        subject,
-                        self
-                    )
-
-            except Exception:
-                logger.exception('Relation  creation failed')
-
-                # Clean up orphan Identity.
-                self.delete()
-
-                raise
-
     def __unicode__(self):
         if (self.name):
             return str(self.name)
@@ -299,6 +241,36 @@ class IdentityIndividual(Identity):
         print ("Cleaning IdentityIndividual")
         self.identity_type = IdentityTypes.INDIVIDUAL
 
+    def save(
+        self,
+        user=None,
+        *args,
+        **kwargs
+    ):
+        create = not self.id
+
+        self.identity_type = IdentityTypes.INDIVIDUAL
+        super(IdentityIndividual, self).save(
+            *args,
+            **kwargs
+        )
+
+        if user:
+            try:
+                Relation.objects.create_individual(
+                    user,
+                    self
+                )
+
+            except Exception:
+                logger.exception('Individual relation  creation failed')
+
+                if create:
+                    # Clean up orphan Identity.
+                    self.delete()
+
+                raise
+
 
 class IdentityBusiness(Identity):
     class Meta:
@@ -321,6 +293,53 @@ class IdentityBusiness(Identity):
         print ("Cleaning IdentityBusiness")
         self.identity_type = IdentityTypes.BUSINESS
 
+    def save(
+        self,
+        manager=None,
+        *args,
+        **kwargs
+    ):
+        create = not self.id
+
+        self.identity_type = IdentityTypes.BUSINESS
+        super(IdentityBusiness, self).save(
+            *args,
+            **kwargs
+        )
+
+        if create:
+            relation_manager = None
+            if manager:
+                # Create a manager relation for the new business
+                try:
+                    relation_manager = Relation.objects.create_manager(
+                        manager,
+                        self
+                    )
+
+                except Exception:
+                    logger.exception('Manager relation creation failed')
+
+                    # Clean up orphan Identity.
+                    self.delete()
+
+                    raise
+
+            # Create an establishment for the new business.
+            try:
+                establishment = IdentityEstablishment(
+                    name=self.name
+                )
+                establishment.save(business=self)
+
+            except Exception:
+                logger.exception('Establishment creation failed')
+
+                relation_manager.delete()
+                self.delete()
+
+                raise
+
 
 class IdentityEstablishment(Identity):
     class Quick(Identity.Quick):
@@ -336,3 +355,33 @@ class IdentityEstablishment(Identity):
     def clean(self):
         print ("Cleaning IdentityEstablishment")
         self.identity_type = IdentityTypes.ESTABLISHMENT
+
+    def save(
+        self,
+        business=None,
+        *args,
+        **kwargs
+    ):
+        create = not self.id
+
+        self.identity_type = IdentityTypes.ESTABLISHMENT
+        super(IdentityEstablishment, self).save(
+            *args,
+            **kwargs
+        )
+
+        if create:
+            if business:
+                try:
+                    Relation.objects.create_establishment(
+                        business,
+                        self
+                    )
+
+                except Exception:
+                    logger.exception('Establishment relation  creation failed')
+
+                    # Clean up orphan Identity.
+                    self.delete()
+
+                    raise

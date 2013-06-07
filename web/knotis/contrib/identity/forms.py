@@ -17,6 +17,9 @@ from crispy_forms.layout import (
 
 from models import (
     Identity,
+    IdentityIndividual,
+    IdentityBusiness,
+    IdentityEstablishment,
     IdentityTypes
 )
 
@@ -140,6 +143,9 @@ class IdentitySimpleForm(IdentityForm):
 
 
 class IdentityIndividualSimpleForm(IdentitySimpleForm):
+    class Meta(IdentitySimpleForm.Meta):
+        model = IdentityIndividual
+
     identity_type = IntegerField(
         initial=IdentityTypes.INDIVIDUAL,
         widget=HiddenInput()
@@ -158,6 +164,9 @@ class IdentityIndividualSimpleForm(IdentitySimpleForm):
 
 
 class IdentityBusinessSimpleForm(IdentitySimpleForm):
+    class Meta(IdentitySimpleForm.Meta):
+        model = IdentityBusiness
+
     identity_type = IntegerField(
         initial=IdentityTypes.BUSINESS,
         widget=HiddenInput()
@@ -176,6 +185,9 @@ class IdentityBusinessSimpleForm(IdentitySimpleForm):
 
 
 class IdentityEstablishmentSimpleForm(IdentitySimpleForm):
+    class Meta(IdentitySimpleForm.Meta):
+        model = IdentityEstablishment
+
     identity_type = IntegerField(
         initial=IdentityTypes.ESTABLISHMENT,
         widget=HiddenInput()

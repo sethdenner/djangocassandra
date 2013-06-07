@@ -6,12 +6,11 @@ logger = logging.getLogger(__name__)
 from django.http import HttpResponse
 
 from knotis.views import ApiView
-from knotis.contrib.auth.models import KnotisUser
+from knotis.contrib.identity.models import Identity
 
 from forms import GeocompleteForm
 from models import (
-    Location,
-    LocationItem
+    Location
 )
 
 
@@ -25,50 +24,42 @@ class LocationApi(ApiView):
         *args,
         **kwargs
     ):
+        import pdb; pdb.set_trace()
         errors = {}
-
-        identity_type = int(request.POST.get(
-            'identity_type',
-            IdentityTypes.UNDEFINED
-        ))
 
         update_id = request.POST.get('id')
         if update_id:
             try:
-                instance = Identity.objects.get(pk=update_id)
+                instance = Location.objects.get(pk=update_id)
 
             except Exception:
-                errors['no-field'] = "Could not find identity to update"
+                errors['no-field'] = "Could not find location to update"
                 return self.generate_response(None, errors)
 
         else:
             instance = None
 
-        form = IdentitySimpleForm(
+        form = GeocompleteForm(
             data=request.POST,
             instance=instance
         )
 
-        subject_id = request.POST.get('subject_id')
-        if subject_id:
-            if identity_type == IdentityTypes.INDIVIDUAL:
-                subject = KnotisUser.objects.get(pk=subject_id)
-
-            else:
-                subject = Identity.objects.get(pk=subject_id)
+        related_id = request.POST.get('related_id')
+        if related_id:
+            related = Identity.objects.get(pk=related_id)
 
         else:
-            subject = None
+            related = None
 
         if form.is_valid():
             try:
                 instance = form.save(commit=False)
-                instance.save(subject=subject)
+                instance.save(related=related)
                 form.save_m2m()
 
             except Exception, e:
                 logger.exception(
-                    'An Exception occurred during identity creation'
+                    'An Exception occurred during location creation'
                 )
                 errors['no-field'] = e.message
 
