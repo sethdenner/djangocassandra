@@ -42,7 +42,9 @@
                             detailsAttribute: 'data-geo'
                         });
                         
-                        $('form#id-location-form input#related-id-input').val(data.data.identityid);
+                        $('form#id-location-form input#related-id-input').val(
+                            data.data.business_id
+                        );
 
                     }
 

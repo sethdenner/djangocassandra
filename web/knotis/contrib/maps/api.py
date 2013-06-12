@@ -1,16 +1,13 @@
-import json
-
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
-
-from django.http import HttpResponse
 
 from knotis.views import ApiView
 from knotis.contrib.identity.models import Identity
 
-from forms import GeocompleteForm
+from forms import LocationForm
 from models import (
-    Location
+    Location,
+    LocationItem
 )
 
 
@@ -18,7 +15,7 @@ class LocationApi(ApiView):
     model = Location
     api_url = 'location'
 
-    def create(
+    def post(
         self,
         request,
         *args,
@@ -30,18 +27,21 @@ class LocationApi(ApiView):
         update_id = request.POST.get('id')
         if update_id:
             try:
-                instance = Location.objects.get(pk=update_id)
+                location = Location.objects.get(pk=update_id)
 
-            except Exception:
+            except Exception, e:
                 errors['no-field'] = "Could not find location to update"
-                return self.generate_response(None, errors)
+                return self.generate_response({
+                    'message': e.message,
+                    'errors': errors
+                })
 
         else:
-            instance = None
+            location = None
 
-        form = GeocompleteForm(
+        form = LocationForm(
             data=request.POST,
-            instance=instance
+            instance=location
         )
 
         related_id = request.POST.get('related_id')
@@ -51,11 +51,10 @@ class LocationApi(ApiView):
         else:
             related = None
 
+        location = None
         if form.is_valid():
             try:
-                instance = form.save(commit=False)
-                instance.save(related=related)
-                form.save_m2m()
+                location = form.save()
 
             except Exception, e:
                 logger.exception(
@@ -63,30 +62,30 @@ class LocationApi(ApiView):
                 )
                 errors['no-field'] = e.message
 
+            if location and related:
+                try:
+                    LocationItem.objects.create(
+                        location=location,
+                        related=related
+                    )
+
+                except:
+                    logger.exception(
+                        'An exception occurred during location item creation'
+                    )
+
         else:
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-        return self.generate_response(instance, errors)
-
-    @staticmethod
-    def generate_response(instance, errors):
-        response_data = {}
-
-        if errors:
-            response_data['message'] = (
-                'An error occurred during identity creation.'
-            )
-            response_data['errors'] = errors
+        data = {}
+        if not errors:
+            data['location_id'] = location.id
+            data['location_address'] = location.address
+            data['message'] = 'Location saved.'
 
         else:
-            response_data['data'] = {
-                'identityid': instance.id,
-                'identityname': instance.name
-            }
-            response_data['message'] = 'Identity created successfully'
+            data['errors'] = errors
+            data['message'] = 'There was an error while saving location.'
 
-        return HttpResponse(
-            json.dumps(response_data),
-            content_type='application/json'
-        )
+        return self.generate_response(data)

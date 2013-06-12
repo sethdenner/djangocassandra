@@ -59,7 +59,7 @@ class FirstIdentityView(View, RenderTemplateFragmentMixin):
                 ),
                 'business_form': IdentityBusinessSimpleForm(
                     form_id='id-business-form',
-                    initial={'subject_id': individual.id}
+                    initial={'individual_id': individual.id}
                 ),
                 'location_form': GeocompleteForm()
             }

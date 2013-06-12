@@ -20,9 +20,14 @@ from crispy_forms.bootstrap import (
 from models import Location
 
 
-class GeocompleteForm(ModelForm):
+class LocationForm(ModelForm):
     class Meta:
         model = Location
+        exclude = ('content_type')
+
+
+class GeocompleteForm(LocationForm):
+    class Meta(LocationForm.Meta):
         widgets = {
             'latitude': HiddenInput(),
             'longitude': HiddenInput()
