@@ -16,7 +16,7 @@ from models import (
 
 class LocationApi(ApiView):
     model = Location
-    model_name = 'location'
+    api_url = 'location'
 
     def create(
         self,

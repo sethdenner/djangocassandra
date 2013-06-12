@@ -3,7 +3,12 @@ from django.conf.urls.defaults import (
     url
 )
 
-from api import IdentityApi
+from api import (
+    IdentityApi,
+    IdentityIndividualApi,
+    IdentityBusinessApi,
+    IdentityEstablishmentApi
+)
 from views import (
     IdentitySwitcherView,
     FirstIdentityView
@@ -19,5 +24,8 @@ urlpatterns = patterns(
         r'^identity/first/$',
         FirstIdentityView.as_view()
     ),
-    IdentityApi.urls()
+    IdentityApi.urls(),
+    IdentityIndividualApi.urls(),
+    IdentityBusinessApi.urls(),
+    IdentityEstablishmentApi.urls()
 )

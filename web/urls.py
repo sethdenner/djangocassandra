@@ -81,8 +81,12 @@ urlpatterns = patterns(
         include('knotis.contrib.sickle.urls')
     ),
     url(
+        r'',
+        include('knotis.contrib.maps.urls')
+    ),
+    url(
         r'^(?P<backend_name>[^/]+)/$',
-        'knotis.contrib.business.views.profile',
+        'knotis.contrib.business.views.profile'
     ),
     url(
         r'',

@@ -24,7 +24,8 @@
 
                     }
 
-                }
+                },
+                method: 'put'
             });
 
             $('#id-business-form').ajaxform({

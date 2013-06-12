@@ -3,7 +3,8 @@
         var settings = $.extend({
             done: function(data, status, jqxhr) {},
             fail: function(jqxhr, status, error) {},
-            always: function() {}
+            always: function() {},
+            method: 'post'
         }, options);
         
         return this.each(function(){
@@ -11,10 +12,11 @@
                 event.preventDefault();
                 
                 var $form = $(this)
-                $.post(
-                    this.action,
-                    $form.serialize(),
-                    function(data, status, jqxhr) {
+                $.ajax({
+                    type: settings.method,
+                    url: this.action,
+                    data: $form.serialize(),
+                    success: function(data, status, jqxhr) {
                         $form.find('.modal-body p[class*="text-"]').remove();
                         $form.find('input').next('span.help-inline').remove();
                         $form.find('.control-group').removeClass(
@@ -44,8 +46,8 @@
                         } 
 
                     },
-                    'json'
-                ).done(settings.done).fail(settings.fail).always(settings.always);
+                    dataType: 'json'
+                }).done(settings.done).fail(settings.fail).always(settings.always);
 
             });
 

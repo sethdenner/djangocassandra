@@ -27,6 +27,7 @@ from models import (
 class IdentityForm(ModelForm):
     class Meta:
         model = Identity
+        exclude = ('content_type')
 
 
 class IdentitySimpleForm(IdentityForm):
@@ -50,18 +51,11 @@ class IdentitySimpleForm(IdentityForm):
         label=''
     )
 
-    subject_id = CharField(
-        max_length=36,
-        label='',
-        required=False,
-        widget=HiddenInput()
-    )
-
     def __init__(
         self,
         form_id='id-identity-form',
-        form_method='post',
         form_action='/api/v1/identity/identity/',
+        subject_field=None,
         description_text=None,
         placeholder_text=None,
         help_text=None,
@@ -82,8 +76,8 @@ class IdentitySimpleForm(IdentityForm):
 
         self.helper = FormHelper()
         self.helper.form_id = form_id
-        self.helper.form_method = form_method
         self.helper.form_action = form_action
+        self.helper.form_method = 'post'
 
         if description_text:
             element_description_text = HTML(
@@ -109,6 +103,15 @@ class IdentitySimpleForm(IdentityForm):
         else:
             element_help_text = None
 
+        if subject_field:
+            element_subject_field = Field(
+                subject_field,
+                id='identity-subject-input'
+            )
+
+        else:
+            element_subject_field = None
+
         self.helper.layout = Layout(
             Div(
                 element_description_text,
@@ -125,10 +128,7 @@ class IdentitySimpleForm(IdentityForm):
                     'identity_type',
                     id='identity-type-input'
                 ),
-                Field(
-                    'subject_id',
-                    id='identity-subject-input'
-                ),
+                element_subject_field,
                 element_help_text,
                 css_class='modal-body'
             ),
@@ -151,13 +151,21 @@ class IdentityIndividualSimpleForm(IdentitySimpleForm):
         widget=HiddenInput()
     )
 
+    user_id = CharField(
+        max_length=36,
+        label='',
+        widget=HiddenInput
+    )
+
     def __init__(
         self,
         *args,
         **kwargs
     ):
         super(IdentityIndividualSimpleForm, self).__init__(
+            form_action='/api/v1/identity/individual/',
             placeholder_text='Your Name',
+            subject_field='user_id',
             *args,
             **kwargs
         )
@@ -172,13 +180,21 @@ class IdentityBusinessSimpleForm(IdentitySimpleForm):
         widget=HiddenInput()
     )
 
+    individual_id = CharField(
+        max_length=36,
+        label='',
+        widget=HiddenInput
+    )
+
     def __init__(
         self,
         *args,
         **kwargs
     ):
         super(IdentityBusinessSimpleForm, self).__init__(
+            form_action='/api/v1/identity/business/',
             placeholder_text='Business Name',
+            subject_field='individual_id',
             *args,
             **kwargs
         )
@@ -193,13 +209,21 @@ class IdentityEstablishmentSimpleForm(IdentitySimpleForm):
         widget=HiddenInput()
     )
 
+    business_id = CharField(
+        max_length=36,
+        label='',
+        widget=HiddenInput
+    )
+
     def __init__(
         self,
         *args,
         **kwargs
     ):
         super(IdentityEstablishmentSimpleForm, self).__init__(
+            form_action='/api/v1/identity/establishment/',
             placeholder_text='Establishment Name',
+            subject_field='business_id',
             *args,
             **kwargs
         )

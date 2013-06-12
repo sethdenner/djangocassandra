@@ -20,7 +20,7 @@ from models import KnotisUser
 
 class AuthenticationApi(ApiView):
     model = KnotisUser
-    model_name = 'auth'
+    api_url = 'auth'
 
     def post(
         self,
@@ -73,9 +73,9 @@ class AuthenticationApi(ApiView):
 
 class AuthUserApi(ApiView):
     model = KnotisUser
-    model_name = 'user'
+    api_url = 'user'
 
-    def create(
+    def post(
         self,
         request,
         *args,
