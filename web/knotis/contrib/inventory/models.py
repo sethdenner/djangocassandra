@@ -175,6 +175,8 @@ class Inventory(QuickModel):
         related_name='inventory_recipient'
     )
     stock = QuickFloatField()
+    price = QuickFloatField()
+    unlimited = QuickBooleanField()
     perishable = QuickBooleanField()
 
     objects = InventoryManager()

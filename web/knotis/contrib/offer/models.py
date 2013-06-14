@@ -71,26 +71,8 @@ class OfferManager(QuickManager):
         *args,
         **kwargs
     ):
-        status = Offer.get_arg_value_by_name(
-            'status',
-            *args,
-            **kwargs
-        )
-        published = Offer.get_arg_value_by_name(
-            'published',
-            *args,
-            **kwargs
-        )
-        price_discount = Offer.get_arg_value_by_name(
-            'price_discount',
-            *args,
-            **kwargs
-        )
-        image = Offer.get_arg_value_by_name(
-            'image',
-            *args,
-            **kwargs
-        )
+        status = kwargs.get('status')
+        published = kwargs.get('published', False)
 
         if not status:
             status = OfferStatus.CURRENT if published else OfferStatus.CREATED
@@ -102,13 +84,16 @@ class OfferManager(QuickManager):
         )
         offer.save()
 
+        discount_factor = kwargs.pop('discount_factor', 0.)
         for i in inventory:
+            price_discount = i.price * discount_factor
             OfferItem.objects.create(
                 offer=offer,
                 inventory=i,
                 price_discount=price_discount
             )
 
+        image = kwargs.get('image')
         if image:
             image.related_object_id = offer.id
             image.save()

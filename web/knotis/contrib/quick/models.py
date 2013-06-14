@@ -118,6 +118,8 @@ class QuickModelBase(object):
             if field.name == field_name:
                 break
 
+            ++i
+
         return args[i] if len(args) > i else kwargs.get(field_name)
 
     def get_absolute_url(self):

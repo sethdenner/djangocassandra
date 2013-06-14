@@ -4,7 +4,10 @@ logger = logging.getLogger(__name__)
 from knotis.views import ApiView
 
 from models import Inventory
-from forms import InventoryForm
+from forms import (
+    InventoryForm,
+    InventoryStackFromProductForm
+)
 
 
 class InventoryApi(ApiView):
@@ -19,11 +22,15 @@ class InventoryApi(ApiView):
     ):
         errors = {}
 
-        form = InventoryForm(data=request.POST)
+        form = InventoryStackFromProductForm(data=request.POST)
 
         if form.is_valid():
             try:
-                inventory = form.save()
+                inventory = Inventory.objects.create_stack_from_product(
+                    form.cleaned_data.get('provider'),
+                    form.cleaned_data.get('product'),
+                    form.cleaned_data.get('stock', 0.),
+                )
 
             except Exception, e:
                 error_message = 'An error occurred during inventory creation'
@@ -58,11 +65,23 @@ class InventoryApi(ApiView):
         errors = {}
 
         update_id = request.PUT.get('id')
-        if update_id:
+
+        try:
             inventory = Inventory.objects.get(pk=update_id)
 
-        else:
-            inventory = None
+        except Exception, e:
+            error_message = ''.join([
+                'Could not find inventory with id <',
+                update_id,
+                '>.'
+            ])
+            logger.exception(error_message)
+            errors['no-field'] = error_message
+
+            return self.generate_response({
+                'message': e.message,
+                'errors': errors
+            })
 
         form = InventoryForm(
             data=request.PUT,

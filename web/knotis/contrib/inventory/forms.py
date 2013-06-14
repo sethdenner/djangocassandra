@@ -10,3 +10,15 @@ class InventoryForm(ModelForm):
             'content_type',
             'deleted'
         )
+
+
+class InventoryStackFromProductForm(InventoryForm):
+    class Meta(InventoryForm.Meta):
+        exclude = (
+            'id',
+            'content_type',
+            'deleted',
+            'recipient',
+            'perishable',
+            'unlimited'
+        )
