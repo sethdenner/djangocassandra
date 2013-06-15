@@ -5,22 +5,84 @@ from django.views.generic import (
     View,
     ListView
 )
-from django.shortcuts import render
+from django.shortcuts import (
+    render,
+    get_object_or_404
+)
 from django.utils import log
 logger = log.getLogger(__name__)
 
 from knotis.views.mixins import RenderTemplateFragmentMixin
 
 from knotis.contrib.auth.models import UserInformation
-from knotis.contrib.identity.models import Identity
 from knotis.contrib.maps.forms import GeocompleteForm
 
-from models import IdentityIndividual
+from models import (
+    Identity,
+    IdentityIndividual,
+    IdentityEstablishment
+)
 
 from forms import (
     IdentityIndividualSimpleForm,
     IdentityBusinessSimpleForm
 )
+
+
+class EstablishmentProfileView(View, RenderTemplateFragmentMixin):
+    template_name = 'knotis/identity/profile_establishment.html'
+    view_name = 'establishment_profile'
+
+    def get(
+        self,
+        request,
+        establishment_id=None,
+        backend_name=None,
+        *args,
+        **kwargs
+    ):
+        try:
+            if establishment_id:
+                establishment = get_object_or_404(
+                    IdentityEstablishment,
+                    pk=establishment_id
+                )
+
+            elif backend_name:
+                establishment = get_object_or_404(
+                    IdentityEstablishment,
+                    backend_name=backend_name
+                )
+
+            else:
+                raise IdentityEstablishment.DoesNotExist()
+
+        except:
+            raise http.Http404
+
+        is_manager = False
+        if request.user.is_authenticated():
+            individual = IdentityIndividual.objects.get_individual(
+                request.user
+            )
+            establishments_managed = (
+                IdentityEstablishment.objects.get_establishments(
+                    individual
+                )
+            )
+
+            for managed in establishments_managed:
+                if managed.id == establishment.id:
+                    is_manager = True
+                    break
+
+        return render(
+            request,
+            self.template_name, {
+                'establishment': establishment,
+                'is_manager': is_manager
+            }
+        )
 
 
 class FirstIdentityView(View, RenderTemplateFragmentMixin):

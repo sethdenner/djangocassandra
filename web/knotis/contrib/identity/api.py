@@ -9,7 +9,8 @@ from models import (
     Identity,
     IdentityIndividual,
     IdentityBusiness,
-    IdentityEstablishment
+    IdentityEstablishment,
+    IdentityTypes
 )
 from forms import IdentityForm
 
@@ -280,6 +281,25 @@ class IdentityBusinessApi(IdentityApi):
                 'errors': errors
             })
 
+        # Create a default establishment for this business.
+        try:
+            establishment_data = request.POST.copy()
+            establishment_data['identity_type'] = IdentityTypes.ESTABLISHMENT
+            form_establishment = IdentityForm(data=establishment_data)
+            establishment = form_establishment.save()
+
+        except Exception, e:
+            business.delete()
+
+            message = 'An error occurred during establishment creation.'
+            logger.exception(message)
+            errors['no-field']  = e.message
+
+            return self.generate_response({
+                'message': message,
+                'errors': errors
+            })
+
         individual = None
         individual_id = request.POST.get('individual_id')
         if individual_id:
@@ -321,7 +341,9 @@ class IdentityBusinessApi(IdentityApi):
 
         data['data'] = {
             'business_id': business.id,
-            'business_name': business.name
+            'business_name': business.name,
+            'business_backend_name': business.backend_name,
+            'establishment_id': establishment.id
         }
 
         data['message'] = 'Business created successfully'
@@ -422,7 +444,8 @@ class IdentityEstablishmentApi(IdentityApi):
 
         data['data'] = {
             'establishment_id': establishment.id,
-            'establishment_name': establishment.name
+            'establishment_name': establishment.name,
+            'establishment_backend_name': establishment.backend_name
         }
 
         data['message'] = 'Establishment created successfully'

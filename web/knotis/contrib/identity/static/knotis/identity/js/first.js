@@ -43,7 +43,13 @@
                         });
                         
                         $('form#id-location-form input#related-id-input').val(
-                            data.data.business_id
+                            data.data.establishment_id
+                        );
+
+                        $('form#id-location-form').append(
+                            '<input id="backend_name" type="hidden" value="' +
+                            data.data.business_backend_name +
+                            '"/>'
                         );
 
                     }
@@ -55,7 +61,8 @@
                 done: function(data, status, jqxhr) {
                     if (!data.errors) {
                         $('#modal-box').modal('hide');
-                        window.location = '/merchants/' + data.establishment_name
+                        var backend_name = $('form#id-location-form input#backend_name').val();
+                        window.location = '/merchants/' + backend_name + '/';
 
                     }
 

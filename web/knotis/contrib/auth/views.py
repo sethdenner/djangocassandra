@@ -373,8 +373,6 @@ def validate(
                 authenticated_user
             )
 
-            redirect_url = '/dashboard/'
-
     except:
         logger.exception('exception while validating endpoint')
 

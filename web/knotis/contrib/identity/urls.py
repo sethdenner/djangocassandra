@@ -3,6 +3,8 @@ from django.conf.urls.defaults import (
     url
 )
 
+from knotis.utils.regex import REGEX_UUID
+
 from api import (
     IdentityApi,
     IdentityIndividualApi,
@@ -10,12 +12,25 @@ from api import (
     IdentityEstablishmentApi
 )
 from views import (
+    EstablishmentProfileView,
     IdentitySwitcherView,
     FirstIdentityView
 )
 
 urlpatterns = patterns(
     'knotis.contrib.identity.views',
+    url(
+        r''.join([
+            '^merchants/(?P<establishment_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        EstablishmentProfileView.as_view()
+    ),
+    url(
+        r'^merchants/(?P<backend_name>[^/]+)/$',
+        EstablishmentProfileView.as_view()
+    ),
     url(
         r'^identity/switcher/$',
         IdentitySwitcherView.as_view()

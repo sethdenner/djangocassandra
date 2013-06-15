@@ -21,7 +21,6 @@ class LocationApi(ApiView):
         *args,
         **kwargs
     ):
-        import pdb; pdb.set_trace()
         errors = {}
 
         update_id = request.POST.get('id')

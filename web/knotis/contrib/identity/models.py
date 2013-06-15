@@ -1,5 +1,9 @@
+import re
+
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
+
+from django.utils.http import urlquote
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
@@ -203,12 +207,16 @@ class Identity(QuickModel):
     )
     name = QuickCharField(
         max_length=80,
-        db_index=True,
-        verbose_name=_("Identity Name"),
+        verbose_name=_('Identity Name'),
         blank=False
     )
+    backend_name = QuickCharField(
+        max_length=80,
+        db_index=True,
+        verbose_name=_('Backend Name')
+    )
     description = QuickTextField(
-        verbose_name=_("Describe the Identity")
+        verbose_name=_('Describe the Identity')
     )
     primary_image = QuickForeignKey('media.Image')
 
@@ -216,6 +224,34 @@ class Identity(QuickModel):
 
     def is_name_default(self):
         return self.DEFAULT_NAME == self.name
+
+    @staticmethod
+    def _clean_backend_name(name):
+        backend_name = name.replace(
+            '&',
+            'and'
+        ).replace(
+            '/',
+            '-'
+        )
+
+        backend_name = urlquote(
+            backend_name.strip().lower().replace(
+                ' ',
+                '-'
+            )
+        )
+        backend_name = re.sub(
+            r'%[0-9a-fA-F]{2}',
+            '',
+            backend_name
+        )
+
+        return backend_name
+
+    def clean(self):
+        if self.name and not self.backend_name:
+            self.backend_name = self._clean_backend_name(self.name)
 
     def __unicode__(self):
         if (self.name):
