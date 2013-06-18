@@ -76,11 +76,31 @@ class EstablishmentProfileView(View, RenderTemplateFragmentMixin):
                     is_manager = True
                     break
 
+        styles = [
+            'layout/css/header.css',
+            'layout/css/grid.css',
+            'navigation/css/nav_top.css',
+            'navigation/css/nav_side.css',
+            'knotis/identity/css/profile.css'
+        ]
+
+        pre_scripts = []
+
+        post_scripts = [
+            'knotis/layout/js/layout.js',
+            'knotis/layout/js/forms.js',
+            'layout/js/header.js',
+            'navigation/js/navigation.js'
+        ]
+
         return render(
             request,
             self.template_name, {
                 'establishment': establishment,
-                'is_manager': is_manager
+                'is_manager': is_manager,
+                'styles': styles,
+                'pre_scripts': pre_scripts,
+                'post_scripts': post_scripts,
             }
         )
 

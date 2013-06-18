@@ -1,10 +1,49 @@
 {% extends 'layout/master.html' %}
+{% load render_template_fragment %}
+{% block title %}Knotis - Be in the kno!{% endblock title %}
+{% block first %}{% endblock first %}
+{% block header %}
+{% render_fragment header %}
+{% render_fragment nav_top %}
+{% endblock header %}
 {% block content %}
 <div class="container">
-  <div class="row">
+  <div id="id-profile-cover" class="row">
     <div class="span12">
-      Business Profile
+      <img src="{{ STATIC_URL }}knotis/identity/img/profile_default.png" class="img-circle" />
+      <div class="row">
+        <div id="id-profile-title" class="span12">
+          <h2>Natrual Life Water Co.</h2>
+        </div>
+      </div>
+      <div id="id-profile-contact" class="row">
+        <strong>
+          <ul class="unstyled span12" >
+            <li>1411 E Alder St.</li>
+            <li>Seattle, WA 98122</li>
+            <li>(555) 555 5555</li>
+            <li>contact@example.com</li>
+            <li>&nbsp;</li>
+            <li>twitter</li>
+            <li>facebook</li>
+          </ul>
+        </strong>
+      </div>
+      <div id="id-profile-action" class="row">
+        
+      </div>
+    </div>
+  </div>
+  <div id="id-profile-spacer" class="row"><p class="span12">&nbsp;</p></div>
+  <div class="row">
+    <div class="span2">
+      {% render_fragment nav_side %}
+    </div>
+    <div class="span10">
+      {% render_fragment grid_mixed %}
     </div>
   </div>
 </div>
 {% endblock content %}
+{% block footer %}{% endblock footer %}
+{% block last %}{% endblock last %}
