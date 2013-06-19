@@ -226,6 +226,9 @@ class SignUpForm(ModelForm):
                 user
             )
 
+            user_info.default_identity_id = individual.id
+            user_info.save()
+
             email = Endpoint.objects.create(
                 endpoint_type=EndpointTypes.EMAIL,
                 value=user.email,

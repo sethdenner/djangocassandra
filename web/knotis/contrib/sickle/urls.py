@@ -12,5 +12,4 @@ urlpatterns = patterns(
         ]),
         'crop'
     )
-    
 )

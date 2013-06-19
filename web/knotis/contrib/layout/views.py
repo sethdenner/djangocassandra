@@ -9,7 +9,7 @@ from knotis.contrib.maps.views import GoogleMap
 
 
 class HeaderView(View, RenderTemplateFragmentMixin):
-    template_name = 'layout/header.html'
+    template_name = 'knotis/layout/header.html'
     view_name = 'header'
 
     def get(
@@ -83,7 +83,7 @@ class IndexView(View):
 
 
 class GridMixedView(View, RenderTemplateFragmentMixin):
-    template_name = 'layout/grid_mixed.html'
+    template_name = 'knotis/layout/grid_mixed.html'
     view_name = 'grid_mixed'
 
     @classmethod

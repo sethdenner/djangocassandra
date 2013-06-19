@@ -1,4 +1,5 @@
 from django import http
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import (
@@ -16,6 +17,7 @@ from knotis.views.mixins import RenderTemplateFragmentMixin
 
 from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.maps.forms import GeocompleteForm
+from knotis.contrib.media.models import Image
 
 from models import (
     Identity,
@@ -81,7 +83,8 @@ class EstablishmentProfileView(View, RenderTemplateFragmentMixin):
             'layout/css/grid.css',
             'navigation/css/nav_top.css',
             'navigation/css/nav_side.css',
-            'knotis/identity/css/profile.css'
+            'knotis/identity/css/profile.css',
+            'styles/default/fileuploader.css'
         ]
 
         pre_scripts = []
@@ -90,8 +93,34 @@ class EstablishmentProfileView(View, RenderTemplateFragmentMixin):
             'knotis/layout/js/layout.js',
             'knotis/layout/js/forms.js',
             'layout/js/header.js',
-            'navigation/js/navigation.js'
+            'navigation/js/navigation.js',
+            'jcrop/js/jquery.Jcrop.js',
+            'scripts/fileuploader.js',
+            'scripts/jquery.sickle.js',
+            'knotis/identity/js/profile.js'
         ]
+
+        images_establishment = Image.objects.filter(
+            related_object_id=establishment.id
+        )
+
+        if 0 == images_establishment.count():
+            no_logo = True
+            if is_manager:
+                profile_logo_uri = ''.join([
+                    settings.STATIC_URL,
+                    'knotis/identity/img/add_logo.png'
+                ])
+
+            else:
+                profile_logo_uri = ''.join([
+                    settings.STATIC_URL,
+                    'knotis/identity/img/profile_default.png'
+                ])
+
+        else:
+            no_logo = False
+            profile_logo_uri = images_establishment[0].image.url
 
         return render(
             request,
@@ -101,6 +130,8 @@ class EstablishmentProfileView(View, RenderTemplateFragmentMixin):
                 'styles': styles,
                 'pre_scripts': pre_scripts,
                 'post_scripts': post_scripts,
+                'profile_logo_uri': profile_logo_uri,
+                'no_logo': no_logo
             }
         )
 
@@ -149,7 +180,7 @@ class FirstIdentityView(View, RenderTemplateFragmentMixin):
 
 
 class IdentitySwitcherView(ListView, RenderTemplateFragmentMixin):
-    template_name = 'identity/switcher.html'
+    template_name = 'knotis/identity/switcher.html'
     view_name = 'identity_switcher'
 
     # make login required for all methods
@@ -243,13 +274,28 @@ class IdentitySwitcherView(ListView, RenderTemplateFragmentMixin):
         if not request.user.is_authenticated():
             return ''
 
+        key_available = 'available_identities'
+
         try:
-            context['available_identities'] = Identity.objects.get_available(
+            context[key_available] = Identity.objects.get_available(
                 user=request.user
             )
 
         except:
             logger.exception('failed to get available identities.')
+
+        current_identity_id = request.session.get('current_identity_id')
+        if not current_identity_id:
+            try:
+                user_information = UserInformation.objects.get(
+                    user=request.user
+                )
+                request.session[
+                    'current_identity_id'
+                ] = user_information.default_identity_id
+
+            except:
+                logger.exception('failed to get current identity')
 
         return super(
             IdentitySwitcherView,

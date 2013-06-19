@@ -67,9 +67,9 @@ class IdentityManager(QuickManager):
         )
         identity_relations = Relation.objects.filter(
             relation_type=RelationTypes.MANAGER,
-            subject_content_type__pk=identity_content_type.id,
+            subject_content_type=identity_content_type,
             subject_object_id=user_identity.id,
-            related_content_type=identity_content_type.id
+            related_content_type=identity_content_type
         )
         for relation in identity_relations:
             identities.add(relation.related)

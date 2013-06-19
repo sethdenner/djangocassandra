@@ -6,16 +6,25 @@ logger = logging.getLogger(__name__)
 from django.http import HttpResponse
 from django.contrib.auth import (
     authenticate,
-    login
+    login,
+    logout
 )
 
 from knotis.views import ApiView
+
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityIndividual
+)
 
 from forms import (
     LoginForm,
     SignUpForm
 )
-from models import KnotisUser
+from models import (
+    KnotisUser,
+    UserInformation
+)
 
 
 class AuthenticationApi(ApiView):
@@ -56,10 +65,30 @@ class AuthenticationApi(ApiView):
                 'errors': errors
             })
 
+        user = form.get_user()
+
         login(
             request,
-            form.get_user()
+            user
         )
+
+        try:
+            user_information = UserInformation.objects.get(user=user)
+            if not user_information.default_identity_id:
+                identity = IdentityIndividual.objects.get_individual(user)
+                user_information.default_identity_id = identity.id
+                user_information.save()
+
+            else:
+                identity = Identity.objects.get(
+                    pk=user_information.default_identity_id
+                )
+
+        except Exception:
+            logger.exception('could not get user identity.')
+            logout(user)
+
+        request.session['current_identity_id'] = identity.id
 
         default_url = '/'
 

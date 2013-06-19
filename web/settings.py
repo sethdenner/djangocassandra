@@ -165,6 +165,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.core.context_processors.static',
+    'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages'
 )
 
@@ -178,6 +179,8 @@ MIDDLEWARE_CLASSES = (
     # 'knotis.contrib.mobile.middleware.MobileDetectionMiddleware',
     # 'knotis.contrib.activity.middleware.ActivityMiddleware'
 )
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 ROOT_URLCONF = 'urls'
 

@@ -6,8 +6,14 @@ from django.conf.urls.defaults import (
 
 from knotis.utils.regex import REGEX_UUID
 
+from views import ImageUploadView
+
 urlpatterns = patterns(
     'knotis.contrib.media.views',
+    url(
+        r'image/upload/',
+        ImageUploadView.as_view()
+    ),
     url(
         r'^image/ajax/',
         'ajax'

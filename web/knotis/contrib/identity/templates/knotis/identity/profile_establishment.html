@@ -10,15 +10,15 @@
 <div class="container">
   <div id="id-profile-cover" class="row">
     <div class="span12">
-      <img src="{{ STATIC_URL }}knotis/identity/img/profile_default.png" class="img-circle" />
+      <img {% if no_logo %}data-add-image {% endif %}src="{{ profile_logo_uri }}" class="img-circle" />
       <div class="row">
         <div id="id-profile-title" class="span12">
-          <h2>Natrual Life Water Co.</h2>
+          <h2>{{ establishment.name }}</h2>
         </div>
       </div>
       <div id="id-profile-contact" class="row">
         <strong>
-          <ul class="unstyled span12" >
+          <ul class="unstyled offset8 span4" >
             <li>1411 E Alder St.</li>
             <li>Seattle, WA 98122</li>
             <li>(555) 555 5555</li>
@@ -44,6 +44,7 @@
     </div>
   </div>
 </div>
+<div id="id-identity-id" data-identity-id="{{ establishment.id }}" class="hide" >&nbsp;</div>
 {% endblock content %}
 {% block footer %}{% endblock footer %}
 {% block last %}{% endblock last %}

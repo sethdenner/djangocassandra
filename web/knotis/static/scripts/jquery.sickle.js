@@ -142,7 +142,7 @@
                 
              } else {
                  $(this).unbind('click.sickle').bind('click.sickle', function(event){
-                    _crop($(this).attr('data-image-id'));
+                     _crop($(this).attr('data-image-id'));
                     
                     event.stopPropagation();
                     return false;

@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 from django.conf import settings
 from django.views.static import serve
+from django.views.generic import View
 from django.forms import (
     ModelForm,
     CharField
@@ -25,9 +26,29 @@ from django.http import (
 )
 from django.core.files.base import ContentFile
 
+from knotis.views.mixins import RenderTemplateFragmentMixin
 from knotis.contrib.media.models import Image
 from knotis.contrib.business.models import Business
-from knotis.contrib.offer.models import Offer
+from knotis.contrib.identity.models import Identity
+
+
+class ImageUploadView(View, RenderTemplateFragmentMixin):
+    template_name = 'knotis/media/image_upload.html'
+    view_name = 'image_upload'
+
+    def get(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        object_id = request.GET.get('object_id')
+        return render(
+            request,
+            self.template_name, {
+                'object_id': object_id
+            }
+        )
 
 
 def render_image_list(
@@ -176,8 +197,11 @@ def _upload(request):
     name = request.GET.get('qqfile')
     response = {}
     try:
+        identity = Identity.objects.get(
+            pk=request.session['current_identity_id']
+        )
         image = Image(
-            user=request.user,
+            owner=identity,
             related_object_id=object_id
         )
         image.image.save(
@@ -192,7 +216,9 @@ def _upload(request):
         response['success'] = 'true'
         response['image_id'] = image.id
 
-    except Exception, error:
+    except Exception:
+        logger.exception('File upload failed.')
+
         response['success'] = 'false'
         response['message'] = 'File upload failed.'
 
@@ -203,6 +229,7 @@ def _upload(request):
 
 
 def ajax(request):
+    import pdb; pdb.set_trace()
     if request.method.lower() == 'post':
         return _upload(request)
     else:

@@ -1,0 +1,5 @@
+{% for identity in available_identities %}
+{% if identity.id == request.session.current_identity_id %}
+<li><a href="#">{{ identity.name }}</a></li>
+{% endif%}
+{% endfor %}

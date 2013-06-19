@@ -2,7 +2,10 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from knotis.views import ApiView
-from knotis.contrib.auth.models import KnotisUser
+from knotis.contrib.auth.models import (
+    KnotisUser,
+    UserInformation
+)
 from knotis.contrib.relation.models import Relation
 
 from models import (
@@ -251,8 +254,34 @@ class IdentityBusinessApi(IdentityApi):
         *args,
         **kwargs
     ):
+        def clean_up(objects=[]):
+            for o in objects:
+                if o:
+                    o.delete()
+
+        created_objects = []
+
         data = {}
         errors = {}
+
+        individual = None
+        individual_id = request.POST.get('individual_id')
+        if individual_id:
+            try:
+                individual = IdentityIndividual.objects.get(
+                    pk=individual_id
+                )
+
+            except Exception, e:
+                message = 'Individual does not exist.'
+                logger.exception(message)
+                errors['no-field'] = e.message
+
+                clean_up(created_objects)
+                return self.generate_response({
+                    'message': message,
+                    'errors': errors
+                })
 
         form = IdentityForm(
             data=request.POST
@@ -260,7 +289,7 @@ class IdentityBusinessApi(IdentityApi):
 
         if not form.is_valid():
             for field, messages in form.errors.iteritems():
-                errors[field] = [message for message in messages]
+                errors[field] = [m for m in messages]
 
             data['message'] = (
                 'An error occurred during business creation.'
@@ -270,6 +299,7 @@ class IdentityBusinessApi(IdentityApi):
 
         try:
             business = form.save()
+            created_objects.append(business)
 
         except Exception, e:
             message = 'An error occurred during business creation.'
@@ -281,63 +311,76 @@ class IdentityBusinessApi(IdentityApi):
                 'errors': errors
             })
 
+        try:
+            user_information = UserInformation.objects.get(user=request.user)
+            user_information.default_identity_id = business.id
+            user_information.save()
+
+        except Exception:
+            logger.exception('failed to update default identity')
+
         # Create a default establishment for this business.
         try:
             establishment_data = request.POST.copy()
             establishment_data['identity_type'] = IdentityTypes.ESTABLISHMENT
             form_establishment = IdentityForm(data=establishment_data)
             establishment = form_establishment.save()
+            created_objects.append(establishment)
 
         except Exception, e:
-            business.delete()
-
             message = 'An error occurred during establishment creation.'
             logger.exception(message)
             errors['no-field']  = e.message
 
+            clean_up(created_objects)
             return self.generate_response({
                 'message': message,
                 'errors': errors
             })
 
-        individual = None
-        individual_id = request.POST.get('individual_id')
-        if individual_id:
-            try:
-                individual = IdentityIndividual.objects.get(
-                    pk=individual_id
+        try:
+            created_objects.append(
+                Relation.objects.create_establishment(
+                    business,
+                    establishment
                 )
+            )
 
-            except Exception, e:
-                business.delete()
+        except Exception, e:
+            message = (
+                'An error occurred during manager '
+                'relation creation.'
+            )
+            logger.exception(message)
+            errors['no-field'] = e.message
 
-                message = 'Individual does not exist.'
-                logger.exception(message)
-                errors['no-field'] = e.message
-                return self.generate_response({
-                    'message': message,
-                    'errors': errors
-                })
+            clean_up(created_objects)
+            return self.generate_response({
+                'message': message,
+                'errors': errors
+            })
 
-            try:
+        try:
+            created_objects.append(
                 Relation.objects.create_manager(
                     individual,
                     business
                 )
+            )
 
-            except Exception, e:
-                business.delete()
-                message = (
-                    'An error occurred during manager '
-                    'relation creation.'
-                )
-                logger.exception(message)
-                errors['no-field'] = e.message
+        except Exception, e:
+            message = (
+                'An error occurred during manager '
+                'relation creation.'
+            )
+            logger.exception(message)
+            errors['no-field'] = e.message
 
-                return self.generate_response({
-                    'message': message,
-                    'errors': errors
-                })
+            clean_up(created_objects)
+            return self.generate_response({
+                'message': message,
+                'errors': errors
+            })
 
         data['data'] = {
             'business_id': business.id,
