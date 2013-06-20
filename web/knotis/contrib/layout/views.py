@@ -24,6 +24,16 @@ class HeaderView(View, RenderTemplateFragmentMixin):
             {}
         )
 
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        return super(
+            HeaderView,
+            cls
+        ).render_template_fragment(context)
+
 
 class IndexView(View):
     def get(
@@ -36,7 +46,8 @@ class IndexView(View):
             'layout/css/header.css',
             'layout/css/grid.css',
             'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css'
+            'navigation/css/nav_side.css',
+            'knotis/identity/css/switcher.css'
         ]
 
         pre_scripts = []

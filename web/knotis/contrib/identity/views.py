@@ -197,7 +197,7 @@ class IdentitySwitcherView(ListView, RenderTemplateFragmentMixin):
             **kwargs
         )
 
-    def get(
+    def _render_to_response(
         self,
         request,
         *args,
@@ -223,16 +223,13 @@ class IdentitySwitcherView(ListView, RenderTemplateFragmentMixin):
             parameters
         )
 
-    def put(
+    def _update_current_identity(
         self,
         request,
         identity_id,
         *args,
         **kwargs
     ):
-        """
-        Update current identity
-        """
         try:
             available_identities = Identity.objects.get_available(
                 user=request.user
@@ -253,14 +250,38 @@ class IdentitySwitcherView(ListView, RenderTemplateFragmentMixin):
                 logger.warning(msg)
                 return http.HttpResponseServerError(msg)
 
-            request.session['current_identity'] = identity
-            return http.HttpResponse('OK')
+            request.session['current_identity_id'] = identity.id
+            return http.HttpResponseRedirect(
+                request.META.get('HTTP_REFERER', '/')
+            )
 
         except Exception, e:
             logger.exception(
                 'identity with id=%s does not exist.' % identity_id
             )
             return http.HttpResponseServerError(e)
+
+    def get(
+        self,
+        request,
+        identity_id=None,
+        *args,
+        **kwargs
+    ):
+        if not identity_id:
+            return self._render_to_response(
+                request,
+                *args,
+                **kwargs
+            )
+
+        else:
+            return self._update_current_identity(
+                request,
+                identity_id,
+                *args,
+                **kwargs
+            )
 
     @classmethod
     def render_template_fragment(
