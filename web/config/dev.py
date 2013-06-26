@@ -17,7 +17,7 @@ EMAIL_HOST_USER = 'knotis.dev@gmail.com'
 EMAIL_HOST_PASSWORD = 'wheeling and dealing'
 
 # Base url for external access
-BASE_URL = 'http://localhost:8000' # NO TRAILING SLASH!!!
+BASE_URL = 'http://dev1.knotis.com:8080'  # NO TRAILING SLASH!!!
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -28,16 +28,16 @@ STATIC_URL_ABSOLUTE = BASE_URL + STATIC_URL
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = '/srv/knotis/app/static/'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = '/home/seth/workspace/knotis.com/media/'
+MEDIA_ROOT = '/srv/knotis/app/media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = 'http://localhost:8000/media/'
+MEDIA_URL = '/media/'
 
 GOOGLE_MAPS_API_KEY = 'AIzaSyBrsdJdU3pwYc5Rsbg7f25yOGNYaOmaFnk'
 

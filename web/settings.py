@@ -95,12 +95,17 @@ YELP_CONSUMER_SECRET = 'vfyr5UHPQbjN5QFz22PcckRODSE'
 YELP_TOKEN_KEY = 'MEMHpkNVdQHmqK6fjjf0Xls30yAdg6sC'
 YELP_TOKEN_SECRET = 'WQyffYaB4R-NaMGaTcHJOkUWsWE'
 
-TWITTER_FEED_URI_TEMPLATE = (
-    'https://api.twitter.com/1/statuses/user_timeline.json'
-    '?include_entities=true'
-    '&include_rts=true'
-    '&screen_name=%s'
-    '&count=%s'
+TWITTER_CONSUMER_KEY = 'F1JxtuDONa6Iy4rF3cl7w'
+TWITTER_CONSUMER_SECRET = '8BoRFGcveB6Q7Ber70uoNGQoZo3kSFKTm0kk5ICXo0'
+TWITTER_KNOTIS_ACCESS_TOKEN = (
+    '321699338-nji3k08VXK0Gu7YLmBXsk8ptU8yuxGaO3He560Nj'
+)
+TWITTER_KNOTIS_TOKEN_SECRET = '2NC4yOFFbXPR59VoXISuVsn5IoZrENo8yfvlaW1Y'
+TWITTER_REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token'
+TWITTER_AUTHORIZE_URL = 'https://api.twitter.com/oauth/authorize'
+TWITTER_ACCESS_TOKEN_URL = 'https://api.twitter.com/oauth/access_token'
+TWITTER_FEED_URL = (
+    'https://api.twitter.com/1.1/statuses/user_timeline.json'
 )
 TWITTER_DEFAULT_RESULT_COUNT = 10
 
@@ -144,7 +149,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
