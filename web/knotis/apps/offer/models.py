@@ -583,12 +583,16 @@ class Offer(KnotisModel):
     def available(self):
         now = datetime.datetime.utcnow()
 
-        return self.active and \
-            self.published and \
-            self.status == OfferStatus.CURRENT and \
-            self.start_date < now and \
-            self.end_date > now and \
-            self.purchased < self.stock
+        return (
+            self.active and
+            self.published and
+            self.status == OfferStatus.CURRENT and
+            self.start_date < now and
+            self.end_date > now and (
+                self.unlimited or
+                self.purchased < self.stock
+            )
+        )
 
     def description_formatted_html(self):
         if not self.description or not self.description.value:
