@@ -18,13 +18,15 @@ class ProductTypes:
     SERVICE = 'service'
     CURRENCY = 'currency'
     DIGITAL = 'digital'
+    CREDIT = 'credit'
 
     CHOICES = (
         (PHYSICAL, 'Physical'),
         (EVENT, 'Event'),
         (SERVICE, 'Service'),
         (CURRENCY, 'Currency'),
-        (DIGITAL, 'Digital')
+        (DIGITAL, 'Digital'),
+        (CREDIT, 'Credit')
     )
 
 

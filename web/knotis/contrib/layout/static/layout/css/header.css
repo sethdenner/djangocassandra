@@ -8,3 +8,7 @@
     width: auto;
     float: none;
 }
+
+div.navbar.navbar-fluid-top {
+    margin-bottom: auto;
+}

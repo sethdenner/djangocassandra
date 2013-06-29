@@ -1,14 +1,14 @@
 from django.conf import settings
-from django.views.generic import View
 from django.shortcuts import render
+from django.views.generic import View
 
-from knotis.views.mixins import RenderTemplateFragmentMixin
+from knotis.views import FragmentView
 
 from knotis.contrib.identity.models import IdentityIndividual
 from knotis.contrib.maps.views import GoogleMap
 
 
-class HeaderView(View, RenderTemplateFragmentMixin):
+class HeaderView(FragmentView):
     template_name = 'knotis/layout/header.html'
     view_name = 'header'
 
@@ -88,12 +88,12 @@ class IndexView(View):
 
         return render(
             request,
-            'layout/index.html',
+            'knotis/layout/index.html',
             context
         )
 
 
-class GridMixedView(View, RenderTemplateFragmentMixin):
+class GridMixedView(FragmentView):
     template_name = 'knotis/layout/grid_mixed.html'
     view_name = 'grid_mixed'
 
@@ -104,5 +104,20 @@ class GridMixedView(View, RenderTemplateFragmentMixin):
     ):
         return super(
             GridMixedView,
+            cls
+        ).render_template_fragment(context)
+
+
+class GridSmallView(FragmentView):
+    template_name = 'knotis/layout/grid_small.html'
+    view_name = 'grid'
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        return super(
+            GridSmallView,
             cls
         ).render_template_fragment(context)

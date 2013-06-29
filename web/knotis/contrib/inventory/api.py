@@ -2,6 +2,8 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from knotis.views import ApiView
+from knotis.contrib.product.models import Product
+from knotis.contrib.product.forms import ProductSimpleForm
 
 from models import Inventory
 from forms import (
@@ -22,14 +24,15 @@ class InventoryApi(ApiView):
     ):
         errors = {}
 
-        form = InventoryStackFromProductForm(data=request.POST)
+        product_form = ProductSimpleForm(data=request.POST)
+        inventory_form = InventoryStackFromProductForm(data=request.POST)
 
-        if form.is_valid():
+        if inventory_form.is_valid():
             try:
                 inventory = Inventory.objects.create_stack_from_product(
-                    form.cleaned_data.get('provider'),
-                    form.cleaned_data.get('product'),
-                    form.cleaned_data.get('stock', 0.),
+                    inventory_form.cleaned_data.get('provider'),
+                    inventory_form.cleaned_data.get('product'),
+                    inventory_form.cleaned_data.get('stock', 0.),
                 )
 
             except Exception, e:
@@ -43,7 +46,7 @@ class InventoryApi(ApiView):
                 })
 
         else:
-            for field, messages in form.errors.iteritems():
+            for field, messages in inventory_form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
             return self.generate_response({

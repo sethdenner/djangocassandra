@@ -60,8 +60,103 @@ from knotis.contrib.paypal.views import (
 )
 from knotis.contrib.maps.views import OfferMap
 
-from django.views.generic import View
-from knotis.views.mixins import RenderTemplateFragmentMixin
+from knotis.views import FragmentView
+
+from forms import (
+    OfferProductPriceForm,
+    OfferDetailsForm,
+    OfferPhotoLocationForm,
+    OfferPublicationForm
+)
+
+FORM_DICT = {
+    'product': OfferProductPriceForm,
+    'details': OfferDetailsForm,
+    'location': OfferPhotoLocationForm,
+    'publication': OfferPublicationForm
+}
+
+
+class OfferCreateTile(FragmentView):
+    template_name = 'knotis/offer/create_tile.html'
+    view_name = 'offer_create_tile'
+
+
+class OfferCreateHeaderView(FragmentView):
+    template_name = 'knotis/offer/create_header.html'
+    view_name = 'offer_create_header'
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        return super(
+            OfferCreateHeaderView,
+            cls
+        ).render_template_fragment(context)
+
+
+class OfferCreateView(FragmentView):
+    template_name = 'knotis/offer/create.html'
+    view_name = 'offer_create'
+
+    def get(
+        self,
+        request,
+        form_type='product',
+        *args,
+        **kwargs
+    ):
+        form_class = FORM_DICT.get(form_type)
+        if not form_class:
+            pass  # Error
+
+        template_parameters = {
+            'offer_form': form_class()
+        }
+
+        return render(
+            request,
+            self.template_name,
+            template_parameters
+        )
+
+    def post(
+        self,
+        request,
+        form_type='product',
+        *args,
+        **kwargs
+    ):
+        form_class = FORM_DICT.get(form_type)
+        if not form_class:
+            pass  # Error
+
+        form = form_class(request.POST)
+        if not form.is_valid():
+            pass  # return field errors.
+
+        return super(OfferCreateView, self).post(
+            request,
+            *args,
+            **kwargs
+        )
+
+
+class OfferGridSmall(FragmentView):
+    template_name = 'knotis/layout/grid_small.html'
+    view_name = 'offer_small'
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        return super(
+            OfferGridSmall,
+            cls
+        ).render_template_fragment(context)
 
 
 def send_subscriber_notification(
@@ -74,16 +169,16 @@ def send_subscriber_notification(
             active=True
         )
 
-    except: 
+    except:
         subscriptions = None
-        
+
         logger.exception('failed to get subscriptions')
-        
+
     if not subscriptions:
         return
-    
+
     mail_list = [s.user.username for s in subscriptions]
-    
+
     logger.debug('sending subscriber emails')
     generate_email(
         'subscription_offers',
@@ -99,7 +194,8 @@ def send_subscriber_notification(
     logger.debug('email sent to %s users' % (
         len(mail_list)
     ))
-    
+
+
 class OfferForm(ModelForm):
     class Meta:
         model = Offer

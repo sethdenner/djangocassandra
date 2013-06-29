@@ -8,6 +8,12 @@ from django.http import (
 from django.views.generic import View
 from django.conf.urls.defaults import url
 
+from mixins import RenderTemplateFragmentMixin
+
+
+class FragmentView(View, RenderTemplateFragmentMixin):
+    pass
+
 
 class ApiView(View):
     model = None

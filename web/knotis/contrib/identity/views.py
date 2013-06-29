@@ -13,12 +13,13 @@ from django.shortcuts import (
 from django.utils import log
 logger = log.getLogger(__name__)
 
-from knotis.views.mixins import RenderTemplateFragmentMixin
+from knotis.views import FragmentView
 
 from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.maps.forms import GeocompleteForm
 from knotis.contrib.media.models import Image
 
+from knotis.contrib.layout.views import GridSmallView
 from models import (
     Identity,
     IdentityIndividual,
@@ -31,7 +32,22 @@ from forms import (
 )
 
 
-class EstablishmentProfileView(View, RenderTemplateFragmentMixin):
+class EstablishmentProfileGrid(GridSmallView):
+    view_name = 'establishment_profile_grid'
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+
+        return super(
+            EstablishmentProfileGrid,
+            cls
+        ).render_template_fragment(context)
+
+
+class EstablishmentProfileView(FragmentView):
     template_name = 'knotis/identity/profile_establishment.html'
     view_name = 'establishment_profile'
 
@@ -121,6 +137,11 @@ class EstablishmentProfileView(View, RenderTemplateFragmentMixin):
         else:
             no_logo = False
             profile_logo_uri = images_establishment[0].image.url
+
+        try:
+            establishment_offers = Offer.objects.filter(
+                owner=establishment,
+                
 
         return render(
             request,
