@@ -8,7 +8,7 @@ from views import OfferCreateView
 urlpatterns = patterns(
     'knotis.contrib.offer.views',
     url(
-        r'/create/(?P<form_type>.{1,16})/$',
+        r'/create/$',
         OfferCreateView.as_view()
     ),
 )

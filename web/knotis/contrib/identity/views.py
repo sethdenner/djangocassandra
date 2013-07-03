@@ -1,11 +1,8 @@
 from django import http
 from django.conf import settings
+from django.template import Context
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.views.generic import (
-    View,
-    ListView
-)
 from django.shortcuts import (
     render,
     get_object_or_404
@@ -18,6 +15,11 @@ from knotis.views import FragmentView
 from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.maps.forms import GeocompleteForm
 from knotis.contrib.media.models import Image
+from knotis.contrib.offer.models import Offer
+from knotis.contrib.offer.views import (
+    OfferTile,
+    OfferCreateTile
+)
 
 from knotis.contrib.layout.views import GridSmallView
 from models import (
@@ -40,11 +42,29 @@ class EstablishmentProfileGrid(GridSmallView):
         cls,
         context
     ):
+        establishment_offers = context.get('establishment_offers')
+
+        tiles = [
+            OfferCreateTile.render_template_fragment(Context({
+                'create_type': 'Promotion',
+                'create_action': '/offer/create/',
+                'action_type': 'modal'
+            }))
+        ]
+        if establishment_offers:
+            for offer in establishment_offers:
+                offer_context = Context({'offer': offer})
+                tiles.append(
+                    OfferTile.render_template_fragment(offer_context)
+                )
+
+        local_context = Context(context.dicts)
+        local_context.update({'tiles': tiles})
 
         return super(
             EstablishmentProfileGrid,
             cls
-        ).render_template_fragment(context)
+        ).render_template_fragment(local_context)
 
 
 class EstablishmentProfileView(FragmentView):
@@ -95,8 +115,10 @@ class EstablishmentProfileView(FragmentView):
                     break
 
         styles = [
-            'layout/css/header.css',
-            'layout/css/grid.css',
+            'knotis/layout/css/global.css',
+            'knotis/layout/css/header.css',
+            'knotis/layout/css/grid.css',
+            'knotis/layout/css/tile.css',
             'navigation/css/nav_top.css',
             'navigation/css/nav_side.css',
             'knotis/identity/css/profile.css',
@@ -108,7 +130,8 @@ class EstablishmentProfileView(FragmentView):
         post_scripts = [
             'knotis/layout/js/layout.js',
             'knotis/layout/js/forms.js',
-            'layout/js/header.js',
+            'knotis/layout/js/header.js',
+            'knotis/layout/js/create.js',
             'navigation/js/navigation.js',
             'jcrop/js/jquery.Jcrop.js',
             'scripts/fileuploader.js',
@@ -140,8 +163,11 @@ class EstablishmentProfileView(FragmentView):
 
         try:
             establishment_offers = Offer.objects.filter(
-                owner=establishment,
-                
+                owner=establishment
+            )
+
+        except:
+            logger.exception('failed to get establishment offers')
 
         return render(
             request,
@@ -152,12 +178,13 @@ class EstablishmentProfileView(FragmentView):
                 'pre_scripts': pre_scripts,
                 'post_scripts': post_scripts,
                 'profile_logo_uri': profile_logo_uri,
-                'no_logo': no_logo
+                'no_logo': no_logo,
+                'establishment_offers': establishment_offers
             }
         )
 
 
-class FirstIdentityView(View, RenderTemplateFragmentMixin):
+class FirstIdentityView(FragmentView):
     template_name = 'knotis/identity/first.html'
     view_name = 'identity_edit'
 
@@ -200,7 +227,7 @@ class FirstIdentityView(View, RenderTemplateFragmentMixin):
         )
 
 
-class IdentitySwitcherView(ListView, RenderTemplateFragmentMixin):
+class IdentitySwitcherView(FragmentView):
     template_name = 'knotis/identity/switcher.html'
     view_name = 'identity_switcher'
 

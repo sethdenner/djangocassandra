@@ -1,2 +1,46 @@
 {% load crispy_forms_tags %}
-{% crispy offer_form %}
+{% load render_template_fragment %}
+<div id="offer-create-carousel" class="carousel slide" data-interval="">
+  <div class="carousel-inner">
+    <div class="active item">
+      <div class="modal-header">
+        {% render_fragment offer_create_header 1 %}
+      </div>
+      <div class="modal-body">
+      {% crispy product_form %}
+      </div>
+    </div>
+    <div class="item">
+      <div class="modal-header">
+        {% render_fragment offer_create_header 2 %}
+      </div>
+      <div class="modal-body">
+      {% crispy details_form %}
+      </div>
+    </div>
+    <div class="item">
+      <div class="modal-header">
+        {% render_fragment offer_create_header 3 %}
+      </div>
+      <div class="modal-body">
+      {% crispy location_form %}
+      </div>
+    </div>
+    <div class="item">
+      <div class="modal-header">
+        {% render_fragment offer_create_header 4 %}
+      </div>
+      <div class="modal-body">
+      {% crispy publish_form %}
+      </div>
+    </div>
+    <div class="item">
+      <div class="modal-header">
+        {% render_fragment offer_create_header 5 %}
+      </div>
+      <div class="modal-body">
+        <p>SUMMARY</p>
+      </div>
+    </div>
+  </div>
+</div>

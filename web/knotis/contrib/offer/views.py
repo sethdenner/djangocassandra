@@ -69,12 +69,9 @@ from forms import (
     OfferPublicationForm
 )
 
-FORM_DICT = {
-    'product': OfferProductPriceForm,
-    'details': OfferDetailsForm,
-    'location': OfferPhotoLocationForm,
-    'publication': OfferPublicationForm
-}
+class OfferTile(FragmentView):
+    template_name = 'knotis/offer/tile.html'
+    view_name = 'offer_tile'
 
 
 class OfferCreateTile(FragmentView):
@@ -108,12 +105,16 @@ class OfferCreateView(FragmentView):
         *args,
         **kwargs
     ):
-        form_class = FORM_DICT.get(form_type)
-        if not form_class:
-            pass  # Error
+        product_form = OfferProductPriceForm()
+        details_form = OfferDetailsForm()
+        location_form = OfferPhotoLocationForm()
+        publish_form = OfferPublicationForm
 
         template_parameters = {
-            'offer_form': form_class()
+            'product_form': product_form,
+            'details_form': details_form,
+            'location_form': location_form,
+            'publish_form': publish_form
         }
 
         return render(

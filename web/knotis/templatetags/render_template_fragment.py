@@ -15,7 +15,6 @@ def render_template_fragment(parser, token):
         )
 
     view_name = split_token[1]
-    args = split_token[2:]
 
     if not view_name in RenderTemplateFragmentMixin.registered_fragments:
         raise template.TemplateSyntaxError(
@@ -25,22 +24,16 @@ def render_template_fragment(parser, token):
         )
 
     return TemplateFragmentNode(
-        view_name,
-        *args
+        view_name
     )
 
 
 class TemplateFragmentNode(template.Node):
     def __init__(
         self,
-        view_name,
-        *args
+        view_name
     ):
-        if args:
-            import pdb; pdb.set_trace()
-
         self.view_name = view_name
-        self.args = args
 
     def render(
         self,

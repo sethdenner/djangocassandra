@@ -91,16 +91,11 @@ class OfferProductPriceForm(Form):
 
         self.helper = FormHelper()
         self.helper.form_id = 'id-offer-product-price-form'
+        self.helper.form_action = '/offer/create/product/'
         self.helper.form_class = 'form-horizontal'
         self.helper.layout = Layout(
             Div(
-                'product_type',
-                Div(
-                    'credit_price',
-                    'credit_value',
-                    css_class='controls'
-                ),
-                css_class='control-group'
+                template='knotis/offer/create_product_price.html'
             )
         )
 

@@ -43,8 +43,10 @@ class IndexView(View):
         **kwargs
     ):
         styles = [
-            'layout/css/header.css',
-            'layout/css/grid.css',
+            'knotis/layout/css/global.css',
+            'knotis/layout/css/header.css',
+            'knotis/layout/css/grid.css',
+            'knotis/layout/css/tile.css',
             'navigation/css/nav_top.css',
             'navigation/css/nav_side.css',
             'knotis/identity/css/switcher.css'
@@ -56,7 +58,7 @@ class IndexView(View):
             'geocomplete/jquery.geocomplete.min.js',
             'knotis/layout/js/layout.js',
             'knotis/layout/js/forms.js',
-            'layout/js/header.js',
+            'knotis/layout/js/header.js',
             'navigation/js/navigation.js'
         ]
 
