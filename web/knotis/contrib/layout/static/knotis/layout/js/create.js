@@ -24,6 +24,7 @@
                 {},
                 function(data, status, jqxhr) {
                     $('#modal-box').html(data);
+                    
                 }
             );
         }    

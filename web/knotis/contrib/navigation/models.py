@@ -10,6 +10,7 @@ from knotis.contrib.quick.fields import (
     QuickIntegerField
 )
 
+
 class NavigationTypes:
     LINK = 'link'
     HEADER = 'header'
@@ -20,6 +21,7 @@ class NavigationTypes:
         (HEADER, 'Header'),
         (DIVIDER, 'Divider'),
     )
+
 
 class NavigationManager(Manager):
     def all_ordered(self):
@@ -41,10 +43,11 @@ class NavigationManager(Manager):
             key=lambda item: item.order
         )
 
+
 class NavigationItem(QuickModel):
     item_type = QuickCharField(
         max_length=16,
-        choices = NavigationTypes.CHOICES
+        choices=NavigationTypes.CHOICES
     )
     title = QuickCharField(
         max_length=32
@@ -64,4 +67,3 @@ class NavigationItem(QuickModel):
 
     def has_children(self):
         return self.children.count() > 0
-

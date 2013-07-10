@@ -14,6 +14,7 @@ from django.http import (
     HttpResponseNotFound,
     HttpResponseServerError,
 )
+from django.template import Context
 from django.forms import (
     ModelForm,
     CharField,
@@ -35,6 +36,8 @@ from knotis.contrib.offer.models import (
     OfferSort,
     OfferTitleTypes
 )
+from knotis.contrib.product.models import ProductTypes
+
 from knotis.contrib.business.models import (
     Business,
     BusinessSubscription
@@ -46,6 +49,12 @@ from knotis.contrib.transaction.models import (
     Transaction,
     TransactionTypes
 )
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityBusiness,
+    IdentityTypes
+)
+
 from knotis.contrib.category.models import (
     Category,
     City,
@@ -69,6 +78,7 @@ from forms import (
     OfferPublicationForm
 )
 
+
 class OfferTile(FragmentView):
     template_name = 'knotis/offer/tile.html'
     view_name = 'offer_tile'
@@ -76,12 +86,12 @@ class OfferTile(FragmentView):
 
 class OfferCreateTile(FragmentView):
     template_name = 'knotis/offer/create_tile.html'
-    view_name = 'offer_create_tile'
+    view_name = 'offer_edit_tile'
 
 
-class OfferCreateHeaderView(FragmentView):
-    template_name = 'knotis/offer/create_header.html'
-    view_name = 'offer_create_header'
+class OfferEditHeaderView(FragmentView):
+    template_name = 'knotis/offer/edit_header.html'
+    view_name = 'offer_edit_header'
 
     @classmethod
     def render_template_fragment(
@@ -89,32 +99,22 @@ class OfferCreateHeaderView(FragmentView):
         context
     ):
         return super(
-            OfferCreateHeaderView,
+            OfferEditHeaderView,
             cls
         ).render_template_fragment(context)
 
 
-class OfferCreateView(FragmentView):
-    template_name = 'knotis/offer/create.html'
-    view_name = 'offer_create'
+class OfferEditView(FragmentView):
+    template_name = 'knotis/offer/edit.html'
+    view_name = 'offer_edit'
 
     def get(
         self,
         request,
-        form_type='product',
         *args,
         **kwargs
     ):
-        product_form = OfferProductPriceForm()
-        details_form = OfferDetailsForm()
-        location_form = OfferPhotoLocationForm()
-        publish_form = OfferPublicationForm
-
         template_parameters = {
-            'product_form': product_form,
-            'details_form': details_form,
-            'location_form': location_form,
-            'publish_form': publish_form
         }
 
         return render(
@@ -123,26 +123,189 @@ class OfferCreateView(FragmentView):
             template_parameters
         )
 
-    def post(
+
+class OfferEditProductFormView(FragmentView):
+    template_name = 'knotis/offer/edit_product_price.html'
+    view_name = 'offer_edit_product_form'
+
+    def get(
         self,
         request,
-        form_type='product',
         *args,
         **kwargs
     ):
-        form_class = FORM_DICT.get(form_type)
-        if not form_class:
-            pass  # Error
+        try:
+            current_identity = Identity.objects.get(
+                id=request.session['current_identity_id']
+            )
 
-        form = form_class(request.POST)
-        if not form.is_valid():
-            pass  # return field errors.
+        except:
+            current_identity = None
 
-        return super(OfferCreateView, self).post(
+        if not current_identity:
+            return HttpResponseNotFound()
+
+        if current_identity.identity_type != IdentityTypes.BUSINESS:
+            return HttpResponseServerError()
+
+        return render(
+            request,
+            self.template_name, {
+                'form': OfferProductPriceForm(
+                    owners=IdentityBusiness.objects.filter(
+                        pk=current_identity.id
+                    )
+                ),
+                'ProductTypes': ProductTypes,
+                'current_identity': current_identity
+            }
+        )
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        import pdb; pdb.set_trace()
+
+        try:
+            current_identity = Identity.objects.get(
+                id=request.session['current_identity_id']
+            )
+
+        except:
+            current_identity = None
+
+        if not current_identity:
+            return HttpResponseNotFound()
+
+        if current_identity.identity_type != IdentityTypes.BUSINESS:
+            return HttpResponseServerError()
+
+        form = OfferProductPriceForm(
+            owners=IdentityBusiness.objects.filter(
+                pk=current_identity.id
+            ),
+            data=request.POST
+        )
+
+        if form.is_valid():
+            pass
+
+        return super(OfferEditProductFormView, self).post(
             request,
             *args,
             **kwargs
         )
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        local_context = Context(context.dicts)
+        local_context.update({'form': OfferProductPriceForm()})
+
+        return super(
+            OfferEditProductFormView,
+            cls
+        ).render_template_fragment(local_context)
+
+
+class OfferEditDetailsFormView(FragmentView):
+    template_name = 'knotis/offer/edit_details.html'
+    view_name = 'offer_edit_details_form'
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        return super(
+            OfferEditDetailsFormView,
+            self,
+        ).post(
+            request,
+            *args,
+            **kwargs
+        )
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        return super(
+            OfferEditDetailsFormView,
+            cls
+        ).render_template_fragment(context)
+
+
+class OfferEditLocationFormView(FragmentView):
+    template_name = 'knotis/offer/edit_location.html'
+    view_name = 'offer_edit_location_form'
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        return super(
+            OfferEditLocationFormView,
+            self,
+        ).post(
+            request,
+            *args,
+            **kwargs
+        )
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        return super(
+            OfferEditLocationFormView,
+            cls
+        ).render_template_fragment(context)
+
+
+class OfferEditPublishFormView(FragmentView):
+    template_name = 'knotis/offer/edit_publish.html'
+    view_name = 'offer_edit_publish_form'
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        return super(
+            OfferEditPublishFormView,
+            self,
+        ).post(
+            request,
+            *args,
+            **kwargs
+        )
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        return super(
+            OfferEditPublishFormView,
+            cls
+        ).render_template_fragment(context)
+
+
+class OfferEditSummaryView(FragmentView):
+    template_name = 'knotis/offer/edit_summary.html'
+    view_name = 'offer_edit_summary'
 
 
 class OfferGridSmall(FragmentView):

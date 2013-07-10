@@ -6,15 +6,11 @@ from django.forms import (
     IntegerField,
     BooleanField,
     ModelChoiceField,
-    RadioSelect
+    RadioSelect,
+    HiddenInput
 )
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import (
-    Layout,
-    Div,
-    Field
-)
+from knotis.contrib.identity.models import Identity
 
 from models import Offer
 
@@ -29,6 +25,16 @@ class OfferForm(ModelForm):
 
 
 class OfferProductPriceForm(Form):
+    template = 'knotis/offer/create_product_price.html'
+    form_id = 'id-offer-product-price'
+    form_method = 'POST'
+    form_action = '/offer/create/product/'
+
+    owner = ModelChoiceField(
+        widget=HiddenInput(),
+        queryset=Identity.objects.none()
+    )
+
     product_type = CharField(
         max_length=16,
         widget=RadioSelect(
@@ -38,12 +44,6 @@ class OfferProductPriceForm(Form):
                 'previous', 'Previous'
             )
         ),
-        label=''
-    )
-
-    previous_offers = ModelChoiceField(
-        queryset=Offer.objects.filter(),
-        empty_label='Previous Offers',
         label=''
     )
 
@@ -84,20 +84,14 @@ class OfferProductPriceForm(Form):
         *args,
         **kwargs
     ):
+        owners = kwargs.pop('owners')
+
         super(OfferProductPriceForm, self).__init__(
             *args,
             **kwargs
         )
 
-        self.helper = FormHelper()
-        self.helper.form_id = 'id-offer-product-price-form'
-        self.helper.form_action = '/offer/create/product/'
-        self.helper.form_class = 'form-horizontal'
-        self.helper.layout = Layout(
-            Div(
-                template='knotis/offer/create_product_price.html'
-            )
-        )
+        self.fields['owner'].queryset = owners
 
 
 class OfferDetailsForm(OfferForm):

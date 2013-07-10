@@ -76,6 +76,17 @@ class IdentityManager(QuickManager):
 
         return identities
 
+    def get_managed(
+        self,
+        identity
+    ):
+        managed_relations = Relation.objects.get_managed(identity)
+        managed_ids = []
+        for relation in managed_relations:
+            managed_ids.append(relation.related_object_id)
+
+        return Identity.objects.filter(id__in=managed_ids)
+
 
 class IdentityIndividualManager(IdentityManager):
     def create(
@@ -148,6 +159,20 @@ class IdentityBusinessManager(IdentityManager):
                 businesses.append(relation.related)
 
         return businesses
+
+    def get_establishment_parent(
+        self,
+        establishment
+    ):
+        business = None
+
+        relation_establishment = Relation.objects.get(
+            relation_type=RelationTypes.ESTABLISHMENT,
+            related=establishment
+        )
+
+        business = relation_establishment.subject
+        return business
 
     def get_query_set(self):
         return super(QuickManager, self).get_query_set().filter(

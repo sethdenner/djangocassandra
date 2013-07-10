@@ -23,6 +23,7 @@ from knotis.contrib.offer.views import (
 
 from knotis.contrib.layout.views import GridSmallView
 from models import (
+    IdentityTypes,
     Identity,
     IdentityIndividual,
     IdentityEstablishment
@@ -44,13 +45,18 @@ class EstablishmentProfileGrid(GridSmallView):
     ):
         establishment_offers = context.get('establishment_offers')
 
-        tiles = [
-            OfferCreateTile.render_template_fragment(Context({
-                'create_type': 'Promotion',
-                'create_action': '/offer/create/',
-                'action_type': 'modal'
-            }))
-        ]
+        tiles = []
+
+        is_manager = context.get('is_manager')
+        if is_manager:
+            tiles.append(
+                OfferCreateTile.render_template_fragment(Context({
+                    'create_type': 'Promotion',
+                    'create_action': '/offer/create/',
+                    'action_type': 'modal'
+                }))
+            )
+
         if establishment_offers:
             for offer in establishment_offers:
                 offer_context = Context({'offer': offer})
@@ -100,19 +106,22 @@ class EstablishmentProfileView(FragmentView):
 
         is_manager = False
         if request.user.is_authenticated():
-            individual = IdentityIndividual.objects.get_individual(
-                request.user
-            )
-            establishments_managed = (
-                IdentityEstablishment.objects.get_establishments(
-                    individual
-                )
+            current_identity_id = request.session.get('current_identity_id')
+            current_identity = Identity.objects.get(
+                pk=current_identity_id
             )
 
-            for managed in establishments_managed:
-                if managed.id == establishment.id:
-                    is_manager = True
-                    break
+            if current_identity.identity_type == IdentityTypes.BUSINESS:
+                establishments_managed = (
+                    IdentityEstablishment.objects.get_establishments(
+                        current_identity
+                    )
+                )
+
+                for managed in establishments_managed:
+                    if managed.id == establishment.id:
+                        is_manager = True
+                        break
 
         styles = [
             'knotis/layout/css/global.css',
