@@ -1,21 +1,49 @@
-import json
-
-from django.http import (
-    QueryDict,
-    HttpResponse,
-    HttpResponseServerError
-)
+from django.http import QueryDict
 from django.views.generic import View
 from django.conf.urls.defaults import url
+from django.template import Context
 
-from mixins import RenderTemplateFragmentMixin
+from mixins import (
+    RenderTemplateFragmentMixin,
+    GenerateAJAXResponseMixin
+)
 
 
-class FragmentView(View, RenderTemplateFragmentMixin):
+class FragmentView(
+    View,
+    RenderTemplateFragmentMixin
+):
     pass
 
 
-class ApiView(View):
+class AJAXView(
+    View,
+    GenerateAJAXResponseMixin
+):
+    pass
+
+
+class AJAXFragmentView(
+    View,
+    RenderTemplateFragmentMixin,
+    GenerateAJAXResponseMixin
+):
+    @classmethod
+    def render_ajax_fragment(
+        cls,
+        request
+    ):
+        context = Context()
+        context.update({
+            'request': request
+        })
+
+        return cls.generate_response({
+            'html': cls.render_template_fragment(context)
+        })
+
+
+class ApiView(AJAXView):
     model = None
     api_url = None
     api_version = 'v1'
@@ -46,24 +74,6 @@ class ApiView(View):
             *args,
             **kwargs
         )
-
-    @staticmethod
-    def generate_response(
-        data,
-        format='json'
-    ):
-        if format == 'json':
-            return HttpResponse(
-                json.dumps(data),
-                content_type='application/json'
-            )
-
-        else:
-            return HttpResponseServerError(''.join([
-                'ApiView does not support response format <',
-                format,
-                '>.'
-            ]))
 
     @classmethod
     def urls(cls):

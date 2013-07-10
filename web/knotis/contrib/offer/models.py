@@ -18,16 +18,13 @@ from knotis.utils.view import (
     format_currency,
     sanitize_input_html
 )
-from knotis.contrib.business.models import Business
 from knotis.contrib.media.models import Image
-from knotis.contrib.category.models import (
-    Category,
-    City,
-    Neighborhood
-)
 from knotis.contrib.identity.models import Identity
-from knotis.contrib.product.models import Product
 from knotis.contrib.inventory.models import Inventory
+
+
+class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
+    pass
 
 
 class OfferTypes:
@@ -37,18 +34,6 @@ class OfferTypes:
     CHOICES = (
         (NORMAL, 'Normal'),
         (PREMIUM, 'Premium')
-    )
-
-
-class OfferStatus:
-    CREATED = 'created'
-    CURRENT = 'current'
-    COMPLETE = 'complete'
-
-    CHOICES = (
-        (CREATED, 'Created'),
-        (CURRENT, 'Current'),
-        (COMPLETE, 'Complete')
     )
 
 
@@ -68,23 +53,16 @@ class OfferManager(QuickManager):
     def create(
         self,
         inventory=[],
+        discount_factor=1.,
         *args,
         **kwargs
     ):
-        status = kwargs.get('status')
-        published = kwargs.get('published', False)
-
-        if not status:
-            status = OfferStatus.CURRENT if published else OfferStatus.CREATED
-            kwargs['status'] = status
-
         offer = Offer(
             *args,
             **kwargs
         )
         offer.save()
 
-        discount_factor = kwargs.pop('discount_factor', 0.)
         for i in inventory:
             price_discount = i.price * discount_factor
             OfferItem.objects.create(
@@ -98,58 +76,7 @@ class OfferManager(QuickManager):
             image.related_object_id = offer.id
             image.save()
 
-        if offer.available():
-            offer._update_offer_counts(1)
-
         return offer
-
-    def get_offers_category_dict(self):
-        categories = None
-        try:
-            categories = Category.objects.all()
-        except:
-            pass
-
-        if not categories:
-            return None
-
-        results = {}
-
-        for category in categories:
-            try:
-                offers = self.get_available_offers(category=category)
-                if len(offers):
-                    results[category.short_name()] = offers
-            except:
-                pass
-
-        total = 0
-        for key in results:
-            total += len(results[key])
-
-        results['total_offers'] = total
-
-        return results
-
-    def get_subscribed_businesses_offers_dict(
-        self,
-        subscriptions
-    ):
-        offers = {}
-        for subscription in subscriptions:
-            try:
-                business = Business.objects.get(pk=subscription.business_id)
-                offers[business.backend_name] = business
-            except:
-                pass
-
-        for key in offers:
-            try:
-                offers[key] = self.get_available_offers(business=offers[key])
-            except:
-                offers.pop(key)
-
-        return offers
 
     def _page_results(
         self,
@@ -248,7 +175,6 @@ class OfferManager(QuickManager):
         sort_by=OfferSort.NEWEST
     ):
         filters['active'] = True
-        filters['status'] = OfferStatus.CURRENT
         filters['published'] = True
 
         return self.get_offers(
@@ -322,18 +248,6 @@ class OfferManager(QuickManager):
         )
 
 
-class OfferTitleTypes:
-    TITLE_1 = 1
-    TITLE_2 = 2
-    TITLE_3 = 3
-
-    CHOICES = (
-        (TITLE_1, 'Title 1'),
-        (TITLE_2, 'Title 2'),
-        (TITLE_3, 'Title 3'),
-    )
-
-
 class Offer(QuickModel):
     owner = QuickForeignKey(Identity)
     offer_type = QuickIntegerField(
@@ -344,44 +258,28 @@ class Offer(QuickModel):
     title = QuickCharField(
         max_length=140
     )
-    title_type = QuickIntegerField(
-        choices=OfferTitleTypes.CHOICES,
-    )
     description = QuickCharField(
+        max_length=1024
+    )
+    restrictions = QuickCharField(
         max_length=1024
     )
 
     default_image = QuickForeignKey(Image)
-    category = QuickForeignKey(Category)
-    city = QuickForeignKey(City)
-    neighborhood = QuickForeignKey(Neighborhood)
 
-    price_retail = QuickFloatField(default=0., blank=True, null=True)
-    price_discount = QuickFloatField(default=0., blank=True, null=True)
-    currency = QuickForeignKey(Product)
-
-    status = QuickCharField(
-        max_length=32,
-        choices=OfferStatus.CHOICES,
-        db_index=True,
-        default=OfferStatus.CREATED
+    start_date = QuickDateTimeField()
+    end_date = QuickDateTimeField()
+    stock = QuickIntegerField(
+        default=None
     )
+    unlimited = QuickBooleanField(default=False)
+
+    purchased = QuickIntegerField(default=0)
     redeemed = QuickIntegerField(default=0, blank=True, null=True)
     published = QuickBooleanField(default=False)
     active = QuickBooleanField(default=False, db_index=True)
-    premium = QuickBooleanField(default=False, db_index=True)
-
-    restrictions = QuickCharField(
-        max_length=1024
-    )
-    stock = QuickIntegerField(
-        default=0,
-    )
-    unlimited = QuickBooleanField(default=False)
-    purchased = QuickIntegerField(default=0)
+    completed = QuickBooleanField(default=False, db_index=True)
     last_purchase = QuickDateTimeField(default=None)
-    start_date = QuickDateTimeField()
-    end_date = QuickDateTimeField()
 
     objects = OfferManager()
 
@@ -403,53 +301,6 @@ class Offer(QuickModel):
             not self.unlimited and self.purchased >= self.stock
         ):
             self.complete()
-
-    def _update_offer_counts(
-        self,
-        delta
-    ):
-        if self.city:
-            if self.city.active_offer_count:
-                self.city.active_offer_count = (
-                    self.city.active_offer_count + delta
-                )
-
-                if self.city.active_offer_count < 0:
-                    self.city.active_offer_count = 0
-
-            else:
-                self.city.active_offer_count = delta if delta > 0 else 0
-
-            self.city.save()
-
-        if self.neighborhood:
-            if self.neighborhood.active_offer_count:
-                self.neighborhood.active_offer_count = (
-                    self.neighborhood.active_offer_count + delta
-                )
-
-                if self.neighborhood.active_offer_count < 0:
-                    self.neighborhood.active_offer_count = 0
-
-            else:
-                self.neighborhood.active_offer_count = (
-                    delta if delta > 0 else 0
-                )
-
-            self.neighborhood.save()
-
-        if self.category:
-            if self.category.active_offer_count:
-                self.category.active_offer_count = \
-                    self.category.active_offer_count + delta
-
-                if self.category.active_offer_count < 0:
-                    self.category.active_offer_count = 0
-
-            else:
-                self.category.active_offer_count = delta if delta > 0 else 0
-
-            self.category.save()
 
     def is_visable(self):
         return True
@@ -476,30 +327,18 @@ class Offer(QuickModel):
             self.complete()
 
     def complete(self):
-        available = self.available()
-
-        self.status = OfferStatus.COMPLETE
-        self.save()
-
-        if available:
-            self._update_offer_counts(-1)
+        pass
 
     def delete(self):
-        available = self.available()
-
         self.deleted = True
         self.save()
-
-        if available:
-            self._update_offer_counts(-1)
 
     def available(self):
         now = datetime.datetime.utcnow()
 
         return self.active and \
             self.published and \
-            self.status == OfferStatus.CURRENT and \
-            self.start_date < now and \
+            self.start_date <= now and \
             self.end_date > now and \
             self.purchased < self.stock
 
@@ -524,36 +363,6 @@ class Offer(QuickModel):
                 '<br/>'
             )
         )
-
-    def title_formatted(self):
-        if not self.title:
-            return ''
-
-        title_formatted = None
-        if OfferTitleTypes.TITLE_1 == self.title_type:
-            title_formatted = ''.join([
-                '$',
-                self.price_discount_formatted(),
-                ' for $',
-                self.price_retail_formatted(),
-                ' at ',
-                self.business.business_name.value
-            ])
-
-        elif OfferTitleTypes.TITLE_2 == self.title_type:
-            title_formatted = ''.join([
-                '$',
-                self.price_discount_formatted(),
-                ' for ',
-                self.title,
-                ' at ',
-                self.business.business_name.value
-            ])
-
-        else:
-            title_formatted = self.title
-
-        return title_formatted.replace('\n', ' ')
 
     def description_javascript(self):
         if not self.description:

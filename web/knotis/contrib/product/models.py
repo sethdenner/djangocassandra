@@ -49,7 +49,105 @@ class ProductCurrencyManager(QuickManager):
         )
 
 
+class ProductManager(QuickManager):
+    @staticmethod
+    def _generate_credit_sku(
+        price,
+        value
+    ):
+        return Product.CREDIT_SKU_PREFIX.join([
+            CurrencyCodes.USD,
+            '_',
+            price,
+            '_',
+            value
+        ])
+
+    @staticmethod
+    def _generate_physical_sku(title):
+        pass
+
+    def get_or_create_credit(
+        self,
+        price,
+        value
+    ):
+        sku = self._generate_credit_sku(
+            price,
+            value
+        )
+
+        try:
+            product = self.get(
+                product_type=ProductTypes.CREDIT,
+                sku=sku
+            )
+
+        except Product.DoesNotExist:
+            product = None
+
+        if not product:
+            product = self.create(
+                product_type=ProductTypes.CREDIT,
+                title=''.join([
+                    price,
+                    ' for ',
+                    value
+                ]),
+                description='$'.join([
+                    value,
+                    'worth of credit'
+                ]),
+                primary_image=None,
+                public=False,
+                sku=self._generate_credit_sku(
+                    price,
+                    value
+                )
+            )
+
+        return product
+
+    def get_or_create_physical(
+        self,
+        title
+    ):
+        sku = self._generate_physical_sku(
+            title
+        )
+
+        try:
+            product = self.get(
+                product_type=ProductTypes.PHYSICAL,
+                sku=sku
+            )
+
+        except Product.DoesNotExist:
+            product = None
+
+        if not product:
+            product = self.create(
+                product_type=ProductTypes.PHYSICAL,
+                title=title,
+                public=False,
+                sku=self._generate_physical_sku(
+                    title
+                )
+            )
+
+        return product
+
+
 class Product(QuickModel):
+    CREDIT_SKU_PREFIX = 'knotis_'.join([
+        ProductTypes.CREDIT,
+        '_sku_'
+    ])
+    PHYSICAL_SKU_PREFIX = 'knotis_'.join([
+        ProductTypes.PHYSICAL,
+        '_sku_'
+    ])
+
     product_type = QuickCharField(
         max_length=16,
         db_index=True,
@@ -63,9 +161,14 @@ class Product(QuickModel):
         max_length=140
     )
     primary_image = QuickForeignKey(Image)
-    public = QuickBooleanField(default=True)
+    public = QuickBooleanField(
+        db_index=True,
+        default=True
+    )
     sku = QuickCharField(
+        db_index=True,
         max_length=32
     )
 
     currency = ProductCurrencyManager()
+    objects = ProductManager()

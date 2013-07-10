@@ -24,6 +24,11 @@
             true
         );
 
+        $('input[name="product_price"], input[name="product_value"]').prop(
+            'disabled',
+            false
+        );
+
         $('input[name="product_title"]').prop(
             'disabled',
             false
@@ -43,6 +48,11 @@
         $('input[name="credit_price"], input[name="credit_value"]').prop(
             'disabled',
             false
+        );
+
+        $('input[name="product_price"], input[name="product_value"]').prop(
+            'disabled',
+            true
         );
 
         $('input[name="product_title"]').prop(

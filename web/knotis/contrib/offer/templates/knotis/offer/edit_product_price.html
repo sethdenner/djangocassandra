@@ -19,13 +19,13 @@
   <div class="control-group physical{% if form.product_type.value != ProductTypes.PHYSICAL %} hide{% endif %}">
     <label class="control-label">Enter Price</label>
     <div class="controls">
-      <input class="span1" name="{{ form.product_price.html_name }}" type="text" value="{{ form.product_price.value|default_if_none:"20" }}" />
+      <input class="span1" name="{{ form.product_price.html_name }}" type="text" value="{{ form.product_price.value|default_if_none:"20" }}"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
       <span>discounted value</span>
     </div>
   </div>
   <div class="control-group physical{% if form.product_type.value != ProductTypes.PHYSICAL %} hide{% endif %}">
     <div class="controls">
-      <input class="span1"  name="{{ form.product_value.html_name }}" type="text" value="{{ form.product_value.value|default_if_none:"40" }}" />
+      <input class="span1"  name="{{ form.product_value.html_name }}" type="text" value="{{ form.product_value.value|default_if_none:"40" }}"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
       <span>regular price (retail value)</span>
     </div>
   </div>
