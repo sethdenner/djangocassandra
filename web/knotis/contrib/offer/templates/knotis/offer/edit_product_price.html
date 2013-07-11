@@ -13,7 +13,7 @@
   <div class="control-group">
     <div class="controls">
       <input id="id-physical-product-input"  name="{{ form.product_type.html_name }}" type="radio" value="{{ ProductTypes.PHYSICAL }}"{% if form.product_type.value == ProductTypes.PHYSICAL %} checked{% endif %} />
-      <input name="product_title" type="text" placeholder="Product"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
+      <input name="{{ form.product_title.html_name }}" type="text" placeholder="Product"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
     </div>
   </div>
   <div class="control-group physical{% if form.product_type.value != ProductTypes.PHYSICAL %} hide{% endif %}">

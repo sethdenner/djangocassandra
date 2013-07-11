@@ -1,38 +1,17 @@
-import random
-import string
-
-from django.conf import settings
 from django.shortcuts import (
     render,
-    redirect
+    get_object_or_404
 )
-from django.contrib.auth.decorators import login_required
-from django.utils.html import strip_tags
 from django.http import (
-    HttpResponse,
-    HttpResponseBadRequest,
     HttpResponseNotFound,
-    HttpResponseServerError,
+    HttpResponseServerError
 )
 from django.template import Context
-from django.forms import (
-    ModelForm,
-    CharField,
-    DateTimeField,
-    ValidationError
-)
-from django.utils.http import urlquote
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from knotis.utils.view import (
-    get_standard_template_parameters,
-    get_boolean_from_request
-)
-from knotis.utils.email import generate_email
 from knotis.contrib.offer.models import (
-    Offer,
-    OfferSort
+    Offer
 )
 from knotis.contrib.product.models import (
     Product,
@@ -42,23 +21,11 @@ from knotis.contrib.inventory.models import (
     Inventory
 )
 
-from knotis.contrib.transaction.models import (
-    Transaction,
-    TransactionTypes
-)
 from knotis.contrib.identity.models import (
     Identity,
     IdentityBusiness,
     IdentityTypes
 )
-from knotis.contrib.media.models import Image
-from knotis.contrib.media.views import render_image_list
-from knotis.contrib.auth.models import KnotisUser
-from knotis.contrib.paypal.views import (
-    generate_ipn_hash,
-    render_paypal_button
-)
-from knotis.contrib.maps.views import OfferMap
 
 from knotis.views import (
     FragmentView,
@@ -122,14 +89,6 @@ class OfferEditProductFormView(AJAXFragmentView):
     template_name = 'knotis/offer/edit_product_price.html'
     view_name = 'offer_edit_product_form'
 
-    def get(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        return self.render_ajax_fragment(request)
-
     def post(
         self,
         request,
@@ -167,17 +126,15 @@ class OfferEditProductFormView(AJAXFragmentView):
                 'errors': errors
             })
 
-        import pdb; pdb.set_trace()
-
         product_type = form.cleaned_data.get('product_type')
         if ProductTypes.CREDIT == product_type:
             price = form.cleaned_data.get('credit_price')
             value = form.cleaned_data.get('credit_value')
             title = ''.join([
                 '$',
-                price,
+                ('%.2f' % price).rstrip('00').rstrip('.'),
                 ' for $',
-                value
+                ('%.2f' % value).rstrip('00').rstrip('.')
             ])
 
             try:
@@ -200,7 +157,7 @@ class OfferEditProductFormView(AJAXFragmentView):
             product_title = form.cleaned_data.get('product_title')
             title = ''.join(
                 '$',
-                price,
+                ('%.2f' % price).rstrip('00').rstrip('.'),
                 ' for ',
                 product_title
             )
@@ -282,7 +239,7 @@ class OfferEditProductFormView(AJAXFragmentView):
         except:
             current_identity = None
 
-        local_context = Context(context.dicts)
+        local_context = Context(context)
         local_context.update({
             'form': OfferProductPriceForm(
                 owners=IdentityBusiness.objects.filter(
@@ -299,7 +256,7 @@ class OfferEditProductFormView(AJAXFragmentView):
         ).render_template_fragment(local_context)
 
 
-class OfferEditDetailsFormView(FragmentView):
+class OfferEditDetailsFormView(AJAXFragmentView):
     template_name = 'knotis/offer/edit_details.html'
     view_name = 'offer_edit_details_form'
 
@@ -309,24 +266,56 @@ class OfferEditDetailsFormView(FragmentView):
         *args,
         **kwargs
     ):
-        return super(
-            OfferEditDetailsFormView,
-            self,
-        ).post(
-            request,
-            *args,
-            **kwargs
-        )
+        form = OfferDetailsForm(data=request.POST)
+        if not form.is_form_valid():
+            errors = {}
+            for field, messages in form.errors.iteritems():
+                errors[field] = [message for message in messages]
+
+            return self.generate_response({
+                'message': 'the data entered is invalid',
+                'errors': errors
+            })
+
+        try:
+            offer = form.save()
+
+        except Exception, e:
+            logger.exception('error while saving offer detail form')
+            return self.generate_response({
+                'message': e.message,
+                'errors': {
+                    'no-field': 'A server error occurred. Please try again.'
+                }
+            })
+
+        self.generate_response({
+            'message': 'OK',
+            'offer_id': offer.id
+        })
 
     @classmethod
     def render_template_fragment(
         cls,
         context
     ):
+        offer = None
+
+        request = context.get('request')
+        offer_id = request.GET.get('id')
+        offer = get_object_or_404(Offer, pk=offer_id)
+
+        local_context = Context(context)
+        local_context.update({
+            'form': OfferDetailsForm(
+                instance=offer
+            ),
+        })
+
         return super(
             OfferEditDetailsFormView,
             cls
-        ).render_template_fragment(context)
+        ).render_template_fragment(local_context)
 
 
 class OfferEditLocationFormView(FragmentView):

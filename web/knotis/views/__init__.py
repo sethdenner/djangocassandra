@@ -1,7 +1,7 @@
 from django.http import QueryDict
 from django.views.generic import View
 from django.conf.urls.defaults import url
-from django.template import Context
+from django.template import RequestContext
 
 from mixins import (
     RenderTemplateFragmentMixin,
@@ -28,16 +28,20 @@ class AJAXFragmentView(
     RenderTemplateFragmentMixin,
     GenerateAJAXResponseMixin
 ):
+    def get(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        return self.render_ajax_fragment(request)
+
     @classmethod
     def render_ajax_fragment(
         cls,
         request
     ):
-        context = Context()
-        context.update({
-            'request': request
-        })
-
+        context = RequestContext(request)
         return cls.generate_response({
             'html': cls.render_template_fragment(context)
         })

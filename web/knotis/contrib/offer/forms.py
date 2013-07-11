@@ -27,7 +27,6 @@ class OfferForm(ModelForm):
 
 
 class OfferProductPriceForm(Form):
-    template = 'knotis/offer/create_product_price.html'
     form_id = 'id-offer-product-price'
     form_method = 'POST'
     form_action = '/offer/create/product/'
@@ -145,6 +144,10 @@ class OfferDetailsForm(OfferForm):
             'description',
             'restrictions'
         )
+
+    form_id = 'id-offer-details'
+    form_method = 'POST'
+    form_action = '/offer/create/details/'
 
 
 class OfferPhotoLocationForm(Form):

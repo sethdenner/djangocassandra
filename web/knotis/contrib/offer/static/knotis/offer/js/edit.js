@@ -6,6 +6,10 @@
     var $location_div = $('div#offer-edit-location-form');
     var $publish_div = $('div#offer-edit-publish-form');
 
+    $carousel.carousel({
+        interval: false
+    });
+
     var step = function(
         uri,
         container,
@@ -15,7 +19,7 @@
             uri,
             {},
             function(data, status, jqxhr) {
-                container.html(data);
+                container.html(data.html);
                 $carousel.carousel(number);
 
             }
@@ -27,13 +31,13 @@
         '/offer/create/product/', 
         {},
         function(data, status, jqxhr) {
-            $product_div.html(data);
+            $product_div.html(data.html);
             
             $('form#id-offer-product-price').ajaxform({
                 done: function(data, status, jqxhr) {
                     if (!data.errors) {
                         step(
-                            '/offer/create/details/',
+                            '/offer/create/details/?id=' + data.offer_id,
                             $details_div,
                             1
                         );

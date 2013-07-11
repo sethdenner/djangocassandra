@@ -55,17 +55,19 @@ class ProductManager(QuickManager):
         price,
         value
     ):
-        return Product.CREDIT_SKU_PREFIX.join([
+        return '_'.join([
+            Product.CREDIT_SKU_PREFIX,
             CurrencyCodes.USD,
-            '_',
-            price,
-            '_',
-            value
+            ('%.2f' % price).rstrip('00').rstrip('.'),
+            ('%.2f' % value).rstrip('00').rstrip('.')
         ])
 
     @staticmethod
     def _generate_physical_sku(title):
-        pass
+        return '_'.join([
+            Product.PHYSICAL_SKU_PREFIX,
+            title.lower().replace(' ', '_').replace('\'', '')
+        ])
 
     def get_or_create_credit(
         self,
@@ -90,12 +92,13 @@ class ProductManager(QuickManager):
             product = self.create(
                 product_type=ProductTypes.CREDIT,
                 title=''.join([
-                    price,
+                    ('%.2f' % price).rstrip('00').rstrip('.'),
                     ' for ',
-                    value
+                    ('%.2f' % value).rstrip('00').rstrip('.')
                 ]),
-                description='$'.join([
-                    value,
+                description=''.join([
+                    '$',
+                    ('%.2f' % value).rstrip('00').rstrip('.'),
                     'worth of credit'
                 ]),
                 primary_image=None,
@@ -139,13 +142,15 @@ class ProductManager(QuickManager):
 
 
 class Product(QuickModel):
-    CREDIT_SKU_PREFIX = 'knotis_'.join([
+    CREDIT_SKU_PREFIX = '_'.join([
+        'knotis',
         ProductTypes.CREDIT,
-        '_sku_'
+        'sku'
     ])
-    PHYSICAL_SKU_PREFIX = 'knotis_'.join([
+    PHYSICAL_SKU_PREFIX = '_'.join([
+        'knotis',
         ProductTypes.PHYSICAL,
-        '_sku_'
+        'sku'
     ])
 
     product_type = QuickCharField(
