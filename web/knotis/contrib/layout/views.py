@@ -2,7 +2,10 @@ from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import View
 
-from knotis.views import FragmentView
+from knotis.views import (
+    FragmentView,
+    AJAXFragmentView
+)
 
 from knotis.contrib.identity.models import IdentityIndividual
 from knotis.contrib.maps.views import GoogleMap
@@ -121,5 +124,26 @@ class GridSmallView(FragmentView):
     ):
         return super(
             GridSmallView,
+            cls
+        ).render_template_fragment(context)
+
+
+class ItemSelectView(AJAXFragmentView):
+    template_name = 'knotis/layout/item_select.html'
+    view_name = 'item_select'
+
+    def post(
+        self,
+        request
+    ):
+        pass
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        return super(
+            ItemSelectView,
             cls
         ).render_template_fragment(context)

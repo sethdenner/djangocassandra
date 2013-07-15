@@ -1,0 +1,27 @@
+{% load thumbnail %}
+<div class="controls">
+  {% for i in items %}
+  <div class="control-group">
+    <input type="{% if select_multiple %}checkbox{% else %}radio{% endif %}" name="item_id" value="{{ i.id }}" />
+    {% if render_images %}
+    <img
+       {% thumbnail i.image dimensions crop=image.crop as img %}
+       src="{{ img.url }}"
+       {% endthumbnail %}
+       />
+    {% endif %}
+    {% if actions %}
+    {% for action in actions %}
+    {% if forloop.counter != 1 %}&nbsp;|&nbsp;{% endif %}
+    <a class="{{ action.class }}" href="{{ action.url }}?id={{ i.id }}" >{{ action.name }}</a>
+    {% endfor %}
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+<scrpit src="{{ STATIC_URL }}knotis/layout/js/item_select.js"></script>
+{% if item_select_scripts %}
+{% for script in item_select_scripts %}
+<script src="{{ STATIC_URL }}{{ script }}"></script>
+{% endfor %}
+{% endif %}

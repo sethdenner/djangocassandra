@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 from django.conf import settings
 from django.views.static import serve
-from django.views.generic import View
 from django.forms import (
     ModelForm,
     CharField
@@ -26,13 +25,46 @@ from django.http import (
 )
 from django.core.files.base import ContentFile
 
-from knotis.views.mixins import RenderTemplateFragmentMixin
+from knotis.views import FragmentView
+from kontis.contrib.layout.views import ItemSelectView
 from knotis.contrib.media.models import Image
 from knotis.contrib.business.models import Business
 from knotis.contrib.identity.models import Identity
 
 
-class ImageUploadView(View, RenderTemplateFragmentMixin):
+class ImageSelectView(ItemSelectView):
+    view_name = 'image_select'
+
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(ImageSelectView, self).__init__(
+            *args,
+            **kwargs
+        )
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        local_context = Context(context.dicts)
+        local_context.update({
+            'items': None,
+            'actions': None,
+            'item_select_scripts': None,
+            'select_multiple': False,
+        })
+
+        return super(
+            ImageSelectView,
+            cls
+        ).render_template_fragment(local_context)
+
+
+class ImageUploadView(FragmentView):
     template_name = 'knotis/media/image_upload.html'
     view_name = 'image_upload'
 

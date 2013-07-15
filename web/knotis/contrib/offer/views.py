@@ -155,12 +155,12 @@ class OfferEditProductFormView(AJAXFragmentView):
             price = form.cleaned_data.get('product_price')
             value = form.cleaned_data.get('product_value')
             product_title = form.cleaned_data.get('product_title')
-            title = ''.join(
+            title = ''.join([
                 '$',
                 ('%.2f' % price).rstrip('00').rstrip('.'),
                 ' for ',
                 product_title
-            )
+            ])
 
             try:
                 product = Product.objects.get_or_create_physical(product_title)
@@ -267,7 +267,7 @@ class OfferEditDetailsFormView(AJAXFragmentView):
         **kwargs
     ):
         form = OfferDetailsForm(data=request.POST)
-        if not form.is_form_valid():
+        if not form.is_valid():
             errors = {}
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
@@ -289,7 +289,7 @@ class OfferEditDetailsFormView(AJAXFragmentView):
                 }
             })
 
-        self.generate_response({
+        return self.generate_response({
             'message': 'OK',
             'offer_id': offer.id
         })
@@ -318,8 +318,8 @@ class OfferEditDetailsFormView(AJAXFragmentView):
         ).render_template_fragment(local_context)
 
 
-class OfferEditLocationFormView(FragmentView):
-    template_name = 'knotis/offer/edit_location.html'
+class OfferEditLocationFormView(AJAXFragmentView):
+    template_name = 'knotis/offer/edit_photos_location.html'
     view_name = 'offer_edit_location_form'
 
     def post(

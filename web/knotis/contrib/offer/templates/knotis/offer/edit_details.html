@@ -9,13 +9,13 @@
   <div class="control-group">
     <label class="control-label">Synopsis</label>
     <div class="controls">
-      <textarea rows="5" name="{{ form.description.html_name }}">{{ form.description.value }}</textarea>
+      <textarea rows="5" name="{{ form.description.html_name }}">{{ form.description.value|default_if_none:'' }}</textarea>
     </div>
   </div>
   <div class="control-group">
     <label class="control-label">Restrictions</label>
     <div class="controls">
-      <textarea rows="5" name="{{ form.restrictions.html_name }}">{{ form.restrictions.value }}</textarea>
+      <textarea rows="5" name="{{ form.restrictions.html_name }}">{{ form.restrictions.value|default_if_none:'' }}</textarea>
     </div>
   </div>
   <div>

@@ -2,6 +2,22 @@ from django.template import Context
 from django.template.loader import get_template
 from django.conf import settings
 
+from knotis.contrib.layout.views import ItemSelectView
+
+
+class LocationSelectView(ItemSelectView):
+    template_name = 'knotis/maps/location_select.html'
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        return super(
+            LocationSelectView,
+            cls
+        ).render_template_fragment(context)
+
 
 class GoogleMap(object):
     def __init__(
