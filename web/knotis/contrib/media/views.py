@@ -5,7 +5,10 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.template import Context
+from django.template import (
+    Context,
+    RequestContext
+)
 from django.template.loader import get_template
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
@@ -26,7 +29,10 @@ from django.http import (
 from django.core.files.base import ContentFile
 
 from knotis.views import FragmentView
-from kontis.contrib.layout.views import ItemSelectView
+from knotis.contrib.layout.views import (
+    ItemSelectView,
+    ItemSelectAction
+)
 from knotis.contrib.media.models import Image
 from knotis.contrib.business.models import Business
 from knotis.contrib.identity.models import Identity
@@ -50,10 +56,26 @@ class ImageSelectView(ItemSelectView):
         cls,
         context
     ):
-        local_context = Context(context.dicts)
+        items = context.get('image_select_items')
+        actions = [
+            ItemSelectAction(
+                'Crop',
+                '#crop-image',
+                'anchor-green'
+            ),
+            ItemSelectAction(
+                'Delete',
+                '#delete-image',
+                'anchor-red',
+                method='DELETE'
+            )
+        ]
+
+        request = context.get('request')
+        local_context = RequestContext(request)
         local_context.update({
-            'items': None,
-            'actions': None,
+            'items': items,
+            'actions': actions,
             'item_select_scripts': None,
             'select_multiple': False,
         })
@@ -261,7 +283,6 @@ def _upload(request):
 
 
 def ajax(request):
-    import pdb; pdb.set_trace()
     if request.method.lower() == 'post':
         return _upload(request)
     else:

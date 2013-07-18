@@ -144,6 +144,7 @@ class EstablishmentProfileView(FragmentView):
             'navigation/js/navigation.js',
             'jcrop/js/jquery.Jcrop.js',
             'scripts/fileuploader.js',
+            'scripts/jquery.colorbox.js',
             'scripts/jquery.sickle.js',
             'knotis/identity/js/profile.js'
         ]
@@ -151,24 +152,23 @@ class EstablishmentProfileView(FragmentView):
         images_establishment = Image.objects.filter(
             related_object_id=establishment.id
         )
-
-        if 0 == images_establishment.count():
-            no_logo = True
-            if is_manager:
-                profile_logo_uri = ''.join([
-                    settings.STATIC_URL,
-                    'knotis/identity/img/add_logo.png'
-                ])
-
-            else:
-                profile_logo_uri = ''.join([
-                    settings.STATIC_URL,
-                    'knotis/identity/img/profile_default.png'
-                ])
+        if images_establishment:
+            profile_logo = images_establishment[0]
 
         else:
-            no_logo = False
-            profile_logo_uri = images_establishment[0].image.url
+            profile_logo = None
+
+        if is_manager:
+            default_profile_logo_uri = ''.join([
+                settings.STATIC_URL,
+                'knotis/identity/img/add_logo.png'
+            ])
+
+        else:
+            default_profile_logo_uri = ''.join([
+                settings.STATIC_URL,
+                'knotis/identity/img/profile_default.png'
+            ])
 
         try:
             establishment_offers = Offer.objects.filter(
@@ -186,8 +186,8 @@ class EstablishmentProfileView(FragmentView):
                 'styles': styles,
                 'pre_scripts': pre_scripts,
                 'post_scripts': post_scripts,
-                'profile_logo_uri': profile_logo_uri,
-                'no_logo': no_logo,
+                'default_profile_logo_uri': default_profile_logo_uri,
+                'profile_logo': profile_logo,
                 'establishment_offers': establishment_offers
             }
         )

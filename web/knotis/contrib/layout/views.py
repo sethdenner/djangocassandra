@@ -128,6 +128,20 @@ class GridSmallView(FragmentView):
         ).render_template_fragment(context)
 
 
+class ItemSelectAction(object):
+    def __init__(
+        self,
+        name,
+        url,
+        css_class,
+        method='GET'
+    ):
+        self.name = name
+        self.url = url,
+        self.css_class = css_class
+        self.method = method
+
+
 class ItemSelectView(AJAXFragmentView):
     template_name = 'knotis/layout/item_select.html'
     view_name = 'item_select'

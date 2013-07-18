@@ -1,5 +1,4 @@
 from django.forms import (
-    ModelForm,
     CharField,
     HiddenInput
 )
@@ -17,13 +16,7 @@ from crispy_forms.bootstrap import (
     FormActions
 )
 
-from models import Location
-
-
-class LocationForm(ModelForm):
-    class Meta:
-        model = Location
-        exclude = ('content_type')
+from knotis.contrib.location.forms import LocationForm
 
 
 class GeocompleteForm(LocationForm):
@@ -47,7 +40,7 @@ class GeocompleteForm(LocationForm):
     def __init__(
         self,
         form_id='id-location-form',
-        form_action='/api/v1/maps/location/',
+        form_action='/api/v1/location/location/',
         *args,
         **kwargs
     ):

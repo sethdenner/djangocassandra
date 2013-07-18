@@ -82,7 +82,7 @@ urlpatterns = patterns(
     ),
     url(
         r'',
-        include('knotis.contrib.maps.urls')
+        include('knotis.contrib.location.urls')
     ),
     url(
         r'^(?P<backend_name>[^/]+)/$',
