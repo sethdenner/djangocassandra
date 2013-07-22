@@ -128,16 +128,28 @@ class GridSmallView(FragmentView):
         ).render_template_fragment(context)
 
 
+class ItemSelectRow(object):
+    def __init__(
+        self,
+        item,
+        title=None,
+        image=None
+    ):
+        self.item = item
+        self.title = title
+        self.image = image
+
+
 class ItemSelectAction(object):
     def __init__(
         self,
         name,
         url,
-        css_class,
+        css_class=None,
         method='GET'
     ):
         self.name = name
-        self.url = url,
+        self.url = url
         self.css_class = css_class
         self.method = method
 

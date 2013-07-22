@@ -2,7 +2,11 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from knotis.views import ApiView
-from knotis.contrib.identity.models import Identity
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityBusiness,
+    IdentityTypes
+)
 
 from forms import LocationForm
 from models import (
@@ -72,6 +76,24 @@ class LocationApi(ApiView):
                     logger.exception(
                         'An exception occurred during location item creation'
                     )
+
+                if related.identity_type == IdentityTypes.ESTABLISHMENT:
+                    business = (
+                        IdentityBusiness.objects.get_establishment_parent(
+                            related
+                        )
+                    )
+                    try:
+                        LocationItem.objects.create(
+                            location=location,
+                            related=business
+                        )
+
+                    except:
+                        logger.exception(
+                            'An exception occurred during '
+                            'location item creation'
+                        )
 
         else:
             for field, messages in form.errors.iteritems():

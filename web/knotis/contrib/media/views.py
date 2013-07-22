@@ -31,6 +31,7 @@ from django.core.files.base import ContentFile
 from knotis.views import FragmentView
 from knotis.contrib.layout.views import (
     ItemSelectView,
+    ItemSelectRow,
     ItemSelectAction
 )
 from knotis.contrib.media.models import Image
@@ -57,6 +58,18 @@ class ImageSelectView(ItemSelectView):
         context
     ):
         items = context.get('image_select_items')
+        if not items:
+            return super(
+                ImageSelectView,
+                cls
+            ).render_template_fragment(Context())
+
+        rows = [
+            ItemSelectRow(
+                image,
+                image=image.image
+            ) for image in context.get('image_select_items')
+        ]
         actions = [
             ItemSelectAction(
                 'Crop',
@@ -74,10 +87,12 @@ class ImageSelectView(ItemSelectView):
         request = context.get('request')
         local_context = RequestContext(request)
         local_context.update({
-            'items': items,
+            'rows': rows,
             'actions': actions,
             'item_select_scripts': None,
             'select_multiple': False,
+            'render_images': True,
+            'dimensions': '32x32'
         })
 
         return super(

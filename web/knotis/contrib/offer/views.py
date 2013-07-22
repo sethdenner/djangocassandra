@@ -20,6 +20,8 @@ from knotis.contrib.product.models import (
 from knotis.contrib.inventory.models import (
     Inventory
 )
+from knotis.contrib.media.models import Image
+from knotis.contrib.location.models import LocationItem
 
 from knotis.contrib.identity.models import (
     Identity,
@@ -342,6 +344,26 @@ class OfferEditLocationFormView(AJAXFragmentView):
         cls,
         context
     ):
+        request = context.get('request')
+        current_identity_id = request.session.get('current_identity_id')
+        current_identity = Identity.objects.get(id=current_identity_id)
+
+        image_select_items = Image.objects.filter(
+            owner=current_identity
+        )
+
+        location_select_relations = LocationItem.objects.filter(
+            related_object_id=current_identity_id
+        )
+        location_select_items = [
+            location.location for location in location_select_relations
+        ]
+
+        context.update({
+            'image_select_items': image_select_items,
+            'location_select_items': location_select_items
+        })
+
         return super(
             OfferEditLocationFormView,
             cls
