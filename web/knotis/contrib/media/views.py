@@ -41,6 +41,7 @@ from knotis.contrib.identity.models import Identity
 
 class ImageSelectView(ItemSelectView):
     view_name = 'image_select'
+    field_name = 'image_id'
 
     def __init__(
         self,
@@ -83,6 +84,9 @@ class ImageSelectView(ItemSelectView):
                 method='DELETE'
             )
         ]
+
+        if rows:
+            rows[0].checked = True
 
         request = context.get('request')
         local_context = RequestContext(request)

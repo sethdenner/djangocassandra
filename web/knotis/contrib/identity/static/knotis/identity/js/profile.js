@@ -24,7 +24,7 @@
                         id: identity_id,
                         type: 'image'
                     },
-                    aspect: 221.0/125.0,
+                    aspect: 1,
                     done: function(data) {
                         if (data.status == 'success') {
                             

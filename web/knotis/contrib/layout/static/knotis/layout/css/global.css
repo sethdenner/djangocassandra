@@ -18,3 +18,13 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     border-radius: 2px;
     border: 2px;
 }
+/*
+#sickle_content .jcrop-holder {
+    z-index: 2000;
+
+}
+
+#sickle_content .jcrop-holder img {
+    max-width: none;
+}
+*/

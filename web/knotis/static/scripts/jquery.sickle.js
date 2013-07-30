@@ -96,7 +96,7 @@
 
             $modal.load(
                 href,
-                {},
+                '',
                 function() {
                     $modal.modal();
                     onComplete();

@@ -348,20 +348,22 @@ class OfferEditLocationFormView(AJAXFragmentView):
         current_identity_id = request.session.get('current_identity_id')
         current_identity = Identity.objects.get(id=current_identity_id)
 
-        image_select_items = Image.objects.filter(
+        photos = Image.objects.filter(
             owner=current_identity
         )
 
-        location_select_relations = LocationItem.objects.filter(
+        location_items = LocationItem.objects.filter(
             related_object_id=current_identity_id
         )
-        location_select_items = [
-            location.location for location in location_select_relations
+        locations = [
+            location.location for location in location_items
         ]
 
         context.update({
-            'image_select_items': image_select_items,
-            'location_select_items': location_select_items
+            'form': OfferPhotoLocationForm(
+                photos=photos,
+                locations=locations
+            )
         })
 
         return super(

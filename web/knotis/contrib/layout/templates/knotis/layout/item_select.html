@@ -2,7 +2,7 @@
 <div class="controls">
   {% for r in rows %}
   <div class="control-group">
-    <input type="{% if select_multiple %}checkbox{% else %}radio{% endif %}" name="item_id" value="{{ r.item.id }}" />
+    <input {% if r.checked %}checked {% endif %}{% if r.disabled %}disabled {% endif %}type="{% if select_multiple %}checkbox{% else %}radio{% endif %}" name="{{ field_name }}{% if select_multiple%}_{{ forloop.counter0 }}{% endif %}" value="{{ r.item.id }}" />
     {% if render_images %}
     <img
        {% thumbnail r.image dimensions crop=image.crop as img %}

@@ -14,6 +14,10 @@ div#id-profile-spacer p {
     background-color: #ffffff;
 }
 
+div#id-profile-cover img[data-add-image]:hover {
+    cursor: pointer;
+}
+
 @media (min-width: 768px) {
     div#id-profile-cover div#id-profile-contact {
         position: absolute;
@@ -23,3 +27,4 @@ div#id-profile-spacer p {
     }
 
 }
+

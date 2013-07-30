@@ -11,8 +11,14 @@ from django.forms import (
     ValidationError
 )
 
+from knotis.forms import (
+    TemplateForm,
+    ItemSelectWidget
+)
 from knotis.contrib.identity.models import Identity
 from knotis.contrib.product.models import ProductTypes
+from knotis.contrib.locaiton.models import Location
+from knotis.contrib.media.models import Image
 
 from models import Offer
 
@@ -150,8 +156,38 @@ class OfferDetailsForm(OfferForm):
     form_action = '/offer/create/details/'
 
 
-class OfferPhotoLocationForm(Form):
-    pass
+class OfferPhotoLocationForm(TemplateForm):
+    template_name = 'knotis/offer/offer_photo_location_form.html'
+
+    photo = ModelChoiceField(
+        queryset=Image.objects.none(),
+        widget=ItemSelectWidget()
+    )
+
+    locations = ModelChoiceField(
+        queryset=Location.objects.none(),
+        widget=ItemSelectWidget
+    )
+
+    def __init__(
+        self,
+        photos=None,
+        locations=None,
+        *args,
+        **kwargs
+    ):
+        super(OfferPhotoLocationForm, self).__init__(
+            *args,
+            **kwargs
+        )
+
+        # TODO: Add rows/actions to item select widgets
+
+        if photos:
+            self.fields['photo'].query_set = photos
+
+        if locations:
+            self.fields['locations'].query_set = locations
 
 
 class OfferPublicationForm(Form):

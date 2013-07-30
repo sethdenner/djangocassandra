@@ -1,4 +1,4 @@
-{% extends 'layout/master.html' %}
+{% extends 'knotis/layout/master.html' %}
 {% load thumbnail %}
 {% load render_template_fragment %}
 {% block title %}Knotis - Be in the kno!{% endblock title %}
@@ -11,7 +11,7 @@
 <div class="container-fluid">
   <div id="id-profile-cover" class="row-fluid">
     <div class="span12">
-      {% thumbnail profile_logo.image '170x170' crop=image.crop as img %}
+      {% thumbnail profile_logo.image '170x170' crop=profile_logo.crop as img %}
       <img src="{{ img.url }}" class="img-circle" />
       {% empty %}
       <img data-add-image src="{{ default_profile_logo_uri }}" class="img-circle" />

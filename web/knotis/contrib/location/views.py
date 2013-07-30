@@ -12,6 +12,7 @@ from knotis.contrib.layout.views import (
 
 class LocationSelectView(ItemSelectView):
     view_name = 'location_select'
+    field_name = 'location_id'
 
     @classmethod
     def render_template_fragment(
@@ -28,7 +29,8 @@ class LocationSelectView(ItemSelectView):
         rows = [
             ItemSelectRow(
                 location,
-                title=location.address
+                title=location.address,
+                checked=True
             ) for location in items
         ]
         actions = [

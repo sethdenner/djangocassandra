@@ -1,3 +1,4 @@
+import copy
 from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import View
@@ -124,52 +125,5 @@ class GridSmallView(FragmentView):
     ):
         return super(
             GridSmallView,
-            cls
-        ).render_template_fragment(context)
-
-
-class ItemSelectRow(object):
-    def __init__(
-        self,
-        item,
-        title=None,
-        image=None
-    ):
-        self.item = item
-        self.title = title
-        self.image = image
-
-
-class ItemSelectAction(object):
-    def __init__(
-        self,
-        name,
-        url,
-        css_class=None,
-        method='GET'
-    ):
-        self.name = name
-        self.url = url
-        self.css_class = css_class
-        self.method = method
-
-
-class ItemSelectView(AJAXFragmentView):
-    template_name = 'knotis/layout/item_select.html'
-    view_name = 'item_select'
-
-    def post(
-        self,
-        request
-    ):
-        pass
-
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        return super(
-            ItemSelectView,
             cls
         ).render_template_fragment(context)
