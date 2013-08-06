@@ -1,6 +1,5 @@
 from django.forms import Form
 from django.template import (
-    BoundField,
     Context,
     Template
 )

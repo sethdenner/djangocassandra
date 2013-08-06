@@ -17,7 +17,7 @@ from knotis.forms import (
 )
 from knotis.contrib.identity.models import Identity
 from knotis.contrib.product.models import ProductTypes
-from knotis.contrib.locaiton.models import Location
+from knotis.contrib.location.models import Location
 from knotis.contrib.media.models import Image
 
 from models import Offer
