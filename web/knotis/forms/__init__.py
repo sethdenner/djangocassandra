@@ -37,9 +37,7 @@ class TemplateForm(Form):
             'form': self,
         })
 
-        template = Template(
-            get_template(self.template_name)
-        )
+        template = get_template(self.template_name)
         context = Context(self.parameters)
         return mark_safe(
             template.render(context)

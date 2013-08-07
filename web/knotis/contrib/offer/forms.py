@@ -6,6 +6,7 @@ from django.forms import (
     IntegerField,
     BooleanField,
     ModelChoiceField,
+    ModelMultipleChoiceField,
     RadioSelect,
     HiddenInput,
     ValidationError
@@ -13,7 +14,9 @@ from django.forms import (
 
 from knotis.forms import (
     TemplateForm,
-    ItemSelectWidget
+    ItemSelectWidget,
+    ItemSelectRow,
+    ItemSelectAction
 )
 from knotis.contrib.identity.models import Identity
 from knotis.contrib.product.models import ProductTypes
@@ -158,19 +161,31 @@ class OfferDetailsForm(OfferForm):
 
 class OfferPhotoLocationForm(TemplateForm):
     template_name = 'knotis/offer/offer_photo_location_form.html'
+    form_action = '/offer/create/location/'
+    form_id = 'offer_photo_location_form'
+    form_method = 'POST'
+
+    offer = ModelChoiceField(
+        queryset=Offer.objects.none(),
+        widget=HiddenInput()
+    )
 
     photo = ModelChoiceField(
         queryset=Image.objects.none(),
-        widget=ItemSelectWidget()
+        widget=ItemSelectWidget(
+            render_images=True,
+            image_dimensions='32x32'
+        )
     )
 
-    locations = ModelChoiceField(
+    locations = ModelMultipleChoiceField(
         queryset=Location.objects.none(),
-        widget=ItemSelectWidget
+        widget=ItemSelectWidget(select_multiple=True)
     )
 
     def __init__(
         self,
+        offer=None,
         photos=None,
         locations=None,
         *args,
@@ -181,13 +196,62 @@ class OfferPhotoLocationForm(TemplateForm):
             **kwargs
         )
 
-        # TODO: Add rows/actions to item select widgets
+        if offer:
+            self.fields['offer'].queryset = Offer.objects.filter(**{
+                'pk__in': [offer.id]
+            })
+            self.fields['offer'].initial = offer
 
         if photos:
-            self.fields['photo'].query_set = photos
+            self.fields['photo'].queryset = photos
+
+            rows = [
+                ItemSelectRow(
+                    photo,
+                    image=photo.image
+                ) for photo in photos
+            ]
+            actions = [
+                ItemSelectAction(
+                    'Crop',
+                    '#crop-image',
+                    'anchor-green'
+                ),
+                ItemSelectAction(
+                    'Delete',
+                    '#delete-image',
+                    'anchor-red',
+                    method='DELETE'
+                )
+            ]
+
+            if rows:
+                rows[0].checked = True
+
+            photo_widget = self.fields['photo'].widget
+            photo_widget.rows = rows
+            photo_widget.actions = actions
 
         if locations:
-            self.fields['locations'].query_set = locations
+            self.fields['locations'].queryset = locations
+
+            rows = [
+                ItemSelectRow(
+                    location,
+                    title=location.address,
+                    checked=True
+                ) for location in locations
+            ]
+            actions = [
+                ItemSelectAction(
+                    'Edit Location',
+                    '#edit-location'
+                )
+            ]
+
+            locations_widget = self.fields['locations'].widget
+            locations_widget.rows = rows
+            locations_widget.actions = actions
 
 
 class OfferPublicationForm(Form):

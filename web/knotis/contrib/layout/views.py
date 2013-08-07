@@ -1,12 +1,8 @@
-import copy
 from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import View
 
-from knotis.views import (
-    FragmentView,
-    AJAXFragmentView
-)
+from knotis.views import FragmentView
 
 from knotis.contrib.identity.models import IdentityIndividual
 from knotis.contrib.maps.views import GoogleMap

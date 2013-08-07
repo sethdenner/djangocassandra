@@ -29,80 +29,10 @@ from django.http import (
 from django.core.files.base import ContentFile
 
 from knotis.views import FragmentView
-from knotis.contrib.layout.views import (
-    ItemSelectView,
-    ItemSelectRow,
-    ItemSelectAction
-)
+
 from knotis.contrib.media.models import Image
 from knotis.contrib.business.models import Business
 from knotis.contrib.identity.models import Identity
-
-
-class ImageSelectView(ItemSelectView):
-    view_name = 'image_select'
-    field_name = 'image_id'
-
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
-        super(ImageSelectView, self).__init__(
-            *args,
-            **kwargs
-        )
-
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        items = context.get('image_select_items')
-        if not items:
-            return super(
-                ImageSelectView,
-                cls
-            ).render_template_fragment(Context())
-
-        rows = [
-            ItemSelectRow(
-                image,
-                image=image.image
-            ) for image in context.get('image_select_items')
-        ]
-        actions = [
-            ItemSelectAction(
-                'Crop',
-                '#crop-image',
-                'anchor-green'
-            ),
-            ItemSelectAction(
-                'Delete',
-                '#delete-image',
-                'anchor-red',
-                method='DELETE'
-            )
-        ]
-
-        if rows:
-            rows[0].checked = True
-
-        request = context.get('request')
-        local_context = RequestContext(request)
-        local_context.update({
-            'rows': rows,
-            'actions': actions,
-            'item_select_scripts': None,
-            'select_multiple': False,
-            'render_images': True,
-            'dimensions': '32x32'
-        })
-
-        return super(
-            ImageSelectView,
-            cls
-        ).render_template_fragment(local_context)
 
 
 class ImageUploadView(FragmentView):

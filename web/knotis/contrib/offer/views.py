@@ -21,7 +21,10 @@ from knotis.contrib.inventory.models import (
     Inventory
 )
 from knotis.contrib.media.models import Image
-from knotis.contrib.location.models import LocationItem
+from knotis.contrib.location.models import (
+    Location,
+    LocationItem
+)
 
 from knotis.contrib.identity.models import (
     Identity,
@@ -330,14 +333,68 @@ class OfferEditLocationFormView(AJAXFragmentView):
         *args,
         **kwargs
     ):
-        return super(
-            OfferEditLocationFormView,
-            self,
-        ).post(
-            request,
-            *args,
-            **kwargs
+        current_identity_id = request.session.get('current_identity_id')
+        current_identity = Identity.objects.get(id=current_identity_id)
+
+        offer_id = request.POST.get('offer')
+        offer = get_object_or_404(Offer, pk=offer_id)
+
+        photos = Image.objects.filter(
+            owner=current_identity
         )
+
+        location_items = LocationItem.objects.filter(
+            related_object_id=current_identity_id
+        )
+        location_ids = [
+            location.location_id for location in location_items
+        ]
+        locations = Location.objects.filter(**{
+            'pk__in': location_ids
+        })
+
+        form = OfferPhotoLocationForm(
+            data=request.POST,
+            offer=offer,
+            photos=photos,
+            locations=locations
+        )
+
+        if not form.is_valid():
+            errors = {}
+            for field, messages in form.errors.iteritems():
+                errors[field] = [message for message in messages]
+
+            return self.generate_response({
+                'message': 'the data entered is invalid',
+                'errors': errors
+            })
+
+        try:
+            offer = form.cleaned_data['offer']
+            offer.default_image = form.cleaned_data['photo']
+            offer.save()
+
+            locations = form.cleaned_data['locations']
+            for location in locations:
+                LocationItem.objects.create(
+                    location=location,
+                    related=offer
+                )
+
+        except Exception, e:
+            logger.exception('error while saving offer detail form')
+            return self.generate_response({
+                'message': e.message,
+                'errors': {
+                    'no-field': 'A server error occurred. Please try again.'
+                }
+            })
+
+        return self.generate_response({
+            'message': 'OK',
+            'offer_id': offer.id
+        })
 
     @classmethod
     def render_template_fragment(
@@ -348,6 +405,9 @@ class OfferEditLocationFormView(AJAXFragmentView):
         current_identity_id = request.session.get('current_identity_id')
         current_identity = Identity.objects.get(id=current_identity_id)
 
+        offer_id = request.GET.get('id')
+        offer = get_object_or_404(Offer, pk=offer_id)
+
         photos = Image.objects.filter(
             owner=current_identity
         )
@@ -355,12 +415,17 @@ class OfferEditLocationFormView(AJAXFragmentView):
         location_items = LocationItem.objects.filter(
             related_object_id=current_identity_id
         )
-        locations = [
-            location.location for location in location_items
+        location_ids = [
+            location.location_id for location in location_items
         ]
+        locations = Location.objects.filter(**{
+            'pk__in': location_ids
+        })
 
-        context.update({
+        local_context = Context(context)
+        local_context.update({
             'form': OfferPhotoLocationForm(
+                offer=offer,
                 photos=photos,
                 locations=locations
             )
@@ -369,7 +434,7 @@ class OfferEditLocationFormView(AJAXFragmentView):
         return super(
             OfferEditLocationFormView,
             cls
-        ).render_template_fragment(context)
+        ).render_template_fragment(local_context)
 
 
 class OfferEditPublishFormView(FragmentView):

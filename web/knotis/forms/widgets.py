@@ -32,7 +32,7 @@ class TemplateWidget(Widget):
         if not self.template_name:
             raise Exception('template_name is not defined for this class')
 
-        template = Template(get_template(self.template_name))
+        template = get_template(self.template_name)
         context = Context(self.parameters)
         return mark_safe(template.render(context))
 
@@ -68,7 +68,7 @@ class ItemSelectAction(object):
 
 
 class ItemSelectWidget(TemplateWidget):
-    template_name = 'knotis/layout/item_select.html'
+    template_name = 'knotis/item_select.html'
 
     def __init__(
         self,
@@ -98,6 +98,7 @@ class ItemSelectWidget(TemplateWidget):
         attrs=None
     ):
         self.parameters.update({
+            'field_name': name,
             'rows': self.rows,
             'actions': self.actions,
             'select_multiple': self.select_multiple,
@@ -117,8 +118,20 @@ class ItemSelectWidget(TemplateWidget):
         files,
         name
     ):
-        return super(ItemSelectWidget, self).value_from_datadict(
-            data,
-            files,
-            name
-        )
+        if self.select_multiple:
+            key_prefix = ''.join([
+                name,
+                '_'
+            ])
+            return [
+                value for key, value in data.iteritems() if key.startswith(
+                    key_prefix
+                )
+            ]
+
+        else:
+            return super(ItemSelectWidget, self).value_from_datadict(
+                data,
+                files,
+                name
+            )
