@@ -1,0 +1,25 @@
+<form class="form-horizontal" id="{{ form.form_id }}" action="{{ form.form_action }}" method="{{ form.form_method }}" >
+  {{ form.offer }}
+  <div class="control-group">
+    <label class="control-label">When to send offer</label>
+    <div class="controls">
+      {{ form.start_date }}
+    </div>
+    <div class="controls">
+      {{ form.end_date }}
+    </div>
+    <div class="controls">
+      {{ form.no_time_limit }} <span class="help-text">No time limit - run until it sells</span>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">Where to send offer</label>
+    {{ form.publish }}
+  </div>
+  <div>
+    <button type="button" class="pull-left btn">Back</button>
+    <button type="button" class="pull-left btn" data-dismiss="modal">Delete Offer</button>
+    <button id="id-submit-details" type="submit" class="pull-right btn btn-primary">Next</button>
+    <button type="button" class="pull-right btn btn-primary">Save &amp; Preview</button>
+  </div>
+</form>
