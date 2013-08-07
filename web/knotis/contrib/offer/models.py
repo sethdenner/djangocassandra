@@ -21,6 +21,7 @@ from knotis.utils.view import (
 from knotis.contrib.media.models import Image
 from knotis.contrib.identity.models import Identity
 from knotis.contrib.inventory.models import Inventory
+from knotis.contrib.endpoint.models import Endpoint
 
 
 class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
@@ -465,3 +466,13 @@ class OfferItem(QuickModel):
     offer = QuickForeignKey(Offer)
     inventory = QuickForeignKey(Inventory)
     price_discount = QuickFloatField()
+
+
+class OfferPublish(QuickModel):
+    offer = QuickForeignKey(Offer)
+    endpoint = QuickForeignKey(Endpoint)
+
+    def publish(self):
+        # 1. Construct appropriate message for endpoint from offer
+        # 2. Send message to endpoint
+        pass
