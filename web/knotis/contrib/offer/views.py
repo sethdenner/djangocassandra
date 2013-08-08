@@ -11,7 +11,8 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from knotis.contrib.offer.models import (
-    Offer
+    Offer,
+    OfferPublish
 )
 from knotis.contrib.product.models import (
     Product,
@@ -31,6 +32,8 @@ from knotis.contrib.identity.models import (
     IdentityBusiness,
     IdentityTypes
 )
+
+from knotis.contrib.endpoint.models import Endpoint
 
 from knotis.views import (
     FragmentView,
@@ -437,7 +440,7 @@ class OfferEditLocationFormView(AJAXFragmentView):
         ).render_template_fragment(local_context)
 
 
-class OfferEditPublishFormView(FragmentView):
+class OfferEditPublishFormView(AJAXFragmentView):
     template_name = 'knotis/offer/edit_publish.html'
     view_name = 'offer_edit_publish_form'
 
@@ -447,24 +450,86 @@ class OfferEditPublishFormView(FragmentView):
         *args,
         **kwargs
     ):
-        return super(
-            OfferEditPublishFormView,
-            self,
-        ).post(
-            request,
-            *args,
-            **kwargs
+        current_identity_id = request.session.get('current_identity_id')
+        current_identity = Identity.objects.get(id=current_identity_id)
+
+        offer_id = request.GET.get('id')
+        offer = get_object_or_404(Offer, pk=offer_id)
+
+        publish_queryset = Endpoint.objects.filter(**{
+            'identity': current_identity
+        })
+
+        form = OfferPublicationForm(
+            offer=offer,
+            publish_queryset=publish_queryset
         )
+
+        if not form.is_valid():
+            errors = {}
+            for field, messages in form.errors.iteritems():
+                errors[field] = [message for message in messages]
+
+            return self.generate_response({
+                'message': 'the data entered is invalid',
+                'errors': errors
+            })
+
+        try:
+            offer = form.cleaned_data['offer']
+            offer.start_time = form.cleaned_data['start_time']
+            offer.end_time = form.cleaned_data['end_time']
+            offer.save()
+
+            publish = form.cleaned_data['publish']
+            for endpoint in publish:
+                OfferPublish.objects.create(
+                    offer=offer,
+                    endpoint=endpoint
+                )
+
+        except Exception, e:
+            logger.exception('error while saving offer publication form')
+            return self.generate_response({
+                'message': e.message,
+                'errors': {
+                    'no-field': 'A server error occurred. Please try again.'
+                }
+            })
+
+        return self.generate_response({
+            'message': 'OK',
+            'offer_id': offer.id
+        })
 
     @classmethod
     def render_template_fragment(
         cls,
         context
     ):
+        request = context.get('request')
+        current_identity_id = request.session.get('current_identity_id')
+        current_identity = Identity.objects.get(id=current_identity_id)
+
+        offer_id = request.GET.get('id')
+        offer = get_object_or_404(Offer, pk=offer_id)
+
+        publish_queryset = Endpoint.objects.filter(**{
+            'identity': current_identity
+        })
+
+        local_context = Context(context)
+        local_context.update({
+            'form': OfferPublicationForm(
+                offer=offer,
+                publish_queryset=publish_queryset
+            )
+        })
+
         return super(
             OfferEditPublishFormView,
             cls
-        ).render_template_fragment(context)
+        ).render_template_fragment(local_context)
 
 
 class OfferEditSummaryView(FragmentView):

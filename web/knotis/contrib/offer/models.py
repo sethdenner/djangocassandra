@@ -133,7 +133,7 @@ class OfferManager(QuickManager):
 
             if OfferSort.NEWEST == sort_by:
                 def get_newest_sort_key(offer):
-                    return offer.pub_date
+                    return offer.pub_time
 
                 results = sorted(
                     results,
@@ -153,7 +153,7 @@ class OfferManager(QuickManager):
 
             elif OfferSort.EXPIRING == sort_by:
                 def get_expiring_sort_key(offer):
-                    return offer.end_date
+                    return offer.end_time
 
                 results = sorted(
                     results,
@@ -268,8 +268,8 @@ class Offer(QuickModel):
 
     default_image = QuickForeignKey(Image)
 
-    start_date = QuickDateTimeField()
-    end_date = QuickDateTimeField()
+    start_time = QuickDateTimeField()
+    end_time = QuickDateTimeField()
     stock = QuickIntegerField(
         default=None
     )
@@ -297,7 +297,7 @@ class Offer(QuickModel):
         # Check whether offer should be completed on instansiation.
         # Could have no end date I guess so check for not None.
         if (
-            self.end_date and self.end_date < datetime.datetime.utcnow()
+            self.end_time and self.end_time < datetime.datetime.utcnow()
         ) or (
             not self.unlimited and self.purchased >= self.stock
         ):
@@ -339,8 +339,8 @@ class Offer(QuickModel):
 
         return self.active and \
             self.published and \
-            self.start_date <= now and \
-            self.end_date > now and \
+            self.start_time <= now and \
+            self.end_time > now and \
             self.purchased < self.stock
 
     def description_formatted_html(self):
@@ -431,7 +431,7 @@ class Offer(QuickModel):
         )
 
     def days_remaining(self):
-        delta = self.end_date - datetime.datetime.utcnow()
+        delta = self.end_time - datetime.datetime.utcnow()
         return delta.days
 
     def stock_remaining(self):

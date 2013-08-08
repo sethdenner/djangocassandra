@@ -7,6 +7,7 @@ from django.forms import (
     BooleanField,
     ModelChoiceField,
     ModelMultipleChoiceField,
+    DateTimeField,
     RadioSelect,
     HiddenInput,
     ValidationError
@@ -22,6 +23,10 @@ from knotis.contrib.identity.models import Identity
 from knotis.contrib.product.models import ProductTypes
 from knotis.contrib.location.models import Location
 from knotis.contrib.media.models import Image
+from knotis.contrib.endpoint.models import (
+    Endpoint,
+    EndpointTypes
+)
 
 from models import Offer
 
@@ -254,8 +259,122 @@ class OfferPhotoLocationForm(TemplateForm):
             locations_widget.actions = actions
 
 
-class OfferPublicationForm(Form):
-    pass
+class OfferPublicationForm(TemplateForm):
+    template_name = 'knotis/offer/offer_publish_form.html'
+    form_action = '/offer/create/publish/'
+    form_id = 'offer_publish_form'
+    form_method = 'POST'
+
+    offer = ModelChoiceField(
+        queryset=Offer.objects.none(),
+        widget=HiddenInput()
+    )
+
+    start_time = DateTimeField(
+        required=False,
+    )
+    end_time = DateTimeField(
+        required=False,
+    )
+    no_time_limit = BooleanField(
+        required=False
+    )
+
+    publish = ModelMultipleChoiceField(
+        queryset=Endpoint.objects.none(),
+        widget=ItemSelectWidget(select_multiple=True)
+    )
+
+    def __init__(
+        self,
+        offer=None,
+        publish_queryset=None,
+        *args,
+        **kwargs
+    ):
+        super(OfferPublicationForm, self).__init__(
+            *args,
+            **kwargs
+        )
+
+        if offer:
+            self.fields['offer'].queryset = Offer.objects.filter(**{
+                'pk__in': [offer.id]
+            })
+            self.fields['offer'].initial = offer
+
+        (
+            endpoint_facebook,
+            endpoint_twitter,
+            endpoint_widget,
+            endpoint_followers
+        ) = None, None, None, None
+
+        if publish_queryset:
+            self.fields['publish'].queryset = publish_queryset
+
+            for endpoint in publish_queryset:
+                if (
+                    not endpoint_facebook and
+                    EndpointTypes.FACEBOOK == endpoint.endpoint_type
+                ):
+                    endpoint_facebook = endpoint
+
+                elif (
+                    not endpoint_twitter and
+                    EndpointTypes.TWITTER == endpoint.endpoint_type
+                ):
+                    endpoint_twitter = endpoint
+
+                elif (
+                    not endpoint_widget and
+                    EndpointTypes.WIDGET == endpoint.endpoint_type
+                ):
+                    endpoint_widget = endpoint
+
+                elif (
+                    not endpoint_followers and
+                    EndpointTypes.FOLLOWERS == endpoint.endpoint_type
+                ):
+                    endpoint_widget = endpoint
+
+        rows = [
+            ItemSelectRow(
+                endpoint_facebook,
+                title='Facebook',
+                checked=True if endpoint_facebook is not None else False,
+                disabled=True if endpoint_facebook is None else False
+            ),
+            ItemSelectRow(
+                endpoint_twitter,
+                title='Twitter',
+                checked=True if endpoint_twitter is not None else False,
+                disabled=True if endpoint_twitter is None else False
+            ),
+            ItemSelectRow(
+                endpoint_followers,
+                title='Email',
+                checked=True if endpoint_followers is not None else False,
+                disabled=True if endpoint_followers is None else False
+            ),
+            ItemSelectRow(
+                endpoint_widget,
+                title='Website Widget',
+                checked=True if endpoint_widget is not None else False,
+                disabled=True if endpoint_widget is None else False
+            )
+        ]
+
+        actions = [
+            ItemSelectAction(
+                'Edit',
+                '#edit-endpoint'
+            )
+        ]
+
+        publish_widget = self.fields['publish'].widget
+        publish_widget.rows = rows
+        publish_widget.actions = actions
 
 
 class OfferWithInventoryForm(OfferForm):
