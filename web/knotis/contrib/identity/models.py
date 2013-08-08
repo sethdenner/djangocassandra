@@ -168,7 +168,7 @@ class IdentityBusinessManager(IdentityManager):
 
         relation_establishment = Relation.objects.get(
             relation_type=RelationTypes.ESTABLISHMENT,
-            related=establishment
+            related_object_id=establishment.id
         )
 
         business = relation_establishment.subject
