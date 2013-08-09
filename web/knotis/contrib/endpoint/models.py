@@ -1,3 +1,10 @@
+from knotis.contrib.quick.models import QuickModel
+from knotis.contrib.quick.fields import (
+    QuickUUIDField,
+    QuickForeignKey,
+    QuickGenericForeignKey
+)
+
 from django.db.models import (
     CharField,
     DateTimeField,
@@ -6,6 +13,7 @@ from django.db.models import (
     Manager
 )
 from django.core.mail import send_mail, BadHeaderError
+from django.contrib.contenttypes.models import ContentType
 
 from knotis.utils.email import generate_validation_key
 from knotis.contrib.core.models import KnotisModel
@@ -240,3 +248,19 @@ class EndpointAddress(Endpoint):
         kwargs['endpoint_type'] = EndpointTypes.ADDRESS
 
         super(EndpointAddress, self).__init__(*args, **kwargs)
+
+
+class Publish(QuickModel):
+    endpoint = QuickForeignKey(Endpoint)
+    subject_content_type = QuickForeignKey(
+        ContentType,
+        related_name='publish_subject_set'
+    )
+    subject_object_id = QuickUUIDField()
+    subject = QuickGenericForeignKey(
+        'subject_content_type',
+        'subject_object_id'
+    )
+
+    def publish(self):
+        raise NotImplementedError('base class must define this method')
