@@ -270,9 +270,7 @@ class OfferPublicationForm(TemplateForm):
         widget=HiddenInput()
     )
 
-    start_time = DateTimeField(
-        required=False,
-    )
+    start_time = DateTimeField()
     end_time = DateTimeField(
         required=False,
     )
@@ -282,7 +280,8 @@ class OfferPublicationForm(TemplateForm):
 
     publish = ModelMultipleChoiceField(
         queryset=Endpoint.objects.none(),
-        widget=ItemSelectWidget(select_multiple=True)
+        widget=ItemSelectWidget(select_multiple=True),
+        required=False
     )
 
     def __init__(
@@ -375,6 +374,18 @@ class OfferPublicationForm(TemplateForm):
         publish_widget = self.fields['publish'].widget
         publish_widget.rows = rows
         publish_widget.actions = actions
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        start_time = cleaned_data.get('start_time')
+        end_time = cleaned_data.get('end_time')
+        no_time_limit = cleaned_data.get('no_time_limit')
+
+        if not no_time_limit:
+            if start_time >= end_time:
+                raise ValidationError('start time must be before end time')
+
+        return cleaned_data
 
 
 class OfferWithInventoryForm(OfferForm):

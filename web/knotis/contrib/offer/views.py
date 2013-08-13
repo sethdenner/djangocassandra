@@ -1,3 +1,5 @@
+import copy
+
 from django.shortcuts import (
     render,
     get_object_or_404
@@ -453,7 +455,7 @@ class OfferEditPublishFormView(AJAXFragmentView):
         current_identity_id = request.session.get('current_identity_id')
         current_identity = Identity.objects.get(id=current_identity_id)
 
-        offer_id = request.GET.get('id')
+        offer_id = request.POST.get('offer')
         offer = get_object_or_404(Offer, pk=offer_id)
 
         publish_queryset = Endpoint.objects.filter(**{
@@ -461,6 +463,7 @@ class OfferEditPublishFormView(AJAXFragmentView):
         })
 
         form = OfferPublicationForm(
+            data=request.POST,
             offer=offer,
             publish_queryset=publish_queryset
         )
@@ -476,17 +479,18 @@ class OfferEditPublishFormView(AJAXFragmentView):
             })
 
         try:
-            offer = form.cleaned_data['offer']
-            offer.start_time = form.cleaned_data['start_time']
-            offer.end_time = form.cleaned_data['end_time']
+            offer = form.cleaned_data.get('offer')
+            offer.start_time = form.cleaned_data.get('start_time')
+            offer.end_time = form.cleaned_data.get('end_time')
             offer.save()
 
-            publish = form.cleaned_data['publish']
-            for endpoint in publish:
-                OfferPublish.objects.create(
-                    offer=offer,
-                    endpoint=endpoint
-                )
+            publish = form.cleaned_data.get('publish')
+            if publish:
+                for endpoint in publish:
+                    OfferPublish.objects.create(
+                        offer=offer,
+                        endpoint=endpoint
+                    )
 
         except Exception, e:
             logger.exception('error while saving offer publication form')
@@ -518,7 +522,7 @@ class OfferEditPublishFormView(AJAXFragmentView):
             'identity': current_identity
         })
 
-        local_context = Context(context)
+        local_context = copy.copy(context)
         local_context.update({
             'form': OfferPublicationForm(
                 offer=offer,

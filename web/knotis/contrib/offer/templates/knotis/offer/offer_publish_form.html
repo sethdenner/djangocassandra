@@ -3,10 +3,20 @@
   <div class="control-group">
     <label class="control-label">When to send offer</label>
     <div class="controls">
-      <input type="text" name="{{ form.start_time.html_name }}" value="{{ form.start_time.value|default_if_none:'' }}" placeholder="Start Time" />
+      <div id="id-start-time" class="input-append date">
+        <input data-format="MM/dd/yyyy HH:mm:ss PP" type="text" name="{{ form.start_time.html_name }}" value="{{ form.start_time.value|default_if_none:'' }}" placeholder="Start Time" />
+        <span class="add-on">
+          <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+        </span>
+      </div>
     </div>
     <div class="controls">
-      <input type="text" name="{{ form.end_time.html_name }}" value="{{ form.end_time.value|default_if_none:'' }}" placeholder="End Time" />
+      <div id="id-end-time" class="input-append date">
+        <input data-format="MM/dd/yyyy HH:mm:ss PP" type="text" name="{{ form.end_time.html_name }}" value="{{ form.end_time.value|default_if_none:'' }}" placeholder="End Time" />
+        <span class="add-on">
+          <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+        </span>
+      </div>
     </div>
     <div class="controls">
       {{ form.no_time_limit }} <span class="help-text">No time limit - run until it sells</span>
