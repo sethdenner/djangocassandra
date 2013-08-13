@@ -3,127 +3,39 @@ from django.conf.urls.defaults import (
     url
 )
 
-from knotis.utils.regex import (
-    REGEX_UUID,
-    REGEX_OFFER_FILTERING,
+from views import (
+    OfferEditView,
+    OfferEditProductFormView,
+    OfferEditDetailsFormView,
+    OfferEditLocationFormView,
+    OfferEditPublishFormView,
+    OfferEditSummaryView
 )
-from knotis.contrib.offer.models import OfferSort
-
 
 urlpatterns = patterns(
     'knotis.contrib.offer.views',
     url(
-        r's/create/$',
-        'edit',
+        r'/create/$',
+        OfferEditView.as_view()
     ),
     url(
-        'activate/$',
-        'activate'
+        r'/create/product/$',
+        OfferEditProductFormView.as_view()
     ),
     url(
-        r''.join([
-            's/update/(?P<offer_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        'edit',
+        r'/create/details/$',
+        OfferEditDetailsFormView.as_view()
     ),
     url(
-        r''.join([
-            's/rerun/(?P<offer_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        'edit', {
-            'rerun': True
-        }
-    ),
-
-    url(
-        r''.join([
-            'buy/(?P<offer_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        'purchase'
+        r'/create/location/$',
+        OfferEditLocationFormView.as_view()
     ),
     url(
-        r''.join([
-            'image/delete/(?P<offer_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        'delete_offer_image'
+        r'/create/publish/$',
+        OfferEditPublishFormView.as_view()
     ),
     url(
-        r''.join([
-            'delete/(?P<offer_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        'delete_offer'
-    ),
-    url(
-        r''.join([
-            '(?P<offer_id>',
-            REGEX_UUID,
-            ')/$',
-        ]),
-        'offer',
-    ),
-    url(
-        r's/dashboard/$',
-        'dashboard',
-    ),
-    url(
-        's/print_unredeemed',
-        'print_unredeemed',
-    ),
-    url(
-        r's/get_offers_by_status/(?P<status>[a-zA-Z_-]+)/$',
-        'get_offers_by_status',
-    ),
-    url(
-        r''.join([
-            's/get_popular_offers',
-            REGEX_OFFER_FILTERING,
-            '/$'
-        ]),
-        'get_available_offers',
-        {'sort_by': OfferSort.POPULAR},
-    ),
-    url(
-        r''.join([
-            's/get_newest_offers',
-            REGEX_OFFER_FILTERING,
-            '/$'
-        ]),
-        'get_available_offers',
-        {'sort_by': OfferSort.NEWEST},
-    ),
-    url(
-        r''.join([
-            's/get_expiring_offers',
-            REGEX_OFFER_FILTERING,
-            '/$'
-        ]),
-        'get_available_offers',
-        {'sort_by': OfferSort.EXPIRING},
-    ),
-    url(
-        r''.join([
-            's/offer_map',
-            REGEX_OFFER_FILTERING,
-            '/$'
-        ]),
-        'offer_map',
-    ),
-    url(
-        r''.join([
-            's',
-            REGEX_OFFER_FILTERING,
-            '/$'
-        ]),
-        'offers',
-    ),
+        r'/create/summary/$',
+        OfferEditSummaryView.as_view()
+    )
 )

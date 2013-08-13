@@ -47,9 +47,6 @@ class QuickManager(polymodels.managers.PolymorphicManager):
             **kwargs
         )
 
-    def all(self):
-        return self.select_subclasses()
-
 
 @staticmethod
 def get_form_class(model, extra=0):
@@ -120,6 +117,8 @@ class QuickModelBase(object):
         for field in cls._meta.fields:
             if field.name == field_name:
                 break
+
+            ++i
 
         return args[i] if len(args) > i else kwargs.get(field_name)
 

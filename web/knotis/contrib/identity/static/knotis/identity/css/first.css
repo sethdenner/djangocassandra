@@ -1,0 +1,19 @@
+div.modal-backdrop {
+    z-index: 998;
+}
+
+div#modal-box {
+    z-index: 999;
+}
+
+div#modal-box div.modal-body {
+    max-height: 470px;
+}
+
+div#modal-box form#id-location-form div.map_canvas {
+    height: 320px;
+}
+
+div#modal-box form#id-location-form input#address-input {
+    width: auto;
+}

@@ -6,7 +6,7 @@ from api.handlers.testmodel import TestModelHandler
 from handlers.endpoint import EndpointHandler
 from handlers.user import UserHandler
 from resource import JsonResource
-"""
+
 
 from django.conf.urls.defaults import patterns, url, include
 
@@ -41,7 +41,7 @@ urlpatterns = patterns(
     )
 )
 
-"""
+
 user_handler = Resource(UserHandler, **handler_arguments)
 endpoint_handler = Resource(EndpointHandler, **handler_arguments)
 establishment_handler = Resource(EstablishmentModelHandler)

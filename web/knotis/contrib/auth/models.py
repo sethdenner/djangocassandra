@@ -20,17 +20,12 @@ from knotis.contrib.denormalize.models import DenormalizedField
 from knotis.contrib.facebook.views import get_facebook_avatar
 from knotis.contrib.gravatar.views import avatar as get_gravatar_avatar
 from knotis.contrib.endpoint.models import Endpoint
-from knotis.contrib.identity.models import (
-    Identity,
-    IdentityIndividual
-)
+from knotis.contrib.identity.models import Identity
 
 
 class KnotisUserManager(UserManager):
     def create_user(
         self,
-        first_name,
-        last_name,
         email,
         password
     ):
@@ -43,22 +38,12 @@ class KnotisUserManager(UserManager):
             password
         )
 
-        new_user.first_name = first_name
-        new_user.last_name = last_name
-
-        new_user.save()
-
-        identity = IdentityIndividual.objects.create(
-            new_user
-        )
-
         user_info = UserInformation()
         user_info.user = new_user
         user_info.username = new_user
-        user_info.default_identity = identity
         user_info.save()
 
-        return new_user, identity
+        return new_user, user_info
 
 
 class KnotisUser(DjangoUser):

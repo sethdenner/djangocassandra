@@ -63,9 +63,7 @@ class RelationManager(QuickManager):
             related=individual,
             description=''.join([
                 'The identity of ',
-                user.first_name,
-                ' ',
-                user.last_name,
+                individual.name,
                 '.'
             ])
         )
@@ -166,7 +164,7 @@ class RelationManager(QuickManager):
         follower
     ):
         follower_type = ContentType.objects.get_for_model(follower)
-        return  self.filter(
+        return self.filter(
             subject_content_type__pk=follower_type.id,
             subject_object_id=follower.id,
             relation_type=RelationTypes.FOLLOWING
@@ -202,16 +200,6 @@ class Relation(QuickModel):
     )
 
     objects = RelationManager()
-
-    class Quick(QuickModel.Quick):
-        exclude = ()
-        # permissions = {'create': self.check_create}
-        types = RelationTypes
-
-    def __unicode__(self):
-        if (self.name):
-            return str(self.name)
-        return str(self.id)
 
 
 class RelationProprietor(Relation):

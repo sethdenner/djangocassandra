@@ -10,7 +10,6 @@ RenderTemplateFragmentMixin.register_template_fragment_views()
 
 admin.autodiscover()
 
-
 urlpatterns = patterns(
     '',
     url(
@@ -82,19 +81,15 @@ urlpatterns = patterns(
         include('knotis.contrib.sickle.urls')
     ),
     url(
-        r'^admin/doc/',
-        include('django.contrib.admindocs.urls')
-    ),
-    url(
-        r'^admin/',
-        include('admin.site.urls')
-    ),
-    url(
-        r'^api/',
-        include('knotis.contrib.api.urls')
+        r'',
+        include('knotis.contrib.location.urls')
     ),
     url(
         r'^(?P<backend_name>[^/]+)/$',
-        'knotis.contrib.business.views.profile',
+        'knotis.contrib.business.views.profile'
     ),
+    url(
+        r'',
+        include('knotis.contrib.layout.urls')
+    )
 )

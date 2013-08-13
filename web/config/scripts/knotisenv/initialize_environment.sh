@@ -16,7 +16,7 @@ export cassandra_config="${3}"
 installer_dir="$(pwd)/installers"
 
 # install required packages
-apt-get -y install python python-dev python-setuptools
+apt-get -y install python python-dev python-setuptools mercurial
 easy_install virtualenv virtualenvwrapper pip automake autoconf acl gcc git mercurial libmysqlclient-dev
 
 # create temp directory to work in

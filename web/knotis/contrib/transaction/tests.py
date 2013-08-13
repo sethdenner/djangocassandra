@@ -3,7 +3,6 @@ from django.test import TestCase
 from knotis.contrib.auth.tests import UserCreationTests
 from knotis.contrib.identity.tests import IdentityModelTests
 from knotis.contrib.product.tests import ProductTests
-from knotis.contrib.inventory.tests import InventoryTests
 from knotis.contrib.offer.tests import OfferTests
 
 from knotis.contrib.product.models import (

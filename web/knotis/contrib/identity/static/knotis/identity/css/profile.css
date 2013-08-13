@@ -1,0 +1,30 @@
+div#id-profile-cover {
+    text-align: center;
+    background-color: #b5d334;
+    padding: 35px 0 16px 0;
+    position: relative;
+}
+
+div#id-profile-title h2 {
+    color: white;
+}
+
+div#id-profile-spacer p {
+    min-height: 10px;
+    background-color: #ffffff;
+}
+
+div#id-profile-cover img[data-add-image]:hover {
+    cursor: pointer;
+}
+
+@media (min-width: 768px) {
+    div#id-profile-cover div#id-profile-contact {
+        position: absolute;
+        right: 2%;
+        top: 12%;
+        text-align: right;
+    }
+
+}
+

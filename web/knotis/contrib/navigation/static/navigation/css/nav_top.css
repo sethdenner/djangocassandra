@@ -1,0 +1,16 @@
+.navbar.navigation-horizontal .nav {
+    width: 100%;
+}
+
+.navbar.navigation-horizontal .nav > li {
+    float: none;
+    display: inline-block;
+    *display:inline;
+    *zoom:1;
+    vertical-align: top;
+}
+
+
+.navbar.navigation-horizontal .navbar-inner {
+    text-align: center;
+}

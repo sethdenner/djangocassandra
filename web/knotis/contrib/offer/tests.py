@@ -11,9 +11,7 @@ from knotis.contrib.product.models import (
 
 from knotis.contrib.offer.models import (
     Offer,
-    OfferTypes,
-    OfferStatus,
-    OfferTitleTypes
+    OfferTypes
 )
 
 
@@ -31,9 +29,6 @@ class OfferTests(TestCase):
         if not kwargs.get('title'):
             kwargs['title'] = 'Test offer title'
 
-        if not kwargs.get('title_type'):
-            kwargs['title_type'] = OfferTitleTypes.TITLE_1
-
         if not kwargs.get('description'):
             kwargs['description'] = 'Test offer description'
 
@@ -42,23 +37,14 @@ class OfferTests(TestCase):
                 owner=kwargs['owner']
             )
 
-        if not kwargs.get('price_retail'):
-            kwargs['price_retail'] = 10.
-
-        if not kwargs.get('price_discount'):
-            kwargs['price_discount'] = kwargs['price_retail'] * .5
-
-        if not kwargs.get('currency'):
-            kwargs['currency'] = Product.currency.get('usd')
-
-        if not kwargs.get('status'):
-            kwargs['status'] = OfferStatus.CURRENT
-
         if not kwargs.get('published'):
             kwargs['published'] = True
 
         if not kwargs.get('active'):
             kwargs['active'] = True
+
+        if not kwargs.get('completed'):
+            kwargs['completed'] = False
 
         if not kwargs.get('restrictions'):
             kwargs['restrictions'] = 'Test offer restrictions'

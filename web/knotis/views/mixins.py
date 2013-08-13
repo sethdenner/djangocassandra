@@ -1,9 +1,14 @@
 import sys
 import imp
 import inspect
+import json
 
 from django.conf import settings
 from django.template.loader import get_template
+from django.http import (
+    HttpResponse,
+    HttpResponseServerError
+)
 
 
 class RenderTemplateFragmentMixin(object):
@@ -88,3 +93,25 @@ class RenderTemplateFragmentMixin(object):
                 ):
                     print 'registering template fragment %s' % name,
                     cls.register_template_fragment()
+
+
+class GenerateAJAXResponseMixin(object):
+    @classmethod
+    def generate_response(
+        cls,
+        data,
+        format='json'
+    ):
+        if format == 'json':
+            return HttpResponse(
+                json.dumps(data),
+                content_type='application/json'
+            )
+
+        else:
+            return HttpResponseServerError(''.join([
+                cls.__name__,
+                ' does not support response format <',
+                format,
+                '>.'
+            ]))

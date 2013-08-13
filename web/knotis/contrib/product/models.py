@@ -18,13 +18,15 @@ class ProductTypes:
     SERVICE = 'service'
     CURRENCY = 'currency'
     DIGITAL = 'digital'
+    CREDIT = 'credit'
 
     CHOICES = (
         (PHYSICAL, 'Physical'),
         (EVENT, 'Event'),
         (SERVICE, 'Service'),
         (CURRENCY, 'Currency'),
-        (DIGITAL, 'Digital')
+        (DIGITAL, 'Digital'),
+        (CREDIT, 'Credit')
     )
 
 
@@ -47,7 +49,110 @@ class ProductCurrencyManager(QuickManager):
         )
 
 
+class ProductManager(QuickManager):
+    @staticmethod
+    def _generate_credit_sku(
+        price,
+        value
+    ):
+        return '_'.join([
+            Product.CREDIT_SKU_PREFIX,
+            CurrencyCodes.USD,
+            ('%.2f' % price).rstrip('00').rstrip('.'),
+            ('%.2f' % value).rstrip('00').rstrip('.')
+        ])
+
+    @staticmethod
+    def _generate_physical_sku(title):
+        return '_'.join([
+            Product.PHYSICAL_SKU_PREFIX,
+            title.lower().replace(' ', '_').replace('\'', '')
+        ])
+
+    def get_or_create_credit(
+        self,
+        price,
+        value
+    ):
+        sku = self._generate_credit_sku(
+            price,
+            value
+        )
+
+        try:
+            product = self.get(
+                product_type=ProductTypes.CREDIT,
+                sku=sku
+            )
+
+        except Product.DoesNotExist:
+            product = None
+
+        if not product:
+            product = self.create(
+                product_type=ProductTypes.CREDIT,
+                title=''.join([
+                    ('%.2f' % price).rstrip('00').rstrip('.'),
+                    ' for ',
+                    ('%.2f' % value).rstrip('00').rstrip('.')
+                ]),
+                description=''.join([
+                    '$',
+                    ('%.2f' % value).rstrip('00').rstrip('.'),
+                    'worth of credit'
+                ]),
+                primary_image=None,
+                public=False,
+                sku=self._generate_credit_sku(
+                    price,
+                    value
+                )
+            )
+
+        return product
+
+    def get_or_create_physical(
+        self,
+        title
+    ):
+        sku = self._generate_physical_sku(
+            title
+        )
+
+        try:
+            product = self.get(
+                product_type=ProductTypes.PHYSICAL,
+                sku=sku
+            )
+
+        except Product.DoesNotExist:
+            product = None
+
+        if not product:
+            product = self.create(
+                product_type=ProductTypes.PHYSICAL,
+                title=title,
+                public=False,
+                sku=self._generate_physical_sku(
+                    title
+                )
+            )
+
+        return product
+
+
 class Product(QuickModel):
+    CREDIT_SKU_PREFIX = '_'.join([
+        'knotis',
+        ProductTypes.CREDIT,
+        'sku'
+    ])
+    PHYSICAL_SKU_PREFIX = '_'.join([
+        'knotis',
+        ProductTypes.PHYSICAL,
+        'sku'
+    ])
+
     product_type = QuickCharField(
         max_length=16,
         db_index=True,
@@ -61,9 +166,14 @@ class Product(QuickModel):
         max_length=140
     )
     primary_image = QuickForeignKey(Image)
-    public = QuickBooleanField(default=True)
+    public = QuickBooleanField(
+        db_index=True,
+        default=True
+    )
     sku = QuickCharField(
+        db_index=True,
         max_length=32
     )
 
     currency = ProductCurrencyManager()
+    objects = ProductManager()

@@ -8,9 +8,9 @@
  * 
  *      https://github.com/valums/file-uploader
  * 
- * We also rely on colorbox jQuery plugin to render the cropping window:
+ * We also rely on bootstrap-modal to render the cropping window:
  * 
- *      https://github.com/jackmoore/colorbox/
+ *      https://github.com/jschr/bootstrap-modal
  * 
  * And then, of course, we use jCrop for the actual cropping functionality:
  * 
@@ -38,7 +38,8 @@
             aspect: null,
             image_id: null,
             image_max_width: null,
-            image_max_height: null
+            image_max_height: null,
+            modal_selector: '#modal-box'
         }, options);
         
         var _crop = function(image_id) {
@@ -57,70 +58,50 @@
                 ].join('');
             }
             
-            $.colorbox({
-                href: href,
-                transition: 'fade',
-                scrolling: false,
-                overlayClose: false,
-                maxHeight: '100%',
-                maxWidth: '100%',
-                onClose: _options.close,
-                onComplete: function() {
-                    $image = $('#sickle_image');
-                    $image.Jcrop({
-                        aspectRatio: _options.aspect,
-                        onChange: function(coordinates) {
-                            $content = $('#sickle_content');
-                            $content.find('#id_crop_left').val(coordinates.x);
-                            $content.find('#id_crop_top').val(coordinates.y);
-                            $content.find('#id_crop_bottom').val(coordinates.y2);
-                            $content.find('#id_crop_right').val(coordinates.x2);
-                            $content.find('#id_crop_width').val(coordinates.w);
-                            $content.find('#id_crop_height').val(coordinates.h);
-                        }
-                    });
-                    
-                    var resize_box = function() {
-                        $image = $('#sickle_image');
-                        image_width = $image.width();
-                        image_height = $image.height();
-                        if (image_height > image_width) {
-                            $.colorbox.resize({
-                                innerHeight: image_height
-                            });
-    
-                        } else {
-                            $.colorbox.resize({
-                                innerWidth: image_width
-                            });
-                            
-                        }
+            var $modal = $(_options.modal_selector);
+            var onComplete = function() {
+                $image = $('#sickle_image');
+                $image.Jcrop({
+                    aspectRatio: _options.aspect,
+                    onChange: function(coordinates) {
+                        $content = $('#sickle_content');
+                        $content.find('#id_crop_left').val(coordinates.x);
+                        $content.find('#id_crop_top').val(coordinates.y);
+                        $content.find('#id_crop_bottom').val(coordinates.y2);
+                        $content.find('#id_crop_right').val(coordinates.x2);
+                        $content.find('#id_crop_width').val(coordinates.w);
+                        $content.find('#id_crop_height').val(coordinates.h);
+                    }
+                });
+                
+                $('#sickle_form').submit(function(event) {
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        type: 'POST',
+                        data: $(this).serialize(),
+                        dataType: 'json'
+                    }).done(function(data) {
+                        $modal.modal('hide');
+                        _options.done(data);
                         
-                    };
-                    resize_box();
-                    setTimeout(resize_box, 500);
+                    }).fail(_options.fail)
+                        .always(_options.always);
                     
-                    $('#sickle_form').submit(function(event) {
-                        $.ajax({
-                            url: $(this).attr('action'),
-                            type: 'POST',
-                            data: $(this).serialize(),
-                            dataType: 'json'
-                        }).done(function(data) {
-                            $.colorbox.close();
-                            _options.done(data);
-                            
-                        }).fail(_options.fail)
-                            .always(_options.always);
-                        
-                        event.preventDefault();
-                        return false; 
+                    event.preventDefault();
+                    return false; 
 
-                    });
+                });
                 
+            };
+
+            $modal.load(
+                href,
+                '',
+                function() {
+                    $modal.modal();
+                    onComplete();
                 }
-                
-            })
+            );
 
         };
         
@@ -142,7 +123,7 @@
                 
              } else {
                  $(this).unbind('click.sickle').bind('click.sickle', function(event){
-                    _crop($(this).attr('data-image-id'));
+                     _crop($(this).attr('data-image-id'));
                     
                     event.stopPropagation();
                     return false;

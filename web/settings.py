@@ -11,6 +11,8 @@ EMAIL_COMPLETED_OFFERS_INTERVAL_DAYS = 7
 
 PASSWORD_RESET_EXPIRE_MINUTES = 10080
 
+FORMAT_MODULE_PATH = 'web.formats'
+
 BUSINESS_NAME_BLACKLIST = (
     'facebook',
     'login',
@@ -165,6 +167,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.core.context_processors.static',
+    'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages'
 )
 
@@ -175,9 +178,11 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'knotis.contrib.mobile.middleware.MobileDetectionMiddleware',
-    'knotis.contrib.activity.middleware.ActivityMiddleware'
+    # 'knotis.contrib.mobile.middleware.MobileDetectionMiddleware',
+    # 'knotis.contrib.activity.middleware.ActivityMiddleware'
 )
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 ROOT_URLCONF = 'urls'
 
@@ -200,12 +205,12 @@ INSTALLED_APPS = (
     # Third party Django apps.
     'autoload',
     'dbindexer',
-    'piston',
     'djangotoolbox',
     'django_extensions',
     'permission_backend_nonrel',
     'timezones',
     'sorl.thumbnail',
+    'crispy_forms',
     # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -217,6 +222,9 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     # knotis apps
     'knotis',
+    'knotis.contrib.layout',
+    'knotis.contrib.search',
+    'knotis.contrib.navigation',
     'knotis.contrib.denormalize',
     'knotis.contrib.auth',
     'knotis.contrib.endpoint',
@@ -229,7 +237,10 @@ INSTALLED_APPS = (
     'knotis.contrib.transaction',
     'knotis.contrib.inventory',
     'knotis.contrib.product',
-    'knotis.contrib.media'
+    'knotis.contrib.media',
+    'knotis.contrib.api',
+    'knotis.contrib.maps',
+    'knotis.contrib.location'
 )
 
 LOGIN_REDIRECT_URL = '/'
@@ -272,7 +283,7 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'seth'
+ENVIRONMENT_NAME = 'dev1'
 
 # You can key the configurations off of anything - I use project path.
 configs = {
@@ -280,7 +291,8 @@ configs = {
     'int': 'int',
     'prod': 'prod',
     'stage': 'stage',
-    'seth': 'seth'
+    'seth': 'seth',
+    'dev1': 'dev1'
 }
 
 """

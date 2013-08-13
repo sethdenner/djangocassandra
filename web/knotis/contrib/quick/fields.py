@@ -61,6 +61,10 @@ class QuickCharField(QuickField, QuickFieldDefaultMixin, models.CharField):
     pass
 
 
+class QuickURLField(QuickField, QuickFieldDefaultMixin, models.URLField):
+    pass
+
+
 class QuickDateTimeField(
         QuickField,
         QuickFieldDefaultMixin,

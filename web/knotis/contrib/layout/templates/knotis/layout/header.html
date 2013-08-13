@@ -1,0 +1,27 @@
+{% load render_template_fragment %}
+<div class="navbar navbar-fluid-top">
+  <div class="navbar-inner">
+    <div class="container-fluid">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="/">knotis</a>
+      <div class="nav-collapse collapse">
+	    <div class="search-bar span8">
+	      {% render_fragment search_bar %}
+	    </div>
+	    <ul class="nav pull-right">
+          {% if user.is_authenticated %}
+          {% render_fragment identity_switcher %}
+          {% else %}
+	      <li><a id="sign-up" class="modal-link" href="/auth/signup/">Sign Up</a></li>
+	      <li><a id="login" class="modal-link" href="/auth/login/">Login</a></li>
+          {% endif %}
+	    </ul>
+      </div>
+    </div>
+  </div>
+</div>

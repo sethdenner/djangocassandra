@@ -1,0 +1,50 @@
+<form class="form-horizontal" id="{{ form.form_id }}" action="{{ form.form_action }}" method="{{ form.form_method }}" >
+  <input type="hidden" name="{{ form.owner.html_name }}" value="{{ current_identity.id }}" />
+  <div class="control-group">
+    <label class="control-label">Select Type</label>
+    <div class="controls">
+      <input id="id-credit-product-input" name="{{ form.product_type.html_name }}" type="radio" value="{{ ProductTypes.CREDIT }}"{% if form.product_type.value|default_if_none:ProductTypes.CREDIT == ProductTypes.CREDIT %} checked{% endif %} />
+      <input class="span1" name="{{ form.credit_price.html_name }}" type="text" value="{{ form.credit_price.value|default_if_none:"20" }}" />
+      <span>for</span>
+      <input class="span1" name="{{ form.credit_value.html_name }}" type="text" value="{{ form.credit_value.value|default_if_none:"40" }}" />
+      <span id="id-offer-discount"{% if form.product_type == ProductTypes.CREDIT %} class="hide"{% endif %} >Discount (<span id="discount-percent">50</span>%)</span>
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="controls">
+      <input id="id-physical-product-input"  name="{{ form.product_type.html_name }}" type="radio" value="{{ ProductTypes.PHYSICAL }}"{% if form.product_type.value == ProductTypes.PHYSICAL %} checked{% endif %} />
+      <input name="{{ form.product_title.html_name }}" type="text" placeholder="Product"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
+    </div>
+  </div>
+  <div class="control-group physical{% if form.product_type.value != ProductTypes.PHYSICAL %} hide{% endif %}">
+    <label class="control-label">Enter Price</label>
+    <div class="controls">
+      <input class="span1" name="{{ form.product_price.html_name }}" type="text" value="{{ form.product_price.value|default_if_none:"20" }}"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
+      <span>discounted value</span>
+    </div>
+  </div>
+  <div class="control-group physical{% if form.product_type.value != ProductTypes.PHYSICAL %} hide{% endif %}">
+    <div class="controls">
+      <input class="span1"  name="{{ form.product_value.html_name }}" type="text" value="{{ form.product_value.value|default_if_none:"40" }}"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
+      <span>regular price (retail value)</span>
+    </div>
+  </div>
+  <div class="control-group offer-quantity">
+    <label class="control-label">Enter Quantity</label>
+    <div class="controls">
+      <input class="span1" name="{{ form.offer_stock.html_name }}" type="text" value="{{ form.offer_stock.value|default_if_none:"100" }}" />
+      <span>items for sale</span>
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="controls">
+      <input id="id-unlimited-input"  name="{{ form.offer_unlimited.html_name }}" type="checkbox" value="unlimited" />
+      <span>unlimited</span>
+    </div>
+  </div>
+  <div>
+    <button type="button" class="pull-left btn" data-dismiss="modal">Delete Offer</button>
+    <button id="id-submit-product" type="submit" class="pull-right btn btn-primary">Next</button>
+  </div>
+</form>
+<script src="{{ STATIC_URL }}knotis/offer/js/edit_product_price.js"></script>

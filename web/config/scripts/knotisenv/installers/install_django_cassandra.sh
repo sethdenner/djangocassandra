@@ -15,3 +15,12 @@ django_cassandra_dir="$(find ${temp_dir} -name django_cassandra)"
 
 cp -rf ${django_cassandra_dir} /srv/knotis/venv/lib/python2.7/site-packages/
 rm -rf ${temp_dir}
+
+path='./django_cassandra'
+output='/srv/knotis/venv/lib/python2.7/site-packages/django_cassandra.pth'
+echo "Writing pth file to $output"
+
+if [ ! -f "$output" ]; then
+    touch "$output"
+fi
+echo $path >> $output

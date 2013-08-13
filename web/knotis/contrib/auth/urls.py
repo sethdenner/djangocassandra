@@ -3,12 +3,22 @@ from django.conf.urls.defaults import (
     url
 )
 
+from views import (
+    LoginView,
+    SignUpView
+)
+from api import (
+    AuthUserApi,
+    AuthenticationApi
+)
 
 urlpatterns = patterns(
     'knotis.contrib.auth.views',
+    AuthUserApi.urls(),
+    AuthenticationApi.urls(),
     url(
         r'^auth/login/$',
-        'login',
+        LoginView.as_view()
     ),
     url(
         r'^auth/resend_validation_email/(?P<username>[^/]+)/$',
@@ -20,7 +30,7 @@ urlpatterns = patterns(
     ),
     url(
         r'^auth/signup/(?P<account_type>[^/]+)*$',
-        'sign_up',
+        SignUpView.as_view()
     ),
     url(
         r'^auth/validate/(?P<user_id>[^/]+)/(?P<validation_key>[^/]+)',

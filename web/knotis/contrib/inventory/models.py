@@ -81,13 +81,17 @@ class InventoryManager(QuickManager):
         self,
         identity,
         product,
-        stock=0.
+        price=0.,
+        stock=None
     ):
+        unlimited = None == stock
         return Inventory.objects.create(
             product=product,
             provider=identity,
             recipient=identity,
-            stock=stock
+            price=price,
+            stock=stock,
+            unlimited=unlimited
         )
 
     def create_stack_from_inventory(
@@ -175,6 +179,8 @@ class Inventory(QuickModel):
         related_name='inventory_recipient'
     )
     stock = QuickFloatField()
+    price = QuickFloatField()
+    unlimited = QuickBooleanField()
     perishable = QuickBooleanField()
 
     objects = InventoryManager()

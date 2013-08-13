@@ -1,0 +1,109 @@
+div.grid .grid-small > .span12 {
+    margin-left: 0;
+}
+
+div.grid .grid-mixed > .span8 {
+    margin-left: 0;
+}
+
+div.grid .grid-mixed > .span4 {
+    margin-left: 0;
+}
+
+div.grid div.thumbnail {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+@media (min-width: 1200px) {
+    div.grid{
+	    margin-top: 15px;
+    }
+
+    div.grid .grid-mixed .thumbnail {
+	    margin-bottom: 15px;
+    }
+
+    div.grid .grid-mixed > .span4 > .thumbnail {
+	    height: 522.6px;
+    }
+
+    div.grid .grid-mixed > .span8 > .row-fluid > .thumbnail {
+	    height: 253.6px;
+	    float: left;
+	    margin-left: 15px;
+    }
+}
+
+@media (min-width: 980px) and (max-width: 1200px) {
+    div.grid{
+	    margin-top: 12px;
+    }
+
+    div.grid .grid-mixed .thumbnail {
+	    margin-bottom: 12px;
+    }
+
+    div.grid .grid-mixed > .span4 > .thumbnail {
+	    height: 421px;
+    }
+
+    div.grid .grid-mixed > .span8 > .row-fluid > .thumbnail {
+	    height: 203px;
+	    float: left;
+	    margin-left: 12px;
+    }
+}
+
+
+@media (min-width: 768px) and (max-width: 979px) {
+    div.grid{
+	    margin-top: 10px;
+    }
+
+    div.grid .grid-mixed .thumbnail {
+	    margin-bottom: 10px;
+    }
+
+    div.grid .grid-mixed > .span4 > .thumbnail {
+	    height: 328px;
+    }
+
+    div.grid .grid-mixed > .span8 > .row-fluid > .thumbnail {
+	    height: 157px;
+	    float: left;
+	    margin-left: 10px;
+    }
+}
+
+@media (min-width: 557px) and (max-width: 767px) {
+    div.grid{
+	    margin-top: 10px;
+    }
+
+    div.grid .grid-mixed .thumbnail {
+	    margin-bottom: 4px;
+    }
+
+    div.grid .grid-mixed > .span4 > .thumbnail {
+	    height: 328px;
+    }
+
+    div.grid .grid-mixed > .span8 > .row-fluid > .thumbnail {
+	    height: 157px;
+	    float: left;
+	    margin-left: 10px;
+    }
+
+    div.grid .grid-mixed > [class*="span"] {
+	    float: left;
+	    width: auto;
+    }
+}
+
+@media (max-width: 638px) {
+    div.grid .grid-mixed > .span8 > .row-fluid > .thumbnail {
+	    margin-left: 0;
+    }
+}

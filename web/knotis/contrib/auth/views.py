@@ -7,7 +7,6 @@ from django.forms import (
     EmailField,
     BooleanField,
     PasswordInput,
-    CheckboxInput,
     Form,
     ValidationError
 )
@@ -47,101 +46,60 @@ from knotis.contrib.auth.models import (
     KnotisUser,
     PasswordReset
 )
-from knotis.contrib.identity.models import (
-    Identity,
-    IdentityTypes
-)
-from knotis.contrib.relation.models import (
-    Relation,
-    RelationTypes
-)
+
 from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes,
     EndpointEmail
 )
+from knotis.contrib.endpoint.views import send_validation_email
 from knotis.contrib.content.models import Content
 from knotis.contrib.feedback.views import render_feedback_popup
 
+from django.views.generic import View
+from knotis.views.mixins import RenderTemplateFragmentMixin
 
-class SignUpForm(Form):
-    first_name = CharField(label='First Name')
-    last_name = CharField(label='Last Name')
-    email = EmailField(label='Email Address')
-    password = CharField(widget=PasswordInput, label='Password')
-    business = BooleanField(widget=CheckboxInput, required=False)
+from forms import (
+    SignUpForm,
+    LoginForm
+)
 
-    def __init__(self, *args, **kwargs):
-        super(SignUpForm, self).__init__(*args, **kwargs)
 
-        self.fields['first_name'].widget.attrs = {
-            'class': 'radius-general',
-            'placeholder': 'First Name',
-            'autofocus': None,
-        }
+class LoginView(View, RenderTemplateFragmentMixin):
+    template_name = 'knotis/auth/login.html'
+    view_name = 'login'
 
-        self.fields['last_name'].widget.attrs = {
-            'class': 'radius-general',
-            'placeholder': 'Last Name',
-        }
-
-        self.fields['email'].widget.attrs = {
-            'class': 'radius-general',
-            'placeholder': 'Email',
-        }
-
-        self.fields['password'].widget.attrs = {
-            'class': 'radius-general',
-            'placeholder': 'Password',
-        }
-
-        self.fields['business'].widget.attrs = {
-            'checked': None,
-            'value': '1'
-        }
-
-    def clean_email(self):
-        """
-        Validate that the supplied email address is unique for the
-        site.
-        """
-        email = self.cleaned_data['email']
-        if KnotisUser.objects.filter(email__iexact=email):
-            raise ValidationError(
-                'This email address is already in use. '
-                'Please supply a different email address.'
-            )
-        return email
-
-    def create_user(
+    def get(
         self,
-        request
+        request,
+        *args,
+        **kwargs
     ):
-        return KnotisUser.objects.create_user(
-            self.cleaned_data['first_name'],
-            self.cleaned_data['last_name'],
-            self.cleaned_data['email'],
-            self.cleaned_data['password'],
+        request.session.set_test_cookie()
+        return render(
+            request,
+            self.template_name, {
+                'login_form': LoginForm()
+            }
         )
 
 
-def send_validation_email(
-    user_id,
-    email_endpoint
-):
-    subject = 'Welcome to Knotis!'
-    generate_email(
-        'activate',
-        subject,
-        settings.EMAIL_HOST_USER,
-        [email_endpoint.value.value], {
-            'user_id': user_id,
-            'validation_key': email_endpoint.validation_key,
-            'BASE_URL': settings.BASE_URL,
-            'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
-            'SERVICE_NAME': settings.SERVICE_NAME
-        }
-    ).send()
+class SignUpView(View, RenderTemplateFragmentMixin):
+    template_name = 'knotis/auth/sign_up.html'
+    view_name = 'sign_up'
+
+    def get(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        return render(
+            request,
+            self.template_name, {
+                'signup_form': SignUpForm()
+            }
+        )
 
 
 def resend_validation_email(
@@ -414,8 +372,6 @@ def validate(
                 request,
                 authenticated_user
             )
-
-            redirect_url = '/dashboard/'
 
     except:
         logger.exception('exception while validating endpoint')
