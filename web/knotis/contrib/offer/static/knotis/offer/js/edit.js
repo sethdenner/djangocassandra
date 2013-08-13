@@ -28,7 +28,7 @@
         },
         { 
             'action': '/offer/create/summary/',
-            'container': 'div#offer-edit-summary-form',
+            'container': 'div#offer-edit-summary',
             'params': { 'id': 'offer_id' } 
         },
     ];

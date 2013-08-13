@@ -536,9 +536,27 @@ class OfferEditPublishFormView(AJAXFragmentView):
         ).render_template_fragment(local_context)
 
 
-class OfferEditSummaryView(FragmentView):
+class OfferEditSummaryView(AJAXFragmentView):
     template_name = 'knotis/offer/edit_summary.html'
     view_name = 'offer_edit_summary'
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        local_context = copy.copy(context)
+        local_context.update({
+            'summary_revenue_customer': '$18.70',
+            'summary_savings': '$6.00 - $10.00',
+            'summary_revenue_total': '$56.10',
+            'summary_estimated_sales': '3'
+        })
+
+        return super(
+            OfferEditSummaryView,
+            cls
+        ).render_template_fragment(local_context)
 
 
 class OfferGridSmall(FragmentView):

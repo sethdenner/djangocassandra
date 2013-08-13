@@ -1,0 +1,35 @@
+<div>
+  <p class="knotis-bold">
+    Based on the offer you created,<br/>
+    you can expcet to receive the following<br/>
+    revenue per customer:
+  </p>
+  <p class="knotis-price-big text-right">
+    {{ summary_revenue_customer }}
+  </p>
+  <p class="knotis-bold">
+    By using our service, we have<br/>
+    saved you the following<br/>
+    estimated amount:
+  </p>
+  <p class="knotis-price-big text-right">
+    {{ summary_savings }}
+  </p>
+  <p class="knotis-bold" >
+    We anticipate this offer<br/>
+    generating you the<br/>
+    following revenue:
+  </p>
+  <p class="knotis-price-big text-right">
+    {{ summary_revenue_total }}
+  </p>
+  <div class="pull-right">
+    {{ offer_tile_preview }} 
+  </div>
+  <div>
+    <button type="button" class="pull-left btn">Back</button>
+    <button type="button" class="pull-left btn" data-dismiss="modal">Delete Offer</button>
+    <button id="id-submit-details" type="submit" class="pull-right btn btn-primary">Publish</button>
+    <button type="button" class="pull-right btn btn-primary">Save For Later</button>
+  </div>
+</div>
