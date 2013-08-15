@@ -41,6 +41,11 @@
         var _step = steps[index];
         var _params = {};
         
+        if (!_step) {
+            $('#modal-box').modal('hide');
+            return;
+        }
+
         if (data) {
             var _stepParams = _step.params;
             for (var key in _stepParams) {

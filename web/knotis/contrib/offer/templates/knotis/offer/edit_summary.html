@@ -21,15 +21,19 @@
     following revenue:
   </p>
   <p class="knotis-price-big text-right">
-    {{ summary_revenue_total }}
+    {{ summary_revenue_total }} <span class="knotis-price-big-help">({{ summary_estimated_sales }} sales)</span>
   </p>
   <div class="pull-right">
     {{ offer_tile_preview }} 
   </div>
   <div>
-    <button type="button" class="pull-left btn">Back</button>
-    <button type="button" class="pull-left btn" data-dismiss="modal">Delete Offer</button>
-    <button id="id-submit-details" type="submit" class="pull-right btn btn-primary">Publish</button>
-    <button type="button" class="pull-right btn btn-primary">Save For Later</button>
+    <form action="{{ offer_finish_form.form_action }}" method="{{ offer_finish_form.form_method }}" >
+      {{ offer_finish_form.id }}
+      {{ offer_finish_form.published }}
+      <button type="button" class="pull-left btn">Back</button>
+      <button type="button" class="pull-left btn" data-dismiss="modal">Delete Offer</button>
+      <button id="id-submit-details" type="submit" class="pull-right btn btn-primary">Publish</button>
+      <button type="button" class="pull-right btn btn-primary">Save For Later</button>
+    </form>
   </div>
 </div>

@@ -12,8 +12,11 @@ from django.template import Context
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
+from knotis.utils.view import format_currency
+
 from knotis.contrib.offer.models import (
     Offer,
+    OfferItem,
     OfferPublish
 )
 from knotis.contrib.product.models import (
@@ -46,7 +49,8 @@ from forms import (
     OfferProductPriceForm,
     OfferDetailsForm,
     OfferPhotoLocationForm,
-    OfferPublicationForm
+    OfferPublicationForm,
+    OfferFinishForm
 )
 
 
@@ -205,7 +209,7 @@ class OfferEditProductFormView(AJAXFragmentView):
                 'errors': {'no-field': e.message}
             })
 
-        unlimited = form.cleaned_data.get('unlimited', False)
+        unlimited = form.cleaned_data.get('offer_unlimited', False)
         if unlimited:
             stock = None
 
@@ -276,7 +280,13 @@ class OfferEditDetailsFormView(AJAXFragmentView):
         *args,
         **kwargs
     ):
-        form = OfferDetailsForm(data=request.POST)
+        offer_id = request.POST.get('id')
+        offer = get_object_or_404(Offer, pk=offer_id)
+
+        form = OfferDetailsForm(
+            data=request.POST,
+            instance=offer
+        )
         if not form.is_valid():
             errors = {}
             for field, messages in form.errors.iteritems():
@@ -540,17 +550,103 @@ class OfferEditSummaryView(AJAXFragmentView):
     template_name = 'knotis/offer/edit_summary.html'
     view_name = 'offer_edit_summary'
 
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        offer_id = request.POST.get('id')
+        offer = get_object_or_404(Offer, pk=offer_id)
+
+        form = OfferFinishForm(
+            data=request.POST,
+            instance=offer
+        )
+
+        if not form.is_valid():
+            errors = {}
+            for field, messages in form.errors.iteritems():
+                errors[field] = [message for message in messages]
+
+            return self.generate_response({
+                'message': 'the data entered is invalid',
+                'errors': errors
+            })
+
+        try:
+            offer = form.save()
+
+        except Exception, e:
+            logger.exception('error while publishing offer')
+            return self.generate_response({
+                'message': e.message,
+                'errors': {
+                    'no-field': 'A server error occurred. Please try again.'
+                }
+            })
+
+        return self.generate_response({
+            'message': 'OK',
+            'offer_id': offer.id
+        })
+
     @classmethod
     def render_template_fragment(
         cls,
         context
     ):
+        request = context.get('request')
+
+        offer_id = request.GET.get('id')
+        offer = get_object_or_404(Offer, id=offer_id)
+
+        try:
+            offer_items = OfferItem.objects.filter(offer=offer)
+
+        except Exception:
+            logger.exception('failed to get offer items')
+            offer_items = None
+
+        # FIXME: These two parameters should call
+        # methods that figure these numbers out.
+        knotis_cut = .035
+        estimated_sales_max = 3.
+
+        estimated_sales = min(
+            estimated_sales_max,
+            offer.stock
+        ) if not offer.unlimited else estimated_sales_max
+        revenue_per_offer = 0.
+        for item in offer_items:
+            revenue_per_offer += item.price_discount
+
+        revenue_customer = revenue_per_offer - knotis_cut * revenue_per_offer
+        revenue_total = revenue_customer * estimated_sales
+        savings_low = revenue_total * .3
+        savings_high = revenue_total * .5
+
         local_context = copy.copy(context)
         local_context.update({
-            'summary_revenue_customer': '$18.70',
-            'summary_savings': '$6.00 - $10.00',
-            'summary_revenue_total': '$56.10',
-            'summary_estimated_sales': '3'
+            'summary_revenue_customer': ''.join([
+                '$',
+                format_currency(revenue_customer)
+            ]),
+            'summary_savings': ''.join([
+                '$',
+                format_currency(savings_low),
+                ' - ',
+                '$',
+                format_currency(savings_high)
+            ]),
+            'summary_revenue_total': ''.join([
+                '$',
+                format_currency(revenue_total)
+            ]),
+            'summary_estimated_sales': str(int(estimated_sales)),
+            'offer_finish_form': OfferFinishForm(
+                instance=offer
+            )
         })
 
         return super(
