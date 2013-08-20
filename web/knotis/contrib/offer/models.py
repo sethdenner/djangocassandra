@@ -468,6 +468,107 @@ class OfferItem(QuickModel):
     price_discount = QuickFloatField()
 
 
+class OfferAvailabilityManager(QuickManager):
+    def create(
+        self,
+        *args,
+        **kwargs
+    ):
+        offer = kwargs.get('offer')
+
+        if offer:
+            kwargs['offer_title'] = offer.title
+            kwargs['offer_stock'] = offer.stock
+            kwargs['offer_purchased'] = offer.purchased
+            kwargs['offer_default_image'] = offer.default_image
+
+            offer_items = OfferItem.objects.filter(offer=offer)
+            price = 0.
+            for i in offer_items:
+                price += i.price_discount
+
+            kwargs['price'] = price
+
+        identity = kwargs.get('identity')
+
+        if identity:
+            kwargs['identity_primary_image'] = identity.primary_image
+
+        return super(OfferAvailabilityManager, self).create(
+            *args,
+            **kwargs
+        )
+
+    def update_denormalized_offer_fields(
+        self,
+        offer
+    ):
+        offers = self.objects.filter(offer=offer)
+        for o in offers:
+            o.offer_title = offer.title
+            o.offer_stock = offer.stock
+            o.offer_purchased = offer.purchased
+            o.offer_default_image = offer.default_image
+            o.save()
+
+        return offers
+
+    def update_denormalized_identity_fields(
+        self,
+        identity
+    ):
+        offers = self.objects.filter(identity=identity)
+        for o in offers:
+            o.identity_primary_image = identity.primary_image
+            o.save()
+
+        return offers
+
+    def update_offer_price(
+        self,
+        offer
+    ):
+        offer_items = OfferItem.objects.filter(offer=offer)
+        total_price = 0.
+        for i in offer_items:
+            total_price += i.price_discount
+
+        offers = self.objects.filter(offer=offer)
+        for o in offers:
+            o.price = total_price
+            o.save()
+
+
+class OfferAvailability(QuickModel):
+    """
+    Represents an offer being redeemable by
+    the related identity.
+
+    Denormalized offer fields since this will
+    most likely be a common call for rendering
+    offers
+
+    """
+    offer = QuickForeignKey(Offer)
+    identity = QuickForeignKey(Identity)
+    offer_title = QuickCharField(
+        max_length=140
+    )
+    offer_stock = QuickIntegerField()
+    offer_purchased = QuickIntegerField()
+    offer_default_image = QuickForeignKey(Image)
+
+    identity_primary_image = QuickForeignKey('media.Image')
+
+    price = QuickFloatField()
+    available = QuickBooleanField(
+        db_index=True,
+        default=True
+    )
+
+    objects = OfferAvailabilityManager()
+
+
 class OfferPublish(Publish):
     class Meta:
         proxy = True
