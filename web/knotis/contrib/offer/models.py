@@ -19,9 +19,16 @@ from knotis.utils.view import (
     sanitize_input_html
 )
 from knotis.contrib.media.models import Image
-from knotis.contrib.identity.models import Identity
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityEstablishment,
+    IdentityTypes
+)
 from knotis.contrib.inventory.models import Inventory
-from knotis.contrib.endpoint.models import Publish
+from knotis.contrib.endpoint.models import (
+    EndpointTypes,
+    Publish
+)
 
 
 class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
@@ -573,7 +580,34 @@ class OfferPublish(Publish):
     class Meta:
         proxy = True
 
+    def _publish_establishment(
+        self,
+        establishment
+    ):
+        OfferAvailability.objects.create(
+            self.offer,
+            establishment
+        )
+
     def publish(self):
-        # 1. Construct appropriate message for endpoint from offer
-        # 2. Send message to endpoint
-        pass
+        if self.endpoint.endpoint_type == EndpointTypes.IDENTITY:
+            if self.endpoint.identity_type == IdentityTypes.ESTABLISHMENT:
+                self._publish_establishment(self.endpoint.identity)
+
+            if self.endpoint.identity_type == IdentityTypes.BUSINESS:
+                # publish to all establishments.
+                establishments = (
+                    IdentityEstablishment.objects.get_establishments(
+                        self.endpoint.identity
+                    )
+                )
+
+                for e in establishments:
+                    self._publish_establishment(e)
+
+        else:
+            raise NotImplementedError(''.join([
+                'publish not implemented for endpoint type ',
+                self.endpoint.endpoint_type,
+                '.'
+            ]))

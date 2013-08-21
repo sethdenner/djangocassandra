@@ -110,6 +110,7 @@ class EndpointTypes:
     TWITTER = 3
     FACEBOOK = 4
     YELP = 5
+    IDENTITY = 6
 
     CHOICES = (
         (UNDEFINED, 'Undefined'),
@@ -118,7 +119,8 @@ class EndpointTypes:
         (ADDRESS, 'Address'),
         (TWITTER, 'Twitter'),
         (FACEBOOK, 'Facebook'),
-        (YELP, 'Yelp')
+        (YELP, 'Yelp'),
+        (IDENTITY, 'Identity')
     )
 
 
@@ -250,6 +252,16 @@ class EndpointAddress(Endpoint):
         super(EndpointAddress, self).__init__(*args, **kwargs)
 
 
+class EndpointIdentity(Endpoint):
+    class Meta:
+        proxy = True
+
+    def __init__(self, *args, **kwargs):
+        kwargs['endpoint_type'] = EndpointTypes.IDENTITY
+
+        super(EndpointIdentity, self).__init__(*args, **kwargs)
+
+
 class Publish(QuickModel):
     endpoint = QuickForeignKey(Endpoint)
     subject_content_type = QuickForeignKey(
@@ -263,4 +275,7 @@ class Publish(QuickModel):
     )
 
     def publish(self):
-        raise NotImplementedError('base class must define this method')
+        raise NotImplementedError(
+            'publish was not implemented in derived class ' +
+            self.__class__.__name__ + '.'
+        )
