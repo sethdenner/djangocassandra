@@ -9,6 +9,7 @@ from knotis.contrib.auth.models import (
 from knotis.contrib.relation.models import Relation
 from knotis.contrib.endpoint.models import (
     Endpoint,
+    EndpointIdentity,
     EndpointTypes
 )
 
@@ -112,6 +113,23 @@ class IdentityApi(ApiView):
 
         try:
             identity = form.save()
+
+        except Exception, e:
+            message = ''.join([
+                'An error occurred while updating ',
+                noun,
+                '.'
+            ])
+            logger.exception(message)
+            errors['no-field']  = e.message
+
+            return self.generate_response({
+                'message': message,
+                'errors': errors
+            })
+
+        try:
+            EndpointIdentity.objects.update_identity_endpoints(identity)
 
         except Exception, e:
             message = ''.join([
@@ -386,6 +404,27 @@ class IdentityBusinessApi(IdentityApi):
             })
 
         try:
+            created_objects.append(Endpoint.objects.create(
+                endpoint_type=EndpointTypes.IDENTITY,
+                value=establishment.name,
+                identity=establishment
+            ))
+
+        except Exception, e:
+            message = (
+                'An error occurred during '
+                'establishment endpoint creation.'
+            )
+            logger.exception(message)
+            errors['no-field']  = e.message
+
+            clean_up(created_objects)
+            return self.generate_response({
+                'message': message,
+                'errors': errors
+            })
+
+        try:
             created_objects.append(
                 Relation.objects.create_establishment(
                     business,
@@ -510,6 +549,7 @@ class IdentityEstablishmentApi(IdentityApi):
                 'message': message,
                 'errors': errors
             })
+
         business = None
         business_id = request.POST.get('business_id')
         if business_id:

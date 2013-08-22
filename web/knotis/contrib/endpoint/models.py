@@ -253,14 +253,37 @@ class EndpointAddress(Endpoint):
         super(EndpointAddress, self).__init__(*args, **kwargs)
 
 
+class EndpointIdentityManager(EndpointManager):
+    def update_identity_endpoints(
+        self,
+        identity
+    ):
+        if not hasattr(identity, 'endpoint_set'):
+            return
+
+        identity_endpoints = identity.endpoint_set.filter(
+            endpoint_type=EndpointTypes.IDENTITY
+        )
+
+        for e in identity_endpoints:
+            e.value = identity.name
+            e.save()
+
+
 class EndpointIdentity(Endpoint):
     class Meta:
         proxy = True
+
+    objects = EndpointIdentityManager()
 
     def __init__(self, *args, **kwargs):
         kwargs['endpoint_type'] = EndpointTypes.IDENTITY
 
         super(EndpointIdentity, self).__init__(*args, **kwargs)
+
+    def update_value(self):
+        self.value = self.identity.name
+        self.save()
 
 
 class Publish(QuickModel):
