@@ -7,6 +7,10 @@ from knotis.contrib.auth.models import (
     UserInformation
 )
 from knotis.contrib.relation.models import Relation
+from knotis.contrib.endpoint.models import (
+    Endpoint,
+    EndpointTypes
+)
 
 from models import (
     Identity,
@@ -37,6 +41,13 @@ class IdentityApi(ApiView):
         if form.is_valid():
             try:
                 instance = form.save()
+
+                # create identity endpoint
+                Endpoint.objects.create(
+                    endpoint_type=EndpointTypes.IDENTITY,
+                    value=instance.name,
+                    identity=instance
+                )
 
             except Exception, e:
                 instance = None
@@ -158,6 +169,24 @@ class IdentityIndividualApi(IdentityApi):
 
         try:
             individual = form.save()
+
+        except Exception, e:
+            message = 'An error occurred during individual creation.'
+            logger.exception(message)
+            errors['no-field']  = e.message
+
+            return self.generate_response({
+                'message': message,
+                'errors': errors
+            })
+
+        try:
+            # create identity endpoint
+            Endpoint.objects.create(
+                endpoint_type=EndpointTypes.IDENTITY,
+                value=individual.name,
+                identity=individual
+            )
 
         except Exception, e:
             message = 'An error occurred during individual creation.'
@@ -312,6 +341,24 @@ class IdentityBusinessApi(IdentityApi):
             })
 
         try:
+            # create identity endpoint
+            Endpoint.objects.create(
+                endpoint_type=EndpointTypes.IDENTITY,
+                value=business.name,
+                identity=business
+            )
+
+        except Exception, e:
+            message = 'An error occurred during individual creation.'
+            logger.exception(message)
+            errors['no-field']  = e.message
+
+            return self.generate_response({
+                'message': message,
+                'errors': errors
+            })
+
+        try:
             user_information = UserInformation.objects.get(user=request.user)
             user_information.default_identity_id = business.id
             user_information.save()
@@ -446,6 +493,23 @@ class IdentityEstablishmentApi(IdentityApi):
                 'errors': errors
             })
 
+        try:
+            # create identity endpoint
+            Endpoint.objects.create(
+                endpoint_type=EndpointTypes.IDENTITY,
+                value=establishment.name,
+                identity=establishment
+            )
+
+        except Exception, e:
+            message = 'An error occurred during individual creation.'
+            logger.exception(message)
+            errors['no-field']  = e.message
+
+            return self.generate_response({
+                'message': message,
+                'errors': errors
+            })
         business = None
         business_id = request.POST.get('business_id')
         if business_id:

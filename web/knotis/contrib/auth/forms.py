@@ -236,6 +236,13 @@ class SignUpForm(ModelForm):
                 primary=True
             )
 
+            # create identity endpoint
+            Endpoint.objects.create(
+                endpoint_type=EndpointTypes.IDENTITY,
+                value=individual.name,
+                identity=individual
+            )
+
         except:
             rollback = [
                 user,

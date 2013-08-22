@@ -250,6 +250,20 @@ class Identity(QuickModel):
     def is_name_default(self):
         return self.DEFAULT_NAME == self.name
 
+    def is_manager(
+        self,
+        identity
+    ):
+        """
+        Returns True is self is manager of identity.
+        """
+        managed_relations = Relation.objects.get_managed(self)
+        for rel in managed_relations:
+            if rel.related_object_id == identity.pk:
+                return True
+
+        return False
+
     @staticmethod
     def _clean_backend_name(name):
         backend_name = name.replace(

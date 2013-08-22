@@ -131,10 +131,10 @@ class AuthUserApi(ApiView):
                 'An Exception occurred during account creation'
             )
 
-        if request.POST.get('authenticate', 'false').lower == 'true':
+        if request.POST.get('authenticate', 'false').lower() == 'true':
             user = authenticate(
-                request.POST.get('username'),
-                request.POST.get('password')
+                username=request.POST.get('username'),
+                password=request.POST.get('password')
             )
             if user is not None:
                 if user.is_active:

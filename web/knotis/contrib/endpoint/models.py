@@ -2,7 +2,8 @@ from knotis.contrib.quick.models import QuickModel
 from knotis.contrib.quick.fields import (
     QuickUUIDField,
     QuickForeignKey,
-    QuickGenericForeignKey
+    QuickGenericForeignKey,
+    QuickBooleanField
 )
 
 from django.db.models import (
@@ -272,6 +273,11 @@ class Publish(QuickModel):
     subject = QuickGenericForeignKey(
         'subject_content_type',
         'subject_object_id'
+    )
+
+    completed = QuickBooleanField(
+        db_index=True,
+        default=False
     )
 
     def publish(self):

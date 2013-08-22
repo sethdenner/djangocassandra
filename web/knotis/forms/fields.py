@@ -1,4 +1,37 @@
-from django.forms import Field
+import re
+
+from django.core.exceptions import ValidationError
+from django.forms import (
+    Field,
+    CharField
+)
+
+from knotis.utils.regex import REGEX_UUID
+
+
+class UUIDField(CharField):
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        kwargs['max_length'] = '36'
+        super(UUIDField, self).__init__(
+            *args,
+            **kwargs
+        )
+
+    def clean(
+        self,
+        value
+    ):
+        if not re.match(
+            REGEX_UUID,
+            value
+        ):
+            raise ValidationError('value is not a UUID string')
+
+        return value
 
 
 class DynamicField(Field):

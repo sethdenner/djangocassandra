@@ -4,8 +4,11 @@ from django.shortcuts import (
     render,
     get_object_or_404
 )
+from django.core.exceptions import (
+    ValidationError,
+    PermissionDenied
+)
 from django.http import (
-    HttpResponseNotFound,
     HttpResponseServerError
 )
 from django.template import Context
@@ -34,11 +37,13 @@ from knotis.contrib.location.models import (
 
 from knotis.contrib.identity.models import (
     Identity,
-    IdentityBusiness,
-    IdentityTypes
+    IdentityEstablishment
 )
 
-from knotis.contrib.endpoint.models import Endpoint
+from knotis.contrib.endpoint.models import (
+    Endpoint,
+    EndpointTypes
+)
 
 from knotis.views import (
     FragmentView,
@@ -109,25 +114,14 @@ class OfferEditProductFormView(AJAXFragmentView):
         *args,
         **kwargs
     ):
-        try:
-            current_identity = Identity.objects.get(
-                id=request.session['current_identity_id']
-            )
-
-        except:
-            current_identity = None
-
-        if not current_identity:
-            return HttpResponseNotFound()
-
-        if current_identity.identity_type != IdentityTypes.BUSINESS:
-            return HttpResponseServerError()
+        current_identity = get_object_or_404(
+            Identity,
+            pk=request.session.get('current_identity_id')
+        )
 
         form = OfferProductPriceForm(
-            owners=IdentityBusiness.objects.filter(
-                pk=current_identity.id
-            ),
-            data=request.POST
+            data=request.POST,
+            owners=Identity.objects.filter(pk=current_identity.pk)
         )
 
         if not form.is_valid():
@@ -245,20 +239,15 @@ class OfferEditProductFormView(AJAXFragmentView):
         context
     ):
         request = context.get('request')
-        try:
-            current_identity = Identity.objects.get(
-                id=request.session['current_identity_id']
-            )
-
-        except:
-            current_identity = None
+        current_identity = get_object_or_404(
+            Identity,
+            pk=request.session['current_identity_id']
+        )
 
         local_context = Context(context)
         local_context.update({
             'form': OfferProductPriceForm(
-                owners=IdentityBusiness.objects.filter(
-                    pk=current_identity.id
-                )
+                owners=Identity.objects.filter(pk=current_identity.pk)
             ),
             'ProductTypes': ProductTypes,
             'current_identity': current_identity
@@ -494,12 +483,20 @@ class OfferEditPublishFormView(AJAXFragmentView):
             offer.end_time = form.cleaned_data.get('end_time')
             offer.save()
 
+            endpoint_current_identity = Endpoint.objects.get(
+                endpoint_type=EndpointTypes.IDENTITY,
+                identity=current_identity
+            )
+            OfferPublish.objects.create(
+                endpoint=endpoint_current_identity,
+                subject=offer
+            )
             publish = form.cleaned_data.get('publish')
             if publish:
                 for endpoint in publish:
                     OfferPublish.objects.create(
-                        offer=offer,
-                        endpoint=endpoint
+                        endpoint=endpoint,
+                        subject=offer
                     )
 
         except Exception, e:

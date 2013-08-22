@@ -563,9 +563,15 @@ class OfferAvailability(QuickModel):
     )
     offer_stock = QuickIntegerField()
     offer_purchased = QuickIntegerField()
-    offer_default_image = QuickForeignKey(Image)
+    offer_default_image = QuickForeignKey(
+        Image,
+        related_name='offeravailability_offer'
+    )
 
-    identity_primary_image = QuickForeignKey('media.Image')
+    identity_primary_image = QuickForeignKey(
+        Image,
+        related_name='offeravailability_identity'
+    )
 
     price = QuickFloatField()
     available = QuickBooleanField(
