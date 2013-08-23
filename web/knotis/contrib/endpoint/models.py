@@ -112,6 +112,8 @@ class EndpointTypes:
     FACEBOOK = 4
     YELP = 5
     IDENTITY = 6
+    WIDGET = 7
+    FOLLOWERS = 8
 
     CHOICES = (
         (UNDEFINED, 'Undefined'),
@@ -121,7 +123,9 @@ class EndpointTypes:
         (TWITTER, 'Twitter'),
         (FACEBOOK, 'Facebook'),
         (YELP, 'Yelp'),
-        (IDENTITY, 'Identity')
+        (IDENTITY, 'Identity'),
+        (WIDGET, 'Widget'),
+        (FOLLOWERS, 'Followers')
     )
 
 

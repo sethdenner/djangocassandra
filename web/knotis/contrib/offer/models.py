@@ -591,16 +591,21 @@ class OfferPublish(Publish):
         establishment
     ):
         OfferAvailability.objects.create(
-            self.offer,
-            establishment
+            offer=self.subject,
+            identity=establishment
         )
 
     def publish(self):
         if self.endpoint.endpoint_type == EndpointTypes.IDENTITY:
-            if self.endpoint.identity_type == IdentityTypes.ESTABLISHMENT:
+            if (
+                self.endpoint.identity.identity_type ==
+                IdentityTypes.ESTABLISHMENT
+            ):
                 self._publish_establishment(self.endpoint.identity)
 
-            if self.endpoint.identity_type == IdentityTypes.BUSINESS:
+            elif (
+                self.endpoint.identity.identity_type == IdentityTypes.BUSINESS
+            ):
                 # publish to all establishments.
                 establishments = (
                     IdentityEstablishment.objects.get_establishments(
