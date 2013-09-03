@@ -40,6 +40,35 @@ class OfferForm(ModelForm):
         )
 
 
+class OfferFinishForm(OfferForm):
+    form_action = '/offer/create/summary/'
+    form_method = 'POST'
+
+    id = CharField(widget=HiddenInput)
+
+    class Meta(OfferForm.Meta):
+        fields = (
+            'id',
+            'published'
+        )
+        exclude = ()
+        widgets = {
+            'published': HiddenInput()
+        }
+
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(OfferFinishForm, self).__init__(
+            *args,
+            **kwargs
+        )
+
+        self.initial['published'] = True
+
+
 class OfferProductPriceForm(Form):
     form_id = 'id-offer-product-price'
     form_method = 'POST'
@@ -154,14 +183,18 @@ class OfferProductPriceForm(Form):
 class OfferDetailsForm(OfferForm):
     class Meta(OfferForm.Meta):
         fields = (
+            'id',
             'title',
             'description',
             'restrictions'
         )
+        exclude = ()
 
     form_id = 'id-offer-details'
     form_method = 'POST'
     form_action = '/offer/create/details/'
+
+    id = CharField(widget=HiddenInput())
 
 
 class OfferPhotoLocationForm(TemplateForm):

@@ -19,9 +19,16 @@ from knotis.utils.view import (
     sanitize_input_html
 )
 from knotis.contrib.media.models import Image
-from knotis.contrib.identity.models import Identity
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityEstablishment,
+    IdentityTypes
+)
 from knotis.contrib.inventory.models import Inventory
-from knotis.contrib.endpoint.models import Publish
+from knotis.contrib.endpoint.models import (
+    EndpointTypes,
+    Publish
+)
 
 
 class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
@@ -468,11 +475,150 @@ class OfferItem(QuickModel):
     price_discount = QuickFloatField()
 
 
+class OfferAvailabilityManager(QuickManager):
+    def create(
+        self,
+        *args,
+        **kwargs
+    ):
+        offer = kwargs.get('offer')
+
+        if offer:
+            kwargs['offer_title'] = offer.title
+            kwargs['offer_stock'] = offer.stock
+            kwargs['offer_purchased'] = offer.purchased
+            kwargs['offer_default_image'] = offer.default_image
+
+            offer_items = OfferItem.objects.filter(offer=offer)
+            price = 0.
+            for i in offer_items:
+                price += i.price_discount
+
+            kwargs['price'] = price
+
+        identity = kwargs.get('identity')
+
+        if identity:
+            kwargs['identity_primary_image'] = identity.primary_image
+
+        return super(OfferAvailabilityManager, self).create(
+            *args,
+            **kwargs
+        )
+
+    def update_denormalized_offer_fields(
+        self,
+        offer
+    ):
+        offers = self.objects.filter(offer=offer)
+        for o in offers:
+            o.offer_title = offer.title
+            o.offer_stock = offer.stock
+            o.offer_purchased = offer.purchased
+            o.offer_default_image = offer.default_image
+            o.save()
+
+        return offers
+
+    def update_denormalized_identity_fields(
+        self,
+        identity
+    ):
+        offers = self.objects.filter(identity=identity)
+        for o in offers:
+            o.identity_primary_image = identity.primary_image
+            o.save()
+
+        return offers
+
+    def update_offer_price(
+        self,
+        offer
+    ):
+        offer_items = OfferItem.objects.filter(offer=offer)
+        total_price = 0.
+        for i in offer_items:
+            total_price += i.price_discount
+
+        offers = self.objects.filter(offer=offer)
+        for o in offers:
+            o.price = total_price
+            o.save()
+
+
+class OfferAvailability(QuickModel):
+    """
+    Represents an offer being redeemable by
+    the related identity.
+
+    Denormalized offer fields since this will
+    most likely be a common call for rendering
+    offers
+
+    """
+    offer = QuickForeignKey(Offer)
+    identity = QuickForeignKey(Identity)
+    offer_title = QuickCharField(
+        max_length=140
+    )
+    offer_stock = QuickIntegerField()
+    offer_purchased = QuickIntegerField()
+    offer_default_image = QuickForeignKey(
+        Image,
+        related_name='offeravailability_offer'
+    )
+
+    identity_primary_image = QuickForeignKey(
+        Image,
+        related_name='offeravailability_identity'
+    )
+
+    price = QuickFloatField()
+    available = QuickBooleanField(
+        db_index=True,
+        default=True
+    )
+
+    objects = OfferAvailabilityManager()
+
+
 class OfferPublish(Publish):
     class Meta:
         proxy = True
 
+    def _publish_establishment(
+        self,
+        establishment
+    ):
+        OfferAvailability.objects.create(
+            offer=self.subject,
+            identity=establishment
+        )
+
     def publish(self):
-        # 1. Construct appropriate message for endpoint from offer
-        # 2. Send message to endpoint
-        pass
+        if self.endpoint.endpoint_type == EndpointTypes.IDENTITY:
+            if (
+                self.endpoint.identity.identity_type ==
+                IdentityTypes.ESTABLISHMENT
+            ):
+                self._publish_establishment(self.endpoint.identity)
+
+            elif (
+                self.endpoint.identity.identity_type == IdentityTypes.BUSINESS
+            ):
+                # publish to all establishments.
+                establishments = (
+                    IdentityEstablishment.objects.get_establishments(
+                        self.endpoint.identity
+                    )
+                )
+
+                for e in establishments:
+                    self._publish_establishment(e)
+
+        else:
+            raise NotImplementedError(''.join([
+                'publish not implemented for endpoint type ',
+                self.endpoint.endpoint_type,
+                '.'
+            ]))

@@ -4,16 +4,22 @@ from django.shortcuts import (
     render,
     get_object_or_404
 )
+from django.core.exceptions import (
+    ValidationError,
+    PermissionDenied
+)
 from django.http import (
-    HttpResponseNotFound,
     HttpResponseServerError
 )
 from django.template import Context
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
+from knotis.utils.view import format_currency
+
 from knotis.contrib.offer.models import (
     Offer,
+    OfferItem,
     OfferPublish
 )
 from knotis.contrib.product.models import (
@@ -31,11 +37,13 @@ from knotis.contrib.location.models import (
 
 from knotis.contrib.identity.models import (
     Identity,
-    IdentityBusiness,
-    IdentityTypes
+    IdentityEstablishment
 )
 
-from knotis.contrib.endpoint.models import Endpoint
+from knotis.contrib.endpoint.models import (
+    Endpoint,
+    EndpointTypes
+)
 
 from knotis.views import (
     FragmentView,
@@ -46,7 +54,8 @@ from forms import (
     OfferProductPriceForm,
     OfferDetailsForm,
     OfferPhotoLocationForm,
-    OfferPublicationForm
+    OfferPublicationForm,
+    OfferFinishForm
 )
 
 
@@ -105,25 +114,14 @@ class OfferEditProductFormView(AJAXFragmentView):
         *args,
         **kwargs
     ):
-        try:
-            current_identity = Identity.objects.get(
-                id=request.session['current_identity_id']
-            )
-
-        except:
-            current_identity = None
-
-        if not current_identity:
-            return HttpResponseNotFound()
-
-        if current_identity.identity_type != IdentityTypes.BUSINESS:
-            return HttpResponseServerError()
+        current_identity = get_object_or_404(
+            Identity,
+            pk=request.session.get('current_identity_id')
+        )
 
         form = OfferProductPriceForm(
-            owners=IdentityBusiness.objects.filter(
-                pk=current_identity.id
-            ),
-            data=request.POST
+            data=request.POST,
+            owners=Identity.objects.filter(pk=current_identity.pk)
         )
 
         if not form.is_valid():
@@ -205,7 +203,7 @@ class OfferEditProductFormView(AJAXFragmentView):
                 'errors': {'no-field': e.message}
             })
 
-        unlimited = form.cleaned_data.get('unlimited', False)
+        unlimited = form.cleaned_data.get('offer_unlimited', False)
         if unlimited:
             stock = None
 
@@ -241,20 +239,15 @@ class OfferEditProductFormView(AJAXFragmentView):
         context
     ):
         request = context.get('request')
-        try:
-            current_identity = Identity.objects.get(
-                id=request.session['current_identity_id']
-            )
-
-        except:
-            current_identity = None
+        current_identity = get_object_or_404(
+            Identity,
+            pk=request.session['current_identity_id']
+        )
 
         local_context = Context(context)
         local_context.update({
             'form': OfferProductPriceForm(
-                owners=IdentityBusiness.objects.filter(
-                    pk=current_identity.id
-                )
+                owners=Identity.objects.filter(pk=current_identity.pk)
             ),
             'ProductTypes': ProductTypes,
             'current_identity': current_identity
@@ -276,7 +269,13 @@ class OfferEditDetailsFormView(AJAXFragmentView):
         *args,
         **kwargs
     ):
-        form = OfferDetailsForm(data=request.POST)
+        offer_id = request.POST.get('id')
+        offer = get_object_or_404(Offer, pk=offer_id)
+
+        form = OfferDetailsForm(
+            data=request.POST,
+            instance=offer
+        )
         if not form.is_valid():
             errors = {}
             for field, messages in form.errors.iteritems():
@@ -484,12 +483,20 @@ class OfferEditPublishFormView(AJAXFragmentView):
             offer.end_time = form.cleaned_data.get('end_time')
             offer.save()
 
+            endpoint_current_identity = Endpoint.objects.get(
+                endpoint_type=EndpointTypes.IDENTITY,
+                identity=current_identity
+            )
+            OfferPublish.objects.create(
+                endpoint=endpoint_current_identity,
+                subject=offer
+            )
             publish = form.cleaned_data.get('publish')
             if publish:
                 for endpoint in publish:
                     OfferPublish.objects.create(
-                        offer=offer,
-                        endpoint=endpoint
+                        endpoint=endpoint,
+                        subject=offer
                     )
 
         except Exception, e:
@@ -536,9 +543,113 @@ class OfferEditPublishFormView(AJAXFragmentView):
         ).render_template_fragment(local_context)
 
 
-class OfferEditSummaryView(FragmentView):
+class OfferEditSummaryView(AJAXFragmentView):
     template_name = 'knotis/offer/edit_summary.html'
     view_name = 'offer_edit_summary'
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        offer_id = request.POST.get('id')
+        offer = get_object_or_404(Offer, pk=offer_id)
+
+        form = OfferFinishForm(
+            data=request.POST,
+            instance=offer
+        )
+
+        if not form.is_valid():
+            errors = {}
+            for field, messages in form.errors.iteritems():
+                errors[field] = [message for message in messages]
+
+            return self.generate_response({
+                'message': 'the data entered is invalid',
+                'errors': errors
+            })
+
+        try:
+            offer = form.save()
+
+        except Exception, e:
+            logger.exception('error while publishing offer')
+            return self.generate_response({
+                'message': e.message,
+                'errors': {
+                    'no-field': 'A server error occurred. Please try again.'
+                }
+            })
+
+        return self.generate_response({
+            'message': 'OK',
+            'offer_id': offer.id
+        })
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        request = context.get('request')
+
+        offer_id = request.GET.get('id')
+        offer = get_object_or_404(Offer, id=offer_id)
+
+        try:
+            offer_items = OfferItem.objects.filter(offer=offer)
+
+        except Exception:
+            logger.exception('failed to get offer items')
+            offer_items = None
+
+        # FIXME: These two parameters should call
+        # methods that figure these numbers out.
+        knotis_cut = .035
+        estimated_sales_max = 3.
+
+        estimated_sales = min(
+            estimated_sales_max,
+            offer.stock
+        ) if not offer.unlimited else estimated_sales_max
+        revenue_per_offer = 0.
+        for item in offer_items:
+            revenue_per_offer += item.price_discount
+
+        revenue_customer = revenue_per_offer - knotis_cut * revenue_per_offer
+        revenue_total = revenue_customer * estimated_sales
+        savings_low = revenue_total * .3
+        savings_high = revenue_total * .5
+
+        local_context = copy.copy(context)
+        local_context.update({
+            'summary_revenue_customer': ''.join([
+                '$',
+                format_currency(revenue_customer)
+            ]),
+            'summary_savings': ''.join([
+                '$',
+                format_currency(savings_low),
+                ' - ',
+                '$',
+                format_currency(savings_high)
+            ]),
+            'summary_revenue_total': ''.join([
+                '$',
+                format_currency(revenue_total)
+            ]),
+            'summary_estimated_sales': str(int(estimated_sales)),
+            'offer_finish_form': OfferFinishForm(
+                instance=offer
+            )
+        })
+
+        return super(
+            OfferEditSummaryView,
+            cls
+        ).render_template_fragment(local_context)
 
 
 class OfferGridSmall(FragmentView):

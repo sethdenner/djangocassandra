@@ -2,7 +2,8 @@ from knotis.contrib.quick.models import QuickModel
 from knotis.contrib.quick.fields import (
     QuickUUIDField,
     QuickForeignKey,
-    QuickGenericForeignKey
+    QuickGenericForeignKey,
+    QuickBooleanField
 )
 
 from django.db.models import (
@@ -110,6 +111,9 @@ class EndpointTypes:
     TWITTER = 3
     FACEBOOK = 4
     YELP = 5
+    IDENTITY = 6
+    WIDGET = 7
+    FOLLOWERS = 8
 
     CHOICES = (
         (UNDEFINED, 'Undefined'),
@@ -118,7 +122,10 @@ class EndpointTypes:
         (ADDRESS, 'Address'),
         (TWITTER, 'Twitter'),
         (FACEBOOK, 'Facebook'),
-        (YELP, 'Yelp')
+        (YELP, 'Yelp'),
+        (IDENTITY, 'Identity'),
+        (WIDGET, 'Widget'),
+        (FOLLOWERS, 'Followers')
     )
 
 
@@ -250,6 +257,39 @@ class EndpointAddress(Endpoint):
         super(EndpointAddress, self).__init__(*args, **kwargs)
 
 
+class EndpointIdentityManager(EndpointManager):
+    def update_identity_endpoints(
+        self,
+        identity
+    ):
+        if not hasattr(identity, 'endpoint_set'):
+            return
+
+        identity_endpoints = identity.endpoint_set.filter(
+            endpoint_type=EndpointTypes.IDENTITY
+        )
+
+        for e in identity_endpoints:
+            e.value = identity.name
+            e.save()
+
+
+class EndpointIdentity(Endpoint):
+    class Meta:
+        proxy = True
+
+    objects = EndpointIdentityManager()
+
+    def __init__(self, *args, **kwargs):
+        kwargs['endpoint_type'] = EndpointTypes.IDENTITY
+
+        super(EndpointIdentity, self).__init__(*args, **kwargs)
+
+    def update_value(self):
+        self.value = self.identity.name
+        self.save()
+
+
 class Publish(QuickModel):
     endpoint = QuickForeignKey(Endpoint)
     subject_content_type = QuickForeignKey(
@@ -262,5 +302,13 @@ class Publish(QuickModel):
         'subject_object_id'
     )
 
+    completed = QuickBooleanField(
+        db_index=True,
+        default=False
+    )
+
     def publish(self):
-        raise NotImplementedError('base class must define this method')
+        raise NotImplementedError(
+            'publish was not implemented in derived class ' +
+            self.__class__.__name__ + '.'
+        )

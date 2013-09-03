@@ -292,7 +292,8 @@ configs = {
     'prod': 'prod',
     'stage': 'stage',
     'seth': 'seth',
-    'dev1': 'dev1'
+    'dev1': 'dev1',
+    'ub2': 'ub2'
 }
 
 """

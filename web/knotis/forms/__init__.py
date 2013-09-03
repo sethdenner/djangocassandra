@@ -6,6 +6,9 @@ from django.template import (
 from django.template.loader import get_template
 from django.utils.safestring import mark_safe
 
+from fields import (
+    UUIDField
+)
 from widgets import (
     ItemSelectWidget,
     ItemSelectRow,
