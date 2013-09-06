@@ -38,6 +38,7 @@ if [[ ! -e ${config_file} ]] ; then
 fi 
 
 # Create knotis user and group on the system
+id -g ${ADMIN_GROUP} > /dev/null 2>&1 || groupadd --system ${ADMIN_GROUP}
 id -u ${ADMIN_USER} > /dev/null 2>&1 || useradd --system -N ${ADMIN_USER}
 chsh -s /bin/bash ${ADMIN_USER}
 usermod -a -G ${ADMIN_GROUP} ${ADMIN_USER}
