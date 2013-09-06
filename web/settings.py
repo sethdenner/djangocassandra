@@ -81,6 +81,8 @@ PRIORITY_BUSINESS_NAMES = [
     'ipic-theaters'
 ]
 
+CRISPY_TEMPLATE_PACK = 'bootstrap'
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -273,7 +275,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
-            'filename': '/srv/knotis/logs/web.log',
+            'filename': '/tmp/web.log',
             'maxBytes': 1048576,
             'backupCount': 10
         }
@@ -283,10 +285,11 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'dev1'
+ENVIRONMENT_NAME = 'josie'
 
 # You can key the configurations off of anything - I use project path.
 configs = {
+    'josie': 'josie',
     'dev': 'dev',
     'int': 'int',
     'prod': 'prod',
