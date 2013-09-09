@@ -46,7 +46,6 @@ class IdentityTypes:
         (ESTABLISHMENT, 'Establishment'),
     )
 
-
 class IdentityManager(QuickManager):
     def get_available(
         self,
@@ -289,8 +288,7 @@ class Identity(QuickModel):
         return backend_name
 
     def clean(self):
-        if self.name and not self.backend_name:
-            self.backend_name = self._clean_backend_name(self.name)
+        pass
 
     def __unicode__(self):
         if (self.name):
@@ -315,6 +313,7 @@ class IdentityIndividual(Identity):
     def clean(self):
         print ("Cleaning IdentityIndividual")
         self.identity_type = IdentityTypes.INDIVIDUAL
+        return super(IdentityIndividual, self).clean()
 
 
 class IdentityBusiness(Identity):
@@ -338,6 +337,11 @@ class IdentityBusiness(Identity):
         print ("Cleaning IdentityBusiness")
         self.identity_type = IdentityTypes.BUSINESS
 
+        if self.name and not self.backend_name:
+            self.backend_name = self._clean_backend_name(self.name)
+
+        return super(IdentityBusiness, self).clean()
+
 
 class IdentityEstablishment(Identity):
     class Quick(Identity.Quick):
@@ -353,3 +357,8 @@ class IdentityEstablishment(Identity):
     def clean(self):
         print ("Cleaning IdentityEstablishment")
         self.identity_type = IdentityTypes.ESTABLISHMENT
+
+        if self.name and not self.backend_name:
+            self.backend_name = self._clean_backend_name(self.name)
+
+        return super(IdentityEstablishment, self).clean()

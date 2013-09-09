@@ -20,7 +20,12 @@ from models import (
     IdentityEstablishment,
     IdentityTypes
 )
-from forms import IdentityForm
+from forms import (
+    IdentityForm,
+    IdentityIndividualForm,
+    IdentityBusinessForm,
+    IdentityEstablishmentForm
+)
 
 
 class IdentityApi(ApiView):
@@ -330,7 +335,7 @@ class IdentityBusinessApi(IdentityApi):
                     'errors': errors
                 })
 
-        form = IdentityForm(
+        form = IdentityBusinessForm(
             data=request.POST
         )
 
@@ -388,7 +393,7 @@ class IdentityBusinessApi(IdentityApi):
         try:
             establishment_data = request.POST.copy()
             establishment_data['identity_type'] = IdentityTypes.ESTABLISHMENT
-            form_establishment = IdentityForm(data=establishment_data)
+            form_establishment = IdentityEstablishmentForm(data=establishment_data)
             establishment = form_establishment.save()
             created_objects.append(establishment)
 
@@ -505,7 +510,7 @@ class IdentityEstablishmentApi(IdentityApi):
         data = {}
         errors = {}
 
-        form = IdentityForm(
+        form = IdentityEstablishmentForm(
             data=request.POST
         )
 

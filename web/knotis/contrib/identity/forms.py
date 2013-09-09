@@ -23,12 +23,25 @@ from models import (
     IdentityTypes
 )
 
-
 class IdentityForm(ModelForm):
     class Meta:
         model = Identity
         exclude = ('content_type')
 
+class IdentityIndividualForm(ModelForm):
+    class Meta:
+        model = IdentityIndividual 
+        exclude = ('content_type')
+
+class IdentityBusinessForm(ModelForm):
+    class Meta:
+        model = IdentityBusiness
+        exclude = ('content_type')
+
+class IdentityEstablishmentForm(ModelForm):
+    class Meta:
+        model = IdentityEstablishment
+        exclude = ('content_type')
 
 class IdentitySimpleForm(IdentityForm):
     class Meta(IdentityForm.Meta):
