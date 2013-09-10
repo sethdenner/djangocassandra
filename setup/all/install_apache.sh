@@ -1,10 +1,21 @@
 #!/bin/bash
 set -e
 
-echo "${env_dir}/config/apache2/${env_name}.knotis.com"
+apache2_config=$(readlink -m "${env_dir}/config/apache2/${APACHE2_CONFIG}")
+if [[ ! -f ${apache2_config} ]] ; then
+    apache2_config=$(readlink -m "${all_dir}/config/apache2/${APACHE2_CONFIG}")
+fi
+if [[ ! -f ${apache2_config} ]] ; then
+    echo "There is no apache2 config available for environment ${ENVIRONMENT_NAME}" >&2 ; exit 1 ;
+fi
 
-apache2_config=$(readlink -f "${env_dir}/config/apache2/${env_name}.knotis.com") || { echo "There is no apache2 config available for environment ${env_name}" >&2 ; exit 1 ; }
-modwsgi_script=$(readlink -f "${all_dir}/config/modwsgi/knotis.modwsgi") || { echo "There is no modwsgi script available for environment ${env_name}" >&2 ; exit 1 ; }
+modwsgi_script=$(readlink -m "${env_dir}/config/modwsgi/${MODWSGI_SCRIPT}")
+if [[ ! -f ${modwsgi_script} ]] ; then
+    modwsgi_script=$(readlink -m "${all_dir}/config/modwsgi/${MODWSGI_SCRIPT}")
+fi
+if [[ ! -f ${modwsgi_script} ]] ; then
+    echo "There is no modwsgi script available for environment ${env_name}" >&2 ; exit 1 ;
+fi
 
 apt-get -y install apache2-mpm-worker apache2-dev
 
@@ -19,7 +30,7 @@ mkdir -p ${temp_dir}
 tar xvf ${modwsgi_tarball} -C ${temp_dir}
 (
     cd ${temp_dir}
-    bootstrap_script=$(find "${temp_dir}" -maxdepth 2 -name bootstrap.sh)
+    bootstrap_script=$(find . -maxdepth 2 -name bootstrap.sh)
     if [[ ${bootstrap_script} ]] ; then
         (
             cd ${bootstrap_script%/*}
@@ -27,7 +38,7 @@ tar xvf ${modwsgi_tarball} -C ${temp_dir}
             
         )
     fi
-    configure_script=$(find "${temp_dir}" -maxdepth 2 -name configure)
+    configure_script=$(find . -maxdepth 2 -name configure)
     if [[ ${configure_script} ]] ; then
         (
             cd ${configure_script%/*}
@@ -47,6 +58,6 @@ cp ${modwsgi_script} /srv/knotis/app/conf/apache/
 cp ${apache2_config} /etc/apache2/sites-available/
 
 a2dissite default
-a2ensite $(basename ${apache2_config})
+a2ensite $(basename ${APACHE2_CONFIG})
 
 service apache2 restart
