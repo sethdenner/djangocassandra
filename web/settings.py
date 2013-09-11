@@ -285,10 +285,11 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'ub2'
+ENVIRONMENT_NAME = 'josh'
 
 # You can key the configurations off of anything - I use project path.
 configs = {
+    'josh': 'josh',
     'josie': 'josie',
     'dev': 'dev',
     'int': 'int',
