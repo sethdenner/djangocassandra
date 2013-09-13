@@ -4,7 +4,7 @@ export ENVIRONMENT_NAME=next
 export MODWSGI_SCRIPT=$(readlink -e ./config/modwsgi/knotis.wsgi)
 export APACHE2_CONFIG=$(readlink -e ./config/apache2/next.knotis.com)
 export CASSANDRA_CONFIG=$(readlink -e ./config/cassandra/cassandra.yaml)
-export CASSANDRA_THRIFT_INTERFACE=$(readlink -e ./config/cassandra/cassandra.thrift)
+export CASSANDRA_THRIFT_INTERFACE=$(readlink -e ./static/cassandra.thrift)
 export DEFAULT_INSTALL_LOCATION=/srv/knotis
 export ADMIN_USER=knotis
 export ADMIN_GROUP=knotis
@@ -31,5 +31,6 @@ export INSTALLERS=(
     install_piston.sh
     install_pil.sh
     install_sorlthumbnail.sh
+    install_beautiful_soup.sh
     install_timezones.sh
 )
