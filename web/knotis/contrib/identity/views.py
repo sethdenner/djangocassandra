@@ -59,7 +59,10 @@ class EstablishmentProfileGrid(GridSmallView):
 
         if establishment_offers:
             for offer in establishment_offers:
-                offer_context = Context({'offer': offer})
+                offer_context = Context({
+                    'offer': offer,
+                    'profile_logo': context['profile_logo']
+                })
                 tiles.append(
                     OfferTile.render_template_fragment(offer_context)
                 )

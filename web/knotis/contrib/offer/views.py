@@ -62,6 +62,27 @@ from forms import (
 class OfferTile(FragmentView):
     template_name = 'knotis/offer/tile.html'
     view_name = 'offer_tile'
+    offer_stats = 'osdfisdjf'
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context
+    ):
+        offer = context.get('offer', None)
+
+        if not offer:
+            return ''
+
+        # TODO: CALCULATE STATS.
+        context.update({
+            'stats': 'Stats',
+        })
+
+        return super(
+            OfferTile,
+            cls
+        ).render_template_fragment(context)
 
 
 class OfferCreateTile(FragmentView):
