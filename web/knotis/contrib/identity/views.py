@@ -15,7 +15,7 @@ from knotis.views import FragmentView
 from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.maps.forms import GeocompleteForm
 from knotis.contrib.media.models import Image
-from knotis.contrib.offer.models import Offer
+from knotis.contrib.offer.models import OfferAvailability
 from knotis.contrib.offer.views import (
     OfferTile,
     OfferCreateTile
@@ -60,8 +60,7 @@ class EstablishmentProfileGrid(GridSmallView):
         if establishment_offers:
             for offer in establishment_offers:
                 offer_context = Context({
-                    'offer': offer,
-                    'profile_logo': context['profile_logo']
+                    'offer': offer
                 })
                 tiles.append(
                     OfferTile.render_template_fragment(offer_context)
@@ -174,8 +173,8 @@ class EstablishmentProfileView(FragmentView):
             ])
 
         try:
-            establishment_offers = Offer.objects.filter(
-                owner=establishment
+            establishment_offers = OfferAvailability.objects.filter(
+                identity=establishment
             )
 
         except:
