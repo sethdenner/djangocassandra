@@ -110,7 +110,8 @@ class AuthUserApi(ApiView):
         *args,
         **kwargs
     ):
-        form = SignUpForm(request.POST)
+        import pdb; pdb.set_trace()
+        form = SignUpForm(data=request.POST)
 
         errors = {}
 

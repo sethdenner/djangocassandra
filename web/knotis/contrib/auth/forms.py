@@ -135,12 +135,14 @@ class SignUpForm(ModelForm):
         widget=PasswordInput()
     )
     authenticate = BooleanField(
-        initial=True,
+        required=False,
+        initial=False,
         widget=HiddenInput()
     )
 
     def __init__(
         self,
+        authenticate=False,
         *args,
         **kwargs
     ):
@@ -148,6 +150,8 @@ class SignUpForm(ModelForm):
             *args,
             **kwargs
         )
+
+        self.fields['authenticate'].initial = authenticate
 
         self.helper = FormHelper()
         self.helper.form_id = 'id-signup-form'
