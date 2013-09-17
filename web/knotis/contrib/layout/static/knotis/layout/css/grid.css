@@ -16,6 +16,10 @@ div.grid div.thumbnail {
     box-shadow: none;
 }
 
+div.grid div.grid-tile {
+    margin: 0 0 0 5px;
+}
+
 @media (min-width: 1200px) {
     div.grid{
 	    margin-top: 15px;

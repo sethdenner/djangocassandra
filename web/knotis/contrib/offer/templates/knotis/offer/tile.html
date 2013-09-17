@@ -1,7 +1,7 @@
 {% load thumbnail %}
-<div class="grid-tile-small" >
+<div class="grid-tile small-tile" >
   <div class="tile-header">
-    {% thumbnail offer.offer_default_image.image '221x125' crop=offer.offer_default_image.crop as image %}
+    {% thumbnail offer.offer_default_image.image '120x120' crop=offer.offer_default_image.crop as image %}
     <img class="tile-image" alt="{{ offer.offer_title }}" src="{{ image.url }}" />
     {% empty %}
     <img class="tile-image"  alt="{{ offer.offer_title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
