@@ -68,4 +68,12 @@ done
 
 rm -rf ${tmp}
 
+cp -a ${KNOTIS_WEB} ${install_location}
+chown -R ${ADMIN_USER}:${ADMIN_GROUP} ${install_location}
+chmod -R 760 ${install_location}
+
+${install_location}/venv/bin/python ${install_location}/web/manage.py syncdb --noinput
+${install_location}/venv/bin/python ${install_location}/web/manage.py collectstatic --noinput
+service apache2 restart
+
 ) >> ${output_log} 2>> ${error_log}
