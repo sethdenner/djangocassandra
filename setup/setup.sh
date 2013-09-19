@@ -52,7 +52,7 @@ fi
 mkdir -p ${install_location} ${install_location}/logs ${install_location}/run/eggs || { echo "Failed to create install location at: ${install_location}" >&2 ; exit 1 ; }
 
 chown -R ${ADMIN_USER}:${ADMIN_GROUP} ${install_location}
-chmod -R 760 ${install_location}
+chmod -R 755 ${install_location}
 usermod -m -d ${install_location} ${ADMIN_USER}
 
 echo "Running install scripts:"
@@ -70,7 +70,7 @@ rm -rf ${tmp}
 
 cp -a ${KNOTIS_WEB} ${install_location}
 chown -R ${ADMIN_USER}:${ADMIN_GROUP} ${install_location}
-chmod -R 760 ${install_location}
+chmod -R 755 ${install_location}
 
 ${install_location}/venv/bin/python ${install_location}/web/manage.py syncdb --noinput
 ${install_location}/venv/bin/python ${install_location}/web/manage.py collectstatic --noinput
