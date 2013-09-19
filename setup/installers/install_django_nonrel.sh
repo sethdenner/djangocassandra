@@ -2,5 +2,5 @@
 venv_bin=/srv/knotis/venv/bin
 
 echo 'installing django-nonrel ...'
-django_git_repo=https://github.com/django-nonrel/django.git
-${install_location}/venv/bin/pip install git+${django_git_repo}@nonrel-1.3
+django_tarball="${setup_dir}/static/django-nonrel-1.3.tar.gz"
+${install_location}/venv/bin/pip install ${django_tarball}
