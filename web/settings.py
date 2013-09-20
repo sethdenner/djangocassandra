@@ -275,7 +275,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
-            'filename': '/tmp/web.log',
+            'filename': '/srv/knotis/logs/django.log',
             'maxBytes': 1048576,
             'backupCount': 10
         }
@@ -285,7 +285,7 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'ub2'
+ENVIRONMENT_NAME = 'dev'
 
 # You can key the configurations off of anything - I use project path.
 configs = {
