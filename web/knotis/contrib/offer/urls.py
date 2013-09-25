@@ -3,7 +3,10 @@ from django.conf.urls.defaults import (
     url
 )
 
+from knotis.utils.regex import REGEX_UUID
+
 from views import (
+    OfferDetailView,
     OfferEditView,
     OfferEditProductFormView,
     OfferEditDetailsFormView,
@@ -14,6 +17,14 @@ from views import (
 
 urlpatterns = patterns(
     'knotis.contrib.offer.views',
+    url(
+        r''.join([
+            '/(?P<offer_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        OfferDetailView.as_view()
+    ),
     url(
         r'/create/$',
         OfferEditView.as_view()
