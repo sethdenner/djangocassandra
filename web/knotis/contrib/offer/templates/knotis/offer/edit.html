@@ -3,19 +3,6 @@
   {% render_fragment offer_edit_header %}
 </div>
 <div class="modal-body">
-  <div id="offer-edit-carousel" class="carousel slide" data-interval="false">
-    <div class="carousel-inner">
-      <div id="offer-edit-product-form" class="active item">
-      </div>
-      <div id="offer-edit-details-form" class="item">
-      </div>
-      <div id="offer-edit-location-form"  class="item">
-      </div>
-      <div id="offer-edit-publish-form" class="item">
-      </div>
-      <div id="offer-edit-summary" class="item">
-      </div>
-    </div>
-  </div>
+  {% render_fragment offer_create_wizard %}
 </div>
-<script src="{{ STATIC_URL }}knotis/offer/js/edit.js"></script>
+<script src="{{ STATIC_URL }}knotis/wizard/js/wizard.js"></script>

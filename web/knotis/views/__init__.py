@@ -34,14 +34,18 @@ class AJAXFragmentView(
         *args,
         **kwargs
     ):
-        return self.render_ajax_fragment(request)
+        return self.render_ajax_fragment(request, *args, **kwargs)
 
     @classmethod
     def render_ajax_fragment(
         cls,
-        request
+        request,
+        *args,
+        **kwargs
     ):
         context = RequestContext(request)
+        context['args'] = args
+        context['kwargs'] = kwargs
         return cls.generate_response({
             'html': cls.render_template_fragment(context)
         })

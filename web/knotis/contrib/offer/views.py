@@ -58,6 +58,10 @@ from forms import (
     OfferFinishForm
 )
 
+from knotis.contrib.wizard.views import(
+    WizardView,
+    WizardStep
+)
 
 class OfferTile(FragmentView):
     template_name = 'knotis/offer/tile.html'
@@ -686,3 +690,70 @@ class OfferGridSmall(FragmentView):
             OfferGridSmall,
             cls
         ).render_template_fragment(context)
+
+
+class OfferDetailView(AJAXFragmentView):
+    template_name = 'knotis/offer/detail.html'
+    view_name = 'offer_detail'
+
+    @classmethod
+    def render_template_fragment(
+        cls,
+        context,
+    ):
+        request = context.get('request')
+
+        offer_id = context.get('kwargs',{}).get('offer_id')
+        #request.GET.get('offer_id')
+        offer = get_object_or_404(Offer, id=offer_id)
+
+        try:
+            offer_items = OfferItem.objects.filter(offer=offer)
+
+        except Exception:
+            logger.exception('failed to get offer items')
+            offer_items = None
+        
+        local_context = copy.copy(context)
+        local_context.update({
+            'offer': offer, 
+            'offer_items':offer_items
+            })
+
+        return super(
+            OfferDetailView,
+            cls
+        ).render_template_fragment(local_context)
+
+class OfferCreateWizard(WizardView):
+    view_name = 'offer_create_wizard'
+                 
+    steps = [
+            WizardStep(
+                '/offer/create/product/',
+                'offer-edit-product-form',
+                {}
+                ),
+            WizardStep(
+                '/offer/create/details/',
+                'offer-edit-details-form',
+                { 'id': 'offer_id' } 
+                ),
+            WizardStep(
+                '/offer/create/location/',
+                'offer-edit-location-form',
+                { 'id': 'offer_id' } 
+                ),
+            WizardStep(
+                '/offer/create/publish/',
+                'offer-edit-publish-form',
+                { 'id': 'offer_id' } 
+                ),
+            WizardStep(
+                '/offer/create/summary/',
+                'offer-edit-summary',
+                { 'id': 'offer_id' } 
+                ),
+            ]
+
+
