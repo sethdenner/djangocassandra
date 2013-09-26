@@ -1,3 +1,5 @@
+import copy
+
 from django import http
 from django.conf import settings
 from django.template import Context
@@ -10,7 +12,10 @@ from django.shortcuts import (
 from django.utils import log
 logger = log.getLogger(__name__)
 
-from knotis.views import FragmentView
+from knotis.views import (
+    ContextView,
+    FragmentView
+)
 
 from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.maps.forms import GeocompleteForm
@@ -38,16 +43,12 @@ from forms import (
 class EstablishmentProfileGrid(GridSmallView):
     view_name = 'establishment_profile_grid'
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        establishment_offers = context.get('establishment_offers')
+    def process_context(self):
+        establishment_offers = self.context.get('establishment_offers')
 
         tiles = []
 
-        is_manager = context.get('is_manager')
+        is_manager = self.context.get('is_manager')
         if is_manager:
             tiles.append(
                 OfferCreateTile.render_template_fragment(Context({
@@ -66,27 +67,21 @@ class EstablishmentProfileGrid(GridSmallView):
                     OfferTile.render_template_fragment(offer_context)
                 )
 
-        local_context = Context(context.dicts)
+        local_context = copy.copy(self.context)
         local_context.update({'tiles': tiles})
 
-        return super(
-            EstablishmentProfileGrid,
-            cls
-        ).render_template_fragment(local_context)
+        return local_context
 
 
-class EstablishmentProfileView(FragmentView):
+class EstablishmentProfileView(ContextView):
     template_name = 'knotis/identity/profile_establishment.html'
     view_name = 'establishment_profile'
 
-    def get(
-        self,
-        request,
-        establishment_id=None,
-        backend_name=None,
-        *args,
-        **kwargs
-    ):
+    def process_context(self):
+        request = self.request
+        establishment_id = self.kwargs.get('establishment_id')
+        backend_name = self.kwargs.get('backend_name')
+
         try:
             if establishment_id:
                 establishment = get_object_or_404(
@@ -180,31 +175,28 @@ class EstablishmentProfileView(FragmentView):
         except:
             logger.exception('failed to get establishment offers')
 
-        return render(
-            request,
-            self.template_name, {
-                'establishment': establishment,
-                'is_manager': is_manager,
-                'styles': styles,
-                'pre_scripts': pre_scripts,
-                'post_scripts': post_scripts,
-                'default_profile_logo_uri': default_profile_logo_uri,
-                'profile_logo': profile_logo,
-                'establishment_offers': establishment_offers
-            }
-        )
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'establishment': establishment,
+            'is_manager': is_manager,
+            'styles': styles,
+            'pre_scripts': pre_scripts,
+            'post_scripts': post_scripts,
+            'default_profile_logo_uri': default_profile_logo_uri,
+            'profile_logo': profile_logo,
+            'establishment_offers': establishment_offers
+        })
+
+        return local_context
 
 
 class FirstIdentityView(FragmentView):
     template_name = 'knotis/identity/first.html'
     view_name = 'identity_edit'
 
-    def get(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
+    def process_context(self):
+        request = self.request
+
         try:
             individual = IdentityIndividual.objects.get_individual(
                 request.user
@@ -213,29 +205,29 @@ class FirstIdentityView(FragmentView):
         except:
             individual = None
 
-        return render(
-            request,
-            self.template_name, {
-                'individual_form': IdentityIndividualSimpleForm(
-                    form_id='id-individual-form',
-                    description_text=(
-                        'First thing\'s first. Tell us '
-                        'your name so we can personalize '
-                        'your Knotis account.'
-                    ),
-                    help_text=(
-                        'This is the name that will be displayed '
-                        'publicly in Knotis services.'
-                    ),
-                    instance=individual
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'individual_form': IdentityIndividualSimpleForm(
+                form_id='id-individual-form',
+                description_text=(
+                    'First thing\'s first. Tell us '
+                    'your name so we can personalize '
+                    'your Knotis account.'
                 ),
-                'business_form': IdentityBusinessSimpleForm(
-                    form_id='id-business-form',
-                    initial={'individual_id': individual.id}
+                help_text=(
+                    'This is the name that will be displayed '
+                    'publicly in Knotis services.'
                 ),
-                'location_form': GeocompleteForm()
-            }
-        )
+                instance=individual
+            ),
+            'business_form': IdentityBusinessSimpleForm(
+                form_id='id-business-form',
+                initial={'individual_id': individual.id}
+            ),
+            'location_form': GeocompleteForm()
+        })
+
+        return local_context
 
 
 class IdentitySwitcherView(FragmentView):
@@ -254,32 +246,6 @@ class IdentitySwitcherView(FragmentView):
             request,
             *args,
             **kwargs
-        )
-
-    def _render_to_response(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        current_identity = request.session.get('current_identity')
-        if not current_identity:
-            user_information = UserInformation.objects.get(user=request.user)
-            current_identity = user_information.default_identity
-
-        available_identities = Identity.objects.get_available(
-            user=request.user
-        )
-
-        parameters = {
-            'current': current_identity,
-            'available': available_identities
-        }
-
-        return render(
-            request,
-            self.template_name,
-            parameters
         )
 
     def _update_current_identity(
@@ -327,14 +293,7 @@ class IdentitySwitcherView(FragmentView):
         *args,
         **kwargs
     ):
-        if not identity_id:
-            return self._render_to_response(
-                request,
-                *args,
-                **kwargs
-            )
-
-        else:
+        if identity_id:
             return self._update_current_identity(
                 request,
                 identity_id,
@@ -342,22 +301,26 @@ class IdentitySwitcherView(FragmentView):
                 **kwargs
             )
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        request = context.get('request')
+        else:
+            return super(IdentitySwitcherView, self).get(
+                request,
+                *args,
+                **kwargs
+            )
+
+    def process_context(self):
+        request = self.request
         if not request:
             return ''
 
         if not request.user.is_authenticated():
             return ''
 
-        key_available = 'available_identities'
+        local_context = copy.copy(self.context)
 
+        key_available = 'available_identities'
         try:
-            context[key_available] = Identity.objects.get_available(
+            local_context[key_available] = Identity.objects.get_available(
                 user=request.user
             )
 
@@ -377,7 +340,4 @@ class IdentitySwitcherView(FragmentView):
             except:
                 logger.exception('failed to get current identity')
 
-        return super(
-            IdentitySwitcherView,
-            cls
-        ).render_template_fragment(context)
+        return local_context

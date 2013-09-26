@@ -1,27 +1,15 @@
-from django.views.generic import View
-from django.shortcuts import render
+import copy
 
-from knotis.views.mixins import RenderTemplateFragmentMixin
+from django.http import HttpResponse
+
+from knotis.views import FragmentView
 
 from forms import SearchForm
 
 
-class SearchBarView(View, RenderTemplateFragmentMixin):
+class SearchBarView(FragmentView):
     template_name = 'search/search_bar.html'
     view_name = 'search_bar'
-
-    def get(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        return render(
-            request,
-            self.template_name, {
-                'search_form': SearchForm()
-            }
-        )
 
     def post(
         self,
@@ -29,16 +17,12 @@ class SearchBarView(View, RenderTemplateFragmentMixin):
         *args,
         **kwargs
     ):
-        return http.HttpResponse('OK')
+        return HttpResponse('OK')
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        context['search_form'] = SearchForm()
+    def process_context(self):
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'search_form': SearchForm()
+        })
 
-        return super(
-            SearchBarView,
-            cls
-        ).render_template_fragment(context)
+        return local_context

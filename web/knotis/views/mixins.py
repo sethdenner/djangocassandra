@@ -17,18 +17,18 @@ class RenderTemplateFragmentMixin(object):
     view_name = None
 
     @classmethod
-    def register_template_fragment(cls):
-        RenderTemplateFragmentMixin.registered_fragments[
-            cls.view_name
-        ] = cls
-
-    @classmethod
     def render_template_fragment(
         cls,
         context
     ):
         template = get_template(cls.template_name)
         return template.render(context)
+
+    @classmethod
+    def register_template_fragment(cls):
+        RenderTemplateFragmentMixin.registered_fragments[
+            cls.view_name
+        ] = cls
 
     @staticmethod
     def register_template_fragment_views(apps=None):
@@ -91,7 +91,6 @@ class RenderTemplateFragmentMixin(object):
                 ) and (
                     cls.__name__ != RenderTemplateFragmentMixin.__name__
                 ):
-                    print 'registering template fragment %s' % name,
                     cls.register_template_fragment()
 
 
