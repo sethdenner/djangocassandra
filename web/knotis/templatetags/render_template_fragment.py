@@ -39,6 +39,9 @@ class TemplateFragmentNode(template.Node):
         self,
         context
     ):
-        return RenderTemplateFragmentMixin.registered_fragments[
+        view_class = RenderTemplateFragmentMixin.registered_fragments[
             self.view_name
-        ].render_template_fragment(context)
+        ]
+
+        instance = view_class()
+        return instance.render_template_fragment(context)

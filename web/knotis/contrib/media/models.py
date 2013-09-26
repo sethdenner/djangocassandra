@@ -7,7 +7,8 @@ from knotis.contrib.quick.models import QuickModel
 from knotis.contrib.quick.fields import (
     QuickCharField,
     QuickFloatField,
-    QuickForeignKey
+    QuickForeignKey,
+    QuickBooleanField
 )
 from knotis.contrib.identity.models import Identity
 
@@ -18,9 +19,8 @@ class Image(QuickModel):
         max_length=36,
         db_index=True
     )
+    public = QuickBooleanField(db_index=True)
     image = ImageField(upload_to='images/')
-
-    caption = QuickCharField(max_length=140)
 
     crop_left = QuickFloatField()
     crop_top = QuickFloatField()

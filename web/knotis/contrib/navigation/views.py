@@ -1,6 +1,8 @@
+import copy
+
 from django.views.generic import View
 
-from knotis.views.mixins import RenderTemplateFragmentMixin
+from knotis.views import FragmentView
 
 from knotis.contrib.identity.models import (
     IdentityTypes,
@@ -15,40 +17,36 @@ from models import (
 )
 
 
-class NavigationTopView(View, RenderTemplateFragmentMixin):
+class NavigationTopView(FragmentView):
     template_name = 'navigation/nav_top.html'
     view_name = 'nav_top'
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        context['navigation_items'] = NavigationItem.objects.filter(
-            menu_name='nav_top'
-        )
+    def process_context(self):
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'navigation_items': NavigationItem.objects.filter(
+                menu_name='nav_top'
+            )
+        })
 
-        return super(
-            NavigationTopView,
-            cls
-        ).render_template_fragment(context)
+        return local_context
 
 
-class NavigationSideView(View, RenderTemplateFragmentMixin):
+class NavigationSideView(FragmentView):
     template_name = 'navigation/nav_side.html'
     view_name = 'nav_side'
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        context['NAVIGATION_TYPES'] = NavigationTypes
-        context['navigation_items'] = NavigationItem.objects.filter_ordered(
-            menu_name='default'
-        )
+    def process_context(self):
+        request = self.request
+        local_context = copy.copy(self.context)
 
-        request = context.get('request')
+        local_context.update({
+            'NAVIGATION_TYPES': NavigationTypes,
+            'navigation_items': NavigationItem.objects.filter_ordered(
+                menu_name='default'
+            )
+        })
+
         if request:
             current_identity_id = request.session.get('current_identity_id')
             try:
@@ -60,8 +58,8 @@ class NavigationSideView(View, RenderTemplateFragmentMixin):
         else:
             current_identity = None
 
-        businesses = context.get('businesses')
-        establishments = context.get('establishments')
+        businesses = self.context.get('businesses')
+        establishments = self.context.get('establishments')
 
         if current_identity:
             if current_identity.identity_type == IdentityTypes.INDIVIDUAL:
@@ -69,7 +67,7 @@ class NavigationSideView(View, RenderTemplateFragmentMixin):
                     businesses = IdentityBusiness.objects.get_businesses(
                         current_identity
                     )
-                    context['businesses'] = businesses
+                    local_context['businesses'] = businesses
 
             if current_identity.identity_type != IdentityTypes.ESTABLISHMENT:
                 if not establishments:
@@ -78,9 +76,6 @@ class NavigationSideView(View, RenderTemplateFragmentMixin):
                             current_identity
                         )
                     )
-                    context['establishments'] = establishments
+                    local_context['establishments'] = establishments
 
-        return super(
-            NavigationSideView,
-            cls
-        ).render_template_fragment(context)
+        return local_context

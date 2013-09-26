@@ -1,8 +1,9 @@
 import copy
 
 from knotis.views import (
-    AJAXFragmentView
+    FragmentView
 )
+
 
 class WizardStep(object):
     def __init__(self, action, element_id, params={}, *args, **kwargs):
@@ -10,19 +11,15 @@ class WizardStep(object):
         self.element_id = element_id
         self.params = params
 
-class WizardView(AJAXFragmentView):
+
+class WizardView(FragmentView):
     template_name = 'knotis/wizard/wizard.html'
     view_name = 'wizard'
 
     steps = []
 
-    @classmethod
-    def render_template_fragment(
-            cls,
-            context):
-        #import ipdb;ipdb.set_trace()
+    def process_context(self):
+        local_context = copy.copy(self.context)
+        local_context.update({'steps': self.steps})
 
-        local_context = copy.copy(context)
-        local_context.update({'steps':cls.steps})
-
-        return super(WizardView, cls).render_template_fragment(local_context)
+        return local_context

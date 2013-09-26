@@ -1,8 +1,11 @@
-from django.conf import settings
-from django.shortcuts import render
-from django.views.generic import View
+import copy
 
-from knotis.views import FragmentView
+from django.conf import settings
+
+from knotis.views import (
+    FragmentView,
+    ContextView
+)
 
 from knotis.contrib.identity.models import IdentityIndividual
 from knotis.contrib.maps.views import GoogleMap
@@ -12,36 +15,12 @@ class HeaderView(FragmentView):
     template_name = 'knotis/layout/header.html'
     view_name = 'header'
 
-    def get(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        return render(
-            request,
-            self.template_name,
-            {}
-        )
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        return super(
-            HeaderView,
-            cls
-        ).render_template_fragment(context)
+class IndexView(ContextView):
+    template_name = 'knotis/layout/index.html'
 
-
-class IndexView(View):
-    def get(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
+    def process_context(self):
+        request = self.request
         styles = [
             'knotis/layout/css/global.css',
             'knotis/layout/css/header.css',
@@ -81,45 +60,22 @@ class IndexView(View):
         maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
         maps_scripts = maps.render_api_js()
 
-        context = {
+        local_context = copy.copy(self.context)
+        local_context.update({
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
             'maps_scripts': maps_scripts
-        }
+        })
 
-        return render(
-            request,
-            'knotis/layout/index.html',
-            context
-        )
+        return local_context
 
 
 class GridMixedView(FragmentView):
     template_name = 'knotis/layout/grid_mixed.html'
     view_name = 'grid_mixed'
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        return super(
-            GridMixedView,
-            cls
-        ).render_template_fragment(context)
-
 
 class GridSmallView(FragmentView):
     template_name = 'knotis/layout/grid_small.html'
     view_name = 'grid'
-
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        return super(
-            GridSmallView,
-            cls
-        ).render_template_fragment(context)

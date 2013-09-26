@@ -1,7 +1,13 @@
 from django.http import QueryDict
-from django.views.generic import View
+from django.views.generic import (
+    View,
+    TemplateView
+)
 from django.conf.urls.defaults import url
-from django.template import RequestContext
+from django.template import (
+    Context,
+    RequestContext
+)
 
 from mixins import (
     RenderTemplateFragmentMixin,
@@ -9,11 +15,58 @@ from mixins import (
 )
 
 
+class ContextView(TemplateView):
+    '''
+    Slight modification to the behavior of TemplateView.
+    The dispatch method now creates a context upon all requests
+    and copys the kwargs dict to the new request context.
+
+    get_context_data now just returns self.context
+    '''
+    def dispatch(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        self.context = RequestContext(request)
+        self.context.update(kwargs)
+
+        return super(ContextView, self).dispatch(
+            request,
+            *args,
+            **kwargs
+        )
+
+    def process_context(self):
+        '''
+        Override this method to make further modifications
+        to the context on a per view basis.
+        '''
+        return self.context
+
+    def get_context_data(
+        self,
+        **kwargs
+    ):
+        return self.process_context()
+
+
 class FragmentView(
-    View,
+    ContextView,
     RenderTemplateFragmentMixin
 ):
-    pass
+    def render_template_fragment(
+        self,
+        context
+    ):
+        self.context = context
+        self.request = context.get('request')
+
+        processed_context = self.process_context()
+        return super(FragmentView, self).render_template_fragment(
+            processed_context
+        )
 
 
 class AJAXView(
@@ -24,31 +77,10 @@ class AJAXView(
 
 
 class AJAXFragmentView(
-    View,
-    RenderTemplateFragmentMixin,
+    FragmentView,
     GenerateAJAXResponseMixin
 ):
-    def get(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        return self.render_ajax_fragment(request, *args, **kwargs)
-
-    @classmethod
-    def render_ajax_fragment(
-        cls,
-        request,
-        *args,
-        **kwargs
-    ):
-        context = RequestContext(request)
-        context['args'] = args
-        context['kwargs'] = kwargs
-        return cls.generate_response({
-            'html': cls.render_template_fragment(context)
-        })
+    pass
 
 
 class ApiView(AJAXView):
