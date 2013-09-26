@@ -50,8 +50,9 @@ class EstablishmentProfileGrid(GridSmallView):
 
         is_manager = self.context.get('is_manager')
         if is_manager:
+            offer_create_tile = OfferCreateTile()
             tiles.append(
-                OfferCreateTile.render_template_fragment(Context({
+                offer_create_tile.render_template_fragment(Context({
                     'create_type': 'Promotion',
                     'create_action': '/offer/create/',
                     'action_type': 'modal'
@@ -60,11 +61,12 @@ class EstablishmentProfileGrid(GridSmallView):
 
         if establishment_offers:
             for offer in establishment_offers:
+                offer_tile = OfferTile()
                 offer_context = Context({
                     'offer': offer
                 })
                 tiles.append(
-                    OfferTile.render_template_fragment(offer_context)
+                    offer_tile.render_template_fragment(offer_context)
                 )
 
         local_context = copy.copy(self.context)

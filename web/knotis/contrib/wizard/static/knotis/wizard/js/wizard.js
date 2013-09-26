@@ -47,19 +47,23 @@
             _step.action,
             get_params,
             function (data, status, jqxhr) {
-                var _container = $('div#' + _step.container);
-                _container.html(data.html);
-                _container.find('form').ajaxform({
-                    done: function(data, status, jqxhr) {
-                        if (!data.errors) {
-                            step(
-                                index + 1,
-                                data
-                            );
+                if ('success' == status) {
+                    var _container = $('div#' + _step.container);
+                    _container.html(data);
+                    _container.find('form').ajaxform({
+                        done: function(data, status, jqxhr) {
+                            if (!data.errors) {
+                                step(
+                                    index + 1,
+                                    data
+                                );
+                            }
                         }
-                    }
-                });
-                $carousel.carousel(index);
+                    });
+                    $carousel.carousel(index);
+                } else {
+                    // error handling 
+                }
             }
         );
     };
