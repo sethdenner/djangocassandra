@@ -23,27 +23,15 @@ class ContextView(TemplateView):
 
     get_context_data now just returns self.context
     '''
-    def __init__(
-        self,
-        context=Context(),
-        *args,
-        **kwargs
-    ):
-        super(ContextView, self).__init__(
-            *args,
-            **kwargs
-        )
-
-        self.context = context
-
     def dispatch(
         self,
         request,
         *args,
         **kwargs
     ):
-        self.context.update(RequestContext(request))
+        self.context = RequestContext(request)
         self.context.update(kwargs)
+
         return super(ContextView, self).dispatch(
             request,
             *args,
@@ -72,6 +60,9 @@ class FragmentView(
         self,
         context
     ):
+        self.context = context
+        self.request = context.get('request')
+
         processed_context = self.process_context()
         return super(FragmentView, self).render_template_fragment(
             processed_context

@@ -16,12 +16,11 @@ class RenderTemplateFragmentMixin(object):
     template_name = None
     view_name = None
 
-    @classmethod
     def render_template_fragment(
-        cls,
+        self,
         context
     ):
-        template = get_template(cls.template_name)
+        template = get_template(self.template_name)
         return template.render(context)
 
     @classmethod
