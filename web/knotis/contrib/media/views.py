@@ -196,7 +196,6 @@ def _get(request):
 
 def _upload(request):
     image_source = request.raw_post_data
-    object_id = request.GET.get('id')
     name = request.GET.get('qqfile')
     response = {}
     try:
@@ -205,7 +204,6 @@ def _upload(request):
         )
         image = Image(
             owner=identity,
-            related_object_id=object_id
         )
         image.image.save(
             '/'.join([

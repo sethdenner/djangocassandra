@@ -37,6 +37,7 @@
             always: function(xhr, status) {},
             aspect: null,
             image_id: null,
+            related_object_id: null,
             image_max_width: null,
             image_max_height: null,
             modal_selector: '#modal-box'
@@ -46,6 +47,8 @@
             href = [
                 _options.crop_form_url,
                 image_id,
+                '/',
+                _options.related_object_id,
                 '/'
             ].join('');
             if (_options.image_max_width && _options.image_max_height) {
@@ -67,8 +70,6 @@
                         $content = $('#sickle_content');
                         $content.find('#id_crop_left').val(coordinates.x);
                         $content.find('#id_crop_top').val(coordinates.y);
-                        $content.find('#id_crop_bottom').val(coordinates.y2);
-                        $content.find('#id_crop_right').val(coordinates.x2);
                         $content.find('#id_crop_width').val(coordinates.w);
                         $content.find('#id_crop_height').val(coordinates.h);
                     }

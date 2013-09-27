@@ -10,7 +10,7 @@
         var identity_id = $('div#id-identity-id').attr('data-identity-id')
 
         $.get(
-            '/image/upload/?object_id=' + encodeURIComponent(identity_id),
+            '/image/upload/',
             {},
             function(
                 data,
@@ -21,7 +21,6 @@
                 $('#file-uploader').sickle({
                     do_upload: true,
                     params: {
-                        id: identity_id,
                         type: 'image'
                     },
                     aspect: 1,
@@ -34,6 +33,7 @@
                             // Invalid Status
                         }
                     },
+                    related_object_id: identity_id
 
                 });
 
