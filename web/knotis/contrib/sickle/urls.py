@@ -8,6 +8,8 @@ urlpatterns = patterns(
         r''.join([
             'image/crop/(?P<image_id>',
             REGEX_UUID,
+            ')/(?P<related_object_id>',
+            REGEX_UUID,
             ')/((?P<image_max_width>[\d]+)/(?P<image_max_height>[\d]+)/)?$'
         ]),
         'crop'

@@ -242,7 +242,7 @@ class Identity(QuickModel):
     description = QuickTextField(
         verbose_name=_('Describe the Identity')
     )
-    primary_image = QuickForeignKey('media.Image')
+    primary_image = QuickForeignKey('media.ImageInstance')
 
     objects = IdentityManager()
 

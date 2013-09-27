@@ -148,11 +148,8 @@ class EstablishmentProfileView(ContextView):
             'knotis/identity/js/profile.js'
         ]
 
-        images_establishment = Image.objects.filter(
-            related_object_id=establishment.id
-        )
-        if images_establishment:
-            profile_logo = images_establishment[0]
+        if establishment.primary_image:
+            profile_logo = establishment.primary_image
 
         else:
             profile_logo = None
