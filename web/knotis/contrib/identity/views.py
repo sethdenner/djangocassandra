@@ -51,7 +51,70 @@ class BusinessesView(ContextView):
     template_name = 'knotis/identity/businesses_view.html'
 
     def process_context(self):
-        return self.context
+        styles = [
+            'knotis/layout/css/global.css',
+            'knotis/layout/css/header.css',
+            'knotis/layout/css/grid.css',
+            'knotis/layout/css/tile.css',
+            'navigation/css/nav_top.css',
+            'navigation/css/nav_side.css',
+            'knotis/identity/css/profile.css',
+            'styles/default/fileuploader.css'
+        ]
+
+        pre_scripts = []
+
+        post_scripts = [
+            'knotis/layout/js/layout.js',
+            'knotis/layout/js/forms.js',
+            'knotis/layout/js/header.js',
+            'knotis/layout/js/create.js',
+            'navigation/js/navigation.js',
+            'jcrop/js/jquery.Jcrop.js',
+            'scripts/fileuploader.js',
+            'scripts/jquery.colorbox.js',
+            'scripts/jquery.sickle.js',
+            'knotis/identity/js/profile.js'
+        ]
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'styles': styles,
+            'pre_scripts': pre_scripts,
+            'post_scripts': post_scripts,
+        })
+        return local_context
+
+
+class BusinessesGrid(GridSmallView):
+    view_name = 'businesses_grid'
+
+    def process_context(self):
+        establishments = IdentityEstablishment.objects.all()
+
+        tiles = []
+
+        if establishments:
+            for establishment in establishments:
+                establishment_tile = IdentityTile()
+                establishment_context = Context({
+                    'identity': establishment
+                })
+                tiles.append(
+                    establishment_tile.render_template_fragment(
+                        establishment_context
+                    )
+                )
+
+        local_context = copy.copy(self.context)
+        local_context.update({'tiles': tiles})
+
+        return local_context
+
+
+class IdentityTile(FragmentView):
+    template_name = 'knotis/identity/tile.html'
+    view_name = 'identity_tile'
 
 
 class EstablishmentProfileGrid(GridSmallView):
@@ -162,8 +225,8 @@ class EstablishmentProfileView(ContextView):
             'knotis/identity/js/profile.js'
         ]
 
-        if establishment.primary_image:
-            profile_logo = establishment.primary_image
+        if establishment.badge_image:
+            profile_logo = establishment.badge_image
 
         else:
             profile_logo = None

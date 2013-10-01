@@ -178,15 +178,15 @@ def crop(
                 pass
 
             if related_object:
-                if not related_object.primary_image:
-                    related_object.primary_image = saved_instance
+                if not related_object.badge_image:
+                    related_object.badge_image = saved_instance
 
                     try:
                         related_object.save()
 
                     except:
                         logger.exception(
-                            'failed to save instance as primary image.'
+                            'failed to save instance as badge image.'
                         )
 
             return HttpResponse(
