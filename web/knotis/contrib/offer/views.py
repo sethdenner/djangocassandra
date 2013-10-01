@@ -62,6 +62,20 @@ from knotis.contrib.wizard.views import(
 )
 
 
+class OffersView(ContextView):
+    template_name = 'knotis/offer/offers_view.html'
+
+    def process_context(self):
+        return self.context
+
+
+class OfferPurchaseView(ContextView):
+    template_name = 'knotis/offer/offer_purchase_view.html'
+
+    def process_context(self):
+        return self.context
+
+
 class OfferTile(FragmentView):
     template_name = 'knotis/offer/tile.html'
     view_name = 'offer_tile'
