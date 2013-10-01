@@ -6,17 +6,31 @@ from django.conf.urls.defaults import (
 from knotis.utils.regex import REGEX_UUID
 
 from views import (
+    OffersView,
     OfferDetailView,
     OfferEditView,
     OfferEditProductFormView,
     OfferEditDetailsFormView,
     OfferEditLocationFormView,
     OfferEditPublishFormView,
-    OfferEditSummaryView
+    OfferEditSummaryView,
+    OfferPurchaseView,
 )
 
 urlpatterns = patterns(
     'knotis.contrib.offer.views',
+    url(
+        r's/$',
+        OffersView.as_view()
+    ),
+    url(
+        r''.join([
+            '/(?P<offer_id>',
+            REGEX_UUID,
+            ')/buy/$'
+        ]),
+        OfferPurchaseView.as_view()
+    ),
     url(
         r''.join([
             '/(?P<offer_id>',

@@ -40,6 +40,20 @@ from forms import (
 )
 
 
+class IdentityView(ContextView):
+    template_name = 'knotis/identity/identity_view.html'
+
+    def process_context(self):
+        return self.context
+
+
+class BusinessesView(ContextView):
+    template_name = 'knotis/identity/businesses_view.html'
+
+    def process_context(self):
+        return self.context
+
+
 class EstablishmentProfileGrid(GridSmallView):
     view_name = 'establishment_profile_grid'
 
