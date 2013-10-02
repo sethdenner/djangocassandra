@@ -35,10 +35,7 @@ from knotis.contrib.location.models import (
     LocationItem
 )
 
-from knotis.contrib.identity.models import (
-    Identity,
-    IdentityEstablishment
-)
+from knotis.contrib.identity.models import Identity
 
 from knotis.contrib.endpoint.models import (
     Endpoint,
@@ -46,6 +43,7 @@ from knotis.contrib.endpoint.models import (
 )
 
 from knotis.views import (
+    ContextView,
     FragmentView,
     AJAXFragmentView
 )
@@ -58,10 +56,43 @@ from forms import (
     OfferFinishForm
 )
 
+from knotis.contrib.wizard.views import(
+    WizardView,
+    WizardStep
+)
+
+
+class OffersView(ContextView):
+    template_name = 'knotis/offer/offers_view.html'
+
+    def process_context(self):
+        return self.context
+
+
+class OfferPurchaseView(ContextView):
+    template_name = 'knotis/offer/offer_purchase_view.html'
+
+    def process_context(self):
+        return self.context
+
 
 class OfferTile(FragmentView):
     template_name = 'knotis/offer/tile.html'
     view_name = 'offer_tile'
+    offer_stats = 'osdfisdjf'
+
+    def process_context(self):
+        offer = self.context.get('offer', None)
+
+        if not offer:
+            return ''
+
+        # TODO: CALCULATE STATS.
+        self.context.update({
+            'stats': 'Stats',
+        })
+
+        return self.context
 
 
 class OfferCreateTile(FragmentView):
@@ -73,35 +104,10 @@ class OfferEditHeaderView(FragmentView):
     template_name = 'knotis/offer/edit_header.html'
     view_name = 'offer_edit_header'
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        return super(
-            OfferEditHeaderView,
-            cls
-        ).render_template_fragment(context)
 
-
-class OfferEditView(FragmentView):
+class OfferEditView(ContextView):
     template_name = 'knotis/offer/edit.html'
     view_name = 'offer_edit'
-
-    def get(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        template_parameters = {
-        }
-
-        return render(
-            request,
-            self.template_name,
-            template_parameters
-        )
 
 
 class OfferEditProductFormView(AJAXFragmentView):
@@ -233,18 +239,14 @@ class OfferEditProductFormView(AJAXFragmentView):
             'offer_id': offer.id
         })
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        request = context.get('request')
+    def process_context(self):
+        request = self.context.get('request')
         current_identity = get_object_or_404(
             Identity,
             pk=request.session['current_identity_id']
         )
 
-        local_context = Context(context)
+        local_context = copy.copy(self.context)
         local_context.update({
             'form': OfferProductPriceForm(
                 owners=Identity.objects.filter(pk=current_identity.pk)
@@ -253,10 +255,7 @@ class OfferEditProductFormView(AJAXFragmentView):
             'current_identity': current_identity
         })
 
-        return super(
-            OfferEditProductFormView,
-            cls
-        ).render_template_fragment(local_context)
+        return local_context
 
 
 class OfferEditDetailsFormView(AJAXFragmentView):
@@ -303,28 +302,21 @@ class OfferEditDetailsFormView(AJAXFragmentView):
             'offer_id': offer.id
         })
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
+    def process_context(self):
         offer = None
 
-        request = context.get('request')
+        request = self.request
         offer_id = request.GET.get('id')
         offer = get_object_or_404(Offer, pk=offer_id)
 
-        local_context = Context(context)
+        local_context = copy.copy(self.context)
         local_context.update({
             'form': OfferDetailsForm(
                 instance=offer
             ),
         })
 
-        return super(
-            OfferEditDetailsFormView,
-            cls
-        ).render_template_fragment(local_context)
+        return local_context
 
 
 class OfferEditLocationFormView(AJAXFragmentView):
@@ -400,12 +392,8 @@ class OfferEditLocationFormView(AJAXFragmentView):
             'offer_id': offer.id
         })
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        request = context.get('request')
+    def process_context(self):
+        request = self.context.get('request')
         current_identity_id = request.session.get('current_identity_id')
         current_identity = Identity.objects.get(id=current_identity_id)
 
@@ -426,7 +414,7 @@ class OfferEditLocationFormView(AJAXFragmentView):
             'pk__in': location_ids
         })
 
-        local_context = Context(context)
+        local_context = copy.copy(self.context)
         local_context.update({
             'form': OfferPhotoLocationForm(
                 offer=offer,
@@ -435,10 +423,7 @@ class OfferEditLocationFormView(AJAXFragmentView):
             )
         })
 
-        return super(
-            OfferEditLocationFormView,
-            cls
-        ).render_template_fragment(local_context)
+        return local_context
 
 
 class OfferEditPublishFormView(AJAXFragmentView):
@@ -513,12 +498,8 @@ class OfferEditPublishFormView(AJAXFragmentView):
             'offer_id': offer.id
         })
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        request = context.get('request')
+    def process_context(self):
+        request = self.context.get('request')
         current_identity_id = request.session.get('current_identity_id')
         current_identity = Identity.objects.get(id=current_identity_id)
 
@@ -529,7 +510,7 @@ class OfferEditPublishFormView(AJAXFragmentView):
             'identity': current_identity
         })
 
-        local_context = copy.copy(context)
+        local_context = copy.copy(self.context)
         local_context.update({
             'form': OfferPublicationForm(
                 offer=offer,
@@ -537,10 +518,7 @@ class OfferEditPublishFormView(AJAXFragmentView):
             )
         })
 
-        return super(
-            OfferEditPublishFormView,
-            cls
-        ).render_template_fragment(local_context)
+        return local_context
 
 
 class OfferEditSummaryView(AJAXFragmentView):
@@ -588,12 +566,8 @@ class OfferEditSummaryView(AJAXFragmentView):
             'offer_id': offer.id
         })
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        request = context.get('request')
+    def process_context(self):
+        request = self.context.get('request')
 
         offer_id = request.GET.get('id')
         offer = get_object_or_404(Offer, id=offer_id)
@@ -623,7 +597,7 @@ class OfferEditSummaryView(AJAXFragmentView):
         savings_low = revenue_total * .3
         savings_high = revenue_total * .5
 
-        local_context = copy.copy(context)
+        local_context = copy.copy(self.context)
         local_context.update({
             'summary_revenue_customer': ''.join([
                 '$',
@@ -646,22 +620,66 @@ class OfferEditSummaryView(AJAXFragmentView):
             )
         })
 
-        return super(
-            OfferEditSummaryView,
-            cls
-        ).render_template_fragment(local_context)
+        return local_context
 
 
 class OfferGridSmall(FragmentView):
     template_name = 'knotis/layout/grid_small.html'
     view_name = 'offer_small'
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        return super(
-            OfferGridSmall,
-            cls
-        ).render_template_fragment(context)
+
+class OfferDetailView(AJAXFragmentView):
+    template_name = 'knotis/offer/detail.html'
+    view_name = 'offer_detail'
+
+    def process_context(self):
+        offer_id = self.context.get('kwargs', {}).get('offer_id')
+        #request.GET.get('offer_id')
+        offer = get_object_or_404(Offer, id=offer_id)
+
+        try:
+            offer_items = OfferItem.objects.filter(offer=offer)
+
+        except Exception:
+            logger.exception('failed to get offer items')
+            offer_items = None
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'offer': offer,
+            'offer_items': offer_items
+        })
+
+        return local_context
+
+
+class OfferCreateWizard(WizardView):
+    view_name = 'offer_create_wizard'
+
+    steps = [
+        WizardStep(
+            '/offer/create/product/',
+            'offer-edit-product-form',
+            {}
+        ),
+        WizardStep(
+            '/offer/create/details/',
+            'offer-edit-details-form',
+            {'id': 'offer_id'}
+        ),
+        WizardStep(
+            '/offer/create/location/',
+            'offer-edit-location-form',
+            {'id': 'offer_id'}
+        ),
+        WizardStep(
+            '/offer/create/publish/',
+            'offer-edit-publish-form',
+            {'id': 'offer_id'}
+        ),
+        WizardStep(
+            '/offer/create/summary/',
+            'offer-edit-summary',
+            {'id': 'offer_id'}
+        ),
+    ]

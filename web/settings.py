@@ -11,7 +11,7 @@ EMAIL_COMPLETED_OFFERS_INTERVAL_DAYS = 7
 
 PASSWORD_RESET_EXPIRE_MINUTES = 10080
 
-FORMAT_MODULE_PATH = 'web.formats'
+FORMAT_MODULE_PATH = 'formats'
 
 BUSINESS_NAME_BLACKLIST = (
     'facebook',
@@ -242,7 +242,8 @@ INSTALLED_APPS = (
     'knotis.contrib.media',
     'knotis.contrib.api',
     'knotis.contrib.maps',
-    'knotis.contrib.location'
+    'knotis.contrib.location',
+    'knotis.contrib.wizard'
 )
 
 LOGIN_REDIRECT_URL = '/'
@@ -275,7 +276,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
-            'filename': '/tmp/web.log',
+            'filename': '/srv/knotis/logs/django.log',
             'maxBytes': 1048576,
             'backupCount': 10
         }
@@ -285,7 +286,8 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'josh'
+ENVIRONMENT_NAME = 'dev'
+
 
 # You can key the configurations off of anything - I use project path.
 configs = {

@@ -110,7 +110,7 @@ class AuthUserApi(ApiView):
         *args,
         **kwargs
     ):
-        form = SignUpForm(request.POST)
+        form = SignUpForm(data=request.POST)
 
         errors = {}
 

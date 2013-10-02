@@ -1,7 +1,4 @@
-from django.template import (
-    RequestContext,
-    Context
-)
+import copy
 
 from knotis.contrib.layout.views import (
     ItemSelectView,
@@ -14,17 +11,10 @@ class LocationSelectView(ItemSelectView):
     view_name = 'location_select'
     field_name = 'location_id'
 
-    @classmethod
-    def render_template_fragment(
-        cls,
-        context
-    ):
-        items = context.get('location_select_items')
+    def process_context(self):
+        items = self.context.get('location_select_items')
         if not items:
-            return super(
-                LocationSelectView,
-                cls
-            ).render_template_fragment(Context())
+            return self.context
 
         rows = [
             ItemSelectRow(
@@ -40,8 +30,7 @@ class LocationSelectView(ItemSelectView):
             )
         ]
 
-        request = context.get('request')
-        local_context = RequestContext(request)
+        local_context = copy.copy(self.context)
         local_context.update({
             'rows': rows,
             'actions': actions,
@@ -50,7 +39,4 @@ class LocationSelectView(ItemSelectView):
             'render_images': False
         })
 
-        return super(
-            LocationSelectView,
-            cls
-        ).render_template_fragment(local_context)
+        return local_context

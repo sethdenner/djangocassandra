@@ -41,6 +41,14 @@ urlpatterns = patterns(
         include('knotis.contrib.transaction.urls')
     ),
     url(
+        r'^my/',
+        include('knotis.contrib.merchant.urls')
+    ),
+    url(
+        r'^my/',
+        include('knotis.contrib.consumer.urls')
+    ),
+    url(
         r'^offer',
         include('knotis.contrib.offer.urls')
     ),

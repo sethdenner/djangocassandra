@@ -1,14 +1,16 @@
 div.grid-tile {
     border: 1px solid black;
+    cursor: pointer;
 }
 
 div.grid-tile.small-tile {
     width: 180px;
     height: 256px;
+    display: inline-block;
+    text-align: center;
 }
 
 div.grid-tile.small-tile div.tile-create {
-    text-align: center;
     color: #8B8A8A;
 }
 
@@ -27,5 +29,37 @@ div.grid-tile.small-tile div.tile-create p.tile-create-text {
 div.grid-tile.small-tile div.tile-create div.tile-footer {
     background-color: #2076B8;
     color: #FFFFFF;
+}
+
+div.grid-tile.small-tile div.tile-header img.tile-image {
+    height: 120px;
+    width: 100%;
+}
+
+div.grid-tile.small-tile div.tile-header {
+    height: 160px;
+}
+
+div.grid-tile.small-tile div.tile-header img.tile-badge {
+    position: relative;
+    top: -37px;
+    -webkit-border-radius: 500px;
+    -moz-border-radius: 500px;
+    border-radius: 500px;
+    border: 1px solid #D8D9D8;
+    width: 70px;
+    height: 70px;
+    background: #FFFFFF;
+}
+
+div.grid-tile.small-tile div.tile-body {
+    height: 75px;
+}
+
+div.grid-tile.small-tile div.tile-body p.tile-title {
+    font-size: 1.25em;
+}
+
+div.grid-tile.small-tile div.tile-footer {
     border-top: 1px solid #D8D9D8;
 }
