@@ -1,3 +1,5 @@
+from django.views.decorators.csrf import csrf_exempt
+
 from django.http import QueryDict
 from django.views.generic import (
     View,
@@ -88,6 +90,7 @@ class ApiView(AJAXView):
     api_url = None
     api_version = 'v1'
 
+    @csrf_exempt
     def dispatch(
         self,
         request,
