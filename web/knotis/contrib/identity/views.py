@@ -116,6 +116,30 @@ class IdentityTile(FragmentView):
     template_name = 'knotis/identity/tile.html'
     view_name = 'identity_tile'
 
+    def process_context(self):
+
+        shown_identity = IdentityEstablishment.objects.get(pk=self.context.get('identity_id'))
+        if request.user.is_authenticated():
+            current_identity_id = request.session.get('current_identity_id')
+            current_identity = Identity.objects.get(
+                pk=current_identity_id
+            )
+        else:
+            current_identity = None
+
+        pre_scripts = [
+            'knotis/identity/js/follow.js'
+        ]
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'current_identity': current_identity,
+            'shown_identity': shown_identity,
+            'pre_scripts': pre_scripts
+        })
+
+        return local_context
+
 
 class EstablishmentProfileGrid(GridSmallView):
     view_name = 'establishment_profile_grid'

@@ -1,20 +1,30 @@
 {% load thumbnail %}
-<div class="grid-tile small-tile" >
-  <div class="tile-header">
-    {% thumbnail identity.header_image.image.image '120x120' crop=identity.header_image.crop as image %}
-    <img class="tile-image" alt="{{ identity.name }}" src="{{ image.url }}" />
-    {% empty %}
-    <img class="tile-image"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
-    {% endthumbnail %}
-    {% thumbnail identity.badge_image.image.image '60x60' crop=identity.badge_image.crop as image %}
-    <img class="tile-badge" src="{{ image.url }}" />
-    {% empty %}
-    <img class="tile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
-    {% endthumbnail %}
-  </div>
+<div class="grid-tile small-tile">
+  <input type="hidden" class="tile-user" value="{{ current_identity.id }}" />
+  <a href="/id/{{ shown_identity.id }}">
+    <div class="tile-header">
+      {% thumbnail shown_identity.header_image.image.image bo'120x120' crop=shown_identity.header_image.crop as image %}
+      <img class="tile-image" alt="{{ shown_identity.name }}" src="{{ image.url }}" />
+      {% empty %}
+      <img class="tile-image"  alt="{{ shown_identity.name }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
+      {% endthumbnail %}
+      
+      {% thumbnail shown_identity.badge_image.image.image '60x60' crop=shown_identity.badge_image.crop as image %}
+      <img class="tile-badge" src="{{ image.url }}" />
+      {% empty %}
+      <img class="tile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
+      {% endthumbnail %}
+    </div>
+  </a>
+  
   <div class="tile-body">
-    <p class="tile-title">{{ identity.name }}</p>
-    <button class="btn btn-primary action">Follow</button>
+    <p class="tile-title">{{ shown_identity.name }}</p>
+    <button class="btn btn-primary action" onclick="follow({{ current_identity_id }}, {{ shown_identity.id }})">Follow</button>
   </div>
-  <div class="tile-footer">{% if stats %}{{ stats }}{% else %}McLean???{% endif %}</div>
+
+  <a href="/id/{{shown_identity.id}}">
+    <div class="tile-footer">
+      {% if stats %}{{ stats }}{% else %}McLean???{% endif %}
+    </div>
+  </a>
 </div>
