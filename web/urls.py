@@ -18,6 +18,10 @@ urlpatterns = patterns(
     ),
     url(
         r'',
+        include('knotis.contrib.relation.urls')
+    ),
+    url(
+        r'',
         include('knotis.contrib.media.urls')
     ),
     url(

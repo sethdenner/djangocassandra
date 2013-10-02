@@ -176,6 +176,7 @@ class Relation(QuickModel):
         choices=RelationTypes.CHOICES,
         default=RelationTypes.UNDEFINED,
         max_length=25,
+        db_index=True
     )
     subject_content_type = QuickForeignKey(
         ContentType,
@@ -196,7 +197,7 @@ class Relation(QuickModel):
         'related_object_id'
     )
     description = QuickTextField(
-        required=True
+        required=False
     )
 
     objects = RelationManager()
