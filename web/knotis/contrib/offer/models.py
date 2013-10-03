@@ -590,10 +590,13 @@ class OfferPublish(Publish):
         self,
         establishment
     ):
+        offer = self.subject
         OfferAvailability.objects.create(
-            offer=self.subject,
+            offer=offer,
             identity=establishment
         )
+        offer.active = True
+        offer.save()
 
     def publish(self):
         if self.endpoint.endpoint_type == EndpointTypes.IDENTITY:

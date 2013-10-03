@@ -1,17 +1,10 @@
 import copy
 
-from django.shortcuts import (
-    render,
-    get_object_or_404
-)
-from django.core.exceptions import (
-    ValidationError,
-    PermissionDenied
-)
+from django.shortcuts import get_object_or_404
+from django.core.exceptions import PermissionDenied
 from django.http import (
     HttpResponseServerError
 )
-from django.template import Context
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
@@ -35,7 +28,11 @@ from knotis.contrib.location.models import (
     LocationItem
 )
 
-from knotis.contrib.identity.models import Identity
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityBusiness,
+    IdentityTypes
+)
 
 from knotis.contrib.endpoint.models import (
     Endpoint,
@@ -125,9 +122,20 @@ class OfferEditProductFormView(AJAXFragmentView):
             pk=request.session.get('current_identity_id')
         )
 
+        if IdentityTypes.ESTABLISHMENT == current_identity.identity_type:
+            owner = IdentityBusiness.objects.get_establishment_parent(
+                current_identity
+            )
+
+        elif IdentityTypes.BUSINESS == current_identity.identity_type:
+            owner = current_identity
+
+        else:
+            raise PermissionDenied()
+
         form = OfferProductPriceForm(
             data=request.POST,
-            owners=Identity.objects.filter(pk=current_identity.pk)
+            owners=Identity.objects.filter(pk=owner.pk)
         )
 
         if not form.is_valid():
@@ -246,10 +254,21 @@ class OfferEditProductFormView(AJAXFragmentView):
             pk=request.session['current_identity_id']
         )
 
+        if IdentityTypes.ESTABLISHMENT == current_identity.identity_type:
+            owner = IdentityBusiness.objects.get_establishment_parent(
+                current_identity
+            )
+
+        elif IdentityTypes.BUSINESS == current_identity.identity_type:
+            owner = current_identity
+
+        else:
+            raise PermissionDenied()
+
         local_context = copy.copy(self.context)
         local_context.update({
             'form': OfferProductPriceForm(
-                owners=Identity.objects.filter(pk=current_identity.pk)
+                owners=Identity.objects.filter(pk=owner.pk)
             ),
             'ProductTypes': ProductTypes,
             'current_identity': current_identity

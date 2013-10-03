@@ -5,7 +5,8 @@ logger = logging.getLogger(__name__)
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-
+from django.http import Http404
+from django.template import Context
 
 from knotis.views import (
     ContextView
@@ -48,16 +49,17 @@ class MyOffersGrid(GridSmallView):
 
         offer_filter = self.context.get('offer_filter')
         offer_filter_dict = {}
-        if 'active' == offer_filter:
-            offer_filter_dict['active'] = True
-            offer_filter_dict['published'] = True
-
-        elif 'pending':
-            offer_filter_dict['active'] = True
+        if 'pending' == offer_filter:
             offer_filter_dict['published'] = False
 
-        elif 'completed':
+        elif 'completed' == offer_filter:
             offer_filter_dict['completed'] = True
+
+        elif 'active' == offer_filter or not offer_filter:
+            offer_filter_dict['published'] = True
+
+        else:
+            raise Http404()
 
         for i in managed_identities:
             if i.identity_type != IdentityTypes.BUSINESS:
@@ -82,9 +84,9 @@ class MyOffersGrid(GridSmallView):
         for key, value in offers_by_business.iteritems():
             for offer in value:
                 tile = OfferTile()
-                tiles.append(tile.render_template_fragment({
+                tiles.append(tile.render_template_fragment(Context({
                     'offer': offer
-                }))
+                })))
 
         local_context = copy.copy(self.context)
         local_context['tiles'] = tiles
