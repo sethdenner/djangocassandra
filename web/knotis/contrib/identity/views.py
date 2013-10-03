@@ -74,7 +74,8 @@ class BusinessesView(ContextView):
             'scripts/fileuploader.js',
             'scripts/jquery.colorbox.js',
             'scripts/jquery.sickle.js',
-            'knotis/identity/js/profile.js'
+            'knotis/identity/js/profile.js',
+            'knotis/identity/js/business-tile.js'
         ]
 
         local_context = copy.copy(self.context)
@@ -117,7 +118,8 @@ class IdentityTile(FragmentView):
     view_name = 'identity_tile'
 
     def process_context(self):
-
+        
+        request = self.context.get('request')
         shown_identity = IdentityEstablishment.objects.get(pk=self.context.get('identity_id'))
         if request.user.is_authenticated():
             current_identity_id = request.session.get('current_identity_id')
@@ -127,15 +129,10 @@ class IdentityTile(FragmentView):
         else:
             current_identity = None
 
-        pre_scripts = [
-            'knotis/identity/js/follow.js'
-        ]
-
         local_context = copy.copy(self.context)
         local_context.update({
             'current_identity': current_identity,
-            'shown_identity': shown_identity,
-            'pre_scripts': pre_scripts
+            'identity': shown_identity
         })
 
         return local_context

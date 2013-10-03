@@ -7,6 +7,31 @@ from models import Relation
 
 from forms import RelationForm
 
+class FollowApi(ApiView):
+    model = Relation
+    api_url = 'follow'
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+
+        errors = {}
+
+        if request.user.is_authenticated():
+            subject_id = request.session.get('current_identity_id')
+            subject = Identity.objects.get(pk=subject_id)
+
+            related_id = request.GET.get('related_id')
+            related = Identity.objects.get(pk=related_id)
+
+            Relation.objects.create_following(
+                subject,
+                related
+            )
+
 
 class RelationApi(ApiView):
     model = Relation
