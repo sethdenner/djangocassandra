@@ -243,7 +243,9 @@ INSTALLED_APPS = (
     'knotis.contrib.api',
     'knotis.contrib.maps',
     'knotis.contrib.location',
-    'knotis.contrib.wizard'
+    'knotis.contrib.wizard',
+    'knotis.contrib.merchant',
+    'knotis.contrib.consumer'
 )
 
 LOGIN_REDIRECT_URL = '/'

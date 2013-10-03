@@ -59,7 +59,8 @@ class GeocompleteForm(LocationForm):
                 StrictButton('Search'),
                 id='address-input',
                 placeholder='Enter An Address',
-                data_geo='address_formatted'
+                data_geo='address_formatted',
+                css_class='geo-input'
             ),
             Field(
                 'latitude',

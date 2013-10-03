@@ -20,7 +20,7 @@ from views import (
 urlpatterns = patterns(
     'knotis.contrib.offer.views',
     url(
-        r's/$',
+        r'^s/$',
         OffersView.as_view()
     ),
     url(

@@ -46,6 +46,7 @@ class IdentityTypes:
         (ESTABLISHMENT, 'Establishment'),
     )
 
+
 class IdentityManager(QuickManager):
     def get_available(
         self,

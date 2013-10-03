@@ -22,7 +22,7 @@ urlpatterns = patterns(
         OfferRedemptionView.as_view()
     ),
     url(
-        r'^offers(/(?P<filter>\w*))?/$',
+        r'^offers(/(?P<offer_filter>\w*))?/$',
         MyOffersView.as_view()
     ),
     url(
