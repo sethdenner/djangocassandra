@@ -22,7 +22,10 @@ from knotis.forms import (
 from knotis.contrib.identity.models import Identity
 from knotis.contrib.product.models import ProductTypes
 from knotis.contrib.location.models import Location
-from knotis.contrib.media.models import Image
+from knotis.contrib.media.models import (
+    Image,
+    ImageInstance
+)
 from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
@@ -290,6 +293,18 @@ class OfferPhotoLocationForm(TemplateForm):
             locations_widget = self.fields['locations'].widget
             locations_widget.rows = rows
             locations_widget.actions = actions
+
+    def clean_photo(self):
+        offer = self.cleaned_data.get('offer')
+        photo = self.cleaned_data.get('photo')
+
+        instance = ImageInstance.objects.create(
+            owner=offer.owner,
+            image=photo,
+            related_object_id=offer.id
+        )
+
+        return instance
 
 
 class OfferPublicationForm(TemplateForm):

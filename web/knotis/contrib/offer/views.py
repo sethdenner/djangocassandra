@@ -85,7 +85,7 @@ class OfferTile(FragmentView):
         offer = self.context.get('offer', None)
 
         if not offer:
-            return ''
+            return self.context
 
         # TODO: CALCULATE STATS.
         self.context.update({

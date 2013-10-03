@@ -18,7 +18,7 @@ from knotis.utils.view import (
     format_currency,
     sanitize_input_html
 )
-from knotis.contrib.media.models import Image
+from knotis.contrib.media.models import ImageInstance
 from knotis.contrib.identity.models import (
     Identity,
     IdentityEstablishment,
@@ -273,7 +273,7 @@ class Offer(QuickModel):
         max_length=1024
     )
 
-    default_image = QuickForeignKey(Image)
+    default_image = QuickForeignKey(ImageInstance)
 
     start_time = QuickDateTimeField()
     end_time = QuickDateTimeField()
@@ -284,7 +284,7 @@ class Offer(QuickModel):
 
     purchased = QuickIntegerField(default=0)
     redeemed = QuickIntegerField(default=0, blank=True, null=True)
-    published = QuickBooleanField(default=False)
+    published = QuickBooleanField(default=False, db_index=True)
     active = QuickBooleanField(default=False, db_index=True)
     completed = QuickBooleanField(default=False, db_index=True)
     last_purchase = QuickDateTimeField(default=None)
@@ -499,7 +499,7 @@ class OfferAvailabilityManager(QuickManager):
         identity = kwargs.get('identity')
 
         if identity:
-            kwargs['identity_primary_image'] = identity.primary_image
+            kwargs['identity_badge_image'] = identity.badge_image
 
         return super(OfferAvailabilityManager, self).create(
             *args,
@@ -526,7 +526,7 @@ class OfferAvailabilityManager(QuickManager):
     ):
         offers = self.objects.filter(identity=identity)
         for o in offers:
-            o.identity_primary_image = identity.primary_image
+            o.identity_badge_image = identity.badge_image
             o.save()
 
         return offers
@@ -564,13 +564,13 @@ class OfferAvailability(QuickModel):
     offer_stock = QuickIntegerField()
     offer_purchased = QuickIntegerField()
     offer_default_image = QuickForeignKey(
-        Image,
-        related_name='offeravailability_offer'
+        ImageInstance,
+        related_name='offeravailability_offer_images'
     )
 
-    identity_primary_image = QuickForeignKey(
-        Image,
-        related_name='offeravailability_identity'
+    identity_badge_image = QuickForeignKey(
+        ImageInstance,
+        related_name='offeravailability_badge_images'
     )
 
     price = QuickFloatField()
