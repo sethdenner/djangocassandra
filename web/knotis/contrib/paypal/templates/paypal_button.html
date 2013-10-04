@@ -1,4 +1,0 @@
-<input type="submit" name="paypal-submit"{% if button_class %} class="{{ button_class }}"{% endif %} value="{{ button_text }}" />
-{% for key, value in paypal_parameters.items %}
-<input type="hidden" name="{{ key }}" value="{{ value }}" />
-{% endfor %}
