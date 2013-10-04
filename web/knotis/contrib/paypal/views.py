@@ -264,7 +264,8 @@ class PayPalButton(FragmentView):
         local_context = Context({
             'button_text': settings.PAYPAL_DEFAULT_BUTTON_TEXT,
         })
-        local_context.update(self.context.__dicts__)
+        for d in self.context.dicts:
+            local_context.update(d)
 
         notify_url = local_context.get('notify_url')
         if notify_url:

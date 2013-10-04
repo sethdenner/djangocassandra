@@ -274,6 +274,36 @@ class OfferEditProductFormView(AJAXFragmentView):
                 'errors': {'no-field': e.message}
             })
 
+        try:
+            inventory = Inventory.objects.create_stack_from_product(
+                owner,
+                product,
+                value
+            )
+
+        except Exception, e:
+            logger.exception('failed to create inventory')
+
+            return self.generate_response({
+                'message': 'a server error occurred',
+                'errors': {'no-field': e.message}
+            })
+
+        try:
+            split_inventory = Inventory.objects.split(
+                inventory,
+                owner,
+                1
+            )
+
+        except Exception, e:
+            logger.exception('failed to split inventory')
+
+            return self.generate_response({
+                'message': 'a server error occurred',
+                'errors': {'no-field': e.message}
+            })
+
         unlimited = form.cleaned_data.get('offer_unlimited', False)
         if unlimited:
             stock = None
@@ -282,12 +312,13 @@ class OfferEditProductFormView(AJAXFragmentView):
             stock = form.cleaned_data.get('offer_stock')
 
         try:
+            import pdb; pdb.set_trace()
             offer = Offer.objects.create(
                 owner=owner,
                 title=title,
                 stock=stock,
                 unlimited=unlimited,
-                inventory=[inventory],
+                inventory=[split_inventory],
                 discount_factor=price / value
             )
 

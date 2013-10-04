@@ -61,7 +61,7 @@ class InventoryManager(QuickManager):
         if inventory.provider_id != inventory.recipient_id:
             raise Exception('can not split unstacked inventory')
 
-        if not force:
+        if not force and not inventory.unlimited:
             if quantity > inventory.stock:
                 raise Exception('quantity requested exceeds inventory stock')
 
@@ -70,10 +70,12 @@ class InventoryManager(QuickManager):
             provider=inventory.provider,
             recipient=recipient,
             stock=quantity,
+            price=inventory.price
         )
 
-        inventory.stock -= quantity
-        inventory.save()
+        if not inventory.unlimited:
+            inventory.stock -= quantity
+            inventory.save()
 
         return split
 

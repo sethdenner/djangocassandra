@@ -319,8 +319,9 @@ class Offer(QuickModel):
         price_discount = 0.0
         for item in offer_items:
             stock = item.inventory.stock
-            price_retail += stock * item.inventory.price
-            price_discount += stock * item.price_discount
+            if stock and item.inventory.price:
+                price_retail += stock * item.inventory.price
+                price_discount += stock * item.price_discount
 
         self._price_retail = price_retail
         self._price_discount = price_discount
