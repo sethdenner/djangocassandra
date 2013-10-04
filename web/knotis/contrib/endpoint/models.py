@@ -17,7 +17,6 @@ from django.core.mail import send_mail, BadHeaderError
 from django.contrib.contenttypes.models import ContentType
 
 from knotis.utils.email import generate_validation_key
-from knotis.contrib.core.models import KnotisModel
 from knotis.contrib.cassandra.models import ForeignKey
 from knotis.contrib.identity.models import Identity
 
@@ -129,7 +128,7 @@ class EndpointTypes:
     )
 
 
-class Endpoint(KnotisModel):
+class Endpoint(QuickModel):
     endpoint_type = IntegerField(
         choices=EndpointTypes.CHOICES,
         default=EndpointTypes.UNDEFINED,
@@ -151,8 +150,6 @@ class Endpoint(KnotisModel):
         default=None
     )
     disabled = BooleanField(default=False)
-
-    pub_date = DateTimeField('date published', auto_now_add=True)
 
     objects = EndpointManager()
 

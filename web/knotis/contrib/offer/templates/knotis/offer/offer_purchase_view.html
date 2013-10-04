@@ -1,0 +1,52 @@
+{% extends 'knotis/layout/master.html' %}
+{% load render_template_fragment %}
+{% block title %}Knotis - Purchase Offer{% endblock title %}
+
+{% block header %}
+{% render_fragment header %}
+{% endblock header %}
+
+{% block content %}
+<div class="container-fluid" id="content">
+    <div class="curve">
+        <div class="wrapper clear-fix">
+            <div class="box-offers box-border left">
+                <h2 class="backend"><strong>Buy your offer</strong></h2>
+                <form action="{{ settings.PAYPAL_URL }}" method="post">
+                    <div class="buy">
+                        <ul class="title clear-fix">
+                            <li class="offer">Offer</li>
+                            <li class="quantity-print">Quantity</li>
+                            <li class="quantity-print">Price</li>
+                            <li class="quantity-print">Total</li>
+                        </ul>
+                        <ul class="offer-buy clear-fix">
+                            <li class="offer">{{ offer.title }}</li>
+                            <li class="quantity-print">
+                                <label>
+                                    <select name="quantity_1" id="selectquantity" data-money="{{ offer.price_discount }}" >
+                                        {% for stock in offer.stock_values %}
+                                        <option value="{{ stock }}" >{{ stock }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+                            </li>
+                            <li class="quantity-print"><span class="padd">${{ offer.price_discount_formatted }}</span></li>
+                            <li class="quantity-print"><span
+                                    class="padd"><strong>${{ offer.price_discount_formatted }}</strong></span></li>
+                        </ul>
+                        <div class="total clear-fix">
+                            <p class="left">Total</p>
+                            <p class="right"><strong>${{ offer.price_discount_formatted }}</strong></p>
+                        </div>
+                    </div>
+                    <p class="margin-general"><label>
+                        {{ paypal_button }}
+                        <input type="hidden" value="{{ offer.id }}" name="offerId"/>
+                    </label></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

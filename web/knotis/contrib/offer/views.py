@@ -1,6 +1,10 @@
 import copy
+import random
+import string
 
+from django.conf import settings
 from django.shortcuts import get_object_or_404
+from django.template import Context
 from django.core.exceptions import PermissionDenied
 from django.http import (
     HttpResponseServerError
@@ -39,6 +43,16 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes
 )
 
+from knotis.contrib.paypal.views import (
+    IPNCallbackView,
+    PayPalButton
+)
+
+from knotis.contrib.transaction.models import (
+    Transaction,
+    TransactionTypes
+)
+
 from knotis.views import (
     ContextView,
     FragmentView,
@@ -70,6 +84,49 @@ class OfferPurchaseView(ContextView):
     template_name = 'knotis/offer/offer_purchase_view.html'
 
     def process_context(self):
+        request = self.context.get('request')
+
+        offer_id = self.context.get('offer_id')
+        offer = get_object_or_404(Offer, pk=offer_id)
+        self.context['offer'] = offer
+
+        redemption_code = ''.join(
+            random.choice(
+                string.ascii_uppercase + string.digits
+            ) for _ in range(10)
+        )
+
+        transaction_context = '|'.join([
+            request.user.id,
+            IPNCallbackView.generate_ipn_hash(request.user.id),
+            redemption_code
+        ])
+
+        paypal_button = PayPalButton()
+        paypal_button_context = Context({
+            'button_text': 'Checkout',
+            'button_class': 'btn btn-primary action',
+            'paypal_parameters': {
+                'cmd': '_cart',
+                'upload': '1',
+                'business': settings.PAYPAL_ACCOUNT,
+                'shopping_url': settings.BASE_URL,
+                'currency_code': 'USD',
+                'return': '/offers/dashboard/',
+                'notify_url': settings.PAYPAL_NOTIFY_URL,
+                'rm': '2',
+                'item_name_1': offer.title,
+                'amount_1': offer.price_discount(),
+                'item_number_1': offer.id,
+                'custom': transaction_context
+            }
+        })
+        self.context['paypal_button'] = (
+            paypal_button.render_template_fragment(
+                paypal_button_context
+            )
+        )
+
         return self.context
 
 

@@ -1,15 +1,14 @@
-from django.db.models import (
-    CharField,
-    IPAddressField,
-    DateTimeField,
-    ForeignKey
-)
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.generic import GenericForeignKey
 from django.utils.log import getLogger
 logger = getLogger(__name__)
 
-from knotis.contrib.core.models import KnotisModel
+from knotis.contrib.quick.models import QuickModel
+from knotis.contrib.quick.fields import (
+    QuickCharField,
+    QuickIPAddressField,
+    QuickForeignKey,
+    QuickGenericForeignKey
+)
 from knotis.contrib.auth.models import KnotisUser
 
 
@@ -39,51 +38,42 @@ class ActivityTypes:
     )
 
 
-class Activity(KnotisModel):
-    class Meta(KnotisModel.Meta):
-        verbose_name = "Activity"
-        verbose_name_plural = "Activity"
-
-    ip_address = IPAddressField(
+class Activity(QuickModel):
+    ip_address = QuickIPAddressField(
         null=True,
         default=None,
         db_index=True
     )
-    authenticated_user = ForeignKey(
+    authenticated_user = QuickForeignKey(
         KnotisUser,
         null=True,
         default=None
     )
 
-    activity_type = CharField(
+    activity_type = QuickCharField(
         null=True,
         max_length=64,
         choices=ActivityTypes.CHOICES,
         db_index=True
     )
 
-    application = CharField(
+    application = QuickCharField(
         null=True,
         max_length=64,
         choices=ApplicationTypes.CHOICES,
         db_index=True
     )
 
-    message = CharField(
+    message = QuickCharField(
         null=True,
         default=None,
         max_length=1024
     )
 
-    context = CharField(
+    context = QuickCharField(
         null=True,
         default=None,
         max_length=1024
-    )
-
-    pub_date = DateTimeField(
-        null=True,
-        auto_now_add=True
     )
 
     def save(
@@ -99,7 +89,7 @@ class Activity(KnotisModel):
                 try:
                     ActivityRelation.objects.create(
                         activity=activity,
-                        content_object=obj
+                        related=obj
                     )
 
                 except:
@@ -108,12 +98,12 @@ class Activity(KnotisModel):
                     )
 
 
-class ActivityRelation(KnotisModel):
-    activity = ForeignKey(Activity)
+class ActivityRelation(QuickModel):
+    activity = QuickForeignKey(Activity)
 
-    content_type = ForeignKey(ContentType)
-    object_id = CharField(max_length=32)
-    content_object = GenericForeignKey(
+    related_content_type = QuickForeignKey(ContentType)
+    related_object_id = QuickCharField(max_length=32)
+    related = QuickGenericForeignKey(
         'content_type',
         'object_id'
     )
