@@ -312,7 +312,6 @@ class OfferEditProductFormView(AJAXFragmentView):
             stock = form.cleaned_data.get('offer_stock')
 
         try:
-            import pdb; pdb.set_trace()
             offer = Offer.objects.create(
                 owner=owner,
                 title=title,
