@@ -290,8 +290,10 @@ LOGGING = {
 # Import additional settings.
 ENVIRONMENT_NAME = 'dev'
 
+
 # You can key the configurations off of anything - I use project path.
 configs = {
+    'josh': 'josh',
     'josie': 'josie',
     'dev': 'dev',
     'int': 'int',

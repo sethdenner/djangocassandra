@@ -34,6 +34,8 @@ from models import (
     IdentityEstablishment
 )
 
+from knotis.contrib.relation.models import Relation
+
 from forms import (
     IdentityIndividualSimpleForm,
     IdentityBusinessSimpleForm
@@ -74,7 +76,9 @@ class BusinessesView(ContextView):
             'scripts/fileuploader.js',
             'scripts/jquery.colorbox.js',
             'scripts/jquery.sickle.js',
-            'knotis/identity/js/profile.js'
+            'knotis/identity/js/profile.js',
+            'knotis/api/js/api.js',
+            'knotis/identity/js/business-tile.js'
         ]
 
         local_context = copy.copy(self.context)
@@ -98,7 +102,8 @@ class BusinessesGrid(GridSmallView):
             for establishment in establishments:
                 establishment_tile = IdentityTile()
                 establishment_context = Context({
-                    'identity': establishment
+                    'identity': establishment,
+                    'request': self.request
                 })
                 tiles.append(
                     establishment_tile.render_template_fragment(
@@ -107,7 +112,10 @@ class BusinessesGrid(GridSmallView):
                 )
 
         local_context = copy.copy(self.context)
-        local_context.update({'tiles': tiles})
+        local_context.update({
+            'tiles': tiles,
+            'request': self.request
+        })
 
         return local_context
 
@@ -115,6 +123,38 @@ class BusinessesGrid(GridSmallView):
 class IdentityTile(FragmentView):
     template_name = 'knotis/identity/tile.html'
     view_name = 'identity_tile'
+
+    def process_context(self):
+        
+        request = self.context.get('request')
+        render_follow = False
+        following = False
+        if request.user.is_authenticated():
+            current_identity_id = request.session.get('current_identity_id')
+            current_identity = Identity.objects.get(
+                pk=current_identity_id
+            )
+            render_follow = True
+
+            follows = Relation.objects.get_following(current_identity)  
+            identity = self.context.get('identity')
+            for follow in follows:
+                if not follow.deleted and (follow.related_object_id == identity.id):
+                    following = True
+                    break
+            
+        else:
+            current_identity = None
+            render_follow = False
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'current_identity': current_identity,
+            'render_follow': render_follow,
+            'following': following
+        })
+
+        return local_context
 
 
 class EstablishmentProfileGrid(GridSmallView):
