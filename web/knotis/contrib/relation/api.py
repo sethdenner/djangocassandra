@@ -6,6 +6,7 @@ from knotis.views import ApiView
 from models import Relation
 
 from forms import RelationForm
+from knotis.contrib.identity.models import Identity
 
 class FollowApi(ApiView):
     model = Relation
@@ -20,18 +21,36 @@ class FollowApi(ApiView):
 
         errors = {}
 
-        if request.user.is_authenticated():
-            subject_id = request.session.get('current_identity_id')
-            subject = Identity.objects.get(pk=subject_id)
+        try:
+            if request.user.is_authenticated():
+                subject_id = request.session.get('current_identity_id')
+                subject = Identity.objects.get(pk=subject_id)
+                
+                related_id = request.REQUEST.get('related_id')
+                related = Identity.objects.get(pk=related_id)
 
-            related_id = request.GET.get('related_id')
-            related = Identity.objects.get(pk=related_id)
+                verb = request.REQUEST.get('verb')
 
-            Relation.objects.create_following(
-                subject,
-                related
-            )
+                if verb == 'follow':
+                    Relation.objects.create_following(
+                        subject,
+                        related
+                    ).save()
 
+                elif verb == 'unfollow':
+                    follows = Relation.objects.get_following(subject)
+                    for follow in follows:
+                        if not follow.deleted and (follow.related == related):
+                            follow.deleted = True
+                            follow.save()
+                        
+        except Exception, e:
+            logger.exception('failed to follow')
+            errors['no-field'] = e.message
+            
+        return self.generate_response({
+            'errors': errors
+        })
 
 class RelationApi(ApiView):
     model = Relation

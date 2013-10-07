@@ -1,18 +1,53 @@
-$(document.ready(function(){
+(function($){
+    
+    var getCurrentIdentity = function(btn){
+	return $(btn).parent().siblings('.tile-user').val();
+    };
 
-  var getIdentity(e){
-    $(this).parent().sibling('.tile-user').val();
-  };
+    var getRelatedIdentity = function(btn){
+	return $(btn).parent().siblings('.tile-identity').val();
+    };
+    
+    var click_follow = function(){
 
-  var getCurrentIdentity(e){
-    $(this).parent().sibling('.tile-identity').val();
-  };
+	var btn = $(this);
 
-  $('.identity-follow').click(function(e){
-    $.post('/api/follow', {
-      current_identity_id: getCurrentIdentity(e),
-      related_id: getIdentity(e);
-    });
-  });
-  
-});
+	$.post('/api/v1/relation/follow/', {
+	    current_identity_id: getCurrentIdentity(btn),
+	    related_id: getRelatedIdentity(btn),
+	    verb: 'follow'
+	}, function(response){
+	    $(btn).off('click', click_follow);
+
+	    $(btn).removeClass('tile-identity-follow');
+	    $(btn).addClass('tile-identity-unfollow');
+
+	    $(btn).text('Unfollow');
+	    $(btn).on('click', click_unfollow);
+	});
+
+    };
+
+    var click_unfollow = function(){
+	
+	var btn = $(this).get();
+
+	$.post('/api/v1/relation/follow/', {
+	    current_identity_id: getCurrentIdentity(btn),
+	    related_id: getRelatedIdentity(btn),
+	    verb: 'unfollow'
+	}, function(response){
+	    $(btn).off('click', click_unfollow);
+	    
+	    $(btn).removeClass('tile-identity-unfollow');
+	    $(btn).addClass('tile-identity-follow');
+
+	    $(btn).text('Follow');
+	    $(btn).on('click', click_follow);
+	});    
+    };
+
+    $('.tile-identity-follow').on('click', click_follow);
+    $('.tile-identity-unfollow').on('click', click_unfollow);
+
+})(jQuery);
