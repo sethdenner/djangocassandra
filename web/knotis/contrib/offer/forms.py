@@ -31,7 +31,10 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes
 )
 
-from models import Offer
+from models import (
+    Offer,
+    OfferPublish
+)
 
 
 class OfferForm(ModelForm):
@@ -70,6 +73,27 @@ class OfferFinishForm(OfferForm):
         )
 
         self.initial['published'] = True
+
+    def save(
+        self,
+        *args,
+        **kwargs
+    ):
+        instance = super(OfferFinishForm, self).save(
+            *args,
+            **kwargs
+        )
+
+        if instance.published:
+            offer_publish = OfferPublish.objects.filter(
+                subject_object_id=instance.id
+            )
+
+            for publish in offer_publish:
+                publish.publish = True
+                publish.save()
+
+        return instance
 
 
 class OfferProductPriceForm(Form):

@@ -525,7 +525,8 @@ class OfferEditLocationFormView(AJAXFragmentView):
             'form': OfferPhotoLocationForm(
                 offer=offer,
                 photos=photos,
-                locations=locations
+                locations=locations,
+                parameters=self.context
             )
         })
 
@@ -580,14 +581,16 @@ class OfferEditPublishFormView(AJAXFragmentView):
             )
             OfferPublish.objects.create(
                 endpoint=endpoint_current_identity,
-                subject=offer
+                subject=offer,
+                publish_now=False
             )
             publish = form.cleaned_data.get('publish')
             if publish:
                 for endpoint in publish:
                     OfferPublish.objects.create(
                         endpoint=endpoint,
-                        subject=offer
+                        subject=offer,
+                        publish_now=False
                     )
 
         except Exception, e:
@@ -620,7 +623,8 @@ class OfferEditPublishFormView(AJAXFragmentView):
         local_context.update({
             'form': OfferPublicationForm(
                 offer=offer,
-                publish_queryset=publish_queryset
+                publish_queryset=publish_queryset,
+                parameters=self.context
             )
         })
 

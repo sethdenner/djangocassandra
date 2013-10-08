@@ -246,7 +246,7 @@ INSTALLED_APPS = (
     'knotis.contrib.merchant',
     'knotis.contrib.consumer',
     'knotis.contrib.qrcode',
-    'knoits.contrib.api'
+    'knotis.contrib.api'
 )
 
 LOGIN_REDIRECT_URL = '/'

@@ -9,7 +9,10 @@ class Command(BaseCommand):
         **kwargs
     ):
         self.stdout.write('\nPublishing offers.\n')
-        unpublished = OfferPublish.objects.filter(completed=False)
+        unpublished = OfferPublish.objects.filter(
+            publish_now=True,
+            completed=False
+        )
 
         self.stdout.write(''.join([
             'Query returned ',

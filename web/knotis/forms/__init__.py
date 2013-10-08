@@ -36,12 +36,19 @@ class TemplateForm(Form):
         if not self.template_name:
             raise Exception('subclass must define template_name')
 
-        self.parameters.update({
-            'form': self,
-        })
+        self.parameters['form'] = self
 
         template = get_template(self.template_name)
-        context = Context(self.parameters)
+
+        if isinstance(self.parameters, dict):
+            context = Context(self.parameters)
+
+        elif isinstance(self.parameters, Context):
+            context = self.parameters
+
+        else:
+            raise Exception('parameters must be Context or dict object')
+
         return mark_safe(
             template.render(context)
         )

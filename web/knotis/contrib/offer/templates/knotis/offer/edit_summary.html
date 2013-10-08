@@ -27,7 +27,7 @@
     {{ offer_tile_preview }} 
   </div>
   <div>
-    <form action="{{ offer_finish_form.form_action }}" method="{{ offer_finish_form.form_method }}" >
+    <form action="{{ offer_finish_form.form_action }}" method="{{ offer_finish_form.form_method }}" >{% csrf_token %}
       {{ offer_finish_form.id }}
       {{ offer_finish_form.published }}
       <button type="button" class="pull-left btn">Back</button>

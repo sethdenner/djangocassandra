@@ -299,6 +299,11 @@ class Publish(QuickModel):
         'subject_object_id'
     )
 
+    publish_now = QuickBooleanField(
+        db_index=True,
+        default=True
+    )
+
     completed = QuickBooleanField(
         db_index=True,
         default=False
