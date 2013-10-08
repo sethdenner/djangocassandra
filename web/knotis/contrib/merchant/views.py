@@ -8,11 +8,11 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.template import Context
 
+from knotis.contrib.layout.views import GridSmallView
+
 from knotis.views import (
     ContextView
 )
-
-from knotis.contrib.layout.views import GridSmallView
 
 from knotis.contrib.identity.models import (
     Identity,
@@ -22,13 +22,92 @@ from knotis.contrib.identity.models import (
 from knotis.contrib.offer.models import Offer
 from knotis.contrib.offer.views import OfferTile
 
+from knotis.contrib.identity.views import (
+    IdentityTile,
+    BusinessesView,
+    BusinessesGrid
+)
+
+from knotis.contrib.identity.models import (
+    IdentityIndividual,
+    IdentityEstablishment
+)
+
 
 class MyEstablishmentsView(ContextView):
     template_name = 'knotis/merchant/my_establishments_view.html'
 
     def process_context(self):
-        return self.context
 
+        styles = [
+            'knotis/layout/css/global.css',
+            'knotis/layout/css/global.css',
+            'knotis/layout/css/grid.css',
+            'knotis/layout/css/tile.css',
+            'navigation/css/nav_top.css',
+            'navigation/css/nav_side.css', 
+            'knotis/identity/css/profile.css', 
+            'styles/default/fileuploader.css'
+        ]
+
+        
+        pre_scripts = []
+        
+        post_scripts = [
+            'knotis/layout/js/layout.js', 
+            'knotis/layout/js/forms.js', 
+            'knotis/layout/js/create.js',
+            'navigation/js/navigation.js', 
+            'jcrop/js/jquery.Jcrop.js',
+            'scripts/fileuploader.js', 
+            'scripts/jquery.colorbox.js',
+            'scripts/jquery.sickle.js',
+            'knotis/identity/js/profile.js', 
+            'knotis/api/js/api.js',    
+            'knotis/identity/js/business-tile.js'
+        ]
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'styles': styles,
+            'pre_scripts': pre_scripts,
+            'post_scripts': post_scripts
+        })
+
+        return local_context
+        
+class MyEstablishmentsGrid(GridSmallView):
+    view_name = 'my_establishments_grid'
+
+    def process_context(self):
+        tiles = []
+
+        request = self.request
+        if request.user.is_authenticated():
+            user_ident = IdentityIndividual.objects.get_individual(request.user)
+            establishments = IdentityEstablishment.objects.get_establishments(user_ident)
+            if establishments:
+                for establishment in establishments:
+                    establishment_tile = IdentityTile()
+                    establishment_context = Context({
+                        'identity': establishment,
+                        'request': request
+                    })
+                    tiles.append(
+                        establishment_tile.render_template_fragment(
+                            establishment_context
+                        )
+                    )
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'tiles': tiles,
+            'tile_link_template': '/id/',
+            'request': request
+        })
+
+        return local_context
+    
 
 class MyOffersGrid(GridSmallView):
     view_name = 'my_offers_grid'
