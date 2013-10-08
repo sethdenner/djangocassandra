@@ -2,7 +2,7 @@
 <div class="grid-tile small-tile">
   <input type="hidden" class="tile-user" value="{{ current_identity.id }}" />
   <input type="hidden" class="tile-identity" value="{{ identity.id }}"/>
-  <a href="/id/{{ identity.id }}">
+  <a href="{{ tile_link_template }}{{ identity.id }}">
     <div class="tile-header">
       {% thumbnail identity.header_image.image.image '120x120' crop=identity.header_image.crop as image %}
       <img class="tile-image" alt="{{ identity.name }}" src="{{ image.url }}" />

@@ -114,6 +114,7 @@ class BusinessesGrid(GridSmallView):
         local_context = copy.copy(self.context)
         local_context.update({
             'tiles': tiles,
+            'tile_link_template': '/id/', # + identity.id
             'request': self.request
         })
 
