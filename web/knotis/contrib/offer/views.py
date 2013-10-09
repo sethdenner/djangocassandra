@@ -89,6 +89,7 @@ class OfferPurchaseView(ContextView):
         offer_id = self.context.get('offer_id')
         offer = get_object_or_404(Offer, pk=offer_id)
         self.context['offer'] = offer
+        self.context['settings'] = settings
 
         redemption_code = ''.join(
             random.choice(
