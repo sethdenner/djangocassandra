@@ -3,15 +3,19 @@ from django.conf.urls.defaults import (
     url
 )
 
+from views import (
+    IPNCallbackView,
+    PayPalReturn
+)
 
 urlpatterns = patterns(
     'knotis.contrib.paypal.views',
     url(
         r'^ipn/$',
-        'ipn_callback'
+        IPNCallbackView.as_view()
     ),
     url(
         r'^return/$',
-        'paypal_return'
+        PayPalReturn.as_view()
     ),
 )

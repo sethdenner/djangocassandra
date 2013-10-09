@@ -4,20 +4,18 @@ from django.shortcuts import (
     render
 )
 from django.conf import settings
+from django.template import Context
 
-from knotis.utils.view import get_standard_template_parameters
 from knotis.contrib.offer.models import (
     Offer,
     OfferStatus
 )
-from knotis.contrib.business.models import Business
-from knotis.contrib.business.views import edit_profile
 from knotis.contrib.qrcode.models import (
     Qrcode,
     QrcodeTypes,
     Scan
 )
-from knotis.contrib.legacy.models import QrcodeIdMap
+from knotis.contrib.identity.models import Identity
 
 
 def scan(request, qrcode_id):
@@ -31,7 +29,7 @@ def scan(request, qrcode_id):
         return redirect('/')
 
     qrcode.scan()
-    
+
     return redirect(
         qrcode.uri,
         permanent=True
@@ -41,13 +39,14 @@ def scan(request, qrcode_id):
 @login_required
 def manage(request):
     try:
-        business = Business.objects.get(user=request.user)
+        current_identity_id = request.session.get('current_identity_id')
+        business = Identity.objects.get(pk=current_identity_id)
 
     except:
-        return redirect(edit_profile)
+        return redirect('/')
 
     try:
-        qrcode = Qrcode.objects.get(business=business)
+        qrcode = Qrcode.objects.get(owner=business)
 
     except:
         qrcode = None
@@ -83,12 +82,12 @@ def manage(request):
             ])
             qrcode.save()
 
-    template_parameters = get_standard_template_parameters(request)
+    template_parameters = Context()
     template_parameters['business'] = business
 
     try:
         template_parameters['offers'] = Offer.objects.filter(
-            business=business,
+            owner=business,
             status=OfferStatus.CURRENT
         )
 
@@ -103,25 +102,11 @@ def manage(request):
         except:
             pass
 
-        try:
-            id_map = QrcodeIdMap.objects.get(new_qrcode=qrcode)
-
-        except Exception, e:
-            id_map = None
-
-        if id_map:
-            qrcode_uri = '/'.join([
-                settings.BASE_URL,
-                'business',
-                unicode(id_map.old_id),
-            ])
-
-        else:
-            qrcode_uri = '/'.join([
-                settings.BASE_URL,
-                'qrcode',
-                qrcode.id
-            ])
+        qrcode_uri = '/'.join([
+            settings.BASE_URL,
+            'qrcode',
+            qrcode.id
+        ])
 
         template_parameters['qrcode_uri'] = qrcode_uri
 

@@ -31,7 +31,6 @@ from django.core.files.base import ContentFile
 from knotis.views import FragmentView
 
 from knotis.contrib.media.models import Image
-from knotis.contrib.business.models import Business
 from knotis.contrib.identity.models import Identity
 
 
@@ -75,67 +74,6 @@ def render_image_list(
         context = Context(options)
         image_list = get_template('image_list.html')
         return image_list.render(context)
-
-
-def get_image_row(
-    request,
-    image_id
-):
-    try:
-        image = Image.objects.get(pk=image_id)
-
-    except:
-        logger.exception('failed to get image')
-
-    if not image:
-        return HttpResponseNotFound(
-            'Could not find image with id %s' % (image_id,)
-        )
-
-    try:
-        business = Business.objects.get(pk=image.related_object_id)
-
-    except:
-        business = None
-
-    return render_image_list({
-            'images': [image],
-            'business': business
-        },
-        request
-    )
-
-
-def get_image_list(
-    request,
-    related_object_id
-):
-    try:
-        images = Image.objects.filter(related_object_id=related_object_id)
-
-    except:
-        logger.exception('failed to get images')
-
-    if not images:
-        return HttpResponseNotFound(
-            'No images found for related_object_id %s' % (related_object_id,)
-        )
-
-    try:
-        business = Business.objects.get(pk=related_object_id)
-
-    except:
-        business = None
-
-    options = {
-        'images': images,
-        'business': business
-    }
-
-    return render_image_list(
-        options,
-        request
-    )
 
 
 @login_required

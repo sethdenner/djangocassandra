@@ -1,17 +1,19 @@
 import datetime
 import itertools
 
-from django.db.models import (
-    URLField,
-    IntegerField,
-    CharField,
-    DateTimeField,
-    Manager
+from knotis.contrib.quick.models import (
+    QuickModel,
+    QuickManager
+)
+from knotis.contrib.quick.fields import (
+    QuickForeignKey,
+    QuickCharField,
+    QuickURLField,
+    QuickIntegerField,
+    QuickDateTimeField
 )
 
-from knotis.contrib.core.models import KnotisModel
-from knotis.contrib.business.models import Business
-from knotis.contrib.cassandra.models import ForeignKey
+from knotis.contrib.identity.models import Identity
 
 
 class QrcodeTypes:
@@ -28,19 +30,18 @@ class QrcodeTypes:
     )
 
 
-class Qrcode(KnotisModel):
-    business = ForeignKey(Business)
-    uri = URLField(blank=True, null=True)
-    qrcode_type = CharField(
+class Qrcode(QuickModel):
+    owner = QuickForeignKey(Identity)
+    uri = QuickURLField(blank=True, null=True)
+    qrcode_type = QuickCharField(
         max_length=16,
         choices=QrcodeTypes.CHOICES,
         null=True,
         default=QrcodeTypes.PROFILE,
         db_index=True
     )
-    hits = IntegerField(blank=True, null=True, default=0)
-    last_hit = DateTimeField(auto_now=True, blank=True, null=True)
-    pub_date = DateTimeField(auto_now_add=True, blank=True, null=True)
+    hits = QuickIntegerField(blank=True, null=True, default=0)
+    last_hit = QuickDateTimeField(auto_now=True, blank=True, null=True)
 
     def __init__(self, *args, **kwargs):
         super(Qrcode, self).__init__(*args, **kwargs)
@@ -59,7 +60,7 @@ class Qrcode(KnotisModel):
             pass
 
 
-class ScanManager(Manager):
+class ScanManager(QuickManager):
     def get_daily_scans(
         self,
         business
@@ -89,9 +90,9 @@ class ScanManager(Manager):
 
     def get_weekly_scans(
         self,
-        business
+        qrcode
     ):
-        scans = self.filter(business=business)
+        scans = self.filter(qrcode=qrcode)
 
         now = datetime.datetime.utcnow()
         now_week = now.isocalendar()[1]
@@ -125,9 +126,9 @@ class ScanManager(Manager):
 
     def get_monthly_scans(
         self,
-        business
+        qrcode
     ):
-        scans = self.filter(business=business)
+        scans = self.filter(qrcode=qrcode)
 
         monthly_scans = []
         month = 0
@@ -153,10 +154,9 @@ class ScanManager(Manager):
         return monthly_scans
 
 
-class Scan(KnotisModel):
-    qrcode = ForeignKey(Qrcode)
-    business = ForeignKey(Business)
-    uri = URLField(blank=True, null=True, db_index=True)
-    pub_date = DateTimeField(auto_now_add=True)
+class Scan(QuickModel):
+    qrcode = QuickForeignKey(Qrcode)
+    identity = QuickForeignKey(Identity)
+    uri = QuickURLField(blank=True, null=True, db_index=True)
 
     objects = ScanManager()

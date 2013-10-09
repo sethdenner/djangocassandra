@@ -1,6 +1,10 @@
 import copy
+import random
+import string
 
+from django.conf import settings
 from django.shortcuts import get_object_or_404
+from django.template import Context
 from django.core.exceptions import PermissionDenied
 from django.http import (
     HttpResponseServerError
@@ -39,6 +43,16 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes
 )
 
+from knotis.contrib.paypal.views import (
+    IPNCallbackView,
+    PayPalButton
+)
+
+from knotis.contrib.transaction.models import (
+    Transaction,
+    TransactionTypes
+)
+
 from knotis.views import (
     ContextView,
     FragmentView,
@@ -70,6 +84,50 @@ class OfferPurchaseView(ContextView):
     template_name = 'knotis/offer/offer_purchase_view.html'
 
     def process_context(self):
+        request = self.context.get('request')
+
+        offer_id = self.context.get('offer_id')
+        offer = get_object_or_404(Offer, pk=offer_id)
+        self.context['offer'] = offer
+        self.context['settings'] = settings
+
+        redemption_code = ''.join(
+            random.choice(
+                string.ascii_uppercase + string.digits
+            ) for _ in range(10)
+        )
+
+        transaction_context = '|'.join([
+            request.user.id,
+            IPNCallbackView.generate_ipn_hash(request.user.id),
+            redemption_code
+        ])
+
+        paypal_button = PayPalButton()
+        paypal_button_context = Context({
+            'button_text': 'Checkout',
+            'button_class': 'btn btn-primary action',
+            'paypal_parameters': {
+                'cmd': '_cart',
+                'upload': '1',
+                'business': settings.PAYPAL_ACCOUNT,
+                'shopping_url': settings.BASE_URL,
+                'currency_code': 'USD',
+                'return': '/offers/dashboard/',
+                'notify_url': settings.PAYPAL_NOTIFY_URL,
+                'rm': '2',
+                'item_name_1': offer.title,
+                'amount_1': offer.price_discount(),
+                'item_number_1': offer.id,
+                'custom': transaction_context
+            }
+        })
+        self.context['paypal_button'] = (
+            paypal_button.render_template_fragment(
+                paypal_button_context
+            )
+        )
+
         return self.context
 
 
@@ -217,6 +275,36 @@ class OfferEditProductFormView(AJAXFragmentView):
                 'errors': {'no-field': e.message}
             })
 
+        try:
+            inventory = Inventory.objects.create_stack_from_product(
+                owner,
+                product,
+                value
+            )
+
+        except Exception, e:
+            logger.exception('failed to create inventory')
+
+            return self.generate_response({
+                'message': 'a server error occurred',
+                'errors': {'no-field': e.message}
+            })
+
+        try:
+            split_inventory = Inventory.objects.split(
+                inventory,
+                owner,
+                1
+            )
+
+        except Exception, e:
+            logger.exception('failed to split inventory')
+
+            return self.generate_response({
+                'message': 'a server error occurred',
+                'errors': {'no-field': e.message}
+            })
+
         unlimited = form.cleaned_data.get('offer_unlimited', False)
         if unlimited:
             stock = None
@@ -230,7 +318,7 @@ class OfferEditProductFormView(AJAXFragmentView):
                 title=title,
                 stock=stock,
                 unlimited=unlimited,
-                inventory=[inventory],
+                inventory=[split_inventory],
                 discount_factor=price / value
             )
 
@@ -438,7 +526,8 @@ class OfferEditLocationFormView(AJAXFragmentView):
             'form': OfferPhotoLocationForm(
                 offer=offer,
                 photos=photos,
-                locations=locations
+                locations=locations,
+                parameters=self.context
             )
         })
 
@@ -493,14 +582,16 @@ class OfferEditPublishFormView(AJAXFragmentView):
             )
             OfferPublish.objects.create(
                 endpoint=endpoint_current_identity,
-                subject=offer
+                subject=offer,
+                publish_now=False
             )
             publish = form.cleaned_data.get('publish')
             if publish:
                 for endpoint in publish:
                     OfferPublish.objects.create(
                         endpoint=endpoint,
-                        subject=offer
+                        subject=offer,
+                        publish_now=False
                     )
 
         except Exception, e:
@@ -533,7 +624,8 @@ class OfferEditPublishFormView(AJAXFragmentView):
         local_context.update({
             'form': OfferPublicationForm(
                 offer=offer,
-                publish_queryset=publish_queryset
+                publish_queryset=publish_queryset,
+                parameters=self.context
             )
         })
 

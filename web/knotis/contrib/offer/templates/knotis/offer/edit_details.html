@@ -1,4 +1,4 @@
-<form class="form-horizontal" id="{{ form.form_id }}" action="{{ form.form_action }}" method="{{ form.form_method }}" >
+<form class="form-horizontal" id="{{ form.form_id }}" action="{{ form.form_action }}" method="{{ form.form_method }}" >{% csrf_token %}
   <input type="hidden" name="{{ form.id.html_name }}" value="{{ form.id.value }}" />
   <div class="control-group">
     <label class="control-label">Enter Title</label>

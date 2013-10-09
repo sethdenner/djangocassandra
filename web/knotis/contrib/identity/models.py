@@ -122,7 +122,7 @@ class IdentityIndividualManager(IdentityManager):
         return self.get(pk=relation.related_object_id)
 
     def get_query_set(self):
-        return super(QuickManager, self).get_query_set().filter(
+        return super(IdentityIndividualManager, self).get_query_set().filter(
             identity_type=IdentityTypes.INDIVIDUAL
         )
 
@@ -175,7 +175,7 @@ class IdentityBusinessManager(IdentityManager):
         return business
 
     def get_query_set(self):
-        return super(QuickManager, self).get_query_set().filter(
+        return super(IdentityBusinessManager, self).get_query_set().filter(
             identity_type=IdentityTypes.BUSINESS
         )
 
@@ -213,7 +213,10 @@ class IdentityEstablishmentManager(IdentityManager):
         return establishments
 
     def get_query_set(self):
-        return super(QuickManager, self).get_query_set().filter(
+        return super(
+            IdentityEstablishmentManager,
+            self
+        ).get_query_set().filter(
             identity_type=IdentityTypes.ESTABLISHMENT
         )
 
