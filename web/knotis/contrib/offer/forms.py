@@ -90,7 +90,7 @@ class OfferFinishForm(OfferForm):
             )
 
             for publish in offer_publish:
-                publish.publish = True
+                publish.publish_now = True
                 publish.save()
 
         return instance
