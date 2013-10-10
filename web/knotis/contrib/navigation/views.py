@@ -1,6 +1,5 @@
 import copy
-
-from django.views.generic import View
+from itertools import chain
 
 from knotis.views import FragmentView
 
@@ -40,13 +39,6 @@ class NavigationSideView(FragmentView):
         request = self.request
         local_context = copy.copy(self.context)
 
-        local_context.update({
-            'NAVIGATION_TYPES': NavigationTypes,
-            'navigation_items': NavigationItem.objects.filter_ordered(
-                menu_name='default'
-            )
-        })
-
         if request:
             current_identity_id = request.session.get('current_identity_id')
             try:
@@ -77,5 +69,25 @@ class NavigationSideView(FragmentView):
                         )
                     )
                     local_context['establishments'] = establishments
+
+        local_context['NAVIGATION_TYPES'] = NavigationTypes
+        default_navigation = NavigationItem.objects.filter_ordered(
+            menu_name='default'
+        )
+
+        if businesses or establishments:
+            merchant_navigation = NavigationItem.objects.filter_ordered(
+                menu_name='merchant'
+            )
+
+        else:
+            merchant_navigation = []
+
+        local_context['navigation_items'] = list(
+            chain(
+                default_navigation,
+                merchant_navigation
+            )
+        )
 
         return local_context
