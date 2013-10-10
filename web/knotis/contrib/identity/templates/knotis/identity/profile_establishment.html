@@ -8,6 +8,7 @@
 {% render_fragment nav_top %}
 {% endblock header %}
 {% block content %}
+{% load crispy_forms_tags %}
 <div class="container-fluid">
   <div id="id-profile-cover" class="row-fluid">
     <div class="span12">
@@ -23,10 +24,15 @@
       </div>
       <div id="id-profile-contact" class="row">
         <strong>
-          <ul class="unstyled" >
-            <li>1411 E Alder St.</li>
-            <li>Seattle, WA 98122</li>
-            <li>(555) 555 5555</li>
+
+	  <div id="id-profile-contact-address">
+	    {% if is_manager %}
+	    <a class="update-address-link">{{ address }}</a>
+	    {% else %}
+	    {{ address }}
+	    {% endif %}
+	  </div>
+	  <ul class="unstyled">
             <li>contact@example.com</li>
             <li>&nbsp;</li>
             <li>twitter</li>

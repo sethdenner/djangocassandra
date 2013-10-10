@@ -81,5 +81,5 @@ urlpatterns = patterns(
     IdentityApi.urls(),
     IdentityIndividualApi.urls(),
     IdentityBusinessApi.urls(),
-    IdentityEstablishmentApi.urls()
+    IdentityEstablishmentApi.urls(),
 )

@@ -25,10 +25,7 @@ class OfferMap(GoogleMap):
         self,
         key,
         offers,
-        center=(
-            47.602227802480606,
-            - 122.30203628540039
-        ),
+        center=(47.602227802480606,- 122.30203628540039),
         map_zoom=15,
         map_type='ROADMAP',
         map_element_id='map_canvas',

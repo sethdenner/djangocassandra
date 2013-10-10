@@ -41,6 +41,14 @@ from forms import (
     IdentityBusinessSimpleForm
 )
 
+from knotis.contrib.location.models import (
+    Location, 
+    LocationItem
+)
+
+from knotis.contrib.maps.views import GoogleMap
+
+# from knotis.contrib.location.forms import LocationForm
 
 class IdentityView(ContextView):
     template_name = 'knotis/identity/identity_view.html'
@@ -248,7 +256,8 @@ class EstablishmentProfileView(ContextView):
             'navigation/css/nav_top.css',
             'navigation/css/nav_side.css',
             'knotis/identity/css/profile.css',
-            'styles/default/fileuploader.css'
+            'styles/default/fileuploader.css',
+            'knotis/identity/css/first.css'
         ]
 
         pre_scripts = []
@@ -263,7 +272,11 @@ class EstablishmentProfileView(ContextView):
             'scripts/fileuploader.js',
             'scripts/jquery.colorbox.js',
             'scripts/jquery.sickle.js',
-            'knotis/identity/js/profile.js'
+            'knotis/identity/js/profile.js',
+            'geocomplete/jquery.geocomplete.min.js',
+            'knotis/layout/js/forms.js',
+            'knotis/maps/js/maps.js',
+            'knotis/identity/js/update_profile.js',
         ]
 
         if establishment.badge_image:
@@ -292,6 +305,15 @@ class EstablishmentProfileView(ContextView):
         except:
             logger.exception('failed to get establishment offers')
 
+        locationItem = LocationItem.objects.filter(related_object_id=establishment.id)
+        if len(locationItem):
+            address = locationItem[0].location.address        
+        else:
+            address = None
+
+        maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
+        maps_scripts = maps.render_api_js()
+
         local_context = copy.copy(self.context)
         local_context.update({
             'establishment': establishment,
@@ -300,8 +322,10 @@ class EstablishmentProfileView(ContextView):
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
             'default_profile_logo_uri': default_profile_logo_uri,
-            'profile_logo': profile_logo,
-            'establishment_offers': establishment_offers
+            'profile_bologo': profile_logo,
+            'establishment_offers': establishment_offers,
+            'address': address,
+            'maps_scripts': maps_scripts
         })
 
         return local_context
