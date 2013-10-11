@@ -620,6 +620,7 @@ class OfferPublish(Publish):
             identity=establishment
         )
         offer.active = True
+        offer.published = True
         offer.save()
 
     def publish(self):

@@ -79,7 +79,11 @@ class OfferFinishForm(OfferForm):
         *args,
         **kwargs
     ):
+        # Don't actually want to update instance
+        # here Offer will get publish set to True
+        # when publish_offers script is run.
         instance = super(OfferFinishForm, self).save(
+            commit=False,
             *args,
             **kwargs
         )
