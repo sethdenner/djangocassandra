@@ -176,7 +176,7 @@
             "parent": null, 
             "title": "Completed", 
             "deleted": false, 
-            "uri": "/my/offers/active/", 
+            "uri": "/my/offers/completed/", 
             "menu_name": "my_offers", 
             "item_type": "link", 
             "content_type": [
