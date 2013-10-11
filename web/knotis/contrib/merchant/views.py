@@ -12,7 +12,8 @@ from django.template import Context
 from knotis.contrib.layout.views import GridSmallView
 
 from knotis.views import (
-    ContextView
+    ContextView,
+    FragmentView
 )
 
 from knotis.contrib.identity.models import (
@@ -239,6 +240,15 @@ class MyOffersView(ContextView):
             'top_menu_name': 'my_offers'
         })
         return local_context
+
+
+class OfferRedemptionView(FragmentView):
+    template_name = 'knotis/merchant/redemption_view.html'
+    view_name = 'offer_redemption'
+
+    def process_context(self):
+        self.context = copy.copy(self.context)
+        return self.context
 
 
 class MyFollowersView(ContextView):

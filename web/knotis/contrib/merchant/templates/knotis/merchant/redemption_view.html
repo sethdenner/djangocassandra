@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <h1>Offer Redemption</h1>
+</div>
+<div class="modal-body">
+  <div class="span12">
+    <h2>Outstanding Purchases</h2>
+    <div class="span8">
+    {% for p in purchase %}
+    <ul class="unstyled">
+      <li>Purchaser: {{ p.purchaser }}</li>
+      <li>Redemption Code: {{ p.redemption_code }}</li>
+    </ul>
+    {% endfor %}
+    </div>
+    <div class="span4">
+      <h4>Offer Info</h4>
+      <ul class="unstyled">
+        <li>{{ offer.title }}</li>
+        <li>Price Paid: {{ offer.price_discount_formatted }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
