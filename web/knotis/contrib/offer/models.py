@@ -508,10 +508,10 @@ class OfferAvailabilityManager(QuickManager):
         offer = kwargs.get('offer')
 
         if offer:
-            kwargs['offer_title'] = offer.title
-            kwargs['offer_stock'] = offer.stock
-            kwargs['offer_purchased'] = offer.purchased
-            kwargs['offer_default_image'] = offer.default_image
+            kwargs['title'] = offer.title
+            kwargs['stock'] = offer.stock
+            kwargs['purchased'] = offer.purchased
+            kwargs['default_image'] = offer.default_image
 
             offer_items = OfferItem.objects.filter(offer=offer)
             price = 0.
@@ -523,7 +523,7 @@ class OfferAvailabilityManager(QuickManager):
         identity = kwargs.get('identity')
 
         if identity:
-            kwargs['identity_badge_image'] = identity.badge_image
+            kwargs['badge_image'] = identity.badge_image
 
         return super(OfferAvailabilityManager, self).create(
             *args,
@@ -536,10 +536,10 @@ class OfferAvailabilityManager(QuickManager):
     ):
         offers = self.objects.filter(offer=offer)
         for o in offers:
-            o.offer_title = offer.title
-            o.offer_stock = offer.stock
-            o.offer_purchased = offer.purchased
-            o.offer_default_image = offer.default_image
+            o.title = offer.title
+            o.stock = offer.stock
+            o.purchased = offer.purchased
+            o.default_image = offer.default_image
             o.save()
 
         return offers
@@ -550,7 +550,7 @@ class OfferAvailabilityManager(QuickManager):
     ):
         offers = self.objects.filter(identity=identity)
         for o in offers:
-            o.identity_badge_image = identity.badge_image
+            o.badge_image = identity.badge_image
             o.save()
 
         return offers
@@ -582,17 +582,17 @@ class OfferAvailability(QuickModel):
     """
     offer = QuickForeignKey(Offer)
     identity = QuickForeignKey(Identity)
-    offer_title = QuickCharField(
+    title = QuickCharField(
         max_length=140
     )
-    offer_stock = QuickIntegerField()
-    offer_purchased = QuickIntegerField()
-    offer_default_image = QuickForeignKey(
+    stock = QuickIntegerField()
+    purchased = QuickIntegerField()
+    default_image = QuickForeignKey(
         ImageInstance,
         related_name='offeravailability_offer_images'
     )
 
-    identity_badge_image = QuickForeignKey(
+    badge_image = QuickForeignKey(
         ImageInstance,
         related_name='offeravailability_badge_images'
     )

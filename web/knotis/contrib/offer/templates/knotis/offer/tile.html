@@ -1,20 +1,31 @@
 {% load thumbnail %}
 <div class="grid-tile small-tile" >
   <div class="tile-header">
-    {% thumbnail offer.offer_default_image.image '120x120' crop=offer.offer_default_image.crop as image %}
-    <img class="tile-image" alt="{{ offer.offer_title }}" src="{{ image.url }}" />
+    {% thumbnail offer.default_image.image '120x120' crop=offer.default_image.crop as image %}
+    <img class="tile-image" alt="{{ offer.title }}" src="{{ image.url }}" />
     {% empty %}
-    <img class="tile-image"  alt="{{ offer.offer_title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
+    <img class="tile-image"  alt="{{ offer.title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
     {% endthumbnail %}
-    {% thumbnail offer.identity_primary_image '60x60' crop=offer.identity_primary_image.crop as image %}
+    {% thumbnail offer.badge_image '60x60' crop=offer.badge_image.crop as image %}
     <img class="tile-badge" src="{{ image.url }}" />
     {% empty %}
     <img class="tile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
     {% endthumbnail %}
   </div>
   <div class="tile-body">
-    <p class="tile-title">{{ offer.offer_title }}</p>
+    <p class="tile-title">{{ offer.title }}</p>
+    {% if offer_action == 'buy' %}
     <button data-offer-id="{{ offer.offer_id }}" class="btn btn-primary action buy-offer">Buy</button>
+    {% endif %}
+    {% if offer_action == 'redeem' %}
+    <button data-offer-id="{{ offer.offer_id }}" class="btn btn-primary action redeem-offer">Redeem</button>
+    {% endif %}
+    {% if offer_action == 'publish' %}
+    <button data-offer-id="{{ offer.offer_id }}" class="btn btn-primary action publish-offer">Publish</button>
+    {% endif %}
+    {% if offer_action == 'pause' %}
+    <button data-offer-id="{{ offer.offer_id }}" class="btn btn-{% if offer.active %}danger{% else %}success{% endif %} action publish-offer">{% if offer.active %}Pause{% else %}Resume{% endif %}</button>
+    {% endif %}
   </div>
   <div class="tile-footer">{% if stats %}{{ stats }}{% else %}&nbsp;{% endif %}</div>
 </div>

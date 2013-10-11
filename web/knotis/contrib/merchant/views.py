@@ -1,4 +1,5 @@
 import copy
+from itertools import chain
 
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
@@ -20,12 +21,13 @@ from knotis.contrib.identity.models import (
 )
 
 from knotis.contrib.offer.models import Offer
-from knotis.contrib.offer.views import OfferTile
+from knotis.contrib.offer.views import (
+    OfferTile,
+    OfferCreateTile
+)
 
 from knotis.contrib.identity.views import (
-    IdentityTile,
-    BusinessesView,
-    BusinessesGrid
+    IdentityTile
 )
 
 from knotis.contrib.identity.models import (
@@ -130,20 +132,27 @@ class MyOffersGrid(GridSmallView):
         offer_filter_dict = {}
         if 'pending' == offer_filter:
             offer_filter_dict['published'] = False
+            offer_action = 'publish'
 
         elif 'completed' == offer_filter:
             offer_filter_dict['completed'] = True
+            offer_action = None
 
         elif 'active' == offer_filter or not offer_filter:
             offer_filter_dict['published'] = True
+            offer_action = 'pause'
 
         elif 'redeem' == offer_filter:
             offer_filter_dict['active'] = True
+            offer_action = 'redeem'
 
         else:
             raise Http404()
 
-        for i in managed_identities:
+        identities = [current_identity]
+        identities = list(chain(identities, managed_identities))
+
+        for i in identities:
             if i.identity_type != IdentityTypes.BUSINESS:
                 continue
 
@@ -163,16 +172,28 @@ class MyOffersGrid(GridSmallView):
                 continue
 
         tiles = []
+
+        offer_create_tile = OfferCreateTile()
+        tiles.append(
+            offer_create_tile.render_template_fragment(Context({
+                'create_type': 'Promotion',
+                'create_action': '/offer/create/',
+                'action_type': 'modal'
+            }))
+        )
+
         for key, value in offers_by_business.iteritems():
             for offer in value:
                 tile = OfferTile()
                 tiles.append(tile.render_template_fragment(Context({
-                    'offer': offer
+                    'offer': offer,
+                    'offer_action': offer_action
                 })))
 
         local_context = copy.copy(self.context)
-        local_context['tiles'] = tiles
-
+        local_context.update({
+            'tiles': tiles
+        })
         return local_context
 
 
