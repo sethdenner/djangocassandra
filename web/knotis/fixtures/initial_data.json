@@ -134,93 +134,75 @@
         }
     }, 
     {
-        "pk": "e9b2c39c-46b0-4731-8e59-89e170be7351", 
+        "pk": "bbf7d24f-925b-437c-9ae7-f8c19579331b", 
         "model": "navigation.navigationitem", 
         "fields": {
             "parent": null, 
-            "title": "My Establishments", 
+            "title": "Active", 
             "deleted": false, 
-            "uri": "/my/establishments/", 
-            "menu_name": "merchant", 
+            "uri": "/my/offers/active/", 
+            "menu_name": "my_offers", 
             "item_type": "link", 
             "content_type": [
                 "navigation", 
                 "navigationitem"
             ], 
-            "pub_date": "2013-10-10 17:56:26", 
+            "pub_date": "2013-10-10 19:13:34", 
+            "order": 1
+        }
+    }, 
+    {
+        "pk": "9c29a5b6-a575-4c0c-ade1-db35873f7cfc", 
+        "model": "navigation.navigationitem", 
+        "fields": {
+            "parent": null, 
+            "title": "Pending", 
+            "deleted": false, 
+            "uri": "/my/offers/pending/", 
+            "menu_name": "my_offers", 
+            "item_type": "link", 
+            "content_type": [
+                "navigation", 
+                "navigationitem"
+            ], 
+            "pub_date": "2013-10-10 19:13:05", 
+            "order": 0
+        }
+    }, 
+    {
+        "pk": "6e54890c-b93c-4c0d-9fd7-a50359d2d555", 
+        "model": "navigation.navigationitem", 
+        "fields": {
+            "parent": null, 
+            "title": "Completed", 
+            "deleted": false, 
+            "uri": "/my/offers/active/", 
+            "menu_name": "my_offers", 
+            "item_type": "link", 
+            "content_type": [
+                "navigation", 
+                "navigationitem"
+            ], 
+            "pub_date": "2013-10-10 19:13:56", 
             "order": 2
         }
-    },
-    {
-        "pk": "d04454f5-2874-404d-ab80-8c34cc0da5de", 
-        "model": "navigation.navigationitem", 
-        "fields": {
-            "parent": null, 
-            "title": "Manage Business", 
-            "deleted": false, 
-            "uri": null, 
-            "menu_name": "merchant", 
-            "item_type": "header", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 17:55:09", 
-            "order": 0
-        }
     }, 
     {
-        "pk": "2d1ca47b-5af8-4fa9-a48e-0f67d39cb96b", 
+        "pk": "53b739b2-9a96-4360-b697-f1b6103c02e6", 
         "model": "navigation.navigationitem", 
         "fields": {
             "parent": null, 
-            "title": "My Offers", 
+            "title": "Redeem", 
             "deleted": false, 
-            "uri": "/my/offers/", 
-            "menu_name": "merchant", 
+            "uri": "/my/offers/redeem/", 
+            "menu_name": "my_offers", 
             "item_type": "link", 
             "content_type": [
                 "navigation", 
                 "navigationitem"
             ], 
-            "pub_date": "2013-10-10 17:56:01", 
-            "order": 1
-        }
-    }, 
-    {
-        "pk": "763c7422-6ae8-46f3-8bce-4cdd8595b1fa", 
-        "model": "navigation.navigationitem", 
-        "fields": {
-            "parent": null, 
-            "title": "Businesses", 
-            "deleted": false, 
-            "uri": "/businesses/", 
-            "menu_name": "default", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 17:52:40", 
-            "order": 1
-        }
-    }, 
-    {
-        "pk": "56550ab3-6e4d-426c-867a-bab4e5880f4c", 
-        "model": "navigation.navigationitem", 
-        "fields": {
-            "parent": null, 
-            "title": "Offers", 
-            "deleted": false, 
-            "uri": "/offers/", 
-            "menu_name": "default", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 17:50:48", 
-            "order": 0
+            "pub_date": "2013-10-10 19:15:15", 
+            "order": 3
         }
     }, 
     {

@@ -107,7 +107,7 @@ class MyEstablishmentsGrid(GridSmallView):
         })
 
         return local_context
-    
+
 
 class MyOffersGrid(GridSmallView):
     view_name = 'my_offers_grid'
@@ -136,6 +136,9 @@ class MyOffersGrid(GridSmallView):
 
         elif 'active' == offer_filter or not offer_filter:
             offer_filter_dict['published'] = True
+
+        elif 'redeem' == offer_filter:
+            offer_filter_dict['active'] = True
 
         else:
             raise Http404()
@@ -212,15 +215,9 @@ class MyOffersView(ContextView):
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
+            'top_menu_name': 'my_offers'
         })
         return local_context
-
-
-class OfferRedemptionView(ContextView):
-    template_name = 'knotis/merchant/offer_redemption_view.html'
-
-    def process_context(self):
-        return self.context
 
 
 class MyFollowersView(ContextView):

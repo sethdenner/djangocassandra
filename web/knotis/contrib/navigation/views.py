@@ -22,9 +22,15 @@ class NavigationTopView(FragmentView):
 
     def process_context(self):
         local_context = copy.copy(self.context)
+
+        menu_name = local_context.get(
+            'top_menu_name',
+            'default'
+        )
+
         local_context.update({
             'navigation_items': NavigationItem.objects.filter(
-                menu_name='nav_top'
+                menu_name=menu_name
             )
         })
 

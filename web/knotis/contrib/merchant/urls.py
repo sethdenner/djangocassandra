@@ -6,7 +6,6 @@ from django.conf.urls.defaults import (
 from views import (
     MyEstablishmentsView,
     MyOffersView,
-    OfferRedemptionView,
     MyFollowersView,
     MyAnalyticsView,
 )
@@ -16,10 +15,6 @@ urlpatterns = patterns(
     url(
         r'^establishments/$',
         MyEstablishmentsView.as_view()
-    ),
-    url(
-        r'^offers/redeem/',
-        OfferRedemptionView.as_view()
     ),
     url(
         r'^offers(/(?P<offer_filter>\w*))?/$',
