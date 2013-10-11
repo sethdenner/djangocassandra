@@ -116,7 +116,7 @@ class TransactionManager(QuickManager):
             currency_owner = Inventory.objects.split(
                 currency,
                 offer.owner,
-                offer.price_discount
+                offer.price_discount()
             )
 
             currencies_thrid_party = []

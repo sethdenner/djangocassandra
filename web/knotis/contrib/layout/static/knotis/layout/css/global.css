@@ -1,3 +1,17 @@
+.knotis-bold {
+    font-weight: bold;
+}
+
+.knotis-price-big {
+    color: #00ae99;
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-left: 95px;
+}
+
+/*
+Bootstrap Overrides
+*/
 .container-fluid {
     padding-right: 0;
     padding-left: 0;
@@ -19,13 +33,6 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     border: 2px;
 }
 
-.knotis-bold {
-    font-weight: bold;
-}
-
-.knotis-price-big {
-    color: #00ae99;
-    font-size: 1.4em;
-    font-weight: bold;
-    margin-left: 95px;
+.modal, .modal.fade.in {
+    top: 20%;
 }

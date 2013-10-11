@@ -36,6 +36,11 @@ from knotis.contrib.identity.models import (
     IdentityEstablishment
 )
 
+from knotis.contrib.transaction.models import (
+    Transaction,
+    TransactionTypes
+)
+
 
 class MyEstablishmentsView(ContextView):
     template_name = 'knotis/merchant/my_establishments_view.html'
@@ -230,6 +235,7 @@ class MyOffersView(ContextView):
             'knotis/layout/js/header.js',
             'knotis/layout/js/create.js',
             'navigation/js/navigation.js',
+            'knotis/merchant/js/my_offers.js'
         ]
 
         local_context = copy.copy(self.context)
@@ -248,6 +254,30 @@ class OfferRedemptionView(FragmentView):
 
     def process_context(self):
         self.context = copy.copy(self.context)
+
+        request = self.context.get('request')
+
+        offer_id = self.context.get('offer_id')
+        offer = Offer.objects.get(pk=offer_id)
+
+        current_identity_id = request.session.get('current_identity_id')
+        current_identity = Identity.objects.get(pk=current_identity_id)
+
+        purchases = Transaction.objects.filter(
+            offer=offer,
+            transaction_type=TransactionTypes.PURCHASE
+        )
+
+        consumer_purchases = []
+        for purchase in purchases:
+            if purchase.owner != current_identity:
+                consumer_purchases.append(purchase)
+
+        self.context.update({
+            'offer': offer,
+            'purchases': consumer_purchases
+        })
+
         return self.context
 
 
