@@ -20,22 +20,6 @@ urlpatterns = patterns(
     ),
     url(
         r''.join([
-            '^image/get_list/(?P<related_object_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        'get_image_list'
-    ),
-    url(
-        r''.join([
-            '^image/get_row/(?P<image_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        'get_image_row'
-    ),
-    url(
-        r''.join([
             '^image/delete/(?P<image_id>',
             REGEX_UUID,
             ')/$'

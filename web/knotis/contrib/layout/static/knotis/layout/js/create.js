@@ -14,19 +14,13 @@
         }
         
         if (action_type == 'modal') {
-            $('#modal-box').modal({
-                backdrop: 'static',
-                keyboard: true
-            });
-
-            $.get(
-                create_action,
-                {},
-                function(data, status, jqxhr) {
-                    $('#modal-box').html(data);
-                    
+            $.ajaxmodal({
+                href: create_action,
+                modal_settings: {
+                    backdrop: 'static',
+                    keyboard: true
                 }
-            );
+            });
         }    
     });
 

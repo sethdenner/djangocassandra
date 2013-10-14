@@ -1,4 +1,5 @@
-<form class="form-horizontal" id="{{ form.form_id }}" action="{{ form.form_action }}" method="{{ form.form_method }}" >
+
+<form class="form-horizontal" id="{{ form.form_id }}" action="{{ form.form_action }}" method="{{ form.form_method }}" >{% csrf_token %}
   <input type="hidden" name="{{ form.owner.html_name }}" value="{{ current_identity.id }}" />
   <div class="control-group">
     <label class="control-label">Select Type</label>

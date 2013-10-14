@@ -29,22 +29,6 @@ urlpatterns = patterns(
         include('knotis.contrib.auth.urls')
     ),
     url(
-        r'',
-        include('knotis.contrib.core.urls')
-    ),
-    url(
-        r'',
-        include('knotis.contrib.legacy.urls')
-    ),
-    url(
-        r'',
-        include('knotis.contrib.business.urls')
-    ),
-    url(
-        r'',
-        include('knotis.contrib.transaction.urls')
-    ),
-    url(
         r'^my/',
         include('knotis.contrib.merchant.urls')
     ),
@@ -57,32 +41,8 @@ urlpatterns = patterns(
         include('knotis.contrib.offer.urls')
     ),
     url(
-        r'^charts/',
-        include('knotis.contrib.highchart.urls')
-    ),
-    url(
-        r'^contact/',
-        include('knotis.contrib.contact.urls'),
-    ),
-    url(
-        r'^events/',
-        include('knotis.contrib.event.urls'),
-    ),
-    url(
-        r'^happyhours/',
-        include('knotis.contrib.happyhour.urls'),
-    ),
-    url(
-        r'^dashboard/',
-        include('knotis.contrib.dashboard.urls')
-    ),
-    url(
         r'^qrcode/',
         include('knotis.contrib.qrcode.urls')
-    ),
-    url(
-        r'^category/',
-        include('knotis.contrib.category.urls')
     ),
     url(
         r'^paypal/',
@@ -97,11 +57,11 @@ urlpatterns = patterns(
         include('knotis.contrib.location.urls')
     ),
     url(
-        r'^(?P<backend_name>[^/]+)/$',
-        'knotis.contrib.business.views.profile'
+        r'',
+        include('knotis.contrib.layout.urls')
     ),
     url(
         r'',
-        include('knotis.contrib.layout.urls')
+        include('knotis.contrib.api.urls')
     )
 )

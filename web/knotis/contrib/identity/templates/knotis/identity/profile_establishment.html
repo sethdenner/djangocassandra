@@ -12,7 +12,7 @@
 <div class="container-fluid">
   <div id="id-profile-cover" class="row-fluid">
     <div class="span12">
-      {% thumbnail profile_logo.image.image '170x170' crop=profile_logo.crop as img %}
+      {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
       <img src="{{ img.url }}" class="img-circle" />
       {% empty %}
       <img data-add-image src="{{ default_profile_logo_uri }}" class="img-circle" />

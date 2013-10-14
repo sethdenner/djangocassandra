@@ -65,6 +65,14 @@ class QuickURLField(QuickField, QuickFieldDefaultMixin, models.URLField):
     pass
 
 
+class QuickIPAddressField(
+        QuickField,
+        QuickFieldDefaultMixin,
+        models.IPAddressField
+):
+    pass
+
+
 class QuickDateTimeField(
         QuickField,
         QuickFieldDefaultMixin,

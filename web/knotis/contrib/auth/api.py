@@ -22,14 +22,12 @@ from forms import (
     SignUpForm
 )
 from models import (
-    KnotisUser,
     UserInformation
 )
 
 
 class AuthenticationApi(ApiView):
-    model = KnotisUser
-    api_url = 'auth'
+    api_url = 'auth/auth'
 
     def post(
         self,
@@ -101,8 +99,7 @@ class AuthenticationApi(ApiView):
 
 
 class AuthUserApi(ApiView):
-    model = KnotisUser
-    api_url = 'user'
+    api_url = 'auth/user'
 
     def post(
         self,

@@ -1,15 +1,11 @@
 (function($) {
-    $('#modal-box').modal({
-        backdrop: 'static',
-        keyboard: false,
-    });
-
-    $.get(
-        '/identity/first/',
-        {},
-        function(data, status, jqxhr) {
-            $('#modal-box').html(data);
-
+    $.ajaxmodal({
+        href: '/identity/first/',
+        modal_settings: {
+            backdrop: 'static',
+            keyboard: false,
+        },
+        on_open: function(data, status, request) {
             $('#id-individual-form').ajaxform({
                 done: function(data, status, jqxhr) {
                     if (!data.errors) {
@@ -48,8 +44,8 @@
 
                         $('form#id-location-form').append(
                             '<input id="backend_name" type="hidden" value="' +
-                            data.data.business_backend_name +
-                            '"/>'
+                                data.data.business_backend_name +
+                                '"/>'
                         );
 
                     }
@@ -80,9 +76,7 @@
                 $('#modal-box').modal('hide');
 
             });
-
         }
-
-    );
+    });
 
 })(jQuery);

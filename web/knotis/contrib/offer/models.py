@@ -310,6 +310,30 @@ class Offer(QuickModel):
         ):
             self.complete()
 
+    def _calculate_prices(self):
+        if hasattr(self, '_price_retail') and hasattr(self, '_price_discount'):
+            return
+
+        offer_items = OfferItem.objects.filter(offer=self)
+        price_retail = 0.0
+        price_discount = 0.0
+        for item in offer_items:
+            stock = item.inventory.stock
+            if stock and item.inventory.price:
+                price_retail += stock * item.inventory.price
+                price_discount += stock * item.price_discount
+
+        self._price_retail = price_retail
+        self._price_discount = price_discount
+
+    def price_retail(self):
+        self._calculate_prices()
+        return self._price_retail
+
+    def price_discount(self):
+        self._calculate_prices()
+        return self._price_discount
+
     def is_visable(self):
         return True
 
@@ -421,20 +445,20 @@ class Offer(QuickModel):
         ]).replace('\n', ' ')
 
     def price_retail_formatted(self):
-        return format_currency(self.price_retail)
+        return format_currency(self.price_retail())
 
     def price_discount_formatted(self):
-        return format_currency(self.price_discount)
+        return format_currency(self.price_discount())
 
     def savings(self):
         return format_currency(
-            self.price_retail - self.price_discount
+            self.price_retail() - self.price_discount()
         )
 
     def savings_percent(self):
         return '%.0f' % round(
-            (self.price_retail - self.price_discount) /
-            self.price_retail * 100, 0
+            (self.price_retail() - self.price_discount()) /
+            self.price_retail() * 100, 0
         )
 
     def days_remaining(self):
@@ -461,7 +485,7 @@ class Offer(QuickModel):
             return [i for i in range(1, stock_remaining + 1)]
 
     def income_gross(self):
-        return (self.purchased * self.price_discount)
+        return (self.purchased * self.price_discount())
 
     def income_net_formatted(self):
         gross = self.income_gross()
@@ -484,10 +508,10 @@ class OfferAvailabilityManager(QuickManager):
         offer = kwargs.get('offer')
 
         if offer:
-            kwargs['offer_title'] = offer.title
-            kwargs['offer_stock'] = offer.stock
-            kwargs['offer_purchased'] = offer.purchased
-            kwargs['offer_default_image'] = offer.default_image
+            kwargs['title'] = offer.title
+            kwargs['stock'] = offer.stock
+            kwargs['purchased'] = offer.purchased
+            kwargs['default_image'] = offer.default_image
 
             offer_items = OfferItem.objects.filter(offer=offer)
             price = 0.
@@ -499,7 +523,7 @@ class OfferAvailabilityManager(QuickManager):
         identity = kwargs.get('identity')
 
         if identity:
-            kwargs['identity_badge_image'] = identity.badge_image
+            kwargs['badge_image'] = identity.badge_image
 
         return super(OfferAvailabilityManager, self).create(
             *args,
@@ -512,10 +536,10 @@ class OfferAvailabilityManager(QuickManager):
     ):
         offers = self.objects.filter(offer=offer)
         for o in offers:
-            o.offer_title = offer.title
-            o.offer_stock = offer.stock
-            o.offer_purchased = offer.purchased
-            o.offer_default_image = offer.default_image
+            o.title = offer.title
+            o.stock = offer.stock
+            o.purchased = offer.purchased
+            o.default_image = offer.default_image
             o.save()
 
         return offers
@@ -526,7 +550,7 @@ class OfferAvailabilityManager(QuickManager):
     ):
         offers = self.objects.filter(identity=identity)
         for o in offers:
-            o.identity_badge_image = identity.badge_image
+            o.badge_image = identity.badge_image
             o.save()
 
         return offers
@@ -558,17 +582,17 @@ class OfferAvailability(QuickModel):
     """
     offer = QuickForeignKey(Offer)
     identity = QuickForeignKey(Identity)
-    offer_title = QuickCharField(
+    title = QuickCharField(
         max_length=140
     )
-    offer_stock = QuickIntegerField()
-    offer_purchased = QuickIntegerField()
-    offer_default_image = QuickForeignKey(
+    stock = QuickIntegerField()
+    purchased = QuickIntegerField()
+    default_image = QuickForeignKey(
         ImageInstance,
         related_name='offeravailability_offer_images'
     )
 
-    identity_badge_image = QuickForeignKey(
+    badge_image = QuickForeignKey(
         ImageInstance,
         related_name='offeravailability_badge_images'
     )
@@ -596,6 +620,7 @@ class OfferPublish(Publish):
             identity=establishment
         )
         offer.active = True
+        offer.published = True
         offer.save()
 
     def publish(self):
