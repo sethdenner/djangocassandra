@@ -32,6 +32,7 @@ class CropForm(ModelForm):
             'owner',
             'image',
             'related_object_id',
+            'context',
             'crop_left',
             'crop_top',
             'crop_width',
@@ -41,6 +42,7 @@ class CropForm(ModelForm):
             'owner': HiddenInput(),
             'image': HiddenInput(),
             'related_object_id': HiddenInput(),
+            'context': HiddenInput(),
             'crop_left': HiddenInput(),
             'crop_top': HiddenInput(),
             'crop_width': HiddenInput(),
@@ -59,6 +61,7 @@ class CropForm(ModelForm):
         owner,
         image,
         related_object_id,
+        context=None,
         *args,
         **kwargs
     ):
@@ -70,6 +73,7 @@ class CropForm(ModelForm):
         self.fields['owner'].initial = owner
         self.fields['image'].initial = image
         self.fields['related_object_id'].initial = related_object_id
+        self.fields['context'].initial = context
 
     def save(
         self,
@@ -116,6 +120,7 @@ def crop(
     request,
     image_id,
     related_object_id,
+    context=None,
     image_max_width=None,
     image_max_height=None
 ):
@@ -171,24 +176,6 @@ def crop(
                 logger.exception()
 
         if saved:
-            try:
-                related_object = Identity.objects.get(pk=related_object_id)
-
-            except:
-                pass
-
-            if related_object:
-                if not related_object.badge_image:
-                    related_object.badge_image = saved_instance
-
-                    try:
-                        related_object.save()
-
-                    except:
-                        logger.exception(
-                            'failed to save instance as badge image.'
-                        )
-
             return HttpResponse(
                 json.dumps({
                     'status': 'success',
@@ -208,6 +195,7 @@ def crop(
             owner=current_identity,
             image=image,
             related_object_id=related_object_id,
+            context=context,
             instance=image_instance
         )
 

@@ -44,6 +44,11 @@ class ImageInstance(QuickModel):
         db_index=True
     )
 
+    context = QuickCharField(
+        max_length=16,
+        db_index=True
+    )
+
     crop_left = QuickFloatField()
     crop_top = QuickFloatField()
     crop_width = QuickFloatField()

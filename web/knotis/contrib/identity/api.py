@@ -29,8 +29,7 @@ from forms import (
 
 
 class IdentityApi(ApiView):
-    model = Identity
-    api_url = 'identity'
+    api_url = 'identity/identity'
 
     def post(
         self,
@@ -164,8 +163,7 @@ class IdentityApi(ApiView):
 
 
 class IdentityIndividualApi(IdentityApi):
-    model = IdentityIndividual
-    api_url = 'individual'
+    api_url = 'identity/individual'
 
     def post(
         self,
@@ -297,8 +295,7 @@ class IdentityIndividualApi(IdentityApi):
 
 
 class IdentityBusinessApi(IdentityApi):
-    model = IdentityBusiness
-    api_url = 'business'
+    api_url = 'identity/business'
 
     def post(
         self,
@@ -393,7 +390,9 @@ class IdentityBusinessApi(IdentityApi):
         try:
             establishment_data = request.POST.copy()
             establishment_data['identity_type'] = IdentityTypes.ESTABLISHMENT
-            form_establishment = IdentityEstablishmentForm(data=establishment_data)
+            form_establishment = IdentityEstablishmentForm(
+                data=establishment_data
+            )
             establishment = form_establishment.save()
             created_objects.append(establishment)
 
@@ -498,8 +497,7 @@ class IdentityBusinessApi(IdentityApi):
 
 
 class IdentityEstablishmentApi(IdentityApi):
-    model = IdentityEstablishment
-    api_url = 'establishment'
+    api_url = 'identity/establishment'
 
     def post(
         self,
