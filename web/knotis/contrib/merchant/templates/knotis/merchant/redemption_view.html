@@ -4,13 +4,23 @@
 <div class="modal-body">
   <h2>Outstanding Purchases</h2>
   <div class="row-fluid">
-    <div class="span8">
+    <div id="purchases" class="span8">
       {% if purchases %}
       {% for p in purchases %}
-      <ul class="unstyled">
-        <li>Purchaser: {{ p.owner.name }}</li>
-        <li>Redemption Code: {{ p.transaction_context }}</li>
-      </ul>
+      <div class="row-fluid">
+        <div class="span9">
+          <ul class="unstyled">
+            <li>Purchaser: {{ p.owner.name }}</li>
+            <li>Redemption Code: {{ p.transaction_context }}</li>
+          </ul>
+        </div>
+        <div class="span3">
+          <form class="redemption-form"  method="POST" action="/api/v1/merchant/redeem/">
+            <input type="submit" name="redeem" value="Redeem" class="btn btn-primary" />
+            <input type="hidden" name="transaction_context" value="{{ p.transaction_context }}" />
+          </form>
+        </div>
+      </div>
       {% endfor %}
       {% else %}
       <strong>No redeemable purchases</strong>

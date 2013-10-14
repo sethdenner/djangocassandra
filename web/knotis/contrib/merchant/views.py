@@ -271,7 +271,8 @@ class OfferRedemptionView(FragmentView):
         consumer_purchases = []
         for purchase in purchases:
             if purchase.owner != current_identity:
-                consumer_purchases.append(purchase)
+                if not purchase.redemptions():
+                    consumer_purchases.append(purchase)
 
         self.context.update({
             'offer': offer,

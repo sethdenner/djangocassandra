@@ -84,7 +84,7 @@ class InventoryManager(QuickManager):
         identity,
         product,
         price=0.,
-        stock=None
+        stock=0.
     ):
         unlimited = None == stock
         return Inventory.objects.create(
