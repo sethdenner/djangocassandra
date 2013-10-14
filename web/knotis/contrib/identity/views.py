@@ -295,6 +295,10 @@ class EstablishmentProfileView(ContextView):
 
         except:
             profile_banner_image = None
+        if establishment.badge_image:
+            profile_logo = establishment.badge_image
+        else:
+            profile_logo = None
 
         if is_manager:
             default_profile_logo_uri = ''.join([
@@ -333,16 +337,14 @@ class EstablishmentProfileView(ContextView):
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
             'default_profile_logo_uri': default_profile_logo_uri,
-<<<<<<< HEAD
-            'profile_bologo': profile_logo,
+            'profile_logo': profile_logo,
+            'profile_header': profile_header,
             'establishment_offers': establishment_offers,
             'address': address,
             'maps_scripts': maps_scripts
-=======
             'profile_badge': profile_badge_image,
             'profile_banner': profile_banner_image,
             'establishment_offers': establishment_offers
->>>>>>> 9c5330f576eae11694f0f2812d9d7d81a9fc623b
         })
 
         return local_context

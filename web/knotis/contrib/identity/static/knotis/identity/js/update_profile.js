@@ -1,10 +1,7 @@
 (function($){
-/*
-    $('#modal-box').modal({
-	backdrop: 'static',
-	keyboard: false
-    });
-*/
+    
+
+    // ADDRESS EDITING
 
     var $updateable_addresses = $('.update-address-link');
 
@@ -51,5 +48,56 @@
 
 	$updateable_addresses.on('click', update_address);
     }
+
+    // ENDPOINT EDITING
+
+    var $potential_input = $('.editable.establishment-endpoint');
+    
+    var submit_endpoint = function($elem){
+	var identity_id = $elem.attr('data-establishment-id');
+	var endpoint_type = $elem.attr('data-endpoint-endpoint-type-name');
+	var endpoint_id = $elem.attr('data-endpoint-id');
+	console.log(identity_id, endpoint_type);
+	$.post(
+	    '/api/v1/knotis/endpoint/',
+	    {
+		identity_id: identity_id,
+		endpoint_type: endpoint_type,
+		endpoint_id: endpoint_id,
+		value: $elem.text()
+	    },
+	    function(data){
+		$elem.removeAttr('contenteditable');
+		if(!data.errors){
+		    $elem.blur();
+		    $elem.attr('data-endpoint-endpoint-id', data['endpoint-id'])
+		}else{
+		    console.log(data.data);
+		    $potential_input.one('click', edit_endpoint); 
+		}
+	    }
+	);
+    };
+
+    var edit_endpoint = function(){
+	var $this = $(this);
+	$this.attr('contenteditable', true);
+
+	$this.on('keypress', function(e){
+	    if (e.which == 13){
+		$this.off('blur');
+		submit_endpoint($this);
+		e.preventDefault();
+	    }
+	});
+
+	$this.one('blur', function(e){
+	    $this.off('keypress');
+	    submit_endpoint($this);
+	    e.preventDefault();
+	});
+    };
+	
+    $potential_input.one('click', edit_endpoint);
 
 })(jQuery);

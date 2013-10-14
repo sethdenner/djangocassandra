@@ -10,7 +10,13 @@
 {% block content %}
 {% load crispy_forms_tags %}
 <div class="container-fluid">
-  <div id="id-profile-cover" class="row-fluid">
+
+  {% thumbnail profile_header.image.image '2560x281' crop=profile_header.crop as header %}
+  <img src="{{ header.url }}" />
+  {% empty %}
+  Nothing
+  {% endthumbnail %}
+  <div id="id-profile-cover" class="row-fluid" style="background-image=url('{{ header.url }}');" />
     <div class="span12">
       {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
       <img src="{{ img.url }}" class="img-circle" />
@@ -42,8 +48,49 @@
       </div>
       <div id="id-profile-action" class="row">
       </div>
+
+      <a class="change-profile-cover-link">Change Cover Image</a>
+      <script type="text/javascript">
+	document.addEventListener( "DOMContentLoaded", function(){
+	  $('a.change-profile-cover-link').on('click', function(){
+            $.get(
+              '/image/upload/',
+	      {},
+	      function(data, status, jqxhr){
+                console.log(status);
+
+                if(data.errors){
+                  console.log('errors', data.errors);
+                  return;
+                }
+
+	        $('#modal-box').html(data);
+
+                $('#object-id').attr('data-object-id', '{{ establishment.id }}');
+                $('#modal-box').modal({
+                  backdrop: true,
+                  keyboard: true
+                });
+                
+                $('#file-uploader').sickle({
+                  do_upload: true,
+                  params: {
+                    type: 'image'
+                  },
+                  aspect: 9,
+                  done: function(data, status, jqxhr){
+
+                  },
+                  related_object_id: '{{ establishment.id }}'
+                });
+	      }
+            );
+          });
+	});
+      </script>
     </div>
   </div>
+
   <div id="id-profile-spacer" class="row-fluid"><p class="span12">&nbsp;</p></div>
   <div class="row-fluid">
     <div class="span2">
