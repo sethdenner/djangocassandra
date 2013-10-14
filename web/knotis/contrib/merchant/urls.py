@@ -3,12 +3,14 @@ from django.conf.urls.defaults import (
     url
 )
 
+from knotis.utils.regex import REGEX_UUID
+
 from views import (
     MyEstablishmentsView,
     MyOffersView,
-    OfferRedemptionView,
     MyFollowersView,
     MyAnalyticsView,
+    OfferRedemptionView
 )
 
 urlpatterns = patterns(
@@ -18,7 +20,11 @@ urlpatterns = patterns(
         MyEstablishmentsView.as_view()
     ),
     url(
-        r'^offers/redeem/',
+        r''.join([
+            '^offers/redeem/(?P<offer_id>',
+            REGEX_UUID,
+            ')/$',
+        ]),
         OfferRedemptionView.as_view()
     ),
     url(
@@ -30,7 +36,7 @@ urlpatterns = patterns(
         MyFollowersView.as_view()
     ),
     url(
-        r'^analytics(/(?P<graph_type>\w*))/$',
+        r'^analytics(/(?P<graph_type>\w*))?/$',
         MyAnalyticsView.as_view()
     )
 )

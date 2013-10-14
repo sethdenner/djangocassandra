@@ -1,0 +1,23 @@
+{% if actions %}
+<div class="btn-group">
+  <button{% for key, value in primary_action.data.iteritems %}
+            data-{{ key }}="{{ value }}"{% endfor %}
+            data-toggle="dropdown"
+            class="btn dropdown-toggle {{ css_class }}"
+            href="{{ primary_action.href }}">{{ primary_action.title }}<span class="caret"></span></button>
+  <ul class="dropdown-menu">
+    {% for action in actions %}
+    <li>
+      <a 
+         href="{{ action.href }}"{% for key, value in action.data.iteritems %}
+         data-{{ key }}="{{ value }}"{% endfor %}>{{ action.title }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% else %}
+<button{% for key, value in default_action.data.iteritems %}
+          data-{{ key }}="{{ value }}"{% endfor %}
+          class="btn dropdown-toggle {{ css_class }}"
+          href="{{ default_action.href }}">{{ default_action.title }}</button>
+{% endif %}

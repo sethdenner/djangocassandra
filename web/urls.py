@@ -59,5 +59,9 @@ urlpatterns = patterns(
     url(
         r'',
         include('knotis.contrib.layout.urls')
+    ),
+    url(
+        r'',
+        include('knotis.contrib.api.urls')
     )
 )

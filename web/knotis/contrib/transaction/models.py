@@ -116,7 +116,7 @@ class TransactionManager(QuickManager):
             currency_owner = Inventory.objects.split(
                 currency,
                 offer.owner,
-                offer.price_discount
+                offer.price_discount()
             )
 
             currencies_thrid_party = []
@@ -213,8 +213,10 @@ class TransactionManager(QuickManager):
             for i in inventory:
                 for item in purchase_items:
                     if (
-                        i.id == item.inventory_id and
-                        buyer.id == item.inventory.recipient_id
+                        i.id == item.inventory_id and (
+                            buyer.id == item.inventory.recipient_id or
+                            offer.owner_id == item.inventory.recipient_id
+                        )
                     ):
                         inventory_redeem.append(i)
                         add_participant(
@@ -223,16 +225,16 @@ class TransactionManager(QuickManager):
                         )
 
             if len(inventory_redeem) != len(inventory):
-                raise Exception(
-                    ', '.join((
-                        'The following inventories do not belong to this '
-                        'transaction or they have already been redeemed'
-                    ), [
-                        i.id for i in list(
-                            set(inventory) - set(inventory_redeem)
-                        )
-                    ])
+                message = (
+                    'The following inventories do not belong to this '
+                    'transaction or they have already been redeemed: '
                 )
+                message = message + ', '.join([
+                    i.id for i in list(
+                        set(inventory) - set(inventory_redeem)
+                    )
+                ])
+                raise Exception(message)
 
         except:
             logger.exception(
@@ -706,20 +708,14 @@ class Transaction(QuickModel):
     def redemptions(self):
         try:
             redemptions = Transaction.objects.filter(
-                business=self.business,
                 offer=self.offer,
-                user=self.user,
                 transaction_context=self.transaction_context,
                 transaction_type=TransactionTypes.REDEMPTION
             )
         except:
             redemptions = None
 
-        redemption_count = 0
-        for redemption in redemptions:
-            redemption_count = redemption_count + redemption.quantity
-
-        return redemption_count
+        return len(redemptions)
 
     def unredeemed(self):
         return self.purchases() - self.redemptions()

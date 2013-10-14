@@ -1,4 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import (
+    login_required as auth_login_required
+)
 
 from django.http import QueryDict
 from django.views.generic import (
@@ -7,7 +10,6 @@ from django.views.generic import (
 )
 from django.conf.urls.defaults import url
 from django.template import (
-    Context,
     RequestContext
 )
 
@@ -86,7 +88,6 @@ class AJAXFragmentView(
 
 
 class ApiView(AJAXView):
-    model = None
     api_url = None
     api_version = 'v1'
 
@@ -119,21 +120,25 @@ class ApiView(AJAXView):
         )
 
     @classmethod
-    def urls(cls):
-        if None == cls.model:
-            raise Exception('must define a model for ApiView')
+    def urls(
+        cls,
+        login_required=False
+    ):
+        if None == cls.api_url:
+            raise Exception('must define a url for ApiView')
 
-        api_url = (
-            cls.api_url if cls.api_url else cls.model.__name__.lower()
-        )
+        if login_required:
+            view = auth_login_required(cls.as_view())
+
+        else:
+            view = cls.as_view()
 
         return url(
             '/'.join([
                 '^api',
                 ApiView.api_version,
-                cls.model._meta.app_label,
-                api_url,
+                cls.api_url,
                 ''
             ]),
-            cls.as_view()
+            view
         )

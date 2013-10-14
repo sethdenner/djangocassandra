@@ -48,11 +48,6 @@ from knotis.contrib.paypal.views import (
     PayPalButton
 )
 
-from knotis.contrib.transaction.models import (
-    Transaction,
-    TransactionTypes
-)
-
 from knotis.views import (
     ContextView,
     FragmentView,
@@ -71,6 +66,8 @@ from knotis.contrib.wizard.views import(
     WizardView,
     WizardStep
 )
+
+from knotis.contrib.layout.views import ActionButton
 
 
 class OffersView(ContextView):
@@ -129,6 +126,10 @@ class OfferPurchaseView(ContextView):
         )
 
         return self.context
+
+
+class OfferActionButton(ActionButton):
+    view_name = 'offer_action_button'
 
 
 class OfferTile(FragmentView):
