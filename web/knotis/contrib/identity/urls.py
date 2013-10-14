@@ -7,12 +7,6 @@ from django.views.generic.simple import redirect_to
 
 from knotis.utils.regex import REGEX_UUID
 
-from api import (
-    IdentityApi,
-    IdentityIndividualApi,
-    IdentityBusinessApi,
-    IdentityEstablishmentApi
-)
 from views import (
     IdentityView,
     BusinessesView,
@@ -77,9 +71,5 @@ urlpatterns = patterns(
     url(
         r'^identity/first/$',
         FirstIdentityView.as_view()
-    ),
-    IdentityApi.urls(),
-    IdentityIndividualApi.urls(),
-    IdentityBusinessApi.urls(),
-    IdentityEstablishmentApi.urls()
+    )
 )

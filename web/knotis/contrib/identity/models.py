@@ -246,14 +246,6 @@ class Identity(QuickModel):
     description = QuickTextField(
         verbose_name=_('Describe the Identity')
     )
-    badge_image = QuickForeignKey(
-        'media.ImageInstance',
-        related_name='badge_images'
-    )
-    header_image = QuickForeignKey(
-        'media.ImageInstance',
-        related_name='header_images'
-    )
 
     objects = IdentityManager()
 

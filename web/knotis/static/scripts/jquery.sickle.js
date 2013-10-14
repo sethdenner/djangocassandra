@@ -38,6 +38,7 @@
             aspect: null,
             image_id: null,
             related_object_id: null,
+            context: null,
             image_max_width: null,
             image_max_height: null,
             modal_selector: '#modal-box'
@@ -49,6 +50,8 @@
                 image_id,
                 '/',
                 _options.related_object_id,
+                '/',
+                _options.context,
                 '/'
             ].join('');
             if (_options.image_max_width && _options.image_max_height) {

@@ -14,7 +14,7 @@
                 $('#file-uploader').sickle({
                     do_upload: true,
                     params: {
-                        type: 'image'
+                        type: 'image',
                     },
                     aspect: 1,
                     done: function(data) {
@@ -26,8 +26,8 @@
                             // Invalid Status
                         }
                     },
-                    related_object_id: identity_id
-
+                    related_object_id: identity_id,
+                    context: 'profile_badge'
                 });
             }
         })

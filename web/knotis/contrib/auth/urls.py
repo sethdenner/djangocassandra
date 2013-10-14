@@ -7,15 +7,9 @@ from views import (
     LoginView,
     SignUpView
 )
-from api import (
-    AuthUserApi,
-    AuthenticationApi
-)
 
 urlpatterns = patterns(
     'knotis.contrib.auth.views',
-    AuthUserApi.urls(),
-    AuthenticationApi.urls(),
     url(
         r'^auth/login/$',
         LoginView.as_view()
