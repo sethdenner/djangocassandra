@@ -41,7 +41,7 @@ class Qrcode(QuickModel):
         db_index=True
     )
     hits = QuickIntegerField(blank=True, null=True, default=0)
-    last_hit = QuickDateTimeField(auto_now=True, blank=True, null=True)
+    last_hit = QuickDateTimeField(blank=True, null=True, default=None)
 
     def __init__(self, *args, **kwargs):
         super(Qrcode, self).__init__(*args, **kwargs)
@@ -50,11 +50,11 @@ class Qrcode(QuickModel):
         try:
             Scan.objects.create(
                 qrcode=self,
-                business=self.business,
+                identity=self.owner,
                 uri=self.uri
             )
 
-            self.hits = self.hits + 1
+            self.hits += 1
             self.save()
         except:
             pass
@@ -63,9 +63,9 @@ class Qrcode(QuickModel):
 class ScanManager(QuickManager):
     def get_daily_scans(
         self,
-        business
+        qrcode
     ):
-        scans = self.filter(business=business)
+        scans = self.filter(qrcode=qrcode)
 
         daily_scans = []
         day = 0

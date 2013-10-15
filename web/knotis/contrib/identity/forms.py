@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.forms import (
     ModelForm,
     CharField,
@@ -13,6 +14,11 @@ from crispy_forms.layout import (
     Field,
     ButtonHolder,
     Submit
+)
+
+from knotis.contrib.qrcode.models import (
+    Qrcode,
+    QrcodeTypes
 )
 
 from models import (
@@ -40,6 +46,30 @@ class IdentityBusinessForm(ModelForm):
     class Meta:
         model = IdentityBusiness
         exclude = ('content_type')
+
+    def save(
+        self,
+        *args,
+        **kwargs
+    ):
+        instance = super(IdentityBusinessForm, self).save(
+            *args,
+            **kwargs
+        )
+
+        #create qrcode for new business
+        Qrcode.objects.create(
+            owner=instance,
+            uri='/'.join([
+                settings.BASE_URL,
+                'id',
+                instance.id,
+                ''
+            ]),
+            qrcode_type=QrcodeTypes.PROFILE
+        )
+
+        return instance
 
 
 class IdentityEstablishmentForm(ModelForm):
