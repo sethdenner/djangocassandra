@@ -67,14 +67,78 @@ from knotis.contrib.wizard.views import(
     WizardStep
 )
 
-from knotis.contrib.layout.views import ActionButton
+from knotis.contrib.layout.views import (
+    ActionButton,
+    GridSmallView
+)
+
+
+class OffersGridView(GridSmallView):
+    view_name = 'offers_grid'
+
+    def process_context(self):
+        offer_filter_dict = {
+            'published': True,
+            'active': True,
+            'completed': False
+        }
+
+        try:
+            offers = Offer.objects.filter(
+                **offer_filter_dict
+            )
+
+        except Exception:
+            logger.exception(''.join([
+                'failed to get offers.'
+            ]))
+
+        tiles = []
+        for offer in offers:
+            tile = OfferTile()
+            tiles.append(tile.render_template_fragment(Context({
+                'offer': offer,
+                'offer_action': 'buy'
+            })))
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'tiles': tiles
+        })
+        return local_context
 
 
 class OffersView(ContextView):
     template_name = 'knotis/offer/offers_view.html'
 
     def process_context(self):
-        return self.context
+        styles = [
+            'knotis/layout/css/global.css',
+            'knotis/layout/css/header.css',
+            'knotis/layout/css/grid.css',
+            'knotis/layout/css/tile.css',
+            'navigation/css/nav_top.css',
+            'navigation/css/nav_side.css',
+        ]
+
+        pre_scripts = []
+
+        post_scripts = [
+            'knotis/layout/js/layout.js',
+            'knotis/layout/js/forms.js',
+            'knotis/layout/js/header.js',
+            'knotis/layout/js/create.js',
+            'navigation/js/navigation.js',
+            'knotis/merchant/js/my_offers.js'
+        ]
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'styles': styles,
+            'pre_scripts': pre_scripts,
+            'post_scripts': post_scripts,
+        })
+        return local_context
 
 
 class OfferPurchaseView(ContextView):
@@ -733,11 +797,6 @@ class OfferEditSummaryView(AJAXFragmentView):
         })
 
         return local_context
-
-
-class OfferGridSmall(FragmentView):
-    template_name = 'knotis/layout/grid_small.html'
-    view_name = 'offer_small'
 
 
 class OfferDetailView(AJAXFragmentView):
