@@ -41,7 +41,7 @@ class Qrcode(QuickModel):
         db_index=True
     )
     hits = QuickIntegerField(blank=True, null=True, default=0)
-    last_hit = QuickDateTimeField(auto_now=True, blank=True, null=True)
+    last_hit = QuickDateTimeField(blank=True, null=True, default=None)
 
     def __init__(self, *args, **kwargs):
         super(Qrcode, self).__init__(*args, **kwargs)

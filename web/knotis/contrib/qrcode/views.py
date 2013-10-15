@@ -42,8 +42,7 @@ class ScanView(View):
         qrcode.scan()
 
         return redirect(
-            qrcode.uri,
-            permanent=True
+            qrcode.uri
         )
 
 
@@ -102,25 +101,18 @@ class ManageQRCodeView(ContextView):
         *args,
         **kwargs
     ):
-        try:
-            current_identity_id = request.session.get('current_identity_id')
-            business = Identity.objects.get(pk=current_identity_id)
-
-        except:
-            return redirect('/')
-
-        try:
-            qrcode = Qrcode.objects.get(owner=business)
-
-        except:
-            qrcode = None
+        current_identity_id = request.session.get('current_identity_id')
+        business = Identity.objects.get(pk=current_identity_id)
+        qrcode = Qrcode.objects.get(owner=business)
 
         qrcode_type = request.POST.get('qrcode')
+
         if 'profile' == qrcode_type:
             qrcode.qrcode_type = QrcodeTypes.PROFILE
             qrcode.uri = '/'.join([
                 settings.BASE_URL,
-                business.backend_name,
+                'id',
+                business.id,
                 ''
             ])
             qrcode.save()
@@ -145,40 +137,8 @@ class ManageQRCodeView(ContextView):
             ])
             qrcode.save()
 
-            template_parameters = Context()
-            template_parameters['business'] = business
-
-            try:
-                template_parameters['offers'] = Offer.objects.filter(
-                    owner=business,
-                    status=OfferStatus.CURRENT
-                )
-
-            except:
-                pass
-
-            if qrcode:
-                template_parameters['qrcode'] = qrcode
-                try:
-                    template_parameters['scans'] = Scan.objects.filter(
-                        qrcode=qrcode
-                    )
-
-                except:
-                    pass
-
-                qrcode_uri = '/'.join([
-                    settings.BASE_URL,
-                    'qrcode',
-                    qrcode.id
-                ])
-
-                template_parameters['qrcode_uri'] = qrcode_uri
-
-            template_parameters['BASE_URL'] = settings.BASE_URL
-
-            return render(
-                request,
-                'manage_qrcode.html',
-                template_parameters
-            )
+        return self.get(
+            request,
+            *args,
+            **kwargs
+        )
