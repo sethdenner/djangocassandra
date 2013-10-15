@@ -49,6 +49,7 @@
 	$updateable_addresses.on('click', update_address);
     }
 
+
     // ENDPOINT EDITING
 
     var $potential_input = $('.editable.establishment-endpoint');
@@ -100,4 +101,37 @@
 	
     $potential_input.one('click', edit_endpoint);
 
+
+    // BANNER EDITING
+
+    $('a.change-profile-cover-link').click(function(event){
+	event.preventDefault();
+	var identity_id = $('div#id-identity-id').attr('data-identity-id');
+
+	$.ajaxmodal({
+	    href: '/image/upload',
+	    modal_settings: {
+		backdrop: 'static'
+	    },
+	    on_open: function(data, status, request){
+
+		$('#file-uploader').sickle({
+		    do_upload: true,
+		    params: {
+			type: 'image'
+		    },
+		    aspect: 9,
+		    related_object_id: identity_id,
+		    context: 'profile_banner',
+		    done: function(data){
+			$('modal-box').modal('hide');
+			console.log(data.status);
+		    }
+		
+		});
+		
+	    }
+	});
+    });
+    
 })(jQuery);

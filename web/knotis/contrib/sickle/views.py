@@ -36,7 +36,8 @@ class CropForm(ModelForm):
             'crop_left',
             'crop_top',
             'crop_width',
-            'crop_height'
+            'crop_height',
+            'primary'
         )
         widgets = {
             'owner': HiddenInput(),
@@ -46,7 +47,8 @@ class CropForm(ModelForm):
             'crop_left': HiddenInput(),
             'crop_top': HiddenInput(),
             'crop_width': HiddenInput(),
-            'crop_height': HiddenInput()
+            'crop_height': HiddenInput(),
+            'primary': HiddenInput()
         }
 
     '''
@@ -74,6 +76,7 @@ class CropForm(ModelForm):
         self.fields['image'].initial = image
         self.fields['related_object_id'].initial = related_object_id
         self.fields['context'].initial = context
+        self.fields['primary'].initial = True
 
     def save(
         self,
@@ -172,8 +175,8 @@ def crop(
                 saved_instance = form.save()
                 saved = True
 
-            except:
-                logger.exception()
+            except Exception, e:
+                logger.exception(e.message)
 
         if saved:
             return HttpResponse(

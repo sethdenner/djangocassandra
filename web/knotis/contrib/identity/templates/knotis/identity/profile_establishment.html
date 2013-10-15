@@ -11,12 +11,12 @@
 {% load crispy_forms_tags %}
 <div class="container-fluid">
 
-  {% thumbnail profile_header.image.image '2560x281' crop=profile_header.crop as header %}
-  <img src="{{ header.url }}" />
+  {% thumbnail profile_banner.image.image '2560x281' crop=profile_banner.crop as header %}
+  <div id="id-profile-cover" class="row-fluid" style="background-image:url('{{ header.url }}');">
   {% empty %}
-  Nothing
+  <div id="id-profile-cover" class="row-fluid">
   {% endthumbnail %}
-  <div id="id-profile-cover" class="row-fluid" style="background-image=url('{{ header.url }}');" />
+
     <div class="span12">
       {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
       <img src="{{ img.url }}" class="img-circle" />
@@ -50,6 +50,7 @@
       </div>
 
       <a class="change-profile-cover-link">Change Cover Image</a>
+      <!--
       <script type="text/javascript">
 	document.addEventListener( "DOMContentLoaded", function(){
 	  $('a.change-profile-cover-link').on('click', function(){
@@ -88,6 +89,7 @@
           });
 	});
       </script>
+      -->
     </div>
   </div>
 
