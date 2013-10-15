@@ -1,5 +1,5 @@
 {% load thumbnail %}
-<div class="grid-tile small-tile" data-offer-id="{{ offer.id }}" >
+<div class="offer-tile grid-tile small-tile" data-offer-id="{{ offer.id }}" >
   <div class="tile-header">
     {% thumbnail offer.default_image.image '120x120' crop=offer.default_image.crop as image %}
     <img class="tile-image" alt="{{ offer.title }}" src="{{ image.url }}" />

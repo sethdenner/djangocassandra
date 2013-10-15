@@ -33,7 +33,7 @@ urlpatterns = patterns(
     ),
     url(
         r''.join([
-            '/(?P<offer_id>',
+            'detail/(?P<offer_id>',
             REGEX_UUID,
             ')/$'
         ]),
