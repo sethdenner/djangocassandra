@@ -44,9 +44,6 @@
 
     // ENDPOINT EDITING
 
-
-    // ENDPOINT EDITING
-
     var $potential_input = $('.editable.establishment-endpoint');
     
     var submit_endpoint = function($elem){

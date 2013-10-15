@@ -16,7 +16,6 @@
   {% empty %}
   <div id="id-profile-cover" class="row-fluid">
   {% endthumbnail %}
-
     <div class="span12">
       {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
       <img src="{{ img.url }}" class="img-circle" />
