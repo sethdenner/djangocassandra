@@ -50,46 +50,6 @@
       </div>
 
       <a class="change-profile-cover-link">Change Cover Image</a>
-      <!--
-      <script type="text/javascript">
-	document.addEventListener( "DOMContentLoaded", function(){
-	  $('a.change-profile-cover-link').on('click', function(){
-            $.get(
-              '/image/upload/',
-	      {},
-	      function(data, status, jqxhr){
-                console.log(status);
-
-                if(data.errors){
-                  console.log('errors', data.errors);
-                  return;
-                }
-
-	        $('#modal-box').html(data);
-
-                $('#object-id').attr('data-object-id', '{{ establishment.id }}');
-                $('#modal-box').modal({
-                  backdrop: true,
-                  keyboard: true
-                });
-                
-                $('#file-uploader').sickle({
-                  do_upload: true,
-                  params: {
-                    type: 'image'
-                  },
-                  aspect: 9,
-                  done: function(data, status, jqxhr){
-
-                  },
-                  related_object_id: '{{ establishment.id }}'
-                });
-	      }
-            );
-          });
-	});
-      </script>
-      -->
     </div>
   </div>
 
@@ -104,6 +64,7 @@
   </div>
 </div>
 <div id="id-identity-id" data-identity-id="{{ establishment.id }}" class="hide" >&nbsp;</div>
+
 {% endblock content %}
 {% block footer %}{% endblock footer %}
 {% block last %}{% endblock last %}
