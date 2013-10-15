@@ -296,7 +296,6 @@ class EstablishmentProfileView(ContextView):
         except:
             profile_banner_image = None
 
-
         if is_manager:
             default_profile_logo_uri = ''.join([
                 settings.STATIC_URL,
@@ -334,7 +333,6 @@ class EstablishmentProfileView(ContextView):
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
             'default_profile_logo_uri': default_profile_logo_uri,
-            'establishment_offers': establishment_offers,
             'address': address,
             'maps_scripts': maps_scripts,
             'profile_badge': profile_badge_image,
