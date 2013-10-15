@@ -222,5 +222,23 @@
             "pub_date": "2013-10-10 17:56:26", 
             "order": 2
         }
+    },
+    {
+        "pk": "edb53ec5-a362-40bb-a43c-e02334c8229b", 
+        "model": "navigation.navigationitem", 
+        "fields": {
+            "parent": null, 
+            "title": "Manage QRCode", 
+            "deleted": false, 
+            "uri": "/my/qrcodes/", 
+            "menu_name": "merchant", 
+            "item_type": "link", 
+            "content_type": [
+                "navigation", 
+                "navigationitem"
+            ], 
+            "pub_date": "2013-10-14 18:51:09", 
+            "order": 3
+        }
     }
 ]

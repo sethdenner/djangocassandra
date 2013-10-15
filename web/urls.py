@@ -41,7 +41,7 @@ urlpatterns = patterns(
         include('knotis.contrib.offer.urls')
     ),
     url(
-        r'^qrcode/',
+        r'',
         include('knotis.contrib.qrcode.urls')
     ),
     url(

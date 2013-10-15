@@ -1,0 +1,117 @@
+{% extends 'knotis/layout/master.html' %}
+{% load thumbnail %}
+{% load render_template_fragment %}
+{% block title %}Knotis - Manage QR Code{% endblock title %}
+{% block first %}{% endblock first %}
+{% block header %}
+{% render_fragment header %}
+{% endblock header %}
+{% block content %}
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span2">
+      {% render_fragment nav_side %}
+    </div>
+    <div class="span10">
+        <h2 class="backend"><strong>Manage QR Code Scans</strong></h2>
+        <div class="relative closeinfo">
+          <div class="message-confirm margin-general-25 radius-general ">QR Code url
+            -> {{ BASE_URL }}/qrcode/{{ qrcode.id }}/</div>
+          <div class="qrcode-manage"><img
+                                        src="https://chart.googleapis.com/chart?chs=197x197&cht=qr&chl={{ qrcode_uri }}/&choe=UTF-8"
+                                        alt="QR code {{ business.name }}" title="QR code {{ business.name }}"/></div>
+        </div>
+        <div class="clean"></div>
+        <form method="post">{% csrf_token %}
+          <ul>
+            <fieldset>
+              <h3>Business Profile link</h3>
+              <h4>Automatically send visitors to your Knotis Business Profile</h4>
+              <li>
+                <label>
+                  <span>Business Profile link</span>
+                  <input type="radio" value="profile" name="qrcode" {% if qrcode.qrcode_type == 'profile' %}checked{% endif %} />
+                </label>
+              </li>
+            </fieldset>
+            <fieldset>
+              <h3>Link</h3>
+              <h4>Configure an external link outside of Knotis. This link may be a
+                different business profile, a special promo page, a video on YouTube or other custom URL
+                you specify.</h4>
+              <li>
+                <label>
+                  <span>Link</span>
+                  <input type="radio" name="qrcode"
+                         value="link" {% if qrcode.qrcode_type == 'link' %}
+                         checked{% endif %} />
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input {% if qrcode.qrcode_type == 'link' %}value="{{ qrcode.uri }}"{% endif %}
+                         placeholder="Enter the link – ie: http://www.google.com"
+                         type="text" name="link_content">
+                </label>
+              </li>
+            </fieldset>
+            <fieldset>
+              <h3>Video</h3>
+              <li>
+                <label>
+                  <span>Video</span>
+                  <input type="radio" name="qrcode"
+                         value="video" {% if qrcode.qrcode_type == 'video' %}
+                         checked{% endif %} />
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input {% if business.qrcode_type == 'video' %}value="{{ qrcode.uri }}"{% endif %}
+                         placeholder="Enter the link to the video – ie: http://www.youtube.com"
+                         type="text" name="video_content">
+                </label>
+              </li>
+            </fieldset>
+            <fieldset>
+              <h3>Offers</h3>
+              <h4>Send visitors to one of your current Knotis Offers. Visitors will
+                be sent directly to the offer page where they will find details and discover how to
+                redeem a offer.</h4>
+              {% if offers %}
+              {% for offer in offers %}
+              <li>
+                <label>
+                  <span>{{ offer.title_formatted }}</span>
+                  <input type="radio"
+                         name="qrcode" {% if qrcode.qrcode_type == 'offer' and qrcode.uri == offer.public_url %}
+                         checked{% endif %}
+                         value="{{ offer.id }}"/> {% if offer.active %}[active]{% else %}[expired]{% endif %}
+                </label>
+              </li>
+              {% endfor %}
+              {% endif %}
+            </fieldset>
+            <li class="margin-general">
+              <label>
+                <input type="submit" name="saveQrcode" value="Set QR Link"/>
+              </label>
+            </li>
+            <fieldset>
+              <h3><strong>History</strong></h3>
+              {% if scans %}
+              {% for scan in scans %}
+              <div>
+                <div>{{ scan.uri }} ({{ scan.pub_date }})</div>
+              </div>
+              {% endfor%}
+              {% endif %}
+            </fieldset>
+          </ul>
+        </form>
+      </div>
+    </div>
+</div>
+{% endblock content %}
+{% block footer %}{% endblock footer %}
+{% block last %}{% endblock last %}
