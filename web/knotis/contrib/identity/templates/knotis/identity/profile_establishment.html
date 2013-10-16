@@ -50,27 +50,30 @@
 	  <ul class="unstyled">
 	    {% for endpoint in endpoints %}
 	    {% if endpoint.value %}
-	    <li class="editable establishment-endpoint" 
+	    <li class="{% if is_manager %}editable{% endif %} establishment-endpoint" 
 		data-establishment-id="{{ establishment.id }}"
 		data-endpoint-endpoint-id="{{ endpoint.id }}"
 		data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
-	     {{ endpoint.value }}
-	     </li>
-	     {% else %}
-	     <li class="editable establishment-endpoint" 
-		 data-establishment-id="{{ establishment.id }}"
-		 data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
-	       {{ endpoint.endpoint_type_name }}
-	     </li>
-	     {% endif %}
+	      {{ endpoint.value }}
+	    </li>
+	    {% else %}
+	    {% if is_manager %}
+	    <li class="editable establishment-endpoint" 
+		data-establishment-id="{{ establishment.id }}"
+		data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
+	      add {{ endpoint.endpoint_type_name }}
+	    </li>
+	    {% endif %}
+	    {% endif %}
 	    {% endfor %}
           </ul>
         </strong>
       </div>
       <div id="id-profile-action" class="row">
       </div>
-
+      {% if is_manager %}
       <a class="change-profile-cover-link">Change Cover Image</a>
+      {% endif %}
     </div>
   </div>
 
