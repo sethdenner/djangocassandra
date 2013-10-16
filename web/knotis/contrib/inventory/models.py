@@ -84,17 +84,40 @@ class InventoryManager(QuickManager):
         identity,
         product,
         price=0.,
-        stock=0.
+        stock=0.,
+        unlimited=False,
+        get_existing=False
     ):
-        unlimited = None == stock
-        return Inventory.objects.create(
-            product=product,
-            provider=identity,
-            recipient=identity,
-            price=price,
-            stock=stock,
-            unlimited=unlimited
-        )
+        existing = None
+        if get_existing:
+            existing_stacks = Inventory.objects.filter(
+                provider=identity,
+                recipient=identity,
+                product=product
+            )
+
+            for e in existing_stacks:
+                if not e.offeritem_set.all():
+                    existing = e
+                    break
+
+        if existing:
+            # update existing stack columns
+            existing.price = price
+            existing.stock += stock
+            existing.unlimited = unlimited
+            existing.save()
+            return existing
+
+        else:
+            return Inventory.objects.create(
+                product=product,
+                provider=identity,
+                recipient=identity,
+                price=price,
+                stock=stock,
+                unlimited=unlimited
+            )
 
     def create_stack_from_inventory(
         self,
