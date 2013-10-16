@@ -23,8 +23,11 @@
     {% block header %}{% endblock header %}
     {% block content %}{% endblock content %}
     {% block footer %}{% endblock footer %}
+    <div id="modal-box" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
     {% block last %}{% endblock last %}
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="{{ STATIC_URL }}geocomplete/jquery.geocomplete.min.js"></script>
+    <script src="{{ STATIC_URL }}knotis/maps/js/maps.js"></script>
     <script src="{{ STATIC_URL }}jquery.cookie/jquery.cookie.js"></script>
     <script src="{{ STATIC_URL }}knotis/api/js/api.js"></script>
     <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>

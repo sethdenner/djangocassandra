@@ -23,7 +23,7 @@ urlpatterns = patterns(
         r''.join([
             '^offers/redeem/(?P<offer_id>',
             REGEX_UUID,
-            ')/$',
+            ')/$'
         ]),
         OfferRedemptionView.as_view()
     ),
