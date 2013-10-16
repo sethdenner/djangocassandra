@@ -48,6 +48,8 @@ from knotis.contrib.location.models import (
 
 from knotis.contrib.maps.views import GoogleMap
 
+from knotis.contrib.endpoint.models import *
+
 # from knotis.contrib.location.forms import LocationForm
 
 class IdentityView(ContextView):
@@ -200,6 +202,7 @@ class EstablishmentProfileGrid(GridSmallView):
 
         return local_context
 
+get_class = lambda x: globals()[x]
 
 class EstablishmentProfileView(ContextView):
     template_name = 'knotis/identity/profile_establishment.html'
@@ -325,6 +328,26 @@ class EstablishmentProfileView(ContextView):
         maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
         maps_scripts = maps.render_api_js()
 
+        endpoints = []
+        for endpoint_type in ('phone', 'email', 'facebook', 'twitter', 'yelp'):
+            EndpointClass = get_class('Endpoint' + endpoint_type.capitalize())
+            endpoint = EndpointClass.objects.get_primary_endpoint(
+                identity=establishment,
+                endpoint_type=getattr(get_class('EndpointTypes'), endpoint_type.upper())
+            )
+            if endpoint:
+                endpoints.append({
+                    'id': endpoint.id,
+                    'endpoint_type_name': endpoint_type,
+                    'value': endpoint.value
+                })
+            else:
+                endpoints.append({
+                    'endpoint_type_name': endpoint_type,
+                    'value': None
+                })
+            
+            
         local_context = copy.copy(self.context)
         local_context.update({
             'establishment': establishment,
@@ -337,7 +360,8 @@ class EstablishmentProfileView(ContextView):
             'maps_scripts': maps_scripts,
             'profile_badge': profile_badge_image,
             'profile_banner': profile_banner_image,
-            'establishment_offers': establishment_offers
+            'establishment_offers': establishment_offers,
+            'endpoints': endpoints
         })
 
         return local_context

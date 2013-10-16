@@ -52,7 +52,7 @@
 	var endpoint_id = $elem.attr('data-endpoint-id');
 	console.log(identity_id, endpoint_type);
 	$.post(
-	    '/api/v1/knotis/endpoint/',
+	    '/api/v1/endpoint/',
 	    {
 		identity_id: identity_id,
 		endpoint_type: endpoint_type,
@@ -73,6 +73,7 @@
     };
 
     var edit_endpoint = function(){
+	console.log('editing');
 	var $this = $(this);
 	$this.attr('contenteditable', true);
 

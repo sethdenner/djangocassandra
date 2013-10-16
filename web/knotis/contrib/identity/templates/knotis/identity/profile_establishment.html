@@ -38,10 +38,22 @@
 	    {% endif %}
 	  </div>
 	  <ul class="unstyled">
-            <li>contact@example.com</li>
-            <li>&nbsp;</li>
-            <li>twitter</li>
-            <li>facebook</li>
+	    {% for endpoint in endpoints %}
+	    {% if endpoint.value %}
+	    <li class="editable establishment-endpoint" 
+		data-establishment-id="{{ establishment.id }}"
+		data-endpoint-endpoint-id="{{ endpoint.id }}"
+		data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
+	     {{ endpoint.value }}
+	     </li>
+	     {% else %}
+	     <li class="editable establishment-endpoint" 
+		 data-establishment-id="{{ establishment.id }}"
+		 data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
+	       {{ endpoint.endpoint_type_name }}
+	     </li>
+	     {% endif %}
+	    {% endfor %}
           </ul>
         </strong>
       </div>
