@@ -129,7 +129,7 @@ class OffersView(ContextView):
             'knotis/layout/js/header.js',
             'knotis/layout/js/create.js',
             'navigation/js/navigation.js',
-            'knotis/merchant/js/my_offers.js'
+            'knotis/offer/js/offers.js'
         ]
 
         local_context = copy.copy(self.context)
@@ -329,22 +329,9 @@ class OfferEditProductFormView(AJAXFragmentView):
             inventory = Inventory.objects.create_stack_from_product(
                 owner,
                 product,
-                value
-            )
-
-        except Exception, e:
-            logger.exception('failed to create inventory')
-
-            return self.generate_response({
-                'message': 'a server error occurred',
-                'errors': {'no-field': e.message}
-            })
-
-        try:
-            inventory = Inventory.objects.create_stack_from_product(
-                owner,
-                product,
-                value
+                price=value,
+                unlimited=True,
+                get_existing=True
             )
 
         except Exception, e:
@@ -799,14 +786,13 @@ class OfferEditSummaryView(AJAXFragmentView):
         return local_context
 
 
-class OfferDetailView(AJAXFragmentView):
+class OfferDetailView(FragmentView):
     template_name = 'knotis/offer/detail.html'
     view_name = 'offer_detail'
 
     def process_context(self):
-        offer_id = self.context.get('kwargs', {}).get('offer_id')
-        #request.GET.get('offer_id')
-        offer = get_object_or_404(Offer, id=offer_id)
+        offer_id = self.context.get('offer_id')
+        offer = get_object_or_404(Offer, pk=offer_id)
 
         try:
             offer_items = OfferItem.objects.filter(offer=offer)

@@ -1,20 +1,66 @@
 {% load thumbnail %}
-<div class="grid-tile small-tile" >
-  <div class="tile-header">
-    {% thumbnail offer.offer_default_image.image '120x120' crop=offer.offer_default_image.crop as image %}
-    <img class="tile-image" alt="{{ offer.offer_title }}" src="{{ image.url }}" />
-    {% empty %}
-    <img class="tile-image"  alt="{{ offer.offer_title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
-    {% endthumbnail %}
-    {% thumbnail offer.identity_primary_image '60x60' crop=offer.identity_primary_image.crop as image %}
-    <img class="tile-badge" src="{{ image.url }}" />
-    {% empty %}
-    <img class="tile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
-    {% endthumbnail %}
+<div class="modal-header">
+  <h1>{{ offer.title }}</h1>
+  <div>
+    <p>{{ offer.owner.name }}</p>
   </div>
-  <div class="tile-body">
-    <p class="tile-title">{{ offer.offer_title }}</p>
-    <button class="btn btn-primary action">Buy</button>
+</div>
+<div class="modal-body">
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span4">
+        {% thumbnail offer_image.image.image '420x420' crop=offer_image.crop as img %}
+        <img class="offer-image" alt="{{ offer.title }}" src="{{ img.url }}" />
+        {% empty %}
+        <img class="offer-image" alt="{{ offer.title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
+        {% endthumbnail %}
+      </div>
+      <div class="span5">
+        <h4>{{ offer.title }}</h4>
+        <p>
+          {{ offer.description }}
+        </p>
+        <h4>Fine Print / Restrictions</h4>
+        <p>
+          {{ offer.restrictions }}
+        </p>
+      </div>
+      <div class="span3">
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="span6">
+              ${{ offer.price_retail_formatted }}
+            </div>
+            <div class="span6">
+              ${{ offer.price_discount_formatted }}
+            </div>
+          </div>
+          <div class="row-fluid">
+            <div class="span6">
+              <p>
+                {{ offer.savings_percent }}%
+                <small>savings</small>
+              </p>
+            </div>
+            <div class="span6">
+              <p>
+                {{ offer.purchased }}
+                <small>purchased</small>
+              </p>
+            </div>
+          </div>
+          <div class="row-fluid">
+            <div class="span12">
+              <button class="btn btn-primary">Buy</button>
+            </div>
+          </div>
+          <div class="row-fluid">
+            <div class="span12">
+              PUT MAP HERE
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="tile-footer">{% if stats %}{{ stats }}{% else %}&nbsp;{% endif %}</div>
 </div>

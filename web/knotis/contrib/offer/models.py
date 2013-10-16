@@ -30,6 +30,8 @@ from knotis.contrib.endpoint.models import (
     Publish
 )
 
+from knotis.contrib.media.models import ImageInstance
+
 
 class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
     pass
@@ -523,7 +525,12 @@ class OfferAvailabilityManager(QuickManager):
         identity = kwargs.get('identity')
 
         if identity:
-            kwargs['badge_image'] = identity.badge_image
+            identity_profile_badge = ImageInstance.objects.get(
+                related_object_id=identity.id,
+                context='profile_badge',
+                primary=True
+            )
+            kwargs['profile_badge'] = identity_profile_badge
 
         return super(OfferAvailabilityManager, self).create(
             *args,
@@ -549,8 +556,13 @@ class OfferAvailabilityManager(QuickManager):
         identity
     ):
         offers = self.objects.filter(identity=identity)
+        identity_profile_badge = ImageInstance.objects.get(
+            related_object_id=identity.id,
+            context='profile_badge',
+            primary=True
+        )
         for o in offers:
-            o.badge_image = identity.badge_image
+            o.profile_badge = identity_profile_badge
             o.save()
 
         return offers
@@ -592,7 +604,7 @@ class OfferAvailability(QuickModel):
         related_name='offeravailability_offer_images'
     )
 
-    badge_image = QuickForeignKey(
+    profile_badge = QuickForeignKey(
         ImageInstance,
         related_name='offeravailability_badge_images'
     )
