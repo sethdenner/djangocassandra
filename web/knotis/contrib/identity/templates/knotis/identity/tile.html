@@ -4,16 +4,16 @@
   <input type="hidden" class="tile-identity" value="{{ identity.id }}"/>
   <a href="{{ tile_link_template }}{{ identity.id }}">
     <div class="tile-header">
-      {% thumbnail identity.header_image.image.image '120x120' crop=identity.header_image.crop as image %}
+      {% thumbnail banner_image.image.image '120x120' crop=banner_image.crop as image %}
       <img class="tile-image" alt="{{ identity.name }}" src="{{ image.url }}" />
       {% empty %}
-      <img class="tile-image"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
+      <img class="tile-image"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/profile_default.png" />
       {% endthumbnail %}
       
-      {% thumbnail identity.badge_image.image.image '60x60' crop=identity.badge_image.crop as image %}
+      {% thumbnail badge_image.image.image '60x60' crop=badge_image.crop as image %}
       <img class="tile-badge" src="{{ image.url }}" />
       {% empty %}
-      <img class="tile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
+      <img class="tile-badge" src="{{ STATIC_URL }}knotis/identity/img/add_logo.png" />
       {% endthumbnail %}
     </div>
   </a>

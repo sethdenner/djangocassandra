@@ -17,11 +17,21 @@
   <div id="id-profile-cover" class="row-fluid">
   {% endthumbnail %}
     <div class="span12">
+      
+      {% if is_manager %}
       {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
       <img src="{{ img.url }}" class="img-circle" />
       {% empty %}
       <img data-add-image src="{{ default_profile_logo_uri }}" class="img-circle" />
       {% endthumbnail %}
+      {% else %}
+      {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
+      <img src="{{ img.url }}" class="img-circle" />
+      {% empty %}
+      <img src="{{ default_profile_logo_uri }}" class="img-circle" />
+      {% endthumbnail %}
+      {% endif %}
+
       <div class="row-fluid">
         <div id="id-profile-title" class="span12">
           <h2>{{ establishment.name }}</h2>

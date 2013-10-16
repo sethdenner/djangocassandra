@@ -158,11 +158,33 @@ class IdentityTile(FragmentView):
             current_identity = None
             render_follow = False
 
+        try:
+            profile_badge_image = ImageInstance.objects.get(
+                related_object_id=identity.id,
+                context='profile_badge',
+                primary=True
+            )
+        except Exception, e:
+            profile_badge_image = None
+
+        try:
+            profile_banner_image = ImageInstance.objects.get(
+                related_object_id=identity.id,
+                context='profile_banner',
+                primary=True
+            )
+        except Exception, e:
+            profile_banner_image = None
+
+
         local_context = copy.copy(self.context)
         local_context.update({
             'current_identity': current_identity,
             'render_follow': render_follow,
-            'following': following
+            'following': following,
+            'banner_image': profile_banner_image,
+            'badge_image': profile_badge_image,
+            'STATIC_URL': settings.STATIC_URL
         })
 
         return local_context
