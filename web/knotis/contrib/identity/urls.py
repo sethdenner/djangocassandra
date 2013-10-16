@@ -15,6 +15,13 @@ from views import (
     FirstIdentityView
 )
 
+from api import (
+    IdentityApi,
+    IdentityIndividualApi,
+    IdentityBusinessApi,
+    IdentityEstablishmentApi
+)
+
 urlpatterns = patterns(
     'knotis.contrib.identity.views',
     url(
@@ -71,5 +78,9 @@ urlpatterns = patterns(
     url(
         r'^identity/first/$',
         FirstIdentityView.as_view()
-    )
+    ),
+    IdentityApi.urls(),
+    IdentityIndividualApi.urls(),
+    IdentityBusinessApi.urls(),
+    IdentityEstablishmentApi.urls()
 )

@@ -8,8 +8,14 @@
 {% render_fragment nav_top %}
 {% endblock header %}
 {% block content %}
+{% load crispy_forms_tags %}
 <div class="container-fluid">
+
+  {% thumbnail profile_banner.image.image '2560x281' crop=profile_banner.crop as header %}
+  <div id="id-profile-cover" class="row-fluid" style="background-image:url('{{ header.url }}');">
+  {% empty %}
   <div id="id-profile-cover" class="row-fluid">
+  {% endthumbnail %}
     <div class="span12">
       {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
       <img src="{{ img.url }}" class="img-circle" />
@@ -23,21 +29,41 @@
       </div>
       <div id="id-profile-contact" class="row">
         <strong>
-          <ul class="unstyled" >
-            <li>1411 E Alder St.</li>
-            <li>Seattle, WA 98122</li>
-            <li>(555) 555 5555</li>
-            <li>contact@example.com</li>
-            <li>&nbsp;</li>
-            <li>twitter</li>
-            <li>facebook</li>
+
+	  <div id="id-profile-contact-address">
+	    {% if is_manager %}
+	    <a class="update-address-link">{{ address }}</a>
+	    {% else %}
+	    {{ address }}
+	    {% endif %}
+	  </div>
+	  <ul class="unstyled">
+	    {% for endpoint in endpoints %}
+	    {% if endpoint.value %}
+	    <li class="editable establishment-endpoint" 
+		data-establishment-id="{{ establishment.id }}"
+		data-endpoint-endpoint-id="{{ endpoint.id }}"
+		data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
+	     {{ endpoint.value }}
+	     </li>
+	     {% else %}
+	     <li class="editable establishment-endpoint" 
+		 data-establishment-id="{{ establishment.id }}"
+		 data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
+	       {{ endpoint.endpoint_type_name }}
+	     </li>
+	     {% endif %}
+	    {% endfor %}
           </ul>
         </strong>
       </div>
       <div id="id-profile-action" class="row">
       </div>
+
+      <a class="change-profile-cover-link">Change Cover Image</a>
     </div>
   </div>
+
   <div id="id-profile-spacer" class="row-fluid"><p class="span12">&nbsp;</p></div>
   <div class="row-fluid">
     <div class="span2">
@@ -49,6 +75,7 @@
   </div>
 </div>
 <div id="id-identity-id" data-identity-id="{{ establishment.id }}" class="hide" >&nbsp;</div>
+
 {% endblock content %}
 {% block footer %}{% endblock footer %}
 {% block last %}{% endblock last %}

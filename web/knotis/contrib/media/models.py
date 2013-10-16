@@ -6,7 +6,8 @@ from knotis.contrib.quick.models import QuickModel
 from knotis.contrib.quick.fields import (
     QuickCharField,
     QuickFloatField,
-    QuickForeignKey
+    QuickForeignKey,
+    QuickBooleanField
 )
 from knotis.contrib.identity.models import Identity
 
@@ -49,6 +50,11 @@ class ImageInstance(QuickModel):
         db_index=True
     )
 
+    primary = QuickBooleanField(
+        db_index=True,
+        default=False
+    )
+
     crop_left = QuickFloatField()
     crop_top = QuickFloatField()
     crop_width = QuickFloatField()
@@ -68,3 +74,17 @@ class ImageInstance(QuickModel):
             self.crop_width,
             self.crop_height,
         )
+
+    def save(self, *args, **kwargs):
+        super(ImageInstance, self).save(*args, **kwargs)
+        if self.primary:
+            other_instances = ImageInstance.objects.filter(
+                related_object_id=self.related_object_id,
+                primary=True,
+                context=self.context
+            )
+
+            for i in other_instances:
+                if i.id != self.id:
+                    i.primary = False
+                    i.save()

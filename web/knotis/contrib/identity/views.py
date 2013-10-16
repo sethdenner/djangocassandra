@@ -41,6 +41,16 @@ from forms import (
     IdentityBusinessSimpleForm
 )
 
+from knotis.contrib.location.models import (
+    Location, 
+    LocationItem
+)
+
+from knotis.contrib.maps.views import GoogleMap
+
+from knotis.contrib.endpoint.models import *
+
+# from knotis.contrib.location.forms import LocationForm
 
 class IdentityView(ContextView):
     template_name = 'knotis/identity/identity_view.html'
@@ -192,6 +202,7 @@ class EstablishmentProfileGrid(GridSmallView):
 
         return local_context
 
+get_class = lambda x: globals()[x]
 
 class EstablishmentProfileView(ContextView):
     template_name = 'knotis/identity/profile_establishment.html'
@@ -248,7 +259,8 @@ class EstablishmentProfileView(ContextView):
             'navigation/css/nav_top.css',
             'navigation/css/nav_side.css',
             'knotis/identity/css/profile.css',
-            'styles/default/fileuploader.css'
+            'styles/default/fileuploader.css',
+            'knotis/identity/css/first.css'
         ]
 
         pre_scripts = []
@@ -263,7 +275,11 @@ class EstablishmentProfileView(ContextView):
             'scripts/fileuploader.js',
             'scripts/jquery.colorbox.js',
             'scripts/jquery.sickle.js',
-            'knotis/identity/js/profile.js'
+            'knotis/identity/js/profile.js',
+            'geocomplete/jquery.geocomplete.min.js',
+            'knotis/layout/js/forms.js',
+            'knotis/maps/js/maps.js',
+            'knotis/identity/js/update_profile.js',
         ]
 
         try:
@@ -277,9 +293,9 @@ class EstablishmentProfileView(ContextView):
         try:
             profile_banner_image = ImageInstance.objects.get(
                 related_object_id=establishment.pk,
-                context='profile_banner'
+                context='profile_banner',
+                primary=True
             )
-
         except:
             profile_banner_image = None
 
@@ -303,6 +319,35 @@ class EstablishmentProfileView(ContextView):
         except:
             logger.exception('failed to get establishment offers')
 
+        locationItem = LocationItem.objects.filter(related_object_id=establishment.id)
+        if len(locationItem):
+            address = locationItem[0].location.address        
+        else:
+            address = None
+
+        maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
+        maps_scripts = maps.render_api_js()
+
+        endpoints = []
+        for endpoint_type in ('phone', 'email', 'facebook', 'twitter', 'yelp'):
+            EndpointClass = get_class('Endpoint' + endpoint_type.capitalize())
+            endpoint = EndpointClass.objects.get_primary_endpoint(
+                identity=establishment,
+                endpoint_type=getattr(get_class('EndpointTypes'), endpoint_type.upper())
+            )
+            if endpoint:
+                endpoints.append({
+                    'id': endpoint.id,
+                    'endpoint_type_name': endpoint_type,
+                    'value': endpoint.value
+                })
+            else:
+                endpoints.append({
+                    'endpoint_type_name': endpoint_type,
+                    'value': None
+                })
+            
+            
         local_context = copy.copy(self.context)
         local_context.update({
             'establishment': establishment,
@@ -311,9 +356,12 @@ class EstablishmentProfileView(ContextView):
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
             'default_profile_logo_uri': default_profile_logo_uri,
+            'address': address,
+            'maps_scripts': maps_scripts,
             'profile_badge': profile_badge_image,
             'profile_banner': profile_banner_image,
-            'establishment_offers': establishment_offers
+            'establishment_offers': establishment_offers,
+            'endpoints': endpoints
         })
 
         return local_context

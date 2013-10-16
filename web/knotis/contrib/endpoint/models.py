@@ -63,6 +63,7 @@ class EndpointManager(Manager):
 
         return endpoint
 
+
     def validate_endpoints(
         self,
         validation_key,
@@ -100,6 +101,7 @@ class EndpointManager(Manager):
                 return endpoint
 
         return None
+
 
 
 class EndpointTypes:
@@ -152,6 +154,25 @@ class Endpoint(QuickModel):
     disabled = BooleanField(default=False)
 
     objects = EndpointManager()
+
+    def save(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(Endpoint, self).save(*args, **kwargs)
+
+        endpoints = Endpoint.objects.filter(
+            identity=self.identity,
+            endpoint_type=self.endpoint_type,
+            primary=True
+        )
+
+        if self.primary:
+            for endpoint in endpoints:
+                if endpoint.id != self.id:
+                    endpoint.primary = False
+                    endpoint.save()
 
     def validate(
         self,
