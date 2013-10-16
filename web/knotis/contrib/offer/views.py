@@ -129,7 +129,7 @@ class OffersView(ContextView):
             'knotis/layout/js/header.js',
             'knotis/layout/js/create.js',
             'navigation/js/navigation.js',
-            'knotis/merchant/js/my_offers.js'
+            'knotis/offer/js/offers.js'
         ]
 
         local_context = copy.copy(self.context)

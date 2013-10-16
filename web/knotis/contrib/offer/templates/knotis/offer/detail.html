@@ -1,20 +1,12 @@
-{% load thumbnail %}
-<div class="grid-tile small-tile" >
-  <div class="tile-header">
-    {% thumbnail offer.offer_default_image.image '120x120' crop=offer.offer_default_image.crop as image %}
-    <img class="tile-image" alt="{{ offer.offer_title }}" src="{{ image.url }}" />
-    {% empty %}
-    <img class="tile-image"  alt="{{ offer.offer_title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
-    {% endthumbnail %}
-    {% thumbnail offer.identity_primary_image '60x60' crop=offer.identity_primary_image.crop as image %}
-    <img class="tile-badge" src="{{ image.url }}" />
-    {% empty %}
-    <img class="tile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
-    {% endthumbnail %}
+<div class="modal-header">
+<h1>Offer Detail View</h1>
+</div>
+<div class="modal-body">
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span12">
+      Offer Info
+    </div>
   </div>
-  <div class="tile-body">
-    <p class="tile-title">{{ offer.offer_title }}</p>
-    <button class="btn btn-primary action">Buy</button>
-  </div>
-  <div class="tile-footer">{% if stats %}{{ stats }}{% else %}&nbsp;{% endif %}</div>
+</div>
 </div>
