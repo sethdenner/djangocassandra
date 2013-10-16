@@ -1,6 +1,6 @@
 (function($) {
 
-    $('div#id-profile-cover img[data-add-image]').click(function(event) {
+    var upload_logo = function(event) {
         event.preventDefault();
 
         var identity_id = $('div#id-identity-id').attr('data-identity-id')
@@ -32,6 +32,9 @@
             }
         })
 
-    });
+    };
+
+    $('div#id-profile-cover img[data-add-image]').click(upload_logo);
+    $('div#id-profile-cover img[data-edit-image]').click(upload_logo);
 
 })(jQuery);
