@@ -57,11 +57,13 @@
 	      {{ endpoint.value }}
 	    </li>
 	    {% else %}
-	    <li class="{% if is_manager %}editable{% endif %} establishment-endpoint" 
+	    {% if is_manager %}
+	    <li class="editable establishment-endpoint" 
 		data-establishment-id="{{ establishment.id }}"
 		data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
-	      {{ endpoint.endpoint_type_name }}
+	      add {{ endpoint.endpoint_type_name }}
 	    </li>
+	    {% endif %}
 	    {% endif %}
 	    {% endfor %}
           </ul>
