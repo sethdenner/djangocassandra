@@ -42,7 +42,7 @@ from forms import (
 )
 
 from knotis.contrib.location.models import (
-    Location, 
+    Location,
     LocationItem
 )
 
@@ -519,12 +519,26 @@ class IdentitySwitcherView(FragmentView):
 
         key_available = 'available_identities'
         try:
-            local_context[key_available] = Identity.objects.get_available(
+            available_identities = Identity.objects.get_available(
                 user=request.user
             )
 
         except:
             logger.exception('failed to get available identities.')
+
+        for i in available_identities:
+            try:
+                badge_image = ImageInstance.objects.get(
+                    owner=i,
+                    context='profile_badge',
+                    primary=True
+                )
+                i.badge_image = badge_image
+
+            except ImageInstance.DoesNotExist:
+                continue
+
+        local_context[key_available] = available_identities
 
         current_identity_id = request.session.get('current_identity_id')
         if not current_identity_id:
