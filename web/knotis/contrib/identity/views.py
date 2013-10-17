@@ -148,19 +148,18 @@ class IdentityTile(FragmentView):
             render_follow = True
 
             follows = Relation.objects.get_following(current_identity)  
-            identity = self.context.get('identity')
+            business = self.context.get('identity')
             for follow in follows:
-                if not follow.deleted and (follow.related_object_id == identity.id):
+                if (not follow.deleted) and (follow.related.id == business.id):
                     following = True
                     break
-            
         else:
             current_identity = None
             render_follow = False
 
         try:
             profile_badge_image = ImageInstance.objects.get(
-                related_object_id=identity.id,
+                related_object_id=business.id,
                 context='profile_badge',
                 primary=True
             )
@@ -169,7 +168,7 @@ class IdentityTile(FragmentView):
 
         try:
             profile_banner_image = ImageInstance.objects.get(
-                related_object_id=identity.id,
+                related_object_id=business.id,
                 context='profile_banner',
                 primary=True
             )
