@@ -1,8 +1,13 @@
+{% load thumbnail %}
 <div id="id-identity-switcher" class="dropdown">
   <a class="dropdown-toggle" id="id-identity-dropdown" role="button" data-toggle="dropdown" data-target="#" href="#">
     {% for identity in available_identities %}
     {% if identity.id == request.session.current_identity_id %}
-    <img src="http://placehold.it/18x18" />
+    {% thumbnail identity.badge_image.image.image '18x18' crop=identity.badge_image.crop as img %}
+    <img class="img-circle" src="{{ img.url }}" />
+    {% empty %}
+    <img class="img-circle" src="http://placehold.it/18x18" />
+    {% endthumbnail %}
     {{ identity.name }}
     <b class="caret"></b>
     {% endif%}
@@ -13,7 +18,11 @@
     {% if identity.id != request.session.current_identity_id %}
     <li>
       <a href="/identity/switcher/{{ identity.id }}/">
-        <img src="http://placehold.it/18x18" />
+        {% thumbnail identity.badge_image.image.image '18x18' crop=identity.badge_image.crop as img %}
+        <img class="img-circle" src="{{ img.url }}" />
+        {% empty %}
+        <img class="img-circle" src="http://placehold.it/18x18" />
+        {% endthumbnail %}
         {{ identity.name }}
       </a>
     </li>
