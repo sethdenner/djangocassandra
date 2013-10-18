@@ -17,6 +17,10 @@ from knotis.views import (
     FragmentView
 )
 
+from knotis.views.mixins import (
+    RenderTemplateFragmentMixin
+)
+
 from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.maps.forms import GeocompleteForm
 from knotis.contrib.media.models import ImageInstance
@@ -50,13 +54,39 @@ from knotis.contrib.maps.views import GoogleMap
 
 from knotis.contrib.endpoint.models import *
 
+from knotis.contrib.identity.models import *
+
 # from knotis.contrib.location.forms import LocationForm
 
 class IdentityView(ContextView):
     template_name = 'knotis/identity/identity_view.html'
 
     def process_context(self):
-        return self.context
+
+        errors = {}
+        
+        context = copy.copy(self.context)
+        request = self.context.get('request')
+
+        identity_id = self.kwargs.get('id')
+        if not identity_id:
+            raise Exception('No Identity supplied')
+
+        identity = Identity.objects.get(pk=identity_id)
+        if not identity:
+            raise Exception('Identity not found')
+                
+        if identity.identity_type == IdentityTypes.ESTABLISHMENT:
+            profile_view = EstablishmentProfileView()
+            context['establishment_id'] = identity_id
+        else:
+            raise Exception('IdentityType not currently supported')
+
+        context.update({
+            'profile_markup': profile_view.render_template_fragment(context)
+        })
+
+        return context
 
 
 class BusinessesView(ContextView):
@@ -225,15 +255,14 @@ class EstablishmentProfileGrid(GridSmallView):
 
 get_class = lambda x: globals()[x]
 
-
-class EstablishmentProfileView(ContextView):
+class EstablishmentProfileView(FragmentView):
     template_name = 'knotis/identity/profile_establishment.html'
     view_name = 'establishment_profile'
 
     def process_context(self):
         request = self.request
-        establishment_id = self.kwargs.get('establishment_id')
-        backend_name = self.kwargs.get('backend_name')
+        establishment_id = self.context.get('establishment_id')
+        backend_name = self.context.get('backend_name')
 
         try:
             if establishment_id:
@@ -307,7 +336,8 @@ class EstablishmentProfileView(ContextView):
         try:
             profile_badge_image = ImageInstance.objects.get(
                 related_object_id=establishment.pk,
-                context='profile_badge'
+                context='profile_badge',
+                primary=True
             )
         except:
             profile_badge_image = None
