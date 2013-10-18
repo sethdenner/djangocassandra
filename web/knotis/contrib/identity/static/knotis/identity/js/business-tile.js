@@ -8,8 +8,9 @@
 	return $(btn).parent().siblings('.tile-identity').val();
     };
     
-    var click_follow = function(){
-
+    var click_follow = function(e){
+	e.preventDefault();
+	e.stopPropagation();
 	var btn = $(this);
 
 	$.post('/api/v1/relation/follow/', {
@@ -34,8 +35,9 @@
 
     };
 
-    var click_unfollow = function(){
-	
+    var click_unfollow = function(e){
+	e.preventDefault();
+	e.stopPropagation();
 	var btn = $(this).get();
 
 	$.post('/api/v1/relation/follow/', {

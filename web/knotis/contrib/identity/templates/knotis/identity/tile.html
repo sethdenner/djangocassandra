@@ -1,6 +1,4 @@
 {% load thumbnail %}
-{{ render_follow }}
-{{ following }}
 <div class="grid-tile small-tile">
   <input type="hidden" class="tile-user" value="{{ current_identity.id }}" />
   <input type="hidden" class="tile-identity" value="{{ identity.id }}"/>
@@ -19,15 +17,11 @@
       {% endthumbnail %}
     </div>
   </a>
-  
-  <div class="tile-body">
+
+  <div class="tile-body" onclick="window.location='/id/{{ identity.id }}/'">
     <p class="tile-title">{{ identity.name }}</p>
     {% if render_follow %}<button class="btn btn-primary action identity-relation-action {% if following %}tile-identity-unfollow{% else %}tile-identity-follow{% endif %}">{% if following %}Unfollow{% else %}Follow{% endif %}</button>{% csrf_token %}{% endif %}
   </div>
-
-  <a href="/id/{{ identity.id }}">
-    <div class="tile-footer">
-      {% if stats %}{{ stats }}{% else %}McLean???{% endif %}
-    </div>
-  </a>
+  <div class="tile-footer">
+  </div>
 </div>
