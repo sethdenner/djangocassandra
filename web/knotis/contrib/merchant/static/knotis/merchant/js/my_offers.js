@@ -45,11 +45,32 @@
                     active: active
                 }
             }).done(function(data, status, jqxhr){
+                if (data.errors) return;
+
                 var remove_class = active ? 'btn-success' : 'btn-danger',
                     add_class = active ? 'btn-danger' : 'btn-success';
-                $button.removeClass(remove_class)
+                $button.removeClass(remove_class).remove_class(add_class)
                     .addClass(add_class)
                     .text(active ? 'Pause' : 'Resume');
+            });
+        });
+
+        $('.publish-offer').click(function(event){
+            var $button = $(this),
+                offer_id = $button.parent().parent('.grid-tile.small-tile').attr('data-offer-id');
+            $.ajax({
+                url: '/api/v1/offer/publish/',
+                type: 'PUT',
+                data: {
+                    offer_id: offer_id,
+                    publish_now: true
+                }
+            }).done(function(data, status, jqxhr){
+                if (data.errors) return;
+
+                $button.removeClass('btn-primary').removeClass('btn-success')
+                    .addClass('btn-success')
+                    .text('Published');
             });
         });
     });

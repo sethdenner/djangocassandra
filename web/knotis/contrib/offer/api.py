@@ -1,4 +1,3 @@
-from django.forms.models import model_to_dict
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
@@ -8,12 +7,98 @@ from knotis.contrib.inventory.models import Inventory
 
 from models import (
     Offer,
+    OfferPublish,
     OfferAvailability
 )
 from forms import (
     OfferForm,
+    OfferPublishForm,
     OfferWithInventoryForm
 )
+
+
+class OfferPublishApi(ApiView):
+    api_url = 'offer/publish'
+
+    def put(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        errors = {}
+
+        offer_id = request.PUT.get('offer_id', 'None')
+
+        try:
+            offer = Offer.objects.get(pk=offer_id)
+
+        except Exception, e:
+            error_message = ''.join([
+                'Could not find offer with id <',
+                offer_id,
+                '>.'
+            ])
+            logger.exception(error_message)
+            errors['no-field'] = error_message
+
+            return self.generate_response({
+                'message': e.message,
+                'errors': errors
+            })
+
+        try:
+            offer_publish = OfferPublish.objects.filter(
+                subject_object_id=offer.id
+            )
+
+        except Exception, e:
+            error_message = ''.join([
+                'Failed to filter offer publications for offer with id <',
+                offer_id,
+                '>.'
+            ])
+            logger.exception(error_message)
+            errors['no-field'] = error_message
+
+            return self.generate_response({
+                'message': e.message,
+                'errors': errors
+            })
+
+        failed_publish_ids = []
+        for p in offer_publish:
+            form = OfferPublishForm(
+                data=request.PUT,
+                instance=p
+            )
+
+            try:
+                form.save()
+
+            except Exception, e:
+                failed_publish_ids.append(p.id)
+                error_message = (
+                    'An error occurred during offer publication.'
+                )
+                logger.exception(error_message)
+                errors['no-field'] = error_message
+
+        if errors:
+            logger.error(''.join([
+                'The following OfferPublish objects failed to publish:\n\t',
+                '\n\t'.join(failed_publish_ids)
+            ]))
+            return self.generate_response({
+                'message': 'failed',
+                'errors': errors
+            })
+
+        else:
+            return self.generate_response({
+                'offer_id': offer.id,
+                'message': 'This offer will be published shortly.'
+            })
 
 
 class OfferApi(ApiView):
@@ -120,22 +205,8 @@ class OfferApi(ApiView):
 
         active = offer.active
 
-        fields = getattr(OfferForm.Meta, 'fields', None)
-        exclude = getattr(OfferForm.Meta, 'exclude', None)
-        instance_data = model_to_dict(
-            offer,
-            fields,
-            exclude
-        )
-        put_data = dict(
-            (
-                key,
-                value
-            ) for key, value in request.PUT.iteritems()
-        )
-        instance_data.update(put_data)
         form = OfferForm(
-            data=instance_data,
+            data=request.PUT,
             instance=offer
         )
 
