@@ -14,7 +14,7 @@ from knotis.contrib.quick.fields import (
 
 __models__ = (
     'Relation',
-    'RelationOwner',
+    'RelationProprietor',
     'RelationManager',
     'RelationEmployee'
 )

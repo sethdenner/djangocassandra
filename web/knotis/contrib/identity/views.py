@@ -226,6 +226,7 @@ class EstablishmentProfileGrid(GridSmallView):
 
 get_class = lambda x: globals()[x]
 
+
 class EstablishmentProfileView(ContextView):
     template_name = 'knotis/identity/profile_establishment.html'
     view_name = 'establishment_profile'
@@ -335,15 +336,18 @@ class EstablishmentProfileView(ContextView):
 
         try:
             establishment_offers = OfferAvailability.objects.filter(
-                identity=establishment
+                identity=establishment,
+                available=True
             )
 
         except:
             logger.exception('failed to get establishment offers')
 
-        locationItem = LocationItem.objects.filter(related_object_id=establishment.id)
+        locationItem = LocationItem.objects.filter(
+            related_object_id=establishment.id
+        )
         if len(locationItem):
-            address = locationItem[0].location.address        
+            address = locationItem[0].location.address
         else:
             address = None
 
@@ -355,7 +359,10 @@ class EstablishmentProfileView(ContextView):
             EndpointClass = get_class('Endpoint' + endpoint_type.capitalize())
             endpoint = EndpointClass.objects.get_primary_endpoint(
                 identity=establishment,
-                endpoint_type=getattr(get_class('EndpointTypes'), endpoint_type.upper())
+                endpoint_type=getattr(
+                    get_class('EndpointTypes'),
+                    endpoint_type.upper()
+                )
             )
             if endpoint:
                 endpoints.append({
@@ -368,8 +375,7 @@ class EstablishmentProfileView(ContextView):
                     'endpoint_type_name': endpoint_type,
                     'value': None
                 })
-            
-            
+
         local_context = copy.copy(self.context)
         local_context.update({
             'establishment': establishment,
@@ -525,6 +531,7 @@ class IdentitySwitcherView(FragmentView):
 
         except:
             logger.exception('failed to get available identities.')
+            raise
 
         for i in available_identities:
             try:

@@ -32,6 +32,26 @@
                 }
             });
         });
+
+        $('.toggle-offer').click(function(event){
+            var $button = $(this),
+                offer_id = $button.parent().parent('.grid-tile.small-tile').attr('data-offer-id'),
+                active = $button.text().toLowerCase() == 'resume';
+            $.ajax({
+                url: '/api/v1/offer/offer/',
+                type: 'PUT',
+                data: {
+                    id: offer_id,
+                    active: active
+                }
+            }).done(function(data, status, jqxhr){
+                var remove_class = active ? 'btn-success' : 'btn-danger',
+                    add_class = active ? 'btn-danger' : 'btn-success';
+                $button.removeClass(remove_class)
+                    .addClass(add_class)
+                    .text(active ? 'Pause' : 'Resume');
+            });
+        });
     });
     
 })(jQuery);

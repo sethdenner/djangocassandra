@@ -24,7 +24,7 @@
     <button data-offer-id="{{ offer.offer_id }}" class="btn btn-primary action publish-offer">Publish</button>
     {% endif %}
     {% if offer_action == 'pause' %}
-    <button data-offer-id="{{ offer.offer_id }}" class="btn btn-{% if offer.active %}danger{% else %}success{% endif %} action publish-offer">{% if offer.active %}Pause{% else %}Resume{% endif %}</button>
+    <button data-offer-id="{{ offer.offer_id }}" class="btn btn-{% if offer.active %}danger{% else %}success{% endif %} action toggle-offer">{% if offer.active %}Pause{% else %}Resume{% endif %}</button>
     {% endif %}
   </div>
   <div class="tile-footer">{% if stats %}{{ stats }}{% else %}&nbsp;{% endif %}</div>
