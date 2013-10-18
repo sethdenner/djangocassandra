@@ -1,6 +1,5 @@
 from django.forms import (
     Form,
-    ModelForm,
     CharField,
     FloatField,
     IntegerField,
@@ -15,6 +14,7 @@ from django.forms import (
 
 from knotis.forms import (
     TemplateForm,
+    ModelForm,
     ItemSelectWidget,
     ItemSelectRow,
     ItemSelectAction
@@ -333,6 +333,14 @@ class OfferPhotoLocationForm(TemplateForm):
         )
 
         return instance
+
+
+class OfferPublishForm(ModelForm):
+    class Meta:
+        model = OfferPublish
+        exclude = (
+            'content_type'
+        )
 
 
 class OfferPublicationForm(TemplateForm):
