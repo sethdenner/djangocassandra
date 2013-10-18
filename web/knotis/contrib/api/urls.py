@@ -15,6 +15,10 @@ from knotis.contrib.identity.api import (
 
 from knotis.contrib.location.api import LocationApi
 from knotis.contrib.merchant.api import RedemptionApi
+from knotis.contrib.relation.api import (
+    RelationApi,
+    FollowApi
+)
 
 
 urlpatterns = patterns(
@@ -26,5 +30,7 @@ urlpatterns = patterns(
     IdentityBusinessApi.urls(),
     IdentityEstablishmentApi.urls(),
     LocationApi.urls(),
-    RedemptionApi.urls(login_required=True)
+    RedemptionApi.urls(login_required=True),
+    RelationApi.urls(),
+    FollowApi.urls()
 )

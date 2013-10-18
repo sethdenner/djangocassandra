@@ -9,8 +9,7 @@ from forms import RelationForm
 from knotis.contrib.identity.models import Identity
 
 class FollowApi(ApiView):
-    model = Relation
-    api_url = 'follow'
+    api_url = 'relation/follow'
 
     def post(
         self,
@@ -32,19 +31,20 @@ class FollowApi(ApiView):
                 verb = request.REQUEST.get('verb')
 
                 if verb == 'follow':
-                    Relation.objects.create_following(
+                    relation = Relation.objects.create_following(
                         subject,
                         related
                     ).save()
-
+                    
                 elif verb == 'unfollow':
                     follows = Relation.objects.get_following(subject)
                     for follow in follows:
-                        if not follow.deleted and (follow.related == related):
+                        if (not follow.deleted) and (follow.related.id == related.id):
                             follow.deleted = True
                             follow.save()
                         
         except Exception, e:
+            raise e
             logger.exception('failed to follow')
             errors['no-field'] = e.message
             
@@ -53,8 +53,7 @@ class FollowApi(ApiView):
         })
 
 class RelationApi(ApiView):
-    model = Relation
-    api_url = 'relation'
+    api_url = 'relation/relation'
 
     def get(
         self,

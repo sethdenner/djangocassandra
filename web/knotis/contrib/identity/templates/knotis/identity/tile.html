@@ -1,4 +1,6 @@
 {% load thumbnail %}
+{{ render_follow }}
+{{ following }}
 <div class="grid-tile small-tile">
   <input type="hidden" class="tile-user" value="{{ current_identity.id }}" />
   <input type="hidden" class="tile-identity" value="{{ identity.id }}"/>
