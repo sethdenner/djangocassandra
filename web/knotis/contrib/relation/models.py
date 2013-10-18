@@ -148,7 +148,8 @@ class RelationManager(QuickManager):
         follower,
         related
     ):
-        return self.create(
+
+        relation = self.create(
             relation_type=RelationTypes.FOLLOWING,
             subject=follower,
             related=related,
@@ -157,6 +158,20 @@ class RelationManager(QuickManager):
                 ' is following ',
                 related.name
             ])
+        )
+
+        return relation
+
+    def follows(
+        self,
+        subject,
+        _object
+    ):
+
+        return self.filter(
+            relation_type=RelationTypes.FOLLOWING,
+            subject=subject,
+            related=_object
         )
 
     def get_following(

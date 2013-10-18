@@ -19,6 +19,10 @@ from knotis.contrib.offer.api import (
 )
 from knotis.contrib.location.api import LocationApi
 from knotis.contrib.merchant.api import RedemptionApi
+from knotis.contrib.relation.api import (
+    RelationApi,
+    FollowApi
+)
 
 
 urlpatterns = patterns(
@@ -32,5 +36,7 @@ urlpatterns = patterns(
     OfferApi.urls(login_required=True),
     OfferPublishApi.urls(login_required=True),
     LocationApi.urls(login_required=True),
-    RedemptionApi.urls(login_required=True)
+    RedemptionApi.urls(login_required=True),
+    RelationApi.urls(),
+    FollowApi.urls()
 )

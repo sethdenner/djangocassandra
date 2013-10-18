@@ -8,8 +8,9 @@
 	return $(btn).parent().siblings('.tile-identity').val();
     };
     
-    var click_follow = function(){
-
+    var click_follow = function(e){
+	e.preventDefault();
+	e.stopPropagation();
 	var btn = $(this);
 
 	$.post('/api/v1/relation/follow/', {
@@ -17,19 +18,26 @@
 	    related_id: getRelatedIdentity(btn),
 	    verb: 'follow'
 	}, function(response){
-	    $(btn).off('click', click_follow);
 
-	    $(btn).removeClass('tile-identity-follow');
-	    $(btn).addClass('tile-identity-unfollow');
+	    if(!response.errors['no-field']){
+		$(btn).off('click', click_follow);
+		
+		$(btn).removeClass('tile-identity-follow');
+		$(btn).addClass('tile-identity-unfollow');
+		
+		$(btn).text('Unfollow');
+		$(btn).on('click', click_unfollow);
+	    }
 
-	    $(btn).text('Unfollow');
-	    $(btn).on('click', click_unfollow);
+	    console.log(response);
+
 	});
 
     };
 
-    var click_unfollow = function(){
-	
+    var click_unfollow = function(e){
+	e.preventDefault();
+	e.stopPropagation();
 	var btn = $(this).get();
 
 	$.post('/api/v1/relation/follow/', {
@@ -37,13 +45,15 @@
 	    related_id: getRelatedIdentity(btn),
 	    verb: 'unfollow'
 	}, function(response){
-	    $(btn).off('click', click_unfollow);
-	    
-	    $(btn).removeClass('tile-identity-unfollow');
-	    $(btn).addClass('tile-identity-follow');
-
-	    $(btn).text('Follow');
-	    $(btn).on('click', click_follow);
+	    if(!response.errors['no-field']){
+		$(btn).off('click', click_unfollow);
+		
+		$(btn).removeClass('tile-identity-unfollow');
+		$(btn).addClass('tile-identity-follow');
+		
+		$(btn).text('Follow');
+		$(btn).on('click', click_follow);
+	    }
 	});    
     };
 
