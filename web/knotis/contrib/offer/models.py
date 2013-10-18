@@ -656,6 +656,9 @@ class OfferPublish(Publish):
                 for e in establishments:
                     self._publish_establishment(e)
 
+            self.completed = True
+            self.save()
+
         else:
             raise NotImplementedError(''.join([
                 'publish not implemented for endpoint type ',

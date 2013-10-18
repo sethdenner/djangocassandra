@@ -5,16 +5,104 @@ from knotis.views import ApiView
 
 from knotis.contrib.inventory.models import Inventory
 
-from models import Offer
+from models import (
+    Offer,
+    OfferPublish,
+    OfferAvailability
+)
 from forms import (
     OfferForm,
+    OfferPublishForm,
     OfferWithInventoryForm
 )
 
 
+class OfferPublishApi(ApiView):
+    api_url = 'offer/publish'
+
+    def put(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        errors = {}
+
+        offer_id = request.PUT.get('offer_id', 'None')
+
+        try:
+            offer = Offer.objects.get(pk=offer_id)
+
+        except Exception, e:
+            error_message = ''.join([
+                'Could not find offer with id <',
+                offer_id,
+                '>.'
+            ])
+            logger.exception(error_message)
+            errors['no-field'] = error_message
+
+            return self.generate_response({
+                'message': e.message,
+                'errors': errors
+            })
+
+        try:
+            offer_publish = OfferPublish.objects.filter(
+                subject_object_id=offer.id
+            )
+
+        except Exception, e:
+            error_message = ''.join([
+                'Failed to filter offer publications for offer with id <',
+                offer_id,
+                '>.'
+            ])
+            logger.exception(error_message)
+            errors['no-field'] = error_message
+
+            return self.generate_response({
+                'message': e.message,
+                'errors': errors
+            })
+
+        failed_publish_ids = []
+        for p in offer_publish:
+            form = OfferPublishForm(
+                data=request.PUT,
+                instance=p
+            )
+
+            try:
+                form.save()
+
+            except Exception, e:
+                failed_publish_ids.append(p.id)
+                error_message = (
+                    'An error occurred during offer publication.'
+                )
+                logger.exception(error_message)
+                errors['no-field'] = error_message
+
+        if errors:
+            logger.error(''.join([
+                'The following OfferPublish objects failed to publish:\n\t',
+                '\n\t'.join(failed_publish_ids)
+            ]))
+            return self.generate_response({
+                'message': 'failed',
+                'errors': errors
+            })
+
+        else:
+            return self.generate_response({
+                'offer_id': offer.id,
+                'message': 'This offer will be published shortly.'
+            })
+
+
 class OfferApi(ApiView):
-    model = Offer
-    api_url = 'offer'
+    api_url = 'offer/offer'
 
     def post(
         self,
@@ -88,25 +176,46 @@ class OfferApi(ApiView):
             }
         })
 
-        def put(
-            self,
-            request,
-            *args,
-            **kwargs
-        ):
-            errors = {}
+    def put(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        errors = {}
 
-            update_id = request.PUT.get('id')
+        update_id = request.PUT.get('id')
 
+        try:
+            offer = Offer.objects.get(pk=update_id)
+
+        except Exception, e:
+            error_message = ''.join([
+                'Could not find offer with id <',
+                update_id,
+                '>.'
+            ])
+            logger.exception(error_message)
+            errors['no-field'] = error_message
+
+            return self.generate_response({
+                'message': e.message,
+                'errors': errors
+            })
+
+        active = offer.active
+
+        form = OfferForm(
+            data=request.PUT,
+            instance=offer
+        )
+
+        if form.is_valid():
             try:
-                offer = Offer.objects.get(pk=update_id)
+                offer = form.save()
 
             except Exception, e:
-                error_message = ''.join([
-                    'Could not find offer with id <',
-                    update_id,
-                    '>.'
-                ])
+                error_message = 'An error occurred during offer update'
                 logger.exception(error_message)
                 errors['no-field'] = error_message
 
@@ -115,35 +224,28 @@ class OfferApi(ApiView):
                     'errors': errors
                 })
 
-            form = OfferForm(
-                data=request.PUT,
-                instance=offer
-            )
-
-            if form.is_valid():
+            if active != offer.active:
                 try:
-                    offer = form.save()
+                    availability = OfferAvailability.objects.filter(
+                        offer=offer
+                    )
+                    for a in availability:
+                        a.available = offer.active
+                        a.save()
 
-                except Exception, e:
-                    error_message = 'An error occurred during offer update'
-                    logger.exception(error_message)
-                    errors['no-field'] = error_message
+                except:
+                    logger.exception('failed to update offer availability')
 
-                    return self.generate_response({
-                        'message': e.message,
-                        'errors': errors
-                    })
-
-            else:
-                for field, messages in form.errors.iteritems():
-                    errors[field] = [message for message in messages]
-
-                return self.generate_response({
-                    'message': 'An exception occurred during offer update',
-                    'errors': errors
-                })
+        else:
+            for field, messages in form.errors.iteritems():
+                errors[field] = [message for message in messages]
 
             return self.generate_response({
-                'offer_id': offer.id,
-                'message': 'Offer updated sucessfully.'
+                'message': 'An exception occurred during offer update',
+                'errors': errors
             })
+
+        return self.generate_response({
+            'offer_id': offer.id,
+            'message': 'Offer updated sucessfully.'
+        })
