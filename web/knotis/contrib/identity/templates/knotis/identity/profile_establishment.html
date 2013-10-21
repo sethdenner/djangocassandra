@@ -20,7 +20,9 @@
       
       {% if is_manager %}
       {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
-      <img src="{{ img.url }}" class="img-circle" />
+      <a class="change-profile-badge-link">
+	<img src="{{ img.url }}" class="img-circle" />
+      </a>
       {% empty %}
       <img data-add-image src="{{ default_profile_logo_uri }}" class="img-circle" />
       {% endthumbnail %}
