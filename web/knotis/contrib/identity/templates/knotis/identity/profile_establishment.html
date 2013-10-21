@@ -34,7 +34,11 @@
 
       <div class="row-fluid">
         <div id="id-profile-title" class="span12">
+	  {% if is_manager %}
+          <h2 class="updateable-name" data-establishment-id="{{ establishment.id }}" data-identity-type="{{ establishment.identity_type }}">{{ establishment.name }}</h2>
+	  {% else %}
           <h2>{{ establishment.name }}</h2>
+	  {% endif %}
         </div>
       </div>
       <div id="id-profile-contact" class="row">
