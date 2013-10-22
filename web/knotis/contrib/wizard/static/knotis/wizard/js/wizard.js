@@ -59,7 +59,13 @@
             );
         };
 
-        step(0);
+        current_step = $carousel.attr('data-current-step');
+        if (current_step) {
+            step(parseInt(current_step));
+        } else {
+            step(0);
+        }
+
     });
 
 })(jQuery);

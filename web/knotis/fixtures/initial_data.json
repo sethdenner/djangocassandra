@@ -240,5 +240,80 @@
             "pub_date": "2013-10-14 18:51:09", 
             "order": 3
         }
+    },
+    {
+        "pk": "532125df-a7f3-4f28-a149-877367bd6ba6", 
+        "model": "wizard.wizardstep", 
+        "fields": {
+            "deleted": false, 
+            "wizard_name": "offer_create", 
+            "content_type": [
+                "wizard", 
+                "wizardstep"
+            ], 
+            "action": "/offer/create/details/", 
+            "pub_date": "2013-10-22 17:40:24", 
+            "order": 1
+        }
+    }, 
+    {
+        "pk": "d4830a73-c187-415d-a7bf-e1a77058fab5", 
+        "model": "wizard.wizardstep", 
+        "fields": {
+            "deleted": false, 
+            "wizard_name": "offer_create", 
+            "content_type": [
+                "wizard", 
+                "wizardstep"
+            ], 
+            "action": "/offer/create/location/", 
+            "pub_date": "2013-10-22 17:40:38", 
+            "order": 2
+        }
+    }, 
+    {
+        "pk": "238770ea-0183-4ee8-9f10-bf16ec3d8874", 
+        "model": "wizard.wizardstep", 
+        "fields": {
+            "deleted": false, 
+            "wizard_name": "offer_create", 
+            "content_type": [
+                "wizard", 
+                "wizardstep"
+            ], 
+            "action": "/offer/create/summary/", 
+            "pub_date": "2013-10-22 17:40:48", 
+            "order": 4
+        }
+    }, 
+    {
+        "pk": "968fd92b-1a47-483b-a060-659222de2657", 
+        "model": "wizard.wizardstep", 
+        "fields": {
+            "deleted": false, 
+            "wizard_name": "offer_create", 
+            "content_type": [
+                "wizard", 
+                "wizardstep"
+            ], 
+            "action": "/offer/create/product/", 
+            "pub_date": "2013-10-22 17:40:20", 
+            "order": 0
+        }
+    }, 
+    {
+        "pk": "939c97c4-507a-419d-81ad-363927a6e77f", 
+        "model": "wizard.wizardstep", 
+        "fields": {
+            "deleted": false, 
+            "wizard_name": "offer_create", 
+            "content_type": [
+                "wizard", 
+                "wizardstep"
+            ], 
+            "action": "/offer/create/publish/", 
+            "pub_date": "2013-10-22 17:40:42", 
+            "order": 3
+        }
     }
 ]
