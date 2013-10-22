@@ -62,10 +62,8 @@ from forms import (
     OfferFinishForm
 )
 
-from knotis.contrib.wizard.views import(
-    WizardView,
-    WizardStep
-)
+from knotis.contrib.wizard.views import WizardView
+from knotis.contrib.wizard.models import WizardProgress
 
 from knotis.contrib.layout.views import (
     ActionButton,
@@ -271,6 +269,22 @@ class OfferEditProductFormView(AJAXFragmentView):
                 'errors': errors
             })
 
+        offer_id = form.cleaned_data.get('offer_id')
+        if offer_id:
+            try:
+                offer = Offer.objects.get(pk=offer_id)
+
+            except Exception, e:
+                logger.exception('failed to get offer')
+
+                return self.generate_response({
+                    'message': 'a server error occurred',
+                    'errors': {'no-field': e.message}
+                })
+
+        else:
+            offer = None
+
         product_type = form.cleaned_data.get('product_type')
         if ProductTypes.CREDIT == product_type:
             price = form.cleaned_data.get('credit_price')
@@ -364,27 +378,66 @@ class OfferEditProductFormView(AJAXFragmentView):
         else:
             stock = form.cleaned_data.get('offer_stock')
 
+        if offer:
+            try:
+                offer.update(
+                    title=title,
+                    stock=stock,
+                    unlimited=unlimited,
+                    inventory=[split_inventory],
+                    discount_factor=price / value
+                )
+
+            except Exception, e:
+                logger.exception('failed to update offer')
+
+                return self.generate_response({
+                    'message': 'a server error occurred',
+                    'errors': {'no-field': e.message}
+                })
+
+        else:
+            try:
+                offer = Offer.objects.create(
+                    owner=owner,
+                    title=title,
+                    stock=stock,
+                    unlimited=unlimited,
+                    inventory=[split_inventory],
+                    discount_factor=price / value
+                )
+
+            except Exception, e:
+                logger.exception('failed to create offer')
+
+                return self.generate_response({
+                    'message': 'a server error occurred',
+                    'errors': {'no-field': e.message}
+                })
+
+        #update wizard
+        wizard_query = '='.join([
+            'id',
+            offer.id
+        ])
+
         try:
-            offer = Offer.objects.create(
-                owner=owner,
-                title=title,
-                stock=stock,
-                unlimited=unlimited,
-                inventory=[split_inventory],
-                discount_factor=price / value
+            progress = WizardProgress.objects.get(
+                identity=owner,
+                wizard_name='offer_create',
+                query_string='',
+                completed=False
             )
+            progress.query_string = wizard_query
+            progress.next()
 
-        except Exception, e:
-            logger.exception('failed to create offer')
-
-            return self.generate_response({
-                'message': 'a server error occurred',
-                'errors': {'no-field': e.message}
-            })
+        except:
+            logger.exception('could not advance wizard progress')
 
         return self.generate_response({
             'message': 'OK',
-            'offer_id': offer.id
+            'offer_id': offer.id,
+            'wizard_query': wizard_query
         })
 
     def process_context(self):
@@ -405,10 +458,21 @@ class OfferEditProductFormView(AJAXFragmentView):
         else:
             raise PermissionDenied()
 
+        offer_id = request.GET.get('id')
+        if offer_id:
+            offer = get_object_or_404(
+                Offer,
+                pk=offer_id
+            )
+
+        else:
+            offer = None
+
         local_context = copy.copy(self.context)
         local_context.update({
             'form': OfferProductPriceForm(
-                owners=Identity.objects.filter(pk=owner.pk)
+                owners=Identity.objects.filter(pk=owner.pk),
+                offer=offer
             ),
             'ProductTypes': ProductTypes,
             'current_identity': current_identity
@@ -455,6 +519,24 @@ class OfferEditDetailsFormView(AJAXFragmentView):
                     'no-field': 'A server error occurred. Please try again.'
                 }
             })
+
+        wizard_query = '='.join([
+            'id',
+            offer.id
+        ])
+
+        #update wizard
+        try:
+            progress = WizardProgress.objects.get(
+                identity=offer.owner,
+                wizard_name='offer_create',
+                query_string=wizard_query,
+                completed=False
+            )
+            progress.next()
+
+        except:
+            logger.exception('could not advance wizard progress')
 
         return self.generate_response({
             'message': 'OK',
@@ -545,6 +627,24 @@ class OfferEditLocationFormView(AJAXFragmentView):
                     'no-field': 'A server error occurred. Please try again.'
                 }
             })
+
+        wizard_query = '='.join([
+            'id',
+            offer.id
+        ])
+
+        #update wizard
+        try:
+            progress = WizardProgress.objects.get(
+                identity=offer.owner,
+                wizard_name='offer_create',
+                query_string=wizard_query,
+                completed=False
+            )
+            progress.next()
+
+        except:
+            logger.exception('could not advance wizard progress')
 
         return self.generate_response({
             'message': 'OK',
@@ -655,6 +755,24 @@ class OfferEditPublishFormView(AJAXFragmentView):
                 }
             })
 
+        wizard_query = '='.join([
+            'id',
+            offer.id
+        ])
+
+        #update wizard
+        try:
+            progress = WizardProgress.objects.get(
+                identity=offer.owner,
+                wizard_name='offer_create',
+                query_string=wizard_query,
+                completed=False
+            )
+            progress.next()
+
+        except:
+            logger.exception('could not advance wizard progress')
+
         return self.generate_response({
             'message': 'OK',
             'offer_id': offer.id
@@ -723,6 +841,24 @@ class OfferEditSummaryView(AJAXFragmentView):
                     'no-field': 'A server error occurred. Please try again.'
                 }
             })
+
+        wizard_query = '='.join([
+            'id',
+            offer.id
+        ])
+
+        #update wizard
+        try:
+            progress = WizardProgress.objects.get(
+                identity=offer.owner,
+                wizard_name='offer_create',
+                query_string=wizard_query,
+                completed=False
+            )
+            progress.next()
+
+        except:
+            logger.exception('could not advance wizard progress')
 
         return self.generate_response({
             'message': 'OK',
@@ -812,31 +948,4 @@ class OfferDetailView(FragmentView):
 
 class OfferCreateWizard(WizardView):
     view_name = 'offer_create_wizard'
-
-    steps = [
-        WizardStep(
-            '/offer/create/product/',
-            'offer-edit-product-form',
-            {}
-        ),
-        WizardStep(
-            '/offer/create/details/',
-            'offer-edit-details-form',
-            {'id': 'offer_id'}
-        ),
-        WizardStep(
-            '/offer/create/location/',
-            'offer-edit-location-form',
-            {'id': 'offer_id'}
-        ),
-        WizardStep(
-            '/offer/create/publish/',
-            'offer-edit-publish-form',
-            {'id': 'offer_id'}
-        ),
-        WizardStep(
-            '/offer/create/summary/',
-            'offer-edit-summary',
-            {'id': 'offer_id'}
-        ),
-    ]
+    wizard_name = 'offer_create'

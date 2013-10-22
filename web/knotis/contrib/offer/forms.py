@@ -12,6 +12,7 @@ from django.forms import (
     ValidationError
 )
 
+
 from knotis.forms import (
     TemplateForm,
     ModelForm,
@@ -110,6 +111,12 @@ class OfferProductPriceForm(Form):
         queryset=Identity.objects.none()
     )
 
+    offer_id = CharField(
+        max_length=36,
+        widget=HiddenInput(),
+        required=False
+    )
+
     product_type = CharField(
         max_length=16,
         widget=RadioSelect(
@@ -159,7 +166,8 @@ class OfferProductPriceForm(Form):
         *args,
         **kwargs
     ):
-        owners = kwargs.pop('owners')
+        owners = kwargs.pop('owners', None)
+        offer = kwargs.pop('offer', None)
 
         super(OfferProductPriceForm, self).__init__(
             *args,
@@ -168,6 +176,9 @@ class OfferProductPriceForm(Form):
 
         if owners:
             self.fields['owner'].queryset = owners
+
+        if offer:
+            self.fields['offer_id'].initial = offer.pk
 
         if not hasattr(self, 'POST'):
             return
@@ -184,6 +195,13 @@ class OfferProductPriceForm(Form):
 
         if not self.POST.get('unlimited'):
             self.fields['offer_stock'].required = True
+
+    def clean_offer_id(self):
+        offer_id = self.cleaned_data.get('offer_id')
+        if offer_id:
+            Offer.objects.get(pk=offer_id)
+
+        return offer_id
 
     def clean(self):
         cleaned_data = super(OfferProductPriceForm, self).clean()
