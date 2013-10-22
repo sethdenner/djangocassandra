@@ -30,7 +30,7 @@
     <form action="{{ offer_finish_form.form_action }}" method="{{ offer_finish_form.form_method }}" >{% csrf_token %}
       {{ offer_finish_form.id }}
       {{ offer_finish_form.published }}
-      <button type="button" class="pull-left btn">Back</button>
+      <button type="button" class="pull-left btn wizard-back">Back</button>
       <button type="button" class="pull-left btn" data-dismiss="modal">Delete Offer</button>
       <button id="id-submit-details" type="submit" class="pull-right btn btn-primary">Publish</button>
       <button type="button" class="pull-right btn btn-primary">Save For Later</button>
