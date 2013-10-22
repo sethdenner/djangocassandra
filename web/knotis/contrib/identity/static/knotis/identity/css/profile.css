@@ -1,8 +1,17 @@
 div#id-profile-cover {
     text-align: center;
-    background-color: #b5d334;
+    /*background-color: #b5d334;*/
     padding: 35px 0 16px 0;
     position: relative;
+}
+
+img#profile-header {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 290px;
+    z-index: -50;
 }
 
 div#id-profile-title h2 {
