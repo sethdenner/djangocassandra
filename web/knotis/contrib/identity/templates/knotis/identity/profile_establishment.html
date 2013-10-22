@@ -11,12 +11,11 @@
 {% load crispy_forms_tags %}
 <div class="container-fluid">
 
-  {% thumbnail profile_banner.image.image '2560x281' crop=profile_banner.crop as header %}
-  <input id="data-static-url" type="hidden" data-static-url="{{ STATIC_URL }}">
-  <div id="id-profile-cover" class="row-fluid" style="background-image:url('{{ header.url }}');">
-  {% empty %}
+  <input id="data-static-url" type="hidden" data-static-url="{{ STATIC_URL }}" />
   <div id="id-profile-cover" class="row-fluid">
-  {% endthumbnail %}
+    {% thumbnail profile_banner.image.image '2560x500' crop=profile_banner.crop as header %}
+    <img src="{{ header.url }}" alt="header image" id="profile-header" />
+    {% endthumbnail %}
     <div class="span12">
       
       {% if is_manager %}

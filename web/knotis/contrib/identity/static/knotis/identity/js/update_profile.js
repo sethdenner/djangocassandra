@@ -157,15 +157,14 @@
 		    params: {
 			type: 'image'
 		    },
-		    aspect: 9,
+		    aspect: 5.12,
 		    related_object_id: identity_id,
 		    context: 'profile_banner',
 		    done: function(data){
 			$('modal-box').modal('hide');
 			console.log(data);
-			$('#id-profile-cover').css({'background-image': 'url:("' + data.image_url + '")'});
+			$('#profile-header').attr('src', data.image_url);
 		    }
-		
 		});		
 	    }
 	});
