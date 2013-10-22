@@ -73,6 +73,21 @@
                     .text('Published');
             });
         });
+
+        $('.edit-offer').click(function(event){
+            var $button = $(this),
+                offer_id = $button.parent().parent('.grid-tile.small-tile').attr('data-offer-id');
+            $.ajaxmodal({
+                href: [
+                    '/offer/create/?id=',
+                    offer_id
+                ].join(''),
+                modal_settings: {
+                    backdrop: 'static',
+                    keyboard: true
+                }
+            });
+        });
     });
     
 })(jQuery);
