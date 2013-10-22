@@ -20,7 +20,9 @@
       
       {% if is_manager %}
       {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
-      <img src="{{ img.url }}" class="img-circle" />
+      <a class="change-profile-badge-link">
+	<img src="{{ img.url }}" class="img-circle" />
+      </a>
       {% empty %}
       <img data-add-image src="{{ default_profile_logo_uri }}" class="img-circle" />
       {% endthumbnail %}
@@ -34,7 +36,11 @@
 
       <div class="row-fluid">
         <div id="id-profile-title" class="span12">
+	  {% if is_manager %}
+          <h2 class="updateable-name" data-establishment-id="{{ establishment.id }}" data-identity-type="{{ establishment.identity_type }}">{{ establishment.name }}</h2>
+	  {% else %}
           <h2>{{ establishment.name }}</h2>
+	  {% endif %}
         </div>
       </div>
       <div id="id-profile-contact" class="row">

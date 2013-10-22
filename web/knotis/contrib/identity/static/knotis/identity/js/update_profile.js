@@ -1,5 +1,4 @@
-(function($){
-    
+(function($){ 
 
     // ADDRESS EDITING
 
@@ -50,7 +49,7 @@
 	var identity_id = $elem.attr('data-establishment-id');
 	var endpoint_type = $elem.attr('data-endpoint-endpoint-type-name');
 	var endpoint_id = $elem.attr('data-endpoint-id');
-	console.log(identity_id, endpoint_type);
+	
 	$.post(
 	    '/api/v1/endpoint/',
 	    {
@@ -65,7 +64,6 @@
 		    $elem.blur();
 		    $elem.attr('data-endpoint-endpoint-id', data['endpoint-id'])
 		}else{
-		    console.log(data.data);
 		    $potential_input.one('click', edit_endpoint); 
 		}
 	    }
@@ -73,7 +71,6 @@
     };
 
     var edit_endpoint = function(){
-	console.log('editing');
 	var $this = $(this);
 	$this.attr('contenteditable', true);
 
@@ -94,6 +91,53 @@
 	
     $potential_input.one('click', edit_endpoint);
 
+    // EDIT NAME
+    var $updateable_name = $('.updateable-name');
+
+    var submit_name = function($elem){
+	var $this = $(this);
+	
+	var identity_id = $elem.attr('data-establishment-id');
+	var identity_type = $elem.attr('data-identity-type');
+	$.ajax({
+	    url: '/api/v1/identity/identity/',
+	    type: 'PUT',
+	    data: {
+		id: identity_id,
+		name: $elem.text(),
+		identity_type: identity_type
+	    }
+	}).done(function(data){
+	    $elem.removeAttr('contenteditable');
+	    if(!data.errors){
+		$elem.blur();
+	    }else{
+		$updateable_name.one('click', edit_name);
+	    }
+	});
+    };
+
+    var edit_name = function(){
+	var $this = $(this);
+
+	$this.attr('contenteditable', true);
+
+	$this.on('keypress', function(e){
+	    if(e.which == 13){
+		$this.off('blur');
+		submit_name($this);
+		e.preventDefault();
+	    }
+	});
+
+	$this.one('blur', function(e){
+	    $this.off('keypress');
+	    submit_name($this);
+	    e.preventDefault()
+	});
+    };
+
+    $updateable_name.one('click', edit_name);
 
     // BANNER EDITING
 
@@ -118,13 +162,41 @@
 		    context: 'profile_banner',
 		    done: function(data){
 			$('modal-box').modal('hide');
-			console.log(data.status);
 		    }
 		
-		});
-		
+		});		
 	    }
 	});
     });
+
+
+    $('a.change-profile-badge-link').click(function(event){
+	event.preventDefault();
+	var identity_id = $('div#id-identity-id').attr('data-identity-id');
+
+	$.ajaxmodal({
+	    href: '/image/upload',
+	    modal_settings: {
+		backdrop: 'static'
+	    },
+	    on_open: function(data, status, request){
+
+		$('#file-uploader').sickle({
+		    do_upload: true,
+		    params: {
+			type: 'image'
+		    },
+		    aspect: 1,
+		    related_object_id: identity_id,
+		    context: 'profile_badge',
+		    done: function(data){
+			$('modal-box').modal('hide');
+		    }
+		
+		});		
+	    }
+	});
+    });
+
     
 })(jQuery);

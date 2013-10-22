@@ -21,7 +21,7 @@
   {% if establishments %}
   <li class="nav-header">My Establishments</li>
   {% for establishment in establishments %}
-  <li><a href="/merchants/{{ establishment.backend_name }}/">{{ establishment.name }}</a>
+  <li><a href="/id/{{ establishment.id }}/">{{ establishment.name }}</a>
   {% endfor %}
   {% endif %}
 </ul>
