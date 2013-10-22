@@ -163,20 +163,24 @@ class InventoryManager(QuickManager):
 
     def get_provider_stack(
         self,
-        inventory
+        inventory,
+        create_empty=False
     ):
         return self.get_stack(
             inventory.provider,
-            inventory.product
+            inventory.product,
+            create_empty
         )
 
     def get_recipient_stack(
         self,
-        inventory
+        inventory,
+        create_empty=False
     ):
         return self.get_stack(
             inventory.recipient,
-            inventory.product
+            inventory.product,
+            create_empty
         )
 
     def get_participating_stacks(
@@ -190,6 +194,21 @@ class InventoryManager(QuickManager):
             self.get_recipient_stack(
                 inventory
             )
+        )
+
+    def stack_to_identity(
+        self,
+        inventory,
+        identity,
+    ):
+        identity_stack = self.get_stack(
+            identity,
+            inventory.product,
+            create_empty=True
+        )
+        self.stack(
+            inventory,
+            identity_stack
         )
 
 
