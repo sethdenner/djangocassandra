@@ -33,6 +33,7 @@ from knotis.views import FragmentView
 from knotis.contrib.media.models import Image
 from knotis.contrib.identity.models import Identity
 
+from sorl.thumbnail import get_thumbnail
 
 class ImageUploadView(FragmentView):
     template_name = 'knotis/media/image_upload.html'
@@ -143,11 +144,9 @@ def _upload(request):
         image = Image(
             owner=identity,
         )
+        path = '/'.join(['images', name])
         image.image.save(
-            '/'.join([
-                'images',
-                name
-            ]),
+            path,
             ContentFile(image_source)
         )
         image.save()

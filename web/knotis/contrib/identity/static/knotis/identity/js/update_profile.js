@@ -162,6 +162,8 @@
 		    context: 'profile_banner',
 		    done: function(data){
 			$('modal-box').modal('hide');
+			console.log(data);
+			$('#id-profile-cover').css({'background-image': 'url:("' + data.image_url + '")'});
 		    }
 		
 		});		
@@ -169,6 +171,8 @@
 	});
     });
 
+
+    // BADGE EDITING
 
     $('a.change-profile-badge-link').click(function(event){
 	event.preventDefault();
@@ -191,8 +195,9 @@
 		    context: 'profile_badge',
 		    done: function(data){
 			$('modal-box').modal('hide');
+			$img = $('#profile-badge');
+			$img.attr('src', data.image_url);
 		    }
-		
 		});		
 	    }
 	});
