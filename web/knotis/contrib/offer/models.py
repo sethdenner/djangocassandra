@@ -2,6 +2,8 @@ import re
 import datetime
 
 from django.conf import settings
+from django.db.models.fields import Field as ModelField
+
 from knotis.contrib.quick.models import (
     QuickModel,
     QuickManager
@@ -29,8 +31,6 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes,
     Publish
 )
-
-from knotis.contrib.media.models import ImageInstance
 
 
 class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
@@ -360,6 +360,44 @@ class Offer(QuickModel):
         if self.purchased == self.stock:
             self.complete()
 
+    def update(
+        self,
+        inventory=None,
+        discount_factor=1.,
+        *args,
+        **kwargs
+    ):
+        if kwargs:
+            updated = False
+            for key, value in kwargs.iteritems():
+                if (
+                    hasattr(self, key)
+                    and issubclass(
+                        getattr(self, key),
+                        ModelField
+                    )
+                ):
+                    setattr(self, key, value)
+                    updated = True
+
+            if updated:
+                self.save()
+
+        for i in inventory:
+            price_discount = i.price * discount_factor
+            OfferItem.objects.create(
+                offer=self,
+                inventory=i,
+                price_discount=price_discount
+            )
+
+        image = kwargs.get('image')
+        if image:
+            image.related_object_id = self.id
+            image.save()
+
+        return self
+
     def complete(self):
         pass
 
@@ -495,10 +533,27 @@ class Offer(QuickModel):
         return format_currency(gross - our_cut)
 
 
+class OfferItemManager(QuickManager):
+    def clear_offer_items(
+        self,
+        offer
+    ):
+        items = self.filter(offer=offer)
+        for i in items:
+            Inventory.objects.stack_to_identity(
+                i.inventory,
+                offer.owner
+            )
+
+        items.delete()
+
+
 class OfferItem(QuickModel):
     offer = QuickForeignKey(Offer)
     inventory = QuickForeignKey(Inventory)
     price_discount = QuickFloatField()
+
+    objects = OfferItemManager()
 
 
 class OfferAvailabilityManager(QuickManager):

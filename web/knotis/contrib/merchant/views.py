@@ -138,7 +138,7 @@ class MyOffersGrid(GridSmallView):
         offer_filter_dict = {}
         if 'pending' == offer_filter:
             offer_filter_dict['published'] = False
-            offer_action = 'publish'
+            offer_action = 'edit'
 
         elif 'completed' == offer_filter:
             offer_filter_dict['completed'] = True
