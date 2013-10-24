@@ -48,9 +48,11 @@
                                 }
                             }
                         });
+
                         _container.find('.wizard-back').click(function(event) {
                             step(index - 1);
                         });
+
                         $carousel.carousel(index);
                     } else {
                         // error handling 
