@@ -4,18 +4,22 @@
     <label class="control-label">When to send offer</label>
     <div class="controls">
       <div id="id-start-time" class="input-append date">
-        <input data-format="MM/dd/yyyy HH:mm:ss PP" type="text" name="{{ form.start_time.html_name }}" value="{{ form.start_time.value|default_if_none:'' }}" placeholder="Start Time" />
+        {% with form.start_time.value|default_if_none:'' as start_time %}
+        <input data-format="MM/dd/yyyy HH:mm:ss PP" type="text" name="{{ form.start_time.html_name }}" value="{% if start_time %}{{ start_time|date }} {{ start_time|time }}{% endif %}" placeholder="Start Time" />
         <span class="add-on">
           <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
         </span>
+        {% endwith %}
       </div>
     </div>
-    <div class="controls">
-      <div id="id-end-time" class="input-append date">
-        <input data-format="MM/dd/yyyy HH:mm:ss PP" type="text" name="{{ form.end_time.html_name }}" value="{{ form.end_time.value|default_if_none:'' }}" placeholder="End Time" />
+    <div class="controls" >
+        {% with form.end_time.value|default_if_none:'' as end_time %}
+      <div id="id-end-time" class="input-append date{% if form.start_time.value and not form.end_time.value %} hide{% endif %}">
+        <input data-format="MM/dd/yyyy HH:mm:ss PP" type="text" name="{{ form.end_time.html_name }}" value="{% if end_time %}{{ end_time|date }} {{ end_time|time }}{% endif %}" placeholder="End Time"{% if form.start_time.value and not form.end_time.value %} disabled{% endif %} />
         <span class="add-on">
           <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
         </span>
+        {% endwith %}
       </div>
     </div>
     <div class="controls">

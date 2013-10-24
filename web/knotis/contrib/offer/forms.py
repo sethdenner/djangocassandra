@@ -34,6 +34,7 @@ from knotis.contrib.endpoint.models import (
 
 from models import (
     Offer,
+    OfferItem,
     OfferPublish
 )
 
@@ -179,6 +180,34 @@ class OfferProductPriceForm(Form):
 
         if offer:
             self.fields['offer_id'].initial = offer.pk
+            offer_item = OfferItem.objects.get(
+                offer=offer
+            )
+            product_type = offer_item.inventory.product.product_type
+            self.fields['product_type'].initial = product_type
+            stock = offer_item.inventory.stock
+            if ProductTypes.CREDIT == product_type:
+                self.fields['credit_price'].initial = (
+                    offer_item.price_discount * stock
+                )
+                self.fields['credit_value'].initial = (
+                    offer_item.inventory.price * stock
+                )
+
+            elif ProductTypes.PHYSICAL == product_type:
+                self.fields['product_title'].initial = (
+                    offer_item.inventory.product.title
+                )
+
+                self.fields['product_price'].initial = (
+                    offer_item.price_discount * stock
+                )
+                self.fields['product_value'].initial = (
+                    offer_item.inventory.price * stock
+                )
+
+            self.fields['offer_stock'].initial = offer.stock
+            self.fields['offer_unlimited'].initial = offer.unlimited
 
         if not hasattr(self, 'POST'):
             return
@@ -403,6 +432,9 @@ class OfferPublicationForm(TemplateForm):
                 'pk__in': [offer.id]
             })
             self.fields['offer'].initial = offer
+            self.fields['start_time'].initial = offer.start_time
+            self.fields['end_time'].initial = offer.end_time
+            self.fields['no_time_limit'].initial = not offer.end_time
 
         (
             endpoint_facebook,

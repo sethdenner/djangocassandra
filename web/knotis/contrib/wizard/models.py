@@ -25,7 +25,9 @@ class WizardStepManager(QuickManager):
 
 
 class WizardStep(QuickModel):
-    action = QuickURLField()
+    action = QuickURLField(
+        db_index=True
+    )
     order = QuickIntegerField()
     wizard_name = QuickCharField(
         max_length=16,
@@ -33,6 +35,26 @@ class WizardStep(QuickModel):
     )
 
     objects = WizardStepManager()
+
+    def steps(self):
+        return WizardStep.objects.get_wizard_steps(self.wizard_name)
+
+    def get_next_step(
+        self
+    ):
+        steps = self.steps()
+
+        next_step = None
+        found_current = False
+        for step in steps:
+            if found_current:
+                next_step = step
+                break
+
+            if self.id == step.id:
+                found_current = True
+
+        return next_step
 
 
 class WizardProgress(QuickModel):
@@ -53,24 +75,34 @@ class WizardProgress(QuickModel):
         db_index=True
     )
 
-    def steps(self):
-        return WizardStep.objects.get_wizard_steps(self.wizard_name)
+    def step(
+        self,
+        step,
+        allow_completed=False
+    ):
+        if step.wizard_name != self.wizard_name:
+            raise Exception(''.join([
+                'step: <',
+                step.id,
+                '> does not belong to wizard "',
+                self.wizard_name,
+                '".'
+            ]))
+
+        if allow_completed or step.order > self.current_step.order:
+            self.current_step = step
+            self.save()
+
+        return self.current_step
+
+    def get_next_step(self):
+        return self.current_step.get_next_step()
 
     def next(self):
-        steps = self.steps()
-
-        next_step = False
-        updated = False
-        for s in steps:
-            if next_step:
-                self.current_step = s
-                self.save()
-                updated = True
-                break
-
-            elif self.current_step_id == s.id:
-                next_step = True
-
-        if not updated:
+        next_step = self.get_next_step()
+        if not next_step:
             self.completed = True
             self.save()
+            return
+
+        self.step(next_step)
