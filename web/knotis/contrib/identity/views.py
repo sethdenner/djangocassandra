@@ -56,7 +56,9 @@ from knotis.contrib.endpoint.models import *
 
 from knotis.contrib.identity.models import *
 
-# from knotis.contrib.location.forms import LocationForm
+
+EndpointTypeNames = dict((key, name) for (key, name) in EndpointTypes.CHOICES)
+
 
 class IdentityView(ContextView):
     template_name = 'knotis/identity/identity_view.html'
@@ -384,24 +386,36 @@ class EstablishmentProfileView(FragmentView):
         maps_scripts = maps.render_api_js()
 
         endpoints = []
-        for endpoint_type in ('phone', 'email', 'facebook', 'twitter', 'yelp'):
-            EndpointClass = get_class('Endpoint' + endpoint_type.capitalize())
-            endpoint = EndpointClass.objects.get_primary_endpoint(
+        for endpoint_class in (EndpointPhone, EndpointEmail, EndpointFacebook, EndpointYelp, EndpointTwitter, EndpointWebsite):
+
+            endpoint = endpoint_class.objects.get_primary_endpoint(
                 identity=establishment,
-                endpoint_type=getattr(
-                    get_class('EndpointTypes'),
-                    endpoint_type.upper()
-                )
+                endpoint_type=endpoint_class.EndpointType
             )
+
+            endpoint_type_name = EndpointTypeNames[endpoint_class.EndpointType]
+            endpoint_type_name = endpoint_type_name.lower()
+            
             if endpoint:
-                endpoints.append({
+                display = None
+                if endpoint.endpoint_type == EndpointTypes.YELP:
+                    display = 'Yelp'
+                elif endpoint.endpoint_type == EndpointTypes.FACEBOOK:
+                    display = 'Facebook'
+
+                fake_endpoint = {
                     'id': endpoint.id,
-                    'endpoint_type_name': endpoint_type,
-                    'value': endpoint.value
-                })
+                    'endpoint_type_name': endpoint_type_name,
+                    'value': endpoint.value,
+                    'uri': endpoint.get_uri(),
+                    'display': display
+                }
+
+                endpoints.append(fake_endpoint)
+
             else:
                 endpoints.append({
-                    'endpoint_type_name': endpoint_type,
+                    'endpoint_type_name': endpoint_type_name,
                     'value': None
                 })
 

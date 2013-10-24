@@ -60,7 +60,13 @@
 		data-establishment-id="{{ establishment.id }}"
 		data-endpoint-endpoint-id="{{ endpoint.id }}"
 		data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
-	      {{ endpoint.value }}
+	      {% if not is_manager %}<a href="{{ endpoint.uri }}">{% endif %}
+                {% if endpoint.display %}
+		{{ endpoint.display }}
+		{% else %}
+		{{ endpoint.value }}
+		{% endif %}
+	      {% if not is_manager %}</a>{% endif %}
 	    </li>
 	    {% else %}
 	    {% if is_manager %}

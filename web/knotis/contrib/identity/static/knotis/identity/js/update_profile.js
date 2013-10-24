@@ -56,7 +56,7 @@
 		identity_id: identity_id,
 		endpoint_type: endpoint_type,
 		endpoint_id: endpoint_id,
-		value: $elem.text()
+		value: $elem.text().trim()
 	    },
 	    function(data){
 		$elem.removeAttr('contenteditable');
@@ -72,6 +72,8 @@
 
     var edit_endpoint = function(){
 	var $this = $(this);
+	var current_val = $this.text();
+
 	$this.attr('contenteditable', true);
 
 	$this.on('keypress', function(e){
@@ -84,7 +86,9 @@
 
 	$this.one('blur', function(e){
 	    $this.off('keypress');
-	    submit_endpoint($this);
+	    if($this.text() != current_val){
+		submit_endpoint($this);
+	    }
 	    e.preventDefault();
 	});
     };
@@ -104,7 +108,7 @@
 	    type: 'PUT',
 	    data: {
 		id: identity_id,
-		name: $elem.text(),
+		name: $elem.text().trim(),
 		identity_type: identity_type
 	    }
 	}).done(function(data){
@@ -133,7 +137,7 @@
 	$this.one('blur', function(e){
 	    $this.off('keypress');
 	    submit_name($this);
-	    e.preventDefault()
+	    e.preventDefault();
 	});
     };
 
@@ -162,7 +166,6 @@
 		    context: 'profile_banner',
 		    done: function(data){
 			$('modal-box').modal('hide');
-			console.log(data);
 			$('#profile-header').attr('src', data.image_url);
 		    }
 		});		
