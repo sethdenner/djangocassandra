@@ -372,7 +372,7 @@ class Offer(QuickModel):
             for key, value in kwargs.iteritems():
                 if (
                     hasattr(self, key)
-                    and issubclass(
+                    and isinstance(
                         getattr(self, key),
                         ModelField
                     )
