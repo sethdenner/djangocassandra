@@ -55,6 +55,9 @@ class EndpointManager(Manager):
         elif EndpointTypes.YELP == endpoint_type:
             class_type = EndpointYelp
 
+        elif EndpointTypes.WEBSITE == endpoint_type:
+            class_type = EndpointWebsite
+
         else:
             class_type = Endpoint
 
@@ -86,12 +89,19 @@ class EndpointManager(Manager):
 
         return False
 
+    def _get_endpoint_class(self, endpoint_type):
+        class_names = dict((key, 'Endpoint' + name) for (key, name) in EndpointTypes.CHOICES)
+        return globals()[class_names[endpoint_type]]
+
     def get_primary_endpoint(
         self,
         identity,
         endpoint_type
     ):
-        endpoints = Endpoint.objects.filter(
+
+        EndpointClass = self._get_endpoint_class(endpoint_type)
+
+        endpoints = EndpointClass.objects.filter(
             endpoint_type=endpoint_type,
             identity=identity
         )
@@ -103,34 +113,43 @@ class EndpointManager(Manager):
         return None
 
 
-
 class EndpointTypes:
-    UNDEFINED = -1
-    EMAIL = 0
-    PHONE = 1
-    ADDRESS = 2
-    TWITTER = 3
-    FACEBOOK = 4
-    YELP = 5
-    IDENTITY = 6
-    WIDGET = 7
-    FOLLOWERS = 8
-
+    UNDEFINED  = -1
+    EMAIL      = 0
+    PHONE      = 1
+    ADDRESS    = 2
+    TWITTER    = 3
+    FACEBOOK   = 4
+    YELP       = 5
+    IDENTITY   = 6
+    WIDGET     = 7
+    FOLLOWERS  = 8
+    WEBSITE    = 9
+    LINK       = 10
+    
     CHOICES = (
-        (UNDEFINED, 'Undefined'),
-        (EMAIL, 'Email'),
-        (PHONE, 'Phone'),
-        (ADDRESS, 'Address'),
-        (TWITTER, 'Twitter'),
-        (FACEBOOK, 'Facebook'),
-        (YELP, 'Yelp'),
-        (IDENTITY, 'Identity'),
-        (WIDGET, 'Widget'),
-        (FOLLOWERS, 'Followers')
+        (UNDEFINED,  'Undefined'),
+        (EMAIL,      'Email'),
+        (PHONE,      'Phone'),
+        (ADDRESS,    'Address'),
+        (TWITTER,    'Twitter'),
+        (FACEBOOK,   'Facebook'),
+        (YELP,       'Yelp'),
+        (IDENTITY,   'Identity'),
+        (WIDGET,     'Widget'),
+        (FOLLOWERS,  'Followers'),
+        (WEBSITE,    'Website'),
+        (LINK,       'Link')
     )
 
+    SubTypes = {}
+    def register(endpoint_class):
+        SubTypes[endpoint_class.EndpointType] = endpoint_class
 
 class Endpoint(QuickModel):
+    EndpointType = EndpointTypes.UNDEFINED
+    
+
     endpoint_type = IntegerField(
         choices=EndpointTypes.CHOICES,
         default=EndpointTypes.UNDEFINED,
@@ -139,6 +158,10 @@ class Endpoint(QuickModel):
 
     identity = ForeignKey(Identity)
     value = CharField(
+        max_length=256,
+        db_index=True
+    )
+    context = CharField(
         max_length=256,
         db_index=True
     )
@@ -190,8 +213,14 @@ class Endpoint(QuickModel):
             self.__class__.__name__ + '.'
         )
 
+    def get_uri(self):
+        return self.value
+
 
 class EndpointPhone(Endpoint):
+    EndpointType = EndpointTypes.PHONE
+    
+
     class Meta:
         proxy = True
 
@@ -200,8 +229,13 @@ class EndpointPhone(Endpoint):
 
         super(EndpointPhone, self).__init__(*args, **kwargs)
 
+    def get_uri(self):
+        return "callto:" + self.value
 
 class EndpointEmail(Endpoint):
+    EndpointType = EndpointTypes.EMAIL
+    
+
     class Meta:
         proxy = True
 
@@ -234,8 +268,13 @@ class EndpointEmail(Endpoint):
         except:
             pass
 
+    def get_uri(self):
+        return "mailto:" + self.value
 
 class EndpointTwitter(Endpoint):
+    EndpointType = EndpointTypes.TWITTER
+    
+
     class Meta:
         proxy = True
 
@@ -244,8 +283,30 @@ class EndpointTwitter(Endpoint):
 
         super(EndpointTwitter, self).__init__(*args, **kwargs)
 
+    def clean(self):
+        """
+        Set value as the twitter handle only.
+
+        Strip off twitter.com if it's there ad it back in get_uri
+        """
+        v = self.value.strip()
+
+        if v.split('/',1)[0].find('.'): # is absolute
+            prefixes = ['twitter.com/', 'http://twitter.com/', 'www.twitter.com/', 'http://www.twitter.com/']
+            for prefix in prefixes:
+                if v[:len(prefix)] == prefix:
+                    self.value = self.value[len(prefix):]
+                    break
+        
+        super(Endpoint, self).clean()
+
+    def get_uri(self):
+        return "http://twitter.com/" + self.value
 
 class EndpointFacebook(Endpoint):
+    EndpointType = EndpointTypes.FACEBOOK
+    
+
     class Meta:
         proxy = True
 
@@ -254,8 +315,40 @@ class EndpointFacebook(Endpoint):
 
         super(EndpointFacebook, self).__init__(*args, **kwargs)
 
+    def clean(self):
+        """
+        Set value as the facebook username only.
+
+        Strip off facebook.com (and its derivatives) if it's there ad it back in get_uri
+        """
+        v = self.value.strip()
+
+        if v.split('/',1)[0].find('.'): # is absolute
+            prefixes = [
+                'facebook.com/', 
+                'http://facebook.com/', 
+                'www.facebook.com/', 
+                'http://www.facebook.com/',
+                
+                'facebook.com/profile.php?id=',
+                'http://facebook.com/profile.php?id=', 
+                'www.facebook.com/profile.php?id=', 
+                'http://www.facebook.com/profile.php?id=',
+            ]
+            for prefix in prefixes:
+                if (len(v) > len(prefix)) and (v[:len(prefix)] == prefix):
+                    self.value = self.value[len(prefix):]
+                    break
+        
+        super(Endpoint, self).clean()
+
+    def get_uri(self):
+        return "http://facebook.com/profile.php?id=" + self.value
 
 class EndpointYelp(Endpoint):
+    EndpointType = EndpointTypes.YELP
+    
+
     class Meta:
         proxy = True
 
@@ -264,8 +357,36 @@ class EndpointYelp(Endpoint):
 
         super(EndpointYelp, self).__init__(*args, **kwargs)
 
+    def clean(self):
+        """
+        Set value as the yelp handle only.
+
+        Strip off yelp.com and derivatives if it's there ad it back in get_uri
+        """
+        v = self.value.strip()
+
+        if v.split('/',1)[0].find('.'): # is absolute
+            prefixes = [
+                'yelp.com/', 
+                'http://yelp.com/', 
+                'www.yelp.com/', 
+                'http://www.yelp.com/'
+            ]
+            for prefix in prefixes:
+                if v[:len(prefix)] == prefix:
+                    self.value = self.value[len(prefix):]
+                    break
+        
+        super(Endpoint, self).clean()
+
+    def get_uri(self):
+        return "http://yelp.com/biz/" + self.value
+
 
 class EndpointAddress(Endpoint):
+    EndpointType = EndpointTypes.ADDRESS
+    
+
     class Meta:
         proxy = True
 
@@ -273,6 +394,42 @@ class EndpointAddress(Endpoint):
         kwargs['endpoint_type'] = EndpointTypes.ADDRESS
 
         super(EndpointAddress, self).__init__(*args, **kwargs)
+
+class EndpointLink(Endpoint):
+    EndpointType = EndpointTypes.LINK
+    
+
+    class Meta:
+        proxy = True
+
+    def clean(self):
+        """
+        Check that the value has http or https if it contains a domain. 
+        If it contains a domain and no protocol, add http:// to the beginning.
+        """
+        v = self.value.strip()
+        """ If the text before the first / contains a ., the url needs http """
+        is_global = v.split('/',1)[0].find('.') > 0
+        if is_global: 
+            if v[:7] != 'http://' and v[:8] != 'https://':
+                self.value = 'http://' + self.value
+        
+        super(EndpointLink, self).clean()
+
+    def get_uri(self):
+        return self.value
+
+class EndpointWebsite(EndpointLink):
+    EndpointType = EndpointTypes.WEBSITE
+    
+
+    class Meta:
+        proxy = True
+
+    def __init__(self, *args, **kwargs):
+        kwargs['endpoint_type'] = EndpointTypes.WEBSITE
+
+        super(EndpointWebsite, self).__init__(*args, **kwargs)
 
 
 class EndpointIdentityManager(EndpointManager):
@@ -293,6 +450,9 @@ class EndpointIdentityManager(EndpointManager):
 
 
 class EndpointIdentity(Endpoint):
+    EndpointType = EndpointTypes.IDENTITY
+    
+
     class Meta:
         proxy = True
 
@@ -335,3 +495,4 @@ class Publish(QuickModel):
             'publish was not implemented in derived class ' +
             self.__class__.__name__ + '.'
         )
+
