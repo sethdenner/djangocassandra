@@ -13,6 +13,13 @@
     margin-top: 10px;
 }
 
+.navbar a.brand {
+    background: url('/static/knotis/img/knotis.png') no-repeat;
+    height: 40px;
+    width: 105px;
+    margin-left: -5px;
+}
+
 /*
 Bootstrap Overrides
 */
