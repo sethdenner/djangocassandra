@@ -21,6 +21,10 @@ Bootstrap Overrides
     padding-left: 0;
 }
 
+.modal-header {
+    padding: 0;
+}
+
 select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input, .modal {
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
