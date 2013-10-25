@@ -25,6 +25,7 @@ from knotis.contrib.media.models import (
 from knotis.views import FragmentView
 from sorl.thumbnail import get_thumbnail
 
+
 class CropForm(ModelForm):
     class Meta:
         model = ImageInstance
