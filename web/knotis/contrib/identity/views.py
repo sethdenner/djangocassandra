@@ -255,6 +255,58 @@ class EstablishmentProfileGrid(GridSmallView):
 
         return local_context
 
+
+class EstablishmentProfileOffers(FragmentView):
+    template_name = 'knotis/identity/establishment_offers.html'
+    view_name = 'establishment_offers'
+    
+    def process_context(self):
+        request = self.request
+        establishment_id = self.context.get('establishment_id')
+        
+        local_context = copy.copy(self.context)
+        return local_context
+        
+class EstablishmentProfileContact(FragmentView):
+    template_name = 'knotis/identity/establishment_contact.html'
+    view_name = 'establishment_contact'
+    
+    def process_context(self):
+        request = self.context.get('request')
+        establishment_id = self.context.get('establishment_id')
+
+        locationItem = LocationItem.objects.filter(
+            related_object_id=establishment_id
+        )
+        if len(locationItem):
+            address = locationItem[0].location.address
+            latitude = locationItem[0].location.latitude
+            longitude = locationItem[0].location.longitude
+        else:
+            address = None
+            latitude = None,
+            longitude = None
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'address': address,
+            'latitude': latitude,
+            'longitude': longitude
+        })
+        return local_context
+
+
+class EstablishmentProfileAbout(FragmentView):
+    template_name = 'knotis/identity/establishment_about.html'
+    view_name = 'establishment_offers'
+    
+    def process_context(self):
+        request = self.request
+        establishment_id = self.context.get('establishment_id')
+        
+        local_context = copy.copy(self.context)
+        return local_context
+
 get_class = lambda x: globals()[x]
 
 class EstablishmentProfileView(FragmentView):
@@ -333,6 +385,7 @@ class EstablishmentProfileView(FragmentView):
             'knotis/layout/js/forms.js',
             'knotis/maps/js/maps.js',
             'knotis/identity/js/update_profile.js',
+            'knotis/identity/js/establishment_contact.js'
         ]
 
         try:
@@ -419,6 +472,20 @@ class EstablishmentProfileView(FragmentView):
                     'value': None
                 })
 
+        # determine nav view
+        sub_context = Context({ 
+            'request': request,
+            'establishment_id': establishment_id
+        })
+        if self.context.get('view_name') == 'contact':
+            nav_top_content = EstablishmentProfileContact().render_template_fragment(sub_context)
+        elif self.context.get('view_name') == 'offers':
+            pass
+        elif self.context.get('view_name') == 'about':
+            pass
+        else:
+            nav_top_content = None
+
         local_context = copy.copy(self.context)
         local_context.update({
             'establishment': establishment,
@@ -432,7 +499,9 @@ class EstablishmentProfileView(FragmentView):
             'profile_badge': profile_badge_image,
             'profile_banner': profile_banner_image,
             'establishment_offers': establishment_offers,
-            'endpoints': endpoints
+            'endpoints': endpoints,
+	    'top_menu_name': 'identity_profile',
+            'nav_top_content': nav_top_content
         })
 
         return local_context

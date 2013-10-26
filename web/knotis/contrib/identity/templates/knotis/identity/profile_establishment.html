@@ -5,7 +5,6 @@
 {% block first %}{% endblock first %}
 {% block header %}
 {% render_fragment header %}
-{% render_fragment nav_top %}
 {% endblock header %}
 {% block content %}
 {% load crispy_forms_tags %}
@@ -88,15 +87,23 @@
       {% endif %}
     </div>
   </div>
-
+  {% render_fragment nav_top %}
   <div id="id-profile-spacer" class="row-fluid"><p class="span12">&nbsp;</p></div>
   <div class="row-fluid">
     <div class="span2">
       {% render_fragment nav_side %}
     </div>
+
+    <!--
     <div class="span10">
       {% render_fragment establishment_profile_grid %}
     </div>
+    -->    
+
+    <div class="span10">
+      {{ nav_top_content }}
+    </div>
+
   </div>
 </div>
 <div id="id-identity-id" data-identity-id="{{ establishment.id }}" class="hide" >&nbsp;</div>

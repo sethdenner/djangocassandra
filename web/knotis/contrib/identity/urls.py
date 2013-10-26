@@ -28,6 +28,16 @@ urlpatterns = patterns(
         r''.join([
             '^id/(?P<id>',
             REGEX_UUID,
+            ')(/(?P<view_name>',
+            '\w{1,16}',
+            '))?/$'
+        ]),
+        IdentityView.as_view()
+    ),
+    url(
+        r''.join([
+            '^id/(?P<id>',
+            REGEX_UUID,
             ')(/offer/(?P<offer_id>',
             REGEX_UUID,
             '))?/$'
