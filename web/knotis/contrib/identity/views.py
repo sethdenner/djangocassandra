@@ -257,6 +257,7 @@ class EstablishmentProfileGrid(GridSmallView):
 
 get_class = lambda x: globals()[x]
 
+
 class EstablishmentProfileView(FragmentView):
     template_name = 'knotis/identity/profile_establishment.html'
     view_name = 'establishment_profile'

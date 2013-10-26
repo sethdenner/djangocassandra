@@ -324,7 +324,7 @@ class OfferPhotoLocationForm(TemplateForm):
             rows = [
                 ItemSelectRow(
                     photo,
-                    image=photo.image
+                    image=photo
                 ) for photo in photos
             ]
             actions = [
@@ -373,11 +373,22 @@ class OfferPhotoLocationForm(TemplateForm):
         offer = self.cleaned_data.get('offer')
         photo = self.cleaned_data.get('photo')
 
-        instance = ImageInstance.objects.create(
-            owner=offer.owner,
-            image=photo,
-            related_object_id=offer.id
-        )
+        if photo.related_object_id == offer.id:
+            instance = photo
+            instance.primary = True
+            instance.save()
+
+        else:
+            instance = ImageInstance.objects.create(
+                owner=offer.owner,
+                image=photo.image.image,
+                related_object_id=offer.id,
+                crop_left=photo.crop_left,
+                crop_top=photo.crop_top,
+                crop_width=photo.crop_width,
+                crop_height=photo.crop_height,
+                primary=True
+            )
 
         return instance
 
