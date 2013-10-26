@@ -1,16 +1,18 @@
 <form class="form-horizontal" id="{{ form.form_id }}" action="{{ form.form_action }}" method="{{ form.form_method }}" >{% csrf_token %}
   {{ form.offer }}
-  <div class="control-group">
+  <div id="photos" class="control-group">
     <label class="control-label">Photos</label>
     {{ form.photo }}
     <div class="controls">
-      <a href="#addphoto" >&plus; Add a photo</a>
+      <div class="small-space"></div>
+      <a id="add_offer_photo" href="#addphoto" >&plus; Add a photo</a>
     </div>
   </div>
   <div class="control-group">
     <label class="control-label">Offer Location</label>
     {{ form.locations }}
     <div class="controls">
+      <div class="small-space"></div>
       <a href="#addlocation" >&plus; Add a location</a>
     </div>
   </div>
@@ -21,3 +23,4 @@
     <button type="button" class="pull-right btn btn-primary">Save &amp; Preview</button>
   </div>
 </form>
+<script src="{{ STATIC_URL }}knotis/offer/js/edit_photos_location.js" ></script>

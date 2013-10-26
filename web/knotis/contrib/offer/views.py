@@ -26,7 +26,7 @@ from knotis.contrib.product.models import (
 from knotis.contrib.inventory.models import (
     Inventory
 )
-from knotis.contrib.media.models import Image
+from knotis.contrib.media.models import ImageInstance
 from knotis.contrib.location.models import (
     Location,
     LocationItem
@@ -35,6 +35,7 @@ from knotis.contrib.location.models import (
 from knotis.contrib.identity.models import (
     Identity,
     IdentityBusiness,
+    IdentityEstablishment,
     IdentityTypes
 )
 
@@ -50,8 +51,7 @@ from knotis.contrib.paypal.views import (
 
 from knotis.views import (
     ContextView,
-    FragmentView,
-    AJAXFragmentView
+    FragmentView
 )
 
 from forms import (
@@ -66,8 +66,6 @@ from knotis.contrib.wizard.views import (
     WizardView,
     WizardStepView
 )
-
-from knotis.contrib.wizard.models import WizardProgress
 
 from knotis.contrib.layout.views import (
     ActionButton,
@@ -209,8 +207,45 @@ class OfferTile(FragmentView):
         if not offer:
             return self.context
 
+        try:
+            offer_banner_image = ImageInstance.objects.get(
+                owner=offer.owner,
+                related_object_id=offer.id,
+                context='offer_banner',
+                primary=True
+            )
+
+        except:
+            logger.exception('failed to get offer banner image')
+            offer_banner_image = None
+
+        try:
+            establishments = IdentityEstablishment.objects.get_managed(
+                offer.owner
+            )
+            business_badge_image = None
+            for e in establishments:
+                try:
+                    business_badge_image = ImageInstance.objects.get(
+                        owner=e,
+                        related_object_id=e.id,
+                        context='profile_badge',
+                        primary=True
+                    )
+                except:
+                    pass
+
+                if business_badge_image:
+                    break
+
+        except:
+            logger.exception('failed to get business badge image')
+            business_badge_image = None
+
         # TODO: CALCULATE STATS.
         self.context.update({
+            'offer_banner_image': offer_banner_image,
+            'business_badge_image': business_badge_image,
             'stats': 'Stats',
         })
 
@@ -577,8 +612,9 @@ class OfferEditLocationFormView(OfferCreateStepView):
         offer_id = request.POST.get('offer')
         offer = get_object_or_404(Offer, pk=offer_id)
 
-        photos = Image.objects.filter(
-            owner=current_identity
+        photos = ImageInstance.objects.filter(
+            owner=current_identity,
+            context='offer_banner'
         )
 
         location_items = LocationItem.objects.filter(
@@ -648,8 +684,9 @@ class OfferEditLocationFormView(OfferCreateStepView):
         offer_id = request.GET.get('id')
         self.offer = get_object_or_404(Offer, pk=offer_id)
 
-        photos = Image.objects.filter(
-            owner=current_identity
+        photos = ImageInstance.objects.filter(
+            owner=current_identity,
+            context='offer_banner'
         )
 
         location_items = LocationItem.objects.filter(
@@ -862,6 +899,7 @@ class OfferEditSummaryView(OfferCreateStepView):
         savings_high = revenue_total * .5
 
         tile = OfferTile()
+        import pdb;pdb.set_trace()
         tile_rendered = tile.render_template_fragment(Context({
             'offer': self.offer,
         }))
