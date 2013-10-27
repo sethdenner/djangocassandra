@@ -1,0 +1,8 @@
+<h4>Yelp Reviews</h4>
+{% for review in yelp_feed %}
+<div class="yelp-review">
+  {{ review.rating }}/5<br />
+  <p>{{ review.excerpt }}</p>
+  <p>-{{ review.user.name }}</p>
+</div>
+{% endfor %}

@@ -57,7 +57,7 @@ from knotis.contrib.endpoint.models import *
 from knotis.contrib.identity.models import *
 
 from knotis.contrib.twitter.views import get_twitter_feed_json
-
+from knotis.contrib.yelp.views import get_reviews_by_yelp_id
 import json
 
 EndpointTypeNames = dict((key, name) for (key, name) in EndpointTypes.CHOICES)
@@ -329,13 +329,11 @@ class EstablishmentAboutAbout(FragmentView):
 
 class EstablishmentAboutTwitterFeed(FragmentView):
     template_name = 'knotis/identity/establishment_about_twitter.html'
-    view_name = 'estbalishment_about_twitter'
+    view_name = 'establishment_about_twitter'
     
     def process_context(self):
         request = self.context.get('request')
         establishment_id = self.context.get('establishment_id')
-
-        local_context = copy.copy(self.context)
 
         endpoints = self.context.get('endpoints')
         twitter_endpoint = None
@@ -344,12 +342,43 @@ class EstablishmentAboutTwitterFeed(FragmentView):
                 if endpoint['value']:
                     twitter_endpoint = endpoint
 
-        twitter_feed = json.loads(get_twitter_feed_json(twitter_endpoint['value']))
+        twitter_feed = None
+        if(twitter_endpoint):
+            twitter_feed = json.loads(get_twitter_feed_json(twitter_endpoint['value']))
 
+        local_context = copy.copy(self.context)
         local_context.update({
+            'twitter_handle': twitter_endpoint['value'],
             'twitter_feed': twitter_feed
         })
 
+        return local_context
+
+class EstablishmentAboutYelpFeed(FragmentView):
+    template_name = 'knotis/identity/establishment_about_yelp.html'
+    view_name = 'establishment_about_yelp'
+
+    def process_context(self):
+        request = self.context.get('request')
+        establishment_id = self.context.get('establishment_id')
+        
+        endpoints = self.context.get('endpoints')
+        yelp_endpoint = None
+
+        for endpoint in endpoints:
+            if endpoint['endpoint_type_name'] == 'yelp':
+                if endpoint['value']:
+                    yelp_endpoint = endpoint
+
+        yelp_feed = None
+        if yelp_endpoint:
+            yelp_feed = get_reviews_by_yelp_id(yelp_endpoint['value'])
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'yelp_feed': yelp_feed
+        })
+            
         return local_context
 
 class EstablishmentProfileAbout(FragmentView):
@@ -364,7 +393,8 @@ class EstablishmentProfileAbout(FragmentView):
         local_context.update({
             'about_markup': EstablishmentAboutAbout().render_template_fragment(local_context),
             'photos_markup': '<div>PHOTOS</div>',
-            'twitter_json': EstablishmentAboutTwitterFeed().render_template_fragment(local_context)
+            'twitter_markup': EstablishmentAboutTwitterFeed().render_template_fragment(local_context),
+            'yelp_markup': EstablishmentAboutYelpFeed().render_template_fragment(local_context)
         })
         return local_context
 
