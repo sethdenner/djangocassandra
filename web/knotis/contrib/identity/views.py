@@ -56,6 +56,8 @@ from knotis.contrib.endpoint.models import *
 
 from knotis.contrib.identity.models import *
 
+from knotis.contrib.twitter.views import get_twitter_feed
+
 
 EndpointTypeNames = dict((key, name) for (key, name) in EndpointTypes.CHOICES)
 
@@ -296,15 +298,71 @@ class EstablishmentProfileContact(FragmentView):
         return local_context
 
 
+class EstablishmentAboutAbout(FragmentView):
+    template_name = 'knotis/identity/establishment_about_about.html'
+    view_name = 'establishment_about_about'
+
+    def process_context(self):
+        request = self.context.get('request')
+        establishment_id = self.context.get('establishment_id')
+        
+        establishment = IdentityEstablishment.objects.get(pk=establishment_id)
+        business = IdentityBusiness.objects.get_establishment_parent(establishment)
+
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'description': business.description
+        })
+
+        endpoints = self.context.get('endpoints')
+        for endpoint in endpoints:
+            if endpoint['endpoint_type_name'] in ('twitter', 'facebook', 'yelp'):
+                if endpoint['value']:
+                    local_context.update({
+                        endpoint['endpoint_type_name']: endpoint['uri']
+                    })
+
+        return local_context
+
+
+class EstablishmentAboutTwitterFeed(FragmentView):
+    template_name = 'knotis/identity/establishment_about_twitter.html'
+    view_name = 'estbalishment_about_twitter'
+    
+    def process_context(self):
+        request = self.context.get('request')
+        establishment_id = self.context.get('establishment_id')
+
+        local_context = copy.copy(self.context)
+
+        endpoints = self.context.get('endpoints')
+        twitter_endpoint = None
+        for endpoint in endpoints:
+            if endpoint['endpoint_type_name'] == 'twitter':
+                if endpoint['value']:
+                    twitter_endpoint = endpoint
+
+        local_context.update({
+            'twitter_feed': get_twitter_feed(twitter_endpoint['value'])
+        })
+
+        return local_context
+
 class EstablishmentProfileAbout(FragmentView):
     template_name = 'knotis/identity/establishment_about.html'
-    view_name = 'establishment_offers'
+    view_name = 'establishment_about'
     
     def process_context(self):
         request = self.request
         establishment_id = self.context.get('establishment_id')
         
         local_context = copy.copy(self.context)
+        local_context.update({
+            'about_markup': EstablishmentAboutAbout().render_template_fragment(local_context),
+            'photos_markup': '<div>PHOTOS</div>',
+            'twitter_json': EstablishmentAboutTwitterFeed().render_template_fragment(local_context)
+        })
         return local_context
 
 get_class = lambda x: globals()[x]
@@ -449,7 +507,7 @@ class EstablishmentProfileView(FragmentView):
             endpoint_type_name = EndpointTypeNames[endpoint_class.EndpointType]
             endpoint_type_name = endpoint_type_name.lower()
             
-            if endpoint:
+            if endpoint and endpoint.value:
                 display = None
                 if endpoint.endpoint_type == EndpointTypes.YELP:
                     display = 'Yelp'
@@ -473,16 +531,17 @@ class EstablishmentProfileView(FragmentView):
                 })
 
         # determine nav view
-        sub_context = Context({ 
+        nav_context = Context({ 
             'request': request,
-            'establishment_id': establishment_id
+            'establishment_id': establishment_id,
+            'endpoints': endpoints
         })
         if self.context.get('view_name') == 'contact':
-            nav_top_content = EstablishmentProfileContact().render_template_fragment(sub_context)
+            nav_top_content = EstablishmentProfileContact().render_template_fragment(nav_context)
         elif self.context.get('view_name') == 'offers':
             pass
         elif self.context.get('view_name') == 'about':
-            pass
+            nav_top_content = EstablishmentProfileAbout().render_template_fragment(nav_context)
         else:
             nav_top_content = None
 

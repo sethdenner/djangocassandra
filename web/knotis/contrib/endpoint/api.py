@@ -13,7 +13,8 @@ from models import (
 )
 
 from knotis.contrib.identity.models import (
-    Identity
+    Identity,
+    IdentityTypes
 )
 
 from knotis.views import ApiView

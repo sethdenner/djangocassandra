@@ -20,6 +20,10 @@ from knotis.utils.email import generate_validation_key
 from knotis.contrib.cassandra.models import ForeignKey
 from knotis.contrib.identity.models import Identity
 
+from knotis.contrib.identity.models import (
+    IdentityBusiness,
+    IdentityTypes
+)
 
 class EndpointManager(Manager):
     def create(
@@ -93,6 +97,7 @@ class EndpointManager(Manager):
         class_names = dict((key, 'Endpoint' + name) for (key, name) in EndpointTypes.CHOICES)
         return globals()[class_names[endpoint_type]]
 
+
     def get_primary_endpoint(
         self,
         identity,
@@ -103,7 +108,7 @@ class EndpointManager(Manager):
 
         endpoints = EndpointClass.objects.filter(
             endpoint_type=endpoint_type,
-            identity=identity
+            identity=IdentityBusiness.objects.identity_id_to_business(identity.pk)
         )
 
         for endpoint in endpoints:
