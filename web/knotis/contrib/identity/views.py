@@ -56,8 +56,9 @@ from knotis.contrib.endpoint.models import *
 
 from knotis.contrib.identity.models import *
 
-from knotis.contrib.twitter.views import get_twitter_feed
+from knotis.contrib.twitter.views import get_twitter_feed_json
 
+import json
 
 EndpointTypeNames = dict((key, name) for (key, name) in EndpointTypes.CHOICES)
 
@@ -343,8 +344,10 @@ class EstablishmentAboutTwitterFeed(FragmentView):
                 if endpoint['value']:
                     twitter_endpoint = endpoint
 
+        twitter_feed = json.loads(get_twitter_feed_json(twitter_endpoint['value']))
+
         local_context.update({
-            'twitter_feed': get_twitter_feed(twitter_endpoint['value'])
+            'twitter_feed': twitter_feed
         })
 
         return local_context
@@ -392,6 +395,11 @@ class EstablishmentProfileView(FragmentView):
             else:
                 raise IdentityEstablishment.DoesNotExist()
 
+
+            if establishment:
+                business = IdentityBusiness.objects.get_establishment_parent(establishment)
+            if not establishment:
+                raise IdentityBusiness.DoesNotExist
         except:
             raise http.Http404
 
@@ -500,7 +508,7 @@ class EstablishmentProfileView(FragmentView):
         for endpoint_class in (EndpointPhone, EndpointEmail, EndpointFacebook, EndpointYelp, EndpointTwitter, EndpointWebsite):
 
             endpoint = endpoint_class.objects.get_primary_endpoint(
-                identity=establishment,
+                identity=business,
                 endpoint_type=endpoint_class.EndpointType
             )
 
@@ -548,6 +556,7 @@ class EstablishmentProfileView(FragmentView):
         local_context = copy.copy(self.context)
         local_context.update({
             'establishment': establishment,
+            'establishment_parent': business,
             'is_manager': is_manager,
             'styles': styles,
             'pre_scripts': pre_scripts,

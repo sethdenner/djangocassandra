@@ -46,7 +46,7 @@
     var $potential_input = $('.editable.establishment-endpoint');
     
     var submit_endpoint = function($elem){
-	var identity_id = $elem.attr('data-establishment-id');
+	var identity_id = $elem.attr('data-establishment-parent-id');
 	var endpoint_type = $elem.attr('data-endpoint-endpoint-type-name');
 	var endpoint_id = $elem.attr('data-endpoint-id');
 	

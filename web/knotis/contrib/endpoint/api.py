@@ -66,7 +66,7 @@ class EndpointApi(ApiView):
             else:
                 endpoint = EndpointClass.objects.create(
                     endpoint_type=getattr(EndpointTypes, endpoint_type.upper()),
-                    identity=Identity.objects.filter(id=identity_id)[0],
+                    identity=Identity.objects.filter(pk=identity_id)[0],
                     value='',
                     primary=True
                 )

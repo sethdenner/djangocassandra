@@ -1,2 +1,8 @@
 <h4>Twitter</h4>
-{{ twitter_feed }}
+{% for tweet in twitter_feed %}
+<div class="tweet">
+  {{ tweet.text }}<br />
+  <strong>{{ tweet.user.screen_name }}</strong>
+  <br />
+</div>
+{% endfor %}

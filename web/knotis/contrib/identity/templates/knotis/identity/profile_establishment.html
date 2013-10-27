@@ -36,7 +36,11 @@
       <div class="row-fluid">
         <div id="id-profile-title" class="span12">
 	  {% if is_manager %}
-          <h2 class="updateable-name" data-establishment-id="{{ establishment.id }}" data-identity-type="{{ establishment.identity_type }}">{{ establishment.name }}</h2>
+          <h2 
+	     class="updateable-name" 
+	     data-establishment-id="{{ establishment.id }}" 
+	     data-identity-type="{{ establishment.identity_type }}"
+	     data-establishment-parent-id="{{ establishment_parent.id }}">{{ establishment.name }}</h2>
 	  {% else %}
           <h2>{{ establishment.name }}</h2>
 	  {% endif %}
@@ -70,7 +74,7 @@
 	    {% else %}
 	    {% if is_manager %}
 	    <li class="editable establishment-endpoint" 
-		data-establishment-id="{{ establishment.id }}"
+		data-establishment-parent-id="{{ establishment_parent.id }}"
 		data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
 	      add {{ endpoint.endpoint_type_name }}
 	    </li>
@@ -94,11 +98,7 @@
       {% render_fragment nav_side %}
     </div>
 
-    <!--
-    <div class="span10">
-      {% render_fragment establishment_profile_grid %}
-    </div>
-    -->    
+    <!-- render_fragment profile_establishment_grid -->
 
     <div class="span10">
       {{ nav_top_content }}

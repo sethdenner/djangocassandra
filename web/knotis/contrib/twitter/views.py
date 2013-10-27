@@ -12,7 +12,7 @@ from django.template import Context
 from django.template.loader import get_template
 
 
-def get_twitter_feed(
+def get_twitter_feed_json(
     twitter_id,
     count=settings.TWITTER_DEFAULT_RESULT_COUNT
 ):
