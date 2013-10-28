@@ -10,7 +10,6 @@
 {% block content %}
 {% load crispy_forms_tags %}
 <div class="container-fluid">
-
   <input id="data-static-url" type="hidden" data-static-url="{{ STATIC_URL }}" />
   <div id="id-profile-cover" class="row-fluid">
     {% thumbnail profile_banner.image.image '2560x500' crop=profile_banner.crop as header %}
@@ -99,7 +98,7 @@
     </div>
   </div>
 </div>
-<div id="id-identity-id" data-identity-id="{{ establishment.id }}" class="hide" >&nbsp;</div>
+<div id="id-identity-id" data-identity-id="{{ business.id }}" class="hide" >&nbsp;</div>
 
 {% endblock content %}
 {% block footer %}{% endblock footer %}

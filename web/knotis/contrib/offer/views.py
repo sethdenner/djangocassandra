@@ -209,7 +209,6 @@ class OfferTile(FragmentView):
 
         try:
             offer_banner_image = ImageInstance.objects.get(
-                owner=offer.owner,
                 related_object_id=offer.id,
                 context='offer_banner',
                 primary=True
@@ -220,23 +219,11 @@ class OfferTile(FragmentView):
             offer_banner_image = None
 
         try:
-            establishments = IdentityEstablishment.objects.get_managed(
-                offer.owner
+            business_badge_image = ImageInstance.objects.get(
+                related_object_id=offer.owner_id,
+                context='profile_badge',
+                primary=True
             )
-            business_badge_image = None
-            for e in establishments:
-                try:
-                    business_badge_image = ImageInstance.objects.get(
-                        owner=e,
-                        related_object_id=e.id,
-                        context='profile_badge',
-                        primary=True
-                    )
-                except:
-                    pass
-
-                if business_badge_image:
-                    break
 
         except:
             logger.exception('failed to get business badge image')
