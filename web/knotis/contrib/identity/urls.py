@@ -29,7 +29,7 @@ urlpatterns = patterns(
             '^id/(?P<id>',
             REGEX_UUID,
             ')(/(?P<view_name>',
-            '\w{1,16}',
+            '\w{1,50}',
             '))?/$'
         ]),
         IdentityView.as_view()

@@ -46,7 +46,7 @@ class ImageInstance(QuickModel):
     )
 
     context = QuickCharField(
-        max_length=16,
+        max_length=50,
         db_index=True
     )
 
