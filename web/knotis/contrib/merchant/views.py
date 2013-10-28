@@ -225,11 +225,16 @@ class MyOffersView(ContextView):
             'knotis/layout/css/tile.css',
             'navigation/css/nav_top.css',
             'navigation/css/nav_side.css',
+            'styles/default/fileuploader.css',
         ]
 
         pre_scripts = []
 
         post_scripts = [
+            'jcrop/js/jquery.Jcrop.js',
+            'scripts/fileuploader.js',
+            'scripts/jquery.colorbox.js',
+            'scripts/jquery.sickle.js',
             'knotis/layout/js/layout.js',
             'knotis/layout/js/forms.js',
             'knotis/layout/js/header.js',

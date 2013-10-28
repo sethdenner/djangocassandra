@@ -67,11 +67,7 @@ class IdentityView(ContextView):
     template_name = 'knotis/identity/identity_view.html'
 
     def process_context(self):
-
-        errors = {}
-        
         context = copy.copy(self.context)
-        request = self.context.get('request')
 
         identity_id = self.kwargs.get('id')
         if not identity_id:
@@ -80,7 +76,7 @@ class IdentityView(ContextView):
         identity = Identity.objects.get(pk=identity_id)
         if not identity:
             raise Exception('Identity not found')
-                
+
         if identity.identity_type == IdentityTypes.ESTABLISHMENT:
             profile_view = EstablishmentProfileView()
             context['establishment_id'] = identity_id
@@ -247,7 +243,7 @@ class EstablishmentProfileGrid(GridSmallView):
             for offer in establishment_offers:
                 offer_tile = OfferTile()
                 offer_context = Context({
-                    'offer': offer
+                    'offer': offer.offer
                 })
                 tiles.append(
                     offer_tile.render_template_fragment(offer_context)
@@ -400,6 +396,7 @@ class EstablishmentProfileAbout(FragmentView):
 
 get_class = lambda x: globals()[x]
 
+
 class EstablishmentProfileView(FragmentView):
     template_name = 'knotis/identity/profile_establishment.html'
     view_name = 'establishment_profile'
@@ -431,6 +428,23 @@ class EstablishmentProfileView(FragmentView):
             if not establishment:
                 raise IdentityBusiness.DoesNotExist
         except:
+            logger.exception(
+                'failed to get establishment with id ' + establishment_id
+            )
+            raise http.Http404
+
+        try:
+            business = IdentityBusiness.objects.get_establishment_parent(
+                establishment
+            )
+
+        except:
+            logger.exception(
+                ' '.join([
+                    'failed to get business for establishment with id ',
+                    establishment_id
+                ])
+            )
             raise http.Http404
 
         is_manager = False
@@ -484,14 +498,19 @@ class EstablishmentProfileView(FragmentView):
             'knotis/identity/js/establishment_contact.js'
         ]
 
-        try:
-            profile_badge_image = ImageInstance.objects.get(
-                related_object_id=establishment.pk,
-                context='profile_badge',
-                primary=True
-            )
-        except:
-            profile_badge_image = None
+        profile_badge_image = None
+
+        # if there is no profile badge on establishment check business
+        if not profile_badge_image:
+            try:
+                profile_badge_image = ImageInstance.objects.get(
+                    related_object_id=business.pk,
+                    context='profile_badge',
+                    primary=True
+                )
+
+            except:
+                pass
 
         try:
             profile_banner_image = ImageInstance.objects.get(
@@ -544,8 +563,9 @@ class EstablishmentProfileView(FragmentView):
 
             endpoint_type_name = EndpointTypeNames[endpoint_class.EndpointType]
             endpoint_type_name = endpoint_type_name.lower()
-            
+
             if endpoint and endpoint.value:
+
                 display = None
                 if endpoint.endpoint_type == EndpointTypes.YELP:
                     display = 'Yelp'
@@ -587,6 +607,7 @@ class EstablishmentProfileView(FragmentView):
         local_context.update({
             'establishment': establishment,
             'establishment_parent': business,
+            'business': business,
             'is_manager': is_manager,
             'styles': styles,
             'pre_scripts': pre_scripts,
@@ -746,7 +767,7 @@ class IdentitySwitcherView(FragmentView):
         for i in available_identities:
             try:
                 badge_image = ImageInstance.objects.get(
-                    owner=i,
+                    related_object_id=i.pk,
                     context='profile_badge',
                     primary=True
                 )

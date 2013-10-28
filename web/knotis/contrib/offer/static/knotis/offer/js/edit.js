@@ -5,34 +5,6 @@
         interval: false
     });
 
-    var steps = [
-        { 
-            'action': '/offer/create/product/',
-            'container': 'div#offer-edit-product-form',
-            'params': {}
-        },
-        { 
-            'action': '/offer/create/details/',
-            'container': 'div#offer-edit-details-form',
-            'params': { 'id': 'offer_id' } 
-        },
-        { 
-            'action': '/offer/create/location/',
-            'container': 'div#offer-edit-location-form',
-            'params': { 'id': 'offer_id' } 
-        },
-        { 
-            'action': '/offer/create/publish/',
-            'container': 'div#offer-edit-publish-form',
-            'params': { 'id': 'offer_id' } 
-        },
-        { 
-            'action': '/offer/create/summary/',
-            'container': 'div#offer-edit-summary',
-            'params': { 'id': 'offer_id' } 
-        },
-    ];
-
     var step = function (
         steps,
         index, 

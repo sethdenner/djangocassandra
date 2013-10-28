@@ -45,22 +45,27 @@ urlpatterns = patterns(
     ),
     url(
         r'/create/product/$',
-        OfferEditProductFormView.as_view()
+        OfferEditProductFormView.as_view(),
+        name=OfferEditProductFormView.view_name
     ),
     url(
         r'/create/details/$',
-        OfferEditDetailsFormView.as_view()
+        OfferEditDetailsFormView.as_view(),
+        name=OfferEditDetailsFormView.view_name
     ),
     url(
         r'/create/location/$',
-        OfferEditLocationFormView.as_view()
+        OfferEditLocationFormView.as_view(),
+        name=OfferEditLocationFormView.view_name
     ),
     url(
         r'/create/publish/$',
-        OfferEditPublishFormView.as_view()
+        OfferEditPublishFormView.as_view(),
+        name=OfferEditPublishFormView.view_name
     ),
     url(
         r'/create/summary/$',
-        OfferEditSummaryView.as_view()
+        OfferEditSummaryView.as_view(),
+        name=OfferEditSummaryView.view_name
     )
 )

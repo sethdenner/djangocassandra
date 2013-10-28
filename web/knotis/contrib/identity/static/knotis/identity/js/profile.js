@@ -27,7 +27,8 @@
                         }
                     },
                     related_object_id: identity_id,
-                    context: 'profile_badge'
+                    context: 'profile_badge',
+                    jcrop_box_width: 560
                 });
             }
         })

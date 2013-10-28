@@ -1,12 +1,12 @@
 {% load thumbnail %}
 <div class="offer-tile grid-tile small-tile" data-offer-id="{{ offer.id }}" >
   <div class="tile-header">
-    {% thumbnail offer.default_image.image '120x120' crop=offer.default_image.crop as image %}
+    {% thumbnail offer_banner_image.image.image '180x120' crop=offer_banner_image.crop as image %}
     <img class="tile-image" alt="{{ offer.title }}" src="{{ image.url }}" />
     {% empty %}
     <img class="tile-image"  alt="{{ offer.title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
     {% endthumbnail %}
-    {% thumbnail offer.badge_image '60x60' crop=offer.badge_image.crop as image %}
+    {% thumbnail business_badge_image.image.image '72x72' crop=business_badge_image.crop as image %}
     <img class="tile-badge" src="{{ image.url }}" />
     {% empty %}
     <img class="tile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />

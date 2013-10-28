@@ -1,6 +1,8 @@
 div.grid-tile {
-    border: 1px solid black;
+    border: 1px solid #E5E5E5;
     cursor: pointer;
+    background-color: #fff;
+    margin: 0 0 15px 15px;
 }
 
 div.grid-tile.small-tile {
@@ -34,6 +36,8 @@ div.grid-tile.small-tile div.tile-create div.tile-footer {
 div.grid-tile.small-tile div.tile-header img.tile-image {
     height: 120px;
     width: 100%;
+    border: none;
+    border-bottom: 1px solid #D8D9D8;
 }
 
 div.grid-tile.small-tile div.tile-header {
