@@ -11,11 +11,10 @@
   <!-- Wrapper for slides -->
   <div class="carousel-inner">
 
-    {% for index, url, alt in images %}
+    {% for index, url in images %}
     <div class="item {% if index == 0 %}{{ 'active' }}{% endif %}">
-      <img src="{{ url }}" alt="{{ alt }}">
+      <img src="{{ url }}">
       <div class="carouse-caption">
-	{{ alt }}
       </div>
     </div>
     {% endfor %}
@@ -29,40 +28,6 @@
     <span class="icon-next"></span>
   </a>
 </div>
-<a class="upload-photo">Upload Photos</a>
-<script type="text/javascript">
-    (function($){
-      $('#about_carousel').carousel({
-        interval: 2000
-      });
 
-    $('a.upload-photo').click(function(event){
-	event.preventDefault();
-	var identity_id = $('div#id-identity-id').attr('data-identity-id');
-
-	$.ajaxmodal({
-	    href: '/image/upload',
-	    modal_settings: {
-		backdrop: 'static'
-	    },
-	    on_open: function(data, status, request){
-
-		$('#file-uploader').sickle({
-		    do_upload: true,
-		    params: {
-			type: 'image'
-		    },
-		    aspect: 5.12,
-		    related_object_id: identity_id,
-		    context: 'business_profile_carousel',
-		    done: function(data){
-			$('modal-box').modal('hide');
-		    }
-		});		
-	    }
-          });
-        });
-
-    })(jQuery);
-</script>
+{% if is_manager %}<a class="upload-photo">Upload Photos</a>{% endif %}
 

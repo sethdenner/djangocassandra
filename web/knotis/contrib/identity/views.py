@@ -60,6 +60,8 @@ from knotis.contrib.twitter.views import get_twitter_feed_json
 from knotis.contrib.yelp.views import get_reviews_by_yelp_id
 import json
 
+from sorl.thumbnail import get_thumbnail
+
 EndpointTypeNames = dict((key, name) for (key, name) in EndpointTypes.CHOICES)
 
 
@@ -393,17 +395,15 @@ class EstablishmentAboutCarousel(FragmentView):
         business = IdentityBusiness.objects.get_establishment_parent(establishment)
 
         images = ImageInstance.objects.filter(
-            related_object_id=business.id,
-            context='business_profile_carousel'
+            related_object_id=establishment.pk,
+            context='business_profile_carousel',
+            primary=True
         )
-
-        pre_scripts = []
-        post_scripts = []
 
         image_infos = []
         count = 0
         for image in images:
-            image_infos.append((count, image.image.url, ''))
+            image_infos.append((count, get_thumbnail(image, '500x400', crop='center')))
             count += 1
 
         local_context = copy.copy(self.context)
@@ -424,7 +424,6 @@ class EstablishmentProfileAbout(FragmentView):
         local_context = copy.copy(self.context)
         local_context.update({
             'about_markup': EstablishmentAboutAbout().render_template_fragment(local_context),
-            'photos_markup': '<div>PHOTOS</div>',
             'twitter_markup': EstablishmentAboutTwitterFeed().render_template_fragment(local_context),
             'yelp_markup': EstablishmentAboutYelpFeed().render_template_fragment(local_context),
             'carousel_markup': EstablishmentAboutCarousel().render_template_fragment(local_context)
@@ -514,7 +513,8 @@ class EstablishmentProfileView(FragmentView):
             'knotis/layout/js/forms.js',
             'knotis/maps/js/maps.js',
             'knotis/identity/js/update_profile.js',
-            'knotis/identity/js/establishment_contact.js'
+            'knotis/identity/js/establishment_contact.js',
+            'knotis/identity/js/establishment_about.js'
         ]
 
         try:
@@ -605,7 +605,8 @@ class EstablishmentProfileView(FragmentView):
         nav_context = Context({ 
             'request': request,
             'establishment_id': establishment_id,
-            'endpoints': endpoints
+            'endpoints': endpoints,
+            'is_manager': is_manager
         })
         if self.context.get('view_name') == 'contact':
             nav_top_content = EstablishmentProfileContact().render_template_fragment(nav_context)
