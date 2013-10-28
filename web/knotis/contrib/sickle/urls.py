@@ -10,7 +10,7 @@ urlpatterns = patterns(
             REGEX_UUID,
             ')/(?P<related_object_id>',
             REGEX_UUID,
-            ')/((?P<context>\w{1,16})/)?((?P<image_max_width>[\d]+)/(?P<image_max_height>[\d]+)/)?$'
+            ')/((?P<context>\w{1,50})/)?((?P<image_max_width>[\d]+)/(?P<image_max_height>[\d]+)/)?$'
         ]),
         'crop'
     )

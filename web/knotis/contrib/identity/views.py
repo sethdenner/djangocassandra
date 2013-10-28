@@ -60,6 +60,8 @@ from knotis.contrib.twitter.views import get_twitter_feed_json
 from knotis.contrib.yelp.views import get_reviews_by_yelp_id
 import json
 
+from sorl.thumbnail import get_thumbnail
+
 EndpointTypeNames = dict((key, name) for (key, name) in EndpointTypes.CHOICES)
 
 
@@ -377,6 +379,36 @@ class EstablishmentAboutYelpFeed(FragmentView):
             
         return local_context
 
+class EstablishmentAboutCarousel(FragmentView):
+    template_name = 'knotis/identity/establishment_about_carousel.html'
+    view_name = 'establishment_about_carousel'
+
+    def process_context(self):
+        request = self.context.get('request')
+        establishment_id = self.context.get('establishment_id')
+
+        establishment = IdentityEstablishment.objects.get(pk=establishment_id)
+        business = IdentityBusiness.objects.get_establishment_parent(establishment)
+
+        images = ImageInstance.objects.filter(
+            related_object_id=establishment.pk,
+            context='business_profile_carousel',
+            primary=True
+        )
+
+        image_infos = []
+        count = 0
+        for image in images:
+            image_infos.append((count, get_thumbnail(image, '500x400', crop='center')))
+            count += 1
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'images': image_infos
+        })
+
+        return local_context
+        
 class EstablishmentProfileAbout(FragmentView):
     template_name = 'knotis/identity/establishment_about.html'
     view_name = 'establishment_about'
@@ -388,9 +420,9 @@ class EstablishmentProfileAbout(FragmentView):
         local_context = copy.copy(self.context)
         local_context.update({
             'about_markup': EstablishmentAboutAbout().render_template_fragment(local_context),
-            'photos_markup': '<div>PHOTOS</div>',
             'twitter_markup': EstablishmentAboutTwitterFeed().render_template_fragment(local_context),
-            'yelp_markup': EstablishmentAboutYelpFeed().render_template_fragment(local_context)
+            'yelp_markup': EstablishmentAboutYelpFeed().render_template_fragment(local_context),
+            'carousel_markup': EstablishmentAboutCarousel().render_template_fragment(local_context)
         })
         return local_context
 
@@ -495,7 +527,8 @@ class EstablishmentProfileView(FragmentView):
             'knotis/layout/js/forms.js',
             'knotis/maps/js/maps.js',
             'knotis/identity/js/update_profile.js',
-            'knotis/identity/js/establishment_contact.js'
+            'knotis/identity/js/establishment_contact.js',
+            'knotis/identity/js/establishment_about.js'
         ]
 
         profile_badge_image = None
@@ -592,7 +625,8 @@ class EstablishmentProfileView(FragmentView):
         nav_context = Context({ 
             'request': request,
             'establishment_id': establishment_id,
-            'endpoints': endpoints
+            'endpoints': endpoints,
+            'is_manager': is_manager
         })
         if self.context.get('view_name') == 'contact':
             nav_top_content = EstablishmentProfileContact().render_template_fragment(nav_context)
