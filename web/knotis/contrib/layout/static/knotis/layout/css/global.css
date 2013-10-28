@@ -16,7 +16,7 @@
 .navbar a.brand {
     background: url('/static/knotis/img/knotis.png') no-repeat;
     height: 40px;
-    width: 105px;
+    width: 144px;
     margin-left: -5px;
 }
 
@@ -47,6 +47,7 @@ a {
     border-top: 0;
     border-bottom: 2px solid #D8D8D8;
     background-color: #fff;
+    margin: 16px 0 0 15px;
 }
 
 .nav-list > li {
