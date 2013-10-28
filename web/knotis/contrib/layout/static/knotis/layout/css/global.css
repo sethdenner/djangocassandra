@@ -23,6 +23,16 @@
 /*
   Bootstrap Overrides
 */
+
+body {
+    background-color: #E5E5E5;
+}
+
+a {
+    color: #0DB09E;
+    text-decoration: none;
+}
+
 .container-fluid {
     padding-right: 0;
     padding-left: 0;
@@ -30,6 +40,22 @@
 
 .modal-header {
     padding: 0;
+}
+
+.nav-list {
+    border: 1px solid #D8D8D8;
+    border-top: 0;
+    border-bottom: 2px solid #D8D8D8;
+    background-color: #fff;
+}
+
+.nav-list > li {
+    border-bottom: 1px solid #F5F5F5;
+}
+
+.nav-list > li > a.on, .nav-list > li > a:hover {
+    background-color: #EEEEEE;
+    border-left: 2px solid #427FED;
 }
 
 select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input, .modal {
