@@ -87,11 +87,14 @@ class IdentityView(ContextView):
         return context
 
 
-class BusinessesView(ContextView):
+class BusinessesView(FragmentView):
     template_name = 'knotis/identity/businesses_view.html'
 
     def process_context(self):
-        styles = [
+        styles = self.context.get('styles', [])
+        post_scripts = self.context.get('post_scripts', [])
+
+        my_styles = [
             'knotis/layout/css/global.css',
             'knotis/layout/css/header.css',
             'knotis/layout/css/grid.css',
@@ -102,9 +105,11 @@ class BusinessesView(ContextView):
             'styles/default/fileuploader.css'
         ]
 
-        pre_scripts = []
+        for style in my_styles:
+            if not style in styles:
+                styles.append(style)
 
-        post_scripts = [
+        my_post_scripts = [
             'knotis/layout/js/layout.js',
             'knotis/layout/js/forms.js',
             'knotis/layout/js/header.js',
@@ -119,10 +124,13 @@ class BusinessesView(ContextView):
             'knotis/identity/js/business-tile.js'
         ]
 
+        for script in my_post_scripts:
+            if not script in post_scripts:
+                post_scripts.append(script)
+
         local_context = copy.copy(self.context)
         local_context.update({
             'styles': styles,
-            'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
         })
         return local_context

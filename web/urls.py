@@ -4,19 +4,18 @@ from django.contrib import admin
 # This code is required for template fragments
 # to find the corresponding views
 
-from knotis.views.mixins import RenderTemplateFragmentMixin
+from knotis.views import (
+    RenderTemplateFragmentMixin
+)
 RenderTemplateFragmentMixin.register_template_fragment_views()
 
-
 admin.autodiscover()
-
-from knotis.contrib.identity.views import BusinessesView
 
 urlpatterns = patterns(
     '',
     url(
-        r'^[/]?$',
-        BusinessesView.as_view()
+        r'',
+        include('knotis.core.urls')
     ),
     url(
         r'',
