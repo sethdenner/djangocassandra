@@ -14,6 +14,9 @@
   </div>
   <div class="tile-body">
     <p class="tile-title">{{ offer.title }}</p>
+    {% if not offer_action %}
+    <div class="row-fluid" >&nbsp;</div>
+    {% endif %}
     {% if offer_action == 'buy' %}
     <button data-offer-id="{{ offer.offer_id }}" class="btn btn-primary action buy-offer">Buy</button>
     {% endif %}

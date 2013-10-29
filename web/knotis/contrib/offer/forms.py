@@ -381,12 +381,13 @@ class OfferPhotoLocationForm(TemplateForm):
         else:
             instance = ImageInstance.objects.create(
                 owner=offer.owner,
-                image=photo.image.image,
+                image=photo.image,
                 related_object_id=offer.id,
                 crop_left=photo.crop_left,
                 crop_top=photo.crop_top,
                 crop_width=photo.crop_width,
                 crop_height=photo.crop_height,
+                context=photo.context,
                 primary=True
             )
 
@@ -445,7 +446,9 @@ class OfferPublicationForm(TemplateForm):
             self.fields['offer'].initial = offer
             self.fields['start_time'].initial = offer.start_time
             self.fields['end_time'].initial = offer.end_time
-            self.fields['no_time_limit'].initial = not offer.end_time
+            self.fields['no_time_limit'].initial = (
+                offer.start_time and not offer.end_time
+            )
 
         (
             endpoint_facebook,
