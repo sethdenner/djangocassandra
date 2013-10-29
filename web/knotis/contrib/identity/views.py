@@ -333,22 +333,24 @@ class EstablishmentAboutTwitterFeed(FragmentView):
         request = self.context.get('request')
         establishment_id = self.context.get('establishment_id')
 
+        local_context = copy.copy(self.context)
+
         endpoints = self.context.get('endpoints')
         twitter_endpoint = None
         for endpoint in endpoints:
             if endpoint['endpoint_type_name'] == 'twitter':
                 if endpoint['value']:
                     twitter_endpoint = endpoint
+                    local_context.update({
+                        'twitter_handle': twitter_endpoint['value'],
+                    })
 
         twitter_feed = None
         if(twitter_endpoint):
             twitter_feed = json.loads(get_twitter_feed_json(twitter_endpoint['value']))
-
-        local_context = copy.copy(self.context)
-        local_context.update({
-            'twitter_handle': twitter_endpoint['value'],
-            'twitter_feed': twitter_feed
-        })
+            local_context.update({
+                'twitter_feed': twitter_feed
+            })
 
         return local_context
 
@@ -391,16 +393,18 @@ class EstablishmentAboutCarousel(FragmentView):
         business = IdentityBusiness.objects.get_establishment_parent(establishment)
 
         images = ImageInstance.objects.filter(
-            related_object_id=establishment.pk,
+            related_object_id=business.pk,
             context='business_profile_carousel',
-            primary=True
+            primary=False
         )
 
         image_infos = []
         count = 0
         for image in images:
-            image_infos.append((count, get_thumbnail(image, '500x400', crop='center')))
+            image_infos.append((count, image))
             count += 1
+
+        # import pdb; pdb.set_trace()
 
         local_context = copy.copy(self.context)
         local_context.update({
@@ -522,32 +526,30 @@ class EstablishmentProfileView(FragmentView):
             'scripts/fileuploader.js',
             'scripts/jquery.colorbox.js',
             'scripts/jquery.sickle.js',
-            'knotis/identity/js/profile.js',
             'geocomplete/jquery.geocomplete.min.js',
             'knotis/layout/js/forms.js',
             'knotis/maps/js/maps.js',
-            'knotis/identity/js/update_profile.js',
+            'knotis/identity/js/profile.js',
             'knotis/identity/js/establishment_contact.js',
             'knotis/identity/js/establishment_about.js'
         ]
 
         profile_badge_image = None
-
+        
         # if there is no profile badge on establishment check business
-        if not profile_badge_image:
-            try:
-                profile_badge_image = ImageInstance.objects.get(
-                    related_object_id=business.pk,
-                    context='profile_badge',
-                    primary=True
-                )
+        try:
+            profile_badge_image = ImageInstance.objects.get(
+                related_object_id=business.pk,
+                context='profile_badge',
+                primary=True
+            )
 
-            except:
-                pass
+        except:
+            pass
 
         try:
             profile_banner_image = ImageInstance.objects.get(
-                related_object_id=establishment.pk,
+                related_object_id=business.pk,
                 context='profile_banner',
                 primary=True
             )

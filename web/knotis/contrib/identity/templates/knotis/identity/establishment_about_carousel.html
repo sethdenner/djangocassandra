@@ -1,22 +1,23 @@
+{% load thumbnail %}
+
 <h4>Photos</h4>
 
 <div id="about_carousel" class="carousel slide" style="width:500px; height: 400px;">
   <!-- Indicators -->
   <ol class="carousel-indicators">
-    {% for index, url in images %}
-    <li data-target="#about_carousel" data-slide-to="{{ index }}" class="active"></li>
+    {% for index, _ in images %}
+    <li data-target="#about_carousel" data-slide-to="{{ index }}" {% if index == 0 %}class="active"{% endif %} style="list-style: none;"></li>
     {% endfor %}
   </ol>
 
   <!-- Wrapper for slides -->
   <div class="carousel-inner">
-
-    {% for index, url in images %}
-    <div class="item {% if index == 0 %}{{ 'active' }}{% endif %}">
-      <img src="{{ url }}">
-      <div class="carouse-caption">
-      </div>
+    {% for index, image in images %}
+    {% thumbnail image.image.image '500x400' crop=image.crop as img %}
+    <div class="item {% if index == 0 %}active{% endif %}">
+      <img width="500" height="400" src="{{ img.url }}" />
     </div>
+    {% endthumbnail %}
     {% endfor %}
   </div>
 

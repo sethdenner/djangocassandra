@@ -19,10 +19,9 @@
 		    params: {
 			type: 'image'
 		    },
-		    aspect: 1,
 		    related_object_id: identity_id,
 		    context: 'business_profile_carousel',
-		    primary: true,
+		    primary: false,
 		    done: function(data){
 			$('modal-box').modal('hide');
 		    }
