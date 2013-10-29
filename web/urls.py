@@ -10,8 +10,14 @@ RenderTemplateFragmentMixin.register_template_fragment_views()
 
 admin.autodiscover()
 
+from knotis.contrib.identity.views import BusinessesView
+
 urlpatterns = patterns(
     '',
+    url(
+        r'^[/]?$',
+        BusinessesView.as_view()
+    ),
     url(
         r'',
         include('knotis.contrib.identity.urls')
@@ -55,10 +61,6 @@ urlpatterns = patterns(
     url(
         r'',
         include('knotis.contrib.location.urls')
-    ),
-    url(
-        r'',
-        include('knotis.contrib.layout.urls')
     ),
     url(
         r'',
