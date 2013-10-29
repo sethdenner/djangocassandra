@@ -1,0 +1,12 @@
+.modal-header.auth-header {
+    height: 120px;
+    text-align: center;
+    padding: 10px;
+    background-color: #808184;
+    color: #fff;
+}
+
+.modal-header.auth-header button.close {
+    color: #474747;
+    font-size: 2em;
+}
