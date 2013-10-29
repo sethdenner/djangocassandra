@@ -6,7 +6,6 @@ from django.template import Context
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import (
-    render,
     get_object_or_404
 )
 from django.utils import log
@@ -15,10 +14,6 @@ logger = log.getLogger(__name__)
 from knotis.views import (
     ContextView,
     FragmentView
-)
-
-from knotis.views.mixins import (
-    RenderTemplateFragmentMixin
 )
 
 from knotis.contrib.auth.models import UserInformation
@@ -198,7 +193,8 @@ class IdentityTile(FragmentView):
                 context='profile_badge',
                 primary=True
             )
-        except Exception, e:
+
+        except:
             profile_badge_image = None
 
         try:
@@ -207,9 +203,9 @@ class IdentityTile(FragmentView):
                 context='profile_banner',
                 primary=True
             )
-        except Exception, e:
-            profile_banner_image = None
 
+        except:
+            profile_banner_image = None
 
         local_context = copy.copy(self.context)
         local_context.update({
