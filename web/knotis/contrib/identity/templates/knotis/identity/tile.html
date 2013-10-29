@@ -7,13 +7,13 @@
       {% thumbnail banner_image.image.image '120x120' crop=banner_image.crop as image %}
       <img class="tile-image" alt="{{ identity.name }}" src="{{ image.url }}" />
       {% empty %}
-      <img class="tile-image"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/profile_default.png" />
+      <img class="tile-image" src="{{ STATIC_URL }}knotis/identity/img/default_banner.png" />
       {% endthumbnail %}
       
       {% thumbnail badge_image.image.image '60x60' crop=badge_image.crop as image %}
       <img class="tile-badge" src="{{ image.url }}" />
       {% empty %}
-      <img class="tile-badge" src="{{ STATIC_URL }}knotis/identity/img/add_logo.png" />
+      <img class="tile-badge"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/profile_default.png" />
       {% endthumbnail %}
     </div>
   </a>

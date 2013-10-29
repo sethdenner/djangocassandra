@@ -132,27 +132,27 @@ class BusinessesGrid(GridSmallView):
     view_name = 'businesses_grid'
 
     def process_context(self):
-        establishments = IdentityEstablishment.objects.all()
+        businesses = IdentityBusiness.objects.all()
 
         tiles = []
 
-        if establishments:
-            for establishment in establishments:
-                establishment_tile = IdentityTile()
-                establishment_context = Context({
-                    'identity': establishment,
+        if businesses:
+            for business in businesses:
+                business_tile = IdentityTile()
+                business_context = Context({
+                    'identity': business,
                     'request': self.request
                 })
                 tiles.append(
-                    establishment_tile.render_template_fragment(
-                        establishment_context
+                    business_tile.render_template_fragment(
+                        business_context
                     )
                 )
 
         local_context = copy.copy(self.context)
         local_context.update({
             'tiles': tiles,
-            'tile_link_template': '/id/', # + identity.id
+            'tile_link_template': '/id/',  # + identity.id
             'request': self.request
         })
 
@@ -164,7 +164,6 @@ class IdentityTile(FragmentView):
     view_name = 'identity_tile'
 
     def process_context(self):
-        
         request = self.context.get('request')
         render_follow = False
         following = False
@@ -175,7 +174,7 @@ class IdentityTile(FragmentView):
             )
             render_follow = True
 
-            follows = Relation.objects.get_following(current_identity)  
+            follows = Relation.objects.get_following(current_identity)
             business = self.context.get('identity')
             for follow in follows:
                 if (not follow.deleted) and (follow.related.id == business.id):
@@ -365,7 +364,7 @@ class EstablishmentProfileView(FragmentView):
 
         try:
             profile_banner_image = ImageInstance.objects.get(
-                related_object_id=establishment.pk,
+                related_object_id=business.pk,
                 context='profile_banner',
                 primary=True
             )

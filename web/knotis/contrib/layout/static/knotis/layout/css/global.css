@@ -17,7 +17,7 @@
     background: url('/static/knotis/img/knotis.png') no-repeat;
     height: 40px;
     width: 144px;
-    margin-left: -5px;
+    margin-left: 15px;
 }
 
 /*
@@ -26,6 +26,13 @@
 
 body {
     background-color: #E5E5E5;
+}
+
+@media (max-width: 979px) {
+    body {
+        padding-right: 0;
+        padding-left: 0;
+    }
 }
 
 a {
@@ -78,6 +85,7 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
+    margin: 2px;
 }
 
 .btn-primary {
@@ -108,14 +116,14 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 
 .navbar-inner {
     min-height: 40px;
-    padding-right: 20px;
-    padding-left: 20px;
+    padding-right: 0;
+    padding-left: 0;
     background-color: #fefefe;
     background-image: none;
     border: 1px solid #d4d4d4;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff',endColorstr='#fff2f2f2',GradientType=0);
     -webkit-box-shadow: 0 1px 4px rgba(0,0,0,0.065);
     -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.065);
@@ -124,4 +132,8 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 
 .modal, .modal.fade.in {
     top: 20%;
+}
+
+.input-append.date {
+    padding: 0 0 10px 0;
 }

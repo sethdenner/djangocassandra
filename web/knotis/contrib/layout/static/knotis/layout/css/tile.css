@@ -63,9 +63,10 @@ div.grid-tile.small-tile div.tile-body {
 div.grid-tile.small-tile div.tile-body p.tile-title {
     font-size: 1.25em;
     overflow: hidden;
-    height: 1.25em;
+    height: 1.05em;
 }
 
 div.grid-tile.small-tile div.tile-footer {
     border-top: 1px solid #D8D9D8;
+    background-color: #F4F5F5;
 }
