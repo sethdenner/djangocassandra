@@ -20,6 +20,12 @@
     margin-left: 15px;
 }
 
+div.container-fluid div.row-fluid div.content {
+    background-color: #fff;
+    margin: 16px;
+    padding: 16px;
+}
+
 /*
   Bootstrap Overrides
 */
