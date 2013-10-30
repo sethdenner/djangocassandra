@@ -54,18 +54,10 @@ class NavigationSideView(FragmentView):
         else:
             current_identity = None
 
-        businesses = self.context.get('businesses')
         establishments = self.context.get('establishments')
 
         if current_identity:
-            if current_identity.identity_type == IdentityTypes.INDIVIDUAL:
-                if not businesses:
-                    businesses = IdentityBusiness.objects.get_businesses(
-                        current_identity
-                    )
-                    local_context['businesses'] = businesses
-
-            if current_identity.identity_type != IdentityTypes.ESTABLISHMENT:
+            if current_identity.identity_type == IdentityTypes.BUSINESS:
                 if not establishments:
                     establishments = (
                         IdentityEstablishment.objects.get_establishments(
@@ -79,7 +71,10 @@ class NavigationSideView(FragmentView):
             menu_name='default'
         )
 
-        if businesses or establishments:
+        if (
+            current_identity and
+            IdentityTypes.BUSINESS == current_identity.identity_type
+        ):
             merchant_navigation = NavigationItem.objects.filter_ordered(
                 menu_name='merchant'
             )
