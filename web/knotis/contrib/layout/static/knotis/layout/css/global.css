@@ -134,8 +134,8 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     box-shadow: 0 1px 4px rgba(0,0,0,0.065);
 }
 
-.modal, .modal.fade.in {
-    top: 20%;
+.modal.fade.in {
+    top: 30%;
 }
 
 .input-append.date {
