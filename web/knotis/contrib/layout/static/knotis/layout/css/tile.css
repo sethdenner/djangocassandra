@@ -33,11 +33,14 @@ div.grid-tile.small-tile div.tile-create div.tile-footer {
     color: #FFFFFF;
 }
 
-div.grid-tile.small-tile div.tile-header img.tile-image {
+div.grid-tile.small-tile div.tile-header .tile-image {
     height: 120px;
     width: 100%;
     border: none;
     border-bottom: 1px solid #D8D9D8;
+    background-image: url('/static/knotis/identity/img/default_banner.png');
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 div.grid-tile.small-tile div.tile-header {
