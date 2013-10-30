@@ -577,11 +577,8 @@ class OfferAvailabilityManager(QuickManager):
 
             kwargs['price'] = price
 
-        identity = kwargs.get('identity')
-
-        if identity:
             identity_profile_badge = ImageInstance.objects.get(
-                related_object_id=identity.id,
+                related_object_id=offer.owner.id,
                 context='profile_badge',
                 primary=True
             )
