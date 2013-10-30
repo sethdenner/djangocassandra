@@ -408,7 +408,8 @@ class EstablishmentAboutCarousel(FragmentView):
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'images': image_infos
+            'images': image_infos,
+            'establishment_parent': business
         })
 
         return local_context

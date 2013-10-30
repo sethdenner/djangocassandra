@@ -5,8 +5,9 @@
     
     $('a.upload-photo').click(function(event){
 	event.preventDefault();
-	var identity_id = $('div#id-identity-id').attr('data-business-id');
-	
+	var identity_id = $(this).attr('data-business-id');
+	console.log('identity_id', identity_id);
+
 	$.ajaxmodal({
 	    href: '/image/upload',
 	    modal_settings: {
@@ -19,6 +20,7 @@
 		    params: {
 			type: 'image'
 		    },
+		    aspect: 1.25,
 		    related_object_id: identity_id,
 		    context: 'business_profile_carousel',
 		    primary: false,
