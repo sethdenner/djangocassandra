@@ -168,28 +168,33 @@ class IdentityTile(FragmentView):
 
     def process_context(self):
         request = self.context.get('request')
-        render_follow = False
+        identity = self.context.get('identity')
+
         following = False
+        render_follow = False
         if request.user.is_authenticated():
             current_identity_id = request.session.get('current_identity_id')
             current_identity = Identity.objects.get(
                 pk=current_identity_id
             )
-            render_follow = True
 
-            follows = Relation.objects.get_following(current_identity)
-            business = self.context.get('identity')
-            for follow in follows:
-                if (not follow.deleted) and (follow.related.id == business.id):
-                    following = True
-                    break
+            if current_identity.identity_type == IdentityTypes.INDIVIDUAL:
+                render_follow = True
+
+                follows = Relation.objects.get_following(current_identity)
+                for follow in follows:
+                    if (
+                        (not follow.deleted) and
+                        (follow.related.id == identity.id)
+                    ):
+                        following = True
+                        break
         else:
             current_identity = None
-            render_follow = False
 
         try:
             profile_badge_image = ImageInstance.objects.get(
-                related_object_id=business.id,
+                related_object_id=identity.id,
                 context='profile_badge',
                 primary=True
             )
@@ -197,15 +202,49 @@ class IdentityTile(FragmentView):
         except:
             profile_badge_image = None
 
+        if (
+            not profile_badge_image and
+            identity.identity_type == IdentityTypes.ESTABLISHMENT
+        ):
+            try:
+                business = IdentityBusiness.objects.get_establishment_parent(
+                    identity
+                )
+                profile_badge_image = ImageInstance.objects.get(
+                    related_object_id=business.pk,
+                    context='profile_badge',
+                    primary=True
+                )
+
+            except:
+                pass
+
         try:
             profile_banner_image = ImageInstance.objects.get(
-                related_object_id=business.id,
+                related_object_id=identity.id,
                 context='profile_banner',
                 primary=True
             )
 
         except:
             profile_banner_image = None
+
+        if (
+            not profile_banner_image and
+            identity.identity_type == IdentityTypes.ESTABLISHMENT
+        ):
+            try:
+                business = IdentityBusiness.objects.get_establishment_parent(
+                    identity
+                )
+                profile_banner_image = ImageInstance.objects.get(
+                    related_object_id=business.pk,
+                    context='profile_banner',
+                    primary=True
+                )
+
+            except:
+                pass
 
         local_context = copy.copy(self.context)
         local_context.update({
