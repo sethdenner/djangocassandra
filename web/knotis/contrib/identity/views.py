@@ -72,6 +72,27 @@ class IdentityView(ContextView):
         if identity.identity_type == IdentityTypes.ESTABLISHMENT:
             profile_view = EstablishmentProfileView()
             context['establishment_id'] = identity_id
+
+        elif identity.identity_type == IdentityTypes.BUSINESS:
+            try:
+                establishments = (
+                    IdentityEstablishment.objects.get_establishments(
+                        identity
+                    )
+                )
+
+            except:
+                establishments = None
+                logger.exception('Failed to get establishments for business')
+
+            if 1 == len(establishments):
+                profile_view = EstablishmentProfileView()
+                context['establishment_id'] = establishments[0].pk
+
+            else:
+                profile_view = BusinessProfileView()
+                context['establishments'] = establishments
+
         else:
             raise Exception('IdentityType not currently supported')
 
@@ -294,6 +315,22 @@ class EstablishmentProfileGrid(GridSmallView):
         return local_context
 
 get_class = lambda x: globals()[x]
+
+
+class BusinessProfileView(FragmentView):
+    template_name = 'knotis/identity/profile_business.html'
+    view_name = 'business_profile'
+
+    def get(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        pass
+
+    def process_context(self):
+        pass
 
 
 class EstablishmentProfileView(FragmentView):
