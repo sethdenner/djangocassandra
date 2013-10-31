@@ -316,11 +316,16 @@ class EstablishmentAboutAbout(FragmentView):
 
         endpoints = self.context.get('endpoints')
         for endpoint in endpoints:
-            if endpoint['endpoint_type_name'] in ('twitter', 'facebook', 'yelp'):
-                if endpoint['value']:
-                    local_context.update({
-                        endpoint['endpoint_type_name']: endpoint['uri']
-                    })
+
+            local_context.update({
+                endpoint['endpoint_type_name']: {
+                    'value': endpoint['value'],
+                    'id': endpoint['id'],
+                    'endpoint_type': endpoint['endpoint_type'],
+                    'display': endpoint['display'],
+                    'uri': endpoint['uri']
+                }
+            })
 
         return local_context
 
@@ -613,15 +618,20 @@ class EstablishmentProfileView(FragmentView):
                     'endpoint_type_name': endpoint_type_name,
                     'value': endpoint.value,
                     'uri': endpoint.get_uri(),
-                    'display': display
+                    'display': display,
+                    'endpoint_type': endpoint.endpoint_type
                 }
 
                 endpoints.append(fake_endpoint)
 
             else:
                 endpoints.append({
+                    'id': '',
                     'endpoint_type_name': endpoint_type_name,
-                    'value': None
+                    'value': '',
+                    'uri': '',
+                    'display': '',
+                    'endpoint_type': ''
                 })
 
         # determine nav view

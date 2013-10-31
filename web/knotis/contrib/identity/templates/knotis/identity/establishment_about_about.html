@@ -1,9 +1,95 @@
 <h4>About Us</h4>
-<div class="social_buttons">
-  {% if twitter %}<a id="twitter" href="{{ twitter }}">Twitter</a>{% endif %}
-  {% if facebook %}<a id="facebook" href="{{ facebook }}">Facebook</a>{% endif %}
-  {% if yelp %}<a id="yelp" href="{{ yelp }}">Yelp</a>{% endif %}
-</div>
-<div class="about-us">
-  {{ description }}
+<a class="pull-right edit_about">Edit</a>
+
+<div id="about-us">
+  {% if is_manager %}
+  <form id="about-us-form" class="editable toggleable hide">
+    <input type="hidden" value="{{ business.id }}" />
+
+    <label for="business_name">Business Address:</label>
+    <input 
+       class="edit-endpoint"
+       id="business-name"
+       type="text"
+       data-initial-value="{{  }}"
+
+    <label for="endpoint_phone">Phone Number:</label>
+    <input 
+       class="edit-endpoint" 
+       id="endpoint_phone" 
+       type="text" 
+       placeholder="000-000-0000" 
+       data-endpoint-id="{{ phone.id }}"
+       data-endpoint-type="{{ phone.endpoint_type }}"
+       data-initial-value="{{ phone.value }}" />
+    <br />
+    
+    <label for="endpoint_email">Email:</label>
+    <input 
+       class="edit-endpoint" 
+       id="endpoint_email" 
+       type="text" 
+       placeholder="we@example.com" 
+       data-endpoint-id="{{ email.id }}"
+       data-endpoint-type="{{ email.endpoint_type }}"
+       data-initial-value="{{ email.value }}" />
+    <br />
+
+    <label for="endpoint_twitter">Twitter Handle:</label>
+    <input 
+       class="edit-endpoint" 
+       id="endpoint_twitter" 
+       type="text" 
+       placeholder="handle" 
+       data-endpoint-id="{{ twitter.id }}"
+       data-endpoint-type="{{ twitter.endpoint_type }}"
+       data-initial-value="{{ twitter.value }}" />
+    <br />
+
+    <label for="endpoint_facebook">Facebook Name:</label>
+    <input 
+       class="edit-endpoint" 
+       id="endpoint_facebook" 
+       type="text" 
+       placeholder="facebook username"
+       data-endpoint-id="{{ facebook.id }}"
+       data-endpoint-type="{{ facebook.endpoint_type }}"
+       data-initial-value="{{ facebook.value }}" />
+    <br />
+
+    <label for="endpoint_website">Website:</label>
+    <input 
+       class="edit-endpoint" 
+       id="endpoint_website" 
+       type="text" 
+       placeholder="website" 
+       data-endpoint-id="{{ website.id }}"
+       data-endpoint-type="{{ website.endpoint_type }}"
+       data-initial-value="{{ website.value }}" />
+    <br />
+
+    <label for="business_description">Description:</label>
+    <textarea 
+       class="edit-endpoint description" 
+       id="business_description" 
+       rows="20"
+       placeholder="Lorem Ipsum ...">
+      {{ description }}
+    </textarea>
+    <br />
+    
+    <input type="submit" value="Go!" />
+  </form>
+  {% endif %}
+  
+  <div class="viewable toggleable">
+    <div class="social-buttons">
+      {% if twitter.value %}<a id="twitter" href="{{ twitter }}">Twitter</a>{% endif %}
+      {% if facebook.value %}<a id="facebook" href="{{ facebook }}">Facebook</a>{% endif %}
+      {% if yelp.value %}<a id="yelp" href="{{ yelp }}">Yelp</a>{% endif %}
+    </div>
+    <div class="about-us">
+      {{ description }}
+    </div>
+  </div>
 </div>

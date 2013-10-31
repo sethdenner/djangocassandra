@@ -31,5 +31,17 @@
 	    }
         });
     });
+
+
+    // endpoint editing
+
+
+    $('a.edit_about').click(function(event){
+	$('#about-us>.toggleable').toggle();
+	$('.edit-endpoint:not(.description)').each(function(idx, $element){
+	    $element.val($element.attr('data-initial-value'));
+	});
+    });
+
     
 })(jQuery);
