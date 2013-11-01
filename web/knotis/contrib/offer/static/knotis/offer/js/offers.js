@@ -5,7 +5,9 @@
 
         offer_id = this.getAttribute('data-offer-id');
         $.ajaxmodal({
-            href: '/offer/detail/' + offer_id + '/'
+            href: '/offer/detail/' + offer_id + '/',
+            modal_id: 'id-offer-detail',
+            modal_width: '750px'
         });
     });
 
