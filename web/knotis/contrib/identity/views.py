@@ -405,6 +405,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                 updated_endpoints.append(updated_endpoint)
 
         return self.generate_response({
+            'status': 'ok',
             'updated_endpoints': map(endpoint_to_dict, updated_endpoints)
         })
 

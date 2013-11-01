@@ -116,20 +116,25 @@
 		url: '/identity/update_profile/',
 		data: {data:JSON.stringify(info)},
 		method: 'POST',
-		done: function(response){
-		    console.dir(response);
-		    if(response.status.toLowerCase() == 'ok'){
-			$('#about-us>.toggleable').toggle();
-
+		success: function(response){
+		    if(response.status == 'ok'){
+			$('.toggleable').toggle();
 			// backpopulate changed info
 			for(var endpoint in response.changed_endpoints){
 			    $(endpoint.endpoint_id).attr('data-initial-value', endpoint.endpoint_value);			    
 			}
 
 			// update social buttons
-			for(var endpoint in response.updated_endpoints){
-			    if(endpoint.endpoint_type == 'twitter'){
-				$('.updateable-endpoint.' + endpoint.endpoint_type_name.toLowerCase()).attr('href', endpoint.url);
+			for(var i=0; i<response.updated_endpoints.length; i++){
+			    var endpoint = response.updated_endpoints[i];
+			    if(endpoint.endpoint_type == 4){
+				$('.updateable-endpoint.facebook').attr('href', endpoint.url);
+			    }
+			    if(endpoint.endpoint_type == 5){
+				$('.updateable-endpoint.yelp').attr('href', endpoint.url);
+			    }
+			    if(endpoint.endpoint_type == 3){
+				$('.updateable-endpoint.twitter').attr('href', endpoint.url);
 			    }
 			}
 
