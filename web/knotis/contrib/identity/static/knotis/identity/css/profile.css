@@ -57,9 +57,12 @@ div.column-box {
 }
 
 .edit-endpoint {
-    width: 400px;
+    width: 380px;
+    position: relative;
+    left: 20px;
 }
 
 .carousel-wrapper {
     max-width: 400px;
 }
+

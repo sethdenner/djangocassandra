@@ -11,9 +11,9 @@
         var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
 	var markerOptions = {
-	    position: latLng,
-	    map: map
-	};
+	        position: latLng,
+	        map: map
+	    };
 	var marker = new google.maps.Marker(markerOptions);
     }
     

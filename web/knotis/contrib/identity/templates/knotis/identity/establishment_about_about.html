@@ -4,19 +4,38 @@
 <div id="about-us">
   {% if is_manager %}
   <form id="about-us-form" class="editable toggleable hide">
-    <input type="hidden" value="{{ business.id }}" />
+    <input id="id-business-id" type="hidden" value="{{ business.id }}" />
+    
+    <!--
+	Be careful when editing the ids. The server parses endpoint types
+	out of them. 
+	The id strings are passed on the server and used in processing. 
+      -->
 
-    <label for="business_name">Business Address:</label>
+    <label for="business-name">Business Name:</label>
     <input 
-       class="edit-endpoint"
        id="business-name"
+       class="edit-endpoint"
        type="text"
-       data-initial-value="{{  }}"
+       placeholder="Enter your business's name here..."
+       data-initial-value="{{ business.name }}" />
+    <br />
 
-    <label for="endpoint_phone">Phone Number:</label>
+    <label for="business-address">Business Address:</label>
+    <a 
+       id="business-address"
+       class="edit-endpoint"
+       type="text"
+       data-latitude="{{ address_latitude }}"
+       data-longitude="{{ address_longitude }}"
+       data-initial-value="{{ address }}">
+      {{ address }}
+    </a>
+
+    <label for="endpoint-phone">Phone Number:</label>
     <input 
+       id="endpoint-phone" 
        class="edit-endpoint" 
-       id="endpoint_phone" 
        type="text" 
        placeholder="000-000-0000" 
        data-endpoint-id="{{ phone.id }}"
@@ -24,10 +43,10 @@
        data-initial-value="{{ phone.value }}" />
     <br />
     
-    <label for="endpoint_email">Email:</label>
+    <label for="endpoint-email">Email:</label>
     <input 
+       id="endpoint-email" 
        class="edit-endpoint" 
-       id="endpoint_email" 
        type="text" 
        placeholder="we@example.com" 
        data-endpoint-id="{{ email.id }}"
@@ -35,10 +54,10 @@
        data-initial-value="{{ email.value }}" />
     <br />
 
-    <label for="endpoint_twitter">Twitter Handle:</label>
+    <label for="endpoint-twitter">Twitter Handle:</label>
     <input 
+       id="endpoint-twitter" 
        class="edit-endpoint" 
-       id="endpoint_twitter" 
        type="text" 
        placeholder="handle" 
        data-endpoint-id="{{ twitter.id }}"
@@ -46,21 +65,21 @@
        data-initial-value="{{ twitter.value }}" />
     <br />
 
-    <label for="endpoint_facebook">Facebook Name:</label>
+    <label for="endpoint-facebook">Facebook Name:</label>
     <input 
+       id="endpoint-facebook" 
        class="edit-endpoint" 
-       id="endpoint_facebook" 
        type="text" 
-       placeholder="facebook username"
+       placeholder="facebook.username"
        data-endpoint-id="{{ facebook.id }}"
        data-endpoint-type="{{ facebook.endpoint_type }}"
        data-initial-value="{{ facebook.value }}" />
     <br />
 
-    <label for="endpoint_website">Website:</label>
+    <label for="endpoint-website">Website:</label>
     <input 
+       id="endpoint-website" 
        class="edit-endpoint" 
-       id="endpoint_website" 
        type="text" 
        placeholder="website" 
        data-endpoint-id="{{ website.id }}"
@@ -70,23 +89,23 @@
 
     <label for="business_description">Description:</label>
     <textarea 
+       id="business-description"
        class="edit-endpoint description" 
-       id="business_description" 
        rows="20"
        placeholder="Lorem Ipsum ...">
       {{ description }}
     </textarea>
     <br />
     
-    <input type="submit" value="Go!" />
+    <input id="submit-business-info" type="submit" value="Go!" />
   </form>
   {% endif %}
   
   <div class="viewable toggleable">
     <div class="social-buttons">
-      {% if twitter.value %}<a id="twitter" href="{{ twitter }}">Twitter</a>{% endif %}
-      {% if facebook.value %}<a id="facebook" href="{{ facebook }}">Facebook</a>{% endif %}
-      {% if yelp.value %}<a id="yelp" href="{{ yelp }}">Yelp</a>{% endif %}
+      {% if twitter.value %}<a class="updateable-endpoint twitter" href="{{ twitter }}">Twitter</a>{% endif %}
+      {% if facebook.value %}<a class="updateable-endpoint facebook" href="{{ facebook }}">Facebook</a>{% endif %}
+      {% if yelp.value %}<a class="updateable-endpoint yelp" href="{{ yelp }}">Yelp</a>{% endif %}
     </div>
     <div class="about-us">
       {{ description }}

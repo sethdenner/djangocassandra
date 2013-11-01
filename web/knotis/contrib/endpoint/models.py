@@ -222,6 +222,28 @@ class Endpoint(QuickModel):
         return self.value
 
 
+    def update_or_create(
+        self,
+        *args,
+        **kwargs
+    ):
+        
+        endpoints = Endpoint.objects.filter(**kwargs)
+        if len(endpoints) > 1:
+            raise Exception('Too many endpoints match query')
+            
+        elif len(endpoints) == 0:
+            endpoint = Endpoint.objects.create(**kwargs)
+        
+        else:
+            endpoint = endpoints[0]
+            for attr in kwargs.keys():
+                setattr(endpoint, attr, kwargs[attr])
+
+        endpoint.save()
+        return endpoint
+        
+
 class EndpointPhone(Endpoint):
     EndpointType = EndpointTypes.PHONE
     

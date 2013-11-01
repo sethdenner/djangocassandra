@@ -62,6 +62,8 @@ import json
 
 from sorl.thumbnail import get_thumbnail
 
+from knotis.views import AJAXFragmentView
+
 EndpointTypeNames = dict((key, name) for (key, name) in EndpointTypes.CHOICES)
 
 
@@ -308,12 +310,32 @@ class EstablishmentAboutAbout(FragmentView):
         establishment = IdentityEstablishment.objects.get(pk=establishment_id)
         business = IdentityBusiness.objects.get_establishment_parent(establishment)
 
-
         local_context = copy.copy(self.context)
         local_context.update({
             'description': business.description
         })
 
+        # Fetch and add the address and coordinates to local_context
+        locationItem = LocationItem.objects.filter(
+            related_object_id=business.pk
+        )
+        if len(locationItem):
+            address = locationItem[0].location.address
+        else:
+            address = None
+
+        local_context.update({
+            'address': address,
+            'address_latitude': locationItem[0].location.latitude,
+            'address_longitude': locationItem[0].location.longitude
+        })
+
+        # add business name to local_context
+        local_context.update({
+            'business': business
+        })
+        
+        # add contact info (endpoints) to local_context
         endpoints = self.context.get('endpoints')
         for endpoint in endpoints:
 
@@ -327,16 +349,70 @@ class EstablishmentAboutAbout(FragmentView):
                 }
             })
 
+        # return local_context
         return local_context
 
+    def post(
+            self,
+            request,
+            *args,
+            **kwargs
+    ):
+        
+        business_id = request.POST.get('business_id')
+        business = IdentityBusiness.objects.get(pk=business_id)
+        
+        # business name
+        response = {}
+        response['business_id'] = business_id
+        if 'changed_name' in request.POST.keys():
+            business.name = request.POST.get('changed_name')
+            business.save()
 
-class EstablishmentAboutTwitterFeed(FragmentView):
+        if 'changed_description' in request.POST.keys():
+            business.description = request.POST.get('changed_description')
+            business.save()
+
+        # endpoints
+        def endpoint_to_dict(endpoint):
+            sendable = {
+                'pk': endpoint.pk,
+                'endpoint_type': endpoint.endpoint_type,
+                'value': endpoint.value
+            }
+
+            return sendable
+
+        updated_endpoints = []
+        if 'changed_endpoints' in request.POST.keys():
+            for endpoint in request.POST.get('changed_endpoints'):
+                endpoint_id = endpoint['endpoint_id']
+                endpoint_type = int(endpoint['endpoint_type'])
+                endpoint_value = endpoint['value'].trim()
+                
+                updated_endpoint = Endpoint.objects.update_or_create(
+                    pk=endpoint_id,
+                    endpoint_type=endpoint_type,
+                    value=endpoint_value
+                )
+
+                updated_endpoints.append(updated_endpoint)
+
+        return self.generate_response({
+            'updated_endpoints': map(endpoint_to_dict, updated_endpoints)
+        })
+
+
+class EstablishmentAboutTwitterFeed(AJAXFragmentView):
     template_name = 'knotis/identity/establishment_about_twitter.html'
     view_name = 'establishment_about_twitter'
     
     def process_context(self):
         request = self.context.get('request')
         establishment_id = self.context.get('establishment_id')
+        establishment = IdentityEstablishment.objects.get(pk=establishment_id)
+        business = IdentityBusiness.objects.get_establishment_parent(establishment)
+
 
         local_context = copy.copy(self.context)
 
@@ -358,6 +434,7 @@ class EstablishmentAboutTwitterFeed(FragmentView):
             })
 
         return local_context
+
 
 class EstablishmentAboutYelpFeed(FragmentView):
     template_name = 'knotis/identity/establishment_about_yelp.html'
@@ -619,7 +696,7 @@ class EstablishmentProfileView(FragmentView):
                     'value': endpoint.value,
                     'uri': endpoint.get_uri(),
                     'display': display,
-                    'endpoint_type': endpoint.endpoint_type
+                    'endpoint_type': endpoint_class.endpoint_type
                 }
 
                 endpoints.append(fake_endpoint)
