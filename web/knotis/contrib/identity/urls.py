@@ -27,7 +27,7 @@ urlpatterns = patterns(
     'knotis.contrib.identity.views',
     url(
         r'^identity/update_profile/',
-        EstablishmentAboutAbout
+        EstablishmentAboutAbout.as_view()
     ),
     url(
         r''.join([

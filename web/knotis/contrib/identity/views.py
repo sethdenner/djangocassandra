@@ -299,7 +299,7 @@ class EstablishmentProfileContact(FragmentView):
         return local_context
 
 
-class EstablishmentAboutAbout(FragmentView):
+class EstablishmentAboutAbout(AJAXFragmentView):
     template_name = 'knotis/identity/establishment_about_about.html'
     view_name = 'establishment_about_about'
 
@@ -358,19 +358,20 @@ class EstablishmentAboutAbout(FragmentView):
             *args,
             **kwargs
     ):
-        
-        business_id = request.POST.get('business_id')
+
+        data = json.loads(request.POST.get('data'))
+        business_id = data['business_id']
         business = IdentityBusiness.objects.get(pk=business_id)
         
         # business name
         response = {}
         response['business_id'] = business_id
-        if 'changed_name' in request.POST.keys():
-            business.name = request.POST.get('changed_name')
+        if 'changed_name' in data:
+            business.name = data['changed_name']
             business.save()
 
-        if 'changed_description' in request.POST.keys():
-            business.description = request.POST.get('changed_description')
+        if 'changed_description' in data:
+            business.description = data['changed_description']
             business.save()
 
         # endpoints
@@ -384,16 +385,21 @@ class EstablishmentAboutAbout(FragmentView):
             return sendable
 
         updated_endpoints = []
-        if 'changed_endpoints' in request.POST.keys():
-            for endpoint in request.POST.get('changed_endpoints'):
+        if 'changed_endpoints' in data:
+            for endpoint_name in data['changed_endpoints'].keys():
+                endpoint = data['changed_endpoints'][endpoint_name]
+                print endpoint
                 endpoint_id = endpoint['endpoint_id']
-                endpoint_type = int(endpoint['endpoint_type'])
-                endpoint_value = endpoint['value'].trim()
+                if len(endpoint['endpoint_type']) > 0:
+                    endpoint_type = endpoint['endpoint_type']
+                else:
+                    endpoint_type = ''
+                endpoint_value = endpoint['endpoint_value'].strip()
                 
                 updated_endpoint = Endpoint.objects.update_or_create(
                     pk=endpoint_id,
-                    endpoint_type=endpoint_type,
-                    value=endpoint_value
+                    value=endpoint_value,
+                    primary=True
                 )
 
                 updated_endpoints.append(updated_endpoint)
@@ -403,7 +409,7 @@ class EstablishmentAboutAbout(FragmentView):
         })
 
 
-class EstablishmentAboutTwitterFeed(AJAXFragmentView):
+class EstablishmentAboutTwitterFeed(FragmentView):
     template_name = 'knotis/identity/establishment_about_twitter.html'
     view_name = 'establishment_about_twitter'
     

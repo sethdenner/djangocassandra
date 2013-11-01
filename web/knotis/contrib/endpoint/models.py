@@ -97,7 +97,6 @@ class EndpointManager(Manager):
         class_names = dict((key, 'Endpoint' + name) for (key, name) in EndpointTypes.CHOICES)
         return globals()[class_names[endpoint_type]]
 
-
     def get_primary_endpoint(
         self,
         identity,
@@ -116,6 +115,28 @@ class EndpointManager(Manager):
                 return endpoint
 
         return None
+
+    def update_or_create(
+        self,
+        *args,
+        **kwargs
+    ):
+        
+        endpoints = Endpoint.objects.filter(**kwargs)
+        if len(endpoints) > 1:
+            raise Exception('Too many endpoints match query')
+            
+        elif len(endpoints) == 0:
+            endpoint = Endpoint.objects.create()
+            endpoint.save(**kwargs)
+        
+        else:
+            endpoint = endpoints[0]
+            for attr in kwargs.keys():
+                setattr(endpoint, attr, kwargs[attr])
+
+        endpoint.save()
+        return endpoint
 
 
 class EndpointTypes:
@@ -220,28 +241,6 @@ class Endpoint(QuickModel):
 
     def get_uri(self):
         return self.value
-
-
-    def update_or_create(
-        self,
-        *args,
-        **kwargs
-    ):
-        
-        endpoints = Endpoint.objects.filter(**kwargs)
-        if len(endpoints) > 1:
-            raise Exception('Too many endpoints match query')
-            
-        elif len(endpoints) == 0:
-            endpoint = Endpoint.objects.create(**kwargs)
-        
-        else:
-            endpoint = endpoints[0]
-            for attr in kwargs.keys():
-                setattr(endpoint, attr, kwargs[attr])
-
-        endpoint.save()
-        return endpoint
         
 
 class EndpointPhone(Endpoint):

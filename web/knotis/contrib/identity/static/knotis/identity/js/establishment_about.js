@@ -82,9 +82,7 @@
 	    var changed_name;
 	    var changed_description;
 
-	    var identifying_info = {
-		business_id: $('#id-business-id').val()
-	    };
+	    var business_id = $('#id-business-id').val();
 
 	    $('.edit-endpoint').each(function(idx, element){
 		var $element = $(element);
@@ -95,7 +93,7 @@
 		    if(id.startsWith('endpoint')){
 			changed_endpoints[id] = {
 			    'endpoint_id': $element.attr('data-endpoint-id'),
-		    'endpoint_type': $element.attr('data-endpoint-type'),
+			    'endpoint_type': $element.attr('data-endpoint-type'),
 			    'endpoint_value': $element.val()
 			};
 		    }else if(id == 'business-name'){
@@ -106,17 +104,18 @@
 		}
 	    });
 
-	    var data = {};
-	    data.identifying_info = identifying_info
+	    var info = {};
+	    info.business_id = business_id;
 	    if(changed_name){
-		data.changed_name = changed_name;
+		info.changed_name = changed_name;
 	    }
-	    data.changed_endpoints = changed_endpoints;
-	    data.changed_description = changed_description;
+	    info.changed_endpoints = changed_endpoints;
+	    info.changed_description = changed_description;
 
 	    $.ajax({
 		url: '/identity/update_profile/',
-		data: data,
+		data: {data:JSON.stringify(info)},
+		method: 'POST',
 		done: function(response){
 		    console.dir(response);
 		    if(response.status.toLowerCase() == 'ok'){
