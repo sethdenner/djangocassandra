@@ -35,7 +35,6 @@ from knotis.contrib.location.models import (
 from knotis.contrib.identity.models import (
     Identity,
     IdentityBusiness,
-    IdentityEstablishment,
     IdentityTypes
 )
 
@@ -886,7 +885,6 @@ class OfferEditSummaryView(OfferCreateStepView):
         savings_high = revenue_total * .5
 
         tile = OfferTile()
-        import pdb;pdb.set_trace()
         tile_rendered = tile.render_template_fragment(Context({
             'offer': self.offer,
         }))

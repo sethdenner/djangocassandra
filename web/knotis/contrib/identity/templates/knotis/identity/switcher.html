@@ -3,12 +3,14 @@
   <a class="dropdown-toggle" id="id-identity-dropdown" role="button" data-toggle="dropdown" data-target="#" href="#">
     {% for identity in available_identities %}
     {% if identity.id == request.session.current_identity_id %}
-    {% thumbnail identity.badge_image.image.image '18x18' crop=identity.badge_image.crop as img %}
-    <img class="img-circle" src="{{ img.url }}" />
-    {% empty %}
-    <img class="img-circle" src="http://placehold.it/18x18" />
-    {% endthumbnail %}
-    {{ identity.name }}
+    {{ identity.name }}&nbsp;&nbsp;
+    <div class="image-container">
+      {% thumbnail identity.badge_image.image.image '28x28' crop=identity.badge_image.crop as img %}
+      <img class="img-circle" src="{{ img.url }}" />
+      {% empty %}
+      <img class="img-circle" src="{{ STATIC_URL }}/knotis/img/default_profile_badge.png" />
+      {% endthumbnail %}
+    </div>
     <b class="caret"></b>
     {% endif%}
     {% endfor %}
@@ -18,10 +20,10 @@
     {% if identity.id != request.session.current_identity_id %}
     <li>
       <a href="/identity/switcher/{{ identity.id }}/">
-        {% thumbnail identity.badge_image.image.image '18x18' crop=identity.badge_image.crop as img %}
+        {% thumbnail identity.badge_image.image.image '28x28' crop=identity.badge_image.crop as img %}
         <img class="img-circle" src="{{ img.url }}" />
         {% empty %}
-        <img class="img-circle" src="http://placehold.it/18x18" />
+        <img class="img-circle" src="{{ STATIC_URL }}/knotis/img/default_profile_badge.png" />
         {% endthumbnail %}
         {{ identity.name }}
       </a>
@@ -29,6 +31,6 @@
     {% endif%}
     {% endfor %}
     <li class="divider" role="presentation"></li>
-    <li><a href="/auth/logout/">Logout</a></li>
+    <li><a id="logout" href="/auth/logout/">Logout</a></li>
   </ul>
 </div>

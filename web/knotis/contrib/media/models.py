@@ -1,7 +1,10 @@
 from sorl.thumbnail import ImageField
 from knotis.contrib.sickle import generate_sorl_crop_string as crop
 
-from knotis.contrib.quick.models import QuickModel
+from knotis.contrib.quick.models import (
+    QuickModel,
+    QuickManager
+)
 
 from knotis.contrib.quick.fields import (
     QuickCharField,
@@ -34,6 +37,18 @@ class Image(QuickModel):
             top,
             width,
             height
+        )
+
+
+class ImageInstanceManager(QuickManager):
+    def create(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(ImageInstanceManager, self).create(
+            *args,
+            **kwargs
         )
 
 
@@ -77,6 +92,7 @@ class ImageInstance(QuickModel):
 
     def save(self, *args, **kwargs):
         super(ImageInstance, self).save(*args, **kwargs)
+
         if self.primary:
             other_instances = ImageInstance.objects.filter(
                 related_object_id=self.related_object_id,
