@@ -923,17 +923,43 @@ class OfferDetailView(FragmentView):
         offer_id = self.context.get('offer_id')
         offer = get_object_or_404(Offer, pk=offer_id)
 
-        try:
-            offer_items = OfferItem.objects.filter(offer=offer)
+        offer_items = self.context.get('offer_items')
+        if not offer_items:
+            try:
+                offer_items = OfferItem.objects.filter(offer=offer)
 
-        except Exception:
-            logger.exception('failed to get offer items')
-            offer_items = None
+            except Exception:
+                logger.exception('failed to get offer items')
+                offer_items = None
+
+        try:
+            business_badge_image = ImageInstance.objects.get(
+                related_object_id=offer.owner_id,
+                context='profile_badge',
+                primary=True
+            )
+
+        except:
+            logger.exception('failed to get business badge image')
+            business_badge_image = None
+
+        try:
+            offer_image = ImageInstance.objects.get(
+                related_object_id=offer.pk,
+                context='offer_banner',
+                primary=True
+            )
+
+        except:
+            logger.exception('failed to get offer image')
+            offer_image = None
 
         local_context = copy.copy(self.context)
         local_context.update({
             'offer': offer,
-            'offer_items': offer_items
+            'offer_items': offer_items,
+            'offer_image': offer_image,
+            'business_badge_image': business_badge_image
         })
 
         return local_context
