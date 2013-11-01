@@ -121,19 +121,40 @@ class EndpointManager(Manager):
         *args,
         **kwargs
     ):
+
+        for query_parameter in kwargs.keys():
+            if query_parameter != 'value' and len(str(kwargs[query_parameter])) == 0:
+                del kwargs[query_parameter]
+
+        endpoint_class_dict = {
+            EndpointTypes.TWITTER: EndpointTwitter,
+            EndpointTypes.YELP: EndpointYelp,
+            EndpointTypes.EMAIL: EndpointEmail,
+            EndpointTypes.WEBSITE: EndpointWebsite,
+            EndpointTypes.PHONE: EndpointPhone,
+            EndpointTypes.FACEBOOK: EndpointFacebook
+        }
         
-        endpoints = Endpoint.objects.filter(**kwargs)
+        if 'endpoint_type' in kwargs.keys():
+            endpoint_class = endpoint_class_dict[kwargs['endpoint_type']]
+        else:
+            raise Exception('No EndpointType specified')
+
+        endpoints = endpoint_class.objects.filter(**kwargs)
         if len(endpoints) > 1:
             raise Exception('Too many endpoints match query')
             
         elif len(endpoints) == 0:
-            endpoint = Endpoint.objects.create()
-            endpoint.save(**kwargs)
+            endpoint = endpoint_class.objects.create()
+            endpoint.save()
+            if 'pk' in kwargs.keys():
+                del kwargs['pk']
         
         else:
             endpoint = endpoints[0]
-            for attr in kwargs.keys():
-                setattr(endpoint, attr, kwargs[attr])
+        
+        for attr in kwargs.keys():
+            setattr(endpoint, attr, kwargs[attr])
 
         endpoint.save()
         return endpoint

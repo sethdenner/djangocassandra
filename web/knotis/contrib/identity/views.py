@@ -196,7 +196,7 @@ class IdentityTile(FragmentView):
             profile_badge_image = ImageInstance.objects.get(
                 related_object_id=business.id,
                 context='profile_badge',
-                primary=True
+                prrimary=True
             )
         except Exception, e:
             profile_badge_image = None
@@ -379,25 +379,33 @@ class EstablishmentAboutAbout(AJAXFragmentView):
             sendable = {
                 'pk': endpoint.pk,
                 'endpoint_type': endpoint.endpoint_type,
-                'value': endpoint.value
+                'value': endpoint.value,
+                'url': endpoint.get_uri()
             }
 
             return sendable
+
+        endpoint_type_dict = {
+            'twitter': EndpointTypes.TWITTER,
+            'email': EndpointTypes.EMAIL,
+            'phone': EndpointTypes.PHONE,
+            'website': EndpointTypes.WEBSITE,
+            'yelp': EndpointTypes.YELP,
+            'facebook': EndpointTypes.FACEBOOK
+        }
 
         updated_endpoints = []
         if 'changed_endpoints' in data:
             for endpoint_name in data['changed_endpoints'].keys():
                 endpoint = data['changed_endpoints'][endpoint_name]
-                print endpoint
                 endpoint_id = endpoint['endpoint_id']
-                if len(endpoint['endpoint_type']) > 0:
-                    endpoint_type = endpoint['endpoint_type']
-                else:
-                    endpoint_type = ''
+
                 endpoint_value = endpoint['endpoint_value'].strip()
                 
                 updated_endpoint = Endpoint.objects.update_or_create(
+                    identity=business,
                     pk=endpoint_id,
+                    endpoint_type=int(endpoint['endpoint_type']),
                     value=endpoint_value,
                     primary=True
                 )
@@ -491,8 +499,6 @@ class EstablishmentAboutCarousel(FragmentView):
         for image in images:
             image_infos.append((count, image))
             count += 1
-
-        # import pdb; pdb.set_trace()
 
         local_context = copy.copy(self.context)
         local_context.update({
@@ -702,7 +708,7 @@ class EstablishmentProfileView(FragmentView):
                     'value': endpoint.value,
                     'uri': endpoint.get_uri(),
                     'display': display,
-                    'endpoint_type': endpoint_class.endpoint_type
+                    'endpoint_type': endpoint_class.EndpointType
                 }
 
                 endpoints.append(fake_endpoint)
@@ -714,7 +720,7 @@ class EstablishmentProfileView(FragmentView):
                     'value': '',
                     'uri': '',
                     'display': '',
-                    'endpoint_type': ''
+                    'endpoint_type': endpoint_class.EndpointType
                 })
 
         # determine nav view

@@ -117,19 +117,21 @@
 		data: {data:JSON.stringify(info)},
 		method: 'POST',
 		done: function(response){
-		    console.dir(response);
+		    response = JSON.parse(response);
 		    if(response.status.toLowerCase() == 'ok'){
-			$('#about-us>.toggleable').toggle();
-
+			$('.toggleable').toggle();
 			// backpopulate changed info
 			for(var endpoint in response.changed_endpoints){
-			    $(endpoint.endpoint_id).attr('data-initial-value', endpoint.endpoint_value);			    
+			    $(endpoint.endpoint_id).attr({
+				'data-initial-value': endpoint.endpoint_value,
+				'data-endpoint-id': endpoint.pk
+			    });
 			}
 
 			// update social buttons
 			for(var endpoint in response.updated_endpoints){
-			    if(endpoint.endpoint_type == 'twitter'){
-				$('.updateable-endpoint.' + endpoint.endpoint_type_name.toLowerCase()).attr('href', endpoint.url);
+			    if(endpoint.endpoint_type == 4){
+				$('.updateable-endpoint.facebook').attr('href', endpoint.url);
 			    }
 			}
 
