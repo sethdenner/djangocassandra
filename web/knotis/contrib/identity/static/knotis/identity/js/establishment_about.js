@@ -121,7 +121,10 @@
 			$('.toggleable').toggle();
 			// backpopulate changed info
 			for(var endpoint in response.changed_endpoints){
-			    $(endpoint.endpoint_id).attr('data-initial-value', endpoint.endpoint_value);			    
+			    $(endpoint.endpoint_id).attr({
+				'data-initial-value': endpoint.endpoint_value,
+				'data-endpoint-id': endpoint.pk
+			    });
 			}
 
 			// update social buttons
