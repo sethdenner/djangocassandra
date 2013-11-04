@@ -102,7 +102,7 @@ class MyEstablishmentsGrid(GridSmallView):
                         'request': request
                     })
                     tiles.append(
-                        establishment_tile.render_template_fragment(
+                        establishment_tile.render_temlate_fragment(
                             establishment_context
                         )
                     )
@@ -226,6 +226,7 @@ class MyOffersView(ContextView):
             'navigation/css/nav_top.css',
             'navigation/css/nav_side.css',
             'styles/default/fileuploader.css',
+            'knotis/merchant/css/my_offers.css'
         ]
 
         pre_scripts = []
@@ -279,9 +280,15 @@ class OfferRedemptionView(FragmentView):
                 if not purchase.redemptions():
                     consumer_purchases.append(purchase)
 
+        offer_tile = OfferTile()
+        offer_tile_markup = offer_tile.render_template_fragment(Context({
+            'offer': offer
+        }))
+
         self.context.update({
             'offer': offer,
-            'purchases': consumer_purchases
+            'purchases': consumer_purchases,
+            'offer_tile_markup': offer_tile_markup
         })
 
         return self.context
