@@ -1,7 +1,7 @@
 (function($){
     // carousel
     $('#about_carousel').carousel({
-        interval: 2000
+        interval: 5000
     });
     
     $('a.upload-photo').click(function(event){

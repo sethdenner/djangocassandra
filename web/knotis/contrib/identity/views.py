@@ -810,14 +810,19 @@ class EstablishmentProfileView(FragmentView):
             'endpoints': endpoints,
             'is_manager': is_manager
         })
+        
         if self.context.get('view_name') == 'contact':
             nav_top_content = EstablishmentProfileContact().render_template_fragment(nav_context)
+            content_plexer = 'offersaboutcontact'
         elif self.context.get('view_name') == 'offers':
-            pass
+            content_plexer = 'offersaboutcontact'
+            nav_top_content = None
         elif self.context.get('view_name') == 'about':
+            content_plexer = 'offersaboutcontact'
             nav_top_content = EstablishmentProfileAbout().render_template_fragment(nav_context)
         else:
-            nav_top_content = None
+            content_plexer = 'establishments'
+            nav_top_content = 'establishments'
 
         local_context = copy.copy(self.context)
         local_context.update({
@@ -836,7 +841,8 @@ class EstablishmentProfileView(FragmentView):
             'establishment_offers': establishment_offers,
             'endpoints': endpoints,
 	    'top_menu_name': 'identity_profile',
-            'nav_top_content': nav_top_content
+            'nav_top_content': nav_top_content,
+            'content_plexer': content_plexer
         })
 
         return local_context

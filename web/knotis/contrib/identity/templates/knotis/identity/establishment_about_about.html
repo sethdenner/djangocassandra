@@ -1,5 +1,7 @@
 <h4>About Us</h4>
+{% if is_manager %}
 <a class="pull-right edit_about">Edit</a>
+{% endif %}
 
 <div id="about-us">
   {% if is_manager %}
@@ -103,9 +105,23 @@
   
   <div class="viewable toggleable">
     <div class="social-buttons">
-      {% if twitter.value %}<a class="updateable-endpoint twitter" href="{{ twitter }}">Twitter</a>{% endif %}
-      {% if facebook.value %}<a class="updateable-endpoint facebook" href="{{ facebook }}">Facebook</a>{% endif %}
-      {% if yelp.value %}<a class="updateable-endpoint yelp" href="{{ yelp }}">Yelp</a>{% endif %}
+      {% if twitter.value %}
+      <a class="updateable-endpoint twitter" href="{{ twitter.uri }}">
+	<img src="/static/knotis/identity/img/icon-twitter.png" alt="Twitter"></img>
+      </a>
+      {% endif %}
+      
+      {% if facebook.value %}
+      <a class="updateable-endpoint facebook" href="{{ facebook.uri }}">
+	<img src="/static/knotis/identity/img/icon-facebook.png" alt="Facebook"></img>
+      </a>
+      {% endif %}
+      
+      {% if yelp.value %}
+      <a class="updateable-endpoint yelp" href="{{ yelp.uri }}">
+	<img src="/static/knotis/identity/img/icon-yelp.png" alt="Yelp"></img>
+      </a>
+      {% endif %}
     </div>
     <div class="about-us">
       {{ description }}
