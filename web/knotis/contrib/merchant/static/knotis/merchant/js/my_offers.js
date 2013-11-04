@@ -13,6 +13,8 @@
                     offer_id,
                     '/'
                 ].join(''),
+                modal_id: 'id-redemption-modal',
+                modal_width: 652,
                 on_open: function(data, status, request) {
                     $('.redemption-form').ajaxform({
                         done: function(data, status, jqxhr) {
