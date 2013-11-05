@@ -40,16 +40,14 @@ from forms import (
     IdentityBusinessSimpleForm
 )
 
+from knotis.contrib.endpoint.models import *
+from knotis.contrib.identity.models import *
 from knotis.contrib.location.models import (
     Location,
     LocationItem
 )
 
 from knotis.contrib.maps.views import GoogleMap
-
-from knotis.contrib.endpoint.models import *
-
-from knotis.contrib.identity.models import *
 
 from knotis.contrib.twitter.views import get_twitter_feed_json
 from knotis.contrib.yelp.views import get_reviews_by_yelp_id
@@ -333,9 +331,9 @@ class EstablishmentProfileOffers(FragmentView):
         local_context = copy.copy(self.context)
         return local_context
         
-class EstablishmentProfileContact(FragmentView):
-    template_name = 'knotis/identity/establishment_contact.html'
-    view_name = 'establishment_contact'
+class EstablishmentProfileLocation(FragmentView):
+    template_name = 'knotis/identity/establishment_about_location.html'
+    view_name = 'establishment_location'
     
     def process_context(self):
         request = self.context.get('request')
@@ -585,7 +583,8 @@ class EstablishmentProfileAbout(FragmentView):
             'about_markup': EstablishmentAboutAbout().render_template_fragment(local_context),
             'twitter_markup': EstablishmentAboutTwitterFeed().render_template_fragment(local_context),
             'yelp_markup': EstablishmentAboutYelpFeed().render_template_fragment(local_context),
-            'carousel_markup': EstablishmentAboutCarousel().render_template_fragment(local_context)
+            'carousel_markup': EstablishmentAboutCarousel().render_template_fragment(local_context),
+            'location_markup': EstablishmentProfileLocation().render_template_fragment(local_context)
         })
         return local_context
 
@@ -812,7 +811,7 @@ class EstablishmentProfileView(FragmentView):
         })
         
         if self.context.get('view_name') == 'contact':
-            nav_top_content = EstablishmentProfileContact().render_template_fragment(nav_context)
+            nav_top_content = EstablishmentProfileLocation().render_template_fragment(nav_context)
             content_plexer = 'offersaboutcontact'
         elif self.context.get('view_name') == 'offers':
             content_plexer = 'offersaboutcontact'

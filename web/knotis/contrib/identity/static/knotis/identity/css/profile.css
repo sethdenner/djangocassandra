@@ -48,22 +48,44 @@ a.change-profile-cover-link {
     bottom: 2%;
 }
 
-div#map {
-    width: 600px;
-    height: 500px;
-}
-
 div.column-box {
     columns: 2;
 }
 
+/* Profile About Section Divs */
+
+
+.about-description {
+    
+}
+
+.about-carousel {
+    overflow: hidden;
+}
+
+.about-location {
+    min-width: 300px;
+    min-height: 300px;
+}
+
+#map {
+    width: 100%;
+    min-height: 300px;
+}
+
+
+.about-yelp {
+
+}
+
+.about-twitter {
+
+}
+
+/* Profile About About Endpoint Form */
 .edit-endpoint {
     width: 380px;
     position: relative;
     left: 20px;
-}
-
-.carousel-wrapper {
-    max-width: 400px;
 }
 

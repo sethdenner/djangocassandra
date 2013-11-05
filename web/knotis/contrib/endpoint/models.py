@@ -478,6 +478,11 @@ class EndpointWebsite(EndpointLink):
 
         super(EndpointWebsite, self).__init__(*args, **kwargs)
 
+    def get_uri(self):
+        if self.value.strip().startswith('http'):
+            return self.value
+        else:
+            return 'http://' + self.value.strip()
 
 class EndpointIdentityManager(EndpointManager):
     def update_identity_endpoints(

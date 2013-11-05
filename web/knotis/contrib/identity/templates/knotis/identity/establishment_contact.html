@@ -1,10 +1,9 @@
-<div class="span6">
-  Message
-</div>
+{% if address %}
 
 <div class="span6">
   <h4>Location</h4>
   <div id="map" />
+  <p>{{ address }}</p>
   <div class="establishment-contact-loc-address">{{ address }}</div>
 
   <input type="hidden" 
@@ -12,3 +11,5 @@
 	 data-latitude="{{ latitude }}"
 	 data-longitude="{{ longitude }}" />
 </div>
+
+{% endif %}
