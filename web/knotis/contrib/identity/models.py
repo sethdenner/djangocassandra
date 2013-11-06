@@ -303,8 +303,8 @@ class Identity(QuickModel):
 
     def __unicode__(self):
         if (self.name):
-            return str(self.name)
-        return str(self.id)
+            return u'%s' % self.name
+        return u'%s' % self.id
 
 
 class IdentityIndividual(Identity):

@@ -93,7 +93,7 @@
 	    
 	    $.post(
 	        '/api/v1/endpoint/',
-	        {
+            {
 		        identity_id: identity_id,
 		        endpoint_type: endpoint_type,
 		        endpoint_id: endpoint_id,

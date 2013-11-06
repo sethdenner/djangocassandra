@@ -8,7 +8,6 @@ from knotis.contrib.quick.fields import (
 
 from django.db.models import (
     CharField,
-    DateTimeField,
     BooleanField,
     IntegerField,
     Manager
@@ -20,10 +19,8 @@ from knotis.utils.email import generate_validation_key
 from knotis.contrib.cassandra.models import ForeignKey
 from knotis.contrib.identity.models import Identity
 
-from knotis.contrib.identity.models import (
-    IdentityBusiness,
-    IdentityTypes
-)
+from django.forms.models import model_to_dict
+
 
 class EndpointManager(Manager):
     def create(
@@ -70,7 +67,6 @@ class EndpointManager(Manager):
 
         return endpoint
 
-
     def validate_endpoints(
         self,
         validation_key,
@@ -94,7 +90,9 @@ class EndpointManager(Manager):
         return False
 
     def _get_endpoint_class(self, endpoint_type):
-        class_names = dict((key, 'Endpoint' + name) for (key, name) in EndpointTypes.CHOICES)
+        class_names = dict(
+            (key, 'Endpoint' + name) for (key, name) in EndpointTypes.CHOICES
+        )
         return globals()[class_names[endpoint_type]]
 
     def get_primary_endpoint(
@@ -107,7 +105,7 @@ class EndpointManager(Manager):
 
         endpoints = EndpointClass.objects.filter(
             endpoint_type=endpoint_type,
-            identity=IdentityBusiness.objects.identity_id_to_business(identity.pk)
+            identity=identity
         )
 
         for endpoint in endpoints:
@@ -121,11 +119,6 @@ class EndpointManager(Manager):
         *args,
         **kwargs
     ):
-
-        for query_parameter in kwargs.keys():
-            if query_parameter != 'value' and len(str(kwargs[query_parameter])) == 0:
-                del kwargs[query_parameter]
-
         endpoint_class_dict = {
             EndpointTypes.TWITTER: EndpointTwitter,
             EndpointTypes.YELP: EndpointYelp,
@@ -140,22 +133,35 @@ class EndpointManager(Manager):
         else:
             raise Exception('No EndpointType specified')
 
-        endpoints = endpoint_class.objects.filter(**kwargs)
+        # create a new filter including only filterable fields
+        filter_parameters = {}
+        filterable_fields = endpoint_class.get_filterable_fields()
+        for field in filterable_fields:
+            if field in kwargs.keys():
+                filter_parameters[field] = kwargs.get(field, None)
+
+        # see if there are any endpoints under this filter
+        endpoints = endpoint_class.objects.filter(**filter_parameters)
+        import pdb; pdb.set_trace()
         if len(endpoints) > 1:
             raise Exception('Too many endpoints match query')
-            
+
+        # if there are not, remove pk from filter so it doesn't get overidden
         elif len(endpoints) == 0:
             endpoint = endpoint_class.objects.create()
             endpoint.save()
-            if 'pk' in kwargs.keys():
-                del kwargs['pk']
-        
+            if 'pk' in filter_parameters.keys():
+                del filter_parameters['pk']
+
+        # if there are, use the first retrieved endpoint for the nex step
         else:
             endpoint = endpoints[0]
-        
-        for attr in kwargs.keys():
-            setattr(endpoint, attr, kwargs[attr])
 
+        # update the endpoint
+        for attr in filter_parameters.keys():
+            setattr(endpoint, attr, filter_parameters[attr])
+
+        endpoint.clean()
         endpoint.save()
         return endpoint
 
@@ -190,30 +196,37 @@ class EndpointTypes:
     )
 
     SubTypes = {}
+        
     def register(endpoint_class):
-        SubTypes[endpoint_class.EndpointType] = endpoint_class
+        EndpointTypes.SubTypes[endpoint_class.EndpointType] = endpoint_class
 
+        
 class Endpoint(QuickModel):
     EndpointType = EndpointTypes.UNDEFINED
-    
 
     endpoint_type = IntegerField(
         choices=EndpointTypes.CHOICES,
         default=EndpointTypes.UNDEFINED,
-        db_index=True
+        db_index=True,
+        blank=False
     )
 
     identity = ForeignKey(Identity)
     value = CharField(
         max_length=256,
-        db_index=True
+        db_index=True,
+        blank=False
     )
     context = CharField(
         max_length=256,
-        db_index=True
+        db_index=True,
+        blank=False
     )
 
-    primary = BooleanField(default=False)
+    primary = BooleanField(
+        default=False,
+        db_index=True
+    )
     validated = BooleanField(default=False)
     validation_key = CharField(
         max_length=256,
@@ -224,7 +237,7 @@ class Endpoint(QuickModel):
     disabled = BooleanField(default=False)
 
     objects = EndpointManager()
-
+    
     def save(
         self,
         *args,
@@ -266,7 +279,6 @@ class Endpoint(QuickModel):
 
 class EndpointPhone(Endpoint):
     EndpointType = EndpointTypes.PHONE
-    
 
     class Meta:
         proxy = True
@@ -279,9 +291,9 @@ class EndpointPhone(Endpoint):
     def get_uri(self):
         return "callto:" + self.value
 
+    
 class EndpointEmail(Endpoint):
     EndpointType = EndpointTypes.EMAIL
-    
 
     class Meta:
         proxy = True
@@ -318,10 +330,10 @@ class EndpointEmail(Endpoint):
     def get_uri(self):
         return "mailto:" + self.value
 
+    
 class EndpointTwitter(Endpoint):
     EndpointType = EndpointTypes.TWITTER
     
-
     class Meta:
         proxy = True
 
@@ -338,8 +350,13 @@ class EndpointTwitter(Endpoint):
         """
         v = self.value.strip()
 
-        if v.split('/',1)[0].find('.'): # is absolute
-            prefixes = ['twitter.com/', 'http://twitter.com/', 'www.twitter.com/', 'http://www.twitter.com/']
+        if v.split('/', 1)[0].find('.'):  # is absolute
+            prefixes = [
+                'twitter.com/',
+                'http://twitter.com/',
+                'www.twitter.com/',
+                'http://www.twitter.com/'
+            ]
             for prefix in prefixes:
                 if v[:len(prefix)] == prefix:
                     self.value = self.value[len(prefix):]
@@ -350,9 +367,9 @@ class EndpointTwitter(Endpoint):
     def get_uri(self):
         return "http://twitter.com/" + self.value
 
+    
 class EndpointFacebook(Endpoint):
     EndpointType = EndpointTypes.FACEBOOK
-    
 
     class Meta:
         proxy = True
@@ -366,20 +383,21 @@ class EndpointFacebook(Endpoint):
         """
         Set value as the facebook username only.
 
-        Strip off facebook.com (and its derivatives) if it's there ad it back in get_uri
+        Strip off facebook.com (and its derivatives) if it's there add it
+        back in get_uri
         """
         v = self.value.strip()
 
-        if v.split('/',1)[0].find('.'): # is absolute
+        if v.split('/', 1)[0].find('.'):  # is absolute
             prefixes = [
-                'facebook.com/', 
-                'http://facebook.com/', 
-                'www.facebook.com/', 
+                'facebook.com/',
+                'http://facebook.com/',
+                'www.facebook.com/',
                 'http://www.facebook.com/',
                 
                 'facebook.com/profile.php?id=',
-                'http://facebook.com/profile.php?id=', 
-                'www.facebook.com/profile.php?id=', 
+                'http://facebook.com/profile.php?id=',
+                'www.facebook.com/profile.php?id=',
                 'http://www.facebook.com/profile.php?id=',
             ]
             for prefix in prefixes:
@@ -392,10 +410,10 @@ class EndpointFacebook(Endpoint):
     def get_uri(self):
         return "http://facebook.com/profile.php?id=" + self.value
 
+    
 class EndpointYelp(Endpoint):
     EndpointType = EndpointTypes.YELP
     
-
     class Meta:
         proxy = True
 
@@ -412,11 +430,11 @@ class EndpointYelp(Endpoint):
         """
         v = self.value.strip()
 
-        if v.split('/',1)[0].find('.'): # is absolute
+        if v.split('/', 1)[0].find('.'):  # is absolute
             prefixes = [
-                'yelp.com/', 
-                'http://yelp.com/', 
-                'www.yelp.com/', 
+                'yelp.com/',
+                'http://yelp.com/',
+                'www.yelp.com/',
                 'http://www.yelp.com/'
             ]
             for prefix in prefixes:
@@ -432,7 +450,6 @@ class EndpointYelp(Endpoint):
 
 class EndpointAddress(Endpoint):
     EndpointType = EndpointTypes.ADDRESS
-    
 
     class Meta:
         proxy = True
@@ -442,22 +459,22 @@ class EndpointAddress(Endpoint):
 
         super(EndpointAddress, self).__init__(*args, **kwargs)
 
+        
 class EndpointLink(Endpoint):
     EndpointType = EndpointTypes.LINK
-    
 
     class Meta:
         proxy = True
 
     def clean(self):
         """
-        Check that the value has http or https if it contains a domain. 
+        Check that the value has http or https if it contains a domain.
         If it contains a domain and no protocol, add http:// to the beginning.
         """
         v = self.value.strip()
         """ If the text before the first / contains a ., the url needs http """
-        is_global = v.split('/',1)[0].find('.') > 0
-        if is_global: 
+        is_global = v.split('/', 1)[0].find('.') > 0
+        if is_global:
             if v[:7] != 'http://' and v[:8] != 'https://':
                 self.value = 'http://' + self.value
         
@@ -466,9 +483,9 @@ class EndpointLink(Endpoint):
     def get_uri(self):
         return self.value
 
+    
 class EndpointWebsite(EndpointLink):
     EndpointType = EndpointTypes.WEBSITE
-    
 
     class Meta:
         proxy = True
@@ -484,6 +501,7 @@ class EndpointWebsite(EndpointLink):
         else:
             return 'http://' + self.value.strip()
 
+        
 class EndpointIdentityManager(EndpointManager):
     def update_identity_endpoints(
         self,
@@ -503,7 +521,6 @@ class EndpointIdentityManager(EndpointManager):
 
 class EndpointIdentity(Endpoint):
     EndpointType = EndpointTypes.IDENTITY
-    
 
     class Meta:
         proxy = True
