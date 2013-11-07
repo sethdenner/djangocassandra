@@ -1,5 +1,4 @@
 import copy
-
 from django import http
 from django.conf import settings
 from django.template import Context
@@ -517,6 +516,23 @@ class EstablishmentProfileView(FragmentView):
                     'value': None
                 })
 
+        profile_banner_colors = [
+            'blue',
+            'darkblue',
+            'darkgrey',
+            'lightgrey',
+            'orange',
+            'pink',
+            'purple',
+            'red',
+            'turquoise',
+            'yellow'
+        ]
+        profile_banner_color_index = int(establishment.pk[24:], 16) % 10
+        profile_banner_color = profile_banner_colors[
+            profile_banner_color_index
+        ]
+
         local_context = copy.copy(self.context)
         local_context.update({
             'establishment': establishment,
@@ -531,7 +547,8 @@ class EstablishmentProfileView(FragmentView):
             'profile_badge': profile_badge_image,
             'profile_banner': profile_banner_image,
             'establishment_offers': establishment_offers,
-            'endpoints': endpoints
+            'endpoints': endpoints,
+            'profile_banner_color': profile_banner_color
         })
 
         return local_context
