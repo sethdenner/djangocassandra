@@ -53,25 +53,24 @@ class MyEstablishmentsView(ContextView):
             'knotis/layout/css/grid.css',
             'knotis/layout/css/tile.css',
             'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css', 
-            'knotis/identity/css/profile.css', 
+            'navigation/css/nav_side.css',
+            'knotis/identity/css/profile.css',
             'styles/default/fileuploader.css'
         ]
 
-        
         pre_scripts = []
-        
+
         post_scripts = [
-            'knotis/layout/js/layout.js', 
-            'knotis/layout/js/forms.js', 
+            'knotis/layout/js/layout.js',
+            'knotis/layout/js/forms.js',
             'knotis/layout/js/create.js',
-            'navigation/js/navigation.js', 
+            'navigation/js/navigation.js',
             'jcrop/js/jquery.Jcrop.js',
-            'scripts/fileuploader.js', 
+            'scripts/fileuploader.js',
             'scripts/jquery.colorbox.js',
             'scripts/jquery.sickle.js',
-            'knotis/identity/js/profile.js', 
-            'knotis/api/js/api.js',    
+            'knotis/identity/js/profile.js',
+            'knotis/api/js/api.js',
             'knotis/identity/js/business-tile.js'
         ]
 
@@ -83,7 +82,8 @@ class MyEstablishmentsView(ContextView):
         })
 
         return local_context
-        
+
+
 class MyEstablishmentsGrid(GridSmallView):
     view_name = 'my_establishments_grid'
 
@@ -92,8 +92,12 @@ class MyEstablishmentsGrid(GridSmallView):
 
         request = self.request
         if request.user.is_authenticated():
-            user_ident = IdentityIndividual.objects.get_individual(request.user)
-            establishments = IdentityEstablishment.objects.get_establishments(user_ident)
+            user_identity = IdentityIndividual.objects.get_individual(
+                request.user
+            )
+            establishments = IdentityEstablishment.objects.get_establishments(
+                user_identity
+            )
             if establishments:
                 for establishment in establishments:
                     establishment_tile = IdentityTile()
@@ -102,7 +106,7 @@ class MyEstablishmentsGrid(GridSmallView):
                         'request': request
                     })
                     tiles.append(
-                        establishment_tile.render_temlate_fragment(
+                        establishment_tile.render_template_fragment(
                             establishment_context
                         )
                     )
