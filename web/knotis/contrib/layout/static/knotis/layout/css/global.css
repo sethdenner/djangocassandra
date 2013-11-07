@@ -71,9 +71,14 @@ a {
     border-bottom: 1px solid #F5F5F5;
 }
 
+.nav-list > li > a {
+    color: #808184;
+}
+
 .nav-list > li > a.on, .nav-list > li > a:hover {
     background-color: #EEEEEE;
     border-left: 2px solid #427FED;
+    color: #000;
 }
 
 select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input, .modal {
