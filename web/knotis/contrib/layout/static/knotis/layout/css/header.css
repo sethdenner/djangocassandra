@@ -1,11 +1,13 @@
 .navbar .search-bar {
     display: inline-block;
+    margin-top: 9px;
 }
 
 .navbar .nav-collapse.in.collapse .search-bar {
     text-align: left;
     width: auto;
     float: none;
+    vertical-align: middle;
 }
 
 div.navbar.navbar-fluid-top {
