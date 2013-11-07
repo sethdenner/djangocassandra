@@ -3,6 +3,7 @@ div.grid-tile {
     cursor: pointer;
     background-color: #fff;
     margin: 0 0 15px 15px;
+    color: #808184;
 }
 
 div.grid-tile.small-tile {
