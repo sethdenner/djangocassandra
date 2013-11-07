@@ -1,9 +1,9 @@
 (function($) {
 
-    $('a.modal-link').click(function(event) {
+    $('.modal-link').click(function(event) {
 	    event.preventDefault();
         $.ajaxmodal({
-            href: this.href
+            href: $(this).attr('href')
         });
     });
 
