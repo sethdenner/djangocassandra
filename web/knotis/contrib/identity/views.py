@@ -222,7 +222,7 @@ class IdentityTile(FragmentView):
             profile_badge_image = ImageInstance.objects.get(
                 related_object_id=identity.id,
                 context='profile_badge',
-                prrimary=True
+                primary=True
             )
 
         except:
@@ -704,20 +704,31 @@ class EstablishmentProfileView(FragmentView):
             'knotis/layout/js/forms.js',
             'knotis/maps/js/maps.js',
             'knotis/identity/js/profile.js',
-            'knotis/identity/js/establishment_contact.js',
-            'knotis/identity/js/establishment_about.js'
+            'knotis/identity/js/establishment_about.js',
+            'knotis/identity/js/update_profile.js'
         ]
 
         profile_badge_image = None
         
         # if there is no profile badge on establishment check business
         try:
+            
             profile_badge_image = ImageInstance.objects.get(
-                related_object_id=business.pk,
+                related_object_id=establishment_id,
                 context='profile_badge',
                 primary=True
             )
 
+        except:
+            pass
+
+        try:
+            if not profile_badge_image:
+                profile_badge_image = ImageInstance.objects.get(
+                    related_object_id=business.pk,
+                    context='profile_badge',
+                    primary=True
+                )
         except:
             pass
 

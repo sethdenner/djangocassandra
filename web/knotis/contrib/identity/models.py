@@ -177,7 +177,7 @@ class IdentityBusinessManager(IdentityManager):
         try:
             establishment = IdentityEstablishment.objects.get(pk=identity_id)
             business = self.get_establishment_parent(establishment)
-        except:
+        except IdentityBusiness.DoesNotExist:
             business = self.get(pk=identity_id)
             
         return business

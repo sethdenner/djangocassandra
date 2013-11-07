@@ -19,8 +19,7 @@ from knotis.utils.email import generate_validation_key
 from knotis.contrib.cassandra.models import ForeignKey
 from knotis.contrib.identity.models import Identity
 
-from django.forms.models import model_to_dict
-
+from django.forms.models import model_to_dict    
 
 class EndpointManager(Manager):
     def create(
@@ -134,21 +133,24 @@ class EndpointManager(Manager):
             raise Exception('No EndpointType specified')
 
         # create a new filter including only filterable fields
-        filter_parameters = {}
         filterable_fields = endpoint_class.get_filterable_fields()
+        
         for field in filterable_fields:
             if field in kwargs.keys():
                 filter_parameters[field] = kwargs.get(field, None)
+        existing_filterable_fields = { 
+            key: kwargs[key] for key in filterable_fields if key in kwargs.keys()
+        }
 
         # see if there are any endpoints under this filter
         endpoints = endpoint_class.objects.filter(**filter_parameters)
-        import pdb; pdb.set_trace()
+
         if len(endpoints) > 1:
             raise Exception('Too many endpoints match query')
 
         # if there are not, remove pk from filter so it doesn't get overidden
         elif len(endpoints) == 0:
-            endpoint = endpoint_class.objects.create()
+            endpoint = endpoint_class.objects.create(normalize_arguments(**filter_parameters))
             endpoint.save()
             if 'pk' in filter_parameters.keys():
                 del filter_parameters['pk']
@@ -275,7 +277,15 @@ class Endpoint(QuickModel):
 
     def get_uri(self):
         return self.value
-        
+    
+    
+    def prepend_http(self, string):
+        if string.strip().startswith('http'):
+            return string
+        else:
+            return 'http:/' + self.value.strip()
+
+    
 
 class EndpointPhone(Endpoint):
     EndpointType = EndpointTypes.PHONE
@@ -475,9 +485,8 @@ class EndpointLink(Endpoint):
         """ If the text before the first / contains a ., the url needs http """
         is_global = v.split('/', 1)[0].find('.') > 0
         if is_global:
-            if v[:7] != 'http://' and v[:8] != 'https://':
-                self.value = 'http://' + self.value
-        
+            self.prepend_http(self.value)
+                
         super(EndpointLink, self).clean()
 
     def get_uri(self):
@@ -496,10 +505,7 @@ class EndpointWebsite(EndpointLink):
         super(EndpointWebsite, self).__init__(*args, **kwargs)
 
     def get_uri(self):
-        if self.value.strip().startswith('http'):
-            return self.value
-        else:
-            return 'http://' + self.value.strip()
+        return self.prepend_http(self.value)
 
         
 class EndpointIdentityManager(EndpointManager):
