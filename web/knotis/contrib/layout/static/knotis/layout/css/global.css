@@ -122,10 +122,10 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 }
 
 .input-append .btn:last-child {
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
-    font-size: 10px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    font-size: 14px;
     padding: 4px 8px;
 }
 

@@ -26,7 +26,7 @@ class SearchForm(Form):
             *args,
             **kwargs
         )
-        
+
         self.helper = FormHelper()
         self.helper.form_id = 'id-searchForm'
         self.helper.form_class = 'navbar-form'
@@ -37,7 +37,8 @@ class SearchForm(Form):
                 Field(
                     'search_input',
                     id='search-input',
-                    css_class='span4'
+                    css_class='span4',
+                    placeholder='Search businesses and offers around you'
                 ),
                 Submit(
                     'search',
