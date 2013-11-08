@@ -145,6 +145,7 @@ def _upload(request):
             owner=identity,
         )
         path = '/'.join(['images', name])
+
         image.image.save(
             path,
             ContentFile(image_source)

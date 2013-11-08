@@ -39,6 +39,8 @@ from forms import (
     IdentityBusinessSimpleForm
 )
 
+from knotis.contrib.endpoint.models import *
+from knotis.contrib.identity.models import *
 from knotis.contrib.location.models import (
     Location,
     LocationItem
@@ -46,10 +48,13 @@ from knotis.contrib.location.models import (
 
 from knotis.contrib.maps.views import GoogleMap
 
-from knotis.contrib.endpoint.models import *
+from knotis.contrib.twitter.views import get_twitter_feed_json
+from knotis.contrib.yelp.views import get_reviews_by_yelp_id
+import json
 
-from knotis.contrib.identity.models import *
+from sorl.thumbnail import get_thumbnail
 
+from knotis.views import AJAXFragmentView
 
 EndpointTypeNames = dict((key, name) for (key, name) in EndpointTypes.CHOICES)
 
@@ -313,6 +318,266 @@ class EstablishmentProfileGrid(GridSmallView):
 
         return local_context
 
+
+class EstablishmentProfileOffers(FragmentView):
+    template_name = 'knotis/identity/establishment_offers.html'
+    view_name = 'establishment_offers'
+    
+    def process_context(self):
+        request = self.request
+        establishment_id = self.context.get('establishment_id')
+        
+        local_context = copy.copy(self.context)
+        return local_context
+        
+class EstablishmentProfileLocation(FragmentView):
+    template_name = 'knotis/identity/establishment_about_location.html'
+    view_name = 'establishment_location'
+    
+    def process_context(self):
+        request = self.context.get('request')
+        establishment_id = self.context.get('establishment_id')
+
+        locationItem = LocationItem.objects.filter(
+            related_object_id=establishment_id
+        )
+        if len(locationItem):
+            address = locationItem[0].location.address
+            latitude = locationItem[0].location.latitude
+            longitude = locationItem[0].location.longitude
+        else:
+            address = None
+            latitude = None,
+            longitude = None
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'address': address,
+            'latitude': latitude,
+            'longitude': longitude
+        })
+        return local_context
+
+
+class EstablishmentAboutAbout(AJAXFragmentView):
+    template_name = 'knotis/identity/establishment_about_about.html'
+    view_name = 'establishment_about_about'
+
+    def process_context(self):
+        request = self.context.get('request')
+        establishment_id = self.context.get('establishment_id')
+        
+        establishment = IdentityEstablishment.objects.get(pk=establishment_id)
+        business = IdentityBusiness.objects.get_establishment_parent(establishment)
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'description': business.description
+        })
+
+        # Fetch and add the address and coordinates to local_context
+        locationItem = LocationItem.objects.filter(
+            related_object_id=business.pk
+        )
+        if len(locationItem):
+            address = locationItem[0].location.address
+        else:
+            address = None
+
+        local_context.update({
+            'address': address,
+            'address_latitude': locationItem[0].location.latitude,
+            'address_longitude': locationItem[0].location.longitude
+        })
+
+        # add business name to local_context
+        local_context.update({
+            'business': business
+        })
+        
+        # add contact info (endpoints) to local_context
+        endpoints = self.context.get('endpoints')
+        for endpoint in endpoints:
+
+            local_context.update({
+                endpoint['endpoint_type_name']: {
+                    'value': endpoint['value'],
+                    'id': endpoint['id'],
+                    'endpoint_type': endpoint['endpoint_type'],
+                    'display': endpoint['display'],
+                    'uri': endpoint['uri']
+                }
+            })
+
+        # return local_context
+        return local_context
+
+    def post(
+            self,
+            request,
+            *args,
+            **kwargs
+    ):
+        
+        data = json.loads(request.POST.get('data'))
+        business_id = data['business_id']
+        business = IdentityBusiness.objects.get(pk=business_id)
+        
+        # business name
+        response = {}
+        response['business_id'] = business_id
+        if 'changed_name' in data:
+            business.name = data['changed_name']
+            business.save()
+
+        if 'changed_description' in data:
+            business.description = data['changed_description']
+            business.save()
+
+        # endpoints
+        def endpoint_to_dict(endpoint):
+            sendable = {
+                'pk': endpoint.pk,
+                'endpoint_type': endpoint.endpoint_type,
+                'value': endpoint.value,
+                'url': endpoint.get_uri()
+            }
+
+            return sendable
+
+        updated_endpoints = []
+        if 'changed_endpoints' in data:
+            for endpoint_name in data['changed_endpoints'].keys():
+                endpoint = data['changed_endpoints'][endpoint_name]
+                endpoint_id = endpoint['endpoint_id']
+
+                endpoint_value = endpoint['endpoint_value'].strip()
+
+                updated_endpoint = Endpoint.objects.update_or_create(
+                    identity=business,
+                    pk=endpoint_id,
+                    endpoint_type=int(endpoint['endpoint_type']),
+                    value=endpoint_value,
+                    primary=True
+                )
+
+                updated_endpoints.append(updated_endpoint)
+
+        return self.generate_response({
+            'status': 'ok',
+            'updated_endpoints': map(endpoint_to_dict, updated_endpoints)
+        })
+
+
+class EstablishmentAboutTwitterFeed(FragmentView):
+    template_name = 'knotis/identity/establishment_about_twitter.html'
+    view_name = 'establishment_about_twitter'
+    
+    def process_context(self):
+        request = self.context.get('request')
+        establishment_id = self.context.get('establishment_id')
+        establishment = IdentityEstablishment.objects.get(pk=establishment_id)
+        business = IdentityBusiness.objects.get_establishment_parent(establishment)
+
+
+        local_context = copy.copy(self.context)
+
+        endpoints = self.context.get('endpoints')
+        twitter_endpoint = None
+        for endpoint in endpoints:
+            if endpoint['endpoint_type_name'] == 'twitter':
+                if endpoint['value']:
+                    twitter_endpoint = endpoint
+                    local_context.update({
+                        'twitter_handle': twitter_endpoint['value'],
+                    })
+
+        twitter_feed = None
+        if(twitter_endpoint):
+            twitter_feed = json.loads(get_twitter_feed_json(twitter_endpoint['value']))
+            local_context.update({
+                'twitter_feed': twitter_feed
+            })
+
+        return local_context
+
+
+class EstablishmentAboutYelpFeed(FragmentView):
+    template_name = 'knotis/identity/establishment_about_yelp.html'
+    view_name = 'establishment_about_yelp'
+
+    def process_context(self):
+        request = self.context.get('request')
+        establishment_id = self.context.get('establishment_id')
+        
+        endpoints = self.context.get('endpoints')
+        yelp_endpoint = None
+
+        for endpoint in endpoints:
+            if endpoint['endpoint_type_name'] == 'yelp':
+                if endpoint['value']:
+                    yelp_endpoint = endpoint
+
+        yelp_feed = None
+        if yelp_endpoint:
+            yelp_feed = get_reviews_by_yelp_id(yelp_endpoint['value'])
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'yelp_feed': yelp_feed
+        })
+            
+        return local_context
+
+class EstablishmentAboutCarousel(FragmentView):
+    template_name = 'knotis/identity/establishment_about_carousel.html'
+    view_name = 'establishment_about_carousel'
+
+    def process_context(self):
+        request = self.context.get('request')
+        establishment_id = self.context.get('establishment_id')
+
+        establishment = IdentityEstablishment.objects.get(pk=establishment_id)
+        business = IdentityBusiness.objects.get_establishment_parent(establishment)
+
+        images = ImageInstance.objects.filter(
+            related_object_id=business.pk,
+            context='business_profile_carousel',
+            primary=False
+        )
+
+        image_infos = []
+        count = 0
+        for image in images:
+            image_infos.append((count, image))
+            count += 1
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'images': image_infos,
+            'establishment_parent': business
+        })
+
+        return local_context
+        
+class EstablishmentProfileAbout(FragmentView):
+    template_name = 'knotis/identity/establishment_about.html'
+    view_name = 'establishment_about'
+    
+    def process_context(self):
+        request = self.request
+        establishment_id = self.context.get('establishment_id')
+        
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'about_markup': EstablishmentAboutAbout().render_template_fragment(local_context),
+            'twitter_markup': EstablishmentAboutTwitterFeed().render_template_fragment(local_context),
+            'yelp_markup': EstablishmentAboutYelpFeed().render_template_fragment(local_context),
+            'carousel_markup': EstablishmentAboutCarousel().render_template_fragment(local_context),
+            'location_markup': EstablishmentProfileLocation().render_template_fragment(local_context)
+        })
+        return local_context
+
 get_class = lambda x: globals()[x]
 
 
@@ -357,6 +622,11 @@ class EstablishmentProfileView(FragmentView):
             else:
                 raise IdentityEstablishment.DoesNotExist()
 
+
+            if establishment:
+                business = IdentityBusiness.objects.get_establishment_parent(establishment)
+            if not establishment:
+                raise IdentityBusiness.DoesNotExist
         except:
             logger.exception(
                 'failed to get establishment with id ' + establishment_id
@@ -420,26 +690,37 @@ class EstablishmentProfileView(FragmentView):
             'scripts/fileuploader.js',
             'scripts/jquery.colorbox.js',
             'scripts/jquery.sickle.js',
-            'knotis/identity/js/profile.js',
             'geocomplete/jquery.geocomplete.min.js',
             'knotis/layout/js/forms.js',
             'knotis/maps/js/maps.js',
+            'knotis/identity/js/establishment_about.js',
             'knotis/identity/js/update_profile.js',
+            'knotis/identity/js/profile.js'
         ]
 
         profile_badge_image = None
-
+        
         # if there is no profile badge on establishment check business
-        if not profile_badge_image:
-            try:
+        try:
+            
+            profile_badge_image = ImageInstance.objects.get(
+                related_object_id=establishment_id,
+                context='profile_badge',
+                primary=True
+            )
+
+        except:
+            pass
+
+        try:
+            if not profile_badge_image:
                 profile_badge_image = ImageInstance.objects.get(
                     related_object_id=business.pk,
                     context='profile_badge',
                     primary=True
                 )
-
-            except:
-                pass
+        except:
+            pass
 
         try:
             profile_banner_image = ImageInstance.objects.get(
@@ -482,39 +763,75 @@ class EstablishmentProfileView(FragmentView):
         maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
         maps_scripts = maps.render_api_js()
 
-        endpoints = []
-        for endpoint_class in (EndpointPhone, EndpointEmail, EndpointFacebook, EndpointYelp, EndpointTwitter, EndpointWebsite):
+        endpoints = Endpoint.objects.filter(identity=business, primary=True)
 
-            endpoint = endpoint_class.objects.get_primary_endpoint(
-                identity=establishment,
-                endpoint_type=endpoint_class.EndpointType
-            )
+        endpoint_dicts = []
+        for endpoint_class in (
+                EndpointPhone,
+                EndpointEmail,
+                EndpointFacebook,
+                EndpointYelp,
+                EndpointTwitter,
+                EndpointWebsite
+        ):
 
+            endpoint = None
+            for ep in endpoints:
+                if ep.endpoint_type == endpoint_class.EndpointType:
+                    endpoint = ep
+  
             endpoint_type_name = EndpointTypeNames[endpoint_class.EndpointType]
             endpoint_type_name = endpoint_type_name.lower()
-
-            if endpoint:
+                
+            if endpoint and endpoint.value:
+                
                 display = None
                 if endpoint.endpoint_type == EndpointTypes.YELP:
                     display = 'Yelp'
                 elif endpoint.endpoint_type == EndpointTypes.FACEBOOK:
                     display = 'Facebook'
 
-                fake_endpoint = {
+                endpoint_dict = {
                     'id': endpoint.id,
                     'endpoint_type_name': endpoint_type_name,
                     'value': endpoint.value,
                     'uri': endpoint.get_uri(),
-                    'display': display
+                    'display': display,
+                    'endpoint_type': endpoint_class.EndpointType
                 }
 
-                endpoints.append(fake_endpoint)
+                endpoint_dicts.append(endpoint_dict)
 
             else:
-                endpoints.append({
+                endpoint_dicts.append({
+                    'id': '',
                     'endpoint_type_name': endpoint_type_name,
-                    'value': None
+                    'value': '',
+                    'uri': '',
+                    'display': '',
+                    'endpoint_type': endpoint_class.EndpointType
                 })
+
+        # determine nav view
+        nav_context = Context({ 
+            'request': request,
+            'establishment_id': establishment_id,
+            'endpoints': endpoint_dicts,
+            'is_manager': is_manager
+        })
+        
+        if self.context.get('view_name') == 'contact':
+            nav_top_content = EstablishmentProfileLocation().render_template_fragment(nav_context)
+            content_plexer = 'offersaboutcontact'
+        elif self.context.get('view_name') == 'offers':
+            content_plexer = 'offersaboutcontact'
+            nav_top_content = None
+        elif self.context.get('view_name') == 'about':
+            content_plexer = 'offersaboutcontact'
+            nav_top_content = EstablishmentProfileAbout().render_template_fragment(nav_context)
+        else:
+            content_plexer = 'establishments'
+            nav_top_content = 'establishments'
 
         profile_banner_colors = [
             'blue',
@@ -536,6 +853,7 @@ class EstablishmentProfileView(FragmentView):
         local_context = copy.copy(self.context)
         local_context.update({
             'establishment': establishment,
+            'establishment_parent': business,
             'business': business,
             'is_manager': is_manager,
             'styles': styles,
@@ -547,7 +865,10 @@ class EstablishmentProfileView(FragmentView):
             'profile_badge': profile_badge_image,
             'profile_banner': profile_banner_image,
             'establishment_offers': establishment_offers,
-            'endpoints': endpoints,
+            'endpoints': endpoint_dicts,
+            'top_menu_name': 'identity_profile',
+            'nav_top_content': nav_top_content,
+            'content_plexer': content_plexer,
             'profile_banner_color': profile_banner_color
         })
 

@@ -1,0 +1,11 @@
+{% if twitter_feed %}
+
+<h4>{{ twitter_handle }}'s Twitter Feed</h4>
+
+{% for tweet in twitter_feed %}
+<div class="tweet">
+  <p>{{ tweet.text }}</p>
+</div>
+{% endfor %}
+
+{% endif %}

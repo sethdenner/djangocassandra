@@ -5,7 +5,6 @@
 {% block first %}{% endblock first %}
 {% block header %}
 {% render_fragment header %}
-{% render_fragment nav_top %}
 {% endblock header %}
 {% block content %}
 {% load crispy_forms_tags %}
@@ -18,54 +17,42 @@
   {% endthumbnail %}
       <div class="span12">
         {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
-	    <img id="profile-badge" src="{{ img.url }}" class="img-circle{% if is_manager %} change-profile-badge-link{% endif %}" />
+	<img id="profile-badge" src="{{ img.url }}" class="img-circle{% if is_manager %} change-profile-badge-link{% endif %}" />
         {% empty %}
         <img id="profile-badge" src="{{ default_profile_logo_uri }}" class="img-circle{% if is_manager %} change-profile-badge-link{% endif %}" />
         {% endthumbnail %}
         <div class="row-fluid">
           <div id="id-profile-title" class="span12">
-	        {% if is_manager %}
+	    {% if is_manager %}
             <h2 class="updateable-name" data-establishment-id="{{ establishment.id }}" data-identity-type="{{ establishment.identity_type }}">{{ establishment.name }}</h2>
-	        {% else %}
+	    {% else %}
             <h2>{{ establishment.name }}</h2>
-	        {% endif %}
+	    {% endif %}
           </div>
         </div>
         <div id="id-profile-contact" class="row">
           <strong>
 
-	        <div id="id-profile-contact-address">
-	          {% if is_manager %}
-	          <a class="update-address-link">{{ address }}</a>
-	          {% else %}
-	          {{ address }}
-	          {% endif %}
-	        </div>
-	        <ul class="unstyled">
-	          {% for endpoint in endpoints %}
-	          {% if endpoint.value %}
-	          <li class="{% if is_manager %}editable{% endif %} establishment-endpoint" 
-		          data-establishment-id="{{ establishment.id }}"
-		          data-endpoint-endpoint-id="{{ endpoint.id }}"
-		          data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
-	            {% if not is_manager %}<a href="{{ endpoint.uri }}">{% endif %}
+	    <div id="id-profile-contact-address">
+	      {{ address }}
+	    </div>
+	    <ul class="unstyled">
+	      {% for endpoint in endpoints %}
+	      {% if endpoint.value %}
+	      <li class="{% if is_manager %}editable{% endif %} establishment-endpoint" 
+		  data-establishment-id="{{ establishment.id }}"
+		  data-endpoint-endpoint-id="{{ endpoint.id }}"
+		  data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
+		<a href="{{ endpoint.uri }}">
                   {% if endpoint.display %}
-		          {{ endpoint.display }}
-		          {% else %}
-		          {{ endpoint.value }}
-		          {% endif %}
-	              {% if not is_manager %}</a>{% endif %}
-	          </li>
-	          {% else %}
-	          {% if is_manager %}
-	          <li class="editable establishment-endpoint" 
-		          data-establishment-id="{{ establishment.id }}"
-		          data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
-	            add {{ endpoint.endpoint_type_name }}
-	          </li>
-	          {% endif %}
-	          {% endif %}
-	          {% endfor %}
+		  {{ endpoint.display }}
+		  {% else %}
+		  {{ endpoint.value }}
+		  {% endif %}
+		</a>
+	      </li>
+	      {% endif %}
+	      {% endfor %}
             </ul>
           </strong>
         </div>
@@ -76,18 +63,24 @@
         {% endif %}
       </div>
     </div>
+    {% render_fragment nav_top %}
     <div class="row-fluid"><div class="span12">&nbsp;</div></div>
     <div class="row-fluid">
       <div class="span2">
         {% render_fragment nav_side %}
       </div>
       <div class="span10 grid">
+	{% if content_plexer == 'establishments' %}
         {% render_fragment establishment_profile_grid %}
+	{% else %}
+	{{ nav_top_content }}
+	{% endif %}
       </div>
     </div>
   </div>
-  <div id="id-identity-id" data-identity-id="{{ business.id }}" class="hide" >&nbsp;</div>
-
-  {% endblock content %}
-  {% block footer %}{% endblock footer %}
-  {% block last %}{% endblock last %}
+  <div id="id-identity-id" data-identity-id="{{ establishment.id }}" data-business-id="{{ business.id }}" class="hide" >&nbsp;</div>
+</div>
+{% endblock content %}
+{% block footer %}{% endblock footer %}
+{% block last %}{% endblock last %}
+  

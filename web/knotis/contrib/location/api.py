@@ -103,7 +103,9 @@ class LocationApi(ApiView):
             data['location_id'] = location.id
             data['location_address'] = location.address
             data['message'] = 'Location saved.'
-
+            data['latitude'] = location.latitude
+            data['longitude'] = location.longitude
+            
         else:
             data['errors'] = errors
             data['message'] = 'There was an error while saving location.'

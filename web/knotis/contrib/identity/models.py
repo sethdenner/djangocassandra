@@ -87,7 +87,6 @@ class IdentityManager(QuickManager):
 
         return Identity.objects.filter(id__in=managed_ids)
 
-
 class IdentityIndividualManager(IdentityManager):
     def create(
         self,
@@ -174,11 +173,20 @@ class IdentityBusinessManager(IdentityManager):
         business = relation_establishment.subject
         return business
 
+    def identity_id_to_business(self, identity_id):
+        try:
+            establishment = IdentityEstablishment.objects.get(pk=identity_id)
+            business = self.get_establishment_parent(establishment)
+        except IdentityBusiness.DoesNotExist:
+            business = self.get(pk=identity_id)
+            
+        return business
+
     def get_query_set(self):
         return super(IdentityBusinessManager, self).get_query_set().filter(
             identity_type=IdentityTypes.BUSINESS
         )
-
+    
 
 class IdentityEstablishmentManager(IdentityManager):
     def get_establishments(
@@ -295,8 +303,8 @@ class Identity(QuickModel):
 
     def __unicode__(self):
         if (self.name):
-            return str(self.name)
-        return str(self.id)
+            return u'%s' % self.name
+        return u'%s' % self.id
 
 
 class IdentityIndividual(Identity):
