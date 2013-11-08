@@ -21,6 +21,12 @@ from knotis.contrib.identity.models import Identity
 
 from django.forms.models import model_to_dict    
 
+
+def normalize_arguments(*args, **kwargs):
+    for key in kwargs.keys():
+        if not kwargs[key]:
+            del kwargs[key]
+
 class EndpointManager(Manager):
     def create(
         self,
@@ -134,13 +140,14 @@ class EndpointManager(Manager):
 
         # create a new filter including only filterable fields
         filterable_fields = endpoint_class.get_filterable_fields()
-        
+
+        filter_parameters = {}
         for field in filterable_fields:
             if field in kwargs.keys():
                 filter_parameters[field] = kwargs.get(field, None)
-        existing_filterable_fields = { 
-            key: kwargs[key] for key in filterable_fields if key in kwargs.keys()
-        }
+                existing_filterable_fields = { 
+                    key: kwargs[key] for key in filterable_fields if key in kwargs.keys()
+                }
 
         # see if there are any endpoints under this filter
         endpoints = endpoint_class.objects.filter(**filter_parameters)
@@ -150,7 +157,9 @@ class EndpointManager(Manager):
 
         # if there are not, remove pk from filter so it doesn't get overidden
         elif len(endpoints) == 0:
-            endpoint = endpoint_class.objects.create(normalize_arguments(**filter_parameters))
+            normalize_arguments(**filter_parameters)
+            endpoint = endpoint_class.objects.create(**filter_parameters)
+            endpoint.clean()
             endpoint.save()
             if 'pk' in filter_parameters.keys():
                 del filter_parameters['pk']
@@ -163,8 +172,6 @@ class EndpointManager(Manager):
         for attr in filter_parameters.keys():
             setattr(endpoint, attr, filter_parameters[attr])
 
-        endpoint.clean()
-        endpoint.save()
         return endpoint
 
 
