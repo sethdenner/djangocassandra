@@ -1,26 +1,33 @@
 <div class="row-fluid">
   <div class="span6 about-section about-description">
-    {{ about_markup }}
+    {{ about_markup|safe }}
   </div>
   
   <div class="span6 about-section about-carousel">
-    {{ carousel_markup }}
+    {{ carousel_markup|safe }}
   </div>
 </div>
 
 <div class="row-fluid">
+  {% if location_markup %}
   <div class="span6 about-section about-location">
-    {{ location_markup }}
+    {{ location_markup|safe }}
   </div>
+  {% endif %}
 
 </div>
 
+{% if yelp_markup or twitter_markup %}
 <div class="row-fluid">  
-  <div class="span6 about-section  about-yelp">
-    {{ yelp_markup }}
+  {% if yelp_markup %}
+  <div class="span6 about-section about-yelp">
+    {{ yelp_markup|safe }}
   </div>
-
+  {% endif %}
+  {% if twitter_markup %}
   <div class="span6 about-section about-twitter">
-    {{ twitter_markup }}
+    {{ twitter_markup|safe }}
   </div>
+  {% endif %}
 </div>
+{% endif %}
