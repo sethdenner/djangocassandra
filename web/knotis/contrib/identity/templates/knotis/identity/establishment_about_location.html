@@ -1,0 +1,13 @@
+{% if address %}
+
+<h4>Location</h4>
+<div id="map" />
+<p>{{ address }}</p>
+<div class="establishment-contact-loc-address">{{ address }}</div>
+
+<input type="hidden" 
+	   id="establishment-contact-loc-details"
+	   data-latitude="{{ latitude }}"
+	   data-longitude="{{ longitude }}" />
+
+{% endif %}

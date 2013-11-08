@@ -203,6 +203,7 @@ def crop(
             )
 
     else:
+
         form = CropForm(
             owner=current_identity,
             image=image,

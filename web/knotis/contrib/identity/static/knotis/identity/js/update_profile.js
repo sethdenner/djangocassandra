@@ -1,9 +1,125 @@
-(function($){ 
+(function($){
 
-    // ADDRESS EDITING
+    if (!String.prototype.trim) {
+	    String.prototype.trim = function () {
+	        return this.replace(/^\s+|\s+$/g, '');
+	    };
+    }    
 
-    var $updateable_addresses = $('.update-address-link');
 
+    // endpoint editing
+    var comparator = function($element){
+	    var init = ($element.attr('data-initial-value') || '').trim();
+	    var current = ($element.val() || '').trim();
+	    if(init != current){
+	        return current;
+	    }
+
+	    return '';
+    };
+
+    if (!String.prototype.startsWith) {
+	    Object.defineProperty(String.prototype, 'startsWith', {
+	        enumerable: false,
+	        configurable: false,
+	        writable: false,
+	        value: function (searchString, position) {
+		        position = position || 0;
+		        return this.indexOf(searchString, position) === position;
+	        }
+	    });
+    }
+
+    $('a.edit_about').click(function(event){
+	    $('#about-us>.toggleable').toggle();
+
+	    // prepopulate endpoints
+	    $('.edit-endpoint:not(.description):not(#business-address)').each(function(idx, element){
+	        $(element).val($(element).attr('data-initial-value') || '');
+	    });
+	    
+	    // submit form handler
+	    $('#submit-business-info').click(function(e){
+	        e.preventDefault();
+	        e.stopPropagation();
+	        
+	        // collect form info
+	        var changed_endpoints = {};
+	        var changed_name;
+	        var changed_description;
+
+	        var business_id = $('#id-business-id').val();
+
+	        $('.edit-endpoint').each(function(idx, element){
+		        var $element = $(element);
+		        var id = $element.attr('id');
+		        
+		        var changed = comparator($element);
+		        if (changed){
+		            if(id.startsWith('endpoint')){
+			            changed_endpoints[id] = {
+			                'endpoint_id': $element.attr('data-endpoint-id'),
+			                'endpoint_type': $element.attr('data-endpoint-type'),
+			                'endpoint_value': $element.val()
+			            };
+		            }else if(id == 'business-name'){
+			            changed_name = $element.val();
+		            }else if(id == 'business-description'){
+			            changed_description = $element.val().trim();
+		            }
+		        }
+	        });
+
+	        var info = {};
+	        info.business_id = business_id;
+	        if(changed_name){
+		        info.changed_name = changed_name;
+	        }
+	        info.changed_endpoints = changed_endpoints;
+	        info.changed_description = changed_description;
+
+	        $.ajax({
+		        url: '/identity/update_profile/',
+		        data: {data:JSON.stringify(info)},
+		        method: 'POST',
+		        success: function(response){
+		            if(response.status == 'ok'){
+			            $('.toggleable').toggle();
+			            // backpopulate changed info
+			            for(var endpoint in response.changed_endpoints){
+			                $(endpoint.endpoint_id).attr({
+				                'data-initial-value': endpoint.endpoint_value,
+				                'data-endpoint-id': endpoint.pk
+			                });
+			            }
+
+			            // update social buttons
+			            for(var i=0; i<response.updated_endpoints.length; i++){
+			                var endpoint = response.updated_endpoints[i];
+			                if(endpoint.endpoint_type == 4){
+				                $('.updateable-endpoint.facebook').
+                                    attr('href', endpoint.url);
+			                }
+			                if(endpoint.endpoint_type == 5){
+				                $('.updateable-endpoint.yelp').
+                                    attr('href', endpoint.url);
+			                }
+			                if(endpoint.endpoint_type == 3){
+				                $('.updateable-endpoint.twitter').
+                                    attr('href', endpoint.url);
+			                }
+			            }
+
+			            // TODO Update business name on profile page
+			            
+		            }
+		        }
+	        });
+	    });
+    });
+
+    // address edit
+    var $updateable_addresses = $('a#business-address');
     var update_address = function(){
 	    var $this = $(this);
 	    $.ajaxmodal({
@@ -17,7 +133,12 @@
 		            done: function(data, status, jqxhr){
 			            if(!data.errors){
 			                $this.text($('#id_address').val());
+			                $('a#business-address').attr({
+				                'data-latitude': data.latitude,
+				                'data-longitude': data.longitude
+			                });
 			                $('#modal-box').modal('hide');
+			                
 			            }
 		            }
 		        });
@@ -34,181 +155,31 @@
 		        );
 	        }
 	    });
+
     };
 
     $updateable_addresses.on('click', update_address);
 
+    // display the map on the about page. 
+    var latLng = new google.maps.LatLng(parseFloat($('#establishment-contact-loc-details').attr('data-latitude')),
+					                    parseFloat($('#establishment-contact-loc-details').attr('data-longitude')));
 
-    // ENDPOINT EDITING
+    var initialize = function(){
+        var mapOptions = {
+            center: latLng,
+            zoom: 10,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-    var $potential_input = $('.editable.establishment-endpoint');
+	    var markerOptions = {
+	        position: latLng,
+	        map: map
+	    };
+	    var marker = new google.maps.Marker(markerOptions);
+    };
     
-    var submit_endpoint = function($elem){
-	    var identity_id = $elem.attr('data-establishment-id');
-	    var endpoint_type = $elem.attr('data-endpoint-endpoint-type-name');
-	    var endpoint_id = $elem.attr('data-endpoint-id');
-	    
-	    $.post(
-	        '/api/v1/endpoint/',
-	        {
-		        identity_id: identity_id,
-		        endpoint_type: endpoint_type,
-		        endpoint_id: endpoint_id,
-		        value: $elem.text().trim()
-	        },
-	        function(data){
-		        $elem.removeAttr('contenteditable');
-		        if(!data.errors){
-		            $elem.blur();
-		            $elem.attr('data-endpoint-endpoint-id', data['endpoint-id'])
-		        }else{
-		            $potential_input.one('click', edit_endpoint); 
-		        }
-	        }
-	    );
-    };
+    google.maps.event.addDomListener(window, 'load', initialize);
 
-    var edit_endpoint = function(){
-	    var $this = $(this);
-	    var current_val = $this.text();
-
-	    $this.attr('contenteditable', true);
-
-	    $this.on('keypress', function(e){
-	        if (e.which == 13){
-		        $this.off('blur');
-		        submit_endpoint($this);
-		        e.preventDefault();
-	        }
-	    });
-
-	    $this.one('blur', function(e){
-	        $this.off('keypress');
-	        if($this.text() != current_val){
-		        submit_endpoint($this);
-	        }
-	        e.preventDefault();
-	    });
-    };
-	
-    $potential_input.one('click', edit_endpoint);
-
-    // EDIT NAME
-    var $updateable_name = $('.updateable-name');
-
-    var submit_name = function($elem){
-	    var $this = $(this);
-	    
-	    var identity_id = $elem.attr('data-establishment-id');
-	    var identity_type = $elem.attr('data-identity-type');
-	    $.ajax({
-	        url: '/api/v1/identity/identity/',
-	        type: 'PUT',
-	        data: {
-		        id: identity_id,
-		        name: $elem.text().trim(),
-		        identity_type: identity_type
-	        }
-	    }).done(function(data){
-	        $elem.removeAttr('contenteditable');
-	        if(!data.errors){
-		        $elem.blur();
-	        }else{
-		        $updateable_name.one('click', edit_name);
-	        }
-	    });
-    };
-
-    var edit_name = function(){
-	    var $this = $(this);
-
-	    $this.attr('contenteditable', true);
-
-	    $this.on('keypress', function(e){
-	        if(e.which == 13){
-		        $this.off('blur');
-		        submit_name($this);
-		        e.preventDefault();
-	        }
-	    });
-
-	    $this.one('blur', function(e){
-	        $this.off('keypress');
-	        submit_name($this);
-	        e.preventDefault();
-	    });
-    };
-
-    $updateable_name.one('click', edit_name);
-
-    // BANNER EDITING
-
-    $('a.change-profile-cover-link').click(function(event){
-	    event.preventDefault();
-	    var identity_id = $('div#id-identity-id').attr('data-identity-id');
-
-	    $.ajaxmodal({
-	        href: '/image/upload',
-	        modal_settings: {
-		        backdrop: 'static'
-	        },
-	        on_open: function(data, status, request){
-
-		        $('#file-uploader').sickle({
-		            do_upload: true,
-		            params: {
-			            type: 'image'
-		            },
-		            aspect: 1920 / 376,
-		            related_object_id: identity_id,
-		            context: 'profile_banner',
-		            done: function(data){
-			            $('modal-box').modal('hide');
-			            $('#id-profile-cover').attr(
-                            'style', [
-                                'background-image: url(\'',
-                                data.image_url,
-                                '\');'
-                            ].join('')
-                        );
-		            },
-                    jcrop_box_width: 560
-		        });		
-	        }
-	    });
-    });
-
-
-    // BADGE EDITING
-
-    $('.change-profile-badge-link').click(function(event){
-	    event.preventDefault();
-	    var identity_id = $('div#id-identity-id').attr('data-identity-id');
-
-	    $.ajaxmodal({
-	        href: '/image/upload',
-	        modal_settings: {
-		        backdrop: 'static'
-	        },
-	        on_open: function(data, status, request){
-
-		        $('#file-uploader').sickle({
-		            do_upload: true,
-		            params: {
-			            type: 'image'
-		            },
-		            aspect: 1,
-		            related_object_id: identity_id,
-		            context: 'profile_badge',
-		            done: function(data){
-			            $('modal-box').modal('hide');
-			            $img = $('#profile-badge');
-			            $img.attr('src', data.image_url);
-		            }
-		        });		
-	        }
-	    });
-    });
-
-    
 })(jQuery);
+

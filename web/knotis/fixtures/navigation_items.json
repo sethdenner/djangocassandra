@@ -1,0 +1,56 @@
+[
+    {
+        "pk": "bbf7d24f-925b-437c-9ae7-f8c19579331d", 
+        "model": "navigation.navigationitem", 
+        "fields": {
+            "parent": null, 
+            "title": "About", 
+            "deleted": false, 
+            "uri": "/id/_fuck_/about/", 
+            "menu_name": "identity_profile", 
+            "item_type": "link", 
+            "content_type": [
+                "navigation", 
+                "navigationitem"
+            ], 
+            "pub_date": "2013-10-10 19:13:34", 
+            "order": 0
+        }
+    }, 
+    {
+        "pk": "bbf7d24f-925b-437c-9ae7-f8c19579331e", 
+        "model": "navigation.navigationitem", 
+        "fields": {
+            "parent": null, 
+            "title": "About", 
+            "deleted": false, 
+            "uri": "/id/_fuck_/contact/", 
+            "menu_name": "identity_profile", 
+            "item_type": "link", 
+            "content_type": [
+                "navigation", 
+                "navigationitem"
+            ], 
+            "pub_date": "2013-10-10 19:13:34", 
+            "order": 1
+        }
+    },     
+    {
+        "pk": "bbf7d24f-925b-437c-9ae7-f8c19579331c", 
+        "model": "navigation.navigationitem", 
+        "fields": {
+            "parent": null, 
+            "title": "Offers", 
+            "deleted": false, 
+            "uri": "/id/_fuck_/offers/", 
+            "menu_name": "identity_profile", 
+            "item_type": "link", 
+            "content_type": [
+                "navigation", 
+                "navigationitem"
+            ], 
+            "pub_date": "2013-10-10 19:13:34", 
+            "order": 2
+        }
+    }
+]

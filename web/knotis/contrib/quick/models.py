@@ -73,17 +73,17 @@ class QuickModelBase(object):
         form_class = get_form_class
 
     def __unicode__(self):
-        if (hasattr(self, 'name')):
-            return str(self.name)
-        if (hasattr(self, 'id')):
-            return str(self.id)
-        return str(self.__class__)
+        if hasattr(self, 'name'):
+            return u'%s' % self.name
+        if hasattr(self, 'id'):
+            return u'%s' % self.id
+        return u'%s' % self.__class__
 
     @property
     def model_type(self):
         #return str(type(self))
-        return str(type(self).__name__)
-
+        return u'%s' % type(self).__name__
+    
     def get_fields_dict(self):
         fields = {
             field.name: (
@@ -134,9 +134,8 @@ class QuickModelBase(object):
     def get_filterable_fields(cls):
         return cls._meta.get_all_field_names()
 
-#class QuickModel(QuickModelBase, polymodels.models.PolymorphicModel): #models.Model):
-#class QuickModel(proxy.QuickProxyMixin, QuickModelBase, polymodels.models.PolymorphicModel): #models.Model):
-class QuickModel(QuickModelBase, polymodels.models.PolymorphicModel ): #models.Model):
+
+class QuickModel(QuickModelBase, polymodels.models.PolymorphicModel ):
     deleted = QuickBooleanField(default=False)
     pub_date = QuickDateTimeField('date published', auto_now_add=True)
     objects = QuickManager()
@@ -148,8 +147,17 @@ class QuickModel(QuickModelBase, polymodels.models.PolymorphicModel ): #models.M
         abstract = True
 
     def clean(self, *args, **kwargs):
-        return super(QuickModel,self).clean(*args, **kwargs)
+        return super(QuickModel, self).clean(*args, **kwargs)
 
     def validate(self, *args, **kwargs):
-        return super(QuickModel,self).validate(*args, **kwargs)
-    
+        return super(QuickModel, self).validate(*args, **kwargs)
+
+    @classmethod
+    def get_filterable_fields(cls):
+        filterable_fields = []
+        for field in cls._meta.fields:
+            if field.primary_key or field.db_index:
+                filterable_fields.append(field.name)
+
+        return filterable_fields
+        

@@ -12,7 +12,8 @@ from views import (
     BusinessesView,
     EstablishmentProfileView,
     IdentitySwitcherView,
-    FirstIdentityView
+    FirstIdentityView,
+    EstablishmentAboutAbout,
 )
 
 from api import (
@@ -24,6 +25,20 @@ from api import (
 
 urlpatterns = patterns(
     'knotis.contrib.identity.views',
+    url(
+        r'^identity/update_profile/',
+        EstablishmentAboutAbout.as_view()
+    ),
+    url(
+        r''.join([
+            '^id/(?P<id>',
+            REGEX_UUID,
+            ')(/(?P<view_name>',
+            '\w{1,50}',
+            '))?/$'
+        ]),
+        IdentityView.as_view()
+    ),
     url(
         r''.join([
             '^id/(?P<id>',
