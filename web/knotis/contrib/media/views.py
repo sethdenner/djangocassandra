@@ -35,6 +35,7 @@ from knotis.contrib.identity.models import Identity
 
 from sorl.thumbnail import get_thumbnail
 
+
 class ImageUploadView(FragmentView):
     template_name = 'knotis/media/image_upload.html'
     view_name = 'image_upload'

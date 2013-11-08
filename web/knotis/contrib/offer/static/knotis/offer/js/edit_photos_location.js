@@ -20,7 +20,7 @@
                         params: {
                             type: 'image',
                         },
-                        aspect: 180/120,
+                        aspect: 240/161,
                         modal_selector: '#' + modal_id,
                         done: function(data) {
                             if (data.status == 'success') {
