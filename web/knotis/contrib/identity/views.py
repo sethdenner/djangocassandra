@@ -419,7 +419,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
             *args,
             **kwargs
     ):
-
+        
         data = json.loads(request.POST.get('data'))
         business_id = data['business_id']
         business = IdentityBusiness.objects.get(pk=business_id)
@@ -446,15 +446,6 @@ class EstablishmentAboutAbout(AJAXFragmentView):
 
             return sendable
 
-        endpoint_type_dict = {
-            'twitter': EndpointTypes.TWITTER,
-            'email': EndpointTypes.EMAIL,
-            'phone': EndpointTypes.PHONE,
-            'website': EndpointTypes.WEBSITE,
-            'yelp': EndpointTypes.YELP,
-            'facebook': EndpointTypes.FACEBOOK
-        }
-
         updated_endpoints = []
         if 'changed_endpoints' in data:
             for endpoint_name in data['changed_endpoints'].keys():
@@ -462,7 +453,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                 endpoint_id = endpoint['endpoint_id']
 
                 endpoint_value = endpoint['endpoint_value'].strip()
-                
+
                 updated_endpoint = Endpoint.objects.update_or_create(
                     identity=business,
                     pk=endpoint_id,
@@ -773,26 +764,35 @@ class EstablishmentProfileView(FragmentView):
         maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
         maps_scripts = maps.render_api_js()
 
-        endpoints = []
-        for endpoint_class in (EndpointPhone, EndpointEmail, EndpointFacebook, EndpointYelp, EndpointTwitter, EndpointWebsite):
+        endpoints = Endpoint.objects.filter(identity=business, primary=True)
 
-            endpoint = endpoint_class.objects.get_primary_endpoint(
-                identity=business,
-                endpoint_type=endpoint_class.EndpointType
-            )
+        endpoint_dicts = []
+        for endpoint_class in (
+                EndpointPhone,
+                EndpointEmail,
+                EndpointFacebook,
+                EndpointYelp,
+                EndpointTwitter,
+                EndpointWebsite
+        ):
 
+            endpoint = None
+            for ep in endpoints:
+                if ep.endpoint_type == endpoint_class.EndpointType:
+                    endpoint = ep
+  
             endpoint_type_name = EndpointTypeNames[endpoint_class.EndpointType]
             endpoint_type_name = endpoint_type_name.lower()
-
+                
             if endpoint and endpoint.value:
-
+                
                 display = None
                 if endpoint.endpoint_type == EndpointTypes.YELP:
                     display = 'Yelp'
                 elif endpoint.endpoint_type == EndpointTypes.FACEBOOK:
                     display = 'Facebook'
 
-                fake_endpoint = {
+                endpoint_dict = {
                     'id': endpoint.id,
                     'endpoint_type_name': endpoint_type_name,
                     'value': endpoint.value,
@@ -801,10 +801,10 @@ class EstablishmentProfileView(FragmentView):
                     'endpoint_type': endpoint_class.EndpointType
                 }
 
-                endpoints.append(fake_endpoint)
+                endpoint_dicts.append(endpoint_dict)
 
             else:
-                endpoints.append({
+                endpoint_dicts.append({
                     'id': '',
                     'endpoint_type_name': endpoint_type_name,
                     'value': '',
@@ -817,7 +817,7 @@ class EstablishmentProfileView(FragmentView):
         nav_context = Context({ 
             'request': request,
             'establishment_id': establishment_id,
-            'endpoints': endpoints,
+            'endpoints': endpoint_dicts,
             'is_manager': is_manager
         })
         
@@ -849,7 +849,7 @@ class EstablishmentProfileView(FragmentView):
             'profile_badge': profile_badge_image,
             'profile_banner': profile_banner_image,
             'establishment_offers': establishment_offers,
-            'endpoints': endpoints,
+            'endpoints': endpoint_dicts,
 	    'top_menu_name': 'identity_profile',
             'nav_top_content': nav_top_content,
             'content_plexer': content_plexer

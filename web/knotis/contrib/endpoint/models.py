@@ -68,6 +68,7 @@ class EndpointManager(Manager):
             class_type = Endpoint
 
         endpoint = class_type(**kwargs)
+        endpoint.clean()
         endpoint.save()
 
         return endpoint
@@ -141,13 +142,10 @@ class EndpointManager(Manager):
         # create a new filter including only filterable fields
         filterable_fields = endpoint_class.get_filterable_fields()
 
-        filter_parameters = {}
-        for field in filterable_fields:
-            if field in kwargs.keys():
-                filter_parameters[field] = kwargs.get(field, None)
-                existing_filterable_fields = { 
-                    key: kwargs[key] for key in filterable_fields if key in kwargs.keys()
-                }
+        filter_parameters = {
+            key: kwargs[key] for key in filterable_fields
+            if key in kwargs.keys() and kwargs[key] != ''
+        }
 
         # see if there are any endpoints under this filter
         endpoints = endpoint_class.objects.filter(**filter_parameters)
@@ -157,21 +155,21 @@ class EndpointManager(Manager):
 
         # if there are not, remove pk from filter so it doesn't get overidden
         elif len(endpoints) == 0:
-            normalize_arguments(**filter_parameters)
-            endpoint = endpoint_class.objects.create(**filter_parameters)
-            endpoint.clean()
-            endpoint.save()
             if 'pk' in filter_parameters.keys():
                 del filter_parameters['pk']
-
+            endpoint = endpoint_class.objects.create(**filter_parameters)
+            
         # if there are, use the first retrieved endpoint for the nex step
         else:
             endpoint = endpoints[0]
 
-        # update the endpoint
-        for attr in filter_parameters.keys():
-            setattr(endpoint, attr, filter_parameters[attr])
+            # update the endpoint
+            for attr in filter_parameters.keys():
+                setattr(endpoint, attr, filter_parameters[attr])
 
+            endpoint.clean()
+            endpoint.save()
+            
         return endpoint
 
 
