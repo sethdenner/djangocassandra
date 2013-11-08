@@ -559,22 +559,40 @@ class EstablishmentAboutCarousel(FragmentView):
         })
 
         return local_context
-        
+
+
 class EstablishmentProfileAbout(FragmentView):
     template_name = 'knotis/identity/establishment_about.html'
     view_name = 'establishment_about'
-    
+
     def process_context(self):
-        request = self.request
-        establishment_id = self.context.get('establishment_id')
-        
         local_context = copy.copy(self.context)
         local_context.update({
-            'about_markup': EstablishmentAboutAbout().render_template_fragment(local_context),
-            'twitter_markup': EstablishmentAboutTwitterFeed().render_template_fragment(local_context),
-            'yelp_markup': EstablishmentAboutYelpFeed().render_template_fragment(local_context),
-            'carousel_markup': EstablishmentAboutCarousel().render_template_fragment(local_context),
-            'location_markup': EstablishmentProfileLocation().render_template_fragment(local_context)
+            'about_markup': (
+                EstablishmentAboutAbout().render_template_fragment(
+                    local_context
+                ).strip()
+            ),
+            'twitter_markup': (
+                EstablishmentAboutTwitterFeed().render_template_fragment(
+                    local_context
+                ).strip()
+            ),
+            'yelp_markup': (
+                EstablishmentAboutYelpFeed().render_template_fragment(
+                    local_context
+                ).strip()
+            ),
+            'carousel_markup': (
+                EstablishmentAboutCarousel().render_template_fragment(
+                    local_context
+                ).strip()
+            ),
+            'location_markup': (
+                EstablishmentProfileLocation().render_template_fragment(
+                    local_context
+                ).strip()
+            )
         })
         return local_context
 

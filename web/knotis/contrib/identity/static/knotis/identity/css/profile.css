@@ -54,6 +54,10 @@ div.column-box {
 
 /* Profile About Section Divs */
 
+.about-section {
+    background: #fff;
+    padding: 24px;
+}
 
 .about-description {
     
