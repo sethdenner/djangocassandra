@@ -3,11 +3,30 @@
         var $carousel = $('[data-wizard-name=offer_create].carousel'),
         $create_header_title = $('.create-header .create-header-title');
 
+        var init_step_click_handler = function() {
+            $('.create-header .create-step.on').off('click.offerwizard').on('click.offerwizard', function(event){
+                event.preventDefault();
+                event.stopPropagation();
+
+                $this = $(this);
+                var current_step = parseInt($carousel.attr('data-current-step')),
+                step_order = parseInt($this.attr('data-step-order'));
+                
+                if (current_step != step_order) {
+                    $.wizard.step($carousel, {index: step_order });
+                    var step_title = $this.attr('data-header-title');
+                    $create_header_title.text(step_title);
+                }
+            });
+        }
+
         $carousel.wizard('init', {
             step_callback: function(index) {
                 $('.create-header .create-step.off[data-step-order=' + index + ']')
                     .removeClass('off')
                     .addClass('on');
+
+                init_step_click_handler();
             }
         });
 
@@ -26,20 +45,7 @@
             }
         });
 
-        $('.create-header .create-step.on').click(function(event){
-            event.preventDefault();
-            event.stopPropagation();
-
-            $this = $(this);
-            var current_step = parseInt($carousel.attr('data-current-step')),
-            step_order = parseInt($this.attr('data-step-order'));
-            
-            if (current_step != step_order) {
-                $.wizard.step($carousel, {index: step_order });
-                var step_title = $this.attr('data-header-title');
-                $create_header_title.text(step_title);
-            }
-        });
+        init_step_click_handler();
 
     });
 })(jQuery);
