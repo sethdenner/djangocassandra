@@ -21,6 +21,15 @@
       {% endthumbnail %}
       {% endfor %}
     </div>
+
+    <!-- Controls -->
+    {% if images|length > 1 %}
+    <a class="left carousel-control" href="#about_carousel" data-slide="prev">
+    </a>
+
+    <a class="right carousel-control" href="#about_carousel" data-slide="next">
+    </a>
+    {% endif %}
   </div>
   
 </div>
