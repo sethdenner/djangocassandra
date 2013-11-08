@@ -6,8 +6,18 @@
     text-align: left;
     width: auto;
     float: none;
+    vertical-align: middle;
 }
 
 div.navbar.navbar-fluid-top {
     margin-bottom: auto;
+}
+
+div.navbar.navbar-fluid-top .navbar-inner .container-fluid .search-bar,
+div.navbar.navbar-fluid-top .navbar-inner .container-fluid .auth-links {
+    margin-top: 10px;
+}
+
+div.navbar.navbar-fluid-top .navbar-inner .container-fluid .auth-links {
+    margin-right: 16px;
 }

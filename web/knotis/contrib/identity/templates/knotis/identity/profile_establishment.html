@@ -12,9 +12,9 @@
   <input id="data-static-url" type="hidden" data-static-url="{{ STATIC_URL }}" />
   {% thumbnail profile_banner.image.image '1920x500' crop=profile_banner.crop as header %}
   <div id="id-profile-cover" class="row-fluid" style="background-image: url('{{ header.url }}');">
-    {% empty%}
-    <div id="id-profile-cover" class="row-fluid">
-      {% endthumbnail %}
+  {% empty%}
+  <div id="id-profile-cover" class="row-fluid" style="background-image: url('{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png')" >
+  {% endthumbnail %}
       <div class="span12">
         {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
 	<img id="profile-badge" src="{{ img.url }}" class="img-circle{% if is_manager %} change-profile-badge-link{% endif %}" />

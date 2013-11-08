@@ -13,12 +13,12 @@
 	    <div class="search-bar span8">
 	      {% render_fragment search_bar %}
 	    </div>
-	    <ul class="nav pull-right">
+	    <ul class="nav pull-right auth-links">
           {% if user.is_authenticated %}
           {% render_fragment identity_switcher %}
           {% else %}
-	      <li><a id="sign-up" class="modal-link" href="/auth/signup/">Sign Up</a></li>
 	      <li><a id="login" class="modal-link" href="/auth/login/">Login</a></li>
+	      <li><button id="sign-up" class="modal-link btn btn-primary" href="/auth/signup/">Sign Up</button></li>
           {% endif %}
 	    </ul>
       </div>
