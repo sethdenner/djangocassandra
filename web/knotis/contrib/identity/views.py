@@ -703,9 +703,9 @@ class EstablishmentProfileView(FragmentView):
             'geocomplete/jquery.geocomplete.min.js',
             'knotis/layout/js/forms.js',
             'knotis/maps/js/maps.js',
-            'knotis/identity/js/profile.js',
             'knotis/identity/js/establishment_about.js',
-            'knotis/identity/js/update_profile.js'
+            'knotis/identity/js/update_profile.js',
+            'knotis/identity/js/profile.js'
         ]
 
         profile_badge_image = None
