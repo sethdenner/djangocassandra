@@ -13,6 +13,8 @@ div#id-profile-cover img#profile-badge {
     margin-top: 50px;
     width: 170px;
     height: 170px;
+    cursor: hand;
+    cursor: pointer;
 }
 
 div#id-profile-title h2 {
@@ -53,7 +55,6 @@ div.column-box {
 }
 
 /* Profile About Section Divs */
-
 .about-section {
     background: #fff;
     padding: 24px;
