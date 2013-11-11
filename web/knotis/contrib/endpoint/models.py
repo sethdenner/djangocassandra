@@ -19,13 +19,12 @@ from knotis.utils.email import generate_validation_key
 from knotis.contrib.cassandra.models import ForeignKey
 from knotis.contrib.identity.models import Identity
 
-from django.forms.models import model_to_dict    
-
 
 def normalize_arguments(*args, **kwargs):
     for key in kwargs.keys():
         if not kwargs[key]:
             del kwargs[key]
+
 
 class EndpointManager(Manager):
     def create(
@@ -133,7 +132,7 @@ class EndpointManager(Manager):
             EndpointTypes.PHONE: EndpointPhone,
             EndpointTypes.FACEBOOK: EndpointFacebook
         }
-        
+
         if 'endpoint_type' in kwargs.keys():
             endpoint_class = endpoint_class_dict[kwargs['endpoint_type']]
         else:
@@ -158,7 +157,7 @@ class EndpointManager(Manager):
             if 'pk' in filter_parameters.keys():
                 del filter_parameters['pk']
             endpoint = endpoint_class.objects.create(**filter_parameters)
-            
+
         # if there are, use the first retrieved endpoint for the nex step
         else:
             endpoint = endpoints[0]
@@ -169,45 +168,48 @@ class EndpointManager(Manager):
 
             endpoint.clean()
             endpoint.save()
-            
+
         return endpoint
 
 
 class EndpointTypes:
-    UNDEFINED  = -1
-    EMAIL      = 0
-    PHONE      = 1
-    ADDRESS    = 2
-    TWITTER    = 3
-    FACEBOOK   = 4
-    YELP       = 5
-    IDENTITY   = 6
-    WIDGET     = 7
-    FOLLOWERS  = 8
-    WEBSITE    = 9
-    LINK       = 10
-    
+    UNDEFINED = -1
+    EMAIL = 0
+    PHONE = 1
+    ADDRESS = 2
+    TWITTER = 3
+    FACEBOOK = 4
+    YELP = 5
+    IDENTITY = 6
+    WIDGET = 7
+    FOLLOWERS = 8
+    WEBSITE = 9
+    LINK = 10
+
     CHOICES = (
-        (UNDEFINED,  'Undefined'),
-        (EMAIL,      'Email'),
-        (PHONE,      'Phone'),
-        (ADDRESS,    'Address'),
-        (TWITTER,    'Twitter'),
-        (FACEBOOK,   'Facebook'),
-        (YELP,       'Yelp'),
-        (IDENTITY,   'Identity'),
-        (WIDGET,     'Widget'),
-        (FOLLOWERS,  'Followers'),
-        (WEBSITE,    'Website'),
-        (LINK,       'Link')
+        (UNDEFINED, 'Undefined'),
+        (EMAIL, 'Email'),
+        (PHONE, 'Phone'),
+        (ADDRESS, 'Address'),
+        (TWITTER, 'Twitter'),
+        (FACEBOOK, 'Facebook'),
+        (YELP, 'Yelp'),
+        (IDENTITY, 'Identity'),
+        (WIDGET, 'Widget'),
+        (FOLLOWERS, 'Followers'),
+        (WEBSITE, 'Website'),
+        (LINK, 'Link')
     )
 
     SubTypes = {}
-        
+
     def register(endpoint_class):
         EndpointTypes.SubTypes[endpoint_class.EndpointType] = endpoint_class
 
-        
+
+EndpointTypeNames = {key: value for key, value in EndpointTypes.CHOICES}
+
+
 class Endpoint(QuickModel):
     EndpointType = EndpointTypes.UNDEFINED
 
