@@ -147,7 +147,8 @@ class BusinessesView(FragmentView):
             'scripts/jquery.sickle.js',
             'knotis/identity/js/profile.js',
             'knotis/api/js/api.js',
-            'knotis/identity/js/business-tile.js'
+            'knotis/identity/js/business-tile.js',
+            'knotis/identity/js/businesses.js'
         ]
 
         for script in my_post_scripts:
@@ -166,7 +167,11 @@ class BusinessesGrid(GridSmallView):
     view_name = 'businesses_grid'
 
     def process_context(self):
-        businesses = IdentityBusiness.objects.all()[:20]
+        page = int(self.context.get('page', '0'))
+        count = int(self.context.get('count', '20'))
+        start_range = page * count
+        end_range = start_range + count
+        businesses = IdentityBusiness.objects.all()[start_range:end_range]
 
         tiles = []
 
