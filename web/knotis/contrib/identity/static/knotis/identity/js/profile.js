@@ -101,7 +101,6 @@
 		            primary: false,
 		            done: function(data){
 			            
-                        console.dir(data);
                         // stop the carousel
                         $('#about_carousel').carousel('pause').removeData();
 
