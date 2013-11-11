@@ -100,7 +100,27 @@
 		            context: 'business_profile_carousel',
 		            primary: false,
 		            done: function(data){
-			            $('modal-box').modal('hide');
+			            
+                        console.dir(data);
+                        // stop the carousel
+                        $('#about_carousel').carousel('pause').removeData();
+
+                        // populate carousel-inner
+                        var uploaded_url = data.image_url;
+                        var $img = $('<div style="display:block; width:500px; height:400px; overflow:hidden; background:url(' + uploaded_url + ') no-repeat;"></div>');
+                        var $item = $('<div class="item"></div>');
+                        $item.append($img);
+                        $('#about_carousel>.carousel-inner').append($item);
+
+                        // populate carousel-indicators
+                        $indicator = $('<li data-target="#about_carousel" data-slide-to="' + $('#about_carousel>.carousel-indicators').children().size() + '" style="list-style: none;"></li>');
+                        $('#about_carousel>.carousel-indicators').append($indicator);
+                        
+                        // resume the carousel
+                        $('#about_carousel').carousel('next');
+
+                        // finally, hide the modal box
+                        $('modal-box').modal('hide');
 		            }
 		        });
 	        }

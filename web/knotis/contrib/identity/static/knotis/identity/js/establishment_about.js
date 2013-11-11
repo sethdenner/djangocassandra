@@ -40,16 +40,21 @@
     var initialize = function(){
         var mapOptions = {
             center: latLng,
-            zoom: 10,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
+            zoomControl: false,
+            scaleControl: false,
+            draggable: false,
+            navigationContol: false,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoom: 16
         };
-        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        var map = new google.maps.Map(document.getElementById('about-map'), mapOptions);
 
-	var markerOptions = {
+	    var markerOptions = {
 	        position: latLng,
 	        map: map
 	    };
-	var marker = new google.maps.Marker(markerOptions);
+	    var marker = new google.maps.Marker(markerOptions);
+        map.setZoom(16);
     }
     
     google.maps.event.addDomListener(window, 'load', initialize);
