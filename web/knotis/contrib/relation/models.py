@@ -29,6 +29,7 @@ class RelationTypes:
     """
     UNDEFINED = 'undefined'
     INDIVIDUAL = 'individual'
+    SUPERUSER = 'superuser'
     PROPRIETOR = 'proprietor'
     MANAGER = 'manager'
     EMPLOYEE = 'employee'
@@ -41,6 +42,7 @@ class RelationTypes:
     CHOICES = (
         (UNDEFINED, 'Undefined'),
         (INDIVIDUAL, 'Individual'),
+        (SUPERUSER, 'Superuser'),
         (PROPRIETOR, 'Proprietor'),
         (MANAGER, 'Manager'),
         (EMPLOYEE, 'Employee'),
@@ -64,6 +66,22 @@ class RelationManager(QuickManager):
             description=''.join([
                 'The identity of ',
                 individual.name,
+                '.'
+            ])
+        )
+
+    def create_superuser(
+        self,
+        user,
+        superuser
+    ):
+        return self.create(
+            relation_type=RelationTypes.SUPERUSER,
+            subject=user,
+            related=superuser,
+            description=''.join([
+                'The superuser of ',
+                superuser.name,
                 '.'
             ])
         )

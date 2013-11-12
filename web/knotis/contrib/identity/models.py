@@ -232,6 +232,16 @@ class IdentityEstablishmentManager(IdentityManager):
         )
 
 
+class IdentitySuperUserManager(IdentityManager):
+    def get_query_set(self):
+        return super(
+            IdentitySuperUserManager,
+            self
+        ).get_query_set().filter(
+            identity_type=IdentityTypes.SUPERUSER
+        )
+
+
 class Identity(QuickModel):
     class Quick(QuickModel.Quick):
         exclude = ()
@@ -305,7 +315,8 @@ class Identity(QuickModel):
         return backend_name
 
     def clean(self):
-        pass
+        if self.name and not self.backend_name:
+            self.backend_name = self._clean_backend_name(self.name)
 
     def __unicode__(self):
         if (self.name):
@@ -330,6 +341,7 @@ class IdentityIndividual(Identity):
     def clean(self):
         print ("Cleaning IdentityIndividual")
         self.identity_type = IdentityTypes.INDIVIDUAL
+
         return super(IdentityIndividual, self).clean()
 
 
@@ -354,9 +366,6 @@ class IdentityBusiness(Identity):
         print ("Cleaning IdentityBusiness")
         self.identity_type = IdentityTypes.BUSINESS
 
-        if self.name and not self.backend_name:
-            self.backend_name = self._clean_backend_name(self.name)
-
         return super(IdentityBusiness, self).clean()
 
 
@@ -375,9 +384,6 @@ class IdentityEstablishment(Identity):
         print ("Cleaning IdentityEstablishment")
         self.identity_type = IdentityTypes.ESTABLISHMENT
 
-        if self.name and not self.backend_name:
-            self.backend_name = self._clean_backend_name(self.name)
-
         return super(IdentityEstablishment, self).clean()
 
 
@@ -389,3 +395,11 @@ class IdentitySuperUser(Identity):
 
     class Meta:
         proxy = True
+
+    objects = IdentitySuperUserManager()
+
+    def clean(self):
+        print ("Cleaning IdentitySuperUser")
+        self.identity_type = IdentityTypes.SUPERUSER
+
+        return super(IdentityEstablishment, self).clean()
