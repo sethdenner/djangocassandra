@@ -7,7 +7,7 @@
       {% thumbnail banner_image.image.image 'x161' crop=banner_image.crop as image %}
       <div class="tile-image" style="background-image: url('{{ image.url }}');">&nbsp;</div>
       {% empty %}
-      <div class="tile-image" >&nbsp;</div>
+      <div class="tile-image" style="background-image: url('{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png')" >&nbsp;</div>
       {% endthumbnail %}
       {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
       <img class="tile-badge" src="{{ image.url }}" />
