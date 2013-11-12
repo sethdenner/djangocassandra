@@ -546,8 +546,7 @@ class EstablishmentAboutCarousel(FragmentView):
 
         images = ImageInstance.objects.filter(
             related_object_id=business.pk,
-            context='business_profile_carousel',
-            primary=False
+            context='business_profile_carousel'
         )
 
         image_infos = []
