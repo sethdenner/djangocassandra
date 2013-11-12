@@ -233,6 +233,38 @@ class IdentityEstablishmentManager(IdentityManager):
 
 
 class IdentitySuperUserManager(IdentityManager):
+    def create(
+        self,
+        user,
+        *args,
+        **kwargs
+    ):
+        name = kwargs.get('name', IdentitySuperUser.DEFAULT_NAME)
+
+        superuser = super(IdentitySuperUserManager, self).create(
+            identity_type=IdentityTypes.SUPERUSER,
+            name=name,
+            *args,
+            **kwargs
+        )
+
+        Relation.objects.create_superuser(
+            user,
+            superuser
+        )
+
+        return superuser
+
+    def get_superuser(
+        self,
+        user
+    ):
+        relation = Relation.objects.get_superuser(
+            user
+        )
+
+        return self.get(pk=relation.related_object_id)
+
     def get_query_set(self):
         return super(
             IdentitySuperUserManager,

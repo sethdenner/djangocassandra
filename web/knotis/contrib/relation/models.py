@@ -70,6 +70,17 @@ class RelationManager(QuickManager):
             ])
         )
 
+    def get_individual(
+        self,
+        user
+    ):
+        user_type = ContentType.objects.get_for_model(user)
+        return Relation.objects.get(
+            subject_content_type__pk=user_type.id,
+            subject_object_id=user.id,
+            relation_type=RelationTypes.INDIVIDUAL
+        )
+
     def create_superuser(
         self,
         user,
@@ -86,14 +97,15 @@ class RelationManager(QuickManager):
             ])
         )
 
-    def get_individual(
+    def get_superuser(
         self,
         user
     ):
         user_type = ContentType.objects.get_for_model(user)
         return Relation.objects.get(
             subject_content_type__pk=user_type.id,
-            subject_object_id=user.id
+            subject_object_id=user.id,
+            relation_type=RelationTypes.SUPERUSER
         )
 
     def create_manager(
