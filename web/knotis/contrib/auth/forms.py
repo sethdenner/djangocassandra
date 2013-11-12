@@ -25,7 +25,10 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes
 )
 from knotis.contrib.endpoint.views import send_validation_email
-from knotis.contrib.identity.models import IdentityIndividual
+from knotis.contrib.identity.models import (
+    IdentityIndividual,
+    IdentitySuperUser
+)
 from knotis.contrib.relation.models import Relation
 
 from models import KnotisUser
@@ -118,7 +121,7 @@ class LoginForm(AuthenticationForm):
         return cleaned_data
 
 
-class SignUpForm(ModelForm):
+class CreateUserForm(ModelForm):
     class Meta:
         model = KnotisUser
         fields = [
@@ -146,7 +149,7 @@ class SignUpForm(ModelForm):
         *args,
         **kwargs
     ):
-        super(SignUpForm, self).__init__(
+        super(CreateUserForm, self).__init__(
             *args,
             **kwargs
         )
@@ -202,7 +205,8 @@ class SignUpForm(ModelForm):
 
     def save(
         self,
-        commit=True
+        commit=True,
+        is_superuser=False
     ):
         if self.instance.pk is None:
             fail_message = 'created'
@@ -219,39 +223,46 @@ class SignUpForm(ModelForm):
                 )
             )
 
-        user = user_info = individual = email = None
+        user = user_info = identity = email = None
         try:
             user, user_info = KnotisUser.objects.create_user(
                 self.cleaned_data['email'],
-                self.cleaned_data['password']
+                self.cleaned_data['password'],
+                is_superuser
             )
 
-            individual = IdentityIndividual.objects.create(
-                user
-            )
+            if user.is_superuser:
+                identity = IdentitySuperUser.objects.create(
+                    user
+                )
 
-            user_info.default_identity_id = individual.id
+            else:
+                identity = IdentityIndividual.objects.create(
+                    user
+                )
+
+            user_info.default_identity_id = identity.id
             user_info.save()
 
             email = Endpoint.objects.create(
                 endpoint_type=EndpointTypes.EMAIL,
                 value=user.email,
-                identity=individual,
+                identity=identity,
                 primary=True
             )
 
             # create identity endpoint
             Endpoint.objects.create(
                 endpoint_type=EndpointTypes.IDENTITY,
-                value=individual.name,
-                identity=individual
+                value=identity.name,
+                identity=identity
             )
 
         except:
             rollback = [
                 user,
                 user_info,
-                individual,
+                identity,
                 email
             ]
 
@@ -266,4 +277,17 @@ class SignUpForm(ModelForm):
             email
         )
 
-        return user, individual
+        return user, identity
+
+
+class CreateSuperUserForm(CreateUserForm):
+    def save(
+        self,
+        *args,
+        **kwargs
+    ):
+        return super(CreateSuperUserForm, self).save(
+            is_superuser=True,
+            *args,
+            **kwargs
+        )

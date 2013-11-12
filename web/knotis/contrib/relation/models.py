@@ -110,11 +110,26 @@ class RelationManager(QuickManager):
         manager
     ):
         manager_type = ContentType.objects.get_for_model(manager)
-        return self.filter(
+        managed_relations = self.filter(
             subject_content_type__pk=manager_type.id,
             subject_object_id=manager.id,
             relation_type=RelationTypes.MANAGER
         )
+
+        if managed_relations:
+            managed_pks = [rel.pk for rel in managed_relations]
+
+            for rel in managed_relations:
+                establishment_relations = self.get_establishments(rel.related)
+                managed_pks.extend(
+                    [rel.pk for rel in establishment_relations]
+                )
+
+        else:
+            establishment_relations = self.get_establishments(manager)
+            managed_pks = [rel.pk for rel in establishment_relations]
+
+        return self.filter(pk__in=managed_pks)
 
     def create_establishment(
         self,

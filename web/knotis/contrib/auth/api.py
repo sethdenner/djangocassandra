@@ -1,9 +1,6 @@
-import json
-
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from django.http import HttpResponse
 from django.contrib.auth import (
     authenticate,
     login,
@@ -19,7 +16,8 @@ from knotis.contrib.identity.models import (
 
 from forms import (
     LoginForm,
-    SignUpForm
+    CreateUserForm,
+    CreateSuperUserForm
 )
 from models import (
     UserInformation
@@ -35,12 +33,6 @@ class AuthenticationApi(ApiView):
         *args,
         **kwargs
     ):
-        def generate_response(data):
-            return HttpResponse(
-                json.dumps(data),
-                content_type='application/json'
-            )
-
         form = LoginForm(
             request,
             request.POST
@@ -58,7 +50,7 @@ class AuthenticationApi(ApiView):
                 errors['no-field'] = non_field_errors
 
             # Message user about failed login attempt.
-            return generate_response({
+            return self.generate_response({
                 'message': 'Login failed. Please try again.',
                 'errors': errors
             })
@@ -92,7 +84,7 @@ class AuthenticationApi(ApiView):
 
         next_url = request.POST.get('next')
 
-        return generate_response({
+        return self.generate_response({
             'success': 'yes',
             'redirect': next_url if next_url else default_url
         })
@@ -101,22 +93,22 @@ class AuthenticationApi(ApiView):
 class AuthUserApi(ApiView):
     api_url = 'auth/user'
 
-    def post(
+    def create_user(
         self,
-        request,
         *args,
         **kwargs
     ):
-        form = SignUpForm(data=request.POST)
+        form = CreateUserForm(data=kwargs)
 
         errors = {}
 
+        user = identity = None
         try:
             user, identity = form.save()
 
         except ValueError, e:
             logger.exception(
-                'SignUpForm validation failed'
+                'CreateUserForm validation failed'
             )
 
             for field, messages in form.errors.iteritems():
@@ -127,6 +119,47 @@ class AuthUserApi(ApiView):
             logger.exception(
                 'An Exception occurred during account creation'
             )
+
+        return user, identity, errors
+
+    def create_superuser(
+        self,
+        *args,
+        **kwargs
+    ):
+        form = CreateSuperUserForm(data=kwargs)
+
+        errors = {}
+
+        user = identity = None
+        try:
+            user, identity = form.save()
+
+        except ValueError, e:
+            logger.exception(
+                'CreateSuperUserForm validation failed'
+            )
+
+            for field, messages in form.errors.iteritems():
+                errors[field] = [message for message in messages]
+
+        except Exception, e:
+            errors['no-field'] = e.message
+            logger.exception(
+                'An Exception occurred during account creation'
+            )
+
+        return user, identity, errors
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        user, identity, errors = self.create_user(
+            **dict(request.POST.iteritems())
+        )
 
         if request.POST.get('authenticate', 'false').lower() == 'true':
             user = authenticate(
@@ -163,7 +196,4 @@ class AuthUserApi(ApiView):
             }
             response_data['message'] = 'Account created successfully'
 
-        return HttpResponse(
-            json.dumps(response_data),
-            content_type='application/json'
-        )
+        return self.generate_response(response_data)

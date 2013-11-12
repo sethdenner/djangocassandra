@@ -38,12 +38,14 @@ class IdentityTypes:
     INDIVIDUAL = 0
     BUSINESS = 1
     ESTABLISHMENT = 2
+    SUPERUSER = 3
 
     CHOICES = (
         (UNDEFINED, 'Undefined'),
         (INDIVIDUAL, 'Individual'),
         (BUSINESS, 'Business'),
         (ESTABLISHMENT, 'Establishment'),
+        (SUPERUSER, 'Super User')
     )
 
 
@@ -86,6 +88,7 @@ class IdentityManager(QuickManager):
             managed_ids.append(relation.related_object_id)
 
         return Identity.objects.filter(id__in=managed_ids)
+
 
 class IdentityIndividualManager(IdentityManager):
     def create(
@@ -179,14 +182,14 @@ class IdentityBusinessManager(IdentityManager):
             business = self.get_establishment_parent(establishment)
         except IdentityBusiness.DoesNotExist:
             business = self.get(pk=identity_id)
-            
+
         return business
 
     def get_query_set(self):
         return super(IdentityBusinessManager, self).get_query_set().filter(
             identity_type=IdentityTypes.BUSINESS
         )
-    
+
 
 class IdentityEstablishmentManager(IdentityManager):
     def get_establishments(
@@ -265,8 +268,11 @@ class Identity(QuickModel):
         identity
     ):
         """
-        Returns True is self is manager of identity.
+        Returns True if self is manager of identity.
         """
+        if IdentityTypes.SUPERUSER == self.identity_type:
+            return True
+
         managed_relations = Relation.objects.get_managed(self)
         for rel in managed_relations:
             if rel.related_object_id == identity.pk:
@@ -373,3 +379,13 @@ class IdentityEstablishment(Identity):
             self.backend_name = self._clean_backend_name(self.name)
 
         return super(IdentityEstablishment, self).clean()
+
+
+class IdentitySuperUser(Identity):
+    class Quick(Identity.Quick):
+        exclude = ('identity_type')
+        filters = {'identity_type': IdentityTypes.SUPERUSER}
+        name = 'god'
+
+    class Meta:
+        proxy = True
