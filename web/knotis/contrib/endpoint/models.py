@@ -1,4 +1,7 @@
-from knotis.contrib.quick.models import QuickModel
+from knotis.contrib.quick.models import (
+    QuickModel,
+    QuickManager
+)
 from knotis.contrib.quick.fields import (
     QuickUUIDField,
     QuickForeignKey,
@@ -26,7 +29,7 @@ def normalize_arguments(*args, **kwargs):
             del kwargs[key]
 
 
-class EndpointManager(Manager):
+class EndpointManager(QuickManager):
     def create(
         self,
         *args,
@@ -165,8 +168,14 @@ class EndpointManager(Manager):
             # update the endpoint
             for attr in filter_parameters.keys():
                 setattr(endpoint, attr, filter_parameters[attr])
-
+                
             endpoint.clean()
+
+            params = filter_parameters
+            if 'value' not in params.keys() or params['value'].trim() == '':
+                endpoint.deleted = True
+                endpoint.delete()
+                            
             endpoint.save()
 
         return endpoint

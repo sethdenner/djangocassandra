@@ -12,10 +12,14 @@
 	    var init = ($element.attr('data-initial-value') || '').trim();
 	    var current = ($element.val() || '').trim();
 	    if(init != current){
+            if(current == ''){
+                return true;
+            }
+
 	        return current;
 	    }
 
-	    return '';
+	    return false;
     };
 
     if (!String.prototype.startsWith) {
@@ -30,8 +34,97 @@
 	    });
     }
 
+    var endpoint_id_to_type = {
+        0: 'email',
+        1: 'phone',
+        3: 'twitter',
+        4: 'facebook',
+        5: 'yelp',
+        9: 'website',
+        10: 'link'
+    };
+
+    var endpoint_type_to_id = {
+        'email': 0,
+        'phone': 1,
+        'twitter': 3,
+        'facebook': 4,
+        'yelp': 5,
+        'website': 9,
+        'link': 10
+    };
+
+    /*
+      Takes one updated endpoint of the kind returned in a call to update_profile/ and
+      displays the corresponding endpoints on the profile header.
+     */
+    var header_display_updated_endpoint = function(updated){
+        // var endpoint_type_name = endpoint_id_to_type[updated['endpoint_type']];
+        var endpoint_id = updated['pk']; 
+        // determine whether endpoint type is already displayed
+        var $list = $('#id-profile-contact>strong>ul');
+        var $endpoints = $list.children('[data-endpoint-endpoint-type-name="' + endpoint_id_to_type[updated['endpoint_type']] + '"]');
+        if($endpoints.size() == 1){
+            var $endpoint = $endpoints;
+            $endpoint.attr('href', updated['url']);
+            
+            if(updated['endpoint_type'] != 4 &&
+               updated['endpoint_type'] != 5 &&
+               updated['endpoint_type'] != 3){
+                $endpoint.text(updated['value']);
+            }
+            
+        }else{
+            var text = updated['value'];
+
+            if(updated['endpoint_type'] == 4){
+                text = 'Facebook';
+            }else if(updated['endpoint_type'] == 5){
+                text = 'Yelp';
+            }else if(updated['endpoint_type'] == 3){
+                text = 'Twitter';
+            }
+
+            var href = updated['url'];
+            var establishment_id = $('id-identity-id').attr('data-identity-id');
+            var endpoint_id = updated['pk'];
+            var endpoint_type_name = endpoint_id_to_type[updated['endpoint_type']];
+
+            var $endpoint = $('<li></li>');
+            $endpoint.attr({
+                'class': 'establishment-endpoint',
+                'data-establishment-id': establishment_id,
+                'data-endpoint-endpoint-id': endpoint_id,
+                'data-endpoint-endpoint-type-name': endpoint_type_name
+            });
+            $endpoint_link = $('<a></a>');
+            $endpoint_link.text(text);
+            $endpoint_link.attr({
+                'href': href
+            });
+            $endpoint.append($endpoint_link);
+            $list.append($endpoint);
+        }
+    };
+
+    /*
+      Displays endpoint elements on the edit form.
+     */
+    var form_display_updated_endpoint = function(updated){
+        var $form_endpoint = $('[data-endpoint-type="' + updated['endpoint_type'] + '"]');
+        
+        var new_value = updated['value'];
+        var endpoint_id = updated['pk'] || $form_endpoint.attr('data-endpoint-id');
+
+        $form_endpoint.attr({
+            'data-initial-value': new_value,
+            'data-endpoint-id': endpoint_id
+        });
+        // $form_endpoint.val(new_value);
+    };
+
     $('a.edit_about').click(function(event){
-	    $('#about-us>.toggleable').toggle();
+	    $('#about-us>.toggleable').show();
 
 	    // prepopulate endpoints
 	    $('.edit-endpoint:not(.description):not(#business-address)').each(function(idx, element){
@@ -53,7 +146,7 @@
 	        $('.edit-endpoint').each(function(idx, element){
 		        var $element = $(element);
 		        var id = $element.attr('id');
-		        
+
 		        var changed = comparator($element);
 		        if (changed){
 		            if(id.startsWith('endpoint')){
@@ -84,7 +177,7 @@
 		        method: 'POST',
 		        success: function(response){
 		            if(response.status == 'ok'){
-			            $('.toggleable').toggle();
+			            
 			            // backpopulate changed info
 			            for(var endpoint in response.changed_endpoints){
 			                $(endpoint.endpoint_id).attr({
@@ -97,21 +190,34 @@
 			            for(var i=0; i<response.updated_endpoints.length; i++){
 			                var endpoint = response.updated_endpoints[i];
 			                if(endpoint.endpoint_type == 4){
+                                // update social button
 				                $('.updateable-endpoint.facebook').
                                     attr('href', endpoint.url);
 			                }
 			                if(endpoint.endpoint_type == 5){
+                                // update social button
 				                $('.updateable-endpoint.yelp').
                                     attr('href', endpoint.url);
 			                }
 			                if(endpoint.endpoint_type == 3){
+                                // update social button
 				                $('.updateable-endpoint.twitter').
                                     attr('href', endpoint.url);
 			                }
+                            
+                            form_display_updated_endpoint(response.updated_endpoints[i]);
+                            header_display_updated_endpoint(response.updated_endpoints[i]);
 			            }
 
-			            // TODO Update business name on profile page
-			            
+                        for(var i=0; i<response.deleted_endpoints.length; i++){
+                            var endpoint = response.deleted_endpoints[i];
+                            
+                            $('#id-profile-contact>strong>ul>[data-endpoint-endpoint-id=' + endpoint['pk'] + ']').remove();
+                            $('#about-us-form>[data-endpoint-type="' + endpoint['endpoint_type'] + ']').val('');
+                        }
+
+			            // Update business name on profile page
+                        $('.toggleable').hide();			            
 		            }
 		        }
 	        });
@@ -155,7 +261,6 @@
 		        );
 	        }
 	    });
-
     };
 
     $updateable_addresses.on('click', update_address);
@@ -182,4 +287,3 @@
     google.maps.event.addDomListener(window, 'load', initialize);
 
 })(jQuery);
-

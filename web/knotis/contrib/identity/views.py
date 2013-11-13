@@ -473,13 +473,14 @@ class EstablishmentAboutAbout(AJAXFragmentView):
             return sendable
 
         updated_endpoints = []
+        deleted_endpoints = []
         if 'changed_endpoints' in data:
             for endpoint_name in data['changed_endpoints'].keys():
                 endpoint = data['changed_endpoints'][endpoint_name]
                 endpoint_id = endpoint['endpoint_id']
 
                 endpoint_value = endpoint['endpoint_value'].strip()
-
+                    
                 updated_endpoint = Endpoint.objects.update_or_create(
                     identity=business,
                     pk=endpoint_id,
@@ -487,12 +488,16 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                     value=endpoint_value,
                     primary=True
                 )
-
-                updated_endpoints.append(updated_endpoint)
+                
+                if updated_endpoint.deleted:
+                    deleted_endpoints.append(updated_endpoint)
+                else:
+                    updated_endpoints.append(updated_endpoint)
 
         return self.generate_response({
             'status': 'ok',
-            'updated_endpoints': map(endpoint_to_dict, updated_endpoints)
+            'updated_endpoints': map(endpoint_to_dict, updated_endpoints),
+            'deleted_endpoints': map(endpoint_to_dict, deleted_endpoints)
         })
 
 

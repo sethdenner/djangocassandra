@@ -63,6 +63,16 @@ class EndpointApi(ApiView):
 
             if endpoint_id:
                 endpoint = EndpointClass.objects.get(endpoint_id)
+
+                if value.strip() == '':
+                    endpoint.delete()
+                    endpoint.save()
+                    return self.generate_response({
+                        'data': {
+                            'deleted_endpoints': endpoint_id
+                        }
+                    })
+                
             else:
                 endpoint = EndpointClass.objects.create(
                     endpoint_type=getattr(EndpointTypes, endpoint_type.upper()),
@@ -72,7 +82,6 @@ class EndpointApi(ApiView):
                 )
 
             endpoint.value = value.strip()
-            endpoint.save()
             endpoint.clean()
             endpoint.save()
 
