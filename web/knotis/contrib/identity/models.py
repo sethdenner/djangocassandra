@@ -57,24 +57,30 @@ class IdentityManager(QuickManager):
         identities = set()
 
         user_content_type = ContentType.objects.get_for_model(user)
-        user_identity_relation = Relation.objects.get(
+        user_identity_relations = Relation.objects.filter(
             subject_content_type__pk=user_content_type.id,
             subject_object_id=user.id
         )
-        user_identity = user_identity_relation.related
-        identities.add(user_identity)
 
-        identity_content_type = ContentType.objects.get_for_model(
-            user_identity
-        )
-        identity_relations = Relation.objects.filter(
-            relation_type=RelationTypes.MANAGER,
-            subject_content_type=identity_content_type,
-            subject_object_id=user_identity.id,
-            related_content_type=identity_content_type
-        )
-        for relation in identity_relations:
-            identities.add(relation.related)
+        user_identity = None
+        for rel in user_identity_relations:
+            if rel.relation_type == RelationTypes.INDIVIDUAL:
+                user_identity = rel.related
+
+            identities.add(rel.related)
+
+        if user_identity:
+            identity_content_type = ContentType.objects.get_for_model(
+                user_identity
+            )
+            identity_relations = Relation.objects.filter(
+                relation_type=RelationTypes.MANAGER,
+                subject_content_type=identity_content_type,
+                subject_object_id=user_identity.id,
+                related_content_type=identity_content_type
+            )
+            for relation in identity_relations:
+                identities.add(relation.related)
 
         return identities
 

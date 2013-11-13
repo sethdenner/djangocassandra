@@ -1032,6 +1032,7 @@ class IdentitySwitcherView(FragmentView):
             return ''
 
         local_context = copy.copy(self.context)
+        local_context['IdentityTypes'] = IdentityTypes
 
         key_available = 'available_identities'
         try:
