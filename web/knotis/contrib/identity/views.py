@@ -699,17 +699,7 @@ class EstablishmentProfileView(FragmentView):
                 pk=current_identity_id
             )
 
-            if current_identity.identity_type == IdentityTypes.BUSINESS:
-                establishments_managed = (
-                    IdentityEstablishment.objects.get_establishments(
-                        current_identity
-                    )
-                )
-
-                for managed in establishments_managed:
-                    if managed.id == establishment.id:
-                        is_manager = True
-                        break
+            is_manager = current_identity.is_manager(establishment)
 
         styles = [
             'knotis/layout/css/global.css',
@@ -1046,6 +1036,7 @@ class IdentitySwitcherView(FragmentView):
             return ''
 
         local_context = copy.copy(self.context)
+        local_context['IdentityTypes'] = IdentityTypes
 
         key_available = 'available_identities'
         try:
