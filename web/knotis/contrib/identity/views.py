@@ -790,6 +790,7 @@ class EstablishmentProfileView(FragmentView):
         maps_scripts = maps.render_api_js()
 
         endpoints = Endpoint.objects.filter(identity=business, primary=True)
+        endpoints = endpoints.select_subclasses()
 
         endpoint_dicts = []
         for endpoint_class in (
