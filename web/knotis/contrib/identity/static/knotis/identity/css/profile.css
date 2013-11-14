@@ -94,7 +94,7 @@ div.column-box {
 
 /* Profile About About Endpoint Form */
 .edit-endpoint {
-    width: 380px;
+    width: 90%;
     position: relative;
     left: 20px;
 }
