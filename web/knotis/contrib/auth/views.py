@@ -1,6 +1,7 @@
 import json
 import uuid
 import datetime
+import copy
 
 from django.forms import (
     CharField,
@@ -59,6 +60,7 @@ from forms import (
     LoginForm
 )
 
+from knotis.views import FragmentView
 
 class LoginView(View, RenderTemplateFragmentMixin):
     template_name = 'knotis/auth/login.html'
@@ -433,3 +435,23 @@ class KnotisPasswordForgotForm(Form):
         except:
             logger.exception('failed to initiate password reset')
             return False
+
+        
+class KnotisPasswordResetEmailBody(FragmentView):
+    template_name = 'knotis/auth/email_forgot_password.html'
+
+    def process_context(self):
+        local_context = copy.copy(self.context)
+
+        account_name = 'Fine Bitstrings'
+        browser_link = 'http://example.com'
+        reset_link = 'http://example.com'
+        
+        local_context.update({
+            'account_name': account_name,
+            'browser_link': browser_link,
+            'reset_link': reset_link
+        })
+
+        return local_context
+
