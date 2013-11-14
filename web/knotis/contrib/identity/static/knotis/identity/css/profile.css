@@ -70,12 +70,17 @@ div.column-box {
 
 .about-location {
     min-width: 300px;
-    min-height: 300px;
+    min-height: 600px;
 }
 
-#map {
+#about-map {
     width: 100%;
-    min-height: 300px;
+    min-height: 400px;
+}
+
+.map {
+    width: 100%;
+    min-height: 500px;
 }
 
 
