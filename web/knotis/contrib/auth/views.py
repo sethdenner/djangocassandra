@@ -56,7 +56,7 @@ from django.views.generic import View
 from knotis.views.mixins import RenderTemplateFragmentMixin
 
 from forms import (
-    SignUpForm,
+    CreateUserForm,
     LoginForm
 )
 
@@ -94,7 +94,7 @@ class SignUpView(View, RenderTemplateFragmentMixin):
         return render(
             request,
             self.template_name, {
-                'signup_form': SignUpForm()
+                'signup_form': CreateUserForm()
             }
         )
 
@@ -149,7 +149,7 @@ def sign_up(request):
         feedback = ''
         error = ''
 
-        sign_up_form = SignUpForm(request.POST)
+        sign_up_form = CreateUserForm(request.POST)
         user = None
         if sign_up_form.is_valid():
             try:
@@ -210,7 +210,7 @@ def sign_up(request):
         )
 
     else:
-        form = SignUpForm()
+        form = CreateUserForm()
         return render(
             request,
             'sign_up.html', {

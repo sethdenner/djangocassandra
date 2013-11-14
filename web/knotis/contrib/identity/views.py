@@ -282,6 +282,23 @@ class IdentityTile(FragmentView):
             except:
                 pass
 
+        profile_banner_colors = [
+            'blue',
+            'darkblue',
+            'darkgrey',
+            'lightgrey',
+            'orange',
+            'pink',
+            'purple',
+            'red',
+            'turquoise',
+            'yellow'
+        ]
+        profile_banner_color_index = int(identity.pk[24:], 16) % 10
+        profile_banner_color = profile_banner_colors[
+            profile_banner_color_index
+        ]
+
         local_context = copy.copy(self.context)
         local_context.update({
             'current_identity': current_identity,
@@ -289,7 +306,8 @@ class IdentityTile(FragmentView):
             'following': following,
             'banner_image': profile_banner_image,
             'badge_image': profile_badge_image,
-            'STATIC_URL': settings.STATIC_URL
+            'STATIC_URL': settings.STATIC_URL,
+            'profile_banner_color': profile_banner_color
         })
 
         return local_context
@@ -681,17 +699,7 @@ class EstablishmentProfileView(FragmentView):
                 pk=current_identity_id
             )
 
-            if current_identity.identity_type == IdentityTypes.BUSINESS:
-                establishments_managed = (
-                    IdentityEstablishment.objects.get_establishments(
-                        current_identity
-                    )
-                )
-
-                for managed in establishments_managed:
-                    if managed.id == establishment.id:
-                        is_manager = True
-                        break
+            is_manager = current_identity.is_manager(establishment)
 
         styles = [
             'knotis/layout/css/global.css',
@@ -872,7 +880,7 @@ class EstablishmentProfileView(FragmentView):
             'turquoise',
             'yellow'
         ]
-        profile_banner_color_index = int(establishment.pk[24:], 16) % 10
+        profile_banner_color_index = int(business.pk[24:], 16) % 10
         profile_banner_color = profile_banner_colors[
             profile_banner_color_index
         ]
@@ -1029,6 +1037,7 @@ class IdentitySwitcherView(FragmentView):
             return ''
 
         local_context = copy.copy(self.context)
+        local_context['IdentityTypes'] = IdentityTypes
 
         key_available = 'available_identities'
         try:

@@ -38,12 +38,14 @@ class IdentityTypes:
     INDIVIDUAL = 0
     BUSINESS = 1
     ESTABLISHMENT = 2
+    SUPERUSER = 3
 
     CHOICES = (
         (UNDEFINED, 'Undefined'),
         (INDIVIDUAL, 'Individual'),
         (BUSINESS, 'Business'),
         (ESTABLISHMENT, 'Establishment'),
+        (SUPERUSER, 'Super User')
     )
 
 
@@ -55,24 +57,30 @@ class IdentityManager(QuickManager):
         identities = set()
 
         user_content_type = ContentType.objects.get_for_model(user)
-        user_identity_relation = Relation.objects.get(
+        user_identity_relations = Relation.objects.filter(
             subject_content_type__pk=user_content_type.id,
             subject_object_id=user.id
         )
-        user_identity = user_identity_relation.related
-        identities.add(user_identity)
 
-        identity_content_type = ContentType.objects.get_for_model(
-            user_identity
-        )
-        identity_relations = Relation.objects.filter(
-            relation_type=RelationTypes.MANAGER,
-            subject_content_type=identity_content_type,
-            subject_object_id=user_identity.id,
-            related_content_type=identity_content_type
-        )
-        for relation in identity_relations:
-            identities.add(relation.related)
+        user_identity = None
+        for rel in user_identity_relations:
+            if rel.relation_type == RelationTypes.INDIVIDUAL:
+                user_identity = rel.related
+
+            identities.add(rel.related)
+
+        if user_identity:
+            identity_content_type = ContentType.objects.get_for_model(
+                user_identity
+            )
+            identity_relations = Relation.objects.filter(
+                relation_type=RelationTypes.MANAGER,
+                subject_content_type=identity_content_type,
+                subject_object_id=user_identity.id,
+                related_content_type=identity_content_type
+            )
+            for relation in identity_relations:
+                identities.add(relation.related)
 
         return identities
 
@@ -86,6 +94,7 @@ class IdentityManager(QuickManager):
             managed_ids.append(relation.related_object_id)
 
         return Identity.objects.filter(id__in=managed_ids)
+
 
 class IdentityIndividualManager(IdentityManager):
     def create(
@@ -179,14 +188,14 @@ class IdentityBusinessManager(IdentityManager):
             business = self.get_establishment_parent(establishment)
         except IdentityBusiness.DoesNotExist:
             business = self.get(pk=identity_id)
-            
+
         return business
 
     def get_query_set(self):
         return super(IdentityBusinessManager, self).get_query_set().filter(
             identity_type=IdentityTypes.BUSINESS
         )
-    
+
 
 class IdentityEstablishmentManager(IdentityManager):
     def get_establishments(
@@ -229,6 +238,48 @@ class IdentityEstablishmentManager(IdentityManager):
         )
 
 
+class IdentitySuperUserManager(IdentityManager):
+    def create(
+        self,
+        user,
+        *args,
+        **kwargs
+    ):
+        name = kwargs.get('name', IdentitySuperUser.DEFAULT_NAME)
+
+        superuser = super(IdentitySuperUserManager, self).create(
+            identity_type=IdentityTypes.SUPERUSER,
+            name=name,
+            *args,
+            **kwargs
+        )
+
+        Relation.objects.create_superuser(
+            user,
+            superuser
+        )
+
+        return superuser
+
+    def get_superuser(
+        self,
+        user
+    ):
+        relation = Relation.objects.get_superuser(
+            user
+        )
+
+        return self.get(pk=relation.related_object_id)
+
+    def get_query_set(self):
+        return super(
+            IdentitySuperUserManager,
+            self
+        ).get_query_set().filter(
+            identity_type=IdentityTypes.SUPERUSER
+        )
+
+
 class Identity(QuickModel):
     class Quick(QuickModel.Quick):
         exclude = ()
@@ -265,8 +316,11 @@ class Identity(QuickModel):
         identity
     ):
         """
-        Returns True is self is manager of identity.
+        Returns True if self is manager of identity.
         """
+        if IdentityTypes.SUPERUSER == self.identity_type:
+            return True
+
         managed_relations = Relation.objects.get_managed(self)
         for rel in managed_relations:
             if rel.related_object_id == identity.pk:
@@ -299,7 +353,8 @@ class Identity(QuickModel):
         return backend_name
 
     def clean(self):
-        pass
+        if self.name and not self.backend_name:
+            self.backend_name = self._clean_backend_name(self.name)
 
     def __unicode__(self):
         if (self.name):
@@ -324,6 +379,7 @@ class IdentityIndividual(Identity):
     def clean(self):
         print ("Cleaning IdentityIndividual")
         self.identity_type = IdentityTypes.INDIVIDUAL
+
         return super(IdentityIndividual, self).clean()
 
 
@@ -348,9 +404,6 @@ class IdentityBusiness(Identity):
         print ("Cleaning IdentityBusiness")
         self.identity_type = IdentityTypes.BUSINESS
 
-        if self.name and not self.backend_name:
-            self.backend_name = self._clean_backend_name(self.name)
-
         return super(IdentityBusiness, self).clean()
 
 
@@ -369,7 +422,22 @@ class IdentityEstablishment(Identity):
         print ("Cleaning IdentityEstablishment")
         self.identity_type = IdentityTypes.ESTABLISHMENT
 
-        if self.name and not self.backend_name:
-            self.backend_name = self._clean_backend_name(self.name)
+        return super(IdentityEstablishment, self).clean()
+
+
+class IdentitySuperUser(Identity):
+    class Quick(Identity.Quick):
+        exclude = ('identity_type')
+        filters = {'identity_type': IdentityTypes.SUPERUSER}
+        name = 'god'
+
+    class Meta:
+        proxy = True
+
+    objects = IdentitySuperUserManager()
+
+    def clean(self):
+        print ("Cleaning IdentitySuperUser")
+        self.identity_type = IdentityTypes.SUPERUSER
 
         return super(IdentityEstablishment, self).clean()
