@@ -13,7 +13,7 @@
   {% thumbnail profile_banner.image.image '1920x500' crop=profile_banner.crop as header %}
   <div id="id-profile-cover" class="row-fluid" style="background-image: url('{{ header.url }}');">
   {% empty%}
-  <div id="id-profile-cover" class="row-fluid" style="background-image: url('{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png')" >
+  <div id="id-profile-cover" class="row-fluid" style="background-image: url('{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png');" >
   {% endthumbnail %}
       <div class="span12">
         {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
@@ -29,33 +29,32 @@
             <h2>{{ establishment.name }}</h2>
 	    {% endif %}
           </div>
-        </div>
-        <div id="id-profile-contact" class="row">
-          <strong>
+          <div class="profile-short-info">
+            {% if phone %}
+            <a class="cover-endpoint" href="{{phone.uri}}">
+              <img height="7.5" src="/static/knotis/img/phone.png" alt="phone icon" />
+              {{ phone.value }}
+            </a>
+            {% endif %}
 
-	    <div id="id-profile-contact-address">
-	      {{ address }}
-	    </div>
-	    <ul class="unstyled">
-	      {% for endpoint in endpoints %}
-	      {% if endpoint.value %}
-	      <li class="{% if is_manager %}editable{% endif %} establishment-endpoint" 
-		  data-establishment-id="{{ establishment.id }}"
-		  data-endpoint-endpoint-id="{{ endpoint.id }}"
-		  data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
-		<a href="{{ endpoint.uri }}">
-                  {% if endpoint.display %}
-		  {{ endpoint.display }}
-		  {% else %}
-		  {{ endpoint.value }}
-		  {% endif %}
-		</a>
-	      </li>
-	      {% endif %}
-	      {% endfor %}
-            </ul>
-          </strong>
+            {% if address %}
+            <span class="cover-endpoint">
+              <img height="7.5" src="/static/knotis/img/address.png" alt="address marker icon" />
+              {{ address }}
+            </span>
+            {% endif %}
+
+            {% if website %}
+            <a class="cover-endpoint" href="{{website.uri}}">
+              <img height="7.5" src="/static/knotis/img/website.png" alt="www icon" />
+              {{ website.value }}
+            </a>
+            {% endif %}
+            
+            
+          </div>
         </div>
+
         <div id="id-profile-action" class="row">
         </div>
         {% if is_manager %}
