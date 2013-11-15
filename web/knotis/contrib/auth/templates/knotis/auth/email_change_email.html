@@ -1,0 +1,14 @@
+{% extends 'knotis/layout/master_email.html' %}
+{% load render_template_fragment %}
+{% block subject %}Knotis Email Change{% endblock subject %}
+{% block browser_link %}{{ browser_link }}{% endblock browser_link %}
+{% block content %}
+<h1>You want to change your email, huh? Let's do it!</h1>
+<p>You'll be resetting the mail address for the account <b>{{ account_name }}</b>.</p>
+<br />
+<br />
+<a class="button" href="{{ cancel_link }}">Reset My Email Address</a>
+<br />
+<br />
+<br />
+{% endblock content %}

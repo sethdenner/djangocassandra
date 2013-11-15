@@ -455,3 +455,70 @@ class KnotisPasswordResetEmailBody(FragmentView):
 
         return local_context
 
+
+class KnotisNewPasswordEmailBody(FragmentView):
+    template_name = 'knotis/auth/email_new_password.html'
+
+    def process_context(self):
+        local_context = copy.copy(self.context)
+
+        browser_link = 'http://example.com'
+        account_name = 'Fine Bitstrings'
+        cancel_link = 'http://example.com'
+
+        local_context.update({
+            'browser_link': browser_link,
+            'account_name': account_name,
+            'cancel_link': cancel_link
+        })
+
+
+class KnotisChangeEmailEmailBody(FragmentView):
+    template_name = 'knotis/auth/email_change_email'
+
+    def process_context(self):
+        local_context = copy.copy(self.context)
+
+        browser_link = 'http://example.com'
+        account_name = 'Fine Bitstrings'
+        cancel_link = 'http://example.com'
+
+        local_context.update({
+            'browser_link': browser_link,
+            'account_name': account_name,
+            'cancel_link': cancel_link
+        })
+ 
+
+class KnotisChangedEmailEmailBody(FragmentView):
+    template_name = 'knotis/auth/email_changed_email'
+
+    def process_context(self):
+        local_context = copy.copy(self.context)
+
+        browser_link = 'http://example.com'
+        account_name = 'Fine Bitstrings'
+        cancel_link = 'http://example.com'
+
+        local_context.update({
+            'browser_link': browser_link,
+            'account_name': account_name,
+            'cancel_link': cancel_link
+        })
+
+
+class KnotisNewPermissionEmailBody(FragmentView):
+    template_name = 'knotis/auth/email_new_permission.html'
+
+    def process_context(self):
+        local_context = copy.copy(self.context)
+
+        browser_link = 'http://example.com'
+        initiator = 'Fine Bitstrings'
+        confirm_link = 'http://example.com'
+
+        local_context.update({
+            'browser_link': browser_link,
+            'initiator': initiator,
+            'confirm_link': confirm_link
+        })

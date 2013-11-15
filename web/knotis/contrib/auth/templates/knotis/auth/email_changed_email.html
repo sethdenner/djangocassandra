@@ -1,0 +1,14 @@
+{% extends 'knotis/layout/master_email.html' %}
+{% load render_template_fragment %}
+{% block subject %}Knotis Email Change Confirmation{% endblock subject %}
+{% block browser_link %}{{ browser_link }}{% endblock browser_link %}
+{% block content %}
+<h1>You've got yourself a new email address.</h1>
+<p>The email address for <b>{{ account_name }}</b> has been changed.</p>
+<br />
+<br />
+<a class="button" href="{{ cancel_link }}">Help I Didn't Request This</a>
+<br />
+<br />
+<br />
+{% endblock content %}
