@@ -31,23 +31,23 @@
           </div>
           <div class="profile-short-info">
             {% if phone %}
-            <a class="cover-endpoint" href="{{phone.uri}}">
+            <a class="cover-endpoint phone" href="{{phone.uri}}">
               <img height="7.5" src="/static/knotis/img/phone.png" alt="phone icon" />
-              {{ phone.value }}
+              <span class="cover-endpoint-text">{{ phone.value }}</span>
             </a>
             {% endif %}
 
             {% if address %}
-            <span class="cover-endpoint">
+            <span class="cover-endpoint address">
               <img height="7.5" src="/static/knotis/img/address.png" alt="address marker icon" />
-              {{ address }}
+              <span class="cover-endpoint-text">{{ address }}</span>
             </span>
             {% endif %}
 
             {% if website %}
-            <a class="cover-endpoint" href="{{website.uri}}">
+            <a class="cover-endpoint website" href="{{website.uri}}">
               <img height="7.5" src="/static/knotis/img/website.png" alt="www icon" />
-              {{ website.value }}
+              <span class="cover-endpoint-text">{{ website.value }}</span>
             </a>
             {% endif %}
             
