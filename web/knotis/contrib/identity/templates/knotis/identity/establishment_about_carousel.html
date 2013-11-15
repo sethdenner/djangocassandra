@@ -1,8 +1,10 @@
 {% load thumbnail %}
+
+<div class="about-carousel">
 <div class="carousel-wrapper">
   <h4>Photos</h4>
   {% if is_manager %}<a class="upload-photo" data-business-id="{{ establishment_parent.id }}">Upload Photos</a>{% endif %}
-  <div id="about_carousel" class="carousel slide" style="width:500px; height: 400px;">
+  <div id="about_carousel" class="carousel slide center">
     <!-- Indicators -->
     <ol class="carousel-indicators">
       {% for index, _ in images %}
@@ -15,8 +17,8 @@
       {% for index, image in images %}
       {% thumbnail image.image.image '500x400' crop=image.crop as img %}
       <div class="item {% if index == 0 %}active{% endif %}">
-	<div style="display:block; width:500px; height:400px; overflow:hidden; background:url('{{ img.url }}') no-repeat;"></div>
-	<!--<img style="width:500px; height:auto;" src="{{ img.url }}" />-->
+	    <div class="about-carousel-image" style="display:block; overflow:hidden; background:url('{{ img.url }}') no-repeat center;"></div>
+	    <!--<img style="width:500px; height:auto;" src="{{ img.url }}" />-->
       </div>
       {% endthumbnail %}
       {% endfor %}
@@ -31,5 +33,5 @@
     </a>
     {% endif %}
   </div>
-  
+</div>
 </div>

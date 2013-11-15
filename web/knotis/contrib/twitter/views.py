@@ -75,7 +75,6 @@ def get_twitter_feed_json(
 
     except Exception:
         logger.exception('failed to get twitter feed.')
-        raise Error
         content = None
 
     return content

@@ -1,5 +1,5 @@
 {% if address %}
-
+<div class="about-location">
 <h4>Location</h4>
 <div id="about-map" />
 <p>{{ address }}</p>
@@ -10,4 +10,6 @@
 	   data-latitude="{{ latitude }}"
 	   data-longitude="{{ longitude }}" />
 
+</div>
 {% endif %}
+

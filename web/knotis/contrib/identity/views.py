@@ -520,12 +520,12 @@ class EstablishmentAboutTwitterFeed(FragmentView):
 
         twitter_feed = None
         if(twitter_endpoint):
-            twitter_feed = json.loads(
-                get_twitter_feed_json(twitter_endpoint['value'])
-            )
-            local_context.update({
-                'twitter_feed': twitter_feed
-            })
+            feed_json = get_twitter_feed_json(twitter_endpoint['value'])
+            if feed_json:
+                twitter_feed = json.loads(feed_json)
+                local_context.update({
+                    'twitter_feed': twitter_feed
+                })
 
         return local_context
 
@@ -593,32 +593,40 @@ class EstablishmentProfileAbout(FragmentView):
 
     def process_context(self):
         local_context = copy.copy(self.context)
+        sections = []
+        
+        about_markup = EstablishmentAboutAbout().render_template_fragment(
+            local_context
+        ).strip()
+        if about_markup:
+            sections.append(about_markup)
+            
+        yelp_markup = EstablishmentAboutYelpFeed().render_template_fragment(
+            local_context
+        ).strip()
+        if yelp_markup:
+            sections.append(yelp_markup)
+        
+        twitter_markup = EstablishmentAboutTwitterFeed().render_template_fragment(
+            local_context
+        ).strip()
+        if twitter_markup:
+            sections.append(twitter_markup)
+
+        carousel_markup = EstablishmentAboutCarousel().render_template_fragment(
+            local_context
+        ).strip()
+        if carousel_markup:
+            sections.append(carousel_markup)
+
+        location_markup = EstablishmentProfileLocation().render_template_fragment(
+            local_context
+        ).strip()
+        if location_markup:
+            sections.append(location_markup)
+
         local_context.update({
-            'about_markup': (
-                EstablishmentAboutAbout().render_template_fragment(
-                    local_context
-                ).strip()
-            ),
-            'twitter_markup': (
-                EstablishmentAboutTwitterFeed().render_template_fragment(
-                    local_context
-                ).strip()
-            ),
-            'yelp_markup': (
-                EstablishmentAboutYelpFeed().render_template_fragment(
-                    local_context
-                ).strip()
-            ),
-            'carousel_markup': (
-                EstablishmentAboutCarousel().render_template_fragment(
-                    local_context
-                ).strip()
-            ),
-            'location_markup': (
-                EstablishmentProfileLocation().render_template_fragment(
-                    local_context
-                ).strip()
-            )
+            'sections': sections
         })
         return local_context
 

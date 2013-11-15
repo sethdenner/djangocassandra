@@ -88,7 +88,7 @@ div.column-box {
 
 .about-location {
     min-width: 300px;
-    min-height: 600px;
+    min-height: 400px;
 }
 
 #about-map {
@@ -100,7 +100,6 @@ div.column-box {
     width: 100%;
     min-height: 500px;
 }
-
 
 .about-yelp {
 
@@ -117,3 +116,21 @@ div.column-box {
     left: 20px;
 }
 
+#about_carousel>.carousel-inner {
+    overflow: hidden;
+    width: 90%;
+}
+
+#about_carousel>.carousel-inner>.item>.about-carousel-image {
+    width: 600px;
+    height: 400px;
+}
+
+.moar-space {
+    padding-top: 34px;
+}
+
+/* Profile Header Endpoints */
+.cover-endpoint>span {
+    padding-left: 3px;
+}

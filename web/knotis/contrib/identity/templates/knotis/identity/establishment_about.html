@@ -1,33 +1,18 @@
+{% if sections %}
 <div class="row-fluid">
-  <div class="span6 about-section about-description">
-    {{ about_markup|safe }}
-  </div>
+
+{% for section in sections %}
   
-  <div class="span6 about-section about-carousel">
-    {{ carousel_markup|safe }}
-  </div>
-</div>
-
-<div class="row-fluid">
-  {% if location_markup %}
-  <div class="span6 about-section about-location" style="height: 500px">
-    {{ location_markup|safe }}
-  </div>
+  {% if forloop.counter0|divisibleby:2 and forloop.counter0 != 0 %}
+  </div><div  class="row-fluid moar-space">
   {% endif %}
-
-</div>
-
-{% if yelp_markup or twitter_markup %}
-<div class="row-fluid">  
-  {% if yelp_markup %}
-  <div class="span6 about-section about-yelp">
-    {{ yelp_markup|safe }}
+  
+  <div class="span6 about-section">
+  {{ section|safe }}
   </div>
-  {% endif %}
-  {% if twitter_markup %}
-  <div class="span6 about-section about-twitter">
-    {{ twitter_markup|safe }}
-  </div>
-  {% endif %}
+
+{% endfor %}
+
 </div>
 {% endif %}
+

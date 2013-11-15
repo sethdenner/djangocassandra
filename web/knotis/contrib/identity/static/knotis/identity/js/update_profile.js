@@ -59,51 +59,17 @@
       displays the corresponding endpoints on the profile header.
      */
     var header_display_updated_endpoint = function(updated){
-        // var endpoint_type_name = endpoint_id_to_type[updated['endpoint_type']];
-        var endpoint_id = updated['pk']; 
-        // determine whether endpoint type is already displayed
-        var $list = $('#id-profile-contact>strong>ul');
-        var $endpoints = $list.children('[data-endpoint-endpoint-type-name="' + endpoint_id_to_type[updated['endpoint_type']] + '"]');
-        if($endpoints.size() == 1){
-            var $endpoint = $endpoints;
-            $endpoint.attr('href', updated['url']);
-            
-            if(updated['endpoint_type'] != 4 &&
-               updated['endpoint_type'] != 5 &&
-               updated['endpoint_type'] != 3){
-                $endpoint.text(updated['value']);
-            }
-            
-        }else{
-            var text = updated['value'];
-
-            if(updated['endpoint_type'] == 4){
-                text = 'Facebook';
-            }else if(updated['endpoint_type'] == 5){
-                text = 'Yelp';
-            }else if(updated['endpoint_type'] == 3){
-                text = 'Twitter';
-            }
-
-            var href = updated['url'];
-            var establishment_id = $('id-identity-id').attr('data-identity-id');
-            var endpoint_id = updated['pk'];
-            var endpoint_type_name = endpoint_id_to_type[updated['endpoint_type']];
-
-            var $endpoint = $('<li></li>');
-            $endpoint.attr({
-                'class': 'establishment-endpoint',
-                'data-establishment-id': establishment_id,
-                'data-endpoint-endpoint-id': endpoint_id,
-                'data-endpoint-endpoint-type-name': endpoint_type_name
-            });
-            $endpoint_link = $('<a></a>');
-            $endpoint_link.text(text);
-            $endpoint_link.attr({
-                'href': href
-            });
-            $endpoint.append($endpoint_link);
-            $list.append($endpoint);
+        var endpoint_type = updated['endpoint_type'];
+        var $cover_endpoint;
+        if (endpoint_type == 1){
+            $cover_endpoint = $('.cover-endpoint.phone');
+            $cover_endpoint.children('span').text(updated['value']);
+            $cover_endpoint.attr('href', updated['url']);
+        }
+        if (endpoint_type == 9){
+            $cover_endpoint = $('.cover-endpoint.website');
+            $cover_endpoint.children('span').text(updated['value']);
+            $cover_endpoint.attr('href', updated['url']);
         }
     };
 
@@ -122,7 +88,6 @@
         });
         // $form_endpoint.val(new_value);
     };
-
     $('a.edit_about').click(function(event){
 	    $('#about-us>.toggleable').show();
 
@@ -189,35 +154,20 @@
 			            // update social buttons
 			            for(var i=0; i<response.updated_endpoints.length; i++){
 			                var endpoint = response.updated_endpoints[i];
-			                if(endpoint.endpoint_type == 4){
-                                // update social button
-				                $('.updateable-endpoint.facebook').
-                                    attr('href', endpoint.url);
-			                }
-			                if(endpoint.endpoint_type == 5){
-                                // update social button
-				                $('.updateable-endpoint.yelp').
-                                    attr('href', endpoint.url);
-			                }
-			                if(endpoint.endpoint_type == 3){
-                                // update social button
-				                $('.updateable-endpoint.twitter').
-                                    attr('href', endpoint.url);
-			                }
                             
-                            form_display_updated_endpoint(response.updated_endpoints[i]);
-                            header_display_updated_endpoint(response.updated_endpoints[i]);
+                            form_display_updated_endpoint(endpoint);
+                            header_display_updated_endpoint(endpoint);
 			            }
 
                         for(var i=0; i<response.deleted_endpoints.length; i++){
                             var endpoint = response.deleted_endpoints[i];
                             
-                            $('#id-profile-contact>strong>ul>[data-endpoint-endpoint-id=' + endpoint['pk'] + ']').remove();
+                            $('.cover-endpoint.' + endpoint_id_to_type[endpoint['endpoint_type']]).remove();
                             $('#about-us-form>[data-endpoint-type="' + endpoint['endpoint_type'] + ']').val('');
                         }
 
 			            // Update business name on profile page
-                        $('.toggleable').hide();			            
+                        $('#about-us-form.toggleable').hide();			            
 		            }
 		        }
 	        });
@@ -244,7 +194,7 @@
 				                'data-longitude': data.longitude
 			                });
 			                $('#modal-box').modal('hide');
-			                
+			                $('.cover-endpoint.address>.cover-endpoint-text').text(data.location_address);
 			            }
 		            }
 		        });

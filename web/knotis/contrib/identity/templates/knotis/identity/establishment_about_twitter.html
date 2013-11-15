@@ -1,5 +1,5 @@
 {% if twitter_feed %}
-
+<div class="about-twitter">
 <h4>{{ twitter_handle }}'s Twitter Feed</h4>
 
 {% for tweet in twitter_feed %}
@@ -7,5 +7,5 @@
   <p>{{ tweet.text }}</p>
 </div>
 {% endfor %}
-
+</div>
 {% endif %}
