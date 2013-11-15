@@ -456,8 +456,8 @@ class KnotisPasswordResetEmailBody(FragmentView):
         return local_context
 
 
-class KnotisNewPasswordEmailBody(FragmentView):
-    template_name = 'knotis/auth/email_new_password.html'
+class KnotisChangedPasswordEmailBody(FragmentView):
+    template_name = 'knotis/auth/email_changed_password.html'
 
     def process_context(self):
         local_context = copy.copy(self.context)
