@@ -13,7 +13,7 @@
   {% thumbnail profile_banner.image.image '1920x500' crop=profile_banner.crop as header %}
   <div id="id-profile-cover" class="row-fluid" style="background-image: url('{{ header.url }}');">
   {% empty%}
-  <div id="id-profile-cover" class="row-fluid" style="background-image: url('{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png')" >
+  <div id="id-profile-cover" class="row-fluid" style="background-image: url('{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png');" >
   {% endthumbnail %}
       <div class="span12">
         {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}

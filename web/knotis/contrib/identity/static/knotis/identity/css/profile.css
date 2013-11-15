@@ -9,6 +9,12 @@ div#id-profile-cover {
     height: 376px;
 }
 
+@media (min-width: 1920px){
+    div#id-profile-cover {
+        background-size: auto;
+    }
+}
+
 div#id-profile-cover img#profile-badge {
     margin-top: 50px;
     width: 170px;
