@@ -9,12 +9,30 @@ div#id-profile-cover {
     height: 376px;
 }
 
+@media (min-width: 1920px){
+    div#id-profile-cover {
+        background-size: auto;
+    }
+}
+
 div#id-profile-cover img#profile-badge {
     margin-top: 50px;
     width: 170px;
     height: 170px;
     cursor: hand;
     cursor: pointer;
+}
+
+.cover-endpoint {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: white;
+    font-size: 125%;
+    padding-left: 1em;
+}
+
+.cover-endpoint>img {
+    height: 20px;
+    width: auto;
 }
 
 div#id-profile-title h2 {
@@ -70,12 +88,17 @@ div.column-box {
 
 .about-location {
     min-width: 300px;
-    min-height: 300px;
+    min-height: 600px;
 }
 
-#map {
+#about-map {
     width: 100%;
-    min-height: 300px;
+    min-height: 400px;
+}
+
+.map {
+    width: 100%;
+    min-height: 500px;
 }
 
 
@@ -89,7 +112,7 @@ div.column-box {
 
 /* Profile About About Endpoint Form */
 .edit-endpoint {
-    width: 380px;
+    width: 90%;
     position: relative;
     left: 20px;
 }
