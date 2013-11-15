@@ -876,6 +876,28 @@ class EstablishmentProfileView(FragmentView):
             profile_banner_color_index
         ]
 
+        # endpoints displayed on the cover
+        phone = EndpointPhone.objects.filter(identity=business, primary=True)
+        if len(phone):
+            phone = {
+                'value': phone[0].value,
+                'uri': phone[0].get_uri()
+            }
+        else:
+            phone = None
+            
+        website = EndpointWebsite.objects.filter(
+            identity=business,
+            primary=True
+        )
+        if len(website):
+            website = {
+                'value': website[0].value,
+                'uri': website[0].get_uri()
+            }
+        else:
+            website = None
+
         local_context = copy.copy(self.context)
         local_context.update({
             'establishment': establishment,
@@ -887,6 +909,8 @@ class EstablishmentProfileView(FragmentView):
             'post_scripts': post_scripts,
             'default_profile_logo_uri': default_profile_logo_uri,
             'address': address,
+            'phone': phone,
+            'website': website,
             'maps_scripts': maps_scripts,
             'profile_badge': profile_badge_image,
             'profile_banner': profile_banner_image,

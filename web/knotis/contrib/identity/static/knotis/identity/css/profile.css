@@ -23,6 +23,18 @@ div#id-profile-cover img#profile-badge {
     cursor: pointer;
 }
 
+.cover-endpoint {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: white;
+    font-size: 125%;
+    padding-left: 1em;
+}
+
+.cover-endpoint>img {
+    height: 20px;
+    width: auto;
+}
+
 div#id-profile-title h2 {
     color: white;
 }
