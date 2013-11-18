@@ -65,6 +65,10 @@ a {
     border-bottom: 2px solid #D8D8D8;
     background-color: #fff;
     margin: 16px 0 0 15px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
 }
 
 .nav-list > li {
@@ -82,10 +86,10 @@ a {
 }
 
 select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input, .modal {
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    -o-border-radius: 0px;
-    border-radius: 0px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
     border: 1px;
     border-color: #D9D9D9;
     border-top-color: #C0C0C0;
@@ -94,7 +98,10 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 
 .btn {
     padding: 2px 8px;
-    border-radius: 0px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
