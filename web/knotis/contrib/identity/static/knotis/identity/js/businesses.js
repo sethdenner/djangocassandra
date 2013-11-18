@@ -11,7 +11,7 @@
                 return;
             }
 
-            if ($this.scrollTop() + $this.innerHeight() >= $(document).innerHeight()) {
+            if ($this.scrollTop() + $this.innerHeight() >= $(document).innerHeight() - 250) {
                 $.get(
                     [
                         '/businesses/grid',
@@ -25,7 +25,9 @@
                             results_left = false;
                             return;
                         }
-                        $('.span10.grid').append(data);
+                        var $markup = $(data);
+                        $markup = $markup.children().children().children();
+                        $('.span10.grid > .row-fluid.grid-small > .span12 > .row-fluid').append($markup);
                     }
                 );
             }
