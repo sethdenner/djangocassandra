@@ -7,6 +7,10 @@ div.grid-tile {
     -moz-box-shadow:    2px 2px 3px 2px #ccc;
     -webkit-box-shadow: 2px 2px 3px 2px #ccc;
     box-shadow:         2px 2px 3px 2px #ccc;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
 }
 
 div.grid-tile.small-tile {
@@ -45,6 +49,9 @@ div.grid-tile.small-tile div.tile-header .tile-image {
     background-image: url('/static/knotis/identity/img/default_banner.png');
     background-repeat: no-repeat;
     background-position: center;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 2px 2px 0px 0px;
+    border-radius: 2px 2px 0px 0px; 
 }
 
 div.grid-tile.small-tile div.tile-header {
@@ -96,4 +103,7 @@ div.grid-tile.small-tile div.tile-footer {
     display: inline-block;
     width: 100%;
     font-size: 1.2em;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px 0px 2px 2px;
+    border-radius: 0px 0px 2px 2px; 
 }
