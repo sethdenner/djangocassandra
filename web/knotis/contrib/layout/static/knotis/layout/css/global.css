@@ -22,7 +22,7 @@
 
 div.container-fluid div.row-fluid div.content {
     background-color: #fff;
-    margin: 16px;
+    margin: 16px 16px 16px 16px;
     padding: 16px;
 }
 

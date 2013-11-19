@@ -136,6 +136,7 @@ class OffersView(ContextView):
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
+            'fixed_side_nav': True
         })
         return local_context
 

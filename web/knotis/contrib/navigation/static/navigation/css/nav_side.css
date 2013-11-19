@@ -1,0 +1,4 @@
+ul.nav.nav-list.side-nav.fixed {
+    position: fixed;
+    min-width: 230px;
+}
