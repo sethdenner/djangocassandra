@@ -127,7 +127,6 @@ class BusinessesView(FragmentView):
             'knotis/layout/css/tile.css',
             'navigation/css/nav_top.css',
             'navigation/css/nav_side.css',
-            'knotis/identity/css/profile.css',
             'styles/default/fileuploader.css'
         ]
 
@@ -159,6 +158,7 @@ class BusinessesView(FragmentView):
         local_context.update({
             'styles': styles,
             'post_scripts': post_scripts,
+            'fixed_side_nav': True
         })
         return local_context
 

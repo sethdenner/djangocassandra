@@ -1,5 +1,5 @@
 {% if navigation_items %}
-<div class="navbar navbar-static-top navigation-horizontal">
+<div class="navbar navbar-static-top navigation-horizontal top-nav{% if fixed_top_nav %} fixed{% endif %}">
   <div class="navbar-inner">
     <div class="container text-center">
       <ul class="nav nav-pills">
@@ -10,4 +10,5 @@
     </div>
   </div>
 </div>
+{% if fixed_top_nav %}<div class="top-nav-extra-space">&nbsp;</div>{% endif %}
 {% endif %}
