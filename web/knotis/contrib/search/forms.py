@@ -26,12 +26,12 @@ class SearchForm(Form):
             *args,
             **kwargs
         )
-        
+
         self.helper = FormHelper()
         self.helper.form_id = 'id-searchForm'
         self.helper.form_class = 'navbar-form'
         self.helper.form_method = 'get'
-        self.helper.form_action = 'search'
+        self.helper.form_action = '/search/'
         self.helper.layout = Layout(
             FieldWithButtons(
                 Field(
