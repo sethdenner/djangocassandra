@@ -6,7 +6,6 @@ from knotis.views import FragmentView
 
 from forms import SearchForm
 
-
 class SearchBarView(FragmentView):
     template_name = 'search/search_bar.html'
     view_name = 'search_bar'

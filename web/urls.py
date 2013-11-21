@@ -56,6 +56,7 @@ urlpatterns = patterns(
         r'',
         include('knotis.contrib.location.urls')
     ),
+    (r'^search/', include('haystack.urls')),
     url(
         r'',
         include('knotis.contrib.layout.urls')
