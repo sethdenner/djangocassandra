@@ -9,6 +9,10 @@
     <link href="{{ STATIC_URL }}bootstrap-modal/css/bootstrap-modal.css" rel="stylesheet" />
     <link href="{{ STATIC_URL }}jcrop/css/jquery.Jcrop.min.css" rel="stylesheet" />
     <link href="{{ STATIC_URL }}bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}knotis/auth/css/auth.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}knotis/identity/css/switcher.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}knotis/offer/css/offer_create.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}knotis/offer/css/offer_detail.css" rel="stylesheet" />
     {% for style in styles %}
     <link href="{{ STATIC_URL }}{{ style }}" rel="stylesheet" />
     {% endfor %}
@@ -18,7 +22,7 @@
     {% endfor %}
     {% block head %}{% endblock head %}
   </head>
-  <body>
+  <body class="knotis" >
     {% block first %}{% endblock first %}
     {% block header %}{% endblock header %}
     {% block content %}{% endblock content %}

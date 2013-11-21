@@ -1,15 +1,39 @@
 (function($) {
+    var _init = function(wizard, options) {
+        var settings = $.extend({
+            step_callback: function(index){}
+        }, options);
 
-    var $carousel = $('div#wizard-carousel');
-    $carousel.carousel({
-        interval: false
-    });
+        console.log(this);
 
-    var step = function (
-        index, 
-        data
-    ) {
-        var step_el = $('div#wizard-carousel .item').get(index);
+        var $carousel = $(wizard);
+        $carousel.carousel({
+            interval: false
+        });
+
+        current_step = $carousel.attr('data-current-step');
+        if (current_step) {
+            $carousel.wizard('step', {
+                index: parseInt(current_step),
+                callback: settings.step_callback
+            });
+
+        } else {
+            $carousel.wizard('step', {
+                index: 0,
+                callback: settings.step_callback
+            });
+        }
+    };
+
+    var _step = function(wizard, options) {
+        var settings = $.extend({
+            index: 0,
+            callback: function(index){}
+        }, options);
+
+        var $carousel = $(wizard),
+        step_el = $carousel.find('.item').get(settings.index);
 
         if (!step_el) {
             $('#modal-box').modal('hide');
@@ -17,50 +41,48 @@
         }
 
         var _step = {};
-        _step.action = step_el.attributes['data-action'].value;
-        
-        _step.container = step_el.attributes['id'].value;
-
-        var attrs = step_el.attributes;
-        var length = attrs.length;
-        var param_prefix = "data-param-";
-        var param_prefix_length = param_prefix.length;
-
-        var id_map_params = {};
-        for( i =0; i < attrs.length; i++) {
-            attr = attrs[i]
-            if(attr.name.indexOf(param_prefix) == 0) //only ones starting with data-
-              id_map_params[attr.name.substr(param_prefix_length)] = attr.value;
-        }
-
-        var get_params = {};
-        if (data) { 
-            for (var key in id_map_params) {
-                var _dataKey = id_map_params[key];
-                if (_dataKey in data) {
-                    get_params[key] = data[_dataKey];
-                }
-            }
-        }
+        var step_action = step_el.attributes['data-action'].value,
+        step_container = step_el.attributes['id'].value,
+        wizard_query = $carousel.attr('data-wizard-query');
 
         $.get(
-            _step.action,
-            get_params,
+            step_action,
+            wizard_query,
             function (data, status, jqxhr) {
                 if ('success' == status) {
-                    var _container = $('div#' + _step.container);
+                    var _container = $('div#' + step_container);
                     _container.html(data);
                     _container.find('form').ajaxform({
                         done: function(data, status, jqxhr) {
                             if (!data.errors) {
-                                step(
-                                    index + 1,
-                                    data
-                                );
+                                if (data.wizard_query) {
+                                    $carousel.attr(
+                                        'data-wizard-query',
+                                        data.wizard_query
+                                    )
+                                }
+
+                                $carousel.wizard('step', {
+                                    index: settings.index + 1,
+                                    callback: settings.callback
+                                });
                             }
                         }
                     });
-                    $carousel.carousel(index);
+
+                    _container.find('.wizard-back').click(function(event) {
+                        $carousel.wizard('step', {
+                            index: settings.index - 1,
+                            callback: settings.callback
+                        });
+                    });
+
+                    $carousel.carousel(settings.index);
+                    $carousel.attr('data-current-step', settings.index);
+                    
+                    if (settings.callback) {
+                        settings.callback(settings.index);
+                    }
                 } else {
                     // error handling 
                 }
@@ -68,8 +90,21 @@
         );
     };
 
-    step(
-        0
-    );
+    $.fn.wizard = function(method, options) {
+        if ('init' == method) {
+            this.each(function(index, element) {
+                _init(element, options);
+            });
+
+        } else if ('step' == method) {
+            this.each(function(index, element) {
+                _step(element, options);
+            });
+        }
+    };
+
+    $.wizard = {
+        step: _step
+    };
 
 })(jQuery);

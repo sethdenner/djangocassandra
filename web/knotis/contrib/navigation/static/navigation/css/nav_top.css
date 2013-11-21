@@ -1,3 +1,12 @@
+.navbar.navigation-horizontal.navbar-static-top.top-nav.fixed {
+    position: fixed;
+    width: 100%;
+}
+
+.top-nav-extra-space {
+    height: 41px;
+}
+
 .navbar.navigation-horizontal .nav {
     width: 100%;
 }

@@ -1,8 +1,38 @@
 div#id-profile-cover {
     text-align: center;
-    background-color: #b5d334;
-    padding: 35px 0 16px 0;
     position: relative;
+    background-image: url('/static/knotis/img/default_profile_banner.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 1920px 376px;
+    width: 100%;
+    height: 376px;
+}
+
+@media (min-width: 1920px){
+    div#id-profile-cover {
+        background-size: auto;
+    }
+}
+
+div#id-profile-cover img#profile-badge {
+    margin-top: 50px;
+    width: 170px;
+    height: 170px;
+    cursor: hand;
+    cursor: pointer;
+}
+
+.cover-endpoint {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: white;
+    font-size: 125%;
+    padding-left: 1em;
+}
+
+.cover-endpoint>img {
+    height: 20px;
+    width: auto;
 }
 
 div#id-profile-title h2 {
@@ -25,9 +55,9 @@ img.img-cover {
 @media (min-width: 768px) {
     div#id-profile-cover div#id-profile-contact {
         position: absolute;
-        right: 2%;
-        top: 12%;
-        text-align: right;
+        left: 3em;
+        top: 4em;
+        text-align: left;
     }
 
 }
@@ -36,4 +66,71 @@ a.change-profile-cover-link {
     position: absolute;
     right: 2%;
     bottom: 2%;
+}
+
+div.column-box {
+    columns: 2;
+}
+
+/* Profile About Section Divs */
+.about-section {
+    background: #fff;
+    padding: 24px;
+}
+
+.about-description {
+    
+}
+
+.about-carousel {
+    overflow: hidden;
+}
+
+.about-location {
+    min-width: 300px;
+    min-height: 400px;
+}
+
+#about-map {
+    width: 100%;
+    min-height: 400px;
+}
+
+.map {
+    width: 100%;
+    min-height: 500px;
+}
+
+.about-yelp {
+
+}
+
+.about-twitter {
+
+}
+
+/* Profile About About Endpoint Form */
+.edit-endpoint {
+    width: 90%;
+    position: relative;
+    left: 20px;
+}
+
+#about_carousel>.carousel-inner {
+    overflow: hidden;
+    width: 90%;
+}
+
+#about_carousel>.carousel-inner>.item>.about-carousel-image {
+    width: 600px;
+    height: 400px;
+}
+
+.moar-space {
+    padding-top: 34px;
+}
+
+/* Profile Header Endpoints */
+.cover-endpoint>span {
+    padding-left: 3px;
 }

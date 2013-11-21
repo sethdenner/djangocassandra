@@ -4,23 +4,22 @@
   <input type="hidden" class="tile-identity" value="{{ identity.id }}"/>
   <a href="/id/{{ identity.id }}/">
     <div class="tile-header">
-      {% thumbnail banner_image.image.image '120x120' crop=banner_image.crop as image %}
-      <img class="tile-image" alt="{{ identity.name }}" src="{{ image.url }}" />
+      {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
+      <div class="tile-image" style="background-image: url('{{ image.url }}');">&nbsp;</div>
       {% empty %}
-      <img class="tile-image"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/profile_default.png" />
+      <div class="tile-image" style="background-image: url('{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png')" >&nbsp;</div>
       {% endthumbnail %}
-      
-      {% thumbnail badge_image.image.image '60x60' crop=badge_image.crop as image %}
+      {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
       <img class="tile-badge" src="{{ image.url }}" />
       {% empty %}
-      <img class="tile-badge" src="{{ STATIC_URL }}knotis/identity/img/add_logo.png" />
+      <img class="tile-badge"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/profile_default.png" />
       {% endthumbnail %}
     </div>
   </a>
-
   <div class="tile-body" onclick="window.location='/id/{{ identity.id }}/'">
     <p class="tile-title">{{ identity.name }}</p>
-    {% if render_follow %}<button class="btn btn-primary action identity-relation-action {% if following %}tile-identity-unfollow{% else %}tile-identity-follow{% endif %}">{% if following %}Unfollow{% else %}Follow{% endif %}</button>{% csrf_token %}{% endif %}
+    {% if render_follow %}<button class="btn btn-primary action identity-relation-action {% if following %}tile-identity-unfollow{% else %}tile-identity-follow{% endif %}">{% if following %}Unfollow{% else %}Follow{% endif %}</button>{% csrf_token %}{% else %}
+    <p class="tile-nobutton">&nbsp;</p>{% endif %}
   </div>
   <div class="tile-footer">
   </div>

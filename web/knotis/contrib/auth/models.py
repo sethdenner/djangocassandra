@@ -27,7 +27,8 @@ class KnotisUserManager(UserManager):
     def create_user(
         self,
         email,
-        password
+        password,
+        is_superuser=False
     ):
         if email:
             email = email.lower()
@@ -37,6 +38,10 @@ class KnotisUserManager(UserManager):
             email,
             password
         )
+
+        if is_superuser:
+            new_user.is_superuser = is_superuser
+            new_user.save()
 
         user_info = UserInformation()
         user_info.user = new_user

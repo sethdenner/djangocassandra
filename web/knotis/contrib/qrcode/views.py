@@ -1,11 +1,7 @@
 import copy
 
-from django.shortcuts import (
-    redirect,
-    render
-)
+from django.shortcuts import redirect
 from django.conf import settings
-from django.template import Context
 from django.views.generic import View
 
 from knotis.views import ContextView
@@ -92,6 +88,21 @@ class ManageQRCodeView(ContextView):
             self.context['qrcode_uri'] = qrcode_uri
 
         self.context['BASE_URL'] = settings.BASE_URL
+        self.context['fixed_side_nav'] = True
+
+        self.context['styles'] = [
+            'knotis/layout/css/global.css',
+            'knotis/layout/css/header.css',
+            'navigation/css/nav_top.css',
+            'navigation/css/nav_side.css',
+        ]
+
+        self.context['post_scripts'] = [
+            'knotis/layout/js/layout.js',
+            'knotis/layout/js/forms.js',
+            'knotis/layout/js/header.js',
+            'navigation/js/navigation.js',
+        ]
 
         return self.context
 

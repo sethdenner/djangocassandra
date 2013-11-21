@@ -74,8 +74,6 @@ PAYPAL_DEFAULT_BUTTON_TEXT = 'Finish in Paypal'
 PAYPAL_ITEM_SUBSCRIPTION = 'subscription'
 PAYPAL_TRANSACTION_PRICE = 0.45
 
-PRICE_MERCHANT_MONTHLY = 14.
-
 # Email Settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.googlemail.com'

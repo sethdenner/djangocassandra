@@ -26,7 +26,7 @@ from knotis.contrib.product.models import (
 from knotis.contrib.inventory.models import (
     Inventory
 )
-from knotis.contrib.media.models import Image
+from knotis.contrib.media.models import ImageInstance
 from knotis.contrib.location.models import (
     Location,
     LocationItem
@@ -50,8 +50,7 @@ from knotis.contrib.paypal.views import (
 
 from knotis.views import (
     ContextView,
-    FragmentView,
-    AJAXFragmentView
+    FragmentView
 )
 
 from forms import (
@@ -62,9 +61,9 @@ from forms import (
     OfferFinishForm
 )
 
-from knotis.contrib.wizard.views import(
+from knotis.contrib.wizard.views import (
     WizardView,
-    WizardStep
+    WizardStepView
 )
 
 from knotis.contrib.layout.views import (
@@ -137,6 +136,7 @@ class OffersView(ContextView):
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
+            'fixed_side_nav': True
         })
         return local_context
 
@@ -207,8 +207,32 @@ class OfferTile(FragmentView):
         if not offer:
             return self.context
 
+        try:
+            offer_banner_image = ImageInstance.objects.get(
+                related_object_id=offer.id,
+                context='offer_banner',
+                primary=True
+            )
+
+        except:
+            logger.exception('failed to get offer banner image')
+            offer_banner_image = None
+
+        try:
+            business_badge_image = ImageInstance.objects.get(
+                related_object_id=offer.owner_id,
+                context='profile_badge',
+                primary=True
+            )
+
+        except:
+            logger.exception('failed to get business badge image')
+            business_badge_image = None
+
         # TODO: CALCULATE STATS.
         self.context.update({
+            'offer_banner_image': offer_banner_image,
+            'business_badge_image': business_badge_image,
             'stats': 'Stats',
         })
 
@@ -230,7 +254,20 @@ class OfferEditView(ContextView):
     view_name = 'offer_edit'
 
 
-class OfferEditProductFormView(AJAXFragmentView):
+class OfferCreateStepView(WizardStepView):
+    wizard_name = 'offer_create'
+
+    def build_query_string(self):
+        if not hasattr(self, 'offer') or not self.offer:
+            return ''
+
+        return '='.join([
+            'id',
+            self.offer.id
+        ])
+
+
+class OfferEditProductFormView(OfferCreateStepView):
     template_name = 'knotis/offer/edit_product_price.html'
     view_name = 'offer_edit_product_form'
 
@@ -270,6 +307,24 @@ class OfferEditProductFormView(AJAXFragmentView):
                 'message': 'the data entered is invalid',
                 'errors': errors
             })
+
+        offer_id = form.cleaned_data.get('offer_id')
+        if offer_id:
+            try:
+                offer = Offer.objects.get(pk=offer_id)
+
+            except Exception, e:
+                logger.exception('failed to get offer')
+
+                return self.generate_response({
+                    'message': 'a server error occurred',
+                    'errors': {'no-field': e.message}
+                })
+
+        else:
+            offer = None
+
+        new_offer = not offer
 
         product_type = form.cleaned_data.get('product_type')
         if ProductTypes.CREDIT == product_type:
@@ -325,6 +380,13 @@ class OfferEditProductFormView(AJAXFragmentView):
 
         owner = form.cleaned_data.get('owner')
 
+        if offer:
+            '''
+            If there's an existing offer nuke all the offer
+            items before manipulating all inventory again.
+            '''
+            OfferItem.objects.clear_offer_items(offer)
+
         try:
             inventory = Inventory.objects.create_stack_from_product(
                 owner,
@@ -364,27 +426,55 @@ class OfferEditProductFormView(AJAXFragmentView):
         else:
             stock = form.cleaned_data.get('offer_stock')
 
+        if offer:
+            try:
+                offer.update(
+                    title=title,
+                    stock=stock,
+                    unlimited=unlimited,
+                    inventory=[split_inventory],
+                    discount_factor=price / value
+                )
+
+            except Exception, e:
+                logger.exception('failed to update offer')
+
+                return self.generate_response({
+                    'message': 'a server error occurred',
+                    'errors': {'no-field': e.message}
+                })
+
+        else:
+            try:
+                offer = Offer.objects.create(
+                    owner=owner,
+                    title=title,
+                    stock=stock,
+                    unlimited=unlimited,
+                    inventory=[split_inventory],
+                    discount_factor=price / value
+                )
+
+            except Exception, e:
+                logger.exception('failed to create offer')
+
+                return self.generate_response({
+                    'message': 'a server error occurred',
+                    'errors': {'no-field': e.message}
+                })
+
+        self.offer = offer
+
         try:
-            offer = Offer.objects.create(
-                owner=owner,
-                title=title,
-                stock=stock,
-                unlimited=unlimited,
-                inventory=[split_inventory],
-                discount_factor=price / value
-            )
+            self.advance('' if new_offer else None)
 
-        except Exception, e:
-            logger.exception('failed to create offer')
-
-            return self.generate_response({
-                'message': 'a server error occurred',
-                'errors': {'no-field': e.message}
-            })
+        except:
+            logger.exception('could not advance wizard progress')
 
         return self.generate_response({
             'message': 'OK',
-            'offer_id': offer.id
+            'offer_id': offer.id,
+            'wizard_query': self.build_query_string()
         })
 
     def process_context(self):
@@ -405,10 +495,21 @@ class OfferEditProductFormView(AJAXFragmentView):
         else:
             raise PermissionDenied()
 
+        offer_id = request.GET.get('id')
+        if offer_id:
+            self.offer = get_object_or_404(
+                Offer,
+                pk=offer_id
+            )
+
+        else:
+            self.offer = None
+
         local_context = copy.copy(self.context)
         local_context.update({
             'form': OfferProductPriceForm(
-                owners=Identity.objects.filter(pk=owner.pk)
+                owners=Identity.objects.filter(pk=owner.pk),
+                offer=self.offer
             ),
             'ProductTypes': ProductTypes,
             'current_identity': current_identity
@@ -417,7 +518,7 @@ class OfferEditProductFormView(AJAXFragmentView):
         return local_context
 
 
-class OfferEditDetailsFormView(AJAXFragmentView):
+class OfferEditDetailsFormView(OfferCreateStepView):
     template_name = 'knotis/offer/edit_details.html'
     view_name = 'offer_edit_details_form'
 
@@ -445,7 +546,7 @@ class OfferEditDetailsFormView(AJAXFragmentView):
             })
 
         try:
-            offer = form.save()
+            self.offer = form.save()
 
         except Exception, e:
             logger.exception('error while saving offer detail form')
@@ -456,29 +557,33 @@ class OfferEditDetailsFormView(AJAXFragmentView):
                 }
             })
 
+        try:
+            self.advance()
+
+        except:
+            logger.exception('could not advance wizard progress')
+
         return self.generate_response({
             'message': 'OK',
             'offer_id': offer.id
         })
 
     def process_context(self):
-        offer = None
-
         request = self.request
         offer_id = request.GET.get('id')
-        offer = get_object_or_404(Offer, pk=offer_id)
+        self.offer = get_object_or_404(Offer, pk=offer_id)
 
         local_context = copy.copy(self.context)
         local_context.update({
             'form': OfferDetailsForm(
-                instance=offer
+                instance=self.offer
             ),
         })
 
         return local_context
 
 
-class OfferEditLocationFormView(AJAXFragmentView):
+class OfferEditLocationFormView(OfferCreateStepView):
     template_name = 'knotis/offer/edit_photos_location.html'
     view_name = 'offer_edit_location_form'
 
@@ -494,8 +599,9 @@ class OfferEditLocationFormView(AJAXFragmentView):
         offer_id = request.POST.get('offer')
         offer = get_object_or_404(Offer, pk=offer_id)
 
-        photos = Image.objects.filter(
-            owner=current_identity
+        photos = ImageInstance.objects.filter(
+            owner=current_identity,
+            context='offer_banner'
         )
 
         location_items = LocationItem.objects.filter(
@@ -526,9 +632,9 @@ class OfferEditLocationFormView(AJAXFragmentView):
             })
 
         try:
-            offer = form.cleaned_data['offer']
-            offer.default_image = form.cleaned_data['photo']
-            offer.save()
+            self.offer = form.cleaned_data['offer']
+            self.offer.default_image = form.cleaned_data['photo']
+            self.offer.save()
 
             locations = form.cleaned_data['locations']
             for location in locations:
@@ -546,9 +652,15 @@ class OfferEditLocationFormView(AJAXFragmentView):
                 }
             })
 
+        try:
+            self.advance()
+
+        except:
+            logger.exception('could not advance wizard progress')
+
         return self.generate_response({
             'message': 'OK',
-            'offer_id': offer.id
+            'offer_id': self.offer.id
         })
 
     def process_context(self):
@@ -557,10 +669,11 @@ class OfferEditLocationFormView(AJAXFragmentView):
         current_identity = Identity.objects.get(id=current_identity_id)
 
         offer_id = request.GET.get('id')
-        offer = get_object_or_404(Offer, pk=offer_id)
+        self.offer = get_object_or_404(Offer, pk=offer_id)
 
-        photos = Image.objects.filter(
-            owner=current_identity
+        photos = ImageInstance.objects.filter(
+            owner=current_identity,
+            context='offer_banner'
         )
 
         location_items = LocationItem.objects.filter(
@@ -576,7 +689,7 @@ class OfferEditLocationFormView(AJAXFragmentView):
         local_context = copy.copy(self.context)
         local_context.update({
             'form': OfferPhotoLocationForm(
-                offer=offer,
+                offer=self.offer,
                 photos=photos,
                 locations=locations,
                 parameters=self.context
@@ -586,7 +699,7 @@ class OfferEditLocationFormView(AJAXFragmentView):
         return local_context
 
 
-class OfferEditPublishFormView(AJAXFragmentView):
+class OfferEditPublishFormView(OfferCreateStepView):
     template_name = 'knotis/offer/edit_publish.html'
     view_name = 'offer_edit_publish_form'
 
@@ -623,10 +736,10 @@ class OfferEditPublishFormView(AJAXFragmentView):
             })
 
         try:
-            offer = form.cleaned_data.get('offer')
-            offer.start_time = form.cleaned_data.get('start_time')
-            offer.end_time = form.cleaned_data.get('end_time')
-            offer.save()
+            self.offer = form.cleaned_data.get('offer')
+            self.offer.start_time = form.cleaned_data.get('start_time')
+            self.offer.end_time = form.cleaned_data.get('end_time')
+            self.offer.save()
 
             endpoint_current_identity = Endpoint.objects.get(
                 endpoint_type=EndpointTypes.IDENTITY,
@@ -634,7 +747,7 @@ class OfferEditPublishFormView(AJAXFragmentView):
             )
             OfferPublish.objects.create(
                 endpoint=endpoint_current_identity,
-                subject=offer,
+                subject=self.offer,
                 publish_now=False
             )
             publish = form.cleaned_data.get('publish')
@@ -642,7 +755,7 @@ class OfferEditPublishFormView(AJAXFragmentView):
                 for endpoint in publish:
                     OfferPublish.objects.create(
                         endpoint=endpoint,
-                        subject=offer,
+                        subject=self.offer,
                         publish_now=False
                     )
 
@@ -655,6 +768,12 @@ class OfferEditPublishFormView(AJAXFragmentView):
                 }
             })
 
+        try:
+            self.advance()
+
+        except:
+            logger.exception('could not advance wizard progress')
+
         return self.generate_response({
             'message': 'OK',
             'offer_id': offer.id
@@ -666,7 +785,7 @@ class OfferEditPublishFormView(AJAXFragmentView):
         current_identity = Identity.objects.get(id=current_identity_id)
 
         offer_id = request.GET.get('id')
-        offer = get_object_or_404(Offer, pk=offer_id)
+        self.offer = get_object_or_404(Offer, pk=offer_id)
 
         publish_queryset = Endpoint.objects.filter(**{
             'identity': current_identity
@@ -675,7 +794,7 @@ class OfferEditPublishFormView(AJAXFragmentView):
         local_context = copy.copy(self.context)
         local_context.update({
             'form': OfferPublicationForm(
-                offer=offer,
+                offer=self.offer,
                 publish_queryset=publish_queryset,
                 parameters=self.context
             )
@@ -684,7 +803,7 @@ class OfferEditPublishFormView(AJAXFragmentView):
         return local_context
 
 
-class OfferEditSummaryView(AJAXFragmentView):
+class OfferEditSummaryView(OfferCreateStepView):
     template_name = 'knotis/offer/edit_summary.html'
     view_name = 'offer_edit_summary'
 
@@ -713,7 +832,7 @@ class OfferEditSummaryView(AJAXFragmentView):
             })
 
         try:
-            offer = form.save()
+            self.offer = form.save()
 
         except Exception, e:
             logger.exception('error while publishing offer')
@@ -724,19 +843,25 @@ class OfferEditSummaryView(AJAXFragmentView):
                 }
             })
 
+        try:
+            self.advance()
+
+        except:
+            logger.exception('could not advance wizard progress')
+
         return self.generate_response({
             'message': 'OK',
-            'offer_id': offer.id
+            'offer_id': self.offer.id
         })
 
     def process_context(self):
         request = self.context.get('request')
 
         offer_id = request.GET.get('id')
-        offer = get_object_or_404(Offer, id=offer_id)
+        self.offer = get_object_or_404(Offer, id=offer_id)
 
         try:
-            offer_items = OfferItem.objects.filter(offer=offer)
+            offer_items = OfferItem.objects.filter(offer=self.offer)
 
         except Exception:
             logger.exception('failed to get offer items')
@@ -749,8 +874,8 @@ class OfferEditSummaryView(AJAXFragmentView):
 
         estimated_sales = min(
             estimated_sales_max,
-            offer.stock
-        ) if not offer.unlimited else estimated_sales_max
+            self.offer.stock
+        ) if not self.offer.unlimited else estimated_sales_max
         revenue_per_offer = 0.
         for item in offer_items:
             revenue_per_offer += item.price_discount
@@ -760,6 +885,10 @@ class OfferEditSummaryView(AJAXFragmentView):
         savings_low = revenue_total * .3
         savings_high = revenue_total * .5
 
+        tile = OfferTile()
+        tile_rendered = tile.render_template_fragment(Context({
+            'offer': self.offer,
+        }))
         local_context = copy.copy(self.context)
         local_context.update({
             'summary_revenue_customer': ''.join([
@@ -779,8 +908,9 @@ class OfferEditSummaryView(AJAXFragmentView):
             ]),
             'summary_estimated_sales': str(int(estimated_sales)),
             'offer_finish_form': OfferFinishForm(
-                instance=offer
-            )
+                instance=self.offer
+            ),
+            'offer_tile_preview': tile_rendered
         })
 
         return local_context
@@ -794,17 +924,43 @@ class OfferDetailView(FragmentView):
         offer_id = self.context.get('offer_id')
         offer = get_object_or_404(Offer, pk=offer_id)
 
-        try:
-            offer_items = OfferItem.objects.filter(offer=offer)
+        offer_items = self.context.get('offer_items')
+        if not offer_items:
+            try:
+                offer_items = OfferItem.objects.filter(offer=offer)
 
-        except Exception:
-            logger.exception('failed to get offer items')
-            offer_items = None
+            except Exception:
+                logger.exception('failed to get offer items')
+                offer_items = None
+
+        try:
+            business_badge_image = ImageInstance.objects.get(
+                related_object_id=offer.owner_id,
+                context='profile_badge',
+                primary=True
+            )
+
+        except:
+            logger.exception('failed to get business badge image')
+            business_badge_image = None
+
+        try:
+            offer_image = ImageInstance.objects.get(
+                related_object_id=offer.pk,
+                context='offer_banner',
+                primary=True
+            )
+
+        except:
+            logger.exception('failed to get offer image')
+            offer_image = None
 
         local_context = copy.copy(self.context)
         local_context.update({
             'offer': offer,
-            'offer_items': offer_items
+            'offer_items': offer_items,
+            'offer_image': offer_image,
+            'business_badge_image': business_badge_image
         })
 
         return local_context
@@ -812,31 +968,4 @@ class OfferDetailView(FragmentView):
 
 class OfferCreateWizard(WizardView):
     view_name = 'offer_create_wizard'
-
-    steps = [
-        WizardStep(
-            '/offer/create/product/',
-            'offer-edit-product-form',
-            {}
-        ),
-        WizardStep(
-            '/offer/create/details/',
-            'offer-edit-details-form',
-            {'id': 'offer_id'}
-        ),
-        WizardStep(
-            '/offer/create/location/',
-            'offer-edit-location-form',
-            {'id': 'offer_id'}
-        ),
-        WizardStep(
-            '/offer/create/publish/',
-            'offer-edit-publish-form',
-            {'id': 'offer_id'}
-        ),
-        WizardStep(
-            '/offer/create/summary/',
-            'offer-edit-summary',
-            {'id': 'offer_id'}
-        ),
-    ]
+    wizard_name = 'offer_create'
