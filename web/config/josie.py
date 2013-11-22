@@ -3,21 +3,30 @@ TEMPLATE_DEBUG = DEBUG
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django_cassandra.db',
-        'NAME': 'knotis',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django_cassandra.db',  # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'knotis',  # Or path to database file if using sqlite3.
+        'USER': '',  # Not used with sqlite3.
+        'PASSWORD': '',  # Not used with sqlite3.
+        'HOST': '',  # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',  # Set to empty string for default. Not used with sqlite3.
     }
 }
 
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
+    },
+}
+
+
+EMAIL_BILLING_USER = 'knotis.dev+billing@gmail.com'
 EMAIL_HOST_USER = 'knotis.dev@gmail.com'
 EMAIL_HOST_PASSWORD = 'wheeling and dealing'
 
 # Base url for external access
-# NO TRAILING SLASH!!!
-BASE_URL = 'http://josie_knotis.local'
+BASE_URL = 'http://josie_knotis.local'  # NO TRAILING SLASH!!!
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -60,7 +69,6 @@ PAYPAL_NOTIFY_URL = ''.join([
     BASE_URL,
     '/paypal/ipn/'
 ])
-PAYPAL_OFFER_BUTTON_ID = 'DCV66T4VPMMXU'
 PAYPAL_PREMIUM_BUTTON_ID = 'YNYHC3S6TYB7W'
 PAYPAL_DEFAULT_BUTTON_TEXT = 'Finish in Paypal'
 PAYPAL_ITEM_SUBSCRIPTION = 'subscription'
