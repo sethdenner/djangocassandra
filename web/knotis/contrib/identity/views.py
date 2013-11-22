@@ -408,13 +408,17 @@ class EstablishmentAboutAbout(AJAXFragmentView):
         )
         if len(locationItem):
             address = locationItem[0].location.address
+            address_latitude = locationItem[0].location.latitude,
+            address_longitude = locationItem[0].location.longitude
         else:
             address = None
+            address_latitude = None
+            address_longitude = None
 
         local_context.update({
             'address': address,
-            'address_latitude': locationItem[0].location.latitude,
-            'address_longitude': locationItem[0].location.longitude
+            'address_latitude': address_latitude,
+            'address_longitude': address_longitude
         })
 
         # add business name to local_context
