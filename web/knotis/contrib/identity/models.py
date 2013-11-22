@@ -153,6 +153,10 @@ class IdentityBusinessManager(IdentityManager):
             business
         )
 
+        business.clean()
+        business.save()
+
+
         return business
 
     def get_businesses(
@@ -198,6 +202,28 @@ class IdentityBusinessManager(IdentityManager):
 
 
 class IdentityEstablishmentManager(IdentityManager):
+    def create(
+        self,
+        parent,
+        *args,
+        **kwargs
+    ):
+        establishment = super(IdentityEstablishmentManager, self).create(
+            identity_type=IdentityTypes.ESTABLISHMENT,
+            *args,
+            **kwargs
+        )
+
+        Relation.objects.create_establishment(
+            parent,
+            establishment
+        )
+
+        establishment.clean()
+        establishment.save()
+
+        return establishment
+
     def get_establishments(
         self,
         identity
