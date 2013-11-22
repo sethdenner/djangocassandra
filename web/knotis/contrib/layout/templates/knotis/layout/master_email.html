@@ -1,11 +1,16 @@
+
+{% if not email_type or email_type == 'html' %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+   <div class="body">
     <style type="text/css">
 
-      body {
+      .body {
         font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
         margin: 0;
         padding: 0;
@@ -96,11 +101,11 @@
       {% block additional_css %}{% endblock additional_css %}
       
     </style>
-  </head>
-  <body>
+
+    
     <div class="subject-bar small">
       <div class="subject">{% block subject %}{% endblock subject %}</div>
-      <div class="browser-link"><a href="{% block browser_link %}{% endblock browser_link %}">View this email in your browser</a></div>
+      <div class="browser-link"><a href="{{ browser_link }}">View this email in your browser</a></div>
     </div>
     
     <div class="knotis-logo">
@@ -119,7 +124,19 @@
       <br />
       <img width="150" height="55" src="http://dev.knotis.com/static/knotis/img/knotis_gray.png" alt="Knotis Name" />
     </div>
-    
+   </div>
   </body>
   
 </html>
+{% endif %}
+
+{% if email_type == 'text' %}
+To view this email in your browser, follow {{ browser_link }}
+
+
+{% block text_content %}{% endblock text_content %}
+
+
+© 2013 Knotis®, All Rights Registered.
+2226 3rd Ave. • Seattle, WA 98107 USA
+{% endif %}

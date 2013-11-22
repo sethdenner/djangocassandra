@@ -18,6 +18,9 @@ from mixins import (
     GenerateAJAXResponseMixin
 )
 
+from django.template.loader import get_template
+from django.core.mail import EmailMultiAlternatives
+import copy
 
 class ContextView(TemplateView):
     '''
@@ -73,6 +76,41 @@ class FragmentView(
         )
 
 
+
+import httplib, urllib2, cgi
+class EmailView(FragmentView):
+
+    text_template_name = None
+    
+    def generate_email(self, subject, from_email, to_list, context):
+        context = copy.copy(context)
+
+        context.update({
+            'email_type': 'html'
+        })
+        html_content = self.render_template_fragment(context)
+
+        params = {
+            'page': html_content
+        }
+            
+        # req = urllib2.Request('http://192.168.1.103:16081/premail/', params)
+        # fweb = urllib2.urlopen(req)
+        # html_content = fweb.read()
+
+        # import pdb; pdb.set_trace()
+        
+        context.update({
+            'email_type': 'text'
+        })
+        text_content = self.render_template_fragment(context)
+        
+        msg = EmailMultiAlternatives(subject, text_content, from_email, to_list)
+        msg.attach_alternative(html_content, 'text/html')
+
+        return msg
+  
+    
 class AJAXView(
     View,
     GenerateAJAXResponseMixin

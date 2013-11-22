@@ -1,0 +1,60 @@
+
+{% extends 'knotis/layout/master_email.html' %}
+{% load render_template_fragment %}
+{% block subject %}High-five, you have a new follower.{% endblock subject %}
+{% block browser_link %}{{ browser_link }}{% endblock browser_link %}
+
+{% if email_type == 'html' %}
+{% block additional_css %}
+div.center {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+h1 {
+ 
+}
+
+h2 {
+  color: white;
+}
+
+img.logo {
+  margin-top: 50px;
+  width: 170px;
+  height: 170px;
+  vertical-align: middle;
+  border: 0;
+  -webkit-border-radius: 500px;
+  -mox-border-radius: 500px;
+  border-radius: 500px;
+}
+{% endblock additional_css %}
+
+{% block content %}
+<h1>High-five, you have a new follower.</h1>
+
+<div class="cover center" style="background: url('{{ business_cover_url }}');">
+  <img class="logo" src="{{ business_logo_url }}" />
+  <div>
+    <h2>{{ business_name }}</h2>
+  </div>
+</div>
+<p>{{ username }} is now following you.</p>
+<br />
+<br />
+<a class="button" href="{{ view_profile_link }}">View Profile</a>
+<br />
+<br />
+<br />
+{% endblock content %}
+{% endif %}
+
+{% if email_type == 'text' %}
+{% block text_content %}
+{{ username }} is now following you. 
+Click the following link to view their profile: {{ view_profile_link }}.
+{% endblock text_content %}
+{% endif %}
