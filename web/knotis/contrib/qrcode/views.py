@@ -88,6 +88,7 @@ class ManageQRCodeView(ContextView):
             self.context['qrcode_uri'] = qrcode_uri
 
         self.context['BASE_URL'] = settings.BASE_URL
+        self.context['fixed_side_nav'] = True
 
         self.context['styles'] = [
             'knotis/layout/css/global.css',

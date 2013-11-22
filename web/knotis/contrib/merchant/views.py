@@ -49,12 +49,11 @@ class MyEstablishmentsView(ContextView):
 
         styles = [
             'knotis/layout/css/global.css',
-            'knotis/layout/css/global.css',
+            'knotis/layout/css/header.css',
             'knotis/layout/css/grid.css',
             'knotis/layout/css/tile.css',
             'navigation/css/nav_top.css',
             'navigation/css/nav_side.css',
-            'knotis/identity/css/profile.css',
             'styles/default/fileuploader.css'
         ]
 
@@ -78,7 +77,8 @@ class MyEstablishmentsView(ContextView):
         local_context.update({
             'styles': styles,
             'pre_scripts': pre_scripts,
-            'post_scripts': post_scripts
+            'post_scripts': post_scripts,
+            'fixed_side_nav': True
         })
 
         return local_context
@@ -229,7 +229,7 @@ class MyOffersView(ContextView):
             'knotis/layout/css/tile.css',
             'navigation/css/nav_top.css',
             'navigation/css/nav_side.css',
-            'styles/default/fileuploader.css',
+            'styles/default/fileuploader.css'
             'knotis/merchant/css/my_offers.css'
         ]
 
@@ -253,7 +253,9 @@ class MyOffersView(ContextView):
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
-            'top_menu_name': 'my_offers'
+            'top_menu_name': 'my_offers',
+            'fixed_top_nav': True,
+            'fixed_side_nav': True
         })
         return local_context
 

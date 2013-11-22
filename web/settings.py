@@ -205,6 +205,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'haystack',
     # knotis apps
     'knotis',
     'knotis.contrib.layout',

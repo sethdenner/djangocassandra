@@ -81,6 +81,10 @@ urlpatterns = patterns(
     ),
     url(
         r'',
+        include('knotis.contrib.search.urls')
+    ),
+    url(
+        r'',
         include('knotis.contrib.api.urls')
     ),
     url(

@@ -4,7 +4,7 @@
   <input type="hidden" class="tile-identity" value="{{ identity.id }}"/>
   <a href="/id/{{ identity.id }}/">
     <div class="tile-header">
-      {% thumbnail banner_image.image.image 'x161' crop=banner_image.crop as image %}
+      {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
       <div class="tile-image" style="background-image: url('{{ image.url }}');">&nbsp;</div>
       {% empty %}
       <div class="tile-image" style="background-image: url('{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png')" >&nbsp;</div>
