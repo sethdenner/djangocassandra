@@ -494,6 +494,11 @@ class Offer(QuickModel):
         our_cut = gross * .03
         return format_currency(gross - our_cut)
 
+    def get_location(self):
+        locations = LocationItems.objects.filter(related_object_id = self.pk)
+        if locations.count > 0:
+            return locations[0].location.get_location()
+        return None
 
 class OfferItem(QuickModel):
     offer = QuickForeignKey(Offer)
