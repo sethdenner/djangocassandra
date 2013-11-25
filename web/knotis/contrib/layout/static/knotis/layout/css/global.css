@@ -118,6 +118,51 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     filter: none;
 }
 
+.btn-knotis-action {
+  color: #808184;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #F4F5F5;
+  *background-color: #F4F5F5;
+  background-image: none;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  border-color: #D8D9D8;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.btn-knotis-action:hover,
+.btn-knotis-action:active,
+.btn-knotis-action.active,
+.btn-knotis-action.disabled,
+.btn-knotis-action[disabled] {
+  color: #808184;
+  background-color: #EEEFEF;
+  *background-color: #EEEFEF;
+  background-image: none;
+  background-repeat: no-repeat;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+
+.btn-knotis-action:active,
+.btn-knotis-action.active {
+  background-color: #003399 \9;
+}
+
+.btn-knotis-action img.action-icon {
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+}
+
+.btn-knotis-action > span {
+    vertical-align: middle;
+}
+
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active,

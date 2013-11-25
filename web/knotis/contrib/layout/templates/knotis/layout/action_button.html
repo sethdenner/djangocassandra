@@ -1,7 +1,8 @@
 {% if actions %}
+{% if actions|length > 1 %}
 <div class="btn-group">
   <button{% for key, value in primary_action.data.iteritems %}
-            data-{{ key }}="{{ value }}"{% endfor %}
+            data-param-{{ key }}="{{ value }}"{% endfor %}
             data-toggle="dropdown"
             class="btn dropdown-toggle {{ css_class }}"
             href="{{ primary_action.href }}">{{ primary_action.title }}<span class="caret"></span></button>
@@ -16,8 +17,14 @@
   </ul>
 </div>
 {% else %}
-<button{% for key, value in default_action.data.iteritems %}
-          data-{{ key }}="{{ value }}"{% endfor %}
-          class="btn dropdown-toggle {{ css_class }}"
-          href="{{ default_action.href }}">{{ default_action.title }}</button>
+{% with action=actions.0 %}
+<button{% for key, value in action.data.iteritems %}
+          data-param-{{ key }}="{{ value }}"{% endfor %}
+          data-method="{{ action.method }}"
+          class="btn {{ css_class }}"
+          href="{{ action.href }}">&nbsp<img class="action-icon" src="{{ STATIC_URL }}knotis/img/action_icon.png" /><span class="hide">{{ action.title }}</span>&nbsp;</button>
+{% endwith %}
+{% endif %}
+{% else %}
+<p class="tile-no-action" >&nbsp;</p>
 {% endif %}
