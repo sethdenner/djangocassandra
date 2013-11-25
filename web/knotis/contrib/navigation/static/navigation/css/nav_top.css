@@ -1,8 +1,3 @@
-.navbar.navigation-horizontal.navbar-static-top.top-nav.fixed {
-    position: fixed;
-    width: 100%;
-}
-
 .top-nav-extra-space {
     height: 41px;
 }
@@ -22,4 +17,8 @@
 
 .navbar.navigation-horizontal .navbar-inner {
     text-align: center;
+}
+
+.navbar.navbar-fixed-top.navigation-horizontal.top-nav {
+    top: 66px;
 }
