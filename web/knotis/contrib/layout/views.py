@@ -25,11 +25,13 @@ class ButtonAction(object):
         self,
         title,
         href,
-        data={}
+        data={},
+        method='get'
     ):
         self.title = title
         self.href = href
         self.data = data
+        self.method = method.lower()
 
 
 class ActionButton(FragmentView):
@@ -37,15 +39,17 @@ class ActionButton(FragmentView):
     view_name = 'action_button'
 
     def process_context(self):
-        local_context = copy.copy(self.context)
+        self.context = copy.copy(self.context)
 
-        local_context.update({
-            'css_class': 'btn-primary',
-            'primary_action': ButtonAction(
-                'Action',
-                '#'
-            ),
-            'actions': []
+        self.context.update({
+            'actions': self.actions(),
+            'css_class': 'btn-knotis-action'
         })
 
-        return local_context
+        return self.context
+
+    def actions(self):
+        '''
+        Override this in subclass. Should return an array of ButtonAction
+        '''
+        return []
