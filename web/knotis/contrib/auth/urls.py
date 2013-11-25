@@ -5,16 +5,20 @@ from django.conf.urls.defaults import (
 
 from views import (
     LoginView,
-    SignUpView,
-    KnotisPasswordResetEmailBody
+    SignUpView
+)
+
+from views import (
+    PasswordResetEmailBody,
+    PasswordChangedEmailBody,
+    ChangeEmailEmailBody,
+    ChangedEmailEmailBody,
+    WelcomeEmailBody
 )
 
 urlpatterns = patterns(
     'knotis.contrib.auth.views',
-    url(
-        r'^auth/resetemail/$',
-        KnotisPasswordResetEmailBody.as_view()
-    ),
+
     url(
         r'^auth/login/$',
         LoginView.as_view()
