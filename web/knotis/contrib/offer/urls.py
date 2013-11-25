@@ -15,10 +15,15 @@ from views import (
     OfferEditPublishFormView,
     OfferEditSummaryView,
     OfferPurchaseView,
+    NewOfferEmailBody
 )
 
 urlpatterns = patterns(
     'knotis.contrib.offer.views',
+    url(
+        r'^newoffer$',
+        NewOfferEmailBody.as_view()
+    ),
     url(
         r'^s/$',
         OffersView.as_view()

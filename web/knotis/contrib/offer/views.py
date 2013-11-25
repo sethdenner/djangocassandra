@@ -50,7 +50,8 @@ from knotis.contrib.paypal.views import (
 
 from knotis.views import (
     ContextView,
-    FragmentView
+    FragmentView,
+    EmailView
 )
 
 from forms import (
@@ -969,3 +970,29 @@ class OfferDetailView(FragmentView):
 class OfferCreateWizard(WizardView):
     view_name = 'offer_create_wizard'
     wizard_name = 'offer_create'
+
+
+class NewOfferEmailBody(EmailView):
+    template_name = 'knotis/offer/email_new_offer.html'
+    text_template_name = 'knotis/offer/email_new_offer.txt'
+    
+    def process_context(self):
+        local_context = copy.copy(self.context)
+
+        browser_link = 'example.com'
+        product_title = 'Grilled Cheese Sandwich'
+        product_img_url = '/media/cache/ef/25/ef2517885c028d7545f13f79e5b7993a.jpg'
+        business_logo_url = '/media/cache/87/08/87087ae77f4a298e550fc9d255513ad4.jpg'
+        purchase_link = 'example.com'
+        price = "$20.00"
+
+        local_context.update({
+            'browser_link': browser_link,
+            'product_title': product_title,
+            'product_img_url': product_img_url,
+            'business_logo_url': business_logo_url,
+            'purchase_link': purchase_link,
+            'price': price
+        })
+
+        return local_context

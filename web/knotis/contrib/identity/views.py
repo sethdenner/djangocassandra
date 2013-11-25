@@ -24,7 +24,12 @@ from knotis.contrib.offer.views import (
     OfferCreateTile
 )
 
-from knotis.contrib.layout.views import GridSmallView
+from knotis.contrib.layout.views import (
+    GridSmallView,
+    ActionButton,
+    ButtonAction
+)
+
 from models import (
     IdentityTypes,
     Identity,
@@ -33,7 +38,10 @@ from models import (
     IdentityEstablishment
 )
 
-from knotis.contrib.relation.models import Relation
+from knotis.contrib.relation.models import (
+    Relation,
+    RelationTypes
+)
 
 from forms import (
     IdentityIndividualSimpleForm,
@@ -139,6 +147,7 @@ class BusinessesView(FragmentView):
             'knotis/layout/js/forms.js',
             'knotis/layout/js/header.js',
             'knotis/layout/js/create.js',
+            'knotis/layout/js/action_button.js',
             'navigation/js/navigation.js',
             'jcrop/js/jquery.Jcrop.js',
             'scripts/fileuploader.js',
@@ -196,6 +205,26 @@ class BusinessesGrid(GridSmallView):
         })
 
         return local_context
+
+
+class IdentityTileActionButton(ActionButton):
+    view_name = 'identity_tile_action'
+
+    def actions(self):
+        identity = self.context.get('identity')
+        current_identity = self.context.get('current_identity')
+
+        return [
+            ButtonAction(
+                'Follow',
+                '/api/v1/relation/', {
+                    'relation-type': RelationTypes.FOLLOWING,
+                    'subject': current_identity.pk,
+                    'related': identity.pk
+                },
+                'get'
+            )
+        ]
 
 
 class IdentityTile(FragmentView):

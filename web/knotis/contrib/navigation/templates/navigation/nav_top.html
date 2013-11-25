@@ -3,7 +3,7 @@
   <div class="navbar-inner">
     <div class="container text-center">
       <ul class="nav nav-pills">
-        {% for item in navigation_items %}
+        {% for item in parsed_navigation_items %}
 	    <li><a href="{{ item.uri }}">{{ item.title }}</a></li>
         {% endfor %}
       </ul>
