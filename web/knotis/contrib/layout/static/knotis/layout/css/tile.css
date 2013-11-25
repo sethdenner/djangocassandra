@@ -70,14 +70,14 @@ div.grid-tile.small-tile div.tile-header img.tile-badge {
 }
 
 div.grid-tile.small-tile div.tile-body {
-    padding-top: 56px;
+    padding-top: 20px;
+    height: 113px;
 }
 
 div.grid-tile.small-tile div.tile-body p.tile-title {
     font-size: 1.25em;
     overflow: hidden;
-    min-height: 2.12em;
-    max-height: 2.12em;
+    height: 3.75em;
 }
 
 div.grid-tile.small-tile div.tile-body button {
