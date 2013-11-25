@@ -1,4 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import (
     login_required as auth_login_required
 )
@@ -130,6 +131,7 @@ class ApiView(AJAXView):
     api_version = 'v1'
 
     @csrf_exempt
+    @never_cache
     def dispatch(
         self,
         request,
@@ -176,7 +178,7 @@ class ApiView(AJAXView):
                 '^api',
                 ApiView.api_version,
                 cls.api_url,
-                ''
+                '$'
             ]),
             view
         )

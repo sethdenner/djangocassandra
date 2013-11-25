@@ -1,12 +1,22 @@
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
+from django.shortcuts import get_object_or_404
+
 from knotis.views import ApiView
+from knotis.utils.regex import REGEX_UUID
 
-from models import Relation
+from knotis.contrib.auth.models import KnotisUser
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityIndividual
+)
 
-from forms import RelationForm
-from knotis.contrib.identity.models import Identity
+from models import (
+    Relation,
+    RelationTypes
+)
+
 
 class FollowApi(ApiView):
     api_url = 'relation/follow'
@@ -24,7 +34,7 @@ class FollowApi(ApiView):
             if request.user.is_authenticated():
                 subject_id = request.session.get('current_identity_id')
                 subject = Identity.objects.get(pk=subject_id)
-                
+
                 related_id = request.REQUEST.get('related_id')
                 related = Identity.objects.get(pk=related_id)
 
@@ -35,54 +45,70 @@ class FollowApi(ApiView):
                         subject,
                         related
                     ).save()
-                    
+
                 elif verb == 'unfollow':
                     follows = Relation.objects.get_following(subject)
                     for follow in follows:
-                        if (not follow.deleted) and (follow.related.id == related.id):
+                        if (
+                            (not follow.deleted) and
+                            (follow.related.id == related.id)
+                        ):
                             follow.deleted = True
                             follow.save()
-                        
+
         except Exception, e:
             raise e
             logger.exception('failed to follow')
             errors['no-field'] = e.message
-            
+
         return self.generate_response({
-            'errors': errors
+            'errors': errors,
+            'relation': {
+                'pk': relation.pk,
+                'subject_id': relation.subject_object_id,
+                'related_id': relation.related_object_id,
+                'description': relation.description
+            }
         })
 
+
 class RelationApi(ApiView):
-    api_url = 'relation/relation'
+    api_url = ''.join([
+        'relation(/(?P<relation_pk>',
+        REGEX_UUID,
+        '))?'
+    ])
 
     def get(
         self,
         request,
         *args,
-        **kwrags
+        **kwargs
     ):
         errors = {}
 
+        pk = kwargs.get('relation_pk')
+
         index = int(request.GET.get('i', '0'))
         count = int(request.GET.get('c', '20'))
-        pk = request.GET.get('pk')
         relation_type = request.GET.get('relation_type')
-        related_id = request.GET.get('related_id')
-        subject_id = request.GET.get('subject_id')
+        related = request.GET.get('related')
+        subject = request.GET.get('subject')
 
         try:
-            relations = Relation.objects.all()
+            relations = Relation.objects.filter(deleted=False)
             if pk:
                 relations = relations.filter(pk=pk)
 
-            if relation_type:
-                relations = relations.filter(relation_type=relation_type)
+            else:
+                if relation_type:
+                    relations = relations.filter(relation_type=relation_type)
 
-            if related_id:
-                relations = relations.filter(related_object_id=related_id)
+                if related:
+                    relations = relations.filter(related_object_id=related)
 
-            if subject_id:
-                relations = relations.filter(subject_object_id=subject_id)
+                if subject:
+                    relations = relations.filter(subject_object_id=subject)
 
             if index:
                 relations = relations[index:index + count]
@@ -98,10 +124,10 @@ class RelationApi(ApiView):
         relation_data = {}
         if relations:
             for relation in relations:
-                relation_data[relation.id] = {
+                relation_data[relation.pk] = {
                     'relation_type': relation.relation_type,
-                    'subject_id': relation.subject_object_id,
-                    'related_id': relation.related_object_id,
+                    'subject': relation.subject_object_id,
+                    'related': relation.related_object_id,
                     'description': relation.description
                 }
 
@@ -116,38 +142,72 @@ class RelationApi(ApiView):
         *args,
         **kwargs
     ):
-        errors = {}
-
-        form = RelationForm(data=request.POST)
+        pk = kwargs.get('relation_pk')
 
         instance = None
-
-        if form.is_valid():
+        if pk:
             try:
-                instance = form.save()
+                instance = Relation.objects.get(pk=pk)
+
+            except Relation.DoesNotExist:
+                pass
 
             except Exception, e:
-                logger.exception(
-                    'an exception occurred during relation creation'
-                )
-                errors['no-field'] = e.message
+                logger.exception()
+                raise e
+
+        relation_type = request.POST.get('relation_type')
+
+        if (
+            RelationTypes.INDIVIDUAL == relation_type or
+            RelationTypes.SUPERUSER == relation_type
+        ):
+            subject_type = KnotisUser
+            related_type = IdentityIndividual
 
         else:
-            for field, messages in form.errors.iteritems():
-                errors[field] = [message for message in messages]
+            subject_type = Identity
+            related_type = Identity
 
-        if instance:
-            instance_data = {
-                'id': instance.id,
-                'subject': instance.subject_object_id,
-                'related': instance.related_object_id,
-                'description': instance.description
+        subject_pk = request.POST.get('subject')
+        related_pk = request.POST.get('related')
+
+        subject = subject_type.objects.get(pk=subject_pk)
+        related = related_type.objects.get(pk=related_pk)
+
+        relation = Relation.objects.create(
+            relation_type=relation_type,
+            subject=subject,
+            related=related
+        )
+
+        if relation:
+            relation_data = {
+                'id': relation.id,
+                'subject': relation.subject_object_id,
+                'related': relation.related_object_id,
+                'description': relation.description
             }
 
         else:
-            instance_data = None
+            relation_data = None
 
         return self.generate_response({
-            'relation': instance_data,
-            'errors': errors
+            'relation': relation_data,
+        })
+
+    def delete(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        relation_pk = kwargs.get('relation_pk', None)
+        relation = get_object_or_404(Relation, pk=relation_pk)
+        relation.deleted = True
+        relation.save()
+
+        return self.generate_response({
+            'relation_id': relation_pk,
+            'deleted': relation.deleted
         })
