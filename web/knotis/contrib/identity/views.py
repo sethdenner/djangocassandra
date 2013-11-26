@@ -317,16 +317,9 @@ class IdentityTile(FragmentView):
         profile_banner_colors = [
             'blue',
             'darkblue',
-            'darkgrey',
-            'lightgrey',
-            'orange',
-            'pink',
-            'purple',
-            'red',
             'turquoise',
-            'yellow'
         ]
-        profile_banner_color_index = int(identity.pk[24:], 16) % 10
+        profile_banner_color_index = int(identity.pk[24:], 16) % 3
         profile_banner_color = profile_banner_colors[
             profile_banner_color_index
         ]
@@ -894,7 +887,7 @@ class EstablishmentProfileView(FragmentView):
             'endpoints': endpoint_dicts,
             'is_manager': is_manager
         })
-        
+
         if self.context.get('view_name') == 'contact':
             nav_top_content = EstablishmentProfileLocation().render_template_fragment(nav_context)
             content_plexer = 'offersaboutcontact'
@@ -911,16 +904,9 @@ class EstablishmentProfileView(FragmentView):
         profile_banner_colors = [
             'blue',
             'darkblue',
-            'darkgrey',
-            'lightgrey',
-            'orange',
-            'pink',
-            'purple',
-            'red',
-            'turquoise',
-            'yellow'
+            'turquoise'
         ]
-        profile_banner_color_index = int(business.pk[24:], 16) % 10
+        profile_banner_color_index = int(business.pk[24:], 16) % 3
         profile_banner_color = profile_banner_colors[
             profile_banner_color_index
         ]
@@ -934,7 +920,7 @@ class EstablishmentProfileView(FragmentView):
             }
         else:
             phone = None
-            
+
         website = EndpointWebsite.objects.filter(
             identity=business,
             primary=True
