@@ -1,12 +1,15 @@
 .modal-header.auth-header {
-    height: 120px;
+    height: 96px;
     text-align: center;
     padding: 10px;
-    background-color: #808184;
+    background-color: #0db09e;
     color: #fff;
+    border: none;
 }
 
 .modal-header.auth-header button.close {
-    color: #474747;
+    color: #fff;
     font-size: 2em;
+    opacity: 1.0;
+    filter: alpha(opacity=100);
 }
