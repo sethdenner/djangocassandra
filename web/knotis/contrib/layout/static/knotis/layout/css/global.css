@@ -109,13 +109,13 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     -o-user-select: none;
     user-select: none;
     margin: 2px;
+    background-image: none;
 }
 
 .btn-primary {
     color: #fff;
     text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
-    background-color: #03948E;
-    background-image: none;
+    background-color: #0db09e;
     filter: none;
 }
 
@@ -170,7 +170,7 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
     color: #ffffff;
-    background-color: #00726E;
+    background-color: #097B6F;
     border-color: #285e8e;
 }
 
