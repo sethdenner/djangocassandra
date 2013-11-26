@@ -14,7 +14,8 @@ from crispy_forms.bootstrap import FieldWithButtons
 
 class SearchForm(Form):
     q = CharField(
-        label=''
+        label='',
+        required=False
     )
 
     def __init__(
@@ -38,7 +39,7 @@ class SearchForm(Form):
                     'q',
                     id='q',
                     css_class='span4',
-                    placeholder='Search businesses and offers around you'
+                    placeholder='Search businesses and offers around you',
                 ),
                 Submit(
                     'search',

@@ -20,6 +20,7 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 EMAIL_BILLING_USER = 'knotis.dev+billing@gmail.com'
 EMAIL_HOST_USER = 'knotis.dev@gmail.com'
