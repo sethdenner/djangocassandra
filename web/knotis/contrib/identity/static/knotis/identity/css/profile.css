@@ -74,7 +74,7 @@ div.column-box {
 
 /* Profile About Section Divs */
 .about-section {
-    background: #fff;
+    background: #e5e5e4;
     padding: 24px;
 }
 
@@ -133,4 +133,48 @@ div.column-box {
 /* Profile Header Endpoints */
 .cover-endpoint>span {
     padding-left: 3px;
+}
+
+/* Profile Feeds */
+/** Twitter */
+div.tweet p {
+    background: #FFFFFF;
+    color: #eb8636;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    padding: 5px;
+}
+
+div.twitter-title h4 {
+    display: inline;
+    margin-left: 10px;
+}
+
+div.twitter-title img {
+    border-radius: 2px;
+    box-shadow: 5px 5px 5px #888888;
+}
+
+div.twitter-title {
+    margin-bottom: 10px;
+}
+
+/** Yelp */
+div.yelp-review p.excerpt {
+    background: #FFFFFF;
+    color: #eb8636;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    padding: 5px;
+}
+
+div.yelp-review span.username {
+    background: #FFFFFF;
+    color: #1d76bb;
+}
+
+div.yelp-review span.score {
+    color: #eb8636;
 }
