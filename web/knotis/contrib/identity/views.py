@@ -214,6 +214,9 @@ class IdentityTileActionButton(ActionButton):
         identity = self.context.get('identity')
         current_identity = self.context.get('current_identity')
 
+        if not current_identity:
+            return None
+
         return [
             ButtonAction(
                 'Follow',
