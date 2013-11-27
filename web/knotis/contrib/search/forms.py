@@ -43,7 +43,8 @@ class SearchForm(Form):
                 ),
                 Submit(
                     'search',
-                    'Search'
+                    '',
+                    css_class='btn-search'
                 )
             )
         )

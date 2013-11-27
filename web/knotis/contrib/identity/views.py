@@ -242,25 +242,12 @@ class IdentityTile(FragmentView):
         request = self.context.get('request')
         identity = self.context.get('identity')
 
-        following = False
-        render_follow = False
         if request.user.is_authenticated():
             current_identity_id = request.session.get('current_identity_id')
             current_identity = Identity.objects.get(
                 pk=current_identity_id
             )
 
-            if current_identity.identity_type == IdentityTypes.INDIVIDUAL:
-                render_follow = True
-
-                follows = Relation.objects.get_following(current_identity)
-                for follow in follows:
-                    if (
-                        (not follow.deleted) and
-                        (follow.related.id == identity.id)
-                    ):
-                        following = True
-                        break
         else:
             current_identity = None
 
@@ -331,8 +318,6 @@ class IdentityTile(FragmentView):
         local_context = copy.copy(self.context)
         local_context.update({
             'current_identity': current_identity,
-            'render_follow': render_follow,
-            'following': following,
             'banner_image': profile_banner_image,
             'badge_image': profile_badge_image,
             'STATIC_URL': settings.STATIC_URL,
@@ -799,11 +784,11 @@ class EstablishmentProfileView(FragmentView):
                         context='profile_badge',
                         primary=True
                     )
-            except Exception as err:
-                logger.exception(err)
+            except:
+                logger.exception('failed to get profile badge image')
 
-        except Exception as err:
-            logger.exception(err)
+        except:
+            logger.exception('failed to get profile badge image')
 
         # if there is no profile banner on establishment check business
         profile_banner_image = None
@@ -822,11 +807,11 @@ class EstablishmentProfileView(FragmentView):
                     primary=True
                 )
 
-            except Exception as err:
-                logger.exception(err)
+            except:
+                logger.exception('failed to get establishment banner image')
 
-        except Exception as err:
-            logger.exception(err)
+        except:
+            logger.exception('failed to get establishment banner image')
 
         try:
             establishment_offers = OfferAvailability.objects.filter(
