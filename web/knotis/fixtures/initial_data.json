@@ -212,7 +212,7 @@
             "parent": null, 
             "title": "Offers", 
             "deleted": false, 
-            "uri": "{{ establishment_id }}/offers", 
+            "uri": "/id/{{ establishment_id }}/offers", 
             "menu_name": "identity_profile", 
             "item_type": "link", 
             "content_type": [
@@ -230,7 +230,7 @@
             "parent": null, 
             "title": "About", 
             "deleted": false, 
-            "uri": "{{ establishment_id }}/about", 
+            "uri": "/id/{{ establishment_id }}/about", 
             "menu_name": "identity_profile", 
             "item_type": "link", 
             "content_type": [
@@ -248,7 +248,7 @@
             "parent": null, 
             "title": "Contact", 
             "deleted": false, 
-            "uri": "{{ establishment_id }}/contact", 
+            "uri": "/id/{{ establishment_id }}/contact", 
             "menu_name": "identity_profile", 
             "item_type": "link", 
             "content_type": [
