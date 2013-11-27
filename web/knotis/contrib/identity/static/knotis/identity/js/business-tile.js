@@ -1,7 +1,15 @@
 (function($){
 
     $(function() {
-        $('.grid-tile.small-tile.identity-tile').each(function(i) {
+        $('.grid-tile.small-tile.identity-tile').click(function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            var identity_id = $(this).find('input.tile-identity').val();
+            window.location = '/id/' + identity_id;
+            return;
+
+        }).each(function(i) {
             var $this = $(this);
             var $action_button = $this.find('.btn.btn-knotis-action');
             var href = $action_button.attr('href');
