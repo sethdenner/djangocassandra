@@ -112,6 +112,7 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     background-image: none;
 }
 
+
 .btn-primary {
     color: #fff;
     text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
@@ -178,8 +179,22 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;
+    -webkit-border-top-left-radius: 0px;
+    -moz-border-top-left-radius: 0px;
+    border-top-left-radius: 0px;
+    -webkit-border-bottom-left-radius: 0px;
+    -moz-border-bottom-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     font-size: 14px;
     padding: 4px 8px;
+}
+
+.input-append .btn:last-child.btn-search {
+    background-image: url('/static/knotis/img/search.png');
+    background-repeat: no-repeat;
+    width: 35px;
+    background-size: 22px 22px;
+    background-position: 5px;
 }
 
 .navbar-inner {
