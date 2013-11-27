@@ -27,7 +27,8 @@ from knotis.contrib.offer.views import (
 from knotis.contrib.layout.views import (
     GridSmallView,
     ActionButton,
-    ButtonAction
+    ButtonAction,
+    SplashTile
 )
 
 from models import (
@@ -186,7 +187,7 @@ class BusinessesGrid(GridSmallView):
         end_range = start_range + count
         businesses = IdentityBusiness.objects.all()[start_range:end_range]
 
-        tiles = []
+        tiles = [SplashTile().render_template_fragment(Context())]
 
         if businesses:
             for business in businesses:

@@ -470,3 +470,8 @@ class IdentitySuperUser(Identity):
         self.identity_type = IdentityTypes.SUPERUSER
 
         return super(IdentityEstablishment, self).clean()
+
+
+class IdentityVariables(QuickModel):
+    identity = QuickForeignKey(Identity)
+    app = QuickCharField(max_length=32)

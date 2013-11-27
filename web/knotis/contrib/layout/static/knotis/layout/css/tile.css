@@ -94,8 +94,6 @@ div.grid-tile.small-tile div.tile-body p.tile-nobutton {
 div.grid-tile.small-tile div.tile-footer {
     border-top: 1px solid #D8D9D8;
     background-color: #F4F5F5;
-    position: relative;
-    bottom: 0px;
     height: 21px;
     margin-top: 12px;
     padding-top: 8px;
@@ -105,4 +103,26 @@ div.grid-tile.small-tile div.tile-footer {
     -moz-border-radius: 0px;
     -webkit-border-radius: 0px 0px 2px 2px;
     border-radius: 0px 0px 2px 2px; 
+}
+
+div.grid-tile.small-tile.splash-tile {
+    background-color: #313f4b;
+}
+
+div.grid-tile.small-tile.splash-tile > .tile-body {
+    color: #fff;
+    height: 300px;
+}
+
+div.grid-tile.small-tile.splash-tile > .tile-body > .tile-text-header {
+    height: 180px;
+    font-size: 2.6em;
+    line-height: 1em;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+div.grid-tile.small-tile.splash-tile > .tile-body > .tile-text-body {
+    font-weight: bold;
+    font-size: 1.3em;
 }
