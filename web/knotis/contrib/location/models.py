@@ -84,9 +84,10 @@ class Location(QuickModel):
     ):
         content_type = get_content_type(self.__class__, self._state.db)
         setattr(self, self.CONTENT_TYPE_FIELD, content_type)
+    
+        kwargs['force_insert'] = kwargs.get('force_insert', self.force_insert)
 
         super(Location, self).save(
-            force_insert=self.force_insert,
             *args,
             **kwargs
         )

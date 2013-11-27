@@ -196,11 +196,21 @@ class BusinessesGrid(GridSmallView):
 
         if businesses:
             for business in businesses:
+                
+                location_items = LocationItem.objects.filter(
+                    related_object_id=business.pk
+                )
+                if len(location_items) > 0:
+                    address = location_items[0].location.address
+                
                 business_tile = IdentityTile()
                 business_context = Context({
                     'identity': business,
-                    'request': self.request
+                    'request': self.request,
                 })
+                if address:
+                    business_context.update({'address': address})
+                    
                 tiles.append(
                     business_tile.render_template_fragment(
                         business_context
@@ -428,13 +438,17 @@ class EstablishmentAboutAbout(AJAXFragmentView):
         )
         if len(locationItem):
             address = locationItem[0].location.address
+            address_latitude = locationItem[0].location.latitude,
+            address_longitude = locationItem[0].location.longitude
         else:
             address = None
+            address_latitude = None
+            address_longitude = None
 
         local_context.update({
             'address': address,
-            'address_latitude': locationItem[0].location.latitude,
-            'address_longitude': locationItem[0].location.longitude
+            'address_latitude': address_latitude,
+            'address_longitude': address_longitude
         })
 
         # add business name to local_context

@@ -1,12 +1,18 @@
 import copy
 
 from django.http import HttpResponse
+from django.contrib.contenttypes.models import ContentType
+
 from django.template import Context
+
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
 
 #from haystack.views import SearchView
 from haystack.query import SearchQuerySet
 
 from knotis.contrib.identity.views import IdentityTile
+from knotis.contrib.offer.views import OfferTile
 from knotis.contrib.layout.views import GridSmallView
 from knotis.views import FragmentView
 
@@ -54,8 +60,8 @@ class SearchResultsView(FragmentView):
             'scripts/jquery.sickle.js',
             'knotis/identity/js/profile.js',
             'knotis/api/js/api.js',
-            'knotis/identity/js/business-tile.js',
-            'knotis/identity/js/businesses.js'
+            'knotis/search/js/searchresults.js',
+            'knotis/identity/js/business-tile.js'
         ]
 
         for script in my_post_scripts:
@@ -76,15 +82,14 @@ class SearchResultsGrid(GridSmallView):
     view_name = 'search_results_grid'
 
     def process_context(self):
-        #page = int(self.context.get('page', '0'))
-        #count = int(self.context.get('count', '20'))
-        #start_range = page * count
-        #end_range = start_range + count
-        #businesses = IdentityBusiness.objects.all()[start_range:end_range]
+        page = int(self.context.get('page', '0'))
+        count = int(self.context.get('count', '20'))
+        start_range = page * count
+        end_range = start_range + count
 
         query = self.request.GET.get('q',None)
         if query:
-            search_results = SearchQuerySet().filter(content=query)
+            search_results = SearchQuerySet().filter(content=query)[start_range:end_range]
             tiles = []
 
         else:
@@ -92,18 +97,38 @@ class SearchResultsGrid(GridSmallView):
             search_results = None
            
         if search_results:
+            i = 0
             for result in search_results:
-                business_tile = IdentityTile()
-                result_context = Context({
-                    'identity': result.object,
-                    'request': self.request
-                })
-                tiles.append(
-                    business_tile.render_template_fragment(
-                        result_context
+                #if result.object.content_type == ContentType.objects.get('identity establishment'):
+                if result.object.content_type.name == 'identity establishment':
+                    business_tile = IdentityTile()
+                    result_context = Context({
+                        'identity': result.object,
+                        'request': self.request
+                    })
+                    tiles.append(
+                        business_tile.render_template_fragment(
+                            result_context
+                        )
                     )
-                )
-
+                elif result.object.content_type == 'offer': 
+                    offer_tile = OfferTile()
+                    result_context = Context({
+                        'offer': result.object,
+                        'request': self.request
+                    })
+                    tiles.append(
+                        offer_tile.render_template_fragment(
+                            result_context
+                        )
+                    )
+                    pass
+                else:
+                    #tiles.append( "no template for this object type" )
+                    logger.exception(' no template available for this search result type. ')
+    
+        if not len(tiles):
+            tiles.append("Sorry your search returned no results.")
 
         local_context = copy.copy(self.context)
         local_context.update({
@@ -130,9 +155,15 @@ class SearchBarView(FragmentView):
         return HttpResponse('OK')
 
     def process_context(self):
+        form_args = {}
+        search_query = self.request.GET.get('q',None)
+        if search_query:
+            form_args['q'] = search_query
+
         local_context = copy.copy(self.context)
         local_context.update({
-            'search_form': SearchForm()
+            'search_form': SearchForm(form_args),
+            'search_query': search_query
         })
 
         return local_context

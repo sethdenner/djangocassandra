@@ -4,8 +4,7 @@
 	    String.prototype.trim = function () {
 	        return this.replace(/^\s+|\s+$/g, '');
 	    };
-    }    
-
+    }
 
     // endpoint editing
     var comparator = function($element){
@@ -75,7 +74,9 @@
 
     /*
       Displays endpoint elements on the edit form.
+      Toggle the Edit prompt to Save.
      */
+
     var form_display_updated_endpoint = function(updated){
         var $form_endpoint = $('[data-endpoint-type="' + updated['endpoint_type'] + '"]');
         
@@ -86,10 +87,12 @@
             'data-initial-value': new_value,
             'data-endpoint-id': endpoint_id
         });
-        // $form_endpoint.val(new_value);
     };
+
     $('a.edit_about').click(function(event){
-	    $('#about-us>.toggleable').show();
+	    $('#about-us .toggleable').toggle();
+        $('.edit_about').hide();
+        $('.close_edit_about').show();
 
 	    // prepopulate endpoints
 	    $('.edit-endpoint:not(.description):not(#business-address)').each(function(idx, element){
@@ -167,11 +170,25 @@
                         }
 
 			            // Update business name on profile page
-                        $('#about-us-form.toggleable').hide();			            
+                        $('#about-us-form.toggleable').hide();
+
+                        // replace the close without saving button with the edit button
+                        $('.close_edit_about').hide();
+                        $('.edit_about').show();
+                        
 		            }
 		        }
 	        });
 	    });
+    });
+
+    $('.close_edit_about').click(function(){
+        $('.edit-endpoint').each(function(i, item){
+            $(item).val($(item).attr('data-initial-value'));
+        });
+        $('#about-us .toggleable').hide();
+        $('.close_edit_about').hide();
+        $('.edit_about').show();
     });
 
     // address edit
