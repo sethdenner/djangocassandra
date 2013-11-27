@@ -3,6 +3,7 @@
 <h4>About Us</h4>
 {% if is_manager %}
 <a class="pull-right edit_about">Edit</a>
+<a class="pull-right close_edit_about" style="display: none;">Close without Saving</a>
 {% endif %}
 
 <div id="about-us">
@@ -111,7 +112,7 @@
     </textarea>
     <br />
     
-    <input id="submit-business-info" type="submit" value="Go!" />
+    <input id="submit-business-info" type="submit" value="Save and Close" />
   </form>
   {% endif %}
   
