@@ -799,11 +799,11 @@ class EstablishmentProfileView(FragmentView):
                         context='profile_badge',
                         primary=True
                     )
-            except:
-                logger.exception()
+            except Exception as err:
+                logger.exception(err)
 
-        except:
-            logger.exception()
+        except Exception as err:
+            logger.exception(err)
 
         # if there is no profile banner on establishment check business
         profile_banner_image = None
@@ -822,11 +822,11 @@ class EstablishmentProfileView(FragmentView):
                     primary=True
                 )
 
-            except:
-                logger.exception()
+            except Exception as err:
+                logger.exception(err)
 
-        except:
-            logger.exception()
+        except Exception as err:
+            logger.exception(err)
 
         try:
             establishment_offers = OfferAvailability.objects.filter(
