@@ -796,10 +796,10 @@ class EstablishmentProfileView(FragmentView):
                         primary=True
                     )
             except:
-                logger.exception()
+                logger.exception('failed to get profile badge image')
 
         except:
-            logger.exception()
+            logger.exception('failed to get profile badge image')
 
         # if there is no profile banner on establishment check business
         profile_banner_image = None
@@ -819,10 +819,10 @@ class EstablishmentProfileView(FragmentView):
                 )
 
             except:
-                logger.exception()
+                logger.exception('failed to get establishment banner image')
 
         except:
-            logger.exception()
+            logger.exception('failed to get establishment banner image')
 
         try:
             establishment_offers = OfferAvailability.objects.filter(
