@@ -390,6 +390,11 @@ class Identity(QuickModel):
             return u'%s' % self.name
         return u'%s' % self.id
 
+    def get_location(self):
+        locations = LocationItems.objects.filter(related_object_id = self.pk)
+        if locations.count > 0:
+            return locations[0].location.get_location()
+        return None
 
 class IdentityIndividual(Identity):
     DEFAULT_NAME = 'New User'
