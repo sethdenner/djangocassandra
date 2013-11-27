@@ -190,10 +190,17 @@ class BusinessesGrid(GridSmallView):
 
         if businesses:
             for business in businesses:
+                
+                location_items = LocationItem.objects.filter(
+                    related_object_id=business.pk
+                )
+                address = location_items[0].location.address
+                
                 business_tile = IdentityTile()
                 business_context = Context({
                     'identity': business,
-                    'request': self.request
+                    'request': self.request,
+                    'address': address
                 })
                 tiles.append(
                     business_tile.render_template_fragment(
