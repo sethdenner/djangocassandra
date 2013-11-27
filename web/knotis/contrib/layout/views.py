@@ -53,3 +53,8 @@ class ActionButton(FragmentView):
         Override this in subclass. Should return an array of ButtonAction
         '''
         return []
+
+
+class SplashTile(FragmentView):
+    template_name = 'knotis/layout/splash_tile.html'
+    view_name = 'splash_tile'
