@@ -187,7 +187,12 @@ class BusinessesGrid(GridSmallView):
         end_range = start_range + count
         businesses = IdentityBusiness.objects.all()[start_range:end_range]
 
-        tiles = [SplashTile().render_template_fragment(Context())]
+        tiles = []
+
+        if 0 == start_range:
+            tiles.append(
+                SplashTile().render_template_fragment(Context())
+            )
 
         if businesses:
             for business in businesses:

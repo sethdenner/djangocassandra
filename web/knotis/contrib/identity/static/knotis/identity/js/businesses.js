@@ -1,8 +1,9 @@
 (function($) {
     $(function(){
         var page = 0;
-        var count = 20;
+        var count = 24;
         var results_left = true;
+        var fetching_results = false;
         $(window).on('scroll.businesses', function(event) {
             var $this = $(this);
 
@@ -11,7 +12,8 @@
                 return;
             }
 
-            if ($this.scrollTop() + $this.innerHeight() >= $(document).innerHeight() - 250) {
+            if (!fetching_results && $this.scrollTop() + $this.innerHeight() >= $(document).innerHeight() - 250) {
+                fetching_results = true;
                 $.get(
                     [
                         '/businesses/grid',
@@ -28,6 +30,7 @@
                         var $markup = $(data);
                         $markup = $markup.children().children().children();
                         $('.span10.grid > .row-fluid.grid-small > .span12 > .row-fluid').append($markup);
+                        fetching_results = false;
                     }
                 );
             }
