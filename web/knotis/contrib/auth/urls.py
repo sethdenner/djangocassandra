@@ -8,8 +8,17 @@ from views import (
     SignUpView
 )
 
+from views import (
+    PasswordResetEmailBody,
+    PasswordChangedEmailBody,
+    ChangeEmailEmailBody,
+    ChangedEmailEmailBody,
+    WelcomeEmailBody
+)
+
 urlpatterns = patterns(
     'knotis.contrib.auth.views',
+
     url(
         r'^auth/login/$',
         LoginView.as_view()

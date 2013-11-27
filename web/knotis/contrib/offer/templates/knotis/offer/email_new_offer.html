@@ -1,0 +1,75 @@
+
+{% extends 'knotis/layout/master_email.html' %}
+{% load render_template_fragment %}
+{% block browser_link %}{{ browser_link }}{% endblock browser_link %}
+
+{% if email_type == 'html' %}
+{% block subject %}{% endblock subject %}
+
+
+{% block additional_css %}
+div.center {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+h1 {
+ 
+}
+
+h3 {
+  position: relative;
+  color: teal;
+  top: -130px;
+}
+
+div.img-wrapper {
+  position: relative;
+  top: -130px;
+}
+
+div.cover {
+  min-height: 270px;
+}
+
+img.logo {
+  width: 170px;
+  height: 170px;
+  vertical-align: middle;
+  border: 0;
+  -webkit-border-radius: 500px;
+  -mox-border-radius: 500px;
+  border-radius: 500px;
+}
+
+a.button {
+  position: relative;
+  top: -130px;
+}
+{% endblock additional_css %}
+
+{% block content %}
+<h1>{{ product_title }}</h1>
+
+<div class="cover center" style="background: url('{{ product_img_url }}');"></div>
+<div class="img-wrapper">
+  <img class="logo" src="{{ business_logo_url }}" />
+</div>
+
+<h3>{{ price }}</h3>
+<br />
+<a class="button" href="{{ purchase_link }}">Purchase</a>
+<br />
+<br />
+<br />
+{% endblock content %}
+{% endif %}
+{% if email_type == 'text' %}
+{% block text_content %}
+{{ business_name }} just added {{ product_name }} to their offerings. 
+Follow the url below to purchase it:
+{{ purchase_link }}
+{% endblock text_content %}
+{% endif %}

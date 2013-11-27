@@ -12,6 +12,7 @@ from django.forms import (
     ValidationError
 )
 
+
 from knotis.forms import (
     TemplateForm,
     ModelForm,
@@ -33,6 +34,7 @@ from knotis.contrib.endpoint.models import (
 
 from models import (
     Offer,
+    OfferItem,
     OfferPublish
 )
 
@@ -110,6 +112,12 @@ class OfferProductPriceForm(Form):
         queryset=Identity.objects.none()
     )
 
+    offer_id = CharField(
+        max_length=36,
+        widget=HiddenInput(),
+        required=False
+    )
+
     product_type = CharField(
         max_length=16,
         widget=RadioSelect(
@@ -159,7 +167,8 @@ class OfferProductPriceForm(Form):
         *args,
         **kwargs
     ):
-        owners = kwargs.pop('owners')
+        owners = kwargs.pop('owners', None)
+        offer = kwargs.pop('offer', None)
 
         super(OfferProductPriceForm, self).__init__(
             *args,
@@ -168,6 +177,37 @@ class OfferProductPriceForm(Form):
 
         if owners:
             self.fields['owner'].queryset = owners
+
+        if offer:
+            self.fields['offer_id'].initial = offer.pk
+            offer_item = OfferItem.objects.get(
+                offer=offer
+            )
+            product_type = offer_item.inventory.product.product_type
+            self.fields['product_type'].initial = product_type
+            stock = offer_item.inventory.stock
+            if ProductTypes.CREDIT == product_type:
+                self.fields['credit_price'].initial = (
+                    offer_item.price_discount * stock
+                )
+                self.fields['credit_value'].initial = (
+                    offer_item.inventory.price * stock
+                )
+
+            elif ProductTypes.PHYSICAL == product_type:
+                self.fields['product_title'].initial = (
+                    offer_item.inventory.product.title
+                )
+
+                self.fields['product_price'].initial = (
+                    offer_item.price_discount * stock
+                )
+                self.fields['product_value'].initial = (
+                    offer_item.inventory.price * stock
+                )
+
+            self.fields['offer_stock'].initial = offer.stock
+            self.fields['offer_unlimited'].initial = offer.unlimited
 
         if not hasattr(self, 'POST'):
             return
@@ -184,6 +224,13 @@ class OfferProductPriceForm(Form):
 
         if not self.POST.get('unlimited'):
             self.fields['offer_stock'].required = True
+
+    def clean_offer_id(self):
+        offer_id = self.cleaned_data.get('offer_id')
+        if offer_id:
+            Offer.objects.get(pk=offer_id)
+
+        return offer_id
 
     def clean(self):
         cleaned_data = super(OfferProductPriceForm, self).clean()
@@ -277,7 +324,7 @@ class OfferPhotoLocationForm(TemplateForm):
             rows = [
                 ItemSelectRow(
                     photo,
-                    image=photo.image
+                    image=photo
                 ) for photo in photos
             ]
             actions = [
@@ -326,11 +373,23 @@ class OfferPhotoLocationForm(TemplateForm):
         offer = self.cleaned_data.get('offer')
         photo = self.cleaned_data.get('photo')
 
-        instance = ImageInstance.objects.create(
-            owner=offer.owner,
-            image=photo,
-            related_object_id=offer.id
-        )
+        if photo.related_object_id == offer.id:
+            instance = photo
+            instance.primary = True
+            instance.save()
+
+        else:
+            instance = ImageInstance.objects.create(
+                owner=offer.owner,
+                image=photo.image,
+                related_object_id=offer.id,
+                crop_left=photo.crop_left,
+                crop_top=photo.crop_top,
+                crop_width=photo.crop_width,
+                crop_height=photo.crop_height,
+                context=photo.context,
+                primary=True
+            )
 
         return instance
 
@@ -385,6 +444,11 @@ class OfferPublicationForm(TemplateForm):
                 'pk__in': [offer.id]
             })
             self.fields['offer'].initial = offer
+            self.fields['start_time'].initial = offer.start_time
+            self.fields['end_time'].initial = offer.end_time
+            self.fields['no_time_limit'].initial = (
+                offer.start_time and not offer.end_time
+            )
 
         (
             endpoint_facebook,

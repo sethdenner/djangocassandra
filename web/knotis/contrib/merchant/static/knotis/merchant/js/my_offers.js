@@ -13,6 +13,8 @@
                     offer_id,
                     '/'
                 ].join(''),
+                modal_id: 'id-redemption-modal',
+                modal_width: 845,
                 on_open: function(data, status, request) {
                     $('.redemption-form').ajaxform({
                         done: function(data, status, jqxhr) {
@@ -71,6 +73,21 @@
                 $button.removeClass('btn-primary').removeClass('btn-success')
                     .addClass('btn-success')
                     .text('Published');
+            });
+        });
+
+        $('.edit-offer').click(function(event){
+            var $button = $(this),
+                offer_id = $button.parent().parent('.grid-tile.small-tile').attr('data-offer-id');
+            $.ajaxmodal({
+                href: [
+                    '/offer/create/?id=',
+                    offer_id
+                ].join(''),
+                modal_settings: {
+                    backdrop: 'static',
+                    keyboard: true
+                }
             });
         });
     });

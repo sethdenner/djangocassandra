@@ -20,6 +20,7 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 EMAIL_BILLING_USER = 'knotis.dev+billing@gmail.com'
 EMAIL_HOST_USER = 'knotis.dev@gmail.com'
@@ -73,8 +74,6 @@ PAYPAL_PREMIUM_BUTTON_ID = 'YNYHC3S6TYB7W'
 PAYPAL_DEFAULT_BUTTON_TEXT = 'Finish in Paypal'
 PAYPAL_ITEM_SUBSCRIPTION = 'subscription'
 PAYPAL_TRANSACTION_PRICE = 0.45
-
-PRICE_MERCHANT_MONTHLY = 14.
 
 # Email Settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

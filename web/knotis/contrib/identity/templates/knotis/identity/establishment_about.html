@@ -1,0 +1,18 @@
+{% if sections %}
+<div class="row-fluid">
+
+{% for section in sections %}
+  
+  {% if forloop.counter0|divisibleby:2 and forloop.counter0 != 0 %}
+  </div><div  class="row-fluid moar-space">
+  {% endif %}
+  
+  <div class="span6 about-section">
+  {{ section|safe }}
+  </div>
+
+{% endfor %}
+
+</div>
+{% endif %}
+

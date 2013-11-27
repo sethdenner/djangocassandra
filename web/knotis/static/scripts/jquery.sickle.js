@@ -41,7 +41,9 @@
             context: null,
             image_max_width: null,
             image_max_height: null,
-            modal_selector: '#modal-box'
+            modal_selector: '#modal-box',
+            jcrop_box_width: 0,
+            jcrop_box_height: 0
         }, options);
         
         var _crop = function(image_id) {
@@ -63,21 +65,40 @@
                     '/'
                 ].join('');
             }
-            
+
             var $modal = $(_options.modal_selector);
             var onComplete = function() {
                 $image = $('#sickle_image');
+
+                var sx = 1.0, sy = 1.0;
+                $image.load(function(){
+                    var width = parseInt(this.width);
+                    var height = parseInt(this.height);
+                    var true_width = parseInt(this.naturalWidth);
+                    var true_height = parseInt(this.naturalHeight);
+
+                    sx = true_width/width;
+                    sy = true_height/height;
+                });
+            
+                var _update_coordinates = function(coordinates) {
+                    var $content = $('#sickle_content');
+                    $content.find('#id_crop_left').val(Math.round(sx * coordinates.x));
+                    $content.find('#id_crop_top').val(Math.round(sy * coordinates.y));
+                    $content.find('#id_crop_width').val(Math.round(sx * coordinates.w));
+                    $content.find('#id_crop_height').val(Math.round(sy * coordinates.h));
+                };
+
                 $image.Jcrop({
                     aspectRatio: _options.aspect,
-                    onChange: function(coordinates) {
-                        $content = $('#sickle_content');
-                        $content.find('#id_crop_left').val(coordinates.x);
-                        $content.find('#id_crop_top').val(coordinates.y);
-                        $content.find('#id_crop_width').val(coordinates.w);
-                        $content.find('#id_crop_height').val(coordinates.h);
-                    }
+                    onChange: _update_coordinates,
+                    onSelect: _update_coordinates,
+                    boxWidth: _options.jcrop_box_width,
+                    boxHeight: _options.jcrop_box_height
                 });
                 
+                // Calculate this stuff after jcrop has loaded.
+
                 $('#sickle_form').submit(function(event) {
                     $.ajax({
                         url: $(this).attr('action'),
@@ -102,8 +123,8 @@
                 href,
                 '',
                 function() {
+                    $modal.on('shown', onComplete());
                     $modal.modal();
-                    onComplete();
                 }
             );
 

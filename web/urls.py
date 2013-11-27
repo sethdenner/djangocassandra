@@ -4,14 +4,37 @@ from django.contrib import admin
 # This code is required for template fragments
 # to find the corresponding views
 
-from knotis.views.mixins import RenderTemplateFragmentMixin
+from knotis.views import (
+    RenderTemplateFragmentMixin
+)
 RenderTemplateFragmentMixin.register_template_fragment_views()
-
 
 admin.autodiscover()
 
+from knotis.contrib.offer.views import (
+    NewOfferEmailBody
+)
+
+from knotis.contrib.transaction.views import CustomerReceiptBody, MerchantReceiptBody
+
 urlpatterns = patterns(
     '',
+    url(
+        r'^transaction/customerreceipt/$',
+        CustomerReceiptBody.as_view()
+    ),
+    url(
+        r'^transaction/merchantreceipt/$',
+        MerchantReceiptBody.as_view()
+    ),
+    url(
+        r'^newoffer$',
+        NewOfferEmailBody.as_view()
+    ),        
+    url(
+        r'',
+        include('knotis.core.urls')
+    ),
     url(
         r'',
         include('knotis.contrib.identity.urls')
@@ -56,10 +79,9 @@ urlpatterns = patterns(
         r'',
         include('knotis.contrib.location.urls')
     ),
-    (r'^search/', include('haystack.urls')),
     url(
         r'',
-        include('knotis.contrib.layout.urls')
+        include('knotis.contrib.search.urls')
     ),
     url(
         r'',

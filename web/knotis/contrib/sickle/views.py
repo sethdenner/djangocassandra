@@ -23,6 +23,7 @@ from knotis.contrib.media.models import (
 )
 
 from knotis.views import FragmentView
+from sorl.thumbnail import get_thumbnail
 
 
 class CropForm(ModelForm):
@@ -179,10 +180,18 @@ def crop(
                 logger.exception(e.message)
 
         if saved:
+
+            im = get_thumbnail(
+                saved_instance.image.image, 
+                'x'.join([str(int(saved_instance.crop_width)), str(int(saved_instance.crop_height))]), 
+                crop=saved_instance.crop()
+            )
+
             return HttpResponse(
                 json.dumps({
                     'status': 'success',
-                    'image_id': saved_instance.id
+                    'image_id': saved_instance.id,
+                    'image_url': im.url
                 }),
                 mimetype='application/json'
             )
@@ -194,6 +203,7 @@ def crop(
             )
 
     else:
+
         form = CropForm(
             owner=current_identity,
             image=image,

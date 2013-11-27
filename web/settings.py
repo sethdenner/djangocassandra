@@ -12,6 +12,9 @@ EMAIL_COMPLETED_OFFERS_INTERVAL_DAYS = 7
 PASSWORD_RESET_EXPIRE_MINUTES = 10080
 
 FORMAT_MODULE_PATH = 'formats'
+DATE_FORMAT = 'm/d/Y'        # '10/25/06'
+TIME_FORMAT = 'h:i:s A'      # '02:30:59 PM'
+DATETIME_FORMAT = ' '.join([DATE_FORMAT, TIME_FORMAT])
 
 BUSINESS_NAME_BLACKLIST = (
     'facebook',
@@ -89,26 +92,6 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-# Email Settings
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.googlemail.com'
-EMAIL_PORT = '587'
-EMAIL_USE_TLS = True
-
-YELP_API_URI = 'http://api.yelp.com/v2/business/'
-YELP_CONSUMER_KEY = 'FOe0SiqTLG-KTzXpg7fdxQ'
-YELP_CONSUMER_SECRET = 'vfyr5UHPQbjN5QFz22PcckRODSE'
-YELP_TOKEN_KEY = 'MEMHpkNVdQHmqK6fjjf0Xls30yAdg6sC'
-YELP_TOKEN_SECRET = 'WQyffYaB4R-NaMGaTcHJOkUWsWE'
-
-TWITTER_FEED_URI_TEMPLATE = (
-    'https://api.twitter.com/1/statuses/user_timeline.json'
-    '?include_entities=true'
-    '&include_rts=true'
-    '&screen_name=%s'
-    '&count=%s'
-)
-TWITTER_DEFAULT_RESULT_COUNT = 10
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

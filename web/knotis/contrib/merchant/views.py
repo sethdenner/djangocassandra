@@ -49,29 +49,27 @@ class MyEstablishmentsView(ContextView):
 
         styles = [
             'knotis/layout/css/global.css',
-            'knotis/layout/css/global.css',
+            'knotis/layout/css/header.css',
             'knotis/layout/css/grid.css',
             'knotis/layout/css/tile.css',
             'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css', 
-            'knotis/identity/css/profile.css', 
+            'navigation/css/nav_side.css',
             'styles/default/fileuploader.css'
         ]
 
-        
         pre_scripts = []
-        
+
         post_scripts = [
-            'knotis/layout/js/layout.js', 
-            'knotis/layout/js/forms.js', 
+            'knotis/layout/js/layout.js',
+            'knotis/layout/js/forms.js',
             'knotis/layout/js/create.js',
-            'navigation/js/navigation.js', 
+            'navigation/js/navigation.js',
             'jcrop/js/jquery.Jcrop.js',
-            'scripts/fileuploader.js', 
+            'scripts/fileuploader.js',
             'scripts/jquery.colorbox.js',
             'scripts/jquery.sickle.js',
-            'knotis/identity/js/profile.js', 
-            'knotis/api/js/api.js',    
+            'knotis/identity/js/profile.js',
+            'knotis/api/js/api.js',
             'knotis/identity/js/business-tile.js'
         ]
 
@@ -79,11 +77,13 @@ class MyEstablishmentsView(ContextView):
         local_context.update({
             'styles': styles,
             'pre_scripts': pre_scripts,
-            'post_scripts': post_scripts
+            'post_scripts': post_scripts,
+            'fixed_side_nav': True
         })
 
         return local_context
-        
+
+
 class MyEstablishmentsGrid(GridSmallView):
     view_name = 'my_establishments_grid'
 
@@ -92,8 +92,12 @@ class MyEstablishmentsGrid(GridSmallView):
 
         request = self.request
         if request.user.is_authenticated():
-            user_ident = IdentityIndividual.objects.get_individual(request.user)
-            establishments = IdentityEstablishment.objects.get_establishments(user_ident)
+            user_identity = IdentityIndividual.objects.get_individual(
+                request.user
+            )
+            establishments = IdentityEstablishment.objects.get_establishments(
+                user_identity
+            )
             if establishments:
                 for establishment in establishments:
                     establishment_tile = IdentityTile()
@@ -138,7 +142,7 @@ class MyOffersGrid(GridSmallView):
         offer_filter_dict = {}
         if 'pending' == offer_filter:
             offer_filter_dict['published'] = False
-            offer_action = 'publish'
+            offer_action = 'edit'
 
         elif 'completed' == offer_filter:
             offer_filter_dict['completed'] = True
@@ -225,11 +229,17 @@ class MyOffersView(ContextView):
             'knotis/layout/css/tile.css',
             'navigation/css/nav_top.css',
             'navigation/css/nav_side.css',
+            'styles/default/fileuploader.css'
+            'knotis/merchant/css/my_offers.css'
         ]
 
         pre_scripts = []
 
         post_scripts = [
+            'jcrop/js/jquery.Jcrop.js',
+            'scripts/fileuploader.js',
+            'scripts/jquery.colorbox.js',
+            'scripts/jquery.sickle.js',
             'knotis/layout/js/layout.js',
             'knotis/layout/js/forms.js',
             'knotis/layout/js/header.js',
@@ -243,7 +253,9 @@ class MyOffersView(ContextView):
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
-            'top_menu_name': 'my_offers'
+            'top_menu_name': 'my_offers',
+            'fixed_top_nav': True,
+            'fixed_side_nav': True
         })
         return local_context
 
@@ -274,9 +286,15 @@ class OfferRedemptionView(FragmentView):
                 if not purchase.redemptions():
                     consumer_purchases.append(purchase)
 
+        offer_tile = OfferTile()
+        offer_tile_markup = offer_tile.render_template_fragment(Context({
+            'offer': offer
+        }))
+
         self.context.update({
             'offer': offer,
-            'purchases': consumer_purchases
+            'purchases': consumer_purchases,
+            'offer_tile_markup': offer_tile_markup
         })
 
         return self.context

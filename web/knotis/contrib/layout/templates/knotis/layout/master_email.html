@@ -1,0 +1,145 @@
+
+{% if not email_type or email_type == 'html' %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+   <div class="body">
+    <style type="text/css">
+
+      .body {
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #EEEEEE;
+        color: #808184;
+      }
+
+      .small {
+        font-size: 75%;
+      }
+      
+      div {
+        margin: 0 auto;
+        text-align: center;
+        padding: 10px;
+      }
+
+      h1 {
+        margin-top: 0;
+      }
+
+      a:link {
+        color: black;
+      }
+      
+      a:visited {
+        color: black;
+      }
+      
+      a:hover {
+        color: blue;
+      }      
+      
+      .subject-bar {
+        height: 30px;
+        width: 500px;
+      }
+      
+      .subject {
+        padding: 0;
+        left: 10px;
+        float: left;
+        width: 45%;
+      }
+      
+      .browser-link {
+        padding: 0;
+        right: 10px;
+        float: right;
+        width: 45%;
+      }
+      
+      .knotis-logo {
+        margin-left: auto;
+        margin-right: auto;
+        align: center;
+      }
+      
+      .content-wrapper {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      .content {
+        border-radius: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 500px;
+        padding: 30px;
+        background: #FFFFFF;
+        text-align: center;
+      }
+      
+      .footer {
+        left: auto;
+        right: auto;
+        align: center;
+      }
+
+      .button {
+        border-radius: 5px;
+        background-color: #26AAE1;
+        color: white !important;
+        height: 30px;
+        border: none;
+        padding: 10px 15px;
+        text-decoration: none;
+        margin: 5px;
+      }
+
+      {% block additional_css %}{% endblock additional_css %}
+      
+    </style>
+
+    
+    <div class="subject-bar small">
+      <div class="subject">{% block subject %}{% endblock subject %}</div>
+      <div class="browser-link"><a href="{{ browser_link }}">View this email in your browser</a></div>
+    </div>
+    
+    <div class="knotis-logo" style="text-align: center;">
+      <img width="117" height="150" src="http://dev.knotis.com/static/knotis/img/knotis_bullseye.png" alt="Knotis Logo" />
+    </div>
+    
+    <div class="content-wrapper">
+      <div class="content" style="text-align: center;">
+        {% block content %}{% endblock content %}
+      </div>
+    </div>
+    
+    <div class="footer small" style="text-align: center;">
+      © 2013 Knotis®, All Rights Reserved.<br />
+      2226 3rd Ave. • Seattle, WA 98107 USA<br />
+      <br />
+      <img width="150" height="55" src="http://dev.knotis.com/static/knotis/img/knotis_gray.png" alt="Knotis Name" />
+    </div>
+   </div>
+  </body>
+  
+</html>
+{% endif %}
+
+{% if email_type == 'text' %}
+To view this email in your browser, follow {{ browser_link }}
+
+
+{% block text_content %}{% endblock text_content %}
+
+
+© 2013 Knotis®, All Rights Registered.
+2226 3rd Ave. • Seattle, WA 98107 USA
+{% endif %}

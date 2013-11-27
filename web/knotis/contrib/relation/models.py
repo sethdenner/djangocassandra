@@ -29,6 +29,7 @@ class RelationTypes:
     """
     UNDEFINED = 'undefined'
     INDIVIDUAL = 'individual'
+    SUPERUSER = 'superuser'
     PROPRIETOR = 'proprietor'
     MANAGER = 'manager'
     EMPLOYEE = 'employee'
@@ -41,6 +42,7 @@ class RelationTypes:
     CHOICES = (
         (UNDEFINED, 'Undefined'),
         (INDIVIDUAL, 'Individual'),
+        (SUPERUSER, 'Superuser'),
         (PROPRIETOR, 'Proprietor'),
         (MANAGER, 'Manager'),
         (EMPLOYEE, 'Employee'),
@@ -75,7 +77,35 @@ class RelationManager(QuickManager):
         user_type = ContentType.objects.get_for_model(user)
         return Relation.objects.get(
             subject_content_type__pk=user_type.id,
-            subject_object_id=user.id
+            subject_object_id=user.id,
+            relation_type=RelationTypes.INDIVIDUAL
+        )
+
+    def create_superuser(
+        self,
+        user,
+        superuser
+    ):
+        return self.create(
+            relation_type=RelationTypes.SUPERUSER,
+            subject=user,
+            related=superuser,
+            description=''.join([
+                'The superuser of ',
+                superuser.name,
+                '.'
+            ])
+        )
+
+    def get_superuser(
+        self,
+        user
+    ):
+        user_type = ContentType.objects.get_for_model(user)
+        return Relation.objects.get(
+            subject_content_type__pk=user_type.id,
+            subject_object_id=user.id,
+            relation_type=RelationTypes.SUPERUSER
         )
 
     def create_manager(
@@ -110,11 +140,26 @@ class RelationManager(QuickManager):
         manager
     ):
         manager_type = ContentType.objects.get_for_model(manager)
-        return self.filter(
+        managed_relations = self.filter(
             subject_content_type__pk=manager_type.id,
             subject_object_id=manager.id,
             relation_type=RelationTypes.MANAGER
         )
+
+        if managed_relations:
+            managed_pks = [rel.pk for rel in managed_relations]
+
+            for rel in managed_relations:
+                establishment_relations = self.get_establishments(rel.related)
+                managed_pks.extend(
+                    [rel.pk for rel in establishment_relations]
+                )
+
+        else:
+            establishment_relations = self.get_establishments(manager)
+            managed_pks = [rel.pk for rel in establishment_relations]
+
+        return self.filter(pk__in=managed_pks)
 
     def create_establishment(
         self,

@@ -15,6 +15,8 @@ from models import (
     NavigationTypes
 )
 
+import re
+
 
 class NavigationTopView(FragmentView):
     template_name = 'navigation/nav_top.html'
@@ -25,16 +27,32 @@ class NavigationTopView(FragmentView):
 
         menu_name = local_context.get('top_menu_name')
 
-        if menu_name:
-            local_context.update({
-                'navigation_items': NavigationItem.objects.filter(
-                    menu_name=menu_name
-                )
-            })
+        def from_context(match):
+            return local_context.get(match.group('variable'))
 
+        template_tag = re.compile(r'{{\s*(?P<variable>\w+)\s*}}')
+        
+        if menu_name:
+            navigation_items = NavigationItem.objects.filter(
+                menu_name=menu_name
+            )
+
+            parsed_navigation_items = [
+                {
+                    'uri': template_tag.sub(from_context, item.uri),
+                    'title': item.title
+                }
+                for item in navigation_items
+            ]
+            
+            local_context.update({
+                'navigation_items': navigation_items,
+                'parsed_navigation_items': parsed_navigation_items
+            })
+            
         return local_context
 
-
+        
 class NavigationSideView(FragmentView):
     template_name = 'navigation/nav_side.html'
     view_name = 'nav_side'
@@ -42,7 +60,7 @@ class NavigationSideView(FragmentView):
     def process_context(self):
         request = self.request
         local_context = copy.copy(self.context)
-
+        
         if request:
             current_identity_id = request.session.get('current_identity_id')
             try:
@@ -54,18 +72,10 @@ class NavigationSideView(FragmentView):
         else:
             current_identity = None
 
-        businesses = self.context.get('businesses')
         establishments = self.context.get('establishments')
 
         if current_identity:
-            if current_identity.identity_type == IdentityTypes.INDIVIDUAL:
-                if not businesses:
-                    businesses = IdentityBusiness.objects.get_businesses(
-                        current_identity
-                    )
-                    local_context['businesses'] = businesses
-
-            if current_identity.identity_type != IdentityTypes.ESTABLISHMENT:
+            if current_identity.identity_type == IdentityTypes.BUSINESS:
                 if not establishments:
                     establishments = (
                         IdentityEstablishment.objects.get_establishments(
@@ -79,7 +89,10 @@ class NavigationSideView(FragmentView):
             menu_name='default'
         )
 
-        if businesses or establishments:
+        if (
+            current_identity and
+            IdentityTypes.BUSINESS == current_identity.identity_type
+        ):
             merchant_navigation = NavigationItem.objects.filter_ordered(
                 menu_name='merchant'
             )

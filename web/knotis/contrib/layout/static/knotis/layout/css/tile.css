@@ -1,29 +1,38 @@
 div.grid-tile {
-    border: 1px solid black;
     cursor: pointer;
+    background-color: #fff;
+    margin: 0 0 15px 15px;
+    color: #808184;
+    -moz-box-shadow:    2px 2px 3px 2px #ccc;
+    -webkit-box-shadow: 2px 2px 3px 2px #ccc;
+    box-shadow:         2px 2px 3px 2px #ccc;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
 }
 
 div.grid-tile.small-tile {
-    width: 180px;
-    height: 256px;
+    width: 240px;
+    height: 335px;
     display: inline-block;
     text-align: center;
 }
 
 div.grid-tile.small-tile div.tile-create {
-    color: #8B8A8A;
+    color: #808184;
 }
 
 div.grid-tile.small-tile div.tile-create p.tile-create-plus {
-    font-size: 8.0em;
+    font-size: 12em;
     line-height: normal;
-    margin-top: 20px;
+    margin-top: 0;
 }
 
 div.grid-tile.small-tile div.tile-create p.tile-create-text {
-    font-size: 1.6em;
+    font-size: 2.6em;
     line-height: normal;
-    height: 66px
+    height: 80px
 }
 
 div.grid-tile.small-tile div.tile-create div.tile-footer {
@@ -31,9 +40,17 @@ div.grid-tile.small-tile div.tile-create div.tile-footer {
     color: #FFFFFF;
 }
 
-div.grid-tile.small-tile div.tile-header img.tile-image {
-    height: 120px;
+div.grid-tile.small-tile div.tile-header .tile-image {
+    height: 135px;
     width: 100%;
+    border: none;
+    border-bottom: 1px solid #D8D9D8;
+    background-image: url('/static/knotis/identity/img/default_banner.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 2px 2px 0px 0px;
+    border-radius: 2px 2px 0px 0px; 
 }
 
 div.grid-tile.small-tile div.tile-header {
@@ -42,26 +59,50 @@ div.grid-tile.small-tile div.tile-header {
 
 div.grid-tile.small-tile div.tile-header img.tile-badge {
     position: relative;
-    top: -37px;
+    top: -55px;
     -webkit-border-radius: 500px;
     -moz-border-radius: 500px;
     border-radius: 500px;
     border: 1px solid #D8D9D8;
-    width: 70px;
-    height: 70px;
+    width: 80px;
+    height: 80px;
     background: #FFFFFF;
 }
 
 div.grid-tile.small-tile div.tile-body {
-    height: 75px;
+    padding-top: 20px;
+    height: 113px;
 }
 
 div.grid-tile.small-tile div.tile-body p.tile-title {
     font-size: 1.25em;
     overflow: hidden;
-    height: 1.25em;
+    height: 3.75em;
+}
+
+div.grid-tile.small-tile div.tile-body button {
+    min-width: 100px;
+    font-size: 1.15em;
+}
+
+div.grid-tile.small-tile div.tile-body p.tile-nobutton {
+    margin: 0;
+    padding: 0;
+    height: 30px;
 }
 
 div.grid-tile.small-tile div.tile-footer {
     border-top: 1px solid #D8D9D8;
+    background-color: #F4F5F5;
+    position: relative;
+    bottom: 0px;
+    height: 21px;
+    margin-top: 12px;
+    padding-top: 8px;
+    display: inline-block;
+    width: 100%;
+    font-size: 1.2em;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px 0px 2px 2px;
+    border-radius: 0px 0px 2px 2px; 
 }

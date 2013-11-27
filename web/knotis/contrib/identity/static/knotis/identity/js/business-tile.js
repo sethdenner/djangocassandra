@@ -1,63 +1,93 @@
 (function($){
-    
-    var getCurrentIdentity = function(btn){
-	return $(btn).parent().siblings('.tile-user').val();
-    };
 
-    var getRelatedIdentity = function(btn){
-	return $(btn).parent().siblings('.tile-identity').val();
-    };
-    
-    var click_follow = function(e){
-	e.preventDefault();
-	e.stopPropagation();
-	var btn = $(this);
+    $(function() {
+        $('.grid-tile.small-tile.identity-tile').each(function(i) {
+            var $this = $(this);
+            var $action_button = $this.find('.btn.btn-knotis-action');
+            var href = $action_button.attr('href');
+            var data = {};
+            $.each($action_button.get(0).attributes, function(i, attribute) {
+                if (attribute.name.substring(0, 'data-param-'.length) != 'data-param-') {
+                    return true;
+                }
+                data[attribute.name.replace('data-param-', '')] = attribute.value;
+            });
 
-	$.post('/api/v1/relation/follow/', {
-	    current_identity_id: getCurrentIdentity(btn),
-	    related_id: getRelatedIdentity(btn),
-	    verb: 'follow'
-	}, function(response){
+            var setupFollow = function($element) {
+                $element.attr('data-method', 'post');
+                $element.attr('href', href);
+                for (var key in data) {
+                    $element.attr('data-param-' + key, data[key]);
+                }
+            };
 
-	    if(!response.errors['no-field']){
-		$(btn).off('click', click_follow);
-		
-		$(btn).removeClass('tile-identity-follow');
-		$(btn).addClass('tile-identity-unfollow');
-		
-		$(btn).text('Unfollow');
-		$(btn).on('click', click_unfollow);
-	    }
+            var setupUnfollow = function($element, relation_id) {
+                $element.attr('data-method', 'delete');
+                $element.attr('href', [
+                    href,
+                    relation_id,
+                    '/'
+                ].join(''));
+                var element = $element.get(0);
+                var remove_attributes = []
+                $.each(element.attributes, function(i, attribute) {
+                    if (attribute.name.substring(0, 'data-param-'.length) != 'data-param-') {
+                        return true;
+                    }
+                    remove_attributes.push(attribute.name);
+                });
+                for (var i = 0; i < remove_attributes.length; ++i){
+                    $element.removeAttr(remove_attributes[i]);
+                }
 
-	    console.log(response);
+            };
 
-	});
+            $action_button.actionButton({
+                onHover: function($element){
+                    var element = $element.get(0);
 
-    };
+                    request_data = {}
+                    for (key in data) {
+                        request_data[key.replace('-', '_')] = data[key];
+                    }
 
-    var click_unfollow = function(e){
-	e.preventDefault();
-	e.stopPropagation();
-	var btn = $(this).get();
+                    $.get(
+                        href,
+                        $.param(request_data),
+                        function(data, status, request) {
+                            if (!$.isEmptyObject(data.errors)) {
+                                var button_text = 'Error';
 
-	$.post('/api/v1/relation/follow/', {
-	    current_identity_id: getCurrentIdentity(btn),
-	    related_id: getRelatedIdentity(btn),
-	    verb: 'unfollow'
-	}, function(response){
-	    if(!response.errors['no-field']){
-		$(btn).off('click', click_unfollow);
-		
-		$(btn).removeClass('tile-identity-unfollow');
-		$(btn).addClass('tile-identity-follow');
-		
-		$(btn).text('Follow');
-		$(btn).on('click', click_follow);
-	    }
-	});    
-    };
+                            } else if ($.isEmptyObject(data.relations)) {
+                                setupFollow($element);
+                                var button_text = 'Follow';
 
-    $('.tile-identity-follow').on('click', click_follow);
-    $('.tile-identity-unfollow').on('click', click_unfollow);
+                            } else {
+                                setupUnfollow($element, Object.keys(data.relations)[0]);
+                                var button_text = 'Unfollow';
 
+                            }
+                            $element.children('span').text(button_text);
+                        },
+                        'json'
+                    );
+                },
+                onClickResponse: function(data, status, request, $element){
+                    if (!$.isEmptyObject(data.errors)) {
+                        var button_text = 'Error';
+
+                    } else if ($.isEmptyObject(data.relation) || data.relation.deleted) {
+                        setupFollow($element);
+                        var button_text = 'Follow';
+
+                    } else {
+                        setupUnfollow($element, data.relation.id);
+                        var button_text = 'Unfollow';
+
+                    }
+                    $element.children('span').text(button_text);
+                }
+            });
+        });
+    });
 })(jQuery);

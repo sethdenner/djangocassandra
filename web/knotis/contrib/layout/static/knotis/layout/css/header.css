@@ -1,14 +1,30 @@
 .navbar .search-bar {
     display: inline-block;
-    text-align: center;
 }
 
 .navbar .nav-collapse.in.collapse .search-bar {
     text-align: left;
     width: auto;
     float: none;
+    vertical-align: middle;
 }
 
-div.navbar.navbar-fluid-top {
+div.navbar.navbar-fluid-top.knotis-header {
     margin-bottom: auto;
+    position: fixed;
+    width: 100%;
+    z-index: 2000;
+}
+
+div.knotis-header-spacing {
+    height: 62px;
+}
+
+div.navbar.navbar-fluid-top .navbar-inner .container-fluid .search-bar,
+div.navbar.navbar-fluid-top .navbar-inner .container-fluid .auth-links {
+    margin-top: 10px;
+}
+
+div.navbar.navbar-fluid-top .navbar-inner .container-fluid .auth-links {
+    margin-right: 16px;
 }

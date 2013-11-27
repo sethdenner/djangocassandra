@@ -5,90 +5,80 @@
 {% block first %}{% endblock first %}
 {% block header %}
 {% render_fragment header %}
-{% render_fragment nav_top %}
 {% endblock header %}
 {% block content %}
 {% load crispy_forms_tags %}
 <div class="container-fluid">
-
-  {% thumbnail profile_banner.image.image '2560x281' crop=profile_banner.crop as header %}
-  <div id="id-profile-cover" class="row-fluid" style="background-image:url('{{ header.url }}');">
-  {% empty %}
-  <div id="id-profile-cover" class="row-fluid">
+  <input id="data-static-url" type="hidden" data-static-url="{{ STATIC_URL }}" />
+  {% thumbnail profile_banner.image.image '1920x500' crop=profile_banner.crop as header %}
+  <div id="id-profile-cover" class="row-fluid" style="background-image: url('{{ header.url }}');">
+  {% empty%}
+  <div id="id-profile-cover" class="row-fluid" style="background-image: url('{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png');" >
   {% endthumbnail %}
-    <div class="span12">
-      
-      {% if is_manager %}
-      {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
-      <img src="{{ img.url }}" class="img-circle" />
-      {% empty %}
-      <img data-add-image src="{{ default_profile_logo_uri }}" class="img-circle" />
-      {% endthumbnail %}
-      {% else %}
-      {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
-      <img src="{{ img.url }}" class="img-circle" />
-      {% empty %}
-      <img src="{{ default_profile_logo_uri }}" class="img-circle" />
-      {% endthumbnail %}
-      {% endif %}
+      <div class="span12">
+        {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
+	<img id="profile-badge" src="{{ img.url }}" class="img-circle{% if is_manager %} change-profile-badge-link{% endif %}" />
+        {% empty %}
+        <img id="profile-badge" src="{{ default_profile_logo_uri }}" class="img-circle{% if is_manager %} change-profile-badge-link{% endif %}" />
+        {% endthumbnail %}
+        <div class="row-fluid">
+          <div id="id-profile-title" class="span12">
+	    {% if is_manager %}
+            <h2 class="updateable-name" data-establishment-id="{{ establishment.id }}" data-identity-type="{{ establishment.identity_type }}">{{ establishment.name }}</h2>
+	    {% else %}
+            <h2>{{ establishment.name }}</h2>
+	    {% endif %}
+          </div>
+          <div class="profile-short-info">
+            {% if phone %}
+            <a class="cover-endpoint phone" href="{{phone.uri}}">
+              <img height="7.5" src="/static/knotis/img/phone.png" alt="phone icon" />
+              <span class="cover-endpoint-text">{{ phone.value }}</span>
+            </a>
+            {% endif %}
 
-      <div class="row-fluid">
-        <div id="id-profile-title" class="span12">
-          <h2>{{ establishment.name }}</h2>
+            {% if address %}
+            <span class="cover-endpoint address">
+              <img height="7.5" src="/static/knotis/img/address.png" alt="address marker icon" />
+              <span class="cover-endpoint-text">{{ address }}</span>
+            </span>
+            {% endif %}
+
+            {% if website %}
+            <a class="cover-endpoint website" href="{{website.uri}}">
+              <img height="7.5" src="/static/knotis/img/website.png" alt="www icon" />
+              <span class="cover-endpoint-text">{{ website.value }}</span>
+            </a>
+            {% endif %}
+            
+            
+          </div>
         </div>
-      </div>
-      <div id="id-profile-contact" class="row">
-        <strong>
 
-	  <div id="id-profile-contact-address">
-	    {% if is_manager %}
-	    <a class="update-address-link">{{ address }}</a>
-	    {% else %}
-	    {{ address }}
-	    {% endif %}
-	  </div>
-	  <ul class="unstyled">
-	    {% for endpoint in endpoints %}
-	    {% if endpoint.value %}
-	    <li class="{% if is_manager %}editable{% endif %} establishment-endpoint" 
-		data-establishment-id="{{ establishment.id }}"
-		data-endpoint-endpoint-id="{{ endpoint.id }}"
-		data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
-	      {{ endpoint.value }}
-	    </li>
-	    {% else %}
-	    {% if is_manager %}
-	    <li class="editable establishment-endpoint" 
-		data-establishment-id="{{ establishment.id }}"
-		data-endpoint-endpoint-type-name="{{ endpoint.endpoint_type_name }}">
-	      add {{ endpoint.endpoint_type_name }}
-	    </li>
-	    {% endif %}
-	    {% endif %}
-	    {% endfor %}
-          </ul>
-        </strong>
+        <div id="id-profile-action" class="row">
+        </div>
+        {% if is_manager %}
+        <a class="change-profile-cover-link">Change Cover Image</a>
+        {% endif %}
       </div>
-      <div id="id-profile-action" class="row">
+    </div>
+    {% render_fragment nav_top %}
+    <div class="row-fluid">
+      <div class="span2">
+        {% render_fragment nav_side %}
       </div>
-      {% if is_manager %}
-      <a class="change-profile-cover-link">Change Cover Image</a>
-      {% endif %}
+      <div class="span10 grid">
+	    {% if content_plexer == 'establishments' %}
+        {% render_fragment establishment_profile_grid %}
+	    {% else %}
+	    {{ profile_content }}
+	    {% endif %}
+      </div>
     </div>
   </div>
 
-  <div id="id-profile-spacer" class="row-fluid"><p class="span12">&nbsp;</p></div>
-  <div class="row-fluid">
-    <div class="span2">
-      {% render_fragment nav_side %}
-    </div>
-    <div class="span10">
-      {% render_fragment establishment_profile_grid %}
-    </div>
-  </div>
 </div>
-<div id="id-identity-id" data-identity-id="{{ establishment.id }}" class="hide" >&nbsp;</div>
-
 {% endblock content %}
 {% block footer %}{% endblock footer %}
 {% block last %}{% endblock last %}
+  
