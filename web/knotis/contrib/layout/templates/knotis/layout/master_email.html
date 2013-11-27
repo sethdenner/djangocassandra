@@ -66,6 +66,7 @@
       .knotis-logo {
         margin-left: auto;
         margin-right: auto;
+        align: center;
       }
       
       .content-wrapper {
@@ -80,11 +81,13 @@
         width: 500px;
         padding: 30px;
         background: #FFFFFF;
+        text-align: center;
       }
       
       .footer {
         left: auto;
         right: auto;
+        align: center;
       }
 
       .button {
@@ -108,17 +111,17 @@
       <div class="browser-link"><a href="{{ browser_link }}">View this email in your browser</a></div>
     </div>
     
-    <div class="knotis-logo">
+    <div class="knotis-logo" style="text-align: center;">
       <img width="117" height="150" src="http://dev.knotis.com/static/knotis/img/knotis_bullseye.png" alt="Knotis Logo" />
     </div>
     
     <div class="content-wrapper">
-      <div class="content">
+      <div class="content" style="text-align: center;">
         {% block content %}{% endblock content %}
       </div>
     </div>
     
-    <div class="footer small">
+    <div class="footer small" style="text-align: center;">
       © 2013 Knotis®, All Rights Reserved.<br />
       2226 3rd Ave. • Seattle, WA 98107 USA<br />
       <br />

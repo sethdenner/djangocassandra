@@ -68,15 +68,15 @@
         {% render_fragment nav_side %}
       </div>
       <div class="span10 grid">
-	{% if content_plexer == 'establishments' %}
+	    {% if content_plexer == 'establishments' %}
         {% render_fragment establishment_profile_grid %}
-	{% else %}
-	{{ nav_top_content }}
-	{% endif %}
+	    {% else %}
+	    {{ profile_content }}
+	    {% endif %}
       </div>
     </div>
   </div>
-  <div id="id-identity-id" data-identity-id="{{ establishment.id }}" data-business-id="{{ business.id }}" class="hide" >&nbsp;</div>
+
 </div>
 {% endblock content %}
 {% block footer %}{% endblock footer %}
