@@ -82,6 +82,7 @@ a {
 .nav-list > li > a.on, .nav-list > li > a:hover {
     background-color: #EEEEEE;
     border-left: 2px solid #427FED;
+    padding-left: 13px;
     color: #000;
 }
 
@@ -108,14 +109,60 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     -o-user-select: none;
     user-select: none;
     margin: 2px;
+    background-image: none;
 }
+
 
 .btn-primary {
     color: #fff;
     text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
-    background-color: #03948E;
-    background-image: none;
+    background-color: #0db09e;
     filter: none;
+}
+
+.btn-knotis-action {
+  color: #808184;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #F4F5F5;
+  *background-color: #F4F5F5;
+  background-image: none;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  border-color: #D8D9D8;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.btn-knotis-action:hover,
+.btn-knotis-action:active,
+.btn-knotis-action.active,
+.btn-knotis-action.disabled,
+.btn-knotis-action[disabled] {
+  color: #808184;
+  background-color: #EEEFEF;
+  *background-color: #EEEFEF;
+  background-image: none;
+  background-repeat: no-repeat;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+
+.btn-knotis-action:active,
+.btn-knotis-action.active {
+  background-color: #003399 \9;
+}
+
+.btn-knotis-action img.action-icon {
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+}
+
+.btn-knotis-action > span {
+    vertical-align: middle;
 }
 
 .btn-primary:hover,
@@ -124,7 +171,7 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
     color: #ffffff;
-    background-color: #00726E;
+    background-color: #097B6F;
     border-color: #285e8e;
 }
 
@@ -132,8 +179,22 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;
+    -webkit-border-top-left-radius: 0px;
+    -moz-border-top-left-radius: 0px;
+    border-top-left-radius: 0px;
+    -webkit-border-bottom-left-radius: 0px;
+    -moz-border-bottom-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     font-size: 14px;
     padding: 4px 8px;
+}
+
+.input-append .btn:last-child.btn-search {
+    background-image: url('/static/knotis/img/search.png');
+    background-repeat: no-repeat;
+    width: 35px;
+    background-size: 22px 22px;
+    background-position: 5px;
 }
 
 .navbar-inner {

@@ -75,13 +75,14 @@ class LoginForm(AuthenticationForm):
                 css_class='modal-body'
             ),
             ButtonHolder(
+                HTML(
+                    '<button class="btn pull-left" data-dismiss="modal" '
+                    'aria-hidden="true">Cancel</button>'
+                ),
                 Submit(
                     'login',
-                    'Login'
-                ),
-                HTML(
-                    '<button class="btn" data-dismiss="modal" '
-                    'aria-hidden="true">Cancel</button>'
+                    'Login',
+                    css_class='btn btn-primary pull-right',
                 ),
                 css_class='modal-footer'
             )
@@ -178,14 +179,14 @@ class CreateUserForm(ModelForm):
                 css_class='modal-body'
             ),
             ButtonHolder(
+                HTML(
+                    '<button class="btn pull-left" data-dismiss="modal" '
+                    'aria-hidden="true">Cancel</button>'
+                ),
                 Submit(
                     'signup',
                     'Sign Up',
-                    css_class='btn btn-primary',
-                ),
-                HTML(
-                    '<button class="btn" data-dismiss="modal" '
-                    'aria-hidden="true">Cancel</button>'
+                    css_class='btn btn-primary pull-right',
                 ),
                 css_class='modal-footer'
             )

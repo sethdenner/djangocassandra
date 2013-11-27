@@ -24,7 +24,12 @@ from knotis.contrib.offer.views import (
     OfferCreateTile
 )
 
-from knotis.contrib.layout.views import GridSmallView
+from knotis.contrib.layout.views import (
+    GridSmallView,
+    ActionButton,
+    ButtonAction
+)
+
 from models import (
     IdentityTypes,
     Identity,
@@ -33,7 +38,10 @@ from models import (
     IdentityEstablishment
 )
 
-from knotis.contrib.relation.models import Relation
+from knotis.contrib.relation.models import (
+    Relation,
+    RelationTypes
+)
 
 from forms import (
     IdentityIndividualSimpleForm,
@@ -69,7 +77,7 @@ class IdentityView(ContextView):
     template_name = 'knotis/identity/identity_view.html'
 
     def process_context(self):
-        context = copy.copy(self.context)
+        self.context = copy.copy(self.context)
 
         identity_id = self.kwargs.get('id')
         if not identity_id:
@@ -81,7 +89,8 @@ class IdentityView(ContextView):
 
         if identity.identity_type == IdentityTypes.ESTABLISHMENT:
             profile_view = EstablishmentProfileView()
-            context['establishment_id'] = identity_id
+            self.context['establishment_id'] = identity_id
+            self.context['establishment'] = identity
 
         elif identity.identity_type == IdentityTypes.BUSINESS:
             try:
@@ -97,20 +106,23 @@ class IdentityView(ContextView):
 
             if 1 == len(establishments):
                 profile_view = EstablishmentProfileView()
-                context['establishment_id'] = establishments[0].pk
+                self.context['establishment_id'] = establishments[0].pk
+                self.context['establishment'] = establishments[0]
 
             else:
                 profile_view = BusinessProfileView()
-                context['establishments'] = establishments
+                self.context['establishments'] = establishments
 
         else:
             raise Exception('IdentityType not currently supported')
 
-        context.update({
-            'profile_markup': profile_view.render_template_fragment(context)
+        self.context.update({
+            'profile_markup': profile_view.render_template_fragment(
+                self.context
+            )
         })
 
-        return context
+        return self.context
 
 
 class BusinessesView(FragmentView):
@@ -139,6 +151,7 @@ class BusinessesView(FragmentView):
             'knotis/layout/js/forms.js',
             'knotis/layout/js/header.js',
             'knotis/layout/js/create.js',
+            'knotis/layout/js/action_button.js',
             'navigation/js/navigation.js',
             'jcrop/js/jquery.Jcrop.js',
             'scripts/fileuploader.js',
@@ -205,6 +218,29 @@ class BusinessesGrid(GridSmallView):
         return local_context
 
 
+class IdentityTileActionButton(ActionButton):
+    view_name = 'identity_tile_action'
+
+    def actions(self):
+        identity = self.context.get('identity')
+        current_identity = self.context.get('current_identity')
+
+        if not current_identity:
+            return None
+
+        return [
+            ButtonAction(
+                'Follow',
+                '/api/v1/relation/', {
+                    'relation-type': RelationTypes.FOLLOWING,
+                    'subject': current_identity.pk,
+                    'related': identity.pk
+                },
+                'get'
+            )
+        ]
+
+
 class IdentityTile(FragmentView):
     template_name = 'knotis/identity/tile.html'
     view_name = 'identity_tile'
@@ -213,25 +249,12 @@ class IdentityTile(FragmentView):
         request = self.context.get('request')
         identity = self.context.get('identity')
 
-        following = False
-        render_follow = False
         if request.user.is_authenticated():
             current_identity_id = request.session.get('current_identity_id')
             current_identity = Identity.objects.get(
                 pk=current_identity_id
             )
 
-            if current_identity.identity_type == IdentityTypes.INDIVIDUAL:
-                render_follow = True
-
-                follows = Relation.objects.get_following(current_identity)
-                for follow in follows:
-                    if (
-                        (not follow.deleted) and
-                        (follow.related.id == identity.id)
-                    ):
-                        following = True
-                        break
         else:
             current_identity = None
 
@@ -292,16 +315,9 @@ class IdentityTile(FragmentView):
         profile_banner_colors = [
             'blue',
             'darkblue',
-            'darkgrey',
-            'lightgrey',
-            'orange',
-            'pink',
-            'purple',
-            'red',
             'turquoise',
-            'yellow'
         ]
-        profile_banner_color_index = int(identity.pk[24:], 16) % 10
+        profile_banner_color_index = int(identity.pk[24:], 16) % 3
         profile_banner_color = profile_banner_colors[
             profile_banner_color_index
         ]
@@ -309,8 +325,6 @@ class IdentityTile(FragmentView):
         local_context = copy.copy(self.context)
         local_context.update({
             'current_identity': current_identity,
-            'render_follow': render_follow,
-            'following': following,
             'banner_image': profile_banner_image,
             'badge_image': profile_badge_image,
             'STATIC_URL': settings.STATIC_URL,
@@ -661,61 +675,6 @@ class EstablishmentProfileView(FragmentView):
     view_name = 'establishment_profile'
 
     def process_context(self):
-        request = self.request
-        establishment_id = self.context.get('establishment_id')
-        backend_name = self.context.get('backend_name')
-
-        try:
-            if establishment_id:
-                establishment = get_object_or_404(
-                    IdentityEstablishment,
-                    pk=establishment_id
-                )
-
-            elif backend_name:
-                establishment = get_object_or_404(
-                    IdentityEstablishment,
-                    backend_name=backend_name
-                )
-
-            else:
-                raise IdentityEstablishment.DoesNotExist()
-
-            if establishment:
-                business = IdentityBusiness.objects.get_establishment_parent(
-                    establishment
-                )
-            if not establishment:
-                raise IdentityBusiness.DoesNotExist
-        except:
-            logger.exception(
-                'failed to get establishment with id ' + establishment_id
-            )
-            raise http.Http404
-
-        try:
-            business = IdentityBusiness.objects.get_establishment_parent(
-                establishment
-            )
-
-        except:
-            logger.exception(
-                ' '.join([
-                    'failed to get business for establishment with id ',
-                    establishment_id
-                ])
-            )
-            raise http.Http404
-
-        is_manager = False
-        if request.user.is_authenticated():
-            current_identity_id = request.session.get('current_identity_id')
-            current_identity = Identity.objects.get(
-                pk=current_identity_id
-            )
-
-            is_manager = current_identity.is_manager(establishment)
-
         styles = [
             'knotis/layout/css/global.css',
             'knotis/layout/css/header.css',
@@ -748,37 +707,56 @@ class EstablishmentProfileView(FragmentView):
             'knotis/identity/js/profile.js'
         ]
 
-        profile_badge_image = None
+        request = self.request
+        establishment_id = self.context.get('establishment_id')
+        establishment = self.context.get('establishment')
+        backend_name = self.context.get('backend_name')
 
-        # if there is no profile badge on establishment check business
-        try:
-            profile_badge_image = ImageInstance.objects.get(
-                related_object_id=establishment_id,
-                context='profile_badge',
-                primary=True
-            )
+        if not establishment:
+            try:
+                if establishment_id:
+                    establishment = get_object_or_404(
+                        IdentityEstablishment,
+                        pk=establishment_id
+                    )
 
-        except:
-            pass
+                elif backend_name:
+                    establishment = get_object_or_404(
+                        IdentityEstablishment,
+                        backend_name=backend_name
+                    )
 
-        try:
-            if not profile_badge_image:
-                profile_badge_image = ImageInstance.objects.get(
-                    related_object_id=business.pk,
-                    context='profile_badge',
-                    primary=True
+                else:
+                    raise IdentityEstablishment.DoesNotExist()
+
+            except:
+                logger.exception(
+                    'failed to get establishment with id ' + establishment_id
                 )
-        except:
-            pass
+                raise http.Http404
 
         try:
-            profile_banner_image = ImageInstance.objects.get(
-                related_object_id=business.pk,
-                context='profile_banner',
-                primary=True
+            business = IdentityBusiness.objects.get_establishment_parent(
+                establishment
             )
+
         except:
-            profile_banner_image = None
+            logger.exception(
+                ' '.join([
+                    'failed to get business for establishment with id ',
+                    establishment_id
+                ])
+            )
+            raise http.Http404
+
+        is_manager = False
+        if request.user.is_authenticated():
+            current_identity_id = request.session.get('current_identity_id')
+            current_identity = Identity.objects.get(
+                pk=current_identity_id
+            )
+
+            is_manager = current_identity.is_manager(establishment)
 
         if is_manager:
             default_profile_logo_uri = ''.join([
@@ -791,6 +769,52 @@ class EstablishmentProfileView(FragmentView):
                 settings.STATIC_URL,
                 'knotis/identity/img/profile_default.png'
             ])
+
+        # if there is no profile badge on establishment check business
+        profile_badge_image = None
+        try:
+            profile_badge_image = ImageInstance.objects.get(
+                related_object_id=establishment_id,
+                context='profile_badge',
+                primary=True
+            )
+
+        except ImageInstance.DoesNotExist:
+            try:
+                if not profile_badge_image:
+                    profile_badge_image = ImageInstance.objects.get(
+                        related_object_id=business.pk,
+                        context='profile_badge',
+                        primary=True
+                    )
+            except:
+                logger.exception('failed to get profile badge image')
+
+        except:
+            logger.exception('failed to get profile badge image')
+
+        # if there is no profile banner on establishment check business
+        profile_banner_image = None
+        try:
+            profile_banner_image = ImageInstance.objects.get(
+                related_object_id=establishment_id,
+                context='profile_banner',
+                primary=True
+            )
+
+        except ImageInstance.DoesNotExist:
+            try:
+                profile_banner_image = ImageInstance.objects.get(
+                    related_object_id=business.pk,
+                    context='profile_banner',
+                    primary=True
+                )
+
+            except:
+                logger.exception('failed to get establishment banner image')
+
+        except:
+            logger.exception('failed to get establishment banner image')
 
         try:
             establishment_offers = OfferAvailability.objects.filter(
@@ -862,70 +886,80 @@ class EstablishmentProfileView(FragmentView):
                     'endpoint_type': endpoint_class.EndpointType
                 })
 
+        # endpoints displayed on the cover
+        phone = None
+        website = None
+        for endpoint in endpoints:
+            if EndpointTypes.PHONE == endpoint.endpoint_type:
+                phone = {
+                    'value': endpoint.value,
+                    'uri': endpoint.get_uri()
+                }
+
+            if EndpointTypes.WEBSITE == endpoint.endpoint_type:
+                website = {
+                    'value': endpoint.value,
+                    'uri': endpoint.get_uri()
+                }
+
+            if phone and website:
+                break
+
         # determine nav view
-        nav_context = Context({ 
+        context_context = Context({
             'request': request,
             'establishment_id': establishment_id,
             'endpoints': endpoint_dicts,
             'is_manager': is_manager
         })
-        
-        if self.context.get('view_name') == 'contact':
-            nav_top_content = EstablishmentProfileLocation().render_template_fragment(nav_context)
+
+        if establishment_offers:
+            default_view_name = 'offers'
+
+        else:
+            default_view_name = 'about'
+
+        view_name = self.context.get('view_name', None)
+        if not view_name:
+            view_name = default_view_name
+
+        if view_name == 'contact':
+            profile_content = (
+                EstablishmentProfileLocation().render_template_fragment(
+                    context_context
+                )
+            )
             content_plexer = 'offersaboutcontact'
-        elif self.context.get('view_name') == 'offers':
+
+        elif view_name == 'offers':
             content_plexer = 'offersaboutcontact'
-            nav_top_content = None
-        elif self.context.get('view_name') == 'about':
+            profile_content = None
+
+        elif view_name == 'about':
             content_plexer = 'offersaboutcontact'
-            nav_top_content = EstablishmentProfileAbout().render_template_fragment(nav_context)
+            profile_content = (
+                EstablishmentProfileAbout().render_template_fragment(
+                    context_context
+                )
+            )
+
         else:
             content_plexer = 'establishments'
-            nav_top_content = 'establishments'
+            profile_content = 'establishments'
 
         profile_banner_colors = [
             'blue',
             'darkblue',
-            'darkgrey',
-            'lightgrey',
-            'orange',
-            'pink',
-            'purple',
-            'red',
-            'turquoise',
-            'yellow'
+            'turquoise'
         ]
-        profile_banner_color_index = int(business.pk[24:], 16) % 10
+        profile_banner_color_index = int(business.pk[24:], 16) % 3
         profile_banner_color = profile_banner_colors[
             profile_banner_color_index
         ]
 
-        # endpoints displayed on the cover
-        phone = EndpointPhone.objects.filter(identity=business, primary=True)
-        if len(phone):
-            phone = {
-                'value': phone[0].value,
-                'uri': phone[0].get_uri()
-            }
-        else:
-            phone = None
-            
-        website = EndpointWebsite.objects.filter(
-            identity=business,
-            primary=True
-        )
-        if len(website):
-            website = {
-                'value': website[0].value,
-                'uri': website[0].get_uri()
-            }
-        else:
-            website = None
-
         local_context = copy.copy(self.context)
         local_context.update({
             'establishment': establishment,
-            'establishment_parent': business,
             'business': business,
             'is_manager': is_manager,
             'styles': styles,
@@ -939,9 +973,8 @@ class EstablishmentProfileView(FragmentView):
             'profile_badge': profile_badge_image,
             'profile_banner': profile_banner_image,
             'establishment_offers': establishment_offers,
-            'endpoints': endpoint_dicts,
             'top_menu_name': 'identity_profile',
-            'nav_top_content': nav_top_content,
+            'profile_content': profile_content,
             'content_plexer': content_plexer,
             'profile_banner_color': profile_banner_color
         })
