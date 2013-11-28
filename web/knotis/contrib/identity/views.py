@@ -39,7 +39,6 @@ from models import (
 )
 
 from knotis.contrib.relation.models import (
-    Relation,
     RelationTypes
 )
 
@@ -543,10 +542,12 @@ class EstablishmentAboutTwitterFeed(FragmentView):
                     })
 
         twitter_feed = None
+        self.has_feed = False
         if(twitter_endpoint):
             feed_json = get_twitter_feed_json(twitter_endpoint['value'])
             if feed_json:
-                twitter_feed = json.loads(feed_json)
+                twitter_feed = json.loads(feed_json)                
+                self.has_feed = len(twitter_feed) > 0
                 local_context.update({
                     'twitter_feed': twitter_feed
                 })
@@ -568,12 +569,39 @@ class EstablishmentAboutYelpFeed(FragmentView):
                     yelp_endpoint = endpoint
 
         yelp_feed = None
+        self.has_feed = False
         if yelp_endpoint:
             yelp_feed = get_reviews_by_yelp_id(yelp_endpoint['value'])
+            
+            self.has_feed = len(yelp_feed)
 
         local_context = copy.copy(self.context)
         local_context.update({
             'yelp_feed': yelp_feed
+        })
+
+        return local_context
+
+        
+class EstablishmentAboutFeeds(FragmentView):
+    template_name = 'knotis/identity/establishment_about_feeds.html'
+    view_name = 'establishment_about_feeds'
+
+    def process_context(self):
+        local_context = copy.copy(self.context)
+        
+        yelp = EstablishmentAboutYelpFeed()
+        yelp.render_template_fragment(local_context)
+
+        twitter = EstablishmentAboutTwitterFeed()
+        twitter.render_template_fragment(local_context)
+
+        local_context.update({
+            'yelp_markup': yelp.render_template_fragment(local_context),
+            'yelp_has_feed': yelp.has_feed,
+
+            'twitter_markup': twitter.render_template_fragment(local_context),
+            'twitter_has_feed': twitter.has_feed
         })
 
         return local_context
@@ -618,34 +646,28 @@ class EstablishmentProfileAbout(FragmentView):
     def process_context(self):
         local_context = copy.copy(self.context)
         sections = []
-        
-        about_markup = EstablishmentAboutAbout().render_template_fragment(
-            local_context
-        ).strip()
+            
+        about = EstablishmentAboutAbout()
+        about_markup = about.render_template_fragment(local_context)
+        about_markup = about_markup.strip()
         if about_markup:
             sections.append(about_markup)
-            
-        yelp_markup = EstablishmentAboutYelpFeed().render_template_fragment(
-            local_context
-        ).strip()
-        if yelp_markup:
-            sections.append(yelp_markup)
-        
-        twitter_markup = EstablishmentAboutTwitterFeed().render_template_fragment(
-            local_context
-        ).strip()
-        if twitter_markup:
-            sections.append(twitter_markup)
 
-        carousel_markup = EstablishmentAboutCarousel().render_template_fragment(
-            local_context
-        ).strip()
+
+        carousel = EstablishmentAboutCarousel()
+        carousel_markup = carousel.render_template_fragment(local_context)
+        carousel_markup = carousel_markup.strip()
         if carousel_markup:
             sections.append(carousel_markup)
 
-        location_markup = EstablishmentProfileLocation().render_template_fragment(
-            local_context
-        ).strip()
+        feeds = EstablishmentAboutFeeds()
+        feeds_markup = feeds.render_template_fragment(local_context)
+        if feeds_markup:
+            sections.append(feeds_markup)
+            
+        location = EstablishmentProfileLocation()
+        location_markup = location.render_template_fragment(local_context)
+        location_markup = location_markup.strip()
         if location_markup:
             sections.append(location_markup)
 

@@ -1,7 +1,6 @@
 {% if twitter_feed %}
+<h5>Twitter</h5>
 <div class="about-twitter">
-<div class="twitter-title">{% if twitter_feed|length > 0 %}<img src="{{ twitter_feed.0.user.profile_image_url_https }}" />{% endif %}<h4>{{ twitter_handle }}'s Twitter Feed</h4></div>
-
 {% for tweet in twitter_feed %}
 <div class="tweet">
   <p>{{ tweet.text }}</p>
