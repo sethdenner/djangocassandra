@@ -117,7 +117,7 @@ div.grid-tile.small-tile.splash-tile > .tile-body {
 }
 
 div.grid-tile.small-tile.splash-tile > .tile-body > .tile-text-header {
-    height: 180px;
+    height: 108px;
     font-size: 2.6em;
     line-height: 1em;
     font-weight: bold;
@@ -126,5 +126,6 @@ div.grid-tile.small-tile.splash-tile > .tile-body > .tile-text-header {
 
 div.grid-tile.small-tile.splash-tile > .tile-body > .tile-text-body {
     font-weight: bold;
-    font-size: 1.3em;
+    font-size: 2em;
+    line-height: 1em;
 }
