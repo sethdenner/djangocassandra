@@ -195,7 +195,9 @@ class BusinessesGrid(GridSmallView):
                 )
                 if len(location_items) > 0:
                     address = location_items[0].location.address
-                
+                else:
+                    address = ''
+                    
                 business_tile = IdentityTile()
                 business_context = Context({
                     'identity': business,
