@@ -1,0 +1,31 @@
+{% if twitter_has_feed or yelp_has_feed %}
+<h4>Ratings &amp; Reviews</h4>
+{% endif %}
+
+<ul id="AboutFeedTab" class="nav nav-tabs pull-right" id="about-feeds">
+  {% if twitter_has_feed %}
+  <li class="twitter active tab">
+    <img class="twitter tab" src="/static/knotis/identity/img/icon-twitter.png" />
+  </li>
+  {% endif %}
+
+  {% if yelp_has_feed %}
+  <li class="yelp tab">
+    <img class="yelp tab"src="/static/knotis/identity/img/icon-yelp.png" />
+  </li>
+  {% endif %} 
+</ul>
+
+<div id="AboutFeedTabContent" class="tab-content">
+  {% if twitter_has_feed %}
+  <div id="twitter" class="tab-pane active">{{ twitter_markup }}</div>
+  {% endif %}
+
+  {% if yelp_has_feed %}
+  <div id="yelp" class="tab-pane">{{ yelp_markup }}</div>
+  {% endif %}
+</div>
+
+<script type="text/javascript">
+
+</script>

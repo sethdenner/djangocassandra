@@ -125,5 +125,17 @@
 	        }
         });
     });
+
+    $('.twitter.tab').click(function(){
+        $('.tab-pane#yelp').hide();
+
+        $('.tab-pane#twitter').show();
+    });
+
+    $('.yelp.tab').click(function(){
+        $('.tab-pane#twitter').hide();
+
+        $('.tab-pane#yelp').show();
+    });
     
 })(jQuery);

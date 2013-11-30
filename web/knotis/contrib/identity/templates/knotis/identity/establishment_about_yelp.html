@@ -1,6 +1,6 @@
 {% if yelp_feed %}
+<h5>Yelp</h5>
 <div class="about-yelp">
-<h4>Yelp Reviews</h4>
 {% for review in yelp_feed %}
 <div class="yelp-review">
   <p class="excerpt">{{ review.excerpt }}  <span class="username"><span class="score">{{ review.rating }}/5</span> -{{ review.user.name }}</span></p>
