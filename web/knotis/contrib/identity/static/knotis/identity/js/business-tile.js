@@ -1,6 +1,10 @@
 (function($){
 
-    $(function() {
+    if (undefined === $.identity) {
+        $.identity = {};
+    }
+
+    $.identity.initialize_business_tiles = function() {
         $('.grid-tile.small-tile.identity-tile').click(function(event) {
             event.preventDefault();
             event.stopPropagation();
@@ -98,5 +102,9 @@
                 }
             });
         });
+    };
+
+    $(function() {
+        $.identity.initialize_business_tiles();
     });
 })(jQuery);
