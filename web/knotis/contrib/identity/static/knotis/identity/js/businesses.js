@@ -31,6 +31,7 @@
                         $markup = $markup.children().children().children();
                         $('.span10.grid > .row-fluid.grid-small > .span12 > .row-fluid').append($markup);
                         fetching_results = false;
+                        $.identity.initialize_business_tiles();
                     }
                 );
             }
