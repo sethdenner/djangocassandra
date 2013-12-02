@@ -1,5 +1,5 @@
 {% load thumbnail %}
-
+{% if images|length > 0 %}
 <div class="about-carousel">
 <div class="carousel-wrapper">
   <h4>Photos</h4>
@@ -17,7 +17,7 @@
       {% for index, image in images %}
       {% thumbnail image.image.image '500x400' crop=image.crop as img %}
       <div class="item {% if index == 0 %}active{% endif %}">
-	    <div class="about-carousel-image" style="display:block; overflow:hidden; background:url('{{ img.url }}') no-repeat center;"></div>
+	    <div class="about-carousel-image" style="display:block; overflow:hidden; background:url('{{ img.url }}') no-repeat center; background-size: 500px 400px"></div>
 	    <!--<img style="width:500px; height:auto;" src="{{ img.url }}" />-->
       </div>
       {% endthumbnail %}
@@ -35,3 +35,4 @@
   </div>
 </div>
 </div>
+{% endif %}
