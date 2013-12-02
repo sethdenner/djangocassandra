@@ -6,7 +6,7 @@
     
     $('a.upload-photo').click(function(event){
 	event.preventDefault();
-	var identity_id = $(this).attr('data-business-id');
+	var identity_id = $('#establishment_id').attr('data-business-id');
 	console.log('identity_id', identity_id);
 
 	$.ajaxmodal({
