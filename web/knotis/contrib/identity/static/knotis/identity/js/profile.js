@@ -66,7 +66,7 @@
 		            primary: true,
 		            done: function(data){
 			            $('modal-box').modal('hide');
-			            $('#profile-header').attr('src', data.image_url);
+			            $('#id-profile-cover').css('background-image', 'url("' + data.image_url + '")');
 		            },
 		            jcrop_box_width: 560
 		        });		
