@@ -142,6 +142,11 @@ class IdentityBusinessManager(IdentityManager):
         *args,
         **kwargs
     ):
+        # Saves the backend name at creation but then redirects to /backend_name
+        #backend_name = Identity._clean_backend_name(kwargs.get('name'))
+        #if backend_name:
+        #    kwargs['backend_name'] = backend_name
+
         business = super(IdentityBusinessManager, self).create(
             identity_type=IdentityTypes.BUSINESS,
             *args,
@@ -198,6 +203,30 @@ class IdentityBusinessManager(IdentityManager):
 
 
 class IdentityEstablishmentManager(IdentityManager):
+    def create(
+        self,
+        parent,
+        *args,
+        **kwargs
+    ):
+        # Saves the backend name at creation but then redirects to /backend_name
+        #backend_name = Identity._clean_backend_name(kwargs.get('name'))
+        #if backend_name:
+        #    kwargs['backend_name'] = backend_name
+
+        establishment = super(IdentityEstablishmentManager, self).create(
+            identity_type=IdentityTypes.ESTABLISHMENT,
+            *args,
+            **kwargs
+        )
+
+        Relation.objects.create_establishment(
+            parent,
+            establishment
+        )
+
+        return establishment
+
     def get_establishments(
         self,
         identity
@@ -361,6 +390,11 @@ class Identity(QuickModel):
             return u'%s' % self.name
         return u'%s' % self.id
 
+    def get_location(self):
+        locations = LocationItems.objects.filter(related_object_id = self.pk)
+        if locations.count > 0:
+            return locations[0].location.get_location()
+        return None
 
 class IdentityIndividual(Identity):
     DEFAULT_NAME = 'New User'
@@ -441,3 +475,8 @@ class IdentitySuperUser(Identity):
         self.identity_type = IdentityTypes.SUPERUSER
 
         return super(IdentityEstablishment, self).clean()
+
+
+class IdentityVariables(QuickModel):
+    identity = QuickForeignKey(Identity)
+    app = QuickCharField(max_length=32)

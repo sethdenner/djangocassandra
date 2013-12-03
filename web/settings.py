@@ -179,6 +179,7 @@ TEMPLATE_DIRS = (
 
 AUTHENTICATION_BACKENDS = (
     'permission_backend_nonrel.backends.NonrelPermissionBackend',
+    'knotis.contrib.auth.authentication.backends.CaseInsensitiveUsernameAuthenticationBackend',
     'knotis.contrib.endpoint.authentication.backends.EndpointValidationAuthenticationBackend',
     'knotis.contrib.legacy.authentication.backends.LegacyAuthenticationBackend',
     'knotis.contrib.legacy.authentication.backends.HamburgertimeAuthenticationBackend'

@@ -27,7 +27,8 @@ from knotis.contrib.offer.views import (
 from knotis.contrib.layout.views import (
     GridSmallView,
     ActionButton,
-    ButtonAction
+    ButtonAction,
+    SplashTile
 )
 
 from models import (
@@ -186,6 +187,11 @@ class BusinessesGrid(GridSmallView):
         businesses = IdentityBusiness.objects.all()[start_range:end_range]
 
         tiles = []
+
+        if 0 == start_range:
+            tiles.append(
+                SplashTile().render_template_fragment(Context())
+            )
 
         if businesses:
             for business in businesses:
@@ -433,20 +439,19 @@ class EstablishmentAboutAbout(AJAXFragmentView):
         )
         if len(locationItem):
             address = locationItem[0].location.address
-
-            local_context.update({
-                'address': address,
-                'address_latitude': locationItem[0].location.latitude,
-                'address_longitude': locationItem[0].location.longitude
-            })
+            address_latitude = locationItem[0].location.latitude,
+            address_longitude = locationItem[0].location.longitude
         else:
             address = None
-            local_context.update({
-                'address': None,
-                'address_latitude': None,
-                'address_longitude': None
-            })
-        
+            address_latitude = None
+            address_longitude = None
+
+        local_context.update({
+            'address': address,
+            'address_latitude': address_latitude,
+            'address_longitude': address_longitude
+        })
+
         # add business name to local_context
         local_context.update({
             'business': business

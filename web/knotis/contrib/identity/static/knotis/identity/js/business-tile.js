@@ -1,18 +1,31 @@
 (function($){
 
-    $(function() {
-        $('.grid-tile.small-tile.identity-tile').each(function(i) {
+    if (undefined === $.identity) {
+        $.identity = {};
+    }
+
+    $.identity.initialize_business_tiles = function() {
+        $('.grid-tile.small-tile.identity-tile').click(function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            var identity_id = $(this).find('input.tile-identity').val();
+            window.location = '/id/' + identity_id;
+            return;
+
+        }).each(function(i) {
             var $this = $(this);
             var $action_button = $this.find('.btn.btn-knotis-action');
             var href = $action_button.attr('href');
             var data = {};
-            $.each($action_button.get(0).attributes, function(i, attribute) {
-                if (attribute.name.substring(0, 'data-param-'.length) != 'data-param-') {
-                    return true;
-                }
-                data[attribute.name.replace('data-param-', '')] = attribute.value;
-            });
-
+            if ($action_button.length) {
+                $.each($action_button.get(0).attributes, function(i, attribute) {
+                    if (attribute.name.substring(0, 'data-param-'.length) != 'data-param-') {
+                        return true;
+                    }
+                    data[attribute.name.replace('data-param-', '')] = attribute.value;
+                });
+            }
             var setupFollow = function($element) {
                 $element.attr('data-method', 'post');
                 $element.attr('href', href);
@@ -89,5 +102,9 @@
                 }
             });
         });
+    };
+
+    $(function() {
+        $.identity.initialize_business_tiles();
     });
 })(jQuery);
