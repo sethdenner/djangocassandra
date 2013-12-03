@@ -76,7 +76,8 @@
       </div>
     </div>
   </div>
-  <input type="hidden" id="establishment_id">{{ establishment.id }}</input>
+  <input type="hidden" id="establishment_id" style="display:none;" val="{{ establishment_id }}"></input>
+  <div id="id-identity-id" data-establishment-id="{{ establishment.id }}" data-business-id="{{ business.id }}" />
 </div>
 {% endblock content %}
 {% block footer %}{% endblock footer %}
