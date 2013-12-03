@@ -1,13 +1,17 @@
 from django.utils.http import urlquote
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms import (
-    ModelForm,
     CharField,
     EmailField,
     BooleanField,
     PasswordInput,
     HiddenInput,
     ValidationError
+)
+
+from knotis.forms import (
+    ModelForm, 
+    TemplateModelForm
 )
 
 from crispy_forms.helper import FormHelper
@@ -122,7 +126,9 @@ class LoginForm(AuthenticationForm):
         return cleaned_data
 
 
-class CreateUserForm(ModelForm):
+class CreateUserForm(TemplateModelForm):
+    template_name = 'knotis/auth/sign_up_form.html'
+
     class Meta:
         model = KnotisUser
         fields = [
@@ -156,41 +162,6 @@ class CreateUserForm(ModelForm):
         )
 
         self.fields['authenticate'].initial = authenticate
-
-        self.helper = FormHelper()
-        self.helper.form_id = 'id-signup-form'
-        self.helper.form_method = 'post'
-        self.helper.form_action = '/api/v1/auth/user/'
-        self.helper.layout = Layout(
-            Div(
-                Field(
-                    'email',
-                    id='email-input',
-                    placeholder='Email Address',
-                ),
-                Field(
-                    'password',
-                    id='password-input',
-                    placeholder='Password'
-                ),
-                Field(
-                    'authenticate'
-                ),
-                css_class='modal-body'
-            ),
-            ButtonHolder(
-                HTML(
-                    '<button class="btn pull-left" data-dismiss="modal" '
-                    'aria-hidden="true">Cancel</button>'
-                ),
-                Submit(
-                    'signup',
-                    'Sign Up',
-                    css_class='btn btn-primary pull-right',
-                ),
-                css_class='modal-footer'
-            )
-        )
 
     def clean_email(self):
         """
