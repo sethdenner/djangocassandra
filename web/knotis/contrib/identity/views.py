@@ -398,7 +398,7 @@ class EstablishmentProfileLocation(FragmentView):
             longitude = locationItem[0].location.longitude
         else:
             address = None
-            latitude = None,
+            latitude = None
             longitude = None
 
         local_context = copy.copy(self.context)
@@ -433,15 +433,20 @@ class EstablishmentAboutAbout(AJAXFragmentView):
         )
         if len(locationItem):
             address = locationItem[0].location.address
+
+            local_context.update({
+                'address': address,
+                'address_latitude': locationItem[0].location.latitude,
+                'address_longitude': locationItem[0].location.longitude
+            })
         else:
             address = None
-
-        local_context.update({
-            'address': address,
-            'address_latitude': locationItem[0].location.latitude,
-            'address_longitude': locationItem[0].location.longitude
-        })
-
+            local_context.update({
+                'address': None,
+                'address_latitude': None,
+                'address_longitude': None
+            })
+        
         # add business name to local_context
         local_context.update({
             'business': business
