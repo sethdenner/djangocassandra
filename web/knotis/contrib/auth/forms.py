@@ -1,3 +1,10 @@
+import uuid
+import datetime
+
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
+
+from django.conf import settings
 from django.utils.http import urlquote
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms import (
@@ -10,18 +17,9 @@ from django.forms import (
 )
 
 from knotis.forms import (
+    TemplateForm,
     TemplateModelForm,
     TemplateFormMixin
-)
-
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import (
-    Layout,
-    HTML,
-    Div,
-    Field,
-    ButtonHolder,
-    Submit
 )
 
 from knotis.contrib.endpoint.models import (
@@ -35,7 +33,12 @@ from knotis.contrib.identity.models import (
 )
 from knotis.contrib.relation.models import Relation
 
-from models import KnotisUser
+from models import (
+    KnotisUser,
+    PasswordReset
+)
+
+from emails import PasswordResetEmailBody
 
 
 class LoginForm(TemplateFormMixin, AuthenticationForm):
@@ -223,3 +226,66 @@ class CreateSuperUserForm(CreateUserForm):
             *args,
             **kwargs
         )
+
+
+class ForgotPasswordForm(TemplateForm):
+    template_name = 'knotis/auth/forgot_form.html'
+
+    email = EmailField()
+
+    def send_reset_instructions(self):
+        email = self.cleaned_data['email']
+
+        try:
+            user = KnotisUser.objects.get(username=email)
+        except:
+            user = None
+
+        if not user:
+            raise Exception('no user with that email address found')
+
+        try:
+            primary_email = Endpoint.objects.get_primary_endpoint(
+                user=user,
+                endpoint_type=EndpointTypes.EMAIL
+            )
+
+        except:
+            primary_email = None
+
+        if not primary_email:
+            raise Exception('user has no primary email.')
+
+        digest = uuid.uuid4().hex
+        key = "%s-%s-%s-%s-%s" % (
+            digest[:8],
+            digest[8:12],
+            digest[12:16],
+            digest[16:20],
+            digest[20:]
+        )
+
+        try:
+            PasswordReset.objects.create(
+                endpoint=primary_email,
+                password_reset_key=key,
+                expires=datetime.datetime.utcnow() + datetime.timedelta(
+                    minutes=settings.PASSWORD_RESET_EXPIRE_MINUTES
+                )
+            )
+
+            email = PasswordResetEmailBody()
+            email.generate_email(
+                'Knotis.com - Change Password',
+                settings.EMAIL_HOST_USER,
+                [email], {
+                    'validation_key': key,
+                    'BASE_URL': settings.BASE_URL,
+                    'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
+                    'SERVICE_NAME': settings.SERVICE_NAME
+                }
+            ).send()
+            return True
+        except:
+            logger.exception('failed to initiate password reset')
+            return False

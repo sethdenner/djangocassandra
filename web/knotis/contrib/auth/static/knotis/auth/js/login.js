@@ -21,4 +21,14 @@
         });
     });
 
+    $('form#id-login-form a#id-forgot-link').click(function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        $.ajaxmodal({
+            href: $(this).attr('href'),
+            modal_id: 'auth-modal'
+        });
+    });
+
 })(jQuery);

@@ -122,6 +122,8 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     user-select: none;
     margin: 2px;
     background-image: none;
+    filter: none;
+    margin: 0;
 }
 
 
@@ -129,7 +131,6 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     color: #fff;
     text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
     background-color: #0db09e;
-    filter: none;
 }
 
 .btn-knotis-action {

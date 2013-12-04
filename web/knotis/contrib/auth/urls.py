@@ -5,16 +5,10 @@ from django.conf.urls.defaults import (
 
 from views import (
     LoginView,
-    SignUpView
+    SignUpView,
+    ForgotPasswordView
 )
 
-from views import (
-    PasswordResetEmailBody,
-    PasswordChangedEmailBody,
-    ChangeEmailEmailBody,
-    ChangedEmailEmailBody,
-    WelcomeEmailBody
-)
 
 urlpatterns = patterns(
     'knotis.contrib.auth.views',
@@ -35,4 +29,8 @@ urlpatterns = patterns(
         r'^auth/validate/(?P<user_id>[^/]+)/(?P<validation_key>[^/]+)',
         'validate',
     ),
+    url(
+        r'^auth/forgot/',
+        ForgotPasswordView.as_view()
+    )
 )
