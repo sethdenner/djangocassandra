@@ -9,7 +9,7 @@
 <div id="about-us">
   {% if is_manager %}
   <form id="about-us-form" class="editable toggleable hide">
-    <input id="id-business-id" type="hidden" value="{{ business.id }}" />
+    <input id="id-business-id" type="hidden" value="{{ establishment.id }}" />
     
     <!--
 	Be careful when editing the ids. The server parses endpoint types
@@ -23,7 +23,7 @@
        class="edit-endpoint"
        type="text"
        placeholder="Enter your business's name here..."
-       data-initial-value="{{ business.name }}" />
+       data-initial-value="{{ establishment.name }}" />
     <br />
 
     <label for="business-address">Business Address:</label>

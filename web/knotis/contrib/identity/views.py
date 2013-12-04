@@ -404,7 +404,7 @@ class EstablishmentProfileLocation(FragmentView):
             longitude = locationItem[0].location.longitude
         else:
             address = None
-            latitude = None,
+            latitude = None
             longitude = None
 
         local_context = copy.copy(self.context)
@@ -424,18 +424,19 @@ class EstablishmentAboutAbout(AJAXFragmentView):
         establishment_id = self.context.get('establishment_id')
 
         establishment = IdentityEstablishment.objects.get(pk=establishment_id)
-        business = IdentityBusiness.objects.get_establishment_parent(
-            establishment
-        )
-
+        
+        #business = IdentityBusiness.objects.get_establishment_parent(
+        #    establishment
+        #)
+        
         local_context = copy.copy(self.context)
         local_context.update({
-            'description': business.description
+            'description': establishment.description
         })
 
         # Fetch and add the address and coordinates to local_context
         locationItem = LocationItem.objects.filter(
-            related_object_id=business.pk
+            related_object_id=establishment.pk
         )
         if len(locationItem):
             address = locationItem[0].location.address
@@ -454,7 +455,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
 
         # add business name to local_context
         local_context.update({
-            'business': business
+            'establishment': establishment
         })
 
         # add contact info (endpoints) to local_context
@@ -483,7 +484,8 @@ class EstablishmentAboutAbout(AJAXFragmentView):
 
         data = json.loads(request.POST.get('data'))
         business_id = data['business_id']
-        business = IdentityBusiness.objects.get(pk=business_id)
+        business = IdentityEstablishment.objects.get(pk=business_id)
+        #business = IdentityBusiness.objects.get(pk=business_id)
 
         # business name
         response = {}
@@ -873,7 +875,7 @@ class EstablishmentProfileView(FragmentView):
         maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
         maps_scripts = maps.render_api_js()
 
-        endpoints = Endpoint.objects.filter(identity=business, primary=True)
+        endpoints = Endpoint.objects.filter(identity=establishment, primary=True)
         endpoints = endpoints.select_subclasses()
 
         endpoint_dicts = []

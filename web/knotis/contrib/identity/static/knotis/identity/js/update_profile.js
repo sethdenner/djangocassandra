@@ -146,6 +146,8 @@
 		        success: function(response){
 		            if(response.status == 'ok'){
 			            
+                        location.reload(true);
+/*
 			            // backpopulate changed info
 			            for(var endpoint in response.changed_endpoints){
 			                $(endpoint.endpoint_id).attr({
@@ -175,7 +177,8 @@
                         // replace the close without saving button with the edit button
                         $('.close_edit_about').hide();
                         $('.edit_about').show();
-                        
+
+*/                        
 		            }
 		        }
 	        });

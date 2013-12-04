@@ -1,7 +1,8 @@
 from django.db.models import Manager
 
 from knotis.contrib.quick.models import (
-    QuickModel
+    QuickModel,
+    QuickManager
 )
 from knotis.contrib.quick.fields import (
     QuickForeignKey,
@@ -23,7 +24,7 @@ class NavigationTypes:
     )
 
 
-class NavigationManager(Manager):
+class NavigationManager(QuickManager):
     def all_ordered(self):
         return sorted(
             super(NavigationManager, self).all(),

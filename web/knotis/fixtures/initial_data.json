@@ -242,25 +242,6 @@
         }
     },     
     {
-        "pk": "bbf7d24f-925b-437c-9ae7-f8c19579331c", 
-        "model": "navigation.navigationitem", 
-        "fields": {
-            "parent": null, 
-            "title": "Contact", 
-            "deleted": false, 
-            "uri": "/id/{{ establishment_id }}/contact", 
-            "menu_name": "identity_profile", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 19:13:34", 
-            "order": 2
-        }
-    }, 
- 
-    {
         "pk": "e9b2c39c-46b0-4731-8e59-89e170be7351", 
         "model": "navigation.navigationitem", 
         "fields": {
