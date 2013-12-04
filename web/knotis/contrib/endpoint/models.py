@@ -172,7 +172,7 @@ class EndpointManager(QuickManager):
             endpoint.clean()
 
             params = filter_parameters
-            if 'value' not in params.keys() or params['value'].trim() == '':
+            if 'value' not in params.keys() or params['value'].strip() == '':
                 endpoint.deleted = True
                 endpoint.delete()
                             
