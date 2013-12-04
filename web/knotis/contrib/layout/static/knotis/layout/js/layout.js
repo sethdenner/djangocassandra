@@ -4,10 +4,8 @@
 	    event.preventDefault();
 
         var modal_width = $(this).attr('data-modal-width');
-        var modal_id = $(this).attr('id');
-        if (modal_id) {
-            modal_id = modal_id + '-modal';
-        } else {
+        var modal_id = $(this).attr('data-modal-id');
+        if (!modal_id) {
             modal_id = 'modal-box';
         }
         $.ajaxmodal({

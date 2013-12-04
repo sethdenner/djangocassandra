@@ -10,8 +10,8 @@ from django.forms import (
 )
 
 from knotis.forms import (
-    ModelForm, 
-    TemplateModelForm
+    TemplateModelForm,
+    TemplateFormMixin
 )
 
 from crispy_forms.helper import FormHelper
@@ -38,7 +38,9 @@ from knotis.contrib.relation.models import Relation
 from models import KnotisUser
 
 
-class LoginForm(AuthenticationForm):
+class LoginForm(TemplateFormMixin, AuthenticationForm):
+    template_name = 'knotis/auth/login_form.html'
+
     username = CharField(
         label='',
         max_length=30,
@@ -49,48 +51,6 @@ class LoginForm(AuthenticationForm):
         widget=PasswordInput,
         required=True
     )
-
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
-        super(LoginForm, self).__init__(
-            *args,
-            **kwargs
-        )
-
-        self.helper = FormHelper()
-        self.helper.form_id = 'id-login-form'
-        self.helper.form_method = 'post'
-        self.helper.form_action = '/api/v1/auth/auth/'
-        self.helper.layout = Layout(
-            Div(
-                Field(
-                    'username',
-                    id='email-input',
-                    placeholder='Email Address',
-                ),
-                Field(
-                    'password',
-                    id='password-input',
-                    placeholder='Password'
-                ),
-                css_class='modal-body'
-            ),
-            ButtonHolder(
-                HTML(
-                    '<button class="btn pull-left" data-dismiss="modal" '
-                    'aria-hidden="true">Cancel</button>'
-                ),
-                Submit(
-                    'login',
-                    'Login',
-                    css_class='btn btn-primary pull-right',
-                ),
-                css_class='modal-footer'
-            )
-        )
 
     def clean(self):
         cleaned_data = super(LoginForm, self).clean()

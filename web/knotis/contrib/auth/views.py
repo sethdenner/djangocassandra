@@ -62,6 +62,7 @@ from forms import (
 
 from knotis.views import EmailView
 
+
 class LoginView(View, RenderTemplateFragmentMixin):
     template_name = 'knotis/auth/login.html'
     view_name = 'login'
