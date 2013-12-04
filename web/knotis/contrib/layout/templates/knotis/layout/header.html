@@ -17,8 +17,8 @@
           {% if user.is_authenticated %}
           {% render_fragment identity_switcher %}
           {% else %}
-	      <li><a id="login" class="modal-link" href="/auth/login/">Login</a></li>
-	      <li><button id="sign-up" class="modal-link btn btn-primary" href="/auth/signup/">Sign Up</button></li>
+	      <li><a id="login" class="modal-link" data-modal-width="633px" href="/auth/login/">Login</a></li>
+	      <li><button id="sign-up" class="modal-link btn btn-primary" data-modal-width="633px" href="/auth/signup/">Sign Up</button></li>
           {% endif %}
 	    </ul>
       </div>

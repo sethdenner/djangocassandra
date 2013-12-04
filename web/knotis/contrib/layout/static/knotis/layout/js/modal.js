@@ -14,6 +14,7 @@
                 backdrop: true,
                 keyboard: true
             },
+            loading: false,
             on_open: function(data, status, request) {}
         };
         var settings = $.extend(
@@ -31,7 +32,10 @@
             return $modal;
          };
 
-        $('body').modalmanager('loading');
+        if (settings.loading) {
+            $('body').modalmanager('loading');
+        }
+
         var $modal = $('#' + settings.modal_id);
         if (0 == $modal.length) {
             $modal = build_modal();
@@ -44,7 +48,6 @@
                     $modal.modal();
                     settings.on_open(data, status, request);
                 } else {
-                    alert('Error opening modal: No data');
                     $modal.modal('hide');
                     $modal.remove();
                 }

@@ -3,5 +3,7 @@
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
   <h3>Sign Up</h3>
 </div>
-{% crispy signup_form %}
+<div class="modal-body" >
+  {{ signup_form.as_template }}
+</div>
 <script src="{{ STATIC_URL }}knotis/auth/js/sign_up.js"></script>
