@@ -1,0 +1,26 @@
+<form action="/api/v1/auth/auth/" id="id-login-form" method="post">
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="control-group">
+        <div class="controls">
+          <label>Email</label>
+          <input name="{{ form.username.html_name }}" maxlength="254" type="text" placeholder="you@example.com" class="textinput textInput" id="email-input" value="{{ form.username.value|default_if_none:'' }}"> 
+        </div>
+      </div>
+      <div id="div_id_password" class="control-group">
+        <div class="controls">
+          <label>Password</label>
+          <input type="password" id="password-input" name="{{ form.password.html_name }}" class="textinput textInput" > 
+        </div>
+      </div>
+    </div>
+    <div class="auth-info span6">
+      <p>Don't have an account?</p>
+      <p><a id="id-signup-link" href="/auth/signup/">Sign-up for free</a></p>
+    </div>
+  </div>
+  <div class="buttonHolder modal-footer">
+    <input type="submit" name="login" value="Login" class="btn btn-primary btn btn-primary" id="submit-id-signup"> 
+    <aside><a href="#forgotpassword">Forgot your password?</a></aside>
+  </div>
+</form>

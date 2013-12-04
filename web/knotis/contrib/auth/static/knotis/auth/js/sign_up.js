@@ -17,7 +17,7 @@
 
         $.ajaxmodal({
             href: $(this).attr('href'),
-            modal_id: 'sign-up-modal'
+            modal_id: 'auth-modal'
         });
     });
 

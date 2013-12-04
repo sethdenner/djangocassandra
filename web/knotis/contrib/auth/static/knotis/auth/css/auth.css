@@ -32,16 +32,16 @@
     margin: 0;
 }
 
-form#id-signup-form div.controls > input {
+form div.controls > input {
     width: 80%;
 }
 
-form#id-signup-form div.signup-info {
+form div.auth-info {
     padding: 28px 0 0 0;
     margin: 0;
 }
 
-form#id-signup-form div.signup-info > p {
+form div.auth-info > p {
     text-align: center;
     font-size: 1.8em;
     color: #808184;
