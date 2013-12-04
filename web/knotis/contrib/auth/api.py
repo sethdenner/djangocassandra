@@ -33,7 +33,6 @@ class AuthenticationApi(ApiView):
         *args,
         **kwargs
     ):
-        import pdb; pdb.set_trace()
         form = LoginForm(
             request=request,
             data=request.POST
