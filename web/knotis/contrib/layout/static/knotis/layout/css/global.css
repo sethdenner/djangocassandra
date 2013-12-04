@@ -1,3 +1,14 @@
+body.knotis {
+    font-family: "Noto Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+body.knotis form label {
+    color: #808184;
+    margin: 0 0 0 2px;
+    padding: 0;
+    line-height: 1em;
+}
+
 .knotis-bold {
     font-weight: bold;
 }
@@ -211,10 +222,6 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     -webkit-box-shadow: 0 1px 4px rgba(0,0,0,0.065);
     -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.065);
     box-shadow: 0 1px 4px rgba(0,0,0,0.065);
-}
-
-.modal.fade.in {
-    top: 30%;
 }
 
 .input-append.date {

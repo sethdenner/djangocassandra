@@ -1,16 +1,27 @@
 <form action="/api/v1/auth/user/" id="id-signup-form" method="post">
-  <div class="control-group">
-    <div class="controls">
-      <input name="{{ form.email.html_name }}" maxlength="254" type="text" placeholder="Email Address" class="textinput textInput" id="email-input" value="{{ form.email.value|default_if_none:'' }}"> 
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="control-group">
+        <div class="controls">
+          <label>Email</label>
+          <input name="{{ form.email.html_name }}" maxlength="254" type="text" placeholder="you@example.com" class="textinput textInput" id="email-input" value="{{ form.email.value|default_if_none:'' }}"> 
+        </div>
+      </div>
+      <div id="div_id_password" class="control-group">
+        <div class="controls">
+          <label>Password</label>
+          <input type="password" id="password-input" name="{{ form.password.html_name }}" class="textinput textInput" > 
+        </div>
+      </div>
+      <input type="hidden" name="{{ form.authenticate.html_name }}" value="{{ form.authenticate.value|default_if_none:'False' }}" > 
+    </div>
+    <div class="signup-info span6">
+      <p>Already have an account?</p>
+      <p><a href="#">Sign-in here</a></p>
     </div>
   </div>
-  <div id="div_id_password" class="control-group">
-    <div class="controls">
-      <input type="password" placeholder="Password" id="password-input" name="{{ form.password.html_name }}" class="textinput textInput" > 
-    </div>
-  </div>
-  <input type="hidden" name="{{ form.authenticate.html_name }}" value="{{ form.authenticate.value|default_if_none:'False' }}" > 
   <div class="buttonHolder modal-footer">
-    <input type="submit" name="signup" value="Sign Up" class="btn btn-primary btn btn-primary pull-left" id="submit-id-signup"> 
+    <input type="submit" name="signup" value="Sign Up" class="btn btn-primary btn btn-primary" id="submit-id-signup"> 
+    <aside>By joining, you agree to our <a href="#terms">Terms of Use</a> and <a href="#privacy">Privacy Policy</a></aside>
   </div>
 </form>
