@@ -3,6 +3,10 @@ body.knotis {
     color: #808184;
 }
 
+body.knotis form {
+    margin: 0;
+}
+
 body.knotis form label {
     color: #808184;
     margin: 0 0 0 2px;
@@ -122,6 +126,8 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     user-select: none;
     margin: 2px;
     background-image: none;
+    filter: none;
+    margin: 0;
 }
 
 
@@ -129,7 +135,6 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     color: #fff;
     text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
     background-color: #0db09e;
-    filter: none;
 }
 
 .btn-knotis-action {

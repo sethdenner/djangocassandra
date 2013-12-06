@@ -4,7 +4,8 @@ from django.conf.urls.defaults import (
 
 from knotis.contrib.auth.api import (
     AuthUserApi,
-    AuthenticationApi
+    AuthenticationApi,
+    AuthForgotPasswordApi
 )
 from knotis.contrib.identity.api import (
     IdentityApi,
@@ -29,6 +30,7 @@ urlpatterns = patterns(
     '',
     AuthUserApi.urls(),
     AuthenticationApi.urls(),
+    AuthForgotPasswordApi.urls(),
     IdentityApi.urls(login_required=True),
     IdentityIndividualApi.urls(login_required=True),
     IdentityBusinessApi.urls(login_required=True),

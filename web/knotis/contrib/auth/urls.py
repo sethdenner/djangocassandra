@@ -3,18 +3,15 @@ from django.conf.urls.defaults import (
     url
 )
 
-from views import (
-    LoginView,
-    SignUpView
-)
+from knotis.utils.regex import REGEX_UUID
 
 from views import (
-    PasswordResetEmailBody,
-    PasswordChangedEmailBody,
-    ChangeEmailEmailBody,
-    ChangedEmailEmailBody,
-    WelcomeEmailBody
+    LoginView,
+    SignUpView,
+    ForgotPasswordView,
+    ResetPasswordView
 )
+
 
 urlpatterns = patterns(
     'knotis.contrib.auth.views',
@@ -35,4 +32,18 @@ urlpatterns = patterns(
         r'^auth/validate/(?P<user_id>[^/]+)/(?P<validation_key>[^/]+)',
         'validate',
     ),
+    url(
+        r'^auth/forgot/',
+        ForgotPasswordView.as_view()
+    ),
+    url(
+        r''.join([
+            '^auth/reset/(?P<user_id>',
+            REGEX_UUID,
+            ')/(?P<password_reset_key>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        ResetPasswordView.as_view()
+    )
 )

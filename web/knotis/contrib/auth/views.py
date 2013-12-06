@@ -1,16 +1,10 @@
-import json
-import uuid
-import datetime
 import copy
+import json
+import datetime
 
-from django.forms import (
-    CharField,
-    EmailField,
-    BooleanField,
-    PasswordInput,
-    Form,
-    ValidationError
-)
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
+
 from django.shortcuts import (
     render,
     redirect
@@ -20,31 +14,21 @@ from django.contrib.auth import (
     login as django_login,
     logout as django_logout
 )
-from django.contrib.auth.forms import (
-    AuthenticationForm,
-    SetPasswordForm
-)
-from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
-    HttpResponseNotFound
+    HttpResponseNotFound,
+    HttpResponseRedirect
 )
 from django.utils.html import strip_tags
-from django.utils.http import urlquote
-from django.utils.log import logging
-logger = logging.getLogger(__name__)
 from django.template import Context
 from django.template.loader import get_template
 from knotis.utils.email import (
     generate_email,
     generate_validation_key
 )
-from knotis.contrib.auth.models import (
-    KnotisUser,
-    PasswordReset
-)
+from knotis.contrib.auth.models import KnotisUser
 
 from knotis.contrib.endpoint.models import (
     Endpoint,
@@ -52,52 +36,235 @@ from knotis.contrib.endpoint.models import (
 )
 from knotis.contrib.endpoint.views import send_validation_email
 
-from django.views.generic import View
-from knotis.views.mixins import RenderTemplateFragmentMixin
+from knotis.views import FragmentView
 
 from forms import (
     CreateUserForm,
-    LoginForm
+    LoginForm,
+    ForgotPasswordForm,
+    ResetPasswordForm
 )
 
-from knotis.views import EmailView
+from models import (
+    PasswordReset
+)
 
 
-class LoginView(View, RenderTemplateFragmentMixin):
+class LoginView(FragmentView):
     template_name = 'knotis/auth/login.html'
     view_name = 'login'
 
-    def get(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        request.session.set_test_cookie()
-        return render(
-            request,
-            self.template_name, {
-                'login_form': LoginForm()
-            }
-        )
+    def process_context(self):
+        self.request.session.set_test_cookie()
+        return self.context.update({
+            'login_form': LoginForm()
+        })
 
 
-class SignUpView(View, RenderTemplateFragmentMixin):
+class SignUpView(FragmentView):
     template_name = 'knotis/auth/sign_up.html'
     view_name = 'sign_up'
 
+    def process_context(self):
+        return self.context.update({
+            'signup_form': CreateUserForm()
+        })
+
+
+class ForgotPasswordView(FragmentView):
+    template_name = 'knotis/auth/forgot.html'
+    view_name = 'forgot_password'
+
+    def process_context(self):
+        return self.context.update({
+            'forgot_form': ForgotPasswordForm()
+        })
+
+
+class ResetPasswordView(FragmentView):
+    template_name = 'knotis/auth/reset.html'
+    view_name = 'reset_password'
+
     def get(
         self,
         request,
         *args,
         **kwargs
     ):
-        return render(
+        if request.user.is_authenticated():
+            return HttpResponseRedirect('/')
+
+        return super(ResetPasswordView, self).get(
             request,
-            self.template_name, {
-                'signup_form': CreateUserForm()
-            }
+            *args,
+            **kwargs
         )
+
+    def post(
+        self,
+        request,
+        user_id,
+        password_reset_key,
+        *args,
+        **kwargs
+    ):
+        errors = {}
+        is_expired = False
+
+        user_id = self.context.get('user_id')
+        try:
+            user = KnotisUser.objects.get(pk=user_id)
+
+        except:
+            user = None
+
+        password_reset_key = self.context.get('password_reset_key')
+
+        try:
+            reset = PasswordReset.objects.get(
+                user=user,
+                password_reset_key=password_reset_key
+            )
+
+        except PasswordReset.DoesNotExist:
+            reset = None  # no reset object
+
+        except:
+            logger.exception('error getting password reset object')
+            reset = None
+
+        if reset and datetime.datetime.utcnow() > reset.expires:
+            is_expired = True
+            reset = None
+
+        if not reset:
+            self.context['is_expired'] = is_expired
+            self.context['is_reset_valid'] = False
+
+            return HttpResponse(self.render_template_fragment(
+                self.context
+            ))
+
+        form = ResetPasswordForm(
+            user,
+            request=request,
+            data=request.POST
+        )
+
+        if not form.is_valid():
+            if form.errors:
+                for field, messages in form.errors.iteritems():
+                    errors[field] = [messages for message in messages]
+
+            non_field_errors = form.non_field_errors()
+            if non_field_errors:
+                errors['no-field'] = non_field_errors
+
+            self.context['errors'] = errors
+            self.context['reset_form'] = form
+            return HttpResponse(self.render_template_fragment(
+                self.context
+            ))
+
+        form.save()
+
+        user = authenticate(
+            username=user.username,
+            password=form.cleaned_data.get('new_password1')
+        )
+
+        if user is not None:
+            if user.is_active:
+                django_login(request, user)
+
+            else:
+                errors['no-field'] = (
+                    'Could not authenticate user. ',
+                    'User is inactive.'
+                )
+
+        else:
+            errors['no-field'] = (
+                'User authentication failed.'
+            )
+
+        if not errors:
+            return HttpResponseRedirect('/')
+
+        else:
+            return HttpResponse(self.render_template_fragment(
+                self.context
+            ))
+
+    def process_context(self):
+        user_id = self.context.get('user_id')
+        user = KnotisUser.objects.get(pk=user_id)
+
+        password_reset_key = self.context.get('password_reset_key')
+
+        is_expired = False
+
+        try:
+            reset = PasswordReset.objects.get(
+                user=user,
+                password_reset_key=password_reset_key
+            )
+
+        except PasswordReset.DoesNotExist:
+            reset = None  # no reset object
+
+        except:
+            logger.exception('error getting password reset object')
+            reset = None
+
+        if reset and datetime.datetime.utcnow() > reset.expires:
+            is_expired = True
+            reset.delete()
+            reset = None
+
+        styles = self.context.get('styles', [])
+        post_scripts = self.context.get('post_scripts', [])
+
+        my_styles = [
+            'knotis/layout/css/global.css',
+            'knotis/layout/css/header.css'
+        ]
+
+        for style in my_styles:
+            if not style in styles:
+                styles.append(style)
+
+        my_post_scripts = [
+            'knotis/layout/js/layout.js',
+            'knotis/layout/js/forms.js',
+            'knotis/layout/js/header.js',
+            'knotis/auth/js/reset.js'
+        ]
+
+        for script in my_post_scripts:
+            if not script in post_scripts:
+                post_scripts.append(script)
+
+        request = self.context.get('request')
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'styles': styles,
+            'post_scripts': post_scripts,
+            'reset_form': ResetPasswordForm(
+                user,
+                request=request,
+                parameters={
+                    'user_id': user_id,
+                    'password_reset_key': self.context.get(
+                        'password_reset_key'
+                    ),
+                    'is_reset_valid': reset is not None,
+                    'is_expired': is_expired
+                }
+            )
+        })
+        return local_context
 
 
 def resend_validation_email(
@@ -220,109 +387,6 @@ def sign_up(request):
         )
 
 
-class KnotisAuthenticationForm(AuthenticationForm):
-    def __init__(self, *args, **kwargs):
-        super(KnotisAuthenticationForm, self).__init__(*args, **kwargs)
-
-        self.fields['username'].widget.attrs = {
-            'class': 'radius-general',
-            'id': 'email',
-            'type': 'text',
-            'name': 'username',
-            'placeholder': 'Username',
-            'autofocus': None
-        }
-
-        self.fields['password'].widget.attrs = {
-            'class': 'radius-general',
-            'id': 'password',
-            'type': 'password',
-            'name': 'password',
-            'placeholder': 'Password',
-        }
-
-
-def login(request):
-    def generate_response(data):
-        if request.method == 'POST':
-            return HttpResponse(
-                json.dumps(data),
-                content_type='application/json'
-            )
-        elif request.method == 'GET':
-            form = KnotisAuthenticationForm()
-            return render(
-                request,
-                'login.html', {
-                    'form': form
-                }
-            )
-
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        if username:
-            username = username.lower()
-
-        user = authenticate(
-            username=username,
-            password=password
-        )
-
-        if not user:
-            # Message user about failed login attempt.
-            return generate_response({
-                'success': 'no',
-                'message': 'Login failed. Please try again.'
-            })
-
-        user_emails = Endpoint.objects.filter(
-            endpoint_type=EndpointTypes.EMAIL,
-            user=user
-        )
-        primary_email = None
-        for email in user_emails:
-            if email.primary or email.value == username:
-                primary_email = email
-
-        if not primary_email.validated:
-            # Message user about account deactivation.
-
-            validation_link = ''.join([
-                '<a id="resend_validation_link" ',
-                'href="/auth/resend_validation_email/',
-                urlquote(username),
-                '/" >Click here</a> '
-            ])
-
-            return generate_response({
-                'success': 'no',
-                'message': ''.join([
-                    'This account still needs to be activated. ',
-                    validation_link,
-                    'to re-send your validation email.'
-                ])
-            })
-
-        django_login(
-            request,
-            user
-        )
-
-        default_url = '/dashboard/'
-
-        next_url = request.POST.get('next')
-
-        return generate_response({
-            'success': 'yes',
-            'redirect': next_url if next_url else default_url
-        })
-
-    else:
-        return generate_response(None)
-
-
 def logout(request):
     django_logout(request)
     return redirect('/')
@@ -375,157 +439,3 @@ def validate(
         logger.exception('exception while validating endpoint')
 
     return redirect(redirect_url)
-
-
-class KnotisPasswordForgotForm(Form):
-    email = EmailField()
-
-    def send_reset_instructions(self):
-        email = self.cleaned_data['email']
-
-        try:
-            user = KnotisUser.objects.get(username=email)
-        except:
-            user = None
-
-        if not user:
-            raise Exception('no user with that email address found')
-
-        try:
-            primary_email = Endpoint.objects.get_primary_endpoint(
-                user=user,
-                endpoint_type=EndpointTypes.EMAIL
-            )
-
-        except:
-            primary_email = None
-
-        if not primary_email:
-            raise Exception('user has no primary email.')
-
-        digest = uuid.uuid4().hex
-        key = "%s-%s-%s-%s-%s" % (
-            digest[:8],
-            digest[8:12],
-            digest[12:16],
-            digest[16:20],
-            digest[20:]
-        )
-
-        try:
-            PasswordReset.objects.create(
-                endpoint=primary_email,
-                password_reset_key=key,
-                expires=datetime.datetime.utcnow() + datetime.timedelta(
-                    minutes=settings.PASSWORD_RESET_EXPIRE_MINUTES
-                )
-            )
-
-            generate_email(
-                'password_forgot',
-                'Knotis.com - Change Password',
-                settings.EMAIL_HOST_USER,
-                [email], {
-                    'validation_key': key,
-                    'BASE_URL': settings.BASE_URL,
-                    'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
-                    'SERVICE_NAME': settings.SERVICE_NAME
-                }
-            ).send()
-            return True
-        except:
-            logger.exception('failed to initiate password reset')
-            return False
-
-        
-class PasswordResetEmailBody(EmailView):
-    template_name = 'knotis/auth/email_forgot_password.html'
-
-    def process_context(self):
-        local_context = copy.copy(self.context)
-
-        account_name = 'Fine Bitstrings'
-        browser_link = 'http://example.com'
-        reset_link = 'http://example.com'
-        
-        local_context.update({
-            'account_name': account_name,
-            'browser_link': browser_link,
-            'reset_link': reset_link
-        })
-
-        return local_context
-
-
-class PasswordChangedEmailBody(EmailView):
-    template_name = 'knotis/auth/email_new_password.html'
-
-    def process_context(self):
-        local_context = copy.copy(self.context)
-
-        browser_link = 'http://example.com'
-        account_name = 'Fine Bitstrings'
-        cancel_link = 'http://example.com'
-
-        local_context.update({
-            'browser_link': browser_link,
-            'account_name': account_name,
-            'cancel_link': cancel_link
-        })
-
-        return local_context
-
-        
-class ChangeEmailEmailBody(EmailView):
-    template_name = 'knotis/auth/email_change_email.html'
-
-    def process_context(self):
-        local_context = copy.copy(self.context)
-
-        browser_link = 'http://example.com'
-        account_name = 'Fine Bitstrings'
-        reset_link = 'http://example.com'
-
-        local_context.update({
-            'browser_link': browser_link,
-            'account_name': account_name,
-            'reset_link': reset_link
-        })
-
-        return local_context
-        
-
-class ChangedEmailEmailBody(EmailView):
-    template_name = 'knotis/auth/email_changed_email.html'
-
-    def process_context(self):
-        local_context = copy.copy(self.context)
-
-        browser_link = 'http://example.com'
-        account_name = 'Fine Bitstrings'
-        cancel_link = 'http://example.com'
-
-        local_context.update({
-            'browser_link': browser_link,
-            'account_name': account_name,
-            'cancel_link': cancel_link
-        })
-
-        return local_context
-
-    
-class WelcomeEmailBody(EmailView):
-    template_name = 'knotis/auth/email_welcome.html'
-
-    def process_context(self):
-        local_context = copy.copy(self.context)
-
-        browser_link = 'http://example.com'
-        activation_link = 'http://dev.knotis.com'
-
-        local_context.update({
-            'browser_link': browser_link,
-            'activation_link': activation_link
-        })
-
-        return local_context

@@ -17,7 +17,8 @@ from knotis.contrib.identity.models import (
 from forms import (
     LoginForm,
     CreateUserForm,
-    CreateSuperUserForm
+    CreateSuperUserForm,
+    ForgotPasswordForm
 )
 from models import (
     UserInformation
@@ -195,5 +196,42 @@ class AuthUserApi(ApiView):
                 'username': user.username
             }
             response_data['message'] = 'Account created successfully'
+
+        return self.generate_response(response_data)
+
+
+class AuthForgotPasswordApi(ApiView):
+    api_url = 'auth/forgot'
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        form = ForgotPasswordForm(
+            data=request.POST
+        )
+
+        errors = {}
+
+        if not form.is_valid():
+            pass  # errors
+
+        if not form.send_reset_instructions():
+            pass  # errors
+
+        response_data = {}
+
+        if errors:
+            response_data = {
+                'errors': errors,
+                'status': 'ERROR'
+            }
+
+        else:
+            response_data = {
+                'status': 'OK'
+            }
 
         return self.generate_response(response_data)

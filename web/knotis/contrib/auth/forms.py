@@ -1,27 +1,30 @@
+import uuid
+import datetime
+
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
+
+from django.conf import settings
 from django.utils.http import urlquote
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import (
+    AuthenticationForm,
+    SetPasswordForm
+)
+from django.template import Context
 from django.forms import (
     CharField,
     EmailField,
     BooleanField,
     PasswordInput,
     HiddenInput,
-    ValidationError
+    ValidationError,
+    ModelChoiceField
 )
 
 from knotis.forms import (
+    TemplateForm,
     TemplateModelForm,
     TemplateFormMixin
-)
-
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import (
-    Layout,
-    HTML,
-    Div,
-    Field,
-    ButtonHolder,
-    Submit
 )
 
 from knotis.contrib.endpoint.models import (
@@ -35,7 +38,13 @@ from knotis.contrib.identity.models import (
 )
 from knotis.contrib.relation.models import Relation
 
-from models import KnotisUser
+from models import (
+    KnotisUser,
+    UserInformation,
+    PasswordReset
+)
+
+from emails import PasswordResetEmailBody
 
 
 class LoginForm(TemplateFormMixin, AuthenticationForm):
@@ -84,6 +93,10 @@ class LoginForm(TemplateFormMixin, AuthenticationForm):
                 ]))
 
         return cleaned_data
+
+
+class ResetPasswordForm(TemplateFormMixin, SetPasswordForm):
+    template_name = 'knotis/auth/reset_form.html'
 
 
 class CreateUserForm(TemplateModelForm):
@@ -223,3 +236,97 @@ class CreateSuperUserForm(CreateUserForm):
             *args,
             **kwargs
         )
+
+
+class ForgotPasswordForm(TemplateForm):
+    template_name = 'knotis/auth/forgot_form.html'
+
+    email = EmailField()
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email:
+            email = email.lower()
+
+        try:
+            user = KnotisUser.objects.get(username=email)
+
+        except:
+            user = None
+
+        if not user:
+            raise ValidationError('no user with that email address found')
+
+        self.user = user
+
+        try:
+            primary_email = Endpoint.objects.filter(
+                value=email,
+                endpoint_type=EndpointTypes.EMAIL,
+                primary=True
+            )[0]
+
+        except:
+            primary_email = None
+
+        if not primary_email:
+            raise ValidationError('user has no primary email.')
+
+        self.endpoint = primary_email
+
+        return email
+
+    def send_reset_instructions(self):
+        if not self.is_valid():
+            logger.error(
+                'Form must be valid to send password reset instructions'
+            )
+            return False
+
+        email = self.cleaned_data['email']
+
+        digest = uuid.uuid4().hex
+        key = "%s-%s-%s-%s-%s" % (
+            digest[:8],
+            digest[8:12],
+            digest[12:16],
+            digest[16:20],
+            digest[20:]
+        )
+
+        try:
+            PasswordReset.objects.create(
+                user=self.user,
+                password_reset_key=key,
+                expires=datetime.datetime.utcnow() + datetime.timedelta(
+                    minutes=settings.PASSWORD_RESET_EXPIRE_MINUTES
+                )
+            )
+
+            reset_link = '/'.join([
+                settings.BASE_URL,
+                'auth',
+                'reset',
+                self.user.pk,
+                key,
+                ''
+            ])
+
+            user_info = UserInformation.objects.get(user=self.user)
+
+            message = PasswordResetEmailBody()
+            message.generate_email(
+                'Knotis.com - Change Password',
+                settings.EMAIL_HOST_USER,
+                [email], Context({
+                    'reset_link': reset_link,
+                    'account_name': user_info.default_identity.name,
+                    'BASE_URL': settings.BASE_URL,
+                    'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
+                })
+            ).send()
+            return True
+
+        except:
+            logger.exception('failed to initiate password reset')
+            return False
