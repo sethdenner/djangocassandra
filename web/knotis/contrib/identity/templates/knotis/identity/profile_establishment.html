@@ -31,7 +31,7 @@
           </div>
           <div class="profile-short-info">
             {% if phone %}
-            <a class="cover-endpoint phone" href="{{phone.uri}}">
+            <a class="cover-endpoint phone" href="{{ phone.uri }}">
               <img height="7.5" src="/static/knotis/img/phone.png" alt="phone icon" />
               <span class="cover-endpoint-text">{{ phone.value }}</span>
             </a>
@@ -45,12 +45,11 @@
             {% endif %}
 
             {% if website %}
-            <a class="cover-endpoint website" href="{{website.uri}}">
+            <a class="cover-endpoint website" href="{{ website.uri }}">
               <img height="7.5" src="/static/knotis/img/website.png" alt="www icon" />
               <span class="cover-endpoint-text">{{ website.value }}</span>
             </a>
             {% endif %}
-            
             
           </div>
         </div>
