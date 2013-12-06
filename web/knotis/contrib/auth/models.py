@@ -120,7 +120,7 @@ class UserInformation(QuickModel):
 
 
 class PasswordReset(QuickModel):
-    endpoint = QuickForeignKey(Endpoint)
+    user = QuickForeignKey(KnotisUser)
     password_reset_key = QuickCharField(
         max_length=36,
         db_index=True

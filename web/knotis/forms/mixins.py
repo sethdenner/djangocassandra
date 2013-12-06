@@ -1,4 +1,8 @@
-from django.template import Context
+from django.template import (
+    Context,
+    RequestContext,
+)
+
 from django.template.loader import get_template
 from django.utils.safestring import mark_safe
 
@@ -8,11 +12,11 @@ class TemplateFormMixin(object):
 
     def __init__(
         self,
-        parameters={},
         *args,
         **kwargs
     ):
-        self.parameters = parameters
+        self.parameters = kwargs.pop('parameters', {})
+        self.request = kwargs.pop('request', None)
 
         super(TemplateFormMixin, self).__init__(
             *args,
@@ -28,7 +32,14 @@ class TemplateFormMixin(object):
         template = get_template(self.template_name)
 
         if isinstance(self.parameters, dict):
-            context = Context(self.parameters)
+            if self.request:
+                context = RequestContext(
+                    self.request,
+                    self.parameters
+                )
+
+            else:
+                context = Context(self.parameters)
 
         elif isinstance(self.parameters, Context):
             context = self.parameters

@@ -3,6 +3,10 @@ body.knotis {
     color: #808184;
 }
 
+body.knotis form {
+    margin: 0;
+}
+
 body.knotis form label {
     color: #808184;
     margin: 0 0 0 2px;

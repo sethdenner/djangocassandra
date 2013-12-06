@@ -215,7 +215,6 @@ class AuthForgotPasswordApi(ApiView):
 
         errors = {}
 
-        import pdb; pdb.set_trace()
         if not form.is_valid():
             pass  # errors
 

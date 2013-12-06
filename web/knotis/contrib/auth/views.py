@@ -1,4 +1,6 @@
+import copy
 import json
+import datetime
 
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
@@ -16,7 +18,8 @@ from django.conf import settings
 from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
-    HttpResponseNotFound
+    HttpResponseNotFound,
+    HttpResponseRedirect
 )
 from django.utils.html import strip_tags
 from django.template import Context
@@ -38,7 +41,12 @@ from knotis.views import FragmentView
 from forms import (
     CreateUserForm,
     LoginForm,
-    ForgotPasswordForm
+    ForgotPasswordForm,
+    ResetPasswordForm
+)
+
+from models import (
+    PasswordReset
 )
 
 
@@ -71,6 +79,192 @@ class ForgotPasswordView(FragmentView):
         return self.context.update({
             'forgot_form': ForgotPasswordForm()
         })
+
+
+class ResetPasswordView(FragmentView):
+    template_name = 'knotis/auth/reset.html'
+    view_name = 'reset_password'
+
+    def get(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        if request.user.is_authenticated():
+            return HttpResponseRedirect('/')
+
+        return super(ResetPasswordView, self).get(
+            request,
+            *args,
+            **kwargs
+        )
+
+    def post(
+        self,
+        request,
+        user_id,
+        password_reset_key,
+        *args,
+        **kwargs
+    ):
+        errors = {}
+        is_expired = False
+
+        user_id = self.context.get('user_id')
+        try:
+            user = KnotisUser.objects.get(pk=user_id)
+
+        except:
+            user = None
+
+        password_reset_key = self.context.get('password_reset_key')
+
+        try:
+            reset = PasswordReset.objects.get(
+                user=user,
+                password_reset_key=password_reset_key
+            )
+
+        except PasswordReset.DoesNotExist:
+            reset = None  # no reset object
+
+        except:
+            logger.exception('error getting password reset object')
+            reset = None
+
+        if reset and datetime.datetime.utcnow() > reset.expires:
+            is_expired = True
+            reset = None
+
+        if not reset:
+            self.context['is_expired'] = is_expired
+            self.context['is_reset_valid'] = False
+
+            return HttpResponse(self.render_template_fragment(
+                self.context
+            ))
+
+        form = ResetPasswordForm(
+            user,
+            request=request,
+            data=request.POST
+        )
+
+        if not form.is_valid():
+            if form.errors:
+                for field, messages in form.errors.iteritems():
+                    errors[field] = [messages for message in messages]
+
+            non_field_errors = form.non_field_errors()
+            if non_field_errors:
+                errors['no-field'] = non_field_errors
+
+            self.context['errors'] = errors
+            self.context['reset_form'] = form
+            return HttpResponse(self.render_template_fragment(
+                self.context
+            ))
+
+        form.save()
+
+        user = authenticate(
+            username=user.username,
+            password=form.cleaned_data.get('new_password1')
+        )
+
+        if user is not None:
+            if user.is_active:
+                django_login(request, user)
+
+            else:
+                errors['no-field'] = (
+                    'Could not authenticate user. ',
+                    'User is inactive.'
+                )
+
+        else:
+            errors['no-field'] = (
+                'User authentication failed.'
+            )
+
+        if not errors:
+            return HttpResponseRedirect('/')
+
+        else:
+            return HttpResponse(self.render_template_fragment(
+                self.context
+            ))
+
+    def process_context(self):
+        user_id = self.context.get('user_id')
+        user = KnotisUser.objects.get(pk=user_id)
+
+        password_reset_key = self.context.get('password_reset_key')
+
+        is_expired = False
+
+        try:
+            reset = PasswordReset.objects.get(
+                user=user,
+                password_reset_key=password_reset_key
+            )
+
+        except PasswordReset.DoesNotExist:
+            reset = None  # no reset object
+
+        except:
+            logger.exception('error getting password reset object')
+            reset = None
+
+        if reset and datetime.datetime.utcnow() > reset.expires:
+            is_expired = True
+            reset.delete()
+            reset = None
+
+        styles = self.context.get('styles', [])
+        post_scripts = self.context.get('post_scripts', [])
+
+        my_styles = [
+            'knotis/layout/css/global.css',
+            'knotis/layout/css/header.css'
+        ]
+
+        for style in my_styles:
+            if not style in styles:
+                styles.append(style)
+
+        my_post_scripts = [
+            'knotis/layout/js/layout.js',
+            'knotis/layout/js/forms.js',
+            'knotis/layout/js/header.js',
+            'knotis/auth/js/reset.js'
+        ]
+
+        for script in my_post_scripts:
+            if not script in post_scripts:
+                post_scripts.append(script)
+
+        request = self.context.get('request')
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'styles': styles,
+            'post_scripts': post_scripts,
+            'reset_form': ResetPasswordForm(
+                user,
+                request=request,
+                parameters={
+                    'user_id': user_id,
+                    'password_reset_key': self.context.get(
+                        'password_reset_key'
+                    ),
+                    'is_reset_valid': reset is not None,
+                    'is_expired': is_expired
+                }
+            )
+        })
+        return local_context
 
 
 def resend_validation_email(

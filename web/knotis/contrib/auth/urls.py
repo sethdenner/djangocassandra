@@ -3,10 +3,13 @@ from django.conf.urls.defaults import (
     url
 )
 
+from knotis.utils.regex import REGEX_UUID
+
 from views import (
     LoginView,
     SignUpView,
-    ForgotPasswordView
+    ForgotPasswordView,
+    ResetPasswordView
 )
 
 
@@ -32,5 +35,15 @@ urlpatterns = patterns(
     url(
         r'^auth/forgot/',
         ForgotPasswordView.as_view()
+    ),
+    url(
+        r''.join([
+            '^auth/reset/(?P<user_id>',
+            REGEX_UUID,
+            ')/(?P<password_reset_key>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        ResetPasswordView.as_view()
     )
 )

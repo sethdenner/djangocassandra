@@ -6,7 +6,10 @@ logger = logging.getLogger(__name__)
 
 from django.conf import settings
 from django.utils.http import urlquote
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import (
+    AuthenticationForm,
+    SetPasswordForm
+)
 from django.template import Context
 from django.forms import (
     CharField,
@@ -14,7 +17,8 @@ from django.forms import (
     BooleanField,
     PasswordInput,
     HiddenInput,
-    ValidationError
+    ValidationError,
+    ModelChoiceField
 )
 
 from knotis.forms import (
@@ -36,6 +40,7 @@ from knotis.contrib.relation.models import Relation
 
 from models import (
     KnotisUser,
+    UserInformation,
     PasswordReset
 )
 
@@ -88,6 +93,10 @@ class LoginForm(TemplateFormMixin, AuthenticationForm):
                 ]))
 
         return cleaned_data
+
+
+class ResetPasswordForm(TemplateFormMixin, SetPasswordForm):
+    template_name = 'knotis/auth/reset_form.html'
 
 
 class CreateUserForm(TemplateModelForm):
@@ -235,7 +244,6 @@ class ForgotPasswordForm(TemplateForm):
     email = EmailField()
 
     def clean_email(self):
-        import pdb; pdb.set_trace()
         email = self.cleaned_data.get('email')
         if email:
             email = email.lower()
@@ -248,6 +256,8 @@ class ForgotPasswordForm(TemplateForm):
 
         if not user:
             raise ValidationError('no user with that email address found')
+
+        self.user = user
 
         try:
             primary_email = Endpoint.objects.filter(
@@ -286,22 +296,33 @@ class ForgotPasswordForm(TemplateForm):
 
         try:
             PasswordReset.objects.create(
-                endpoint=self.endpoint,
+                user=self.user,
                 password_reset_key=key,
                 expires=datetime.datetime.utcnow() + datetime.timedelta(
                     minutes=settings.PASSWORD_RESET_EXPIRE_MINUTES
                 )
             )
 
+            reset_link = '/'.join([
+                settings.BASE_URL,
+                'auth',
+                'reset',
+                self.user.pk,
+                key,
+                ''
+            ])
+
+            user_info = UserInformation.objects.get(user=self.user)
+
             message = PasswordResetEmailBody()
             message.generate_email(
                 'Knotis.com - Change Password',
                 settings.EMAIL_HOST_USER,
                 [email], Context({
-                    'validation_key': key,
+                    'reset_link': reset_link,
+                    'account_name': user_info.default_identity.name,
                     'BASE_URL': settings.BASE_URL,
                     'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
-                    'SERVICE_NAME': settings.SERVICE_NAME
                 })
             ).send()
             return True

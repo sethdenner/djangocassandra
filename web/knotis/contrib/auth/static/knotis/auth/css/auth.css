@@ -47,3 +47,12 @@ form div.auth-info > p {
     color: #808184;
 }
 
+div.reset {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    background-color: #fff;
+    margin: 40px 0 0;
+    padding: 25px;
+}
