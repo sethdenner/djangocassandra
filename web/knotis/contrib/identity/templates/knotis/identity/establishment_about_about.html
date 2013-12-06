@@ -1,6 +1,27 @@
 
 <div class="about-description">
-<h4>About Us</h4>
+<h4>About Us
+
+ <span class="social-buttons pull-right">
+   {% if twitter.value %}
+   <a class="updateable-endpoint twitter" href="{{ twitter.uri }}">
+	 <img class="space" src="/static/knotis/identity/img/twittericon-grey27x27.png" alt="Twitter"></img>
+   </a>
+   {% endif %}
+        
+   {% if facebook.value %}
+   <a class="updateable-endpoint facebook" href="{{ facebook.uri }}">
+	 <img class="space" src="/static/knotis/identity/img/facebookicon-grey27x27.png" alt="Facebook"></img>
+   </a>
+   {% endif %}
+   
+   {% if yelp.value %}
+   <a class="updateable-endpoint yelp" href="{{ yelp.uri }}">
+	 <img class="space" src="/static/knotis/identity/img/yelpicon-grey27x27.png" alt="Yelp"></img>
+   </a>
+   {% endif %}
+ </span>
+</h4>
 <div class="about-us-inner">
   {% if is_manager %}
   <a class="pull-right edit_about">Edit</a>
@@ -118,25 +139,7 @@
     {% endif %}
     
     <div class="viewable toggleable">
-      <div class="social-buttons">
-        {% if twitter.value %}
-        <a class="updateable-endpoint twitter" href="{{ twitter.uri }}">
-	      <img src="/static/knotis/identity/img/icon-twitter.png" alt="Twitter"></img>
-        </a>
-        {% endif %}
-        
-        {% if facebook.value %}
-        <a class="updateable-endpoint facebook" href="{{ facebook.uri }}">
-	      <img src="/static/knotis/identity/img/icon-facebook.png" alt="Facebook"></img>
-        </a>
-        {% endif %}
-        
-        {% if yelp.value %}
-        <a class="updateable-endpoint yelp" href="{{ yelp.uri }}">
-	      <img src="/static/knotis/identity/img/icon-yelp.png" alt="Yelp"></img>
-        </a>
-        {% endif %}
-      </div>
+     
       <div class="about-us">
         {{ description }}
       </div>

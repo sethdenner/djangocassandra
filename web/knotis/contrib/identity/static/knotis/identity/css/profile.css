@@ -80,6 +80,7 @@ div.column-box {
 .about-section {
     background: #e5e5e4;
     padding: 24px;
+    color: #808184;
 }
 
 .about-description {
@@ -90,29 +91,18 @@ div.column-box {
     background: white;
     border: 10px solid white;
     min-height: 250px;
+    color: #808184;
 }
 
 ul.nav-tabs {
     display: inline-block;
 }
 
-h4 {
-
-}
-
-/* Carousel */
-.about-carousel {
-    overflow: hidden;
-}
-
-.upload-photo {
-    line-height: 48px;
-}
-
 /* Location */
 .about-location {
     min-width: 300px;
     min-height: 400px;
+    color: #808184;
 }
 
 .about-location .about-map-outer {
@@ -194,19 +184,45 @@ li.yelp.tab.active div.yelp.tab {
 }
 
 /* About Carousel */
+.about-carousel {
+    overflow: hidden;
+    width: 100%;
+}
+
+.upload-photo {
+    display: block;
+    margin-top: 15px;
+}
+
+.carousel-indicators {
+    margin: 0;
+}
+
 #about_carousel>.carousel-inner {
     overflow: hidden;
-    width: 90%;
+    width: 100%;
 }
 
 #about_carousel {
     background: #FFFFFF;
     border: 10px solid white;
+    width: 100%;
+    padding: 10px solid white;
+}
+
+.carousel-inner {
+    width: 100%;
+    position: relative;
+    left: -10px;
+}
+
+.carousel-wrapper {
+    width: 100%;
 }
 
 #about_carousel>.carousel-inner>.item>.about-carousel-image {
-    width: 600px;
-    height: 400px;
+    overflow:hidden;
+    height: 400px;    
 }
 
 .moar-space {
@@ -232,6 +248,7 @@ p.tweet-text {
     width: 84%;
     display: inline-block;
     min-height: 50px;
+    color: #808184
 }
 
 div.twitter-title h4 {
@@ -293,4 +310,21 @@ p.excerpt {
     width: 84%;
     display: inline-block;
     min-height: 50px;
+    color: #808184;
+}
+
+h4 {
+    color: black;
+}
+
+div.ratings {
+    margin-top: 25px;
+}
+
+div.about-location {
+    margin-top: 25px;
+}
+
+.space {
+    margin-left: 2px;
 }
