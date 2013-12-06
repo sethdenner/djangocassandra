@@ -659,34 +659,36 @@ class EstablishmentProfileAbout(FragmentView):
 
     def process_context(self):
         local_context = copy.copy(self.context)
-        sections = []
+        #sections = []
             
         about = EstablishmentAboutAbout()
         about_markup = about.render_template_fragment(local_context)
         about_markup = about_markup.strip()
-        if about_markup:
-            sections.append(about_markup)
-
-
+        #        if about_markup:
+        #    sections.append(about_markup)
+            
         carousel = EstablishmentAboutCarousel()
         carousel_markup = carousel.render_template_fragment(local_context)
         carousel_markup = carousel_markup.strip()
-        if carousel_markup:
-            sections.append(carousel_markup)
+        #if carousel_markup:
+        #    sections.append(carousel_markup)
 
         feeds = EstablishmentAboutFeeds()
         feeds_markup = feeds.render_template_fragment(local_context)
-        if feeds_markup:
-            sections.append(feeds_markup)
-            
+        #if feeds_markup:
+        #    sections.append(feeds_markup)
+
         location = EstablishmentProfileLocation()
         location_markup = location.render_template_fragment(local_context)
         location_markup = location_markup.strip()
-        if location_markup:
-            sections.append(location_markup)
+        #if location_markup:
+        #    sections.append(location_markup)
 
         local_context.update({
-            'sections': sections
+            'about': about_markup,
+            'photos': carousel_markup,
+            'ratings': feeds_markup,
+            'location': location_markup,
         })
         return local_context
 

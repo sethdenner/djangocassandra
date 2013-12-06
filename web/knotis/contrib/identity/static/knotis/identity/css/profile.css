@@ -73,6 +73,10 @@ div.column-box {
 }
 
 /* Profile About Section Divs */
+.sections {
+    padding-left: 24px;
+}
+
 .about-section {
     background: #e5e5e4;
     padding: 24px;
@@ -82,13 +86,42 @@ div.column-box {
     
 }
 
+.about-us-inner {
+    background: white;
+    border: 10px solid white;
+    min-height: 250px;
+}
+
+ul.nav-tabs {
+    display: inline-block;
+}
+
+h4 {
+
+}
+
+/* Carousel */
 .about-carousel {
     overflow: hidden;
 }
 
+.upload-photo {
+    line-height: 48px;
+}
+
+/* Location */
 .about-location {
     min-width: 300px;
     min-height: 400px;
+}
+
+.about-location .about-map-outer {
+    background: white;
+    border: 10px solid white;
+}
+
+.about-location p.display-address {
+    margin-top: 7px;
 }
 
 #about-map {
@@ -109,6 +142,50 @@ div.column-box {
 
 }
 
+/* Ratings */
+/* Twitter Active --> color */
+div.tab {
+    background-size: cover;
+    min-width: 27px;
+    min-height: 27px;
+    width: 27px;
+    height: 27px;
+}
+
+.tab-content {
+    overflow: inherit;
+}
+
+div.twitter.tab {
+    width: 27px;
+    border-radius: 14px
+}
+
+div.yelp.tab {
+    width: 27px;
+    border-radius: 14px;
+}
+
+/* Twitter Inactive --> grey */
+li.twitter.tab div.twitter.tab {
+    background: url(/static/knotis/identity/img/twittericon-grey27x27.png);
+}
+
+/* Twitter Active --> color */
+li.twitter.active.tab div.twitter.tab {
+    background: url(/static/knotis/identity/img/twittericon-colored27x27.png);
+}
+
+/* Yelp Inactive --> grey */
+li.yelp.tab div.yelp.tab {
+    background: url(/static/knotis/identity/img/yelpicon-grey27x27.png);
+}
+
+/* Yelp Active --> color */
+li.yelp.tab.active div.yelp.tab {
+    background: url(/static/knotis/identity/img/yelpicon-colored27x27.png);
+}
+
 /* Profile About About Endpoint Form */
 .edit-endpoint {
     width: 90%;
@@ -116,9 +193,15 @@ div.column-box {
     left: 20px;
 }
 
+/* About Carousel */
 #about_carousel>.carousel-inner {
     overflow: hidden;
     width: 90%;
+}
+
+#about_carousel {
+    background: #FFFFFF;
+    border: 10px solid white;
 }
 
 #about_carousel>.carousel-inner>.item>.about-carousel-image {
@@ -137,17 +220,18 @@ div.column-box {
 
 /* Profile Feeds */
 /** Twitter */
+div.tweet {
+}
+
 p.tweet-text {
     background: #FFFFFF;
-    color: #eb8636;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;
     padding: 5px;
     width: 84%;
     display: inline-block;
-    position: relative;
-    bottom: 10px;
+    min-height: 50px;
 }
 
 div.twitter-title h4 {
@@ -167,10 +251,10 @@ div.twitter-title {
 /** Yelp */
 
 img.user {
-    border-radius: 2px;
+    border-radius: 25px;
     display: inline;
-    position: relative;
-    bottom: 20px;
+    margin-right: 2px;
+    vertical-align: top;
 }
 
 div.yelp-review {
@@ -179,21 +263,25 @@ div.yelp-review {
 
 div.yelp-review span.username {
     background: #FFFFFF;
-    color: #1d76bb;
 }
 
 div.yelp-review span.score {
-    color: #eb8636;
 }
 
 span.arrow-left {
-    position: relative;
-    bottom: 20px;
+    vertical-align: top;
+    margin: 15px 0 0;
+    line-height: 0;
+    font-size: 0;
+    padding: 0;
     width: 0;
     height: 0;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
     border-right: 10px solid white;
+    display: inline;
+    position: relative;
+    top: 25px;
 }
 
 p.excerpt {
@@ -201,8 +289,8 @@ p.excerpt {
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;
-    color: #eb8636;
     background-color: #FFFFFF;
     width: 84%;
     display: inline-block;
+    min-height: 50px;
 }
