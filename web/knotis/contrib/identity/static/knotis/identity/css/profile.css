@@ -222,7 +222,8 @@ li.yelp.tab.active div.yelp.tab {
 
 #about_carousel>.carousel-inner>.item>.about-carousel-image {
     overflow:hidden;
-    height: 400px;    
+    height: 400px; 
+    width: 100%;
 }
 
 .moar-space {
@@ -327,4 +328,14 @@ div.about-location {
 
 .space {
     margin-left: 2px;
+    margin-right: 2px;
+}
+
+img.away {
+    margin-bottom: 15px;
+}
+
+.social-buttons {
+    position: relative;
+    top: -7px;
 }
