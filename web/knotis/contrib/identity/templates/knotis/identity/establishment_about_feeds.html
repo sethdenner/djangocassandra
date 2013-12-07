@@ -1,20 +1,22 @@
 {% if twitter_has_feed or yelp_has_feed %}
-<h4>Ratings &amp; Reviews</h4>
-{% endif %}
+<h4 class="title-and-selector">
+Ratings &amp; Reviews
 
-<ul id="AboutFeedTab" class="nav nav-tabs pull-right" id="about-feeds">
+<ul id="AboutFeedTab" class="nav nav-tabs pull-right">
   {% if twitter_has_feed %}
-  <li class="twitter active tab">
-    <img class="twitter tab" src="/static/knotis/identity/img/icon-twitter.png" />
+  <li class="twitter tab active">
+    <div class="space twitter tab">&nbsp;</div>
   </li>
   {% endif %}
 
   {% if yelp_has_feed %}
   <li class="yelp tab">
-    <img class="yelp tab"src="/static/knotis/identity/img/icon-yelp.png" />
+    <div class="space yelp tab">&nbsp;</div>
   </li>
   {% endif %} 
 </ul>
+</h4>
+{% endif %}
 
 <div id="AboutFeedTabContent" class="tab-content">
   {% if twitter_has_feed %}
@@ -25,7 +27,3 @@
   <div id="yelp" class="tab-pane">{{ yelp_markup }}</div>
   {% endif %}
 </div>
-
-<script type="text/javascript">
-
-</script>

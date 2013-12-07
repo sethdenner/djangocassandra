@@ -128,14 +128,18 @@
 
     $('.twitter.tab').click(function(){
         $('.tab-pane#yelp').hide();
+        $('li.tab.yelp').removeClass('active');
 
         $('.tab-pane#twitter').show();
+        $('li.tab.twitter').addClass('active');
     });
 
     $('.yelp.tab').click(function(){
         $('.tab-pane#twitter').hide();
+        $('li.tab.twitter').removeClass('active');
 
         $('.tab-pane#yelp').show();
+        $('li.tab.yelp').addClass('active');
     });
     
 })(jQuery);

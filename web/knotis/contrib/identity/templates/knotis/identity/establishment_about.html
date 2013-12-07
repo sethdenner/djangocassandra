@@ -1,18 +1,32 @@
-{% if sections %}
-<div class="row-fluid">
+<div class="row-fluid sections">
 
-{% for section in sections %}
-  
-  {% if forloop.counter0|divisibleby:2 and forloop.counter0 != 0 %}
-  </div><div  class="row-fluid moar-space">
-  {% endif %}
-  
-  <div class="span6 about-section">
-  {{ section|safe }}
+  <div class="span5">
+    <div class="row-fluid">
+      <div class="span12 about">
+        {{ about|safe }}
+      </div>
+    </div>
+    
+    <div class="row-fluid">
+      <div class="span12 ratings">
+       {{ ratings|safe }}
+      </div>
+    </div>
   </div>
 
-{% endfor %}
+  <div class="span5">
+    <div class="row-fluid">
+      <div class="span12 photos">
+        {{ photos|safe }}
+      </div>
+    </div>
+    
+    <div class="row-fluid">
+      <div class="span12 location">
+        {{ location|safe }}
+      </div>
+    </div>
+  </div>
 
 </div>
-{% endif %}
 

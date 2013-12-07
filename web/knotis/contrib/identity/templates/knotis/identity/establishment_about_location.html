@@ -1,15 +1,16 @@
 {% if address %}
 <div class="about-location">
-<h4>Location</h4>
-<div id="about-map" />
-<p>{{ address }}</p>
-<div class="establishment-contact-loc-address">{{ address }}</div>
-
-<input type="hidden" 
-	   id="establishment-contact-loc-details"
-	   data-latitude="{{ latitude }}"
-	   data-longitude="{{ longitude }}" />
-
+  <h4>Location</h4>
+  <div class="about-map-outer">
+    <div id="about-map" />
+    <input type="hidden" 
+	       id="establishment-contact-loc-details"
+	       data-latitude="{{ latitude }}"
+	       data-longitude="{{ longitude }}" />
+    <div class="establishment-contact-loc-address">{{ address }}</div> 
+  </div>
+  <p class="display-address">{{ address }}</p>
+  <a href="http://maps.google.com/maps?daddr={{ address|iriencode }}">Get Directions</a>
 </div>
 {% endif %}
 
