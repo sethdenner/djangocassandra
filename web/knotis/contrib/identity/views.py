@@ -72,6 +72,8 @@ from knotis.contrib.endpoint.models import (
     EndpointWebsite
 )
 
+from django.utils.encoding import iri_to_uri
+
 
 class IdentityView(ContextView):
     template_name = 'knotis/identity/identity_view.html'
@@ -516,7 +518,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                 endpoint = data['changed_endpoints'][endpoint_name]
                 endpoint_id = endpoint['endpoint_id']
 
-                endpoint_value = endpoint['endpoint_value'].strip()
+                endpoint_value = iri_to_uri(endpoint['endpoint_value'].strip())
                     
                 updated_endpoint = Endpoint.objects.update_or_create(
                     identity=business,
