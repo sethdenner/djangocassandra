@@ -15,6 +15,9 @@ from knotis.contrib.quick.fields import (
     QuickGenericForeignKey
 )
 
+from django.conf import settings
+from geopy.geocoders import Nominatim
+
 
 class Location(QuickModel):
     address = QuickCharField(max_length=256)
@@ -37,7 +40,18 @@ class Location(QuickModel):
     def get_location(self):
         return Point(self.longitude, self.latitude)
 
-
+    def update_geocode(self):
+        if not self.latitude or not self.longitude:
+            geocoder = Nominatim()
+            address, (latitude, longitude) = geocoder.geocode(
+                self.address,
+                exactly_one=True
+            )
+            self.latitude = latitude
+            self.longitude = longitude
+        return self
+        
+    
 class LocationItem(QuickModel):
     location = QuickForeignKey(Location)
     related_content_type = QuickForeignKey(
