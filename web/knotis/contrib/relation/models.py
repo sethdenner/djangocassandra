@@ -240,18 +240,18 @@ class Relation(QuickModel):
     )
     subject_content_type = QuickForeignKey(
         ContentType,
-        related_name='relation_subject_set'
+        related_name='relation_subject_set',
     )
-    subject_object_id = QuickUUIDField()
+    subject_object_id = QuickUUIDField(db_index=True)
     subject = QuickGenericForeignKey(
         'subject_content_type',
         'subject_object_id'
     )
     related_content_type = QuickForeignKey(
         ContentType,
-        related_name='relation_related_set'
+        related_name='relation_related_set',
     )
-    related_object_id = QuickUUIDField()
+    related_object_id = QuickUUIDField(db_index=True)
     related = QuickGenericForeignKey(
         'related_content_type',
         'related_object_id'
