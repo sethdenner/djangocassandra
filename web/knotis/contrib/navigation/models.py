@@ -54,9 +54,10 @@ class NavigationItem(QuickModel):
         max_length=32
     )
     uri = QuickURLField()
-    
+
     menu_name = QuickCharField(
-        max_length=32
+        max_length=32,
+        db_index=True
     )
 
     order = QuickIntegerField()

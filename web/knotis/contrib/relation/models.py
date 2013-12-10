@@ -74,9 +74,7 @@ class RelationManager(QuickManager):
         self,
         user
     ):
-        user_type = ContentType.objects.get_for_model(user)
         return Relation.objects.get(
-            subject_content_type__pk=user_type.id,
             subject_object_id=user.id,
             relation_type=RelationTypes.INDIVIDUAL
         )
@@ -101,9 +99,7 @@ class RelationManager(QuickManager):
         self,
         user
     ):
-        user_type = ContentType.objects.get_for_model(user)
         return Relation.objects.get(
-            subject_content_type__pk=user_type.id,
             subject_object_id=user.id,
             relation_type=RelationTypes.SUPERUSER
         )
@@ -128,9 +124,7 @@ class RelationManager(QuickManager):
         self,
         related
     ):
-        related_type = ContentType.objects.get_for_model(related)
         return self.filter(
-            related_content_type__pk=related_type.id,
             related_object_id=related.id,
             relation_type=RelationTypes.MANAGER
         )
@@ -139,9 +133,7 @@ class RelationManager(QuickManager):
         self,
         manager
     ):
-        manager_type = ContentType.objects.get_for_model(manager)
         managed_relations = self.filter(
-            subject_content_type__pk=manager_type.id,
             subject_object_id=manager.id,
             relation_type=RelationTypes.MANAGER
         )
@@ -181,9 +173,7 @@ class RelationManager(QuickManager):
         self,
         business
     ):
-        business_type = ContentType.objects.get_for_model(business)
         return self.filter(
-            subject_content_type__pk=business_type.id,
             subject_object_id=business.id,
             relation_type=RelationTypes.ESTABLISHMENT
         )
@@ -223,9 +213,7 @@ class RelationManager(QuickManager):
         self,
         follower
     ):
-        follower_type = ContentType.objects.get_for_model(follower)
         return self.filter(
-            subject_content_type__pk=follower_type.id,
             subject_object_id=follower.id,
             relation_type=RelationTypes.FOLLOWING
         )
