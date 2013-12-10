@@ -136,7 +136,10 @@ class QuickModelBase(object):
 
 
 class QuickModel(QuickModelBase, polymodels.models.PolymorphicModel ):
-    deleted = QuickBooleanField(default=False)
+    deleted = QuickBooleanField(
+        default=False,
+        db_index=True
+    )
     pub_date = QuickDateTimeField('date published', auto_now_add=True)
     objects = QuickManager()
 
