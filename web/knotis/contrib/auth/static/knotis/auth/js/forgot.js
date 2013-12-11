@@ -5,6 +5,11 @@
                 if (data.errors) {
                     return;
                 }
+
+                $.ajaxmodal({
+                    href: '/auth/forgot/success/',
+                    modal_id: 'auth-modal'
+                });
             }
         });
 

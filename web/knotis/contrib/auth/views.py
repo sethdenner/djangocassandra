@@ -71,6 +71,11 @@ class SignUpView(FragmentView):
         })
 
 
+class SignUpSuccessView(FragmentView):
+    template_name = 'knotis/auth/sign_up_success.html'
+    view_name = 'sign_up_success'
+
+
 class ForgotPasswordView(FragmentView):
     template_name = 'knotis/auth/forgot.html'
     view_name = 'forgot_password'
@@ -79,6 +84,11 @@ class ForgotPasswordView(FragmentView):
         return self.context.update({
             'forgot_form': ForgotPasswordForm()
         })
+
+
+class ForgotPasswordSuccessView(FragmentView):
+    template_name = 'knotis/auth/forgot_success.html'
+    view_name = 'forgot_password_success'
 
 
 class ResetPasswordView(FragmentView):

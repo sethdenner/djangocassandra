@@ -56,3 +56,20 @@ div.reset {
     margin: 40px 0 0;
     padding: 25px;
 }
+
+div.auth-success {
+    text-align: center;
+}
+
+div.auth-success h1.auth-success-header {
+    color: #0db09e;
+    font-size: 6em;
+    font-weight: normal;
+    line-height: 1em;
+}
+
+div.auth-success p.auth-success-body {
+    color: #808184;
+    font-size: 2em;
+    line-height: 1em;
+}
