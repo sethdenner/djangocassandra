@@ -8,6 +8,7 @@ from knotis.utils.regex import REGEX_UUID
 from views import (
     LoginView,
     SignUpView,
+    SignUpSuccessView,
     ForgotPasswordView,
     ResetPasswordView
 )
@@ -23,6 +24,10 @@ urlpatterns = patterns(
     url(
         r'^auth/logout/$',
         'logout',
+    ),
+    url(
+        r'^auth/signup/success/$',
+        SignUpSuccessView.as_view()
     ),
     url(
         r'^auth/signup/(?P<account_type>[^/]+)*$',

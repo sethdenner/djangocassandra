@@ -6,7 +6,10 @@
 
             }
 
-            window.location = '/';
+            $.ajaxmodal({
+                href: '/auth/signup/success/',
+                modal_id: 'auth-modal'
+            });
 
         }
     });

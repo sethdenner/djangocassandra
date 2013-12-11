@@ -130,6 +130,21 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     margin: 0;
 }
 
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary.disabled,
+.btn-primary[disabled] {
+  color: #fff;
+  background-color: #808184;
+  *background-color: #808184;
+  background-image: none;
+  background-repeat: no-repeat;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+}
 
 .btn-primary {
     color: #fff;

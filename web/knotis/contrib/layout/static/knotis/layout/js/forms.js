@@ -10,12 +10,15 @@
         return this.each(function(){
             $(this).unbind('submit').submit(function(event) {
                 event.preventDefault();
-                
-                var $form = $(this)
+
+                var $form = $(this);
+                var data = $form.serialize();
+                $form.find('input, button').prop('disabled', true);
+
                 $.ajax({
                     type: settings.method,
                     url: this.action,
-                    data: $form.serialize(),
+                    data: data,
                     success: function(data, status, jqxhr) {
                         $form.find('.modal-body p[class*="text-"]').remove();
                         $form.find('input').next('span.help-inline').remove();
@@ -47,7 +50,11 @@
 
                     },
                     dataType: 'json'
-                }).done(settings.done).fail(settings.fail).always(settings.always);
+                }).done(settings.done).fail(settings.fail).always(function() {
+                    $form.find('input, button').prop('disabled', false);
+                    settings.always();
+
+                });
 
             });
 
