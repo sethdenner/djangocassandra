@@ -95,7 +95,13 @@ a {
     color: #808184;
 }
 
-.nav-list > li > a.on, .nav-list > li > a:hover {
+.nav-list > li > a.on {
+    border-left: 2px solid #427FED;
+    padding-left: 13px;
+    color: #000;
+}
+
+.nav-list > li > a:hover {
     background-color: #EEEEEE;
     border-left: 2px solid #427FED;
     padding-left: 13px;
