@@ -65,7 +65,7 @@ div.auth-success h1.auth-success-header {
     color: #0db09e;
     font-size: 6em;
     font-weight: normal;
-    line-height: 2em;
+    line-height: 1em;
 }
 
 div.auth-success p.auth-success-body {

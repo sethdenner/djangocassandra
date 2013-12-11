@@ -86,6 +86,11 @@ class ForgotPasswordView(FragmentView):
         })
 
 
+class ForgotPasswordSuccessView(FragmentView):
+    template_name = 'knotis/auth/forgot_success.html'
+    view_name = 'forgot_password_success'
+
+
 class ResetPasswordView(FragmentView):
     template_name = 'knotis/auth/reset.html'
     view_name = 'reset_password'

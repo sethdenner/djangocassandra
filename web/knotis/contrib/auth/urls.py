@@ -10,6 +10,7 @@ from views import (
     SignUpView,
     SignUpSuccessView,
     ForgotPasswordView,
+    ForgotPasswordSuccessView,
     ResetPasswordView
 )
 
@@ -38,7 +39,11 @@ urlpatterns = patterns(
         'validate',
     ),
     url(
-        r'^auth/forgot/',
+        r'^auth/forgot/success/$',
+        ForgotPasswordSuccessView.as_view()
+    ),
+    url(
+        r'^auth/forgot/$',
         ForgotPasswordView.as_view()
     ),
     url(
