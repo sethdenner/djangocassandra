@@ -15,7 +15,8 @@ from knotis.contrib.quick.fields import (
     QuickForeignKey,
     QuickCharField,
     QuickTextField,
-    QuickIntegerField
+    QuickIntegerField,
+    QuickBooleanField
 )
 
 from knotis.contrib.relation.models import (
@@ -325,6 +326,10 @@ class Identity(QuickModel):
     )
     description = QuickTextField(
         verbose_name=_('Describe the Identity')
+    )
+    available = QuickBooleanField(
+        default=True,
+        db_index=True
     )
 
     objects = IdentityManager()

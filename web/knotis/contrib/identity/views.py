@@ -186,7 +186,9 @@ class BusinessesGrid(GridSmallView):
         count = int(self.context.get('count', '20'))
         start_range = page * count
         end_range = start_range + count
-        businesses = IdentityBusiness.objects.all()[start_range:end_range]
+        businesses = IdentityBusiness.objects.filter(
+            available=True
+        )[start_range:end_range]
 
         tiles = []
 
