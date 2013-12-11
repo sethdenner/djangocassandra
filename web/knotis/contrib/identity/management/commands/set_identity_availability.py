@@ -63,7 +63,11 @@ class Command(BaseCommand):
                 except:
                     pass
 
-            available = profile_badge_image and profile_banner_image
-            establishment.available = business.available = available
+            available = (
+                profile_badge_image is not None and
+                profile_banner_image is not None
+            )
+            establishment.available = available
+            business.available = available
             establishment.save()
             business.save()
