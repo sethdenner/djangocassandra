@@ -107,7 +107,7 @@ ul.nav-tabs {
 
 .about-location .about-map-outer {
     background: white;
-    border: 10px solid white;
+    padding: 10px;
 }
 
 .about-location p.display-address {
@@ -203,6 +203,7 @@ li.yelp.tab.active div.yelp.tab {
 .upload-photo {
     display: block;
     margin-top: 15px;
+    padding-bottom: 15px;
 }
 
 .carousel-indicators {
@@ -214,9 +215,14 @@ li.yelp.tab.active div.yelp.tab {
     width: 100%;
 }
 
+.carousel-inner .item.active {
+    padding: 10px;
+}
+
 #about_carousel {
     background: #FFFFFF;
-    border: 10px solid white;
+    border-left: 10px solid white;
+    border-right: 10px solid white;
     width: 100%;
     padding: 10px solid white;
 }
