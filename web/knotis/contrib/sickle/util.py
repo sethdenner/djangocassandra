@@ -8,10 +8,10 @@ def generate_sorl_crop_string(
     height
 ):
     if (
-        left and
-        top and
-        width and
-        height
+        left is not None and
+        top is not None and
+        width is not None and
+        height is not None
     ):
         return ''.join([
             str(int(math.floor(left))),
