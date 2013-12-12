@@ -203,6 +203,7 @@ li.yelp.tab.active div.yelp.tab {
 .upload-photo {
     display: block;
     margin-top: 15px;
+    padding-bottom: 15px;
 }
 
 .carousel-indicators {
@@ -220,7 +221,8 @@ li.yelp.tab.active div.yelp.tab {
 
 #about_carousel {
     background: #FFFFFF;
-    border: 10px solid white;
+    border-left: 10px solid white;
+    border-right: 10px solid white;
     width: 100%;
     padding: 10px solid white;
 }
