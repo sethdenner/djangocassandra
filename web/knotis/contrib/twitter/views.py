@@ -10,6 +10,7 @@ logger = log.getLogger(__name__)
 from django.conf import settings
 from django.template import Context
 from django.template.loader import get_template
+from django.utils.encoding import iri_to_uri
 
 
 def get_twitter_feed_json(
@@ -24,7 +25,7 @@ def get_twitter_feed_json(
         'oauth_timestamp': int(time.time()),
         'include_entities': 'true',
         'include_rts': 'true',
-        'screen_name': twitter_id,
+        'screen_name': iri_to_uri(twitter_id),
         'count': count
     }
 

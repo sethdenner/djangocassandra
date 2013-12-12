@@ -72,8 +72,6 @@ from knotis.contrib.endpoint.models import (
     EndpointWebsite
 )
 
-from django.utils.encoding import iri_to_uri
-
 
 class IdentityView(ContextView):
     template_name = 'knotis/identity/identity_view.html'
@@ -105,7 +103,7 @@ class IdentityView(ContextView):
             except:
                 establishments = None
                 logger.exception('Failed to get establishments for business')
-
+                
             if 1 == len(establishments):
                 profile_view = EstablishmentProfileView()
                 self.context['establishment_id'] = establishments[0].pk
@@ -518,7 +516,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                 endpoint = data['changed_endpoints'][endpoint_name]
                 endpoint_id = endpoint['endpoint_id']
 
-                endpoint_value = iri_to_uri(endpoint['endpoint_value'].strip())
+                endpoint_value = endpoint['endpoint_value'].strip()
                     
                 updated_endpoint = Endpoint.objects.update_or_create(
                     identity=business,
@@ -742,6 +740,7 @@ class EstablishmentProfileView(FragmentView):
             'scripts/fileuploader.js',
             'scripts/jquery.colorbox.js',
             'scripts/jquery.sickle.js',
+            'scripts/jquery.linkedfields.js',
             'geocomplete/jquery.geocomplete.min.js',
             'knotis/layout/js/forms.js',
             'knotis/maps/js/maps.js',
@@ -942,7 +941,8 @@ class EstablishmentProfileView(FragmentView):
             if EndpointTypes.WEBSITE == endpoint.endpoint_type:
                 website = {
                     'value': endpoint.value,
-                    'uri': endpoint.get_uri()
+                    'uri': endpoint.get_uri(),
+                    'display': endpoint.get_display()
                 }
 
             if phone and website:
