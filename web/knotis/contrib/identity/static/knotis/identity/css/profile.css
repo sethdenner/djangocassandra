@@ -107,7 +107,7 @@ ul.nav-tabs {
 
 .about-location .about-map-outer {
     background: white;
-    border: 10px solid white;
+    padding: 10px;
 }
 
 .about-location p.display-address {
@@ -212,6 +212,10 @@ li.yelp.tab.active div.yelp.tab {
 #about_carousel>.carousel-inner {
     overflow: hidden;
     width: 100%;
+}
+
+.carousel-inner .item.active {
+    padding: 10px;
 }
 
 #about_carousel {
