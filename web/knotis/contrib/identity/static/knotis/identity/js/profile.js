@@ -141,5 +141,8 @@
         $('.tab-pane#yelp').show();
         $('li.tab.yelp').addClass('active');
     });
+
+    // gather up all the address display elements on the page, and link them. 
+
     
 })(jQuery);

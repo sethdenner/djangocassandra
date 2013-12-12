@@ -215,6 +215,7 @@
 			                });
 			                $('#modal-box').modal('hide');
 			                $('.cover-endpoint.address>.cover-endpoint-text').text(data.location_address);
+                            $('.cover-endpoint-text.linkedaddress').sync();
 			            }
 		            }
 		        });

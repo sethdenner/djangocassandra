@@ -4,12 +4,13 @@ import urllib2
 import json
 
 from django.conf import settings
+from django.utils.encoding import iri_to_uri
 
 
 def get_reviews_by_yelp_id(yelp_id):
     uri = ''.join([
         settings.YELP_API_URI,
-        yelp_id
+        iri_to_uri(yelp_id)
     ])
     consumer_key = settings.YELP_CONSUMER_KEY
     consumer_secret = settings.YELP_CONSUMER_SECRET

@@ -154,7 +154,6 @@ class EndpointManager(QuickManager):
         endpoints = Endpoint.objects.filter(**filter_parameters)
         endpoints = endpoints.select_subclasses()
 
-        
         if len(endpoints) > 1:
             raise Exception('Too many endpoints match query')
 
@@ -509,7 +508,19 @@ class EndpointLink(Endpoint):
     def get_uri(self):
         return self.value
 
-    
+    def get_display(self):
+        """ 
+        strip off http://, etc. for display
+        """
+        prefix = 'http://'
+        if self.value[:len(prefix)] == prefix:
+            return self.value[len(prefix):]
+        prefix = 'https://'
+        if self.value[:len(prefix)] == prefix:
+            return self.value[len(prefix):]
+        return self.value
+            
+        
 class EndpointWebsite(EndpointLink):
     EndpointType = EndpointTypes.WEBSITE
 

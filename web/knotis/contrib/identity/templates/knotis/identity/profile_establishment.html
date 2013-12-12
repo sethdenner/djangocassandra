@@ -40,14 +40,14 @@
             {% if address %}
             <span class="cover-endpoint address">
               <img height="7.5" src="/static/knotis/img/address.png" alt="address marker icon" />
-              <span class="cover-endpoint-text">{{ address }}</span>
+              <span class="linkedaddress cover-endpoint-text">{{ address }}</span>
             </span>
             {% endif %}
 
             {% if website %}
             <a class="cover-endpoint website" href="{{ website.uri }}">
               <img height="7.5" src="/static/knotis/img/website.png" alt="www icon" />
-              <span class="cover-endpoint-text">{{ website.value }}</span>
+              <span class="cover-endpoint-text">{{ website.display }}</span>
             </a>
             {% endif %}
             
