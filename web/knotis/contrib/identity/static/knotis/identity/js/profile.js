@@ -17,14 +17,14 @@
                         type: 'image',
                     },
                     aspect: 1,
-		            primary: true,
+                primary: true,
                     done: function(data) {
                         if (data.status == 'success') {
                             
-			                // $('modal-box').modal('hide');
-			                $img = $('#profile-badge');
-			                $img.attr('src', data.image_url);
-			                
+                      // $('modal-box').modal('hide');
+                      $img = $('#profile-badge');
+                      $img.attr('src', data.image_url);
+                      
                         } else if (data.status == 'failure') {
                             
                         } else {
@@ -45,33 +45,33 @@
     // BANNER EDITING
 
     $('a.change-profile-cover-link').click(function(event){
-	    event.preventDefault();
-	    var identity_id = $('#id-identity-id').attr('data-business-id');
+      event.preventDefault();
+      var identity_id = $('#id-identity-id').attr('data-business-id');
 
-	    $.ajaxmodal({
-	        href: '/image/upload',
-	        modal_settings: {
-		        backdrop: 'static'
-	        },
-	        on_open: function(data, status, request){
+      $.ajaxmodal({
+          href: '/image/upload',
+          modal_settings: {
+            backdrop: 'static'
+          },
+          on_open: function(data, status, request){
 
-		        $('#file-uploader').sickle({
-		            do_upload: true,
-		            params: {
-			            type: 'image'
-		            },
-		            aspect: 5.12,
-		            related_object_id: identity_id,
-		            context: 'profile_banner',
-		            primary: true,
-		            done: function(data){
-			            $('modal-box').modal('hide');
-			            $('#id-profile-cover').css('background-image', 'url("' + data.image_url + '")');
-		            },
-		            jcrop_box_width: 560
-		        });		
-	        }
-	    });
+            $('#file-uploader').sickle({
+                do_upload: true,
+                params: {
+                  type: 'image'
+                },
+                aspect: 5.12,
+                related_object_id: identity_id,
+                context: 'profile_banner',
+                primary: true,
+                done: function(data){
+                  $('modal-box').modal('hide');
+                  $('#id-profile-cover').css('background-image', 'url("' + data.image_url + '")');
+                },
+                jcrop_box_width: 560
+            });   
+          }
+      });
     });
 
     // carousel
@@ -80,27 +80,27 @@
     });
     
     $('a.upload-photo').click(function(event){
-	    event.preventDefault();
-	    var identity_id = $(this).attr('data-business-id');
+      event.preventDefault();
+      var identity_id = $(this).attr('data-business-id');
         
-	    $.ajaxmodal({
-	        href: '/image/upload',
-	        modal_settings: {
-		        backdrop: 'static'
-	        },
-	        on_open: function(data, status, request){
-		    
-		        $('#file-uploader').sickle({
-		            do_upload: true,
-		            params: {
-			            type: 'image'
-		            },
-		            aspect: 1.25,
-		            related_object_id: identity_id,
-		            context: 'business_profile_carousel',
-		            primary: false,
-		            done: function(data){
-			            
+      $.ajaxmodal({
+          href: '/image/upload',
+          modal_settings: {
+            backdrop: 'static'
+          },
+          on_open: function(data, status, request){
+        
+            $('#file-uploader').sickle({
+                do_upload: true,
+                params: {
+                  type: 'image'
+                },
+                aspect: 1.25,
+                related_object_id: identity_id,
+                context: 'business_profile_carousel',
+                primary: false,
+                done: function(data){
+                  
                         // stop the carousel
                         $('#about_carousel').carousel('pause').removeData();
 
@@ -120,9 +120,9 @@
 
                         // finally, hide the modal box
                         $('modal-box').modal('hide');
-		            }
-		        });
-	        }
+                }
+            });
+          }
         });
     });
 
@@ -143,6 +143,9 @@
     });
 
     // gather up all the address display elements on the page, and link them. 
-
+    $('.linked-business-name').link_field('linkbizname');
+    $('.linked-phone-number').link_field('linkphonenum');
+    $('.linkedaddress').link_field('linkaddress');
+    $('.linkedwebsite').link_field('linkweb');
     
 })(jQuery);

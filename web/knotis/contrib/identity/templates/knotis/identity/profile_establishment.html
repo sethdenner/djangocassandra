@@ -10,7 +10,6 @@
 {% load crispy_forms_tags %}
 <div class="container-fluid">
   <input id="data-static-url" type="hidden" data-static-url="{{ STATIC_URL }}" />
-
   <div id="id-profile-banner-info">
     {% thumbnail profile_banner.image.image '1920x500' crop=profile_banner.crop as header %}
     {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
@@ -25,12 +24,13 @@
 	    {% else %}
         <h2>{{ establishment.name }}</h2>
 	    {% endif %}
+
       </div>
       <div class="profile-short-info">
         {% if phone %}
         <a class="cover-endpoint phone" href="{{ phone.uri }}">
           <img height="7.5" src="/static/knotis/img/phone.png" alt="phone icon" />
-          <span class="cover-endpoint-text">{{ phone.value }}</span>
+          <span class="cover-endpoint-text linked-phone-number">{{ phone.value }}</span>
         </a>
         {% endif %}
         {% if address %}
@@ -43,7 +43,7 @@
         {% if website %}
         <a class="cover-endpoint website" href="{{ website.uri }}">
           <img height="7.5" src="/static/knotis/img/website.png" alt="www icon" />
-          <span class="cover-endpoint-text">{{ website.display }}</span>
+          <span class="cover-endpoint-text linkedwebsite">{{ website.display }}</span>
         </a>
         {% endif %}
       </div>

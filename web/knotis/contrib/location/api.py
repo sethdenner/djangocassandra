@@ -66,10 +66,16 @@ class LocationApi(ApiView):
 
             if location and related:
                 try:
-                    LocationItem.objects.create(
+                    for li in LocationItem.objects.filter(
+                        related=related
+                    ):
+                        li.delete()
+                        
+                    li = LocationItem.objects.create(
                         location=location,
                         related=related
                     )
+                    li.save()
 
                 except:
                     logger.exception(
@@ -83,10 +89,16 @@ class LocationApi(ApiView):
                         )
                     )
                     try:
-                        LocationItem.objects.create(
+                        for li in LocationItem.objects.filter(
+                            related=related
+                        ):
+                            li.delete()
+                        
+                        li = LocationItem.objects.create(
                             location=location,
                             related=business
                         )
+                        li.save()
 
                     except:
                         logger.exception(

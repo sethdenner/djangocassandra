@@ -7,9 +7,9 @@
 	       id="establishment-contact-loc-details"
 	       data-latitude="{{ latitude }}"
 	       data-longitude="{{ longitude }}" />
-    <div class="establishment-contact-loc-address">{{ address }}</div> 
+    <div class="establishment-contact-loc-address linkedaddress">{{ address }}</div> 
   </div>
-  <p class="display-address">{{ address }}</p>
+  <p class="display-address linkedaddress">{{ address }}</p>
   <a href="http://maps.google.com/maps?daddr={{ address|iriencode }}">Get Directions</a>
 </div>
 {% endif %}

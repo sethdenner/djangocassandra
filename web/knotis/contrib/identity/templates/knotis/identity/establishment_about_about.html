@@ -5,19 +5,19 @@
  <span class="social-buttons pull-right">
    {% if twitter.value %}
    <a class="twitter" href="{{ twitter.uri }}">
-	 <img class="space away" src="/static/knotis/identity/img/twittericon-grey27x27.png" alt="Twitter"></img>
+	 <img class="space away" src="/static/knotis/identity/img/twittericon-colored27x27.png" alt="Twitter"></img>
    </a>
    {% endif %}
         
    {% if facebook.value %}
    <a class="facebook" href="{{ facebook.uri }}">
-	 <img class="space away" src="/static/knotis/identity/img/facebookicon-grey27x27.png" alt="Facebook"></img>
+	 <img class="space away" src="/static/knotis/identity/img/facebookicon-colored27x27.png" alt="Facebook"></img>
    </a>
    {% endif %}
    
    {% if yelp.value %}
    <a class="updateable-endpoint yelp" href="{{ yelp.uri }}">
-	 <img class="space away" src="/static/knotis/identity/img/yelpicon-grey27x27.png" alt="Yelp"></img>
+	 <img class="space away" src="/static/knotis/identity/img/yelpicon-colored27x27.png" alt="Yelp"></img>
    </a>
    {% endif %}
  </span>
@@ -33,16 +33,10 @@
     <form id="about-us-form" class="editable toggleable hide">
       <input id="id-business-id" type="hidden" value="{{ establishment.id }}" />
       
-      <!--
-	      Be careful when editing the ids. The server parses endpoint types
-	      out of them. 
-	      The id strings are passed on the server and used in processing. 
-      -->
-      
       <label for="business-name">Business Name:</label>
       <input 
           id="business-name"
-          class="edit-endpoint"
+          class="edit-endpoint linked-business-name"
           type="text"
           placeholder="Enter your business's name here..."
           data-initial-value="{{ establishment.name }}" />
@@ -56,13 +50,13 @@
           data-latitude="{{ address_latitude }}"
           data-longitude="{{ address_longitude }}"
           data-initial-value="{{ address }}">
-        {{ address }}
+        {% if address %}{{ address }}{% else %}Let's get your business' address up here...{% endif %}
       </a>
       
       <label for="endpoint-phone">Phone Number:</label>
       <input 
           id="endpoint-phone" 
-          class="edit-endpoint" 
+          class="edit-endpoint linked-phone-number" 
           type="text" 
           placeholder="000-000-0000" 
           data-endpoint-id="{{ phone.id }}"
@@ -116,7 +110,7 @@
       <label for="endpoint-website">Website:</label>
       <input 
           id="endpoint-website" 
-          class="edit-endpoint" 
+          class="edit-endpoint linkedwebsite" 
           type="text" 
           placeholder="website" 
           data-endpoint-id="{{ website.id }}"
