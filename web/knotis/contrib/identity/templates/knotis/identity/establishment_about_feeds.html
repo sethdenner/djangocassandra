@@ -3,6 +3,7 @@
 Ratings &amp; Reviews
 
 <ul id="AboutFeedTab" class="nav nav-tabs pull-right">
+  {% with count=0 %}
   {% if twitter_has_feed %}
   <li class="twitter tab active">
     <div class="space twitter tab">&nbsp;</div>
@@ -10,10 +11,11 @@ Ratings &amp; Reviews
   {% endif %}
 
   {% if yelp_has_feed %}
-  <li class="yelp tab">
+  <li class="yelp tab {% if not twitter_has_feed %}active{% endif %}">
     <div class="space yelp tab">&nbsp;</div>
   </li>
   {% endif %} 
+  {% endwith %}
 </ul>
 </h4>
 {% endif %}
