@@ -67,9 +67,11 @@ class LocationApi(ApiView):
 
             if location and related:
                 try:
-                    current_location_items = LocationItem.objects.filter(
+                    # convert to list to force the queryset to evaluate.
+                    current_location_items = list(LocationItem.objects.filter(
                         related_object_id=related.pk
-                    )
+                    ))
+
                     new_location_item = LocationItem.objects.create(
                         location=location,
                         related=related
