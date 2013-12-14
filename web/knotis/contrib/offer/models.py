@@ -401,10 +401,6 @@ class Offer(QuickModel):
     def complete(self):
         pass
 
-    def delete(self):
-        self.deleted = True
-        self.save()
-
     def available(self):
         now = datetime.datetime.utcnow()
 

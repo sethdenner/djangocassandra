@@ -54,6 +54,7 @@ class LocationApi(ApiView):
             related = None
             
         location = None
+        new_location_item = None
         if form.is_valid():
             try:
                 location = form.save()
@@ -66,15 +67,17 @@ class LocationApi(ApiView):
 
             if location and related:
                 try:
-                    for li in LocationItem.objects.filter(
+                    current_location_items = LocationItem.objects.filter(
                         related_object_id=related.pk
-                    ):
-                        li.delete()
-                        
-                    li = LocationItem.objects.create(
+                    )
+                    new_location_item = LocationItem.objects.create(
                         location=location,
                         related=related
                     )
+
+                    for li in current_location_items:
+                        li.delete()
+                        
 
                 except Exception, e:
                     logger.exception(
@@ -121,6 +124,9 @@ class LocationApi(ApiView):
             data['message'] = 'Location saved.'
             data['latitude'] = location.latitude
             data['longitude'] = location.longitude
+
+            if new_location_item:
+                data['location_item_id'] = new_location_item.pk
             
         else:
             data['errors'] = errors

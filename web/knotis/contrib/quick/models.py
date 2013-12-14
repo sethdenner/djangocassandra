@@ -155,9 +155,9 @@ class QuickModel(QuickModelBase, polymodels.models.PolymorphicModel ):
     def validate(self, *args, **kwargs):
         return super(QuickModel, self).validate(*args, **kwargs)
 
-    #def delete(self):
-    #    self.deleted = True
-    #    self.save()
+    def delete(self):
+        self.deleted = True
+        super(QuickModel, self).save()
     
     @classmethod
     def get_filterable_fields(cls):
