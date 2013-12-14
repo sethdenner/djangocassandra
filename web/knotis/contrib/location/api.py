@@ -65,7 +65,6 @@ class LocationApi(ApiView):
                 errors['no-field'] = e.message
 
             if location and related:
-                import pdb; pdb.set_trace()
                 try:
                     for li in LocationItem.objects.filter(
                         related_object_id=related.pk
@@ -84,6 +83,11 @@ class LocationApi(ApiView):
 
                 if related.identity_type == IdentityTypes.ESTABLISHMENT:
                     pass
+
+                    # Since we don't have a business profile page at the
+                    # moment, we do not have to worry about the business
+                    # having an address at the moment.
+                
                     # business = (
                     #     IdentityBusiness.objects.get_establishment_parent(
                     #         related
