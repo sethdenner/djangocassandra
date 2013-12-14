@@ -101,9 +101,12 @@ class Activity(QuickModel):
 class ActivityRelation(QuickModel):
     activity = QuickForeignKey(Activity)
 
-    related_content_type = QuickForeignKey(ContentType)
+    related_content_type = QuickForeignKey(
+        ContentType,
+        related_name='activity_activityrelation_related_content_types'
+    )
     related_object_id = QuickCharField(max_length=32)
     related = QuickGenericForeignKey(
-        'content_type',
-        'object_id'
+        'related_content_type',
+        'related_object_id'
     )

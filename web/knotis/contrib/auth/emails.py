@@ -64,18 +64,5 @@ class ChangedEmailEmailBody(EmailView):
         return local_context
 
 
-class WelcomeEmailBody(EmailView):
-    template_name = 'knotis/auth/email_welcome.html'
-
-    def process_context(self):
-        local_context = copy.copy(self.context)
-
-        browser_link = 'http://example.com'
-        activation_link = 'http://dev.knotis.com'
-
-        local_context.update({
-            'browser_link': browser_link,
-            'activation_link': activation_link
-        })
-
-        return local_context
+class ActivationEmailBody(EmailView):
+    template_name = 'knotis/auth/email_activate.html'

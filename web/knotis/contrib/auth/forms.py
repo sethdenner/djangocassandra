@@ -44,7 +44,10 @@ from models import (
     PasswordReset
 )
 
-from emails import PasswordResetEmailBody
+from emails import (
+    ActivationEmailBody,
+    PasswordResetEmailBody
+)
 
 
 class LoginForm(TemplateFormMixin, AuthenticationForm):
@@ -217,13 +220,43 @@ class CreateUserForm(TemplateModelForm):
 
             raise
 
-        send_validation_email(
-            user.id,
+        self.send_welcome_email(
+            user,
             email
         )
 
         return user, identity
 
+    def send_welcome_email(
+        self,
+        user, 
+        email_endpoint
+    ):
+        if not self.is_valid():
+            logger.error(
+                'Form must be valid to send welcome email instructions'
+            )
+            return False
+
+        email = self.cleaned_data['email']
+
+        activation_link = '/'.join([
+            settings.BASE_URL,
+            'auth/validate',
+            user.id,
+            email_endpoint.validation_key,
+            ''
+        ])
+
+        message = ActivationEmailBody()
+        message.generate_email(
+                'Knotis.com - Activate Your Account',
+                settings.EMAIL_HOST_USER,
+                [email_endpoint.value], Context({
+                    'activation_link': activation_link
+                })).send()
+
+        return True
 
 class CreateSuperUserForm(CreateUserForm):
     def save(
