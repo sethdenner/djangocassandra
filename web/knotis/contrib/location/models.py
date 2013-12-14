@@ -65,3 +65,18 @@ class LocationItem(QuickModel):
         'related_content_type',
         'related_object_id'
     )
+     
+    #    def save(
+    #    self,
+    #    *args,
+    #    **kwargs
+    #):
+    #    lis = LocationItem.objects.filter(
+    #        related_object_id=self.related_object_id,
+    #        deleted=False
+    #    )
+    #
+    #    super(QuickModel, self).save()
+    #
+    #    for li in lis:
+    #        li.delete()
