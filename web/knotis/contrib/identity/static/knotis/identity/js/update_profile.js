@@ -205,6 +205,7 @@
             keyboard: true
           },
           on_open: function(data, status, request){
+            
             $('#id-location-form').ajaxform({
                 done: function(data, status, jqxhr){
                   if(!data.errors){
@@ -225,7 +226,7 @@
                   }
                 }
             });
-
+            
             $('#id-location-form #address-input #id_address').geocomplete({
                 map: '.map_canvas',
                 location: $this.text(),
@@ -234,7 +235,7 @@
             });
 
             $('form#id-location-form input#related-id-input').val(
-                $('#id-identity-id').attr('data-identity-id')
+                $('#id-identity-id').attr('data-establishment-id')
             );
           }
       });

@@ -52,7 +52,7 @@ class LocationApi(ApiView):
 
         else:
             related = None
-
+            
         location = None
         if form.is_valid():
             try:
@@ -65,9 +65,10 @@ class LocationApi(ApiView):
                 errors['no-field'] = e.message
 
             if location and related:
+                import pdb; pdb.set_trace()
                 try:
                     for li in LocationItem.objects.filter(
-                        related=related
+                        related_object_id=related.pk
                     ):
                         li.delete()
                         
@@ -75,36 +76,35 @@ class LocationApi(ApiView):
                         location=location,
                         related=related
                     )
-                    li.save()
 
-                except:
+                except Exception, e:
                     logger.exception(
                         'An exception occurred during location item creation'
                     )
 
                 if related.identity_type == IdentityTypes.ESTABLISHMENT:
-                    business = (
-                        IdentityBusiness.objects.get_establishment_parent(
-                            related
-                        )
-                    )
-                    try:
-                        for li in LocationItem.objects.filter(
-                            related=related
-                        ):
-                            li.delete()
+                    pass
+                    # business = (
+                    #     IdentityBusiness.objects.get_establishment_parent(
+                    #         related
+                    #     )
+                    # )
+                    # try:
+                    #     for li in LocationItem.objects.filter(
+                    #         related_object_id=related.pk
+                    #     ):
+                    #         li.delete()
                         
-                        li = LocationItem.objects.create(
-                            location=location,
-                            related=business
-                        )
-                        li.save()
+                    #     li = LocationItem.objects.create(
+                    #         location=location,
+                    #         related=business
+                    #     )
 
-                    except:
-                        logger.exception(
-                            'An exception occurred during '
-                            'location item creation'
-                        )
+                    # except:
+                    #     logger.exception(
+                    #         'An exception occurred during '
+                    #         'location item creation'
+                    #     )
 
         else:
             for field, messages in form.errors.iteritems():
