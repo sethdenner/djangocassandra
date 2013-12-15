@@ -57,8 +57,8 @@
                 done: function(data, status, jqxhr) {
                     if (!data.errors) {
                         $('#modal-box').modal('hide');
-                        var backend_name = $('form#id-location-form input#backend_name').val();
-                        window.location = '/merchants/' + backend_name + '/';
+                        var related_id = $('form#id-location-form input#related-id-input').val();
+                        window.location = '/id/' + related_id + '/';
 
                     }
 
