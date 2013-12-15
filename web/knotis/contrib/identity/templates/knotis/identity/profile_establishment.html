@@ -12,9 +12,9 @@
   <input id="data-static-url" type="hidden" data-static-url="{{ STATIC_URL }}" />
   <div id="id-profile-banner-info">
     {% thumbnail profile_badge.image.image '170x170' crop=profile_badge.crop as img %}
-	<img id="profile-badge" src="{{ img.url }}" class="img-circle{% if is_manager %} change-profile-badge-link{% endif %}" />
+	<img id="profile-badge" width="170" height="170" src="{{ img.url }}" class="img-circle{% if is_manager %} change-profile-badge-link{% endif %}" />
     {% empty %}
-    <img id="profile-badge" src="{{ default_profile_logo_uri }}" class="img-circle{% if is_manager %} change-profile-badge-link{% endif %}" />
+    <img id="profile-badge" width="170" height="170" src="{{ default_profile_logo_uri }}" class="img-circle{% if is_manager %} change-profile-badge-link{% endif %}" />
     {% endthumbnail %}
     <div class="row-fluid">
       <div id="id-profile-title" class="span12">

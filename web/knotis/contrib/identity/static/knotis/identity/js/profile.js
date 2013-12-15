@@ -17,14 +17,12 @@
                         type: 'image',
                     },
                     aspect: 1,
-                primary: true,
+                    primary: true,
                     done: function(data) {
                         if (data.status == 'success') {
-                            
-                      // $('modal-box').modal('hide');
-                      $img = $('#profile-badge');
-                      $img.attr('src', data.image_url);
-                      
+			    $img = $('#profile-badge');
+			    $img.attr('src', data.image_url);
+			    
                         } else if (data.status == 'failure') {
                             
                         } else {
