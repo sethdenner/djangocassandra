@@ -12,7 +12,7 @@
                 return;
             }
 
-            if (!fetching_results && $this.scrollTop() + $this.innerHeight() >= $(document).innerHeight() - 250) {
+            if (!fetching_results && $this.scrollTop() + $this.innerHeight() >= $(document).innerHeight() - 500) {
                 fetching_results = true;
                 $.get(
                     [
