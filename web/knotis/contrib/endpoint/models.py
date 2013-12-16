@@ -422,9 +422,11 @@ class EndpointFacebook(Endpoint):
                 'http://www.facebook.com/',
                 
                 'facebook.com/',
-                'http://facebook.com/',
+                'https://facebook.com/',
                 'www.facebook.com/',
-                'http://www.facebook.com/',
+                'https://www.facebook.com/',
+
+                
             ]
             for prefix in prefixes:
                 if (len(v) > len(prefix)) and (v[:len(prefix)] == prefix):
@@ -434,7 +436,7 @@ class EndpointFacebook(Endpoint):
         super(Endpoint, self).clean()
 
     def get_uri(self):
-        return "http://facebook.com/" + self.value
+        return "https://facebook.com/" + self.value
 
     
 class EndpointYelp(Endpoint):
