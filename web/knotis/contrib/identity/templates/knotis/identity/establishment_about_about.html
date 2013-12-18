@@ -50,7 +50,7 @@
           data-latitude="{{ address_latitude }}"
           data-longitude="{{ address_longitude }}"
           data-initial-value="{{ address }}">
-        {% if address %}{{ address }}{% else %}Let's get your business' address up here...{% endif %}
+        {% if address != None%}{{ address }}{% else %}Let's get your business' address up here...{% endif %}
       </a>
       
       <label for="endpoint-phone">Phone Number:</label>
