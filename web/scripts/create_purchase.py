@@ -3,11 +3,11 @@
 import random
 import string
 
-from knotis.apps.auth.models import KnotisUser
-from knotis.apps.business.models import Business
-from knotis.apps.offer.models import Offer
-from knotis.apps.transaction.models import Transaction, TransactionTypes
-from knotis.apps.paypal.views import generate_ipn_hash
+from knotis.contrib.auth.models import KnotisUser
+from knotis.contrib.business.models import Business
+from knotis.contrib.offer.models import Offer
+from knotis.contrib.transaction.models import Transaction, TransactionTypes
+from knotis.contrib.paypal.views import generate_ipn_hash
 
 def create_purchase(
         business_owner='maps@4thavemaps.com',

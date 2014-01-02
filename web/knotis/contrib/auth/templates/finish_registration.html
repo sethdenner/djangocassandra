@@ -1,0 +1,5 @@
+{% if not error %}
+<p class="message-confirm message-info radius-general txt-size">{{ feedback|safe }}</p>
+{% else %}
+<p class="message-confirm message-error radius-general txt-size">{{ error|safe }}</p>
+{% endif %}

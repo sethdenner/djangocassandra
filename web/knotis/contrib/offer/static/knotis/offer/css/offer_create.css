@@ -1,0 +1,30 @@
+.create-header {
+    text-align: center;
+    padding: 10px 20px;
+    background: #EA2227;
+    padding: 0;
+}
+
+.create-header .create-header-title {
+    color: #FFFFFF;
+    font-weight: normal;
+}
+
+.create-header .create-step {
+    -webkit-border-radius: 500px;
+    -moz-border-radius: 500px;
+    border-radius: 500px;
+    margin: 10px;
+    width: 44px;
+    height: 44px;
+    display: inline-block;
+}
+
+.create-header .create-step.on {
+    background: url('/static/knotis/img/target_on.png') no-repeat;
+    cursor: pointer; cursor: hand;
+}
+
+.create-header .create-step.off {
+    background: url('/static/knotis/img/target_off.png') no-repeat;
+}

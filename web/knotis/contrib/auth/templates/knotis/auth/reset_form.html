@@ -1,0 +1,33 @@
+{% if is_reset_valid %}
+<form action="/auth/reset/{{ user_id }}/{{ password_reset_key }}/" id="id-reset-form" method="post">{% csrf_token %}
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="control-group">
+        <div class="controls">
+          <label>New Password</label>
+          <input name="{{ form.new_password1.html_name }}" type="password" class="textinput textInput" id="password-input-1"> 
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <label>Confirm Password</label>
+          <input type="password" id="password-input-2" name="{{ form.new_password2.html_name }}" class="textinput textInput" > 
+        </div>
+      </div>
+    </div>
+    <div class="auth-info span6">
+      <p>Set a new password and we&rsquo;ll sign you into your account.</p>
+    </div>
+  </div>
+  <div class="buttonHolder">
+    <input type="submit" name="signup" value="Change Password" class="btn btn-primary btn btn-primary" id="submit-id-change-password"> 
+  </div>
+</form>
+{% else %}
+<p>
+  This password reset request {% if is_expired %}has expired{% else %}is invalid{% endif %}.
+</p>
+<p>
+  If you are still having difficulties accessing your account <a id="id-forgot-link" href="/auth/forgot/">click here</a> to request another password change.
+</p>
+{% endif %}

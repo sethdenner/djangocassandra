@@ -1,0 +1,10 @@
+{% load crispy_forms_tags %}
+<div class="modal-header">
+  <h3>Add a product</h3>
+</div>
+<div class="modal-body">
+  <form action="/api/v1/inventory/" method="post" >
+    {% crispy product_form %}
+    {% crispy inventory_form %}
+  </form>
+</div>

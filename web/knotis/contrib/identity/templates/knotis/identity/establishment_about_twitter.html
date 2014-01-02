@@ -1,0 +1,12 @@
+{% if twitter_feed %}
+<h5>Twitter</h5>
+<div class="about-twitter">
+{% for tweet in twitter_feed %}
+<div class="tweet">
+  <img class="user" src="{{ tweet.user.profile_image_url }}" width="50" height="50" />
+  <span class="arrow-left"></span>
+  <p class="tweet-text">{{ tweet.text }}</p>
+</div>
+{% endfor %}
+</div>
+{% endif %}

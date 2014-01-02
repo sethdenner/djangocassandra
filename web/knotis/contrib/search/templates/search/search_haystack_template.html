@@ -1,0 +1,42 @@
+{% extends 'knotis/layout/master.html' %}
+{% load render_template_fragment %}
+{% block title %}Knotis - Be in the kno!{% endblock title %}
+{% block first %}{% endblock first %}
+{% block header %}
+  {% render_fragment header %}
+{% endblock header %}
+{% block content %}
+    <div class="container-fluid">
+      <div class="row-fluid main-row">
+        <div class="span2">
+          {% render_fragment nav_side %}
+        </div>
+        <div class="span10 grid">
+          {% if query %}
+              {% for result in page.object_list %}
+                  <p>
+                      <a href="/id/">{{ result.object.id }}</a>
+                  </p>
+              {% empty %}
+                  <p>No results found.</p>
+              {% endfor %}
+
+              {% if page.has_previous or page.has_next %}
+                  <div>
+                      {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+                      |
+                      {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+                  </div>
+              {% endif %}
+          {% else %}
+              {# Show some example queries to run, maybe query syntax, something else? #}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+
+{% endblock content %}
+{% block footer %}{% endblock footer %}
+{% block last %}{% endblock last %}
+
