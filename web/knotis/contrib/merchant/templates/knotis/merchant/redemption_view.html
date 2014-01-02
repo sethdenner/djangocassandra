@@ -1,0 +1,38 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+  <h1>Offer Redemption</h1>
+</div>
+<div class="modal-body">
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div id="purchases" class="span8">
+        <h2>Outstanding Purchases</h2>
+        {% if purchases %}
+        {% for p in purchases %}
+        <div class="row-fluid">
+          <div class="span9">
+            <ul class="unstyled">
+              <li><strong>Purchaser:</strong> {{ p.owner.name }}</li>
+              <li><strong>Redemption Code:</strong> <span class="last-8">{{ p.transaction_context|slice:"24:" }}</span></li>
+            </ul>
+          </div>
+          <div class="span3">
+            <form class="redemption-form"  method="POST" action="/api/v1/merchant/redeem/">
+              <input type="submit" name="redeem" value="Redeem" class="btn btn-primary" />
+              <input type="hidden" name="transaction_context" value="{{ p.transaction_context }}" />
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <strong>No redeemable purchases</strong>
+        {% endif %}
+      </div>
+      <div class="span4 tile-preview">
+        <ul class="unstyled">
+          <li>{{ offer_tile_markup }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

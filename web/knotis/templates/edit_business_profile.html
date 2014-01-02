@@ -138,7 +138,7 @@
             {% for link in business_links %}
                 <li class="clear-fix radius-general">
                     <a class="name" href="{{ link.uri }}" target="_blank">{{ link.title }}</a>
-                    <a class="right delete radius-general" href="/business/delete_business_link/{{ link.id }}/">Delete</a>
+                    <a class="delete_business_link right delete radius-general" href="/business/link/delete/{{ link.id }}/">Delete</a>
                 </li>
             {% endfor %}
         </ul>

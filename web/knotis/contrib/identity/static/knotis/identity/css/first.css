@@ -1,0 +1,42 @@
+div.modal-backdrop {
+    z-index: 998;
+}
+
+div#modal-box {
+    z-index: 999;
+}
+
+div#modal-box div.modal-body {
+    max-height: 470px;
+}
+
+div#modal-box form#id-location-form div.map_canvas {
+    height: 320px;
+}
+
+div#modal-box form#id-location-form input#address-input {
+    width: auto;
+}
+
+div#first-carousel .item .modal-header {
+    text-align: center;
+    height: 120px;
+}
+
+div#first-carousel .item .modal-header>h3 {
+    padding: 15px;
+    color: #fff;
+    font-weight: lighter;
+}
+
+div#first-carousel .item .modal-header.name {
+    background-color: #05B09C;
+}
+
+div#first-carousel .item .modal-header.account-type {
+    background-color: #26AAE1;
+}
+
+div#first-carousel .item .modal-header.location {
+    background-color: #26AAE1;
+}

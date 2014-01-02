@@ -1,3 +1,4 @@
+{% load render_template_fragment %}
 <div id="header">
     <div class="header-top">
         <div class="wrapper solution clearfix  header-content">
@@ -98,65 +99,7 @@
                 <li><a class="sig_in signup txt-white" href="/plans/">{{ header_sign_up }}</a></li>
             </ul>
 			{% else %}
-            <div class="name-user absolute radius-general clear-fix">
-                <div class="image left ">
-                	<img src="{{ avatar_uri }}"/>
-                </div>
-                <p class="txt-size-12 txt-white left clear-fix">
-                    <strong>{{ username_truncated }}</strong>
-                </p>
-                <div class="arrow-user right"></div>
-                <div class="option-user absolute radius-general">
-                    <div class="option-user-inset radius-general">
-                        <div class="arrow-popup arrow-popup02 arrow-popup-user"></div>
-                        <h3><strong>My stuff</strong></h3>
-						{% if not user.is_staff %}
-                        <ul class="menu-user">
-                            {% if user_profile.is_business_owner %}
-                            <li><a href="/dashboard/" >{{ header_dashboard }}</a></li>
-                            {% endif %}
-                            <li><a href="/offers/dashboard/">{{ header_offers }}</a></li>
-                        </ul>
-                        <ul class="menu-user">
-                            <li><a href="/profile/">{{ header_profile }}</a></li>
-                            <li><a href="/subscriptions/">{{ header_subscriptions }}</a></li>
-                            {% if user_profile.is_business_owner %}
-                            <li><a href="/business/profile/" >{{ header_business_profile }}</a></li>
-                            {% endif %}
-                        </ul>
-                        <ul class="face">
-                        	{% if session.fb_id %}
-                            <li>
-                               <fb:login-button autologoutlink="true"></fb:login-button>
-                            </li>
-							{% else %}
-                            <li>
-                            	<a href="/auth/logout/" >{{ header_sign_out }}</a>
-                            </li>
-                            {% endif %}
-                        </ul>
-						{% else %}						
-                        <ul class="menu-user">
-                            <li><a href="/dynamic_pages/">{{ header_dynamic_pages }}</a>
-                            </li>
-                            <li><a href="/offers/premium/">{{ header_all_offers }}</a></li>
-                            <li><a href="/locations/">{{ header_cities }}</a></li>
-                        </ul>
-                        <ul>
-                            {% if logged_in_facebook %}
-                            <li>
-                                <fb:login-button autologoutlink="true"></fb:login-button>
-                            </li>
-                            {% else %}
-                            <li>
-                            	<a href="/auth/logout/" >{{ header_sign_out }}</a>
-                            </li>
-							{% endif %}
-                        </ul>
-						{% endif %}
-                    </div>
-                </div>
-            </div>
+            {% render_fragment identity_switcher %}
             {% endif %}
         </div>
     </div>

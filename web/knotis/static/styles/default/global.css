@@ -857,10 +857,6 @@ STRUCTURE
 
 /* content */
 
-#content {
-    padding-bottom: 30px;
-}
-
 #page .section {
     padding-bottom:0;
 
@@ -2490,6 +2486,20 @@ a.button-lead:active,
     margin-bottom: 10px;
 }
 
+#scroll-to-top {
+    left: 950px;
+    position: relative;
+    z-index: 100;
+    display: none;
+    padding: 5px;
+}
+
+.more-results {
+    margin-bottom: 20px;
+    padding-left: 242px;
+    width: 702px;    
+}
+
 .offers-txt a,
 .business-buy{
     background: url("../../images/layouts/knotis-icon-location.png") no-repeat scroll left 2px;
@@ -3714,6 +3724,8 @@ li.categoryselect div.selector select {
 
 .main-image-txt img {
     margin: 6px 0 0 6px;
+    width: 221px;
+    height: 125px;
 }
 
 /* content */

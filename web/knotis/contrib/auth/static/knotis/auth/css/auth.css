@@ -1,0 +1,75 @@
+.modal-header.auth-header {
+    height: 96px;
+    text-align: center;
+    padding: 10px;
+    background-color: #0db09e;
+    color: #fff;
+    border: none;
+}
+
+.modal-header.auth-header button.close {
+    color: #fff;
+    font-size: 2em;
+    opacity: 1.0;
+    filter: alpha(opacity=100);
+}
+
+.modal-footer.buttonHolder {
+    background-color: inherit;
+    padding: 14px 15px 0 0;
+    text-align: left;
+}
+
+.modal-footer.buttonHolder > aside {
+    margin-left: 2px;
+}
+
+.modal-footer.buttonHolder > aside > a {
+    color: #26aae1;
+}
+
+.modal-body form {
+    margin: 0;
+}
+
+form div.controls > input {
+    width: 80%;
+}
+
+form div.auth-info {
+    padding: 28px 0 0 0;
+    margin: 0;
+}
+
+form div.auth-info > p {
+    text-align: center;
+    font-size: 1.8em;
+    color: #808184;
+}
+
+div.reset {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    background-color: #fff;
+    margin: 40px 0 0;
+    padding: 25px;
+}
+
+div.auth-success {
+    text-align: center;
+}
+
+div.auth-success h1.auth-success-header {
+    color: #0db09e;
+    font-size: 6em;
+    font-weight: normal;
+    line-height: 1em;
+}
+
+div.auth-success p.auth-success-body {
+    color: #808184;
+    font-size: 2em;
+    line-height: 1em;
+}

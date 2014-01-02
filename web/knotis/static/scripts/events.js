@@ -565,51 +565,6 @@ $(function() {
 
     });
 
-
-    $('.load_more_results').live('click', function() {
-        var $this = $(this),
-                filter = $this.attr('data-filter'),
-                offset = $this.attr('data-offset'),
-                cityId = $('.offer-data').attr('data-cityId'),
-                neightbourhoodId = $('.offer-data').attr('data-neightbourhoodId'),
-                id = $this.attr('data-id');
-
-        $.post([server + "offers/offers_list", cityId, neightbourhoodId,filter,id, offset].join('/'), {}, function(data) {
-            $('.more-results').replaceWith(data);
-        });
-        return false;
-
-    });
-
-
-    $('.load_more_results_premiumoffers').live('click', function() {
-        var $this = $(this),
-                offset = $this.attr('data-offset'),
-                cont = $this.attr('data-cont'),
-                id = $this.attr('data-id');
-
-        $.post([server + "backend/offers_premium_list", id, offset, cont].join('/'), {}, function(data) {
-            $('.results-' + cont).replaceWith(data);
-        });
-        return false;
-
-    });
-
-
-    $('.load_more_results_backend').live('click', function() {
-        var $this = $(this),
-                filter = $this.attr('data-filter'),
-                offset = $this.attr('data-offset'),
-                id = $this.attr('data-id');
-
-        $.post([server + "backend/offers_list",filter,id, offset].join('/'), {}, function(data) {
-            $('.more-results').replaceWith(data);
-        });
-        return false;
-
-    });
-
-
     $('.offerlist_backend li a').live('click', function() {
         var $this = $(this),
                 filter = $this.attr('data-filter');

@@ -9,6 +9,13 @@ PRICE_MERCHANT_MONTHLY = 14.
 
 EMAIL_COMPLETED_OFFERS_INTERVAL_DAYS = 7
 
+PASSWORD_RESET_EXPIRE_MINUTES = 10080
+
+FORMAT_MODULE_PATH = 'formats'
+DATE_FORMAT = 'm/d/Y'        # '10/25/06'
+TIME_FORMAT = 'h:i:s A'      # '02:30:59 PM'
+DATETIME_FORMAT = ' '.join([DATE_FORMAT, TIME_FORMAT])
+
 BUSINESS_NAME_BLACKLIST = (
     'facebook',
     'login',
@@ -77,32 +84,14 @@ PRIORITY_BUSINESS_NAMES = [
     'ipic-theaters'
 ]
 
+CRISPY_TEMPLATE_PACK = 'bootstrap'
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
 
-# Email Settings
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.googlemail.com'
-EMAIL_PORT = '587'
-EMAIL_USE_TLS = True
-
-YELP_API_URI = 'http://api.yelp.com/v2/business/'
-YELP_CONSUMER_KEY = 'FOe0SiqTLG-KTzXpg7fdxQ'
-YELP_CONSUMER_SECRET = 'vfyr5UHPQbjN5QFz22PcckRODSE'
-YELP_TOKEN_KEY = 'MEMHpkNVdQHmqK6fjjf0Xls30yAdg6sC'
-YELP_TOKEN_SECRET = 'WQyffYaB4R-NaMGaTcHJOkUWsWE'
-
-TWITTER_FEED_URI_TEMPLATE = (
-    'https://api.twitter.com/1/statuses/user_timeline.json'
-    '?include_entities=true'
-    '&include_rts=true'
-    '&screen_name=%s'
-    '&count=%s'
-)
-TWITTER_DEFAULT_RESULT_COUNT = 10
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -144,7 +133,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -157,6 +146,16 @@ TEMPLATE_LOADERS = (
     'knotis.template.loaders.app_directories.Loader'
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages'
+)
+
 MIDDLEWARE_CLASSES = (
     'autoload.middleware.AutoloadMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -164,8 +163,11 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'knotis.apps.mobile.middleware.MobileDetectionMiddleware'
+    # 'knotis.contrib.mobile.middleware.MobileDetectionMiddleware',
+    # 'knotis.contrib.activity.middleware.ActivityMiddleware'
 )
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 ROOT_URLCONF = 'urls'
 
@@ -177,9 +179,10 @@ TEMPLATE_DIRS = (
 
 AUTHENTICATION_BACKENDS = (
     'permission_backend_nonrel.backends.NonrelPermissionBackend',
-    'knotis.apps.auth.authentication.backends.EndpointValidationAuthenticationBackend',
-    'knotis.apps.legacy.authentication.backends.LegacyAuthenticationBackend',
-    'knotis.apps.legacy.authentication.backends.HamburgertimeAuthenticationBackend'
+    'knotis.contrib.auth.authentication.backends.CaseInsensitiveUsernameAuthenticationBackend',
+    'knotis.contrib.endpoint.authentication.backends.EndpointValidationAuthenticationBackend',
+    'knotis.contrib.legacy.authentication.backends.LegacyAuthenticationBackend',
+    'knotis.contrib.legacy.authentication.backends.HamburgertimeAuthenticationBackend'
 )
 
 AUTOLOAD_SITECONF = 'dbindexer'
@@ -188,11 +191,12 @@ INSTALLED_APPS = (
     # Third party Django apps.
     'autoload',
     'dbindexer',
-    'piston',
     'djangotoolbox',
+    'django_extensions',
     'permission_backend_nonrel',
     'timezones',
     'sorl.thumbnail',
+    'crispy_forms',
     # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -202,7 +206,32 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'knotis'
+    'haystack',
+    # knotis apps
+    'knotis',
+    'knotis.contrib.layout',
+    'knotis.contrib.search',
+    'knotis.contrib.navigation',
+    'knotis.contrib.denormalize',
+    'knotis.contrib.auth',
+    'knotis.contrib.endpoint',
+    'knotis.contrib.bootstrap',
+    'knotis.contrib.quick',
+    'knotis.contrib.identity',
+    'knotis.contrib.relation',
+    'knotis.contrib.activity',
+    'knotis.contrib.offer',
+    'knotis.contrib.transaction',
+    'knotis.contrib.inventory',
+    'knotis.contrib.product',
+    'knotis.contrib.media',
+    'knotis.contrib.maps',
+    'knotis.contrib.location',
+    'knotis.contrib.wizard',
+    'knotis.contrib.merchant',
+    'knotis.contrib.consumer',
+    'knotis.contrib.qrcode',
+    'knotis.contrib.api'
 )
 
 LOGIN_REDIRECT_URL = '/'
@@ -235,7 +264,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
-            'filename': '/var/log/knotis/web.log',
+            'filename': '/srv/knotis/logs/django.log',
             'maxBytes': 1048576,
             'backupCount': 10
         }
@@ -245,17 +274,26 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'int'
+ENVIRONMENT_NAME = 'prod'
+
 
 # You can key the configurations off of anything - I use project path.
 configs = {
+    'josh': 'josh',
+    'josie': 'josie',
     'dev': 'dev',
     'int': 'int',
     'prod': 'prod',
-    'stage': 'stage'
+    'stage': 'stage',
+    'seth': 'seth',
+    'dev1': 'dev1',
+    'ub2': 'ub2'
 }
 
-# Import the configuration settings file - REPLACE projectname with your project
+"""
+Import the configuration settings file
+REPLACE projectname with your project
+"""
 config_module = __import__(
     'config.%s' % configs[ENVIRONMENT_NAME],
     globals(),
