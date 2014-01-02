@@ -5,7 +5,7 @@ from django.core.management.base import (
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from knotis.apps.transaction.models import (
+from knotis.contrib.transaction.models import (
     Transaction,
     TransactionTypes
 )

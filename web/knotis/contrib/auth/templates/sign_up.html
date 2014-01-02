@@ -1,0 +1,55 @@
+<div class="signup_popup content-popup absolute radius-general">
+    <div class="content-replace relative">
+        <div class="content-popup-inset radius-general">
+            <div class="clear-fix relative">
+                <h3><strong>{% if account_type == 'user' %}Sign up for Knotis offers!
+                    {% else %}{% if account_type == 'foreverfree' %}Sign up - Forever Free Business Plan!
+                    {% else %}{% if account_type == 'premium' %}Sign up - Monthly Unlimited Business Plan!
+                    {% else %}Sign up{% endif %}{% endif %}{% endif %}</strong></h3>
+                <div class="close close_sig_in"></div>
+            </div>
+            <form class="replace" action="/auth/signup/" method="post" id="newuser">{% csrf_token %}
+                <div class="clear-fix">
+                    <div class="content-popup-left">
+                        <ul>
+                            <li>
+                                <label>
+                                    {{ form.first_name }}
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    {{ form.last_name }}
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    {{ form.email }}
+                                </label>
+                            </li>
+
+                            <li>
+                                <label>
+                                    {{ form.password }}
+                                </label>
+                            </li>
+                            <div class="clean"></div>
+                        </ul>
+                        <p class="txt-size margin-general">By creating an account you agree to our Terms &amp; Conditions and Privacy Policy</p>
+                        <p id="createP">
+                            <input class="button radius-general" type="submit" value="Create">
+                            <a class="txt-size close_sig_in" href="#">Cancel</a>
+                        </p>
+                        <p id="createdP" style="display:none">
+                            <img src="{{ STATIC_URL }}/images/lightbox-ico-loading.gif" title="Loading" alt="loading"/>
+                        </p>
+                    </div>
+                </div>
+                <div class="clean relative">
+                    <div id="ajaxBusy" class="absolute"><img src="{{ STATIC_URL }}/images/ajaxloading.gif" title="Loading" alt="loading"/> </div>  
+                </div>
+                <p id="message-log" class="message-confirm message-error hide message-info radius-general txt-size"></p>
+           </form>
+       </div>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="en" xmlns:og="http://ogp.me/ns#">
+  <head>
+    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <title>{% block title %}Knotis.com{% endblock %}</title>
+</head>
+<body>
+    <div id="content">
+      <h1>{% trans "Welcome to Knotis." %}</h1>
+        {% block content %}
+        {% endblock %}
+    </div>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery.wookmark.js"></script>
+  </body>
+  <script>
+    $("[rel=tooltip]").tooltip()
+  </script>
+</html>

@@ -1,0 +1,133 @@
+.modal#id-offer-detail .modal-header {
+    background-color: #808184;
+    color: #fff;
+    height: 116px;
+    padding-right: 5px;
+}
+
+.modal#id-offer-detail .modal-header h1 {
+    padding: 10px 0 0 20px;
+    margin: 0;
+    font-weight: lighter;
+    font-size: 1.7em;
+}
+
+.modal#id-offer-detail .modal-header .business-name {
+   position: relative;
+   top: 20px;
+   left: 22px;
+   font-size: 1.2em;
+   z-index: 25;
+}
+
+.modal#id-offer-detail .modal-header .business-name:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.modal#id-offer-detail .modal-header .business-name>.profile-badge {
+    -webkit-border-radius: 500px;
+    -moz-border-radius: 500px;
+    border-radius: 500px;
+    border: 1px solid #D8D9D8;
+    width: 70px;
+    height: 70px;
+    background: #FFFFFF;
+}
+
+.modal#id-offer-detail .modal-body {
+    color: #5E5E5E;
+    background-color: #eee;
+    padding: 0;
+}
+
+.modal#id-offer-detail .modal-body>.container-fluid>.row-fluid {
+    height: 100%;
+}
+
+.modal#id-offer-detail .modal-body h4 {
+    font-weight: lighter;
+    font-size: 1.6em
+}
+
+.modal#id-offer-detail .modal-body .offer-images {
+    min-height: 216px;
+    background-color: #fff;
+    margin: 0;
+    padding: 36px 16px 16px 16px;
+}
+
+.modal#id-offer-detail .modal-body .offer-summary {
+    min-height: 216px;
+    background-color: #fff;
+    margin: 0;
+    padding: 16px;
+}
+
+.modal#id-offer-detail .modal-body .offer-summary p {
+    margin-bottom: 12px;
+}
+
+.modal#id-offer-detail .modal-body .offer-summary>.offer-description {
+    font-size: 1.2em;
+}
+
+.modal#id-offer-detail .modal-body .offer-summary>.offer-restrictions {
+    font-size: 1.0em;
+}
+
+.modal#id-offer-detail .modal-body .offer-info {
+}
+
+.modal#id-offer-detail .modal-body .offer-info .offer-details {
+    margin-top: 16px;
+    background-color: #fff;
+    padding: 16px;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.modal#id-offer-detail .modal-body .offer-info .offer-details .offer-price {
+    border-bottom: 3px solid #F4F5F5;
+}
+
+.modal#id-offer-detail .modal-body .offer-info .offer-details .offer-price .price-retail {
+    font-weight: lighter;
+    font-size: 1.2em;
+    text-decoration: line-through;
+    text-align: right;
+    padding-right: 5px;
+}
+
+.modal#id-offer-detail .modal-body .offer-info .offer-details .offer-price .price-discounted {
+    font-weight: normal;
+    font-size: 1.7em;
+    color: #0DB09E;
+    text-align: left;
+    padding-left: 5px;
+}
+
+.modal#id-offer-detail .modal-body .offer-info .offer-details .offer-stats {
+    border-bottom: 1px solid #D1D1D1;
+    padding: 5px;
+}
+
+.modal#id-offer-detail .modal-body .offer-info .offer-details .offer-stats .savings {
+    border-right: 1px solid #D1D1D1;
+}
+
+.modal#id-offer-detail .modal-body .offer-info .offer-details .offer-stats p {
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+}
+
+.modal#id-offer-detail .modal-body .offer-info .offer-details .offer-stats p>small {
+    display: block;
+    font-weight: normal;
+    margin-top: -8px;
+}
+
+.modal#id-offer-detail .modal-body .offer-info .offer-details .offer-action {
+    padding-top: 16px;
+}

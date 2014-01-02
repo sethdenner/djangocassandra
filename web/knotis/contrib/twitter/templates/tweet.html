@@ -1,0 +1,22 @@
+<h4>Twitter</h4>
+{{ twitter_feed }}
+
+{% for tweet in feed %}
+
+{{ tweet }}
+
+<div class="twitter-content {% cycle 'left' 'right' %}">
+    <div class="pop box-border radius-general relative margin-general-25">
+    <div class="arrow-twitter"></div>
+    <p class="txt-size margin-general">{{ tweet.text }}</p>
+    <p class="txt-right txt-gray txt-size-12"></p>
+    </div>
+    <div class="clear-fix">
+    <div class="image-follow radius-general left">
+    <img src="{{ tweet.user.profile_image_url }}" alt="">
+    </div>
+    <p class="txt-size"><strong>{{ tweet.user.name }}</strong></p>
+    <p class="txt-size"><a href="http://twitter.com/#!/{{ tweet.user.screen_name }}" target="_blank">@{{ tweet.user.screen_name }}</a></p>
+    </div>
+</div>
+{% endfor %}

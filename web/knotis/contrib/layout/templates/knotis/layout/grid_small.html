@@ -1,0 +1,11 @@
+{% if tiles %}
+<div class="row-fluid grid-small">
+  <div class="span12">
+    <div class="row-fluid">
+      {% for tile in tiles %}
+      {{ tile }}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}

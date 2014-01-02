@@ -1,0 +1,400 @@
+div#id-profile-cover {
+    text-align: center;
+    position: relative;
+    background-image: url('/static/knotis/img/default_profile_banner.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 1920px 376px;
+    width: 100%;
+    height: 376px;
+    opacity: 0.8;
+}
+
+@media (min-width: 1920px){
+    div#id-profile-cover {
+        background-size: auto;
+    }
+}
+
+div#id-profile-banner-info {
+    position: relative;
+    top: 50px;
+    z-index: 2;
+    height: 0;
+    width: 100%;
+    text-align: center;
+}
+
+div#id-profile-cover-background {
+    background-color: #000;
+}
+
+div#id-profile-cover img#profile-badge {
+    margin-top: 50px;
+    width: 170px;
+    height: 170px;
+    cursor: hand;
+    cursor: pointer;
+}
+
+.cover-endpoint {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: white;
+    font-size: 125%;
+    padding-left: 1em;
+}
+
+.cover-endpoint>img {
+    height: 20px;
+    width: auto;
+}
+
+div#id-profile-title h2 {
+    color: white;
+}
+
+div#id-profile-spacer p {
+    min-height: 10px;
+    background-color: #ffffff;
+}
+
+div#id-profile-cover img[data-add-image]:hover {
+    cursor: pointer;
+}
+
+img.img-cover {
+    max-width: 100%;
+}
+
+@media (min-width: 768px) {
+    div#id-profile-cover div#id-profile-contact {
+        position: absolute;
+        left: 3em;
+        top: 4em;
+        text-align: left;
+    }
+
+}
+
+a.change-profile-cover-link {
+    position: absolute;
+    right: 2%;
+    bottom: 2%;
+}
+
+div.column-box {
+    columns: 2;
+}
+
+/* Profile About Section Divs */
+.sections {
+    padding-left: 24px;
+}
+
+.about-section {
+    background: #e5e5e4;
+    padding: 24px;
+    color: #808184;
+}
+
+.about-description {
+    
+}
+
+.about-us-inner {
+    background: white;
+    border: 10px solid white;
+    min-height: 250px;
+    color: #808184;
+}
+
+ul.nav-tabs {
+    display: inline-block;
+}
+
+/* Location */
+.about-location {
+    min-width: 300px;
+    min-height: 400px;
+    color: #808184;
+}
+
+.about-location .about-map-outer {
+    background: white;
+    padding: 10px;
+}
+
+.about-location p.display-address {
+    margin-top: 7px;
+}
+
+#about-map {
+    width: 100%;
+    min-height: 400px;
+}
+
+.map {
+    width: 100%;
+    min-height: 500px;
+}
+
+.about-yelp {
+
+}
+
+.about-twitter {
+
+}
+
+/* Ratings */
+/* Twitter Active --> color */
+div.tab {
+    background-size: cover;
+    min-width: 27px;
+    min-height: 27px;
+    width: 27px;
+    height: 27px;
+}
+
+.tab-content {
+    overflow: inherit;
+}
+
+div.twitter.tab {
+    width: 27px;
+    border-radius: 14px
+}
+
+div.yelp.tab {
+    width: 27px;
+    border-radius: 14px;
+}
+
+/* Twitter Inactive --> grey */
+li.twitter.tab div.twitter.tab {
+    background: url(/static/knotis/identity/img/twittericon-grey27x27.png);
+}
+
+/* Twitter Active --> color */
+li.twitter.active.tab div.twitter.tab {
+    background: url(/static/knotis/identity/img/twittericon-colored27x27.png);
+}
+
+/* Yelp Inactive --> grey */
+li.yelp.tab div.yelp.tab {
+    background: url(/static/knotis/identity/img/yelpicon-grey27x27.png);
+}
+
+/* Yelp Active --> color */
+li.yelp.tab.active div.yelp.tab {
+    background: url(/static/knotis/identity/img/yelpicon-colored27x27.png);
+}
+
+/* Profile About About Endpoint Form */
+.edit-endpoint {
+    width: 90%;
+    position: relative;
+    left: 20px;
+}
+
+/* About Carousel */
+.about-carousel {
+    overflow: hidden;
+    width: 100%;
+}
+
+.frame {
+    width: 100%;
+    height: 100%;
+    border: 0px solid #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.upload-photo {
+    display: block;
+    margin-top: 15px;
+    padding-bottom: 15px;
+}
+
+.carousel-indicators {
+    margin: 0;
+}
+
+#about_carousel>.carousel-inner {
+    overflow: hidden;
+    width: 100%;
+}
+
+.carousel-inner .item {
+    padding: 10px;
+}
+
+.about-carousel-image {
+}
+
+.item {
+  padding: 10px;
+}
+
+.frame {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  border: 10px solid white;
+}
+
+.item.next {
+  padding: 10px;
+}
+
+.item.active {
+  padding: 10px;
+}
+
+#about_carousel {
+    background: #FFFFFF;
+    border-left: 10px solid white;
+    border-right: 10px solid white;
+    width: 100%;
+    padding: 10px solid white;
+}
+
+.carousel-inner {
+    width: 100%;
+    position: relative;
+    left: -10px;
+}
+
+.carousel-wrapper {
+    width: 100%;
+}
+
+#about_carousel>.carousel-inner>.item>.about-carousel-image {
+    overflow:hidden;
+    height: 400px; 
+    width: 100%;
+}
+
+.moar-space {
+    padding-top: 34px;
+}
+
+/* Profile Header Endpoints */
+.cover-endpoint>span {
+    padding-left: 3px;
+}
+
+/* Profile Feeds */
+/** Twitter */
+div.tweet {
+}
+
+p.tweet-text {
+    background: #FFFFFF;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    padding: 5px;
+    width: 84%;
+    display: inline-block;
+    min-height: 50px;
+    color: #808184
+}
+
+div.twitter-title h4 {
+    display: inline;
+    margin-left: 10px;
+}
+
+div.twitter-title img {
+    border-radius: 2px;
+    box-shadow: 5px 5px 5px #888888;
+}
+
+div.twitter-title {
+    margin-bottom: 10px;
+}
+
+/** Yelp */
+
+img.user {
+    border-radius: 25px;
+    display: inline;
+    margin-right: 2px;
+    vertical-align: top;
+}
+
+div.yelp-review {
+    min-height: 50px;
+}
+
+div.yelp-review span.username {
+    background: #FFFFFF;
+}
+
+div.yelp-review span.score {
+}
+
+span.arrow-left {
+    vertical-align: top;
+    margin: 15px 0 0;
+    line-height: 0;
+    font-size: 0;
+    padding: 0;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid white;
+    display: inline;
+    position: relative;
+    top: 25px;
+}
+
+p.excerpt {
+    left: 60px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    background-color: #FFFFFF;
+    width: 84%;
+    display: inline-block;
+    min-height: 50px;
+    color: #808184;
+}
+
+h4 {
+    color: black;
+}
+
+div.ratings {
+    margin-top: 25px;
+}
+
+div.about-location {
+    margin-top: 25px;
+}
+
+.space {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+img.away {
+    margin-bottom: 15px;
+}
+
+.social-buttons {
+    position: relative;
+    top: -7px;
+}

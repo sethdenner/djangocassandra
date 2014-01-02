@@ -7,8 +7,8 @@ from django.core.management.base import (
     CommandError
 )
 
-from knotis.apps.business.models import Business
-from knotis.apps.qrcode.models import (
+from knotis.contrib.business.models import Business
+from knotis.contrib.qrcode.models import (
     Qrcode,
     QrcodeTypes
 )

@@ -1,1 +1,1 @@
-from knotis.apps.transaction.management import commands as management
+from knotis.contrib.transaction.management import commands as management
