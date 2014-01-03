@@ -1,0 +1,25 @@
+{% extends 'knotis/layout/master_email.html' %}
+{% load render_template_fragment %}
+{% block subject %}You've been added as a {{ permission_name }}{% endblock subject %}
+{% block browser_link %}{{ browser_link }}{% endblock browser_link %}
+{% if email_type == 'html' %}
+{% block content %}
+<h1>You've been added as a {{ permission_name }}.</h1>
+<p><b>{{ initiator }}</b> has invited you to have access to their account.</p>
+<br />
+<br />
+<a class="button" href="{{ confirm_link }}">Get Me Connected</a>
+<br />
+<br />
+<br />
+{% endblock content %}
+{% endif %}
+
+{% if email_type == 'text' %}
+{% block text_content %}
+You've been added as a {{ permission_name }}.
+{{ initiator }} has invited you to have access to their account. 
+
+Click the following link to get yourself connected: {{ confirm_link }}
+{% endblock text_content %}
+{% endif %}

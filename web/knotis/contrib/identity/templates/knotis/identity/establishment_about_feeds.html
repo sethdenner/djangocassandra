@@ -1,0 +1,31 @@
+{% if twitter_has_feed or yelp_has_feed %}
+<h4 class="title-and-selector">
+Ratings &amp; Reviews
+
+<ul id="AboutFeedTab" class="nav nav-tabs pull-right">
+  {% with count=0 %}
+  {% if twitter_has_feed %}
+  <li class="twitter tab active">
+    <div class="space twitter tab">&nbsp;</div>
+  </li>
+  {% endif %}
+
+  {% if yelp_has_feed %}
+  <li class="yelp tab {% if not twitter_has_feed %}active{% endif %}">
+    <div class="space yelp tab">&nbsp;</div>
+  </li>
+  {% endif %} 
+  {% endwith %}
+</ul>
+</h4>
+{% endif %}
+
+<div id="AboutFeedTabContent" class="tab-content">
+  {% if twitter_has_feed %}
+  <div id="twitter" class="tab-pane active">{{ twitter_markup }}</div>
+  {% endif %}
+
+  {% if yelp_has_feed %}
+  <div id="yelp" class="tab-pane">{{ yelp_markup }}</div>
+  {% endif %}
+</div>

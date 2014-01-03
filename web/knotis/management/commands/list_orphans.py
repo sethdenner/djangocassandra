@@ -6,9 +6,9 @@ from django.core.management.base import (
     CommandError
 )
 
-from knotis.apps.business.models import Business
-from knotis.apps.offer.models import Offer
-from knotis.apps.transaction.models import Transaction
+from knotis.contrib.business.models import Business
+from knotis.contrib.offer.models import Offer
+from knotis.contrib.transaction.models import Transaction
 
 class Command(BaseCommand):
     args = '<b(business)|o(offer)|t(transaction)>'

@@ -1,0 +1,33 @@
+{% load thumbnail %}
+<div class="controls">
+  {% for r in rows %}
+  <div class="control-group">
+    <input {% if r.checked %}checked {% endif %}{% if r.disabled %}disabled {% endif %}type="{% if select_multiple %}checkbox{% else %}radio{% endif %}" name="{{ field_name }}{% if select_multiple%}_{{ forloop.counter0 }}{% endif %}" value="{{ r.item.id }}" />
+    {% if render_images %}
+    <img
+       {% thumbnail r.image.image.image dimensions crop=r.image.crop as img %}
+       src="{{ img.url }}"
+       {% endthumbnail %}
+       />
+    {% endif %}
+    {% if r.title %}
+    <span>{{ r.title }}</span>
+    {% endif %}
+    {% if actions %}
+    {% for action in actions %}
+    {% if forloop.counter != 1 %}&nbsp;|&nbsp;{% endif %}
+    <a 
+       data-method="{{ action.method }}"
+       class="item-action {{ action.class }}"
+       href="{{ action.url }}?id={{ r.item.id }}" >{{ action.name }}</a>
+    {% endfor %}
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+<scrpit src="{{ STATIC_URL }}knotis/layout/js/item_select.js"></script>
+{% if item_select_scripts %}
+{% for script in item_select_scripts %}
+<script src="{{ STATIC_URL }}{{ script }}"></script>
+{% endfor %}
+{% endif %}

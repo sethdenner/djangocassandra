@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% spaceless %}
+  <head>
+    <title>{% block title %}{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}bootstrap-modal/css/bootstrap-modal.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}jcrop/css/jquery.Jcrop.min.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}knotis/auth/css/auth.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}knotis/identity/css/switcher.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}knotis/offer/css/offer_create.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}knotis/offer/css/offer_detail.css" rel="stylesheet" />
+    {% for style in styles %}
+    <link href="{{ STATIC_URL }}{{ style }}" rel="stylesheet" />
+    {% endfor %}
+    {{ maps_scripts }}
+    {% for script in pre_scripts %}
+    <script src="{{ STATIC_URL }}{{ script }}"></script>
+    {% endfor %}
+    {% block head %}{% endblock head %}
+  </head>
+  <body class="knotis" >
+    {% block first %}{% endblock first %}
+    {% block header %}{% endblock header %}
+    {% block content %}{% endblock content %}
+    {% block footer %}{% endblock footer %}
+    <div id="modal-box" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+    {% block last %}{% endblock last %}
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="{{ STATIC_URL }}geocomplete/jquery.geocomplete.min.js"></script>
+    <script src="{{ STATIC_URL }}knotis/maps/js/maps.js"></script>
+    <script src="{{ STATIC_URL }}jquery.cookie/jquery.cookie.js"></script>
+    <script src="{{ STATIC_URL }}knotis/api/js/api.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap-modal/js/bootstrap-modalmanager.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap-modal/js/bootstrap-modal.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" ></script>
+    <script src="{{ STATIC_URL }}knotis/layout/js/modal.js" ></script>
+    <script src="{{ STATIC_URL }}knotis/offer/js/offer.js" ></script>
+    {% for script in post_scripts %}
+    <script src="{{ STATIC_URL }}{{ script }}?8374873485"></script>
+    {% endfor %}
+  </body>
+  {% endspaceless %}
+</html>

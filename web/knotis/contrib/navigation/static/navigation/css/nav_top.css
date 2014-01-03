@@ -1,0 +1,38 @@
+.top-nav-extra-space {
+    height: 41px;
+}
+
+.navbar.navigation-horizontal .nav {
+    width: 100%;
+}
+
+.navbar.navigation-horizontal .nav > li {
+    float: none;
+    display: inline-block;
+    *display:inline;
+    *zoom:1;
+    vertical-align: top;
+}
+
+
+.navbar.navigation-horizontal .nav > li > a:hover {
+    background-color: #EEEEEE;
+    border-bottom: 2px solid #427FED;
+    height: 18px;
+    color: #000;
+}
+
+.navbar.navigation-horizontal .nav > li > a.on {
+    border-bottom: 2px solid #427FED;
+    height: 18px;
+    color: #000;
+}
+
+
+.navbar.navigation-horizontal .navbar-inner {
+    text-align: center;
+}
+
+.navbar.navbar-fixed-top.navigation-horizontal.top-nav {
+    top: 66px;
+}

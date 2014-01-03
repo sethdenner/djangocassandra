@@ -1,0 +1,7 @@
+<div class="controls">
+  {% for l in location %}
+  <input type="radio" name="image" value="{{ i.id }}" />
+  <span>{{ l.address }}</span>
+  {% endfor %}
+</div>
+<scrpit src="{{ STATIC_URL }}knotis/maps/js/location_select.js"></script>

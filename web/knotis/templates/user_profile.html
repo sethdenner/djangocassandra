@@ -58,32 +58,6 @@
                         <input class="button radius-general" type="submit" name="save_profile" value="Save profile">
                     </form>
                 </div>
-                {% if user and not user.is_staff and not user_profile.is_business_owner %}
-                <div class="box-offers box-border" style="margin-top:7px">
-                    <form class="backend-setting" method="post">{% csrf_token %}
-                        <fieldset>
-                            <h3 class="margin-general"><strong>Do you own a business?</strong></h3>
-                            <ul>
-                                <li class="margin-general">
-                                    <label class="clear-fix margin-general">
-                                        <input 
-                                            type="checkbox" 
-                                            value="1" 
-                                            name="{{ business_form.business_owner.html_name }}"{% if user_profile.is_business_owner %}
-                                            checked{% endif %} ><span class="txt-size">Yes! I have a business and I want a business profile in knotis</span>
-                                    </label>
-                                </li>
-                                <li>
-                                    <label>
-                                        <input class="button radius-general" type="submit" name="activate_business" value="Save Role">
-                                    </label>
-                                </li>
-                                <div class="clean"></div>
-                            </ul>
-                        </fieldset>
-                    </form>
-                </div>
-                {% endif%}    
                 <div class="box-offers box-border" style="margin-top:7px">
                     <form class="backend-setting" method="post">{% csrf_token %}
                         <fieldset>

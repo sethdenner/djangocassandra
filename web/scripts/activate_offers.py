@@ -1,4 +1,4 @@
-from knotis.apps.offer.models import (
+from knotis.contrib.offer.models import (
     Offer,
     OfferStatus
 )

@@ -31,3 +31,21 @@ REGEX_OFFER_FILTERING = ''.join([
     '))?(/(?P<premium>premium))?',
     '(/(?P<page>[\d]+))?',
 ])
+
+"""
+Credit card regular expressions.
+"""
+REGEX_CC_VISA = '4[0-9]{12}(?:[0-9]{3})?'
+REGEX_CC_MASTER_CARD = '5[1-5][0-9]{14}'
+REGEX_CC_AMERICAN_EXPRESS = '3[47][0-9]{13}'
+REGEX_CC_DINERS_CLUB = '3(?:0[0-5]|[68][0-9])[0-9]{11}'
+REGEX_CC_DISCOVER = '6(?:011|5[0-9]{2})[0-9]{12}'
+REGEX_CC_JCB = '(?:2131|1800|35\d{3})\d{11}'
+REGEX_CC_ANY = '|'.join([
+    REGEX_CC_VISA,
+    REGEX_CC_MASTER_CARD,
+    REGEX_CC_AMERICAN_EXPRESS,
+    REGEX_CC_DINERS_CLUB,
+    REGEX_CC_DISCOVER,
+    REGEX_CC_JCB
+])

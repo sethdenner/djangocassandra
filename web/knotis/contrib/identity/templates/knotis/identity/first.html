@@ -1,0 +1,43 @@
+{% load crispy_forms_tags %}
+<div id="first-carousel" class="carousel slide" data-interval="">
+  <div class="carousel-inner">
+    <div class="active item">
+      <div class="modal-header name">
+        <h3>Tell us your name</h3>
+      </div>
+      {% crispy individual_form %}
+    </div>
+    <div class="item">
+      <div class="modal-header account-type">
+        <h3>What would you like to do next?</h3>
+      </div>
+      <div class="modal-body">
+        <p>
+          <button id="id-button-business" class="btn btn-large btn-success btn-block" type="button">
+            I am a business owner and would like to create a merchant profile.
+          </button>
+        </p>
+        <p>
+          <button id="id-button-offers" class="btn btn-large btn-primary btn-block" type="button">
+            Just show me what local merchants are offering.
+          </button>
+        </p>
+      </div>
+    </div>
+    <div class="item">
+      <div class="modal-header name">
+        <h3>What is the name of your business?</h3>
+      </div>
+      {% crispy business_form %}
+    </div>
+    <div class="item">
+      <div class="modal-header location">
+        <h3>Where is your establishment located?</h3>
+      </div>
+      <div class="modal-body">
+        {% crispy location_form %}
+        <script src="{{ STATIC_URL }}knotis/maps/js/maps.js" ></script>
+      </div>
+    </div>
+  </div>
+</div>

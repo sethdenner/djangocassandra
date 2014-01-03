@@ -1,0 +1,14 @@
+{% if navigation_items %}
+<div class="navbar{% if fixed_top_nav %} navbar-fixed-top{% else %} navbar-static-top{% endif %} navigation-horizontal top-nav">
+  <div class="navbar-inner">
+    <div class="container text-center">
+      <ul class="nav">
+        {% for item in parsed_navigation_items %}
+	    <li><a href="{{ item.uri }}">{{ item.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% if fixed_top_nav %}<div class="top-nav-extra-space">&nbsp;</div>{% endif %}
+{% endif %}
