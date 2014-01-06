@@ -1,11 +1,11 @@
 #!/bin/bash
 
-export ENVIRONMENT_NAME=dev
+export ENVIRONMENT_NAME=stage
 export KNOTIS_WEB=$(readlink -e ../web)
 export MODWSGI_SCRIPT=$(readlink -e ./config/modwsgi/knotis.wsgi)
-export APACHE2_CONFIG=$(readlink -e ./config/apache2/dev.knotis.com)
-export CASSANDRA_CONFIG=$(readlink -e ./config/cassandra/dev.cassandra-2.0.0.yaml)
-export CASSANDRA_ENV=$(readlink -e ./config/cassandra/dev.cassandra-env-2.0.0.sh)
+export APACHE2_CONFIG=$(readlink -e ./config/apache2/stage.knotis.com)
+export CASSANDRA_CONFIG=$(readlink -e ./config/cassandra/stage.cassandra-2.0.0.yaml)
+export CASSANDRA_ENV=$(readlink -e ./config/cassandra/stage.cassandra-env-2.0.0.sh)
 export CASSANDRA_THRIFT_INTERFACE=$(readlink -e ./static/cassandra.thrift)
 export DEFAULT_INSTALL_LOCATION=/srv/knotis
 export ADMIN_USER=knotis
