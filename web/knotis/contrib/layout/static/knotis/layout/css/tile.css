@@ -77,7 +77,8 @@ div.grid-tile.small-tile div.tile-body {
 div.grid-tile.small-tile div.tile-body p.tile-title {
     font-size: 1.25em;
     overflow: hidden;
-    height: 3.75em;
+    height: 3.7em;
+    margin: 0;
 }
 
 div.grid-tile.small-tile div.tile-body button {
