@@ -180,13 +180,27 @@ class BusinessesGrid(GridSmallView):
     view_name = 'businesses_grid'
 
     def process_context(self):
+        current_identity_id = self.request.session.get('current_identity_id')
+        if current_identity_id:
+            current_identity = Identity.objects.get(pk=current_identity_id)
+
+        else:
+            current_identity = None
+
         page = int(self.context.get('page', '0'))
         count = int(self.context.get('count', '20'))
         start_range = page * count
         end_range = start_range + count
-        businesses = IdentityBusiness.objects.filter(
-            available=True
-        )[start_range:end_range]
+        businesses = IdentityBusiness.objects.all()
+        if (
+            not current_identity or
+            not current_identity.identity_type == IdentityTypes.SUPERUSER
+        ):
+            businesses = businesses.filter(
+                available=True
+            )
+
+        businesses = businesses[start_range:end_range]
 
         tiles = []
 
@@ -197,7 +211,7 @@ class BusinessesGrid(GridSmallView):
 
         if businesses:
             for business in businesses:
-                
+
                 location_items = LocationItem.objects.filter(
                     related_object_id=business.pk
                 )
@@ -205,7 +219,7 @@ class BusinessesGrid(GridSmallView):
                     address = location_items[0].location.address
                 else:
                     address = ''
-                    
+
                 business_tile = IdentityTile()
                 business_context = Context({
                     'identity': business,
@@ -213,7 +227,7 @@ class BusinessesGrid(GridSmallView):
                 })
                 if address:
                     business_context.update({'address': address})
-                    
+
                 tiles.append(
                     business_tile.render_template_fragment(
                         business_context
