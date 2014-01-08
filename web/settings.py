@@ -279,15 +279,10 @@ ENVIRONMENT_NAME = 'prod'
 
 # You can key the configurations off of anything - I use project path.
 configs = {
-    'josh': 'josh',
-    'josie': 'josie',
     'dev': 'dev',
     'int': 'int',
     'prod': 'prod',
     'stage': 'stage',
-    'seth': 'seth',
-    'dev1': 'dev1',
-    'ub2': 'ub2'
 }
 
 """
