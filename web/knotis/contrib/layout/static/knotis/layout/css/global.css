@@ -144,6 +144,14 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     margin: 0;
 }
 
+.btn-to-top {
+    left: 42.445%;
+    width: 25%;
+    position: fixed;
+    z-index: 256;
+    opacity: 0.95;
+}
+
 .btn-primary:hover,
 .btn-primary:active,
 .btn-primary.active,

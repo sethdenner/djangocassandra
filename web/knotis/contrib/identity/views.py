@@ -160,7 +160,8 @@ class BusinessesView(FragmentView):
             'knotis/identity/js/profile.js',
             'knotis/api/js/api.js',
             'knotis/identity/js/business-tile.js',
-            'knotis/identity/js/businesses.js'
+            'knotis/identity/js/businesses.js',
+            'knotis/layout/js/to_top.js'
         ]
 
         for script in my_post_scripts:
