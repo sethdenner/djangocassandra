@@ -26,12 +26,15 @@
                     data[attribute.name.replace('data-param-', '')] = attribute.value;
                 });
             }
+
             var setupFollow = function($element) {
                 $element.attr('data-method', 'post');
                 $element.attr('href', href);
                 for (var key in data) {
                     $element.attr('data-param-' + key, data[key]);
+
                 }
+
             };
 
             var setupUnfollow = function($element, relation_id) {
@@ -46,59 +49,69 @@
                 $.each(element.attributes, function(i, attribute) {
                     if (attribute.name.substring(0, 'data-param-'.length) != 'data-param-') {
                         return true;
+
                     }
                     remove_attributes.push(attribute.name);
+
                 });
                 for (var i = 0; i < remove_attributes.length; ++i){
                     $element.removeAttr(remove_attributes[i]);
+
                 }
 
             };
 
+            var logged_in = 0 != $('div#id-identity-switcher').length;
+
             $action_button.actionButton({
                 onHover: function($element){
-                    var element = $element.get(0);
+                    if (logged_in) {
+                        var element = $element.get(0);
 
-                    request_data = {}
-                    for (key in data) {
-                        request_data[key.replace('-', '_')] = data[key];
+                        request_data = {}
+                        for (key in data) {
+                            request_data[key.replace('-', '_')] = data[key];
+                        }
+
+                        $.get(
+                            href,
+                            $.param(request_data),
+                            function(data, status, request) {
+                                if (!$.isEmptyObject(data.errors)) {
+                                    var button_text = 'Error';
+
+                                } else if ($.isEmptyObject(data.relations)) {
+                                    setupFollow($element);
+                                    var button_text = 'Follow';
+
+                                } else {
+                                    setupUnfollow($element, Object.keys(data.relations)[0]);
+                                    var button_text = 'Unfollow';
+
+                                }
+                                $element.children('span').text(button_text);
+                            },
+                            'json'
+                        );
+
                     }
-
-                    $.get(
-                        href,
-                        $.param(request_data),
-                        function(data, status, request) {
-                            if (!$.isEmptyObject(data.errors)) {
-                                var button_text = 'Error';
-
-                            } else if ($.isEmptyObject(data.relations)) {
-                                setupFollow($element);
-                                var button_text = 'Follow';
-
-                            } else {
-                                setupUnfollow($element, Object.keys(data.relations)[0]);
-                                var button_text = 'Unfollow';
-
-                            }
-                            $element.children('span').text(button_text);
-                        },
-                        'json'
-                    );
                 },
                 onClickResponse: function(data, status, request, $element){
-                    if (!$.isEmptyObject(data.errors)) {
-                        var button_text = 'Error';
+                    if (logged_in) {
+                        if (!$.isEmptyObject(data.errors)) {
+                            var button_text = 'Error';
 
-                    } else if ($.isEmptyObject(data.relation) || data.relation.deleted) {
-                        setupFollow($element);
-                        var button_text = 'Follow';
+                        } else if ($.isEmptyObject(data.relation) || data.relation.deleted) {
+                            setupFollow($element);
+                            var button_text = 'Follow';
 
-                    } else {
-                        setupUnfollow($element, data.relation.id);
-                        var button_text = 'Unfollow';
+                        } else {
+                            setupUnfollow($element, data.relation.id);
+                            var button_text = 'Unfollow';
 
+                        }
+                        $element.children('span').text(button_text);
                     }
-                    $element.children('span').text(button_text);
                 }
             });
         });

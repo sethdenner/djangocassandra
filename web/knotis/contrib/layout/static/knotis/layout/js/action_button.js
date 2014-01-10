@@ -49,17 +49,26 @@
                         data = $.param(data);
                     }
 
-                    $.ajax({
-                        url: url,
-                        data: data,
-                        type: method.toUpperCase(),
-                        dataType: 'json'
-                    }).done(function(data, status, request) {
-                        settings.onClickResponse(data, status, request, $this);
+                    if (method == 'modal') {
+                        $.ajaxmodal({
+                            href: url,
+                            modal_id: data.modalid
+                        });
 
-                    }).fail(function(request, status, error) {
+                    } else {
+                        $.ajax({
+                            url: url,
+                            data: data,
+                            type: method.toUpperCase(),
+                            dataType: 'json'
+                        }).done(function(data, status, request) {
+                            settings.onClickResponse(data, status, request, $this);
 
-                    });
+                        }).fail(function(request, status, error) {
+
+                        });
+
+                    }
                 }
             );
         });
