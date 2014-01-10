@@ -12,6 +12,7 @@
     font-size: 2em;
     opacity: 1.0;
     filter: alpha(opacity=100);
+    font-weight: normal;
 }
 
 .modal-footer.buttonHolder {
