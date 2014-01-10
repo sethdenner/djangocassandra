@@ -2,7 +2,8 @@ from django.conf.urls.defaults import patterns, url
 
 from views import (
     IndexView,
-    TermsAndConditionsView
+    TermsAndConditionsView,
+    PrivacyView
 )
 
 urlpatterns = patterns(
@@ -14,5 +15,9 @@ urlpatterns = patterns(
     url(
         r'^terms-and-conditions/$',
         TermsAndConditionsView.as_view()
+    ),
+    url(
+        r'^privacy/$',
+        PrivacyView.as_view()
     ),
 )
