@@ -278,3 +278,10 @@ button.btn-load-more {
 .input-append.date {
     padding: 0 0 10px 0;
 }
+
+div.row-fluid.main-row div.static-content {
+    background-color: #fff;
+    margin-top: 16px;
+    margin-left: 16px;
+    padding: 16px;
+}
