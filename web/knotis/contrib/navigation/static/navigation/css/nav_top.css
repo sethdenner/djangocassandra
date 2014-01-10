@@ -16,7 +16,6 @@
 
 
 .navbar.navigation-horizontal .nav > li > a:hover {
-    background-color: #EEEEEE;
     border-bottom: 2px solid #427FED;
     height: 18px;
     color: #000;
