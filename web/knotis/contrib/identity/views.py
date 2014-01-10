@@ -253,7 +253,15 @@ class IdentityTileActionButton(ActionButton):
         current_identity = self.context.get('current_identity')
 
         if not current_identity:
-            return None
+            return [
+                ButtonAction(
+                    'Sign Up',
+                    '/auth/signup/', {
+                        'modalid': 'auth-modal'
+                    },
+                    'modal'
+                )
+            ]
 
         return [
             ButtonAction(
