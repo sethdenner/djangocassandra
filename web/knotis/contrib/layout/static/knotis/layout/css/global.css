@@ -152,6 +152,14 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     opacity: 0.95;
 }
 
+div.row-fluid.load-more {
+    text-align: center;
+}
+
+button.btn-load-more {
+    width: 75%;
+}
+
 .btn-primary:hover,
 .btn-primary:active,
 .btn-primary.active,
