@@ -55,7 +55,7 @@ class LoginForm(TemplateFormMixin, AuthenticationForm):
 
     username = CharField(
         label='',
-        max_length=30,
+        max_length=254,
         required=True
     )
     password = CharField(

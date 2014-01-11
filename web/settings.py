@@ -188,6 +188,7 @@ AUTHENTICATION_BACKENDS = (
 AUTOLOAD_SITECONF = 'dbindexer'
 
 INSTALLED_APPS = (
+    'knotis',
     # Third party Django apps.
     'autoload',
     'dbindexer',
@@ -208,7 +209,6 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'haystack',
     # knotis apps
-    'knotis',
     'knotis.contrib.layout',
     'knotis.contrib.search',
     'knotis.contrib.navigation',
