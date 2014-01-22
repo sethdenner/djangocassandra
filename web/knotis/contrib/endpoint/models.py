@@ -13,7 +13,7 @@ from django.db.models import (
     CharField,
     BooleanField,
     IntegerField,
-    Manager
+    DateTimeField
 )
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib.contenttypes.models import ContentType
@@ -170,14 +170,14 @@ class EndpointManager(QuickManager):
             # update the endpoint
             for attr in filter_parameters.keys():
                 setattr(endpoint, attr, filter_parameters[attr])
-                
+
             endpoint.clean()
 
             params = filter_parameters
             if 'value' not in params.keys() or params['value'].strip() == '':
                 endpoint.deleted = True
                 endpoint.delete()
-                            
+
             endpoint.save()
 
         return endpoint
@@ -254,10 +254,14 @@ class Endpoint(QuickModel):
         blank=True,
         default=None
     )
+    validation_key_expires = DateTimeField(
+        blank=True,
+        default=None
+    )
     disabled = BooleanField(default=False)
 
     objects = EndpointManager()
-    
+
     def save(
         self,
         *args,
@@ -295,7 +299,7 @@ class Endpoint(QuickModel):
 
     def get_uri(self):
         return self.value
-    
+
     def prepend_http(self, string):
         if string.strip().startswith('http'):
             return string
@@ -317,7 +321,7 @@ class EndpointPhone(Endpoint):
     def get_uri(self):
         return "callto:" + self.value
 
-    
+
 class EndpointEmail(Endpoint):
     EndpointType = EndpointTypes.EMAIL
 
