@@ -37,8 +37,21 @@ class ScanView(View):
 
         qrcode.scan()
 
+        if (
+            qrcode.uri.startswith('/') or
+            qrcode.uri.startswith('http://') or
+            qrcode.uri.startswith('https://')
+        ):
+            redirect_uri = qrcode.uri
+
+        else:
+            redirect_uri = ''.join([
+                'http://',
+                qrcode.uri
+            ])
+
         return redirect(
-            qrcode.uri
+            redirect_uri
         )
 
 
