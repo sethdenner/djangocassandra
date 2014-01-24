@@ -1,41 +1,32 @@
 from django.db.models import (
+    IntegerField,
+    ForeignKey,
     Model,
-    IntegerField
+    Manager
 )
 
-from knotis.contrib.business.models import Business
-from knotis.contrib.offer.models import Offer
-from knotis.contrib.auth.models import KnotisUser
 from knotis.contrib.qrcode.models import Qrcode
-from knotis.contrib.cassandra.models import ForeignKey
-from knotis.contrib.core.models import KnotisModel
 
 
-class BusinessIdMap(KnotisModel):
-    old_id = IntegerField(null=True, blank=True, default=None, db_index=True)
-    new_business = ForeignKey(Business)
+class QrcodeIdMapManager(Manager):
+    def create_from_business(
+        self,
+        business,
+        old_id
+    ):
+        qrcode = Qrcode.objects.filter(owner=business)[0]
+        return self.create(
+            old_id=old_id,
+            new_qrcode=qrcode
+        )
 
 
-class OfferIdMap(KnotisModel):
-    old_id = IntegerField(null=True, blank=True, default=None, db_index=True)
-    new_offer = ForeignKey(Offer)
-
-
-class UserIdMap(KnotisModel):
+class QrcodeIdMap(Model):
     old_id = IntegerField(
-        null=True,
-        blank=True,
-        default=None,
-        db_index=True
-    )
-    new_user = ForeignKey(KnotisUser)
-
-
-class QrcodeIdMap(KnotisModel):
-    old_id = IntegerField(
-        null=True,
-        blank=True,
-        default=None,
-        db_index=True
+        db_index=True,
+        null=False,
+        blank=False
     )
     new_qrcode = ForeignKey(Qrcode)
+
+    objects = QrcodeIdMapManager()
