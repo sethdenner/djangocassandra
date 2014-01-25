@@ -51,6 +51,7 @@ class SocialIntegrationTile(FragmentView):
 
     def process_context(self):
         self.context['service_name'] = self.service
+
         return self.context
 
 
@@ -98,6 +99,7 @@ class SocialMediaSettingsView(ContextView):
             'knotis/layout/js/layout.js',
             'knotis/layout/js/header.js',
             'navigation/js/navigation.js',
+            'knotis/endpoint/js/social_media.js'
         ]
 
         for script in my_post_scripts:
