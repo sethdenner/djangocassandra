@@ -3,7 +3,10 @@ import django.shortcuts as shortcuts
 from django.conf import settings
 from django.template import Context
 
-from knotis.views import FragmentView
+from knotis.views import (
+    FragmentView,
+    AJAXFragmentView
+)
 
 
 class FacebookSdkInitializationFragment(FragmentView):
@@ -15,6 +18,17 @@ class FacebookSdkInitializationFragment(FragmentView):
         local_context['facebook_app_id'] = settings.FACEBOOK_APP_ID
 
         return local_context
+
+
+class FacebookAccountChoiceFragment(AJAXFragmentView):
+    view_name = 'facebook_account_choice'
+    template_name = 'knotis/facebook/account_choice.html'
+
+    def process_context(self):
+        return self.context
+
+    def post(self, request):
+        return self.generate_response({})
 
 
 def channel(request):

@@ -256,6 +256,7 @@ class Endpoint(QuickModel):
     )
     validation_key_expires = DateTimeField(
         blank=True,
+        null=True,
         default=None
     )
     disabled = BooleanField(default=False)
