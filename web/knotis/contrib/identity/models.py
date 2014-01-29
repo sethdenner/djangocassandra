@@ -24,6 +24,8 @@ from knotis.contrib.relation.models import (
     RelationTypes
 )
 
+from knotis.contrib.location.models import LocationItem
+
 __models__ = (
     'Identity',
     'IdentityIndividual',
@@ -388,10 +390,11 @@ class Identity(QuickModel):
         return u'%s' % self.id
 
     def get_location(self):
-        locations = LocationItems.objects.filter(related_object_id = self.pk)
-        if locations.count > 0:
+        locations = LocationItem.objects.filter(related_object_id=self.pk)
+        if locations.count() > 0:
             return locations[0].location.get_location()
         return None
+
 
 class IdentityIndividual(Identity):
     DEFAULT_NAME = 'New User'
