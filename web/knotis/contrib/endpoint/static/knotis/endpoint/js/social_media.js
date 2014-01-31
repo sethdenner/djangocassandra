@@ -47,7 +47,16 @@
 
                         if (missing_permissions) {
                             fb_login();
+                            return;
                         }
+
+                        $.ajaxmodal({
+                            href: '/facebook/choose-account/',
+                            modal_id: 'facebook-account-choice',
+                            on_open: function(data, status, request) {
+                                //populate available accounts.
+                            }
+                        });
                         
                     });
                 });
