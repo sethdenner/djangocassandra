@@ -4,6 +4,7 @@ from knotis.contrib.quick.models import (
 )
 from knotis.contrib.quick.fields import (
     QuickUUIDField,
+    QuickCharField,
     QuickForeignKey,
     QuickGenericForeignKey,
     QuickBooleanField
@@ -361,10 +362,10 @@ class EndpointEmail(Endpoint):
     def get_uri(self):
         return "mailto:" + self.value
 
-    
+
 class EndpointTwitter(Endpoint):
     EndpointType = EndpointTypes.TWITTER
-    
+
     class Meta:
         proxy = True
 
@@ -392,13 +393,13 @@ class EndpointTwitter(Endpoint):
                 if v[:len(prefix)] == prefix:
                     self.value = self.value[len(prefix):]
                     break
-        
+
         super(Endpoint, self).clean()
 
     def get_uri(self):
         return "http://twitter.com/" + self.value
 
-    
+
 class EndpointFacebook(Endpoint):
     EndpointType = EndpointTypes.FACEBOOK
 
@@ -425,28 +426,25 @@ class EndpointFacebook(Endpoint):
                 'http://facebook.com/',
                 'www.facebook.com/',
                 'http://www.facebook.com/',
-                
                 'facebook.com/',
                 'https://facebook.com/',
                 'www.facebook.com/',
                 'https://www.facebook.com/',
-
-                
             ]
             for prefix in prefixes:
                 if (len(v) > len(prefix)) and (v[:len(prefix)] == prefix):
                     self.value = self.value[len(prefix):]
                     break
-        
+
         super(Endpoint, self).clean()
 
     def get_uri(self):
         return "https://facebook.com/" + self.value
 
-    
+
 class EndpointYelp(Endpoint):
     EndpointType = EndpointTypes.YELP
-    
+
     class Meta:
         proxy = True
 
@@ -474,7 +472,7 @@ class EndpointYelp(Endpoint):
                 if v[:len(prefix)] == prefix:
                     self.value = self.value[len(prefix):]
                     break
-        
+
         super(Endpoint, self).clean()
 
     def get_uri(self):
@@ -492,7 +490,7 @@ class EndpointAddress(Endpoint):
 
         super(EndpointAddress, self).__init__(*args, **kwargs)
 
-        
+
 class EndpointLink(Endpoint):
     EndpointType = EndpointTypes.LINK
 
@@ -509,14 +507,14 @@ class EndpointLink(Endpoint):
         is_global = v.split('/', 1)[0].find('.') > 0
         if is_global:
             self.prepend_http(self.value)
-                
+
         super(EndpointLink, self).clean()
 
     def get_uri(self):
         return self.value
 
     def get_display(self):
-        """ 
+        """
         strip off http://, etc. for display
         """
         prefix = 'http://'
@@ -526,8 +524,8 @@ class EndpointLink(Endpoint):
         if self.value[:len(prefix)] == prefix:
             return self.value[len(prefix):]
         return self.value
-            
-        
+
+
 class EndpointWebsite(EndpointLink):
     EndpointType = EndpointTypes.WEBSITE
 
@@ -542,7 +540,7 @@ class EndpointWebsite(EndpointLink):
     def get_uri(self):
         return self.prepend_http(self.value)
 
-        
+
 class EndpointIdentityManager(EndpointManager):
     def update_identity_endpoints(
         self,
@@ -606,3 +604,12 @@ class Publish(QuickModel):
             self.__class__.__name__ + '.'
         )
 
+
+class Credentials(QuickModel):
+    """
+    Credentials may be required to access certain endpoints
+    like social media oauth access tokens, etc.
+    """
+    endpoint = QuickForeignKey(Endpoint)
+    identifier = QuickCharField(max_length=256)
+    key = QuickCharField(max_length=256)
