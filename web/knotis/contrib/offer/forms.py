@@ -296,7 +296,8 @@ class OfferPhotoLocationForm(TemplateForm):
 
     locations = ModelMultipleChoiceField(
         queryset=Location.objects.none(),
-        widget=ItemSelectWidget(select_multiple=True)
+        widget=ItemSelectWidget(select_multiple=True),
+        required=False
     )
 
     def __init__(
