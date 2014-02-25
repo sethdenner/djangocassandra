@@ -37,7 +37,11 @@ class Location(QuickModel):
         )
 
     def get_location(self):
-        return Point(self.longitude, self.latitude)
+        if self.longitude is not None and self.latitude is not None:
+            return Point(self.longitude, self.latitude)
+
+        else:
+            return None
 
     def update_geocode(self):
         if not self.latitude or not self.longitude:
