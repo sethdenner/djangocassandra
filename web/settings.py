@@ -231,7 +231,8 @@ INSTALLED_APPS = (
     'knotis.contrib.merchant',
     'knotis.contrib.consumer',
     'knotis.contrib.qrcode',
-    'knotis.contrib.api'
+    'knotis.contrib.api',
+    'knotis.contrib.facebook'
 )
 
 LOGIN_REDIRECT_URL = '/'
@@ -274,7 +275,7 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'prod'
+ENVIRONMENT_NAME = 'int'
 
 
 # You can key the configurations off of anything - I use project path.
