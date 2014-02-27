@@ -2,10 +2,16 @@ import copy
 
 from django.conf import settings
 from django.template import Context
+from django.shortcuts import get_object_or_404
 from knotis.utils.email import (
     generate_email
 )
 
+from knotis.contrib.endpoint.models import (
+    Endpoint,
+    EndpointTypes
+)
+from knotis.contrib.identity.models import Identity
 from knotis.views import (
     ContextView,
     FragmentView
@@ -39,6 +45,7 @@ class SocialIntegrationTile(FragmentView):
     def __init__(
         self,
         service,
+        endpoint=None,
         *args,
         **kwargs
     ):
@@ -48,9 +55,11 @@ class SocialIntegrationTile(FragmentView):
         )
 
         self.service = service
+        self.endpoint = endpoint
 
     def process_context(self):
         self.context['service_name'] = self.service
+        self.context['endpoint'] = self.endpoint
 
         return self.context
 
@@ -59,6 +68,12 @@ class SocialIntegrationsGridView(GridSmallView):
     view_name = 'social_integrations_grid'
 
     def process_context(self):
+        request = self.context.get('request')
+        current_identity = get_object_or_404(
+            Identity,
+            pk=request.session['current_identity_id']
+        )
+
         facebook_tile = SocialIntegrationTile(service='facebook')
         twitter_tile = SocialIntegrationTile(service='twitter')
 
@@ -70,6 +85,34 @@ class SocialIntegrationsGridView(GridSmallView):
             facebook_tile.render_template_fragment(tile_context),
             twitter_tile.render_template_fragment(tile_context),
         ]
+
+        facebook_endpoints = Endpoint.objects.filter(
+            identity=current_identity,
+            endpoint_type=EndpointTypes.FACEBOOK
+        )
+
+        for endpoint in facebook_endpoints:
+            connected_facebook = SocialIntegrationTile(
+                service='facebook',
+                endpoint=endpoint
+            )
+            self.context['tiles'].append(
+                connected_facebook.render_template_fragment(tile_context)
+            )
+
+        twitter_endpoints = Endpoint.objects.filter(
+            identity=current_identity,
+            endpoint_type=EndpointTypes.TWITTER
+        )
+
+        for endpoint in twitter_endpoints:
+            connected_twitter = SocialIntegrationTile(
+                service='twitter',
+                endpoint=endpoint
+            )
+            self.context['tiles'].append(
+                connected_twitter.render_template_fragment(tile_context)
+            )
 
         return self.context
 
@@ -97,6 +140,7 @@ class SocialMediaSettingsView(ContextView):
 
         my_post_scripts = [
             'knotis/layout/js/layout.js',
+            'knotis/layout/js/forms.js',
             'knotis/layout/js/header.js',
             'navigation/js/navigation.js',
             'knotis/endpoint/js/social_media.js'

@@ -4,6 +4,28 @@
 
         var required_permissions = ['publish_stream', 'manage_pages'];
 
+        $('.disconnect-facebook').click(function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            var $this = $(this);
+            var endpoint_pk =  $this.attr('data-endpoint-pk');
+            $.post(
+                '/facebook/revoke-access/',
+                {'endpoint_pk': endpoint_pk},
+                function(data, status, jqxhr) {
+                    if (data.errors) {
+                        var message = data.errors['no-field'];
+                        alert(message);
+                    } else {
+                        $('a.disconnect-facebook[data-endpoint-pk="' + endpoint_pk + '"]')
+                            .parent().parent().remove();
+                    }
+                }
+            );
+
+        });
+
         $('.connect-facebook').click(function(event) {
             event.preventDefault();
             event.stopPropagation();
@@ -53,9 +75,6 @@
                         $.ajaxmodal({
                             href: '/facebook/choose-account/',
                             modal_id: 'facebook-account-choice',
-                            on_open: function(data, status, request) {
-                                //populate available accounts.
-                            }
                         });
                         
                     });

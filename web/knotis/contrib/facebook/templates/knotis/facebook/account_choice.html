@@ -3,7 +3,7 @@
   <h3>Choose The Facebook Account To Integrate With Knotis</h3>
 </div>
 <div class="modal-body" >
-  <form action="/api/v1/endpoint/facebook/" id="form-facebook-account-choice" method="post">
+  <form action="/facebook/choose-account/" id="form-facebook-account-choice" method="post">{% csrf_token %}
     <div class="row-fluid">
       <div id="id-facebook-accounts" class="span6">
       </div>
@@ -12,8 +12,10 @@
       </div>
     </div>
     <div class="buttonHolder modal-footer">
-      <input type="submit" name="connect" value="Connect" class="btn btn-primary btn btn-primary" id="submit-id-connect"> 
+      <input type="submit" name="connect" value="Connect" class="btn btn-primary btn btn-primary" id="submit-id-connect" /> 
     </div>
+    <input name="account-name" type="hidden" value="" />
+    <input name="access-token" type="hidden" value="" />
   </form>
 </div>
 <script src="{{ STATIC_URL }}knotis/facebook/js/account_choice.js"></script>
