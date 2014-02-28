@@ -97,5 +97,9 @@ urlpatterns = patterns(
     url(
         r'^facebook/',
         include('knotis.contrib.facebook.urls')
+    ),
+    url(
+        r'^twitter/',
+        include('knotis.contrib.twitter.urls')
     )
 )

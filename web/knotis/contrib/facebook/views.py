@@ -17,56 +17,8 @@ from knotis.contrib.endpoint.forms import (
     EndpointForm,
     CredentialsForm
 )
-from knotis.contrib.endpoint.models import (
-    Endpoint,
-    EndpointTypes,
-    Credentials
-)
+from knotis.contrib.endpoint.models import EndpointTypes
 from knotis.contrib.endpoint.views import SocialIntegrationTile
-
-
-class FacebookRevokeAccessView(AJAXView):
-    def post(
-        self,
-        request
-    ):
-        current_identity = get_object_or_404(
-            Identity,
-            pk=request.session['current_identity_id']
-        )
-
-        endpoint_pk = request.POST.get('endpoint_pk')
-
-        endpoint = Endpoint.objects.get(pk=endpoint_pk)
-
-        if endpoint.identity != current_identity:
-            return self.generate_response({
-                'errors': {
-                    'no-field': 'This endpoint does not belong to you.',
-                    'status': 'ERROR'
-                }
-            })
-
-        credentials = Credentials.objects.filter(endpoint=endpoint)
-
-        errors = {}
-        for credential in credentials:
-            try:
-                credential.delete()
-
-            except:
-                errors['no-field'] = 'Failed to revoke permissions.'
-                break
-
-        if errors:
-            return self.generate_response({
-                'errors': errors,
-                'status': 'ERROR'
-            })
-
-        else:
-            endpoint.delete()
-            return self.generate_response({'status': 'OK', 'errors': None})
 
 
 class FacebookSdkInitializationFragment(FragmentView):
@@ -85,7 +37,15 @@ class FacebookAccountChoiceFragment(AJAXFragmentView):
     template_name = 'knotis/facebook/account_choice.html'
 
     def process_context(self):
-        return self.context
+        '''
+        Most of the DOM/Form generation is done on the
+        client side for this view. See account_choice.js
+        for the client side code.
+        '''
+        return super(
+            FacebookAccountChoiceFragment,
+            self
+        ).process_context()
 
     def post(self, request):
         current_identity = get_object_or_404(
