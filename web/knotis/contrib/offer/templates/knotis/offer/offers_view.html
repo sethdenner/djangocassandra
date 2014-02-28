@@ -20,4 +20,6 @@
 </div>
 {% endblock content %}
 {% block footer %}{% endblock footer %}
-{% block last %}{% endblock last %}
+{% block last %}
+{% if offer_id %}<input type="hidden" id="open_offer_id" value="{{ offer_id }}" />{% endif %}
+{% endblock last %}

@@ -1,6 +1,8 @@
 import re
 import datetime
 
+from facebook import GraphAPI
+
 from django.conf import settings
 from django.db.models.fields import Field as ModelField
 
@@ -29,6 +31,7 @@ from knotis.contrib.identity.models import (
 from knotis.contrib.inventory.models import Inventory
 from knotis.contrib.endpoint.models import (
     EndpointTypes,
+    Credentials,
     Publish
 )
 
@@ -688,6 +691,66 @@ class OfferPublish(Publish):
         offer.published = True
         offer.save()
 
+    def _publish_facebook(self):
+        offer = self.subject
+
+        try:
+            image_instance = ImageInstance.objects.get(
+                related_object_id=offer.pk,
+                context='offer_banner',
+                primary=True
+            )
+
+        except:
+            image_instance = None
+
+        attachment = {
+            'name': offer.title,
+            'description': offer.description,
+            'link': '/'.join([
+                settings.BASE_URL,
+                'offers',
+                offer.pk,
+                ''
+            ])
+        }
+
+        if image_instance:
+            attachment['picture'] = '/'.join([
+                settings.BASE_URL,
+                image_instance.image.image.url,
+                ''
+            ])
+
+        credentials = Credentials.objects.filter(
+            endpoint=self.endpoint
+        )
+
+        posted = False
+        for c in credentials:
+            graph = GraphAPI(
+                access_token=c.key
+            )
+
+            try:
+                graph.put_wall_post(
+                    'Check out our current offer!',
+                    attachment=attachment,
+                    profile_id=c.identifier,
+                )
+                posted = True
+                break
+
+            except:
+                pass
+
+        if not posted:
+            raise
+
+        else:
+            self.completed = True
+            self.save()
+
     def publish(self):
         if self.endpoint.endpoint_type == EndpointTypes.IDENTITY:
             if (
@@ -711,6 +774,9 @@ class OfferPublish(Publish):
 
             self.completed = True
             self.save()
+
+        elif self.endpoint.endpoint_type == EndpointTypes.FACEBOOK:
+            self._publish_facebook()
 
         else:
             raise NotImplementedError(''.join([
