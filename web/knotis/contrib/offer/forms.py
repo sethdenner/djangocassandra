@@ -296,7 +296,8 @@ class OfferPhotoLocationForm(TemplateForm):
 
     locations = ModelMultipleChoiceField(
         queryset=Location.objects.none(),
-        widget=ItemSelectWidget(select_multiple=True)
+        widget=ItemSelectWidget(select_multiple=True),
+        required=False
     )
 
     def __init__(
@@ -488,27 +489,27 @@ class OfferPublicationForm(TemplateForm):
         rows = [
             ItemSelectRow(
                 endpoint_facebook,
-                title='Facebook',
+                title=(
+                    'Facebook' if endpoint_facebook is None else
+                    endpoint_facebook.value + ' (Facebook)'
+                ),
                 checked=True if endpoint_facebook is not None else False,
                 disabled=True if endpoint_facebook is None else False
             ),
             ItemSelectRow(
                 endpoint_twitter,
-                title='Twitter',
+                title=(
+                    'Twitter' if endpoint_twitter is None else
+                    endpoint_twitter.value + ' (Twitter)'
+                ),
                 checked=True if endpoint_twitter is not None else False,
                 disabled=True if endpoint_twitter is None else False
             ),
             ItemSelectRow(
                 endpoint_followers,
-                title='Email',
+                title='Email Followers',
                 checked=True if endpoint_followers is not None else False,
                 disabled=True if endpoint_followers is None else False
-            ),
-            ItemSelectRow(
-                endpoint_widget,
-                title='Website Widget',
-                checked=True if endpoint_widget is not None else False,
-                disabled=True if endpoint_widget is None else False
             )
         ]
 

@@ -25,7 +25,11 @@ urlpatterns = patterns(
         NewOfferEmailBody.as_view()
     ),
     url(
-        r'^s/$',
+        r''.join([
+            '^s/(?P<offer_id>',
+            REGEX_UUID,
+            '/)?$'
+        ]),
         OffersView.as_view()
     ),
     url(
