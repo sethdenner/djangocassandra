@@ -103,14 +103,14 @@ YELP_CONSUMER_SECRET = 'vfyr5UHPQbjN5QFz22PcckRODSE'
 YELP_TOKEN_KEY = 'MEMHpkNVdQHmqK6fjjf0Xls30yAdg6sC'
 YELP_TOKEN_SECRET = 'WQyffYaB4R-NaMGaTcHJOkUWsWE'
 
-TWITTER_CONSUMER_KEY = 'F1JxtuDONa6Iy4rF3cl7w'
-TWITTER_CONSUMER_SECRET = '8BoRFGcveB6Q7Ber70uoNGQoZo3kSFKTm0kk5ICXo0'
+TWITTER_CONSUMER_KEY = 'UJehBgAaUeBuc2nn31MhCQ'
+TWITTER_CONSUMER_SECRET = '2ul4jubtbNFhxDpkhW44Vj6TYG40HsT86wY0Uou6Po'
 TWITTER_KNOTIS_ACCESS_TOKEN = (
-    '321699338-nji3k08VXK0Gu7YLmBXsk8ptU8yuxGaO3He560Nj'
+    '2307608550-hwaA2FqHhiXDn4gX5oO5MChkTCXfaJGsNnqdvYb'
 )
-TWITTER_KNOTIS_TOKEN_SECRET = '2NC4yOFFbXPR59VoXISuVsn5IoZrENo8yfvlaW1Y'
+TWITTER_KNOTIS_TOKEN_SECRET = 'huqzt1Vg4Ee0LVJvDyaJsbGFPdRLLzjOnfPjgmVKBzkMX'
 TWITTER_REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token'
-TWITTER_AUTHORIZE_URL = 'https://api.twitter.com/oauth/authorize'
+TWITTER_AUTHORIZE_URL = 'https://api.twitter.com/oauth/authorize?oauth_token='
 TWITTER_ACCESS_TOKEN_URL = 'https://api.twitter.com/oauth/access_token'
 TWITTER_FEED_URL = (
     'https://api.twitter.com/1.1/statuses/user_timeline.json'

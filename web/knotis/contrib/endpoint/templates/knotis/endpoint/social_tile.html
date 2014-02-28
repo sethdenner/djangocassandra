@@ -8,7 +8,7 @@
   <div class="tile-body">
     {% if endpoint %}
     <p class="tile-title">{{ endpoint.value }}</p>
-    <a data-endpoint-pk="{{ endpoint.pk }}" class="btn btn-knotis-action disconnect-{{ service_name }}" href="{{ action.href }}">&nbsp<span>Disconnect</span>&nbsp;
+    <a data-endpoint-pk="{{ endpoint.pk }}" class="btn btn-knotis-action disconnect" href="{{ action.href }}">&nbsp<span>Disconnect</span>&nbsp;
     {% else %}
     <p class="tile-title">{{ service_name|title }}<br>Account</p>
     <a class="btn btn-knotis-action connect-{{ service_name }}" href="{{ action.href }}">&nbsp<span>Connect</span>&nbsp;

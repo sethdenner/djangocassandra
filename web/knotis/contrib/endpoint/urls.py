@@ -8,7 +8,8 @@ from api import (
 )
 
 from views import(
-    SocialMediaSettingsView
+    SocialMediaSettingsView,
+    DeleteEndpointView
 )
 
 urlpatterns = patterns(
@@ -17,5 +18,9 @@ urlpatterns = patterns(
     url(
         r'^settings/social/$',
         SocialMediaSettingsView.as_view()
-    )
+    ),
+    url(
+        r'^endpoint/delete/$',
+        DeleteEndpointView.as_view()
+    ),
 )

@@ -1,0 +1,27 @@
+<div class="modal-header auth-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+  <h3>Enter Your PIN To Allow Knotis To Access Your Twitter Feed</h3>
+</div>
+<div class="modal-body" >
+  <form action="/twitter/verify-pin/" id="form-twitter-verify-pin" method="post">{% csrf_token %}
+    <div class="row-fluid">
+      <div id="id-facebook-accounts" class="span6">
+        <div class="control-group">
+          <div class="controls">
+            <label>Verification PIN:</label><input name="vpin" type="text" placeholder="Enter PIN"></input>
+          </div>
+        </div>
+      </div>
+      <div class="auth-info span6">
+        <p>This will allow Knotis to promote your business on your Twitter feed.</p>
+        <p>If the authorization window did not open automatically please <a target="_blank" id="a-authorize" href="">click here</a></p>
+      </div>
+    </div>
+    <div class="buttonHolder modal-footer">
+      <input type="submit" name="connect" value="Connect" class="btn btn-primary btn btn-primary" id="submit-id-connect" /> 
+    </div>
+    <input id="oauth_token" type="hidden" name="oauth_token"/>
+    <input id="oauth_token_secret" type="hidden" name="oauth_token_secret"/>
+  </form>
+</div>
+<script src="{{ STATIC_URL }}knotis/twitter/js/verify_pin.js"></script>

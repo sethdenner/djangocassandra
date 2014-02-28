@@ -9,10 +9,12 @@ from knotis.utils.email import (
 
 from knotis.contrib.endpoint.models import (
     Endpoint,
-    EndpointTypes
+    EndpointTypes,
+    Credentials
 )
 from knotis.contrib.identity.models import Identity
 from knotis.views import (
+    AJAXView,
     ContextView,
     FragmentView
 )
@@ -157,3 +159,47 @@ class SocialMediaSettingsView(ContextView):
             'fixed_side_nav': True
         })
         return local_context
+
+
+class DeleteEndpointView(AJAXView):
+    def post(
+        self,
+        request
+    ):
+        current_identity = get_object_or_404(
+            Identity,
+            pk=request.session['current_identity_id']
+        )
+
+        endpoint_pk = request.POST.get('endpoint_pk')
+
+        endpoint = Endpoint.objects.get(pk=endpoint_pk)
+
+        if endpoint.identity != current_identity:
+            return self.generate_response({
+                'errors': {
+                    'no-field': 'This endpoint does not belong to you.',
+                    'status': 'ERROR'
+                }
+            })
+
+        credentials = Credentials.objects.filter(endpoint=endpoint)
+
+        errors = {}
+        for credential in credentials:
+            try:
+                credential.delete()
+
+            except:
+                errors['no-field'] = 'Failed to delete credentials.'
+                break
+
+        if errors:
+            return self.generate_response({
+                'errors': errors,
+                'status': 'ERROR'
+            })
+
+        else:
+            endpoint.delete()
+            return self.generate_response({'status': 'OK', 'errors': None})
