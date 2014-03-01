@@ -1,6 +1,7 @@
 import re
 import datetime
 
+import twitter
 from facebook import GraphAPI
 
 from django.conf import settings
@@ -691,6 +692,47 @@ class OfferPublish(Publish):
         offer.published = True
         offer.save()
 
+    def _publish_twitter(self):
+        offer = self.subject
+
+        credentials = Credentials.objects.filter(
+            endpoint=self.endpoint
+        )
+
+        posted = False
+        for c in credentials:
+            t = twitter.Twitter(
+                auth=twitter.OAuth(
+                    c.identifier,
+                    c.key,
+                    settings.TWITTER_CONSUMER_KEY,
+                    settings.TWITTER_CONSUMER_SECRET
+                )
+            )
+
+            try:
+                t.statuses.update(
+                    status=''.join([
+                        'Check out our current offer: ',
+                        settings.BASE_URL,
+                        '/offers/',
+                        offer.pk,
+                        '/'
+                    ])
+                )
+                posted = True
+                break
+
+            except:
+                pass
+
+        if not posted:
+            raise
+
+        else:
+            self.complete = True
+            self.save()
+
     def _publish_facebook(self):
         offer = self.subject
 
@@ -777,6 +819,9 @@ class OfferPublish(Publish):
 
         elif self.endpoint.endpoint_type == EndpointTypes.FACEBOOK:
             self._publish_facebook()
+
+        elif self.endpoint.endpoint_type == EndpointTypes.TWITTER:
+            self._publish_twitter()
 
         else:
             raise NotImplementedError(''.join([
