@@ -1,0 +1,10 @@
+<form action="/stripe/charge/" method="POST">
+  <script
+     src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+     data-key="{{ STRIPE_API_KEY }}"
+     data-amount="2000"
+     data-name="{{ title }}"
+     data-description="{{ description }}"
+     data-image="/128x128.png">
+  </script>
+</form>
