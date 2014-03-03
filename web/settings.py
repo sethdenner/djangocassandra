@@ -232,7 +232,7 @@ INSTALLED_APPS = (
     'knotis.contrib.consumer',
     'knotis.contrib.qrcode',
     'knotis.contrib.api',
-    'knotis.contrib.legacy'
+    'knotis.contrib.legacy',
     'knotis.contrib.facebook',
     'knotis.contrib.twitter',
     'knotis.contrib.stripe'

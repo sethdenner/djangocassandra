@@ -465,7 +465,6 @@ class OfferEditProductFormView(OfferCreateStepView):
             })
 
         try:
-            import pdb; pdb.set_trace()
             split_inventory = Inventory.objects.split(
                 inventory,
                 owner,
