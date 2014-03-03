@@ -15,10 +15,13 @@ urlpatterns = patterns(
         MerchantReceiptBody.as_view()
     ),
     url(
-        r'^transaction/customerreceipt/$',
+        r''.join([
+            '^transaction/customerreceipt/(?P<transaction_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
         CustomerReceiptBody.as_view()
     ),
-    
     url(
         r''.join([
             '^offer/print/(?P<transaction_id>',
