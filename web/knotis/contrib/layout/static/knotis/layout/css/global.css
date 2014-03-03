@@ -144,6 +144,22 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     margin: 0;
 }
 
+.btn-to-top {
+    left: 42.445%;
+    width: 25%;
+    position: fixed;
+    z-index: 256;
+    opacity: 0.95;
+}
+
+div.row-fluid.load-more {
+    text-align: center;
+}
+
+button.btn-load-more {
+    width: 75%;
+}
+
 .btn-primary:hover,
 .btn-primary:active,
 .btn-primary.active,
@@ -261,4 +277,11 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 
 .input-append.date {
     padding: 0 0 10px 0;
+}
+
+div.row-fluid.main-row div.static-content {
+    background-color: #fff;
+    margin-top: 16px;
+    margin-left: 16px;
+    padding: 16px;
 }

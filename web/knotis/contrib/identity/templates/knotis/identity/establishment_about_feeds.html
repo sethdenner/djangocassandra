@@ -18,8 +18,6 @@ Ratings &amp; Reviews
   {% endwith %}
 </ul>
 </h4>
-{% endif %}
-
 <div id="AboutFeedTabContent" class="tab-content">
   {% if twitter_has_feed %}
   <div id="twitter" class="tab-pane active">{{ twitter_markup }}</div>
@@ -29,3 +27,4 @@ Ratings &amp; Reviews
   <div id="yelp" class="tab-pane">{{ yelp_markup }}</div>
   {% endif %}
 </div>
+{% endif %}

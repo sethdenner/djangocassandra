@@ -15,7 +15,6 @@ from knotis.contrib.quick.fields import (
     QuickGenericForeignKey
 )
 
-from django.conf import settings
 from geopy.geocoders import Nominatim
 
 
@@ -38,7 +37,11 @@ class Location(QuickModel):
         )
 
     def get_location(self):
-        return Point(self.longitude, self.latitude)
+        if self.longitude is not None and self.latitude is not None:
+            return Point(self.longitude, self.latitude)
+
+        else:
+            return None
 
     def update_geocode(self):
         if not self.latitude or not self.longitude:
@@ -50,8 +53,8 @@ class Location(QuickModel):
             self.latitude = latitude
             self.longitude = longitude
         return self
-        
-    
+
+
 class LocationItem(QuickModel):
     location = QuickForeignKey(Location)
     related_content_type = QuickForeignKey(
@@ -65,18 +68,3 @@ class LocationItem(QuickModel):
         'related_content_type',
         'related_object_id'
     )
-     
-    #    def save(
-    #    self,
-    #    *args,
-    #    **kwargs
-    #):
-    #    lis = LocationItem.objects.filter(
-    #        related_object_id=self.related_object_id,
-    #        deleted=False
-    #    )
-    #
-    #    super(QuickModel, self).save()
-    #
-    #    for li in lis:
-    #        li.delete()

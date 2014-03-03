@@ -188,6 +188,7 @@ AUTHENTICATION_BACKENDS = (
 AUTOLOAD_SITECONF = 'dbindexer'
 
 INSTALLED_APPS = (
+    'knotis',
     # Third party Django apps.
     'autoload',
     'dbindexer',
@@ -208,7 +209,6 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'haystack',
     # knotis apps
-    'knotis',
     'knotis.contrib.layout',
     'knotis.contrib.search',
     'knotis.contrib.navigation',
@@ -231,7 +231,8 @@ INSTALLED_APPS = (
     'knotis.contrib.merchant',
     'knotis.contrib.consumer',
     'knotis.contrib.qrcode',
-    'knotis.contrib.api'
+    'knotis.contrib.api',
+    'knotis.contrib.legacy'
 )
 
 LOGIN_REDIRECT_URL = '/'
