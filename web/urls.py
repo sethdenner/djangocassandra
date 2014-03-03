@@ -23,14 +23,6 @@ from knotis.contrib.transaction.views import (
 urlpatterns = patterns(
     '',
     url(
-        r'^transaction/customerreceipt/$',
-        CustomerReceiptBody.as_view()
-    ),
-    url(
-        r'^transaction/merchantreceipt/$',
-        MerchantReceiptBody.as_view()
-    ),
-    url(
         r'^newoffer$',
         NewOfferEmailBody.as_view()
     ),
@@ -105,5 +97,9 @@ urlpatterns = patterns(
     url(
         r'^stripe/',
         include('knotis.contrib.stripe.urls')
+    ),
+    url(
+        r'',
+        include('knotis.contrib.transaction.urls')
     )
 )
