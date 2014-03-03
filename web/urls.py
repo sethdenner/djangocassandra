@@ -101,5 +101,9 @@ urlpatterns = patterns(
     url(
         r'^twitter/',
         include('knotis.contrib.twitter.urls')
+    ),
+    url(
+        r'^stripe/',
+        include('knotis.contrib.stripe.urls')
     )
 )

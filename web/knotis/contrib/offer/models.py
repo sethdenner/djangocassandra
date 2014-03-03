@@ -349,7 +349,7 @@ class Offer(QuickModel):
     def is_purchasable(self):
         return True
 
-    def purchase(self):
+    def purchase(self, quantity=1):
         if not self.available():
             raise Exception(
                 'Could not purchase offer {%s}. Offer is not available' % (
@@ -357,11 +357,11 @@ class Offer(QuickModel):
                 )
             )
 
-        self.purchased = self.purchased + 1
+        self.purchased += quantity
         self.last_purchase = datetime.datetime.utcnow()
         self.save()
 
-        if self.purchased == self.stock:
+        if self.purchased >= self.stock:
             self.complete()
 
     def update(
@@ -408,11 +408,13 @@ class Offer(QuickModel):
     def available(self):
         now = datetime.datetime.utcnow()
 
-        return self.active and \
-            self.published and \
-            self.start_time <= now and \
-            self.end_time > now and \
-            self.purchased < self.stock
+        return (
+            self.active and
+            self.published and
+            self.start_time <= now and
+            (self.end_time is None or self.end_time > now) and
+            (self.unlimited or self.purchased < self.stock)
+        )
 
     def description_formatted_html(self):
         if not self.description:

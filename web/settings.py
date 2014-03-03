@@ -233,7 +233,8 @@ INSTALLED_APPS = (
     'knotis.contrib.qrcode',
     'knotis.contrib.api',
     'knotis.contrib.facebook',
-    'knotis.contrib.twitter'
+    'knotis.contrib.twitter',
+    'knotis.contrib.stripe'
 )
 
 LOGIN_REDIRECT_URL = '/'

@@ -58,7 +58,8 @@ class TransactionManager(QuickManager):
         try:
             currency_seller_stack = Inventory.objects.get_stack(
                 offer.owner,
-                currency.product
+                currency.product,
+                create_empty=True
             )
             if not currency_seller_stack:
                 raise Exception('this seller does not accept this currency')
@@ -133,7 +134,9 @@ class TransactionManager(QuickManager):
                     item.inventory
                 )
 
-                if provider_stack.stock < item.inventory.stock:
+                if (not provider_stack.unlimited and
+                    provider_stack.stock < item.inventory.stock
+                ):
                     inventory = item.inventory
 
                 else:
@@ -166,6 +169,7 @@ class TransactionManager(QuickManager):
             logger.exception('failed to create transaction items')
             raise
 
+        offer.purchase(quantity)
         return transactions
 
     def create_redemption(
