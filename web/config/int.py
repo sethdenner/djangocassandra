@@ -115,3 +115,6 @@ TWITTER_FEED_URL = (
     'https://api.twitter.com/1.1/statuses/user_timeline.json'
 )
 TWITTER_DEFAULT_RESULT_COUNT = 10
+
+STRIPE_API_KEY = 'pk_test_rgfejLBPEm00QSaRxWcg97UF'
+STRIPE_API_SECRET = 'sk_test_aBN6tc1grlIWsE0nW7LX3Mh5'

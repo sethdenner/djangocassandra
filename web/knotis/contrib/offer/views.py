@@ -4,7 +4,10 @@ import string
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from django.template import Context
+from django.template import (
+    Context,
+    RequestContext
+)
 from django.core.exceptions import PermissionDenied
 from django.http import (
     HttpResponseServerError
@@ -46,6 +49,10 @@ from knotis.contrib.endpoint.models import (
 from knotis.contrib.paypal.views import (
     IPNCallbackView,
     PayPalButton
+)
+
+from knotis.contrib.stripe.views import (
+    StripeButton
 )
 
 from knotis.views import (
@@ -129,7 +136,8 @@ class OffersView(ContextView):
             'knotis/layout/js/header.js',
             'knotis/layout/js/create.js',
             'navigation/js/navigation.js',
-            'knotis/offer/js/offers.js'
+            'knotis/offer/js/offers.js',
+            'knotis/strips/js/stripe_form.js'
         ]
 
         local_context = copy.copy(self.context)
@@ -137,7 +145,7 @@ class OffersView(ContextView):
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
-            'fixed_side_nav': True
+            'fixed_side_nav': True,
         })
         return local_context
 
@@ -147,6 +155,27 @@ class OfferPurchaseView(ContextView):
 
     def process_context(self):
         request = self.context.get('request')
+
+        styles = [
+            'knotis/layout/css/global.css',
+            'knotis/layout/css/header.css',
+            'knotis/layout/css/grid.css',
+            'knotis/layout/css/tile.css',
+            'navigation/css/nav_top.css',
+            'navigation/css/nav_side.css',
+            'knotis/offer/css/offer_purchase.css'
+        ]
+        self.context['styles'] = styles
+
+        post_scripts = [
+            'knotis/layout/js/layout.js',
+            'knotis/layout/js/forms.js',
+            'knotis/layout/js/header.js',
+            'navigation/js/navigation.js',
+            'knotis/offer/js/offer_purchase.js',
+            'knotis/stripe/js/stripe_form.js'
+        ]
+        self.context['post_scripts'] = post_scripts
 
         offer_id = self.context.get('offer_id')
         offer = get_object_or_404(Offer, pk=offer_id)
@@ -165,9 +194,39 @@ class OfferPurchaseView(ContextView):
             redemption_code
         ])
 
+        try:
+            business_badge = ImageInstance.objects.get(
+                related_object_id=offer.owner.pk,
+                context='profile_badge',
+                primary=True
+            )
+
+        except:
+            business_badge = None
+
+        stripe_button = StripeButton()
+        stripe_button_context = RequestContext(
+            request, {
+            'STRIPE_API_KEY': settings.STRIPE_API_KEY,
+            'STATIC_URL': settings.STATIC_URL,
+            'BASE_URL': settings.BASE_URL,
+            'business_name': offer.owner.name,
+            'offer_title': offer.title,
+            'offer_price': offer.price_discount(),
+            'business_badge': business_badge,
+            'transaction_context': transaction_context,
+            'offer_id': offer.pk
+
+        })
+        self.context['stripe_button'] = (
+            stripe_button.render_template_fragment(
+                stripe_button_context
+            )
+        )
+
         paypal_button = PayPalButton()
         paypal_button_context = Context({
-            'button_text': 'Checkout',
+            'button_text': 'Pay with PayPal',
             'button_class': 'btn btn-primary action',
             'paypal_parameters': {
                 'cmd': '_cart',
@@ -406,6 +465,7 @@ class OfferEditProductFormView(OfferCreateStepView):
             })
 
         try:
+            import pdb; pdb.set_trace()
             split_inventory = Inventory.objects.split(
                 inventory,
                 owner,
@@ -975,7 +1035,7 @@ class OfferCreateWizard(WizardView):
 class NewOfferEmailBody(EmailView):
     template_name = 'knotis/offer/email_new_offer.html'
     text_template_name = 'knotis/offer/email_new_offer.txt'
-    
+
     def process_context(self):
         local_context = copy.copy(self.context)
 

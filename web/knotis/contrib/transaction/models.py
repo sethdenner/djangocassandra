@@ -58,7 +58,8 @@ class TransactionManager(QuickManager):
         try:
             currency_seller_stack = Inventory.objects.get_stack(
                 offer.owner,
-                currency.product
+                currency.product,
+                create_empty=True
             )
             if not currency_seller_stack:
                 raise Exception('this seller does not accept this currency')
@@ -133,7 +134,9 @@ class TransactionManager(QuickManager):
                     item.inventory
                 )
 
-                if provider_stack.stock < item.inventory.stock:
+                if (not provider_stack.unlimited and
+                    provider_stack.stock < item.inventory.stock
+                ):
                     inventory = item.inventory
 
                 else:
@@ -166,6 +169,7 @@ class TransactionManager(QuickManager):
             logger.exception('failed to create transaction items')
             raise
 
+        offer.purchase(quantity)
         return transactions
 
     def create_redemption(
@@ -739,6 +743,35 @@ class Transaction(QuickModel):
             return None
 
         return context_parts[2]
+
+    def quantity(self):
+        if self.transaction_type == TransactionTypes.PURCHASE:
+            purchase = self
+
+        else:
+            purchase = Transaction.objects.get(
+                owner=self.owner,
+                offer=self.offer,
+                transaction_context=self.transaction_context
+            )
+
+        offer_items = OfferItem.objects.filter(offer=self.offer)
+        transaction_items = TransactionItem.objects.filter(
+            transaction=purchase
+        )
+
+        offer_stock_sum = transaction_stock_sum = 0
+        for item in offer_items:
+            offer_stock_sum += item.inventory.stock
+
+        for item in transaction_items:
+            if item.inventory.recipient != self.offer.owner:
+                transaction_stock_sum += item.inventory.stock
+
+        if not transaction_stock_sum or not offer_stock_sum:
+            return 0
+
+        return int(transaction_stock_sum / offer_stock_sum)
 
 
 class TransactionItemManager(QuickManager):

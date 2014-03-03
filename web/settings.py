@@ -233,6 +233,9 @@ INSTALLED_APPS = (
     'knotis.contrib.qrcode',
     'knotis.contrib.api',
     'knotis.contrib.legacy'
+    'knotis.contrib.facebook',
+    'knotis.contrib.twitter',
+    'knotis.contrib.stripe'
 )
 
 LOGIN_REDIRECT_URL = '/'
@@ -275,7 +278,7 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'prod'
+ENVIRONMENT_NAME = 'stage'
 
 
 # You can key the configurations off of anything - I use project path.

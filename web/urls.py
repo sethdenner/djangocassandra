@@ -11,6 +11,15 @@ RenderTemplateFragmentMixin.register_template_fragment_views()
 
 admin.autodiscover()
 
+from knotis.contrib.offer.views import (
+    NewOfferEmailBody
+)
+
+from knotis.contrib.transaction.views import (
+    CustomerReceiptBody,
+    MerchantReceiptBody
+)
+
 urlpatterns = patterns(
     '',
     url(
@@ -76,5 +85,21 @@ urlpatterns = patterns(
     url(
         r'',
         include('knotis.contrib.legacy.urls')
+    ),
+    url(
+        r'^facebook/',
+        include('knotis.contrib.facebook.urls')
+    ),
+    url(
+        r'^twitter/',
+        include('knotis.contrib.twitter.urls')
+    ),
+    url(
+        r'^stripe/',
+        include('knotis.contrib.stripe.urls')
+    ),
+    url(
+        r'',
+        include('knotis.contrib.transaction.urls')
     )
 )

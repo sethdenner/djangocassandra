@@ -285,3 +285,14 @@ div.row-fluid.main-row div.static-content {
     margin-left: 16px;
     padding: 16px;
 }
+
+div.row-fluid.main-row div.main-content {
+    background-color: #fff;
+    margin-top: 16px;
+    margin-left: 16px;
+    padding: 16px;
+}
+
+.text-right {
+    text-align: right;
+}

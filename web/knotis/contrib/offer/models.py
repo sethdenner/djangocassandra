@@ -1,6 +1,9 @@
 import re
 import datetime
 
+import twitter
+from facebook import GraphAPI
+
 from django.conf import settings
 from django.db.models.fields import Field as ModelField
 
@@ -29,6 +32,7 @@ from knotis.contrib.identity.models import (
 from knotis.contrib.inventory.models import Inventory
 from knotis.contrib.endpoint.models import (
     EndpointTypes,
+    Credentials,
     Publish
 )
 
@@ -345,7 +349,7 @@ class Offer(QuickModel):
     def is_purchasable(self):
         return True
 
-    def purchase(self):
+    def purchase(self, quantity=1):
         if not self.available():
             raise Exception(
                 'Could not purchase offer {%s}. Offer is not available' % (
@@ -353,11 +357,11 @@ class Offer(QuickModel):
                 )
             )
 
-        self.purchased = self.purchased + 1
+        self.purchased += quantity
         self.last_purchase = datetime.datetime.utcnow()
         self.save()
 
-        if self.purchased == self.stock:
+        if self.purchased >= self.stock:
             self.complete()
 
     def update(
@@ -404,11 +408,13 @@ class Offer(QuickModel):
     def available(self):
         now = datetime.datetime.utcnow()
 
-        return self.active and \
-            self.published and \
-            self.start_time <= now and \
-            self.end_time > now and \
-            self.purchased < self.stock
+        return (
+            self.active and
+            self.published and
+            self.start_time <= now and
+            (self.end_time is None or self.end_time > now) and
+            (self.unlimited or self.purchased < self.stock)
+        )
 
     def description_formatted_html(self):
         if not self.description:
@@ -688,6 +694,107 @@ class OfferPublish(Publish):
         offer.published = True
         offer.save()
 
+    def _publish_twitter(self):
+        offer = self.subject
+
+        credentials = Credentials.objects.filter(
+            endpoint=self.endpoint
+        )
+
+        posted = False
+        for c in credentials:
+            t = twitter.Twitter(
+                auth=twitter.OAuth(
+                    c.identifier,
+                    c.key,
+                    settings.TWITTER_CONSUMER_KEY,
+                    settings.TWITTER_CONSUMER_SECRET
+                )
+            )
+
+            try:
+                t.statuses.update(
+                    status=''.join([
+                        'Check out our current offer: ',
+                        settings.BASE_URL,
+                        '/offers/',
+                        offer.pk,
+                        '/'
+                    ])
+                )
+                posted = True
+                break
+
+            except:
+                pass
+
+        if not posted:
+            raise
+
+        else:
+            self.complete = True
+            self.save()
+
+    def _publish_facebook(self):
+        offer = self.subject
+
+        try:
+            image_instance = ImageInstance.objects.get(
+                related_object_id=offer.pk,
+                context='offer_banner',
+                primary=True
+            )
+
+        except:
+            image_instance = None
+
+        attachment = {
+            'name': offer.title,
+            'description': offer.description,
+            'link': '/'.join([
+                settings.BASE_URL,
+                'offers',
+                offer.pk,
+                ''
+            ])
+        }
+
+        if image_instance:
+            attachment['picture'] = '/'.join([
+                settings.BASE_URL,
+                image_instance.image.image.url,
+                ''
+            ])
+
+        credentials = Credentials.objects.filter(
+            endpoint=self.endpoint
+        )
+
+        posted = False
+        for c in credentials:
+            graph = GraphAPI(
+                access_token=c.key
+            )
+
+            try:
+                graph.put_wall_post(
+                    'Check out our current offer!',
+                    attachment=attachment,
+                    profile_id=c.identifier,
+                )
+                posted = True
+                break
+
+            except:
+                pass
+
+        if not posted:
+            raise
+
+        else:
+            self.completed = True
+            self.save()
+
     def publish(self):
         if self.endpoint.endpoint_type == EndpointTypes.IDENTITY:
             if (
@@ -711,6 +818,12 @@ class OfferPublish(Publish):
 
             self.completed = True
             self.save()
+
+        elif self.endpoint.endpoint_type == EndpointTypes.FACEBOOK:
+            self._publish_facebook()
+
+        elif self.endpoint.endpoint_type == EndpointTypes.TWITTER:
+            self._publish_twitter()
 
         else:
             raise NotImplementedError(''.join([

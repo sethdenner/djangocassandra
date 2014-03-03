@@ -1,0 +1,23 @@
+div.checkout div.business-header {
+}
+
+div.checkout div.checkout-item {
+}
+
+div.checkout div.checkout-total {
+    border-top: 2px solid #808184;
+    padding-top: 5px;b
+}
+
+div.checkout div.checkout-pay {
+}
+
+div.checkout div.checkout-pay form,
+div.checkout div.checkout-pay input {
+    display: inline;
+}
+
+div.checkout div.checkout-pay input {
+    margin: 4px;
+    float: right;
+}
