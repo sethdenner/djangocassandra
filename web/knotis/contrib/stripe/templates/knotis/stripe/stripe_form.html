@@ -1,10 +1,14 @@
-<form action="/stripe/charge/" method="POST">
-  <script
-     src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-     data-key="{{ STRIPE_API_KEY }}"
-     data-amount="2000"
-     data-name="{{ title }}"
-     data-description="{{ description }}"
-     data-image="/128x128.png">
-  </script>
+{% load thumbnail %}
+<script src="https://checkout.stripe.com/checkout.js" ></script>
+<input id="stripe-button" type="button" class="btn btn-primary" value="Pay with Stripe" />
+<form id="stripe-form" action="/stripe/charge/" method="POST">{% csrf_token %}
+<input type="hidden" name="transaction_context" value="{{ transaction_context }}" />
+<input type="hidden" name="offerId" value="{{ offer_id }}" />
 </form>
+<input type="hidden" name="stripe_api_key" value="{{ STRIPE_API_KEY }}" />
+<input type="hidden" name="business_name" value="{{ business_name }}" />
+<input type="hidden" name="description" value="{{ offer_title }}" />
+<input type="hidden" name="offer_price" value="{{ offer_price }}" />
+{% thumbnail business_badge.image.image '128x128' crop=business_badge.crop as image %}
+<input type="hidden" name="business_badge" value="{{ BASE_URL }}{{ image.url }}" />
+{% endthumbnail %}

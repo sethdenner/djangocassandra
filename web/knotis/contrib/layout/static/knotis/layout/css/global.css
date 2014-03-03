@@ -262,3 +262,14 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 .input-append.date {
     padding: 0 0 10px 0;
 }
+
+div.row-fluid.main-row div.main-content {
+    background-color: #fff;
+    margin-top: 16px;
+    margin-left: 16px;
+    padding: 16px;
+}
+
+.text-right {
+    text-align: right;
+}
