@@ -20,6 +20,11 @@ class GridSmallView(FragmentView):
     view_name = 'grid'
 
 
+class ToTopButton(FragmentView):
+    template_name = 'knotis/layout/to_top.html'
+    view_name = 'to_top_button'
+
+
 class ButtonAction(object):
     def __init__(
         self,

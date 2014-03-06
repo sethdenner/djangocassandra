@@ -188,6 +188,7 @@ AUTHENTICATION_BACKENDS = (
 AUTOLOAD_SITECONF = 'dbindexer'
 
 INSTALLED_APPS = (
+    'knotis',
     # Third party Django apps.
     'autoload',
     'dbindexer',
@@ -208,7 +209,6 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'haystack',
     # knotis apps
-    'knotis',
     'knotis.contrib.layout',
     'knotis.contrib.search',
     'knotis.contrib.navigation',
@@ -232,6 +232,7 @@ INSTALLED_APPS = (
     'knotis.contrib.consumer',
     'knotis.contrib.qrcode',
     'knotis.contrib.api',
+    'knotis.contrib.legacy',
     'knotis.contrib.facebook',
     'knotis.contrib.twitter',
     'knotis.contrib.stripe'
@@ -277,7 +278,7 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'int'
+ENVIRONMENT_NAME = 'stage'
 
 
 # You can key the configurations off of anything - I use project path.

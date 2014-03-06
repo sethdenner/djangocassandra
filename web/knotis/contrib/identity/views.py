@@ -160,7 +160,8 @@ class BusinessesView(FragmentView):
             'knotis/identity/js/profile.js',
             'knotis/api/js/api.js',
             'knotis/identity/js/business-tile.js',
-            'knotis/identity/js/businesses.js'
+            'knotis/identity/js/businesses.js',
+            'knotis/layout/js/to_top.js'
         ]
 
         for script in my_post_scripts:
@@ -180,13 +181,27 @@ class BusinessesGrid(GridSmallView):
     view_name = 'businesses_grid'
 
     def process_context(self):
+        current_identity_id = self.request.session.get('current_identity_id')
+        if current_identity_id:
+            current_identity = Identity.objects.get(pk=current_identity_id)
+
+        else:
+            current_identity = None
+
         page = int(self.context.get('page', '0'))
         count = int(self.context.get('count', '20'))
         start_range = page * count
         end_range = start_range + count
-        businesses = IdentityBusiness.objects.filter(
-            available=True
-        )[start_range:end_range]
+        businesses = IdentityBusiness.objects.all()
+        if (
+            not current_identity or
+            not current_identity.identity_type == IdentityTypes.SUPERUSER
+        ):
+            businesses = businesses.filter(
+                available=True
+            )
+
+        businesses = businesses[start_range:end_range]
 
         tiles = []
 
@@ -197,7 +212,7 @@ class BusinessesGrid(GridSmallView):
 
         if businesses:
             for business in businesses:
-                
+
                 location_items = LocationItem.objects.filter(
                     related_object_id=business.pk
                 )
@@ -205,7 +220,7 @@ class BusinessesGrid(GridSmallView):
                     address = location_items[0].location.address
                 else:
                     address = ''
-                    
+
                 business_tile = IdentityTile()
                 business_context = Context({
                     'identity': business,
@@ -213,7 +228,7 @@ class BusinessesGrid(GridSmallView):
                 })
                 if address:
                     business_context.update({'address': address})
-                    
+
                 tiles.append(
                     business_tile.render_template_fragment(
                         business_context
@@ -238,7 +253,15 @@ class IdentityTileActionButton(ActionButton):
         current_identity = self.context.get('current_identity')
 
         if not current_identity:
-            return None
+            return [
+                ButtonAction(
+                    'Sign Up',
+                    '/auth/signup/', {
+                        'modalid': 'auth-modal'
+                    },
+                    'modal'
+                )
+            ]
 
         return [
             ButtonAction(
@@ -423,18 +446,22 @@ class EstablishmentAboutAbout(AJAXFragmentView):
     view_name = 'establishment_about_about'
 
     def process_context(self):
+        has_data = False
         establishment_id = self.context.get('establishment_id')
 
         establishment = IdentityEstablishment.objects.get(pk=establishment_id)
-        
+
         #business = IdentityBusiness.objects.get_establishment_parent(
         #    establishment
         #)
-        
+
         local_context = copy.copy(self.context)
         local_context.update({
             'description': establishment.description
         })
+
+        if establishment.description:
+            has_data = True
 
         # Fetch and add the address and coordinates to local_context
         locationItem = LocationItem.objects.filter(
@@ -463,9 +490,9 @@ class EstablishmentAboutAbout(AJAXFragmentView):
         # add contact info (endpoints) to local_context
         endpoints = self.context.get('endpoints')
         for endpoint in endpoints:
-
+            endpoint_type_name = endpoint['endpoint_type_name']
             local_context.update({
-                endpoint['endpoint_type_name']: {
+                endpoint_type_name: {
                     'value': endpoint['value'],
                     'id': endpoint['id'],
                     'endpoint_type': endpoint['endpoint_type'],
@@ -473,8 +500,17 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                     'uri': endpoint['uri']
                 }
             })
+            if (
+                endpoint['value'] and (
+                    endpoint_type_name == 'facebook'
+                    or endpoint_type_name == 'yelp'
+                    or endpoint_type_name == 'twitter'
+                )
+            ):
+                has_data = True
 
-        # return local_context
+        local_context['has_data'] = has_data
+
         return local_context
 
     def post(
@@ -661,36 +697,46 @@ class EstablishmentProfileAbout(FragmentView):
 
     def process_context(self):
         local_context = copy.copy(self.context)
-        #sections = []
-            
+        sections = []
+
         about = EstablishmentAboutAbout()
         about_markup = about.render_template_fragment(local_context)
         about_markup = about_markup.strip()
-        #        if about_markup:
-        #    sections.append(about_markup)
-            
+        if about_markup:
+            sections.append({
+                'markup': about_markup,
+                'css_class': 'about'
+            })
+
         carousel = EstablishmentAboutCarousel()
         carousel_markup = carousel.render_template_fragment(local_context)
         carousel_markup = carousel_markup.strip()
-        #if carousel_markup:
-        #    sections.append(carousel_markup)
+        if carousel_markup:
+            sections.append({
+                'markup': carousel_markup,
+                'css_class': 'photo'
+            })
 
         feeds = EstablishmentAboutFeeds()
         feeds_markup = feeds.render_template_fragment(local_context)
-        #if feeds_markup:
-        #    sections.append(feeds_markup)
+        feeds_markup = feeds_markup.strip()
+        if feeds_markup:
+            sections.append({
+                'markup': feeds_markup,
+                'css_class': 'ratings'
+            })
 
         location = EstablishmentProfileLocation()
         location_markup = location.render_template_fragment(local_context)
         location_markup = location_markup.strip()
-        #if location_markup:
-        #    sections.append(location_markup)
+        if location_markup:
+            sections.append({
+                'markup': location_markup,
+                'css_class': 'location'
+            })
 
         local_context.update({
-            'about': about_markup,
-            'photos': carousel_markup,
-            'ratings': feeds_markup,
-            'location': location_markup,
+            'sections': sections,
         })
         return local_context
 
@@ -880,7 +926,10 @@ class EstablishmentProfileView(FragmentView):
         maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
         maps_scripts = maps.render_api_js()
 
-        endpoints = Endpoint.objects.filter(identity=establishment, primary=True)
+        endpoints = Endpoint.objects.filter(
+            identity=establishment,
+            primary=True
+        )
         endpoints = endpoints.select_subclasses()
 
         endpoint_dicts = []

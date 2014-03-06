@@ -23,10 +23,6 @@ from knotis.contrib.transaction.views import (
 urlpatterns = patterns(
     '',
     url(
-        r'^newoffer$',
-        NewOfferEmailBody.as_view()
-    ),
-    url(
         r'',
         include('knotis.core.urls')
     ),
@@ -85,6 +81,10 @@ urlpatterns = patterns(
     url(
         r'',
         include('knotis.contrib.endpoint.urls')
+    ),
+    url(
+        r'',
+        include('knotis.contrib.legacy.urls')
     ),
     url(
         r'^facebook/',
