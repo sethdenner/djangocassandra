@@ -1,10 +1,7 @@
+import copy
+
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseNotFound
-from django.shortcuts import (
-    render,
-    get_object_or_404
-)
+from django.shortcuts import get_object_or_404
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
@@ -14,99 +11,51 @@ from knotis.contrib.transaction.models import (
     TransactionTypes,
 )
 from knotis.contrib.media.models import ImageInstance
+from knotis.contrib.identity.views import (
+    get_identity_profile_badge,
+    get_identity_profile_banner,
+    get_identity_default_profile_banner_color
+)
 
-from knotis.views import EmailView
-import copy
+from knotis.views import (
+    EmailView,
+    FragmentView
+)
 
 
-@login_required
-def print_transaction(
-    request,
-    transaction_id
-):
-    template_parameters = get_standard_template_parameters(request)
+class TransactionTileView(FragmentView):
+    template_name = 'knotis/transaction/transaction_tile.html'
+    view_name = 'transaction_tile'
 
-    try:
-        transaction = Transaction.objects.get(pk=transaction_id)
-        template_parameters['purchase'] = transaction
+    def process_context(self):
+        identity = self.context['identity']
 
-    except:
-        logger.exception('could not get offer')
-        transaction = None
-
-    if not transaction:
-        return HttpResponseNotFound('Could not get offer')
-
-    try:
-        transactions = Transaction.objects.filter(
-            user=request.user,
-            transaction_type=TransactionTypes.PURCHASE
+        profile_badge_image = get_identity_profile_badge(identity)
+        profile_banner_image = get_identity_profile_banner(identity)
+        profile_banner_color = get_identity_default_profile_banner_color(
+            identity
         )
-        template_parameters['purchases'] = transactions
-        vouchers = []
-        for t in transactions:
-            for i in range(t.quantity):
-                voucher = {
-                    'redemption_code': '-'.join([
-                        t.redemption_code(),
-                        str(i)
-                    ]),
-                    'offer': t.offer,
-                    'business': t.business,
-                    'purchase_date': t.pub_date,
-                    'value': t.value_formatted()
-                }
-                vouchers.append(voucher)
 
-        template_parameters['vouchers'] = vouchers
+        self.context.update({
+            'badge_image': profile_badge_image,
+            'banner_image': profile_banner_image,
+            'profile_banner_color': profile_banner_color
+        })
 
-    except:
-        logger.exception('failed to render vouchers')
-        transactions = None
-
-    return render(
-        request,
-        'transaction_print.html',
-        template_parameters
-    )
+        return self.context
 
 
-@login_required
-def get_user_transactions(
-    request,
-    status
-):
-    template_parameters = {}
+class RedemptionTileView(FragmentView):
+    template_name = 'knotis/transaction/redemption_tile.html'
+    view_name = 'transaction_tile'
 
-    try:
-        if status == 'redeemed':
-            transaction_type = TransactionTypes.REDEMPTION
-
-        elif status == 'purchased':
-            transaction_type = TransactionTypes.PURCHASE
-
-        else:
-            transaction_type = None
-
-        transactions = Transaction.objects.filter(
-            user=request.user,
-            transaction_type=transaction_type
-        )
-        template_parameters['transactions'] = transactions
-
-    except:
-        pass
-
-    return render(
-        request,
-        'transaction_list_manage.html',
-        template_parameters
-    )
+    def process_context(self):
+        return self.context
 
 
 class CustomerReceiptBody(EmailView):
     template_name = 'knotis/transaction/email_receipt_consumer.html'
-    
+
     def process_context(self):
         local_context = copy.copy(self.context)
 
@@ -170,7 +119,7 @@ class CustomerReceiptBody(EmailView):
         quantity = transaction.quantity()
         price = transaction.offer.price_discount()
         item_total = price * quantity
-        
+
         local_context.update({
             'business_name': business_name,
             'browser_link': browser_link,
@@ -225,7 +174,7 @@ class MerchantReceiptBody(EmailView):
         processing = '$0.10'
         product_name = 'Coal'
         price = '$0.99'
-        
+
         local_context.update({
             'customer_name': customer_name,
             'browser_link': browser_link,

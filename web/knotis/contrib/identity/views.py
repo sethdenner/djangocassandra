@@ -73,6 +73,72 @@ from knotis.contrib.endpoint.models import (
 )
 
 
+def get_identity_image(identity, context):
+    try:
+        image = ImageInstance.objects.get(
+            related_object_id=identity.id,
+            context=context,
+            primary=True
+        )
+
+    except ImageInstance.DoesNotExist:
+        image = None
+
+    except Exception, e:
+        logger.exception(e.message)
+        return None
+
+    if (
+        not image and
+        identity.identity_type == IdentityTypes.ESTABLISHMENT
+    ):
+        try:
+            business = IdentityBusiness.objects.get_establishment_parent(
+                identity
+            )
+            image = ImageInstance.objects.get(
+                related_object_id=business.pk,
+                context=context,
+                primary=True
+            )
+
+        except ImageInstance.DoesNotExist:
+            pass
+
+        except Exception, e:
+            logger.exception(e.message)
+
+    return image
+
+
+def get_identity_profile_badge(identity):
+    return get_identity_image(
+        identity,
+        'profile_badge'
+    )
+
+
+def get_identity_profile_banner(identity):
+    return get_identity_image(
+        identity,
+        'profile_banner'
+    )
+
+
+def get_identity_default_profile_banner_color(identity):
+    profile_banner_colors = [
+        'blue',
+        'darkblue',
+        'turquoise'
+    ]
+    profile_banner_color_index = int(identity.pk[24:], 16) % 3
+    profile_banner_color = profile_banner_colors[
+        profile_banner_color_index
+    ]
+
+    return profile_banner_color
+
+
 class IdentityView(ContextView):
     template_name = 'knotis/identity/identity_view.html'
 
@@ -103,7 +169,7 @@ class IdentityView(ContextView):
             except:
                 establishments = None
                 logger.exception('Failed to get establishments for business')
-                
+
             if 1 == len(establishments):
                 profile_view = EstablishmentProfileView()
                 self.context['establishment_id'] = establishments[0].pk
@@ -293,69 +359,11 @@ class IdentityTile(FragmentView):
         else:
             current_identity = None
 
-        try:
-            profile_badge_image = ImageInstance.objects.get(
-                related_object_id=identity.id,
-                context='profile_badge',
-                primary=True
-            )
-
-        except:
-            profile_badge_image = None
-
-        if (
-            not profile_badge_image and
-            identity.identity_type == IdentityTypes.ESTABLISHMENT
-        ):
-            try:
-                business = IdentityBusiness.objects.get_establishment_parent(
-                    identity
-                )
-                profile_badge_image = ImageInstance.objects.get(
-                    related_object_id=business.pk,
-                    context='profile_badge',
-                    primary=True
-                )
-
-            except:
-                pass
-
-        try:
-            profile_banner_image = ImageInstance.objects.get(
-                related_object_id=identity.id,
-                context='profile_banner',
-                primary=True
-            )
-
-        except:
-            profile_banner_image = None
-
-        if (
-            not profile_banner_image and
-            identity.identity_type == IdentityTypes.ESTABLISHMENT
-        ):
-            try:
-                business = IdentityBusiness.objects.get_establishment_parent(
-                    identity
-                )
-                profile_banner_image = ImageInstance.objects.get(
-                    related_object_id=business.pk,
-                    context='profile_banner',
-                    primary=True
-                )
-
-            except:
-                pass
-
-        profile_banner_colors = [
-            'blue',
-            'darkblue',
-            'turquoise',
-        ]
-        profile_banner_color_index = int(identity.pk[24:], 16) % 3
-        profile_banner_color = profile_banner_colors[
-            profile_banner_color_index
-        ]
+        profile_badge_image = get_identity_profile_badge(identity)
+        profile_banner_image = get_identity_profile_banner(identity)
+        profile_banner_color = get_identity_default_profile_banner_color(
+            identity
+        )
 
         local_context = copy.copy(self.context)
         local_context.update({
@@ -860,51 +868,11 @@ class EstablishmentProfileView(FragmentView):
                 'knotis/identity/img/profile_default.png'
             ])
 
-        # if there is no profile badge on establishment check business
-        profile_badge_image = None
-        try:
-            profile_badge_image = ImageInstance.objects.get(
-                related_object_id=establishment_id,
-                context='profile_badge',
-                primary=True
-            )
-
-        except ImageInstance.DoesNotExist:
-            try:
-                if not profile_badge_image:
-                    profile_badge_image = ImageInstance.objects.get(
-                        related_object_id=business.pk,
-                        context='profile_badge',
-                        primary=True
-                    )
-            except:
-                logger.exception('failed to get profile badge image')
-
-        except:
-            logger.exception('failed to get profile badge image')
-
-        # if there is no profile banner on establishment check business
-        profile_banner_image = None
-        try:
-            profile_banner_image = ImageInstance.objects.get(
-                related_object_id=establishment_id,
-                context='profile_banner',
-                primary=True
-            )
-
-        except ImageInstance.DoesNotExist:
-            try:
-                profile_banner_image = ImageInstance.objects.get(
-                    related_object_id=business.pk,
-                    context='profile_banner',
-                    primary=True
-                )
-
-            except:
-                logger.exception('failed to get establishment banner image')
-
-        except:
-            logger.exception('failed to get establishment banner image')
+        profile_badge_image = get_identity_profile_badge(business)
+        profile_banner_image = get_identity_profile_banner(business)
+        profile_banner_color = get_identity_default_profile_banner_color(
+            business
+        )
 
         try:
             establishment_offers = OfferAvailability.objects.filter(
@@ -1040,16 +1008,6 @@ class EstablishmentProfileView(FragmentView):
         else:
             content_plexer = 'establishments'
             profile_content = 'establishments'
-
-        profile_banner_colors = [
-            'blue',
-            'darkblue',
-            'turquoise'
-        ]
-        profile_banner_color_index = int(business.pk[24:], 16) % 3
-        profile_banner_color = profile_banner_colors[
-            profile_banner_color_index
-        ]
 
         local_context = copy.copy(self.context)
         local_context.update({

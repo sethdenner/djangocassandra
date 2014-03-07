@@ -1,6 +1,10 @@
 import stripe
+
 from django.conf import settings
 from django.shortcuts import get_object_or_404
+
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
 
 from knotis.views import (
     AJAXView,
@@ -29,6 +33,7 @@ class StripeButton(FragmentView):
         )
         return self.context
 
+
 class StripeCharge(AJAXView):
     def post(
         self,
@@ -56,16 +61,16 @@ class StripeCharge(AJAXView):
 
         if not offer:
             return self.generate_response({
-                'errors': { 'no-field': 'Could not find offer'},
+                'errors': {'no-field': 'Could not find offer'},
                 'status': 'ERROR'
             })
 
         if not offer.available():
             return self.generate_response({
-                 'errors': {
-                     'no-field': 'This offer is no longer available'
-                 },
-                 'status': 'ERROR'
+                'errors': {
+                    'no-field': 'This offer is no longer available'
+                },
+                'status': 'ERROR'
             })
 
         try:
@@ -85,7 +90,8 @@ class StripeCharge(AJAXView):
                 description=current_identity.name
             )
 
-        except:
+        except Exception, e:
+            logger.exception(e.message)
             customer = None
 
         if not customer:
@@ -119,6 +125,7 @@ class StripeCharge(AJAXView):
             )
 
         except Exception, e:
+            logger.exception(e.message)
             return self.generate_response({
                 'status': 'ERROR',
                 'errors': {'no-field': e.message}

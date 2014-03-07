@@ -81,6 +81,12 @@ div.grid-tile.small-tile div.tile-body p.tile-title {
     margin: 0;
 }
 
+div.grid-tile.small-tile div.tile-body p.tile-description {
+    overflow: hidden;
+    margin: 0;
+    padding: 0 5px;
+}
+
 div.grid-tile.small-tile div.tile-body button {
     min-width: 100px;
     font-size: 1.15em;
