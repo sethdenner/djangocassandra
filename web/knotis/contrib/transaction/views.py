@@ -6,10 +6,8 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 # from knotis.utils.view import get_standard_template_parameters
-from knotis.contrib.transaction.models import (
-    Transaction,
-    TransactionTypes,
-)
+from knotis.contrib.transaction.models import Transaction
+
 from knotis.contrib.media.models import ImageInstance
 from knotis.contrib.identity.views import (
     get_identity_profile_badge,
@@ -42,14 +40,6 @@ class TransactionTileView(FragmentView):
             'profile_banner_color': profile_banner_color
         })
 
-        return self.context
-
-
-class RedemptionTileView(FragmentView):
-    template_name = 'knotis/transaction/redemption_tile.html'
-    view_name = 'transaction_tile'
-
-    def process_context(self):
         return self.context
 
 

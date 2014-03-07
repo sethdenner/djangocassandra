@@ -17,8 +17,17 @@
   </div>
   <div class="tile-body">
     <p class="tile-title">{{ identity.name }}</p>
+    {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
+    {% if redeem %}
+    <button data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action redeem-offer">Redeem</button>
+    {% endif %}
+    {% endif %}
   </div>
   <div class="tile-footer">
-    &nbsp;
+    {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
+    {% if redeem %}
+    {{ redemption_code|default:'&nbsp;' }}
+    {% endif %}
+    {% else %}&nbsp;{% endif %}
   </div>
 </div>

@@ -13,6 +13,7 @@ from views import (
     MyCustomersView,
     MyFollowersView,
     MyAnalyticsView,
+    MyRedemptionsView,
     OfferRedemptionView
 )
 
@@ -41,6 +42,10 @@ urlpatterns = patterns(
     url(
         r'^customers/$',
         login_required(MyCustomersView.as_view())
+    ),
+    url(
+        r'^redemptions/$',
+        login_required(MyRedemptionsView.as_view())
     ),
     url(
         r'^analytics(/(?P<graph_type>\w*))?/$',
