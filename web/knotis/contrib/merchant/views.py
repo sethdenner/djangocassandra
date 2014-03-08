@@ -15,7 +15,8 @@ from knotis.contrib.layout.views import GridSmallView
 
 from knotis.views import (
     ContextView,
-    FragmentView
+    FragmentView,
+    GenerateAJAXResponseMixin
 )
 
 from knotis.contrib.identity.models import (
@@ -112,7 +113,7 @@ class RedemptionsGrid(GridSmallView):
         return self.context
 
 
-class MyRedemptionsView(ContextView):
+class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
     template_name = 'knotis/merchant/my_redemptions_view.html'
 
     def process_context(self):
@@ -130,6 +131,7 @@ class MyRedemptionsView(ContextView):
         post_scripts = [
             'knotis/layout/js/layout.js',
             'navigation/js/navigation.js',
+            'knotis/merchant/js/redemptions.js'
         ]
 
         local_context = copy.copy(self.context)
@@ -141,6 +143,65 @@ class MyRedemptionsView(ContextView):
         })
 
         return local_context
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        current_identity_id = request.session.get('current_identity_id')
+
+        try:
+            current_identity = Identity.objects.get(pk=current_identity_id)
+
+        except Exception, e:
+            return self.generate_response({
+                'errors': {
+                    'no-field': e.message
+                },
+                'status': 'ERROR'
+            })
+
+        data = request.POST
+
+        transaction_id = data.get('transactionid')
+        transaction = get_object_or_404(
+            Transaction,
+            pk=transaction_id
+        )
+
+        if current_identity.pk != transaction.owner.pk:
+            return self.generate_response({
+                'errors': {
+                    'no-field': 'This transaction does not belong to you'
+                },
+                'status': 'ERROR'
+            })
+
+        try:
+            redemptions = Transaction.objects.create_redemption(
+                transaction
+            )
+
+        except Exception, e:
+            return self.generate_response({
+                'errors': {
+                    'no-field': e.message
+                },
+                'status': 'ERROR'
+            })
+
+        if redemptions[0].owner.pk == current_identity.pk:
+            my_redemption = redemptions[0]
+
+        else:
+            my_redemption = redemptions[1]
+
+        return self.generate_response({
+            'status': 'OK',
+            'redemptionid': my_redemption.pk
+        })
 
 
 class MyCustomersGrid(GridSmallView):

@@ -174,31 +174,20 @@ class TransactionManager(QuickManager):
 
     def create_redemption(
         self,
-        offer,
-        buyer,
-        inventory,
-        transaction_context
+        purchase
     ):
-        try:
-            purchase_buyer = Transaction.objects.get(
-                owner=buyer,
-                transaction_type=TransactionTypes.PURCHASE,
-                offer=offer,
-                transaction_context=transaction_context
-            )
-
-        except:
-            logger.exception(
-                'failed to retrieve purchase transaction'
-            )
-            raise
+        if (
+            not purchase
+            or purchase.transaction_type != TransactionTypes.PURCHASE
+        ):
+            raise Exception('Cannot create redemption without purchase')
 
         try:
             purchase_items = TransactionItem.objects.filter(
-                transaction=purchase_buyer
+                transaction=purchase
             )
 
-            participants = [offer.owner, buyer]
+            participants = []
 
             def add_participant(
                 participant,
@@ -214,36 +203,15 @@ class TransactionManager(QuickManager):
                     participants.append(participant)
 
             inventory_redeem = []
-            for i in inventory:
-                for item in purchase_items:
-                    if (
-                        i.id == item.inventory_id and (
-                            buyer.id == item.inventory.recipient_id or
-                            offer.owner_id == item.inventory.recipient_id
-                        )
-                    ):
-                        inventory_redeem.append(i)
-                        add_participant(
-                            item.inventory.provider,
-                            participants
-                        )
-
-            if len(inventory_redeem) != len(inventory):
-                message = (
-                    'The following inventories do not belong to this '
-                    'transaction or they have already been redeemed: '
+            for item in purchase_items:
+                inventory_redeem.append(item.inventory)
+                add_participant(
+                    item.inventory.provider,
+                    participants
                 )
-                message = message + ', '.join([
-                    i.id for i in list(
-                        set(inventory) - set(inventory_redeem)
-                    )
-                ])
-                raise Exception(message)
 
-        except:
-            logger.exception(
-                'failed to get redemption participants'
-            )
+        except Exception, e:
+            logger.exception(e.message)
             raise
 
         try:
@@ -252,8 +220,8 @@ class TransactionManager(QuickManager):
                 transaction = super(TransactionManager, self).create(
                     owner=participant,
                     transaction_type=TransactionTypes.REDEMPTION,
-                    offer=offer,
-                    transaction_context=transaction_context
+                    offer=purchase.offer,
+                    transaction_context=purchase.transaction_context
                 )
                 transactions.append(transaction)
 
@@ -274,26 +242,7 @@ class TransactionManager(QuickManager):
                 )
 
         except:
-            logger.exception('failed to stack redemed inventory')
-            raise
-
-        try:
-            for item in purchase_items:
-                currency = item.inventory
-                if currency.product.product_type != ProductTypes.CURRENCY:
-                    continue
-
-                currency_recipient = Inventory.objects.get_stack(
-                    currency.recipient,
-                    currency.product
-                )
-                Inventory.objects.stack(
-                    currency,
-                    currency_recipient
-                )
-
-        except:
-            logger.exception('failed to stack provider currency')
+            logger.exception('failed to stack inventory')
             raise
 
         return transactions
