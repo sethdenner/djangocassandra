@@ -4,21 +4,26 @@ from itertools import chain
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.http import Http404
-from django.template import Context
+from django.template import (
+    Context,
+    RequestContext
+)
 
 from knotis.contrib.layout.views import GridSmallView
 
 from knotis.views import (
     ContextView,
-    FragmentView
+    FragmentView,
+    GenerateAJAXResponseMixin
 )
 
 from knotis.contrib.identity.models import (
     Identity,
-    IdentityTypes
+    IdentityTypes,
+    IdentityIndividual,
+    IdentityEstablishment
 )
 
 from knotis.contrib.offer.models import Offer
@@ -30,16 +35,276 @@ from knotis.contrib.offer.views import (
 from knotis.contrib.identity.views import (
     IdentityTile
 )
-
-from knotis.contrib.identity.models import (
-    IdentityIndividual,
-    IdentityEstablishment
-)
-
 from knotis.contrib.transaction.models import (
     Transaction,
+    TransactionItem,
     TransactionTypes
 )
+from knotis.contrib.transaction.views import (
+    TransactionTileView
+)
+
+
+class RedemptionsGrid(GridSmallView):
+    view_name = 'redemptions_grid'
+
+    def process_context(self):
+        tiles = []
+
+        request = self.request
+        session = request.session
+
+        current_identity_id = session['current_identity_id']
+
+        try:
+            current_identity = Identity.objects.get(pk=current_identity_id)
+
+        except:
+            logger.exception('Failed to get current identity')
+            raise
+
+        purchases = Transaction.objects.filter(
+            owner=current_identity,
+            transaction_type=TransactionTypes.PURCHASE
+        )
+
+        for purchase in purchases:
+            if purchase.reverted:
+                continue
+
+            if not purchase.redemptions():
+                transaction_items = TransactionItem.objects.filter(
+                    transaction=purchase
+                )
+
+                consumer = None
+
+                for i in transaction_items:
+                    recipient = i.inventory.recipient
+                    if recipient.pk == current_identity.pk:
+                        continue
+
+                    consumer = recipient
+                    break
+
+                redemption_tile = TransactionTileView()
+                tile_context = RequestContext(
+                    request, {
+                        'redeem': True,
+                        'transaction': purchase,
+                        'identity': consumer,
+                        'TransactionTypes': TransactionTypes
+                    }
+                )
+                tiles.append(
+                    redemption_tile.render_template_fragment(
+                        tile_context
+                    )
+                )
+
+        self.context.update({
+            'tiles': tiles
+        })
+
+        return self.context
+
+
+class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
+    template_name = 'knotis/merchant/my_redemptions_view.html'
+
+    def process_context(self):
+        styles = [
+            'knotis/layout/css/global.css',
+            'knotis/layout/css/header.css',
+            'knotis/layout/css/grid.css',
+            'knotis/layout/css/tile.css',
+            'navigation/css/nav_top.css',
+            'navigation/css/nav_side.css',
+        ]
+
+        pre_scripts = []
+
+        post_scripts = [
+            'knotis/layout/js/layout.js',
+            'navigation/js/navigation.js',
+            'knotis/merchant/js/redemptions.js'
+        ]
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'styles': styles,
+            'pre_scripts': pre_scripts,
+            'post_scripts': post_scripts,
+            'fixed_side_nav': True
+        })
+
+        return local_context
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        current_identity_id = request.session.get('current_identity_id')
+
+        try:
+            current_identity = Identity.objects.get(pk=current_identity_id)
+
+        except Exception, e:
+            return self.generate_response({
+                'errors': {
+                    'no-field': e.message
+                },
+                'status': 'ERROR'
+            })
+
+        data = request.POST
+
+        transaction_id = data.get('transactionid')
+        transaction = get_object_or_404(
+            Transaction,
+            pk=transaction_id
+        )
+
+        if current_identity.pk != transaction.owner.pk:
+            return self.generate_response({
+                'errors': {
+                    'no-field': 'This transaction does not belong to you'
+                },
+                'status': 'ERROR'
+            })
+
+        try:
+            redemptions = Transaction.objects.create_redemption(
+                transaction
+            )
+
+        except Exception, e:
+            return self.generate_response({
+                'errors': {
+                    'no-field': e.message
+                },
+                'status': 'ERROR'
+            })
+
+        if redemptions[0].owner.pk == current_identity.pk:
+            my_redemption = redemptions[0]
+
+        else:
+            my_redemption = redemptions[1]
+
+        return self.generate_response({
+            'status': 'OK',
+            'redemptionid': my_redemption.pk
+        })
+
+
+class MyCustomersGrid(GridSmallView):
+    view_name = 'my_customers_grid'
+
+    def process_context(self):
+        tiles = []
+
+        request = self.request
+        session = request.session
+
+        current_identity_id = session['current_identity_id']
+
+        try:
+            current_identity = Identity.objects.get(pk=current_identity_id)
+
+        except:
+            logger.exception('Failed to get current identity')
+            raise
+
+        purchases = Transaction.objects.filter(
+            owner=current_identity,
+            transaction_type=TransactionTypes.PURCHASE
+        )
+
+        tile_contexts = []
+
+        def add_context(
+            identity,
+            transaction,
+            contexts
+        ):
+            for c in contexts:
+                if c['identity'].pk == identity.pk:
+                    if c['transaction'].pub_date < transaction.pub_date:
+                        c['transaction'] = transaction
+                        break
+
+            contexts.append({
+                'identity': identity,
+                'transaction': transaction
+            })
+
+        for p in purchases:
+            if p.reverted:
+                continue
+
+            transaction_items = TransactionItem.objects.filter(
+                transaction=p
+            )
+
+            for i in transaction_items:
+                recipient = i.inventory.recipient
+                if recipient.pk == current_identity.pk:
+                    continue
+
+                add_context(
+                    recipient,
+                    p,
+                    tile_contexts
+                )
+
+        for c in tile_contexts:
+            customer_tile = TransactionTileView()
+            customer_tile_context = RequestContext(
+                request,
+                c
+            )
+            tiles.append(
+                customer_tile.render_template_fragment(
+                    customer_tile_context
+                )
+            )
+
+        self.context['tiles'] = tiles
+        return self.context
+
+
+class MyCustomersView(ContextView):
+    template_name = 'knotis/merchant/my_customers.html'
+
+    def process_context(self):
+        styles = [
+            'knotis/layout/css/global.css',
+            'knotis/layout/css/header.css',
+            'knotis/layout/css/grid.css',
+            'knotis/layout/css/tile.css',
+            'navigation/css/nav_top.css',
+            'navigation/css/nav_side.css',
+        ]
+
+        pre_scripts = []
+
+        post_scripts = [
+            'knotis/layout/js/layout.js',
+            'navigation/js/navigation.js',
+        ]
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'styles': styles,
+            'pre_scripts': pre_scripts,
+            'post_scripts': post_scripts,
+            'fixed_side_nav': True
+        })
+
+        return local_context
 
 
 class MyEstablishmentsView(ContextView):
@@ -209,17 +474,6 @@ class MyOffersGrid(GridSmallView):
 
 class MyOffersView(ContextView):
     template_name = 'knotis/merchant/my_offers_view.html'
-
-    @login_required
-    def disptach(
-        self,
-        *args,
-        **kwargs
-    ):
-        return super(MyOffersView, self).dispatch(
-            *args,
-            **kwargs
-        )
 
     def process_context(self):
         styles = [

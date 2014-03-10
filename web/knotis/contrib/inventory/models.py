@@ -148,8 +148,9 @@ class InventoryManager(QuickManager):
                 continue
 
             if stack.product_id == product.id:
+                if inventory_stack is not None:
+                    raise Exception('Found multple unbound stacks')
                 inventory_stack = stack
-                break
 
         if not inventory_stack and create_empty:
             inventory_stack = (

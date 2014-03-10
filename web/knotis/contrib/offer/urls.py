@@ -15,6 +15,7 @@ from views import (
     OfferEditPublishFormView,
     OfferEditSummaryView,
     OfferPurchaseView,
+    OfferPurchaseSuccessView,
     NewOfferEmailBody
 )
 
@@ -39,6 +40,14 @@ urlpatterns = patterns(
             ')/buy/$'
         ]),
         OfferPurchaseView.as_view()
+    ),
+    url(
+        r''.join([
+            '/(?P<offer_id>',
+            REGEX_UUID,
+            ')/buy/success/$'
+        ]),
+        OfferPurchaseSuccessView.as_view()
     ),
     url(
         r''.join([

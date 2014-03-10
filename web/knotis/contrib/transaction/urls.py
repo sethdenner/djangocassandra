@@ -22,16 +22,4 @@ urlpatterns = patterns(
         ]),
         CustomerReceiptBody.as_view()
     ),
-    url(
-        r''.join([
-            '^offer/print/(?P<transaction_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        'print_transaction'
-    ),
-    url(
-        r'^offers/get_user_offers/(?P<status>[\D]+)/$',
-        'get_user_transactions'
-    ),
 )

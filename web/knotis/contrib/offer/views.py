@@ -57,6 +57,7 @@ from knotis.contrib.stripe.views import (
 
 from knotis.views import (
     ContextView,
+    AJAXFragmentView,
     FragmentView,
     EmailView
 )
@@ -150,6 +151,11 @@ class OffersView(ContextView):
         return local_context
 
 
+class OfferPurchaseSuccessView(AJAXFragmentView):
+    view_name = 'offer_purchase_success'
+    template_name = 'knotis/offer/offer_purchase_success.html'
+
+
 class OfferPurchaseView(ContextView):
     template_name = 'knotis/offer/offer_purchase_view.html'
 
@@ -182,18 +188,6 @@ class OfferPurchaseView(ContextView):
         self.context['offer'] = offer
         self.context['settings'] = settings
 
-        redemption_code = ''.join(
-            random.choice(
-                string.ascii_uppercase + string.digits
-            ) for _ in range(10)
-        )
-
-        transaction_context = '|'.join([
-            request.user.id,
-            IPNCallbackView.generate_ipn_hash(request.user.id),
-            redemption_code
-        ])
-
         try:
             business_badge = ImageInstance.objects.get(
                 related_object_id=offer.owner.pk,
@@ -214,7 +208,6 @@ class OfferPurchaseView(ContextView):
             'offer_title': offer.title,
             'offer_price': offer.price_discount(),
             'business_badge': business_badge,
-            'transaction_context': transaction_context,
             'offer_id': offer.pk
 
         })
@@ -240,7 +233,6 @@ class OfferPurchaseView(ContextView):
                 'item_name_1': offer.title,
                 'amount_1': offer.price_discount(),
                 'item_number_1': offer.id,
-                'custom': transaction_context
             }
         })
         self.context['paypal_button'] = (

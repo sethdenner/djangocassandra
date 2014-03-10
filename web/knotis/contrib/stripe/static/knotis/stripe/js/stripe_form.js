@@ -30,7 +30,17 @@
 		).ajaxform({
 		    done: function(data, status, jqxhr) {
 			if (data.errors) {
-			    alert('FUCK!');
+			    alert('There was an error making your payment. Please contact support@knotis.com');
+			} else {
+			    $.ajaxmodal({
+				href: './success/',
+				modal_id: 'payment-success'
+			    });
+
+			    setTimeout(function(){
+				window.location = '/my/purchases/'
+			    }, 4000);
+			    
 			}
 		    }
 		}).submit();
