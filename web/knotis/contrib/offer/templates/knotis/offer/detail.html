@@ -54,7 +54,11 @@
           </div>
           <div class="row-fluid offer-action">
             <div class="span12">
+              {% if current_identity.identity_type == IdentityTypes.INDIVIDUAL %}
               <a href="/offer/{{ offer.pk }}/buy/" class="btn btn-primary">Buy</a>
+              {% else %}
+              <span>&nbsp;</span>
+              {% endif %}
             </div>
           </div>
         </div>

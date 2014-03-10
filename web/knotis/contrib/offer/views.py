@@ -1,6 +1,4 @@
 import copy
-import random
-import string
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -46,10 +44,7 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes
 )
 
-from knotis.contrib.paypal.views import (
-    IPNCallbackView,
-    PayPalButton
-)
+from knotis.contrib.paypal.views import PayPalButton
 
 from knotis.contrib.stripe.views import (
     StripeButton
@@ -85,6 +80,25 @@ class OffersGridView(GridSmallView):
     view_name = 'offers_grid'
 
     def process_context(self):
+        request = self.request
+        current_identity = None
+        if request.user.is_authenticated():
+            current_identity_id = request.session['current_identity_id']
+            try:
+                current_identity = Identity.objects.get(pk=current_identity_id)
+
+            except:
+                pass
+
+        if (
+            current_identity and
+            current_identity.identity_type == IdentityTypes.INDIVIDUAL
+        ):
+            offer_action = 'buy'
+
+        else:
+            offer_action = None
+
         offer_filter_dict = {
             'published': True,
             'active': True,
@@ -106,7 +120,7 @@ class OffersGridView(GridSmallView):
             tile = OfferTile()
             tiles.append(tile.render_template_fragment(Context({
                 'offer': offer,
-                'offer_action': 'buy'
+                'offer_action': offer_action
             })))
 
         local_context = copy.copy(self.context)
@@ -1008,8 +1022,18 @@ class OfferDetailView(FragmentView):
             logger.exception('failed to get offer image')
             offer_image = None
 
+        request = self.request
+        current_identity_id = request.session.get('current_identity_id')
+        try:
+            current_identity = Identity.objects.get(pk=current_identity_id)
+
+        except:
+            current_identity = None
+
         local_context = copy.copy(self.context)
         local_context.update({
+            'current_identity': current_identity,
+            'IdentityTypes': IdentityTypes,
             'offer': offer,
             'offer_items': offer_items,
             'offer_image': offer_image,
