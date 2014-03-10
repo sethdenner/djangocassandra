@@ -57,6 +57,7 @@ from knotis.contrib.stripe.views import (
 
 from knotis.views import (
     ContextView,
+    AJAXFragmentView,
     FragmentView,
     EmailView
 )
@@ -148,6 +149,11 @@ class OffersView(ContextView):
             'fixed_side_nav': True,
         })
         return local_context
+
+
+class OfferPurchaseSuccessView(AJAXFragmentView):
+    view_name = 'offer_purchase_success'
+    template_name = 'knotis/offer/offer_purchase_success.html'
 
 
 class OfferPurchaseView(ContextView):
