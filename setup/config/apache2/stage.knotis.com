@@ -1,7 +1,6 @@
 <VirtualHost *:80>
 ServerAdmin seth@knotis.com
 ServerName stage.knotis.com
-ServerAlias stage.knotis.com 74.203.56.185	
 
 Alias /media/ /srv/knotis/media/
 Alias /static/ /srv/knotis/static/

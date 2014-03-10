@@ -97,7 +97,7 @@ class NavigationSideView(FragmentView):
                 menu_name='merchant'
             )
 
-        else (
+        elif (
             current_identity and
             IdentityTypes.INDIVIDUAL == current_identity.identity_type
         ):

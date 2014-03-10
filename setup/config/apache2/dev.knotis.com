@@ -2,7 +2,9 @@
 ServerAdmin dev@example.com
 ServerName dev.knotis.com
 
+Alias /media/ /srv/knotis/app/media/
 Alias /static/ /srv/knotis/app/static/
+Alias /admin/media/ /srv/knotis/venv/lib/python2.7/site-packages/django/contrib/admin/media/
 Alias /admin/static/ /srv/knotis/venv/lib/python2.7/site-packages/django/contrib/admin/static/
 Alias /robots.txt /srv/knotis/app/static/robots.txt
 Alias /favicon.ico /srv/knotis/app/static/favicon.ico
