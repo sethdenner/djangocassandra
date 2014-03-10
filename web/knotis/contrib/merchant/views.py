@@ -21,7 +21,9 @@ from knotis.views import (
 
 from knotis.contrib.identity.models import (
     Identity,
-    IdentityTypes
+    IdentityTypes,
+    IdentityIndividual,
+    IdentityEstablishment
 )
 
 from knotis.contrib.offer.models import Offer
@@ -33,12 +35,6 @@ from knotis.contrib.offer.views import (
 from knotis.contrib.identity.views import (
     IdentityTile
 )
-
-from knotis.contrib.identity.models import (
-    IdentityIndividual,
-    IdentityEstablishment
-)
-
 from knotis.contrib.transaction.models import (
     Transaction,
     TransactionItem,

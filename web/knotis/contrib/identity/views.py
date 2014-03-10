@@ -1121,7 +1121,7 @@ class IdentitySwitcherView(FragmentView):
 
             request.session['current_identity_id'] = identity.id
             return http.HttpResponseRedirect(
-                request.META.get('HTTP_REFERER', '/')
+                '/'
             )
 
         except Exception, e:
