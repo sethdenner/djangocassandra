@@ -26,7 +26,7 @@
   <div class="tile-footer">
     {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
     {% if redeem %}
-    {{ redemption_code|default:'&nbsp;' }}
+    {{ transaction.redemption_code|default:'&nbsp;' }}
     {% endif %}
     {% else %}&nbsp;{% endif %}
   </div>

@@ -46,7 +46,6 @@ class TransactionManager(QuickManager):
         self,
         offer,
         buyer,
-        quantity,
         currency,
         transaction_context=None
     ):
@@ -169,7 +168,7 @@ class TransactionManager(QuickManager):
             logger.exception('failed to create transaction items')
             raise
 
-        offer.purchase(quantity)
+        offer.purchase()
         return transactions
 
     def create_redemption(

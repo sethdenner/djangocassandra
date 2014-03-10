@@ -1,3 +1,5 @@
+import random
+import string
 import stripe
 
 from django.conf import settings
@@ -18,6 +20,8 @@ from knotis.contrib.product.models import (
 from knotis.contrib.inventory.models import Inventory
 from knotis.contrib.offer.models import Offer
 from knotis.contrib.transaction.models import Transaction
+
+from knotis.contrib.paypal.views import IPNCallbackView
 
 from models import StripeCustomer
 from forms import StripeForm
@@ -51,7 +55,6 @@ class StripeCharge(AJAXView):
         amount = request.POST['chargeAmount']
         offer_id = request.POST['offerId']
         quantity = request.POST['quantity']
-        transaction_context = request.POST['transaction_context']
 
         try:
             offer = Offer.objects.get(pk=offer_id)
@@ -116,13 +119,25 @@ class StripeCharge(AJAXView):
                 get_existing=True
             )
 
-            Transaction.objects.create_purchase(
-                offer,
-                current_identity,
-                int(quantity),
-                buyer_usd,
-                transaction_context=transaction_context
-            )
+            for i in range(int(quantity)):
+                redemption_code = ''.join(
+                    random.choice(
+                        string.ascii_uppercase + string.digits
+                    ) for _ in range(10)
+                )
+
+                transaction_context = '|'.join([
+                    current_identity.pk,
+                    IPNCallbackView.generate_ipn_hash(current_identity.pk),
+                    redemption_code
+                ])
+
+                Transaction.objects.create_purchase(
+                    offer,
+                    current_identity,
+                    buyer_usd,
+                    transaction_context=transaction_context
+                )
 
         except Exception, e:
             logger.exception(e.message)
