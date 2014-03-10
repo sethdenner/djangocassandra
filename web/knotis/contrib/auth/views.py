@@ -1,14 +1,10 @@
 import copy
-import json
 import datetime
 
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from django.shortcuts import (
-    render,
-    redirect
-)
+from django.shortcuts import redirect
 from django.contrib.auth import (
     authenticate,
     login as django_login,
@@ -67,7 +63,10 @@ def send_validation_email(
         'Knotis.com - Activate Your Account',
         settings.EMAIL_HOST_USER,
         [endpoint.value], Context({
-            'activation_link': activation_link
+            'activation_link': activation_link,
+            'BASE_URL': settings.BASE_URL,
+            'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
+            'SERVICE_NAME': settings.SERVICE_NAME
         })).send()
 
 
