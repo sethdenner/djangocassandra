@@ -919,11 +919,7 @@ class OfferEditSummaryView(OfferCreateStepView):
             logger.exception('failed to get offer items')
             offer_items = None
 
-        # FIXME: These two parameters should call
-        # methods that figure these numbers out.
-        knotis_cut = .035
         estimated_sales_max = 3.
-
         estimated_sales = min(
             estimated_sales_max,
             self.offer.stock
@@ -932,7 +928,13 @@ class OfferEditSummaryView(OfferCreateStepView):
         for item in offer_items:
             revenue_per_offer += item.price_discount
 
-        revenue_customer = revenue_per_offer - knotis_cut * revenue_per_offer
+        price_adjusted = revenue_per_offer - (
+            revenue_per_offer * (
+                settings.KNOTIS_MODE_PERCENT + settings.STRIPE_MODE_PERCENT
+            ) + settings.STRIPE_MODE_FLAT
+        )
+
+        revenue_customer = price_adjusted
         revenue_total = revenue_customer * estimated_sales
         savings_low = revenue_total * .3
         savings_high = revenue_total * .5

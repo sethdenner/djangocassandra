@@ -3,6 +3,7 @@ import datetime
 import itertools
 
 from django.utils.log import logging
+from django.conf import settings
 logger = logging.getLogger(__name__)
 from knotis.utils.view import format_currency
 from knotis.contrib.quick.models import (
@@ -113,10 +114,16 @@ class TransactionManager(QuickManager):
             raise
 
         try:
+            price = offer.price_discount()
+            price_adjusted = price - (
+                price * (
+                    settings.KNOTIS_MODE_PERCENT + settings.STRIPE_MODE_PERCENT
+                ) + settings.STRIPE_MODE_FLAT
+            )
             currency_owner = Inventory.objects.split(
                 currency,
                 offer.owner,
-                offer.price_discount()
+                price_adjusted
             )
 
             currencies_thrid_party = []
