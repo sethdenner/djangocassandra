@@ -39,6 +39,10 @@ urlpatterns = patterns(
         'validate',
     ),
     url(
+        r'^auth/resend_validation_email/(?P<username>[^/]+)/$',
+        'resend_validation_email'
+    ),
+    url(
         r'^auth/forgot/success/$',
         ForgotPasswordSuccessView.as_view()
     ),

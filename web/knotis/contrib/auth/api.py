@@ -14,6 +14,11 @@ from knotis.contrib.identity.models import (
     IdentityIndividual
 )
 
+from knotis.contrib.endpoint.models import (
+    Endpoint,
+    EndpointTypes
+)
+
 from forms import (
     LoginForm,
     CreateUserForm,
@@ -23,6 +28,7 @@ from forms import (
 from models import (
     UserInformation
 )
+from views import send_validation_email
 
 
 class AuthenticationApi(ApiView):
@@ -106,6 +112,17 @@ class AuthUserApi(ApiView):
         user = identity = None
         try:
             user, identity = form.save()
+
+            endpoint = Endpoint.objects.get(
+                identity=identity,
+                endpoint_type=EndpointTypes.EMAIL,
+                primary=True,
+            )
+
+            send_validation_email(
+                user,
+                endpoint
+            )
 
         except ValueError, e:
             logger.exception(
