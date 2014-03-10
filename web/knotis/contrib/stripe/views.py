@@ -111,11 +111,17 @@ class StripeCharge(AJAXView):
                 customer=customer.id
             )
 
+            adjusted_amount = amount - (
+                amount * (
+                    settings.KNOTIS_MODE_PERCENT + settings.STRIPE_MODE_PERCENT
+                ) + settings.STRIPE_MODE_FLAT
+            )
+
             usd = Product.currency.get(CurrencyCodes.USD)
             buyer_usd = Inventory.objects.create_stack_from_product(
                 current_identity,
                 usd,
-                stock=amount,
+                stock=adjusted_amount,
                 get_existing=True
             )
 
