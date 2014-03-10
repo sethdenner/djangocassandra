@@ -17,8 +17,7 @@ from django.forms import (
     BooleanField,
     PasswordInput,
     HiddenInput,
-    ValidationError,
-    ModelChoiceField
+    ValidationError
 )
 
 from knotis.forms import (
@@ -31,7 +30,6 @@ from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
 )
-from knotis.contrib.endpoint.views import send_validation_email
 from knotis.contrib.identity.models import (
     IdentityIndividual,
     IdentitySuperUser
@@ -44,10 +42,7 @@ from models import (
     PasswordReset
 )
 
-from emails import (
-    ActivationEmailBody,
-    PasswordResetEmailBody
-)
+from emails import PasswordResetEmailBody
 
 
 class LoginForm(TemplateFormMixin, AuthenticationForm):
@@ -220,43 +215,8 @@ class CreateUserForm(TemplateModelForm):
 
             raise
 
-        self.send_welcome_email(
-            user,
-            email
-        )
-
         return user, identity
 
-    def send_welcome_email(
-        self,
-        user, 
-        email_endpoint
-    ):
-        if not self.is_valid():
-            logger.error(
-                'Form must be valid to send welcome email instructions'
-            )
-            return False
-
-        email = self.cleaned_data['email']
-
-        activation_link = '/'.join([
-            settings.BASE_URL,
-            'auth/validate',
-            user.id,
-            email_endpoint.validation_key,
-            ''
-        ])
-
-        message = ActivationEmailBody()
-        message.generate_email(
-                'Knotis.com - Activate Your Account',
-                settings.EMAIL_HOST_USER,
-                [email_endpoint.value], Context({
-                    'activation_link': activation_link
-                })).send()
-
-        return True
 
 class CreateSuperUserForm(CreateUserForm):
     def save(

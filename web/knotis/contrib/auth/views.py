@@ -21,9 +21,7 @@ from django.http import (
     HttpResponseNotFound,
     HttpResponseRedirect
 )
-from django.utils.html import strip_tags
 from django.template import Context
-from django.template.loader import get_template
 from knotis.utils.email import (
     generate_email,
     generate_validation_key
@@ -34,7 +32,7 @@ from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
 )
-from knotis.contrib.endpoint.views import send_validation_email
+from knotis.contrib.identity.models import IdentityIndividual
 
 from knotis.views import FragmentView
 
@@ -48,6 +46,29 @@ from forms import (
 from models import (
     PasswordReset
 )
+
+from emails import ActivationEmailBody
+
+
+def send_validation_email(
+    user,
+    endpoint
+):
+    activation_link = '/'.join([
+        settings.BASE_URL,
+        'auth/validate',
+        user.id,
+        endpoint.validation_key,
+        ''
+    ])
+
+    message = ActivationEmailBody()
+    message.generate_email(
+        'Knotis.com - Activate Your Account',
+        settings.EMAIL_HOST_USER,
+        [endpoint.value], Context({
+            'activation_link': activation_link
+        })).send()
 
 
 class LoginView(FragmentView):
@@ -294,7 +315,19 @@ def resend_validation_email(
         return HttpResponseNotFound('Could not find user')
 
     try:
-        user_endpoints = Endpoint.objects.filter(user=user)
+        user_identity = IdentityIndividual.objects.get_individual(user)
+
+    except:
+        user_identity = None
+
+    if not user_identity:
+        return HttpResponseNotFound('Could not get user identity')
+
+    try:
+        user_endpoints = Endpoint.objects.filter(
+            endpoint_type=EndpointTypes.EMAIL,
+            identity=user_identity
+        )
 
     except:
         user_endpoints = None
@@ -304,97 +337,19 @@ def resend_validation_email(
 
     for endpoint in user_endpoints:
         if (
-            endpoint.type == EndpointTypes.EMAIL and
-            endpoint.value.value == username
+            endpoint.endpoint_type == EndpointTypes.EMAIL and
+            endpoint.value == username
         ):
             endpoint.validation_key = generate_validation_key()
             endpoint.save()
 
             send_validation_email(
-                user.id,
+                user,
                 endpoint
             )
             break
 
     return HttpResponse('OK')
-
-
-def sign_up(request):
-    if request.method == 'POST':
-        response_data = {
-            'success': 'no',
-        }
-        feedback = ''
-        error = ''
-
-        sign_up_form = CreateUserForm(request.POST)
-        user = None
-        if sign_up_form.is_valid():
-            try:
-                user, identity = sign_up_form.create_user(request)
-
-                email = Endpoint.objects.create_endpoint(
-                    EndpointTypes.EMAIL,
-                    user.username,
-                    identity,
-                    True
-                )
-
-                send_validation_email(
-                    user.id,
-                    email
-                )
-
-                response_data['success'] = 'yes'
-                """
-                This is a stopgap to not break
-                the existing web UI. This code
-                should be removed when the UI
-                has been modified not to care
-                differentiate between different
-                users types of users.
-                """
-                response_data['user'] = 'user'
-                feedback = 'Your Knotis account has been created.'
-
-            except Exception as e:
-                error = (
-                    'There was an error creating your account: ' + e.message
-                )
-
-        else:
-            error = 'The following fields are invalid: '
-            for e in sign_up_form.errors:
-                error += strip_tags(e) + '<br/>'
-
-        if error:
-            response_data['message'] = error
-            return HttpResponse(
-                json.dumps(response_data),
-                mimetype='application/json'
-            )
-
-        html = get_template('finish_registration.html')
-        context = Context({
-            'settings': settings,
-            'feedback': feedback,
-            'error': error
-        })
-        response_data['html'] = html.render(context)
-
-        return HttpResponse(
-            json.dumps(response_data),
-            mimetype='application/json'
-        )
-
-    else:
-        form = CreateUserForm()
-        return render(
-            request,
-            'sign_up.html', {
-                'form': form,
-            }
-        )
 
 
 def logout(request):
