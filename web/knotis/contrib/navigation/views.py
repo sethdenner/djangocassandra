@@ -97,6 +97,14 @@ class NavigationSideView(FragmentView):
                 menu_name='merchant'
             )
 
+        else (
+            current_identity and
+            IdentityTypes.INDIVIDUAL == current_identity.identity_type
+        ):
+            merchant_navigation = NavigationItem.objects.filter_ordered(
+                menu_name='consumer'
+            )
+
         else:
             merchant_navigation = []
 
