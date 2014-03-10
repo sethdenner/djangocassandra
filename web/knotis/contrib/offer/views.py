@@ -285,7 +285,6 @@ class OfferTile(FragmentView):
         self.context.update({
             'offer_banner_image': offer_banner_image,
             'business_badge_image': business_badge_image,
-            'stats': 'Stats',
         })
 
         return self.context
