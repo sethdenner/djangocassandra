@@ -106,7 +106,7 @@ TWITTER_KNOTIS_ACCESS_TOKEN = (
 )
 TWITTER_KNOTIS_TOKEN_SECRET = '2NC4yOFFbXPR59VoXISuVsn5IoZrENo8yfvlaW1Y'
 TWITTER_REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token'
-TWITTER_AUTHORIZE_URL = 'https://api.twitter.com/oauth/authorize'
+TWITTER_AUTHORIZE_URL = 'https://api.twitter.com/oauth/authorize?oauth_token='
 TWITTER_ACCESS_TOKEN_URL = 'https://api.twitter.com/oauth/access_token'
 TWITTER_FEED_URL = (
     'https://api.twitter.com/1.1/statuses/user_timeline.json'
