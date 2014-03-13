@@ -69,7 +69,7 @@
         {% render_fragment nav_side %}
       </div>
       <div class="span10 grid">
-	    {% if content_plexer == 'establishments' %}
+	    {% if view_name == 'offers' %}
         {% render_fragment establishment_profile_grid %}
 	    {% else %}
 	    {{ profile_content }}
