@@ -382,6 +382,14 @@ class EstablishmentProfileGrid(GridSmallView):
 
     def process_context(self):
         establishment_offers = self.context.get('establishment_offers')
+        request = self.context.get('request')
+
+        offer_action = None
+        if request.user.is_authenticated():
+            current_identity_id = request.session.get('current_identity_id')
+            current_identity = Identity.objects.get(pk=current_identity_id)
+            if current_identity.identity_type  == IdentityTypes.INDIVIDUAL:
+                offer_action = 'buy'
 
         tiles = []
 
@@ -400,7 +408,8 @@ class EstablishmentProfileGrid(GridSmallView):
             for offer in establishment_offers:
                 offer_tile = OfferTile()
                 offer_context = Context({
-                    'offer': offer.offer
+                    'offer': offer.offer,
+                    'offer_action': offer_action
                 })
                 tiles.append(
                     offer_tile.render_template_fragment(offer_context)
