@@ -3,6 +3,7 @@
     color: #fff;
     height: 116px;
     padding-right: 5px;
+    text-align: left;
 }
 
 .modal#id-offer-detail .modal-header h1 {

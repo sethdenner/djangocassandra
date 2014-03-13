@@ -215,16 +215,16 @@ class OfferPurchaseView(ContextView):
         stripe_button = StripeButton()
         stripe_button_context = RequestContext(
             request, {
-            'STRIPE_API_KEY': settings.STRIPE_API_KEY,
-            'STATIC_URL': settings.STATIC_URL,
-            'BASE_URL': settings.BASE_URL,
-            'business_name': offer.owner.name,
-            'offer_title': offer.title,
-            'offer_price': offer.price_discount(),
-            'business_badge': business_badge,
-            'offer_id': offer.pk
-
-        })
+                'STRIPE_API_KEY': settings.STRIPE_API_KEY,
+                'STATIC_URL': settings.STATIC_URL,
+                'BASE_URL': settings.BASE_URL,
+                'business_name': offer.owner.name,
+                'offer_title': offer.title,
+                'offer_price': offer.price_discount(),
+                'business_badge': business_badge,
+                'offer_id': offer.pk
+            }
+        )
         self.context['stripe_button'] = (
             stripe_button.render_template_fragment(
                 stripe_button_context
