@@ -632,7 +632,7 @@ class EstablishmentAboutYelpFeed(FragmentView):
         self.has_feed = False
         if yelp_endpoint:
             yelp_feed = get_reviews_by_yelp_id(yelp_endpoint['value'])
-            
+
             self.has_feed = len(yelp_feed)
 
         local_context = copy.copy(self.context)
@@ -642,14 +642,14 @@ class EstablishmentAboutYelpFeed(FragmentView):
 
         return local_context
 
-        
+
 class EstablishmentAboutFeeds(FragmentView):
     template_name = 'knotis/identity/establishment_about_feeds.html'
     view_name = 'establishment_about_feeds'
 
     def process_context(self):
         local_context = copy.copy(self.context)
-        
+
         yelp = EstablishmentAboutYelpFeed()
         yelp.render_template_fragment(local_context)
 
@@ -1027,6 +1027,7 @@ class EstablishmentProfileView(FragmentView):
             'establishment_offers': establishment_offers,
             'top_menu_name': 'identity_profile',
             'profile_content': profile_content,
+            'view_name': view_name,
             'content_plexer': content_plexer,
             'profile_banner_color': profile_banner_color
         })
