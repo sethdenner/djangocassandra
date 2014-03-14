@@ -44,6 +44,8 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes
 )
 
+from knotis.contrib.transaction.views import PurchaseButton
+
 from knotis.contrib.paypal.views import PayPalButton
 
 from knotis.contrib.stripe.views import (
@@ -211,6 +213,19 @@ class OfferPurchaseView(ContextView):
 
         except:
             business_badge = None
+
+        free_button = PurchaseButton()
+        free_button_context = RequestContext(
+            request, {
+                'offer_id': offer.pk,
+                'amount': offer.price_discount()
+            }
+        )
+        self.context['free_button'] = (
+            free_button.render_template_fragment(
+                free_button_context
+            )
+        )
 
         stripe_button = StripeButton()
         stripe_button_context = RequestContext(

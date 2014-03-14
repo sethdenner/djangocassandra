@@ -106,25 +106,20 @@ class StripeCharge(AJAXView):
         try:
             amount = float(amount)
             stripe.Charge.create(
-                amount=int(amount * 100),
+                amount=int(amount * 100.),
                 currency='usd',
                 customer=customer.id
-            )
-
-            adjusted_amount = amount - (
-                amount * (
-                    settings.KNOTIS_MODE_PERCENT + settings.STRIPE_MODE_PERCENT
-                ) + settings.STRIPE_MODE_FLAT
             )
 
             usd = Product.currency.get(CurrencyCodes.USD)
             buyer_usd = Inventory.objects.create_stack_from_product(
                 current_identity,
                 usd,
-                stock=adjusted_amount,
+                stock=amount,
                 get_existing=True
             )
 
+            mode = 'stripe'
             for i in range(int(quantity)):
                 redemption_code = ''.join(
                     random.choice(
@@ -135,7 +130,8 @@ class StripeCharge(AJAXView):
                 transaction_context = '|'.join([
                     current_identity.pk,
                     IPNCallbackView.generate_ipn_hash(current_identity.pk),
-                    redemption_code
+                    redemption_code,
+                    mode
                 ])
 
                 Transaction.objects.create_purchase(

@@ -1,0 +1,5 @@
+<input id="purchase-button" type="button" class="btn btn-primary" value="Purchase For Free!" />
+<form id="purchase-form" action="/transaction/purchase/" method="POST">{% csrf_token %}
+<input type="hidden" name="offerId" value="{{ offer_id }}" />
+<input type="hidden" name="quantity" value="{{ quantity|default:'1' }}" />
+</form>

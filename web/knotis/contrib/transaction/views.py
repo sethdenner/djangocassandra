@@ -1,12 +1,11 @@
 import copy
+import random
+import string
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
-
-# from knotis.utils.view import get_standard_template_parameters
-from knotis.contrib.transaction.models import Transaction
 
 from knotis.contrib.media.models import ImageInstance
 from knotis.contrib.identity.views import (
@@ -14,11 +13,100 @@ from knotis.contrib.identity.views import (
     get_identity_profile_banner,
     get_identity_default_profile_banner_color
 )
+from knotis.contrib.transaction.models import Transaction
+from knotis.contrib.identity.models import Identity
+from knotis.contrib.offer.models import Offer
+from knotis.contrib.inventory.models import Inventory
+from knotis.contrib.product.models import (
+    Product,
+    CurrencyCodes
+)
+from knotis.contrib.paypal.views import IPNCallbackView
 
 from knotis.views import (
     EmailView,
-    FragmentView
+    FragmentView,
+    AJAXFragmentView
 )
+
+
+class PurchaseButton(AJAXFragmentView):
+    template_name = 'knotis/transaction/purchase_button.html'
+    view_name = 'purchse_button'
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        current_identity = get_object_or_404(
+            Identity,
+            pk=request.session['current_identity_id']
+        )
+        offer_id = request.POST['offerId']
+        quantity = request.POST['quantity']
+
+        try:
+            offer = Offer.objects.get(pk=offer_id)
+
+        except:
+            offer = None
+
+        if not offer:
+            return self.generate_response({
+                'errors': {'no-field': 'Could not find offer'},
+                'status': 'ERROR'
+            })
+
+        if not offer.available():
+            return self.generate_response({
+                'errors': {
+                    'no-field': 'This offer is no longer available'
+                },
+                'status': 'ERROR'
+            })
+
+        try:
+            mode = 'none'
+            for i in range(int(quantity)):
+                redemption_code = ''.join(
+                    random.choice(
+                        string.ascii_uppercase + string.digits
+                    ) for _ in range(10)
+                )
+
+                transaction_context = '|'.join([
+                    current_identity.pk,
+                    IPNCallbackView.generate_ipn_hash(current_identity.pk),
+                    redemption_code,
+                    mode
+                ])
+
+                usd = Product.currency.get(CurrencyCodes.USD)
+                buyer_usd = Inventory.objects.get_stack(
+                    current_identity,
+                    usd,
+                    create_empty=True
+                )
+
+                Transaction.objects.create_purchase(
+                    offer,
+                    current_identity,
+                    buyer_usd,
+                    transaction_context=transaction_context
+                )
+
+        except Exception, e:
+            logger.exception(e.message)
+            return self.generate_response({
+                'status': 'ERROR',
+                'errors': {'no-field': e.message}
+            })
+
+        return self.generate_response({
+            'status': 'OK'
+        })
 
 
 class TransactionTileView(FragmentView):
