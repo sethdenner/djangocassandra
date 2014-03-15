@@ -107,11 +107,6 @@ class IdentityIndividualManager(IdentityManager):
             **kwargs
         )
 
-        Relation.objects.create_individual(
-            user,
-            individual
-        )
-
         return individual
 
     def get_individual(
