@@ -1,5 +1,8 @@
+from django.conf import settings
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
+
+from django.core.exceptions import ValidationError
 
 from knotis.views import ApiView
 from knotis.contrib.auth.models import (
@@ -13,11 +16,15 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes
 )
 
+from knotis.contrib.qrcode.models import (
+    Qrcode,
+    QrcodeTypes
+)
+
 from models import (
     Identity,
     IdentityIndividual,
     IdentityBusiness,
-    IdentityEstablishment,
     IdentityTypes
 )
 from forms import (
@@ -31,6 +38,38 @@ from forms import (
 class IdentityApi(ApiView):
     api_url = 'identity/identity'
 
+    @staticmethod
+    def create_identity(
+        form_class=IdentityForm,
+        *args,
+        **kwargs
+    ):
+        errors = {}
+
+        form = form_class(
+            data=kwargs
+        )
+
+        if form.is_valid():
+            instance = form.save()
+
+            # create identity endpoint
+            Endpoint.objects.create(
+                endpoint_type=EndpointTypes.IDENTITY,
+                value=instance.name,
+                identity=instance
+            )
+
+        else:
+            for field, messages in form.errors.iteritems():
+                errors[field] = [message for message in messages]
+
+            exception = ValidationError('Some fields are invalid')
+            exception.field_errors = errors
+            raise exception
+
+        return instance
+
     def post(
         self,
         request,
@@ -39,31 +78,22 @@ class IdentityApi(ApiView):
     ):
         errors = {}
 
-        form = IdentityForm(
-            data=request.POST
-        )
+        try:
+            instance = self.create_identity(
+                **dict(request.POST.iteritems())
+            )
 
-        if form.is_valid():
-            try:
-                instance = form.save()
+        except ValidationError, e:
+            logger.exception(e.message)
+            errors['no-field'] = e.message
+            errors.update(e.field_errors)
 
-                # create identity endpoint
-                Endpoint.objects.create(
-                    endpoint_type=EndpointTypes.IDENTITY,
-                    value=instance.name,
-                    identity=instance
-                )
-
-            except Exception, e:
-                instance = None
-                logger.exception(
-                    'An Exception occurred during identity creation'
-                )
-                errors['no-field'] = e.message
-
-        else:
-            for field, messages in form.errors.iteritems():
-                errors[field] = [message for message in messages]
+        except Exception, e:
+            instance = None
+            logger.exception(
+                'An Exception occurred during identity creation'
+            )
+            errors['no-field'] = e.message
 
         return self.generate_response(instance, errors)
 
@@ -165,6 +195,36 @@ class IdentityApi(ApiView):
 class IdentityIndividualApi(IdentityApi):
     api_url = 'identity/individual'
 
+    @staticmethod
+    def create_individual(
+        user_id=None,
+        *args,
+        **kwargs
+    ):
+        if user_id:
+            user = KnotisUser.objects.get(pk=user_id)
+
+        else:
+            raise Exception('No user_id provided')
+
+        kwargs['identity_type'] = IdentityTypes.INDIVIDUAL
+        individual = IdentityApi.create_identity(
+            form_class=IdentityIndividualForm,
+            **kwargs
+        )
+
+        try:
+            Relation.objects.create_individual(
+                user,
+                individual
+            )
+
+        except:
+            individual.delete(hard=True)
+            raise
+
+        return individual
+
     def post(
         self,
         request,
@@ -174,87 +234,25 @@ class IdentityIndividualApi(IdentityApi):
         data = {}
         errors = {}
 
-        form = IdentityForm(
-            data=request.POST
-        )
-
-        if not form.is_valid():
-            for field, messages in form.errors.iteritems():
-                errors[field] = [message for message in messages]
-
-            data['message'] = (
-                'An error occurred during individual creation.'
-            )
-            data['errors'] = errors
-            return self.generate_response(data)
-
         try:
-            individual = form.save()
-
-        except Exception, e:
-            message = 'An error occurred during individual creation.'
-            logger.exception(message)
-            errors['no-field']  = e.message
-
-            return self.generate_response({
-                'message': message,
-                'errors': errors
-            })
-
-        try:
-            # create identity endpoint
-            Endpoint.objects.create(
-                endpoint_type=EndpointTypes.IDENTITY,
-                value=individual.name,
-                identity=individual
+            individual = self.create_individual(
+                **dict(request.POST.iteritems())
             )
 
-        except Exception, e:
-            message = 'An error occurred during individual creation.'
-            logger.exception(message)
-            errors['no-field']  = e.message
+        except ValidationError, e:
+            logger.exception(e.message)
+            errors['no-field'] = e.message
+            errors.update(e.field_errors)
 
+        except Exception, e:
+            logger.exception(e.message)
+            errors['no-field'] = e.message
+
+        if errors:
             return self.generate_response({
-                'message': message,
+                'status': 'ERROR',
                 'errors': errors
             })
-
-        user = None
-        user_id = request.POST.get('user_id')
-        if user_id:
-            try:
-                user = KnotisUser.objects.get(pk=user_id)
-
-            except Exception, e:
-                individual.delete()
-
-                message = 'User does not exist.'
-                logger.exception(message)
-                errors['no-field'] = e.message
-                return self.generate_response({
-                    'message': message,
-                    'errors': errors
-                })
-
-            try:
-                Relation.objects.create_individual(
-                    user,
-                    individual
-                )
-
-            except Exception, e:
-                individual.delete()
-                message = (
-                    'An error occurred during individual '
-                    'relation creation.'
-                )
-                logger.exception(message)
-                errors['no-field'] = e.message
-
-                return self.generate_response({
-                    'message': message,
-                    'errors': errors
-                })
 
         data['data'] = {
             'individual_id': individual.id,
@@ -297,186 +295,110 @@ class IdentityIndividualApi(IdentityApi):
 class IdentityBusinessApi(IdentityApi):
     api_url = 'identity/business'
 
+    @staticmethod
+    def create_business(
+        individual_id=None,
+        *args,
+        **kwargs
+    ):
+        if individual_id:
+            individual = IdentityIndividual.objects.get(pk=individual_id)
+
+        else:
+            raise Exception('No individual_id provided')
+
+        kwargs['identity_type'] = IdentityTypes.BUSINESS
+        business = IdentityApi.create_identity(
+            form_class=IdentityBusinessForm,
+            **kwargs
+        )
+
+        try:
+            relation_manager = Relation.objects.create_manager(
+                individual,
+                business
+            )
+
+        except:
+            business.delete(hard=True)
+            raise
+
+        try:
+            qrcode = Qrcode.objects.create(
+                owner=business,
+                uri='/'.join([
+                    settings.BASE_URL,
+                    'id',
+                    business.id,
+                    ''
+                ]),
+                qrcode_type=QrcodeTypes.PROFILE
+            )
+
+        except:
+            business.delete(hard=True)
+            relation_manager.delete(hard=True)
+            raise
+
+        try:
+            user_information = UserInformation.objects.get(
+                user=KnotisUser.objects.get_identity_user(individual)
+            )
+            user_information.default_identity_id = business.id
+            user_information.save()
+
+        except Exception, e:
+            # This is non-critical, no need to reraise
+            logger.exception(e.message)
+
+        try:
+            establishment = IdentityEstablishmentApi.create_establishment(
+                business_id=business.pk,
+                **kwargs
+            )
+
+        except:
+            business.delete(hard=True)
+            relation_manager.delete(hard=True)
+            qrcode.delete(hard=True)
+            raise
+
+        return business, establishment
+
     def post(
         self,
         request,
         *args,
         **kwargs
     ):
-        def clean_up(objects=[]):
-            for o in objects:
-                if o:
-                    o.delete()
-
-        created_objects = []
-
         data = {}
         errors = {}
 
-        individual = None
-        individual_id = request.POST.get('individual_id')
-        if individual_id:
-            try:
-                individual = IdentityIndividual.objects.get(
-                    pk=individual_id
-                )
-
-            except Exception, e:
-                message = 'Individual does not exist.'
-                logger.exception(message)
-                errors['no-field'] = e.message
-
-                clean_up(created_objects)
-                return self.generate_response({
-                    'message': message,
-                    'errors': errors
-                })
-
-        form = IdentityBusinessForm(
-            data=request.POST
-        )
-
-        if not form.is_valid():
-            for field, messages in form.errors.iteritems():
-                errors[field] = [m for m in messages]
-
-            data['message'] = (
-                'An error occurred during business creation.'
-            )
-            data['errors'] = errors
-            return self.generate_response(data)
-
         try:
-            business = form.save()
-            created_objects.append(business)
+            business, establishment = self.create_business(
+                **dict(request.POST.iteritems())
+            )
+
+        except ValidationError, e:
+            logger.exception(e.message)
+            errors['no-field'] = e.message
+            errors.update(e.field_errors)
 
         except Exception, e:
-            message = 'An error occurred during business creation.'
-            logger.exception(message)
-            errors['no-field']  = e.message
-
-            return self.generate_response({
-                'message': message,
-                'errors': errors
-            })
-
-        try:
-            # create identity endpoint
-            Endpoint.objects.create(
-                endpoint_type=EndpointTypes.IDENTITY,
-                value=business.name,
-                identity=business
-            )
-
-        except Exception, e:
-            message = 'An error occurred during individual creation.'
-            logger.exception(message)
-            errors['no-field']  = e.message
-
-            return self.generate_response({
-                'message': message,
-                'errors': errors
-            })
-
-        try:
-            user_information = UserInformation.objects.get(user=request.user)
-            user_information.default_identity_id = business.id
-            user_information.save()
-
-        except Exception:
-            logger.exception('failed to update default identity')
-
-        # Create a default establishment for this business.
-        try:
-            establishment_data = request.POST.copy()
-            establishment_data['identity_type'] = IdentityTypes.ESTABLISHMENT
-            form_establishment = IdentityEstablishmentForm(
-                data=establishment_data
-            )
-            establishment = form_establishment.save()
-            created_objects.append(establishment)
-
-        except Exception, e:
-            message = 'An error occurred during establishment creation.'
-            logger.exception(message)
-            errors['no-field']  = e.message
-
-            clean_up(created_objects)
-            return self.generate_response({
-                'message': message,
-                'errors': errors
-            })
-
-        try:
-            created_objects.append(Endpoint.objects.create(
-                endpoint_type=EndpointTypes.IDENTITY,
-                value=establishment.name,
-                identity=establishment
-            ))
-
-        except Exception, e:
-            message = (
-                'An error occurred during '
-                'establishment endpoint creation.'
-            )
-            logger.exception(message)
-            errors['no-field']  = e.message
-
-            clean_up(created_objects)
-            return self.generate_response({
-                'message': message,
-                'errors': errors
-            })
-
-        try:
-            created_objects.append(
-                Relation.objects.create_establishment(
-                    business,
-                    establishment
-                )
-            )
-
-        except Exception, e:
-            message = (
-                'An error occurred during manager '
-                'relation creation.'
-            )
-            logger.exception(message)
+            logger.exception(e.message)
             errors['no-field'] = e.message
 
-            clean_up(created_objects)
+        if errors:
             return self.generate_response({
-                'message': message,
-                'errors': errors
-            })
-
-        try:
-            created_objects.append(
-                Relation.objects.create_manager(
-                    individual,
-                    business
-                )
-            )
-
-        except Exception, e:
-            message = (
-                'An error occurred during manager '
-                'relation creation.'
-            )
-            logger.exception(message)
-            errors['no-field'] = e.message
-
-            clean_up(created_objects)
-            return self.generate_response({
-                'message': message,
+                'status': 'ERROR',
                 'errors': errors
             })
 
         data['data'] = {
             'business_id': business.id,
             'business_name': business.name,
-            'business_backend_name': business.backend_name,
-            'establishment_id': establishment.id
+            'establishment_id': establishment.id,
+            'establishment_name': establishment.name
         }
 
         data['message'] = 'Business created successfully'
@@ -499,6 +421,37 @@ class IdentityBusinessApi(IdentityApi):
 class IdentityEstablishmentApi(IdentityApi):
     api_url = 'identity/establishment'
 
+    @staticmethod
+    def create_establishment(
+        business_id=None,
+        *args,
+        **kwargs
+    ):
+        if business_id:
+            business = IdentityBusiness.objects.get(pk=business_id)
+
+        else:
+            raise Exception('No business_id provided')
+
+        kwargs['identity_type'] = IdentityTypes.ESTABLISHMENT
+        establishment = IdentityApi.create_identity(
+            form_class=IdentityEstablishmentForm,
+            **kwargs
+        )
+
+        try:
+
+            Relation.objects.create_establishment(
+                business,
+                establishment
+            )
+
+        except:
+            establishment.delete(hard=True)
+            raise
+
+        return establishment
+
     def post(
         self,
         request,
@@ -508,89 +461,25 @@ class IdentityEstablishmentApi(IdentityApi):
         data = {}
         errors = {}
 
-        form = IdentityEstablishmentForm(
-            data=request.POST
-        )
-
-        if not form.is_valid():
-            for field, messages in form.errors.iteritems():
-                errors[field] = [message for message in messages]
-
-            data['message'] = (
-                'An error occurred during business creation.'
-            )
-            data['errors'] = errors
-            return self.generate_response(data)
-
         try:
-            establishment = form.save()
-
-        except Exception, e:
-            message = 'An error occurred during establishment creation.'
-            logger.exception(message)
-            errors['no-field']  = e.message
-
-            return self.generate_response({
-                'message': message,
-                'errors': errors
-            })
-
-        try:
-            # create identity endpoint
-            Endpoint.objects.create(
-                endpoint_type=EndpointTypes.IDENTITY,
-                value=establishment.name,
-                identity=establishment
+            establishment = self.create_establishment(
+                **dict(request.POST.iteritems())
             )
 
-        except Exception, e:
-            message = 'An error occurred during individual creation.'
-            logger.exception(message)
-            errors['no-field']  = e.message
+        except ValidationError, e:
+            logger.exception(e.message)
+            errors['no-field'] = e.message
+            errors.update(e.field_errors)
 
+        except Exception, e:
+            logger.exception(e.message)
+            errors['no-field'] = e.message
+
+        if errors:
             return self.generate_response({
-                'message': message,
+                'status': 'ERROR',
                 'errors': errors
             })
-
-        business = None
-        business_id = request.POST.get('business_id')
-        if business_id:
-            try:
-                business = IdentityBusiness.objects.get(
-                    pk=business_id
-                )
-
-            except Exception, e:
-                establishment.delete()
-
-                message = 'Business does not exist.'
-                logger.exception(message)
-                errors['no-field'] = e.message
-                return self.generate_response({
-                    'message': message,
-                    'errors': errors
-                })
-
-            try:
-                Relation.objects.create_establishment(
-                    business,
-                    establishment
-                )
-
-            except Exception, e:
-                establishment.delete()
-                message = (
-                    'An error occurred during establishment '
-                    'relation creation.'
-                )
-                logger.exception(message)
-                errors['no-field'] = e.message
-
-                return self.generate_response({
-                    'message': message,
-                    'errors': errors
-                })
 
         data['data'] = {
             'establishment_id': establishment.id,
@@ -607,7 +496,7 @@ class IdentityEstablishmentApi(IdentityApi):
         *args,
         **kwargs
     ):
-        return super(IdentityBusinessApi, self).put(
+        return super(IdentityEstablishmentApi, self).put(
             request,
             noun='establishment',
             *args,

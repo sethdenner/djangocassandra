@@ -100,8 +100,9 @@ class AuthenticationApi(ApiView):
 class AuthUserApi(ApiView):
     api_url = 'auth/user'
 
+    @staticmethod
     def create_user(
-        self,
+        send_validation=True,
         *args,
         **kwargs
     ):
@@ -112,17 +113,6 @@ class AuthUserApi(ApiView):
         user = identity = None
         try:
             user, identity = form.save()
-
-            endpoint = Endpoint.objects.get(
-                identity=identity,
-                endpoint_type=EndpointTypes.EMAIL,
-                primary=True,
-            )
-
-            send_validation_email(
-                user,
-                endpoint
-            )
 
         except ValueError, e:
             logger.exception(
@@ -137,6 +127,22 @@ class AuthUserApi(ApiView):
             logger.exception(
                 'An Exception occurred during account creation'
             )
+
+        if send_validation:
+            try:
+                endpoint = Endpoint.objects.get(
+                    identity=identity,
+                    endpoint_type=EndpointTypes.EMAIL,
+                    primary=True,
+                )
+
+                send_validation_email(
+                    user,
+                    endpoint
+                )
+
+            except Exception, e:
+                logger.exception(e.message)
 
         return user, identity, errors
 

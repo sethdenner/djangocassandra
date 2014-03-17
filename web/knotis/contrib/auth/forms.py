@@ -34,6 +34,10 @@ from knotis.contrib.identity.models import (
     IdentityIndividual,
     IdentitySuperUser
 )
+from knotis.contrib.identity.api import (
+    IdentityIndividualApi
+)
+
 from knotis.contrib.relation.models import Relation
 
 from models import (
@@ -180,8 +184,9 @@ class CreateUserForm(TemplateModelForm):
                 )
 
             else:
-                identity = IdentityIndividual.objects.create(
-                    user
+                identity = IdentityIndividualApi.create_individual(
+                    user_id=user.pk,
+                    name=IdentityIndividual.DEFAULT_NAME
                 )
 
             user_info.default_identity_id = identity.id
@@ -192,13 +197,6 @@ class CreateUserForm(TemplateModelForm):
                 value=user.email,
                 identity=identity,
                 primary=True
-            )
-
-            # create identity endpoint
-            Endpoint.objects.create(
-                endpoint_type=EndpointTypes.IDENTITY,
-                value=identity.name,
-                identity=identity
             )
 
         except:
