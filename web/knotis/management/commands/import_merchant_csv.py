@@ -1,7 +1,13 @@
 import csv
+import random
+import string
+import urllib
+import os
 
+from django.conf import settings
 from django.utils import log
 logger = log.getLogger(__name__)
+from django.utils.http import urlquote_plus
 
 from django.core.management.base import (
     BaseCommand,
@@ -9,6 +15,12 @@ from django.core.management.base import (
 )
 
 from knotis.contrib.auth.api import AuthUserApi
+from knotis.contrib.identity.api import IdentityBusinessApi
+from knotis.contrib.endpoint.models import (
+    Endpoint,
+    EndpointTypes
+)
+from knotis.contrib.qrcode.models import Qrcode
 
 
 class Command(BaseCommand):
@@ -30,6 +42,9 @@ class Command(BaseCommand):
     ):
         if not args:
             raise CommandError('No file specified')
+
+        if not os.path.exists('./merchant-qrcodes'):
+            os.makedirs('./merchant-qrcodes')
 
         try:
             csv_file = open(
@@ -65,6 +80,7 @@ class Command(BaseCommand):
             column_map[column_index] = column.lower()
             column_index += 1
 
+        creation_counter = 0
         for row in csv_reader:
             column_index = 0
             merchant_data = {}
@@ -73,6 +89,7 @@ class Command(BaseCommand):
                 merchant_data[
                     column_map[column_index]
                 ] = column
+                column_index += 1
 
             business_name = merchant_data.get(Columns.BUSINESS_NAME)
             manager_name = merchant_data.get(Columns.MANAGER_NAME)
@@ -89,21 +106,144 @@ class Command(BaseCommand):
                 continue
 
             if not manager_email:
-                manager_email = DEFAULT_EMAIL_TEMPLATE % business_name.strip(
-                    ' '
+                manager_email = DEFAULT_EMAIL_TEMPLATE % business_name.replace(
+                    ' ', ''
                 ).lower()
 
             try:
                 user, identity, errors = AuthUserApi.create_user(**{
                     'email': manager_email,
-                    'password': 'asdfj89f3'
+                    'password': ''.join(random.choice(
+                        string.printable
+                    ) for _ in range(16)),
+                    'send_validation': False
                 })
+                identity.name = manager_name
+                identity.save()
 
             except Exception, e:
                 logger.exception(e.message)
                 continue
 
-            identity.name = manager_name
-            identity.save()
+            try:
+                business, establishment = IdentityBusinessApi.create_business(
+                    **{
+                        'individual_id': identity.pk,
+                        'name': business_name
+                    }
+                )
 
-            business = IdentityBusiness.objects.
+                qrcode = Qrcode.objects.get(
+                    owner=business
+                )
+
+            except Exception, e:
+                logger.exception(e.message)
+                continue
+
+            try:
+                endpoint_email = Endpoint.objects.create(
+                    endpoint_type=EndpointTypes.EMAIL,
+                    identity=establishment,
+                    value=manager_email,
+                    context='establishment_email',
+                    primary=True,
+                    validated=True
+                )
+
+            except Exception, e:
+                logger.exception(e.message)
+                continue
+
+            if manager_phone:
+                try:
+                    endpoint_phone = Endpoint.objects.create(
+                        endpoint_type=EndpointTypes.PHONE,
+                        identity=establishment,
+                        value=manager_phone,
+                        context='establishment_phone',
+                        primary=True,
+                        validated=True
+                    )
+
+                except Exception, e:
+                    logger.exception(e.message)
+                    continue
+
+            if business_website:
+                try:
+                    endpoint_website = Endpoint.objects.create(
+                        endpoint_type=EndpointTypes.WEBSITE,
+                        identity=establishment,
+                        value=business_website,
+                        context='establishment_website',
+                        primary=True,
+                        validated=True
+                    )
+
+                except Exception, e:
+                    logger.exception(e.message)
+                    continue
+
+            if business_address:
+                try:
+                    endpoint_address = Endpoint.objects.create(
+                        endpoint_type=EndpointTypes.ADDRESS,
+                        identity=establishment,
+                        value=business_address,
+                        context='establishment_address',
+                        primary=True,
+                        validated=True
+                    )
+
+                except Exception, e:
+                    logger.exception(e.message)
+                    continue
+
+            creation_counter += 1
+
+            qrcode_url = ''.join([
+                'http://chart.apis.google.com/chart',
+                '?chs=280x280&cht=qr&chld=|1&chl=',
+                urlquote_plus('/'.join([
+                    settings.BASE_URL,
+                    'qrcode',
+                    qrcode.pk,
+                    ''
+                ]))
+            ])
+
+            logger.info(''.join([
+                'Created User With: \n\t',
+                'username: ',
+                user.username,
+                '\n\tindividual name: ',
+                identity.name,
+                '\n\tbusiness name: ',
+                business.name,
+                '\n\tbusiness email: ',
+                endpoint_email.value,
+                '\n\tbusiness phone: ',
+                endpoint_phone.value,
+                '\n\tbusiness website: ',
+                endpoint_website.value,
+                '\n\tbusiness address: ',
+                endpoint_address.value,
+                '\n\tqrcode: ',
+                qrcode_url,
+                '\n\n'
+            ]))
+
+            try:
+                urllib.urlretrieve(
+                    qrcode_url, ''.join([
+                        './merchant-qrcodes/',
+                        business.name,
+                        '.png'
+                    ])
+                )
+
+            except Exception, e:
+                logger.exception(e.message)
+
+        logger.info('Created %i Merchants' % (creation_counter,))

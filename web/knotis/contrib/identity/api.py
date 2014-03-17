@@ -25,7 +25,6 @@ from models import (
     Identity,
     IdentityIndividual,
     IdentityBusiness,
-    IdentityEstablishment,
     IdentityTypes
 )
 from forms import (
@@ -80,7 +79,9 @@ class IdentityApi(ApiView):
         errors = {}
 
         try:
-            instance = self.create_identity(**request.POST)
+            instance = self.create_identity(
+                **dict(request.POST.iteritems())
+            )
 
         except ValidationError, e:
             logger.exception(e.message)
@@ -235,7 +236,7 @@ class IdentityIndividualApi(IdentityApi):
 
         try:
             individual = self.create_individual(
-                **request.POST
+                **dict(request.POST.iteritems())
             )
 
         except ValidationError, e:
@@ -374,8 +375,8 @@ class IdentityBusinessApi(IdentityApi):
         errors = {}
 
         try:
-            business = self.create_business(
-                **request.POST
+            business, establishment = self.create_business(
+                **dict(request.POST.iteritems())
             )
 
         except ValidationError, e:
@@ -395,7 +396,9 @@ class IdentityBusinessApi(IdentityApi):
 
         data['data'] = {
             'business_id': business.id,
-            'business_name': business.name
+            'business_name': business.name,
+            'establishment_id': establishment.id,
+            'establishment_name': establishment.name
         }
 
         data['message'] = 'Business created successfully'
@@ -460,7 +463,7 @@ class IdentityEstablishmentApi(IdentityApi):
 
         try:
             establishment = self.create_establishment(
-                **request.POST
+                **dict(request.POST.iteritems())
             )
 
         except ValidationError, e:
@@ -493,7 +496,7 @@ class IdentityEstablishmentApi(IdentityApi):
         *args,
         **kwargs
     ):
-        return super(IdentityBusinessApi, self).put(
+        return super(IdentityEstablishmentApi, self).put(
             request,
             noun='establishment',
             *args,
