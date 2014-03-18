@@ -14,8 +14,16 @@ from django.core.management.base import (
     CommandError
 )
 
+from knotis.contrib.auth.models import KnotisUser
 from knotis.contrib.auth.api import AuthUserApi
-from knotis.contrib.identity.api import IdentityBusinessApi
+from knotis.contrib.identity.models import (
+    IdentityIndividual,
+    IdentityBusiness
+)
+from knotis.contrib.identity.api import (
+    IdentityBusinessApi,
+    IdentityEstablishmentApi
+)
 from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
@@ -91,12 +99,30 @@ class Command(BaseCommand):
                 ] = column
                 column_index += 1
 
-            business_name = merchant_data.get(Columns.BUSINESS_NAME)
-            manager_name = merchant_data.get(Columns.MANAGER_NAME)
-            manager_email = merchant_data.get(Columns.MANAGER_EMAIL)
-            manager_phone = merchant_data.get(Columns.MANAGER_PHONE)
-            business_website = merchant_data.get(Columns.BUSINESS_WEBSITE)
-            business_address = merchant_data.get(Columns.BUSINESS_ADDRESS)
+            business_name = merchant_data.get(
+                Columns.BUSINESS_NAME,
+                ''
+            ).strip()
+            manager_name = merchant_data.get(
+                Columns.MANAGER_NAME,
+                ''
+            ).strip()
+            manager_email = merchant_data.get(
+                Columns.MANAGER_EMAIL,
+                ''
+            ).strip()
+            manager_phone = merchant_data.get(
+                Columns.MANAGER_PHONE,
+                ''
+            ).strip()
+            business_website = merchant_data.get(
+                Columns.BUSINESS_WEBSITE,
+                ''
+            ).strip()
+            business_address = merchant_data.get(
+                Columns.BUSINESS_ADDRESS,
+                ''
+            ).strip()
 
             if not business_name:
                 logger.error(
@@ -110,29 +136,81 @@ class Command(BaseCommand):
                     ' ', ''
                 ).lower()
 
+            else:
+                manager_email = manager_email.lower()
+
+            if not manager_name:
+                manager_name = manager_email.split('@')[0]
+
             try:
-                user, identity, errors = AuthUserApi.create_user(**{
-                    'email': manager_email,
-                    'password': ''.join(random.choice(
-                        string.printable
-                    ) for _ in range(16)),
-                    'send_validation': False
-                })
-                identity.name = manager_name
-                identity.save()
+                user = KnotisUser.objects.get(username=manager_email)
+
+            except KnotisUser.DoesNotExist:
+                user = None
 
             except Exception, e:
                 logger.exception(e.message)
                 continue
 
-            try:
-                business, establishment = IdentityBusinessApi.create_business(
+            if user:
+                try:
+                    identity = IdentityIndividual.objects.get_individual(user)
+
+                except Exception, e:
+                    logger.exception(e.message)
+                    continue
+
+            else:
+                try:
+                    user, identity, errors = AuthUserApi.create_user(**{
+                        'email': manager_email,
+                        'password': ''.join(random.choice(
+                            string.printable
+                        ) for _ in range(16)),
+                        'send_validation': False
+                    })
+                    identity.name = manager_name
+                    identity.save()
+
+                except Exception, e:
+                    logger.exception(e.message)
+                    continue
+
+            business = None
+            business_name_normalized = business_name.replace(' ', '').lower()
+            existing_businesses = IdentityBusiness.objects.get_businesses(
+                identity
+            )
+            for b in existing_businesses:
+                if business_name_normalized == b.name.replace(' ', '').lower():
+                    business = b
+                    break
+
+            if business:
+                establishment = IdentityEstablishmentApi.create_establishment(
                     **{
-                        'individual_id': identity.pk,
+                        'business_id': business.pk,
                         'name': business_name
                     }
                 )
 
+            else:
+                try:
+                    (
+                        business,
+                        establishment
+                    ) = IdentityBusinessApi.create_business(
+                        **{
+                            'individual_id': identity.pk,
+                            'name': business_name
+                        }
+                    )
+
+                except Exception, e:
+                    logger.exception(e.message)
+                    continue
+
+            try:
                 qrcode = Qrcode.objects.get(
                     owner=business
                 )
@@ -156,6 +234,24 @@ class Command(BaseCommand):
                 continue
 
             if manager_phone:
+                # Should probably use a regex but I'm too lazy to look it up
+                manager_phone = manager_phone.replace(
+                    '.',
+                    ''
+                ).replace(
+                    '-',
+                    ''
+                ).replace(
+                    '(',
+                    ''
+                ).replace(
+                    ')',
+                    ''
+                ).replace(
+                    ' ',
+                    ''
+                )
+
                 try:
                     endpoint_phone = Endpoint.objects.create(
                         endpoint_type=EndpointTypes.PHONE,
@@ -213,26 +309,30 @@ class Command(BaseCommand):
                 ]))
             ])
 
-            logger.info(''.join([
-                'Created User With: \n\t',
-                'username: ',
-                user.username,
-                '\n\tindividual name: ',
-                identity.name,
-                '\n\tbusiness name: ',
-                business.name,
-                '\n\tbusiness email: ',
-                endpoint_email.value,
-                '\n\tbusiness phone: ',
-                endpoint_phone.value,
-                '\n\tbusiness website: ',
-                endpoint_website.value,
-                '\n\tbusiness address: ',
-                endpoint_address.value,
-                '\n\tqrcode: ',
-                qrcode_url,
-                '\n\n'
-            ]))
+            try:
+                logger.info(''.join([
+                    'Created User With: \n\t',
+                    'username: ',
+                    user.username,
+                    '\n\tindividual name: ',
+                    identity.name,
+                    '\n\tbusiness name: ',
+                    business.name,
+                    '\n\tbusiness email: ',
+                    endpoint_email.value,
+                    '\n\tbusiness phone: ',
+                    endpoint_phone.value,
+                    '\n\tbusiness website: ',
+                    endpoint_website.value,
+                    '\n\tbusiness address: ',
+                    endpoint_address.value,
+                    '\n\tqrcode: ',
+                    qrcode_url,
+                    '\n\n'
+                ]))
+
+            except UnicodeDecodeError, e:
+                logger.exception(e.message)
 
             try:
                 urllib.urlretrieve(
