@@ -64,11 +64,7 @@
 	<div class="row-fluid checkout-pay">
           <div class="span8">&nbsp;</div>
           <div class="span4">
-            {% if offer.price_discount > 0. %}
-	        {{ stripe_button }}
-            {% else %}
-            {{ free_button }}
-            {% endif %}
+	        {{ purchase_button }}
             <input type="hidden" value="{{ offer.id }}" name="offerId"/>
           </div>
 	</div>

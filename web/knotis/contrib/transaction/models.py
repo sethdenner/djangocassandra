@@ -627,6 +627,18 @@ class Transaction(QuickModel):
 
     objects = TransactionManager()
 
+    def participants(self):
+        transactions = self.objects.filter(
+            transaction_type=self.transaction_type,
+            transaction_context=self.transaction_context
+        )
+
+        participants = []
+        for t in transactions:
+            participants.append(t.owner)
+
+        return participants
+
     def revert(self):
         if self.reverted:
             return None

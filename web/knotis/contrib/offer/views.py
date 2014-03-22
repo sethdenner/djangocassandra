@@ -1,4 +1,6 @@
 import copy
+import random
+import string
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -22,7 +24,8 @@ from knotis.contrib.offer.models import (
 )
 from knotis.contrib.product.models import (
     Product,
-    ProductTypes
+    ProductTypes,
+    CurrencyCodes
 )
 from knotis.contrib.inventory.models import (
     Inventory
@@ -39,14 +42,18 @@ from knotis.contrib.identity.models import (
     IdentityTypes
 )
 
+from knotis.contrib.paypal.views import IPNCallbackView
+
 from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
 )
 
-from knotis.contrib.transaction.views import PurchaseButton
-
-from knotis.contrib.paypal.views import PayPalButton
+from knotis.contrib.transaction.models import Transaction
+from knotis.contrib.transaction.views import (
+    CustomerReceiptBody,
+    MerchantReceiptBody
+)
 
 from knotis.contrib.stripe.views import (
     StripeButton
@@ -76,6 +83,104 @@ from knotis.contrib.layout.views import (
     ActionButton,
     GridSmallView
 )
+
+
+class OfferPurchaseButton(AJAXFragmentView):
+    template_name = 'knotis/offer/offer_purchase_button.html'
+    view_name = 'purchse_button'
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        current_identity = get_object_or_404(
+            Identity,
+            pk=request.session['current_identity_id']
+        )
+        offer_id = request.POST['offerId']
+        quantity = request.POST['quantity']
+
+        try:
+            offer = Offer.objects.get(pk=offer_id)
+
+        except:
+            offer = None
+
+        if not offer:
+            return self.generate_response({
+                'errors': {'no-field': 'Could not find offer'},
+                'status': 'ERROR'
+            })
+
+        if not offer.available():
+            return self.generate_response({
+                'errors': {
+                    'no-field': 'This offer is no longer available'
+                },
+                'status': 'ERROR'
+            })
+
+        try:
+            mode = 'none'
+            for i in range(int(quantity)):
+                redemption_code = ''.join(
+                    random.choice(
+                        string.ascii_uppercase + string.digits
+                    ) for _ in range(10)
+                )
+
+                transaction_context = '|'.join([
+                    current_identity.pk,
+                    IPNCallbackView.generate_ipn_hash(current_identity.pk),
+                    redemption_code,
+                    mode
+                ])
+
+                usd = Product.currency.get(CurrencyCodes.USD)
+                buyer_usd = Inventory.objects.get_stack(
+                    current_identity,
+                    usd,
+                    create_empty=True
+                )
+
+                transactions = Transaction.objects.create_purchase(
+                    offer,
+                    current_identity,
+                    buyer_usd,
+                    transaction_context=transaction_context
+                )
+
+                for t in transactions:
+                    if offer.owner != t.owner:
+                        customer_receipt = CustomerReceiptBody().generate_email(
+                            'Knotis - Offer Receipt',
+                            settings.EMAIL_HOST_USER,
+                            [],
+                            {}
+                        )
+                        customer_receipt.send()
+
+                    else:
+                        merchant_receipt = MerchantReceiptBody().generate_email(
+                            'Knotis - Offer Receipt',
+                            settings.EMAIL_HOST_USER,
+                            [],
+                            {}
+                        )
+                        merchant_receipt.send()
+
+        except Exception, e:
+            logger.exception(e.message)
+            return self.generate_response({
+                'status': 'ERROR',
+                'errors': {'no-field': e.message}
+            })
+
+        return self.generate_response({
+            'status': 'OK'
+        })
 
 
 class OffersGridView(GridSmallView):
@@ -195,6 +300,7 @@ class OfferPurchaseView(ContextView):
             'knotis/layout/js/header.js',
             'navigation/js/navigation.js',
             'knotis/offer/js/offer_purchase.js',
+            'knotis/offer/js/offer_purchase_button.js',
             'knotis/stripe/js/stripe_form.js'
         ]
         self.context['post_scripts'] = post_scripts
@@ -214,61 +320,39 @@ class OfferPurchaseView(ContextView):
         except:
             business_badge = None
 
-        free_button = PurchaseButton()
-        free_button_context = RequestContext(
-            request, {
-                'offer_id': offer.pk,
-                'amount': offer.price_discount()
-            }
-        )
-        self.context['free_button'] = (
-            free_button.render_template_fragment(
-                free_button_context
+        if offer.price_discount() > 0.:
+            stripe_button = StripeButton()
+            stripe_button_context = RequestContext(
+                request, {
+                    'STRIPE_API_KEY': settings.STRIPE_API_KEY,
+                    'STATIC_URL': settings.STATIC_URL,
+                    'BASE_URL': settings.BASE_URL,
+                    'business_name': offer.owner.name,
+                    'offer_title': offer.title,
+                    'offer_price': offer.price_discount(),
+                    'business_badge': business_badge,
+                    'offer_id': offer.pk
+                }
             )
-        )
+            self.context['purchase_button'] = (
+                stripe_button.render_template_fragment(
+                    stripe_button_context
+                )
+            )
 
-        stripe_button = StripeButton()
-        stripe_button_context = RequestContext(
-            request, {
-                'STRIPE_API_KEY': settings.STRIPE_API_KEY,
-                'STATIC_URL': settings.STATIC_URL,
-                'BASE_URL': settings.BASE_URL,
-                'business_name': offer.owner.name,
-                'offer_title': offer.title,
-                'offer_price': offer.price_discount(),
-                'business_badge': business_badge,
-                'offer_id': offer.pk
-            }
-        )
-        self.context['stripe_button'] = (
-            stripe_button.render_template_fragment(
-                stripe_button_context
+        else:
+            free_button = OfferPurchaseButton()
+            free_button_context = RequestContext(
+                request, {
+                    'offer_id': offer.pk,
+                    'amount': offer.price_discount()
+                }
             )
-        )
-
-        paypal_button = PayPalButton()
-        paypal_button_context = Context({
-            'button_text': 'Pay with PayPal',
-            'button_class': 'btn btn-primary action',
-            'paypal_parameters': {
-                'cmd': '_cart',
-                'upload': '1',
-                'business': settings.PAYPAL_ACCOUNT,
-                'shopping_url': settings.BASE_URL,
-                'currency_code': 'USD',
-                'return': '/offers/dashboard/',
-                'notify_url': settings.PAYPAL_NOTIFY_URL,
-                'rm': '2',
-                'item_name_1': offer.title,
-                'amount_1': offer.price_discount(),
-                'item_number_1': offer.id,
-            }
-        })
-        self.context['paypal_button'] = (
-            paypal_button.render_template_fragment(
-                paypal_button_context
+            self.context['purchase_button'] = (
+                free_button.render_template_fragment(
+                    free_button_context
+                )
             )
-        )
 
         return self.context
 

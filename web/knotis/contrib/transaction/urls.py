@@ -1,4 +1,3 @@
-from django.contrib.auth.decorators import login_required
 from django.conf.urls.defaults import (
     url,
     patterns
@@ -8,8 +7,7 @@ from knotis.utils.regex import REGEX_UUID
 
 from views import (
     MerchantReceiptBody,
-    CustomerReceiptBody,
-    PurchaseButton
+    CustomerReceiptBody
 )
 
 urlpatterns = patterns(
@@ -25,9 +23,5 @@ urlpatterns = patterns(
             ')/$'
         ]),
         CustomerReceiptBody.as_view()
-    ),
-    url(
-        r'^transaction/purchase/$',
-        login_required(PurchaseButton.as_view())
-    ),
+    )
 )
