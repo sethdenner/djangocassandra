@@ -17,11 +17,11 @@ from knotis.contrib.quick.fields import (
 )
 from knotis.contrib.identity.models import Identity
 from knotis.contrib.inventory.models import Inventory
+from knotis.contrib.product.models import ProductTypes
 from knotis.contrib.offer.models import (
     Offer,
     OfferItem
 )
-from knotis.contrib.product.models import ProductTypes
 
 
 class TransactionTypes:
@@ -115,20 +115,16 @@ class TransactionManager(QuickManager):
 
         try:
             price = offer.price_discount()
-            price_adjusted = price - (
-                price * (
-                    settings.KNOTIS_MODE_PERCENT + settings.STRIPE_MODE_PERCENT
-                ) + settings.STRIPE_MODE_FLAT
-            )
-            currency_owner = Inventory.objects.split(
-                currency,
-                offer.owner,
-                price_adjusted
-            )
+            if price:
+                currency_owner = Inventory.objects.split(
+                    currency,
+                    offer.owner,
+                    price
+                )
 
             currencies_thrid_party = []
             for item in offer_items:
-                if item.inventory.provider_id != offer.owner_id:
+                if price and item.inventory.provider_id != offer.owner_id:
                     split_currency = Inventory.objects.split(
                         currency_owner,
                         item.inventory.provider,
@@ -140,7 +136,8 @@ class TransactionManager(QuickManager):
                     item.inventory
                 )
 
-                if (not provider_stack.unlimited and
+                if (
+                    not provider_stack.unlimited and
                     provider_stack.stock < item.inventory.stock
                 ):
                     inventory = item.inventory
@@ -160,16 +157,17 @@ class TransactionManager(QuickManager):
                         inventory_transaction
                     )
 
-            for transaction in transactions:
-                TransactionItem.objects.create(
-                    transaction,
-                    currency_owner
-                )
-                for c in currencies_thrid_party:
+            if price:
+                for transaction in transactions:
                     TransactionItem.objects.create(
                         transaction,
-                        c
+                        currency_owner
                     )
+                    for c in currencies_thrid_party:
+                        TransactionItem.objects.create(
+                            transaction,
+                            c
+                        )
 
         except:
             logger.exception('failed to create transaction items')
@@ -236,12 +234,35 @@ class TransactionManager(QuickManager):
             raise
 
         try:
+            mode = purchase.mode()
             for i in inventory_redeem:
                 recipient_stack = Inventory.objects.get_stack(
                     i.recipient,
                     i.product,
                     create_empty=True
                 )
+
+                if (
+                    i.recipient == purchase.offer.owner and
+                    i.product.product_type == ProductTypes.CURRENCY
+                ):
+                    if mode == 'stripe':
+                        i.stock -= (
+                            i.stock * (
+                                settings.KNOTIS_MODE_PERCENT +
+                                settings.STRIPE_MODE_PERCENT
+                            ) + settings.STRIPE_MODE_FLAT
+                        )
+                        i.save()
+
+                    elif mode == 'none':
+                        i.stock -= (
+                            i.stock * (
+                                settings.KNOTIS_MODE_PERCENT
+                            )
+                        )
+                        i.save()
+
                 Inventory.objects.stack(
                     i,
                     recipient_stack
@@ -606,6 +627,18 @@ class Transaction(QuickModel):
 
     objects = TransactionManager()
 
+    def participants(self):
+        transactions = Transaction.objects.filter(
+            transaction_type=self.transaction_type,
+            transaction_context=self.transaction_context
+        )
+
+        participants = []
+        for t in transactions:
+            participants.append(t.owner)
+
+        return participants
+
     def revert(self):
         if self.reverted:
             return None
@@ -689,12 +722,19 @@ class Transaction(QuickModel):
 
         return values
 
+    def mode(self):
+        context_parts = self.transaction_context.split('|')
+        if len(context_parts) < 4:
+            return None
+
+        return context_parts[3]
+
     def redemption_code(self):
         if not self.offer:
             return None
 
         context_parts = self.transaction_context.split('|')
-        if len(context_parts) != 3:
+        if len(context_parts) < 3:
             return None
 
         return context_parts[2]
@@ -703,7 +743,7 @@ class Transaction(QuickModel):
         purchases = Transaction.objects.filter(
             owner=self.owner,
             transaction_type=TransactionTypes.PURCHASE,
-            transaction_context=self.tranaction_context
+            transaction_context=self.transaction_context
         )
 
         return len(purchases)
