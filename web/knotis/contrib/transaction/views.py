@@ -6,38 +6,8 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from knotis.contrib.media.models import ImageInstance
-from knotis.contrib.identity.views import (
-    get_identity_profile_badge,
-    get_identity_profile_banner,
-    get_identity_default_profile_banner_color
-)
 from knotis.contrib.transaction.models import Transaction
-from knotis.views import (
-    EmailView,
-    FragmentView
-)
-
-
-class TransactionTileView(FragmentView):
-    template_name = 'knotis/transaction/transaction_tile.html'
-    view_name = 'transaction_tile'
-
-    def process_context(self):
-        identity = self.context['identity']
-
-        profile_badge_image = get_identity_profile_badge(identity)
-        profile_banner_image = get_identity_profile_banner(identity)
-        profile_banner_color = get_identity_default_profile_banner_color(
-            identity
-        )
-
-        self.context.update({
-            'badge_image': profile_badge_image,
-            'banner_image': profile_banner_image,
-            'profile_banner_color': profile_banner_color
-        })
-
-        return self.context
+from knotis.views import EmailView
 
 
 class CustomerReceiptBody(EmailView):
@@ -54,7 +24,7 @@ class CustomerReceiptBody(EmailView):
 
         business_images = ImageInstance.objects.filter(
             owner=transaction.offer.owner,
-            related_object_id=transaction.offer.owner,
+            related_object_id=transaction.offer.owner.pk,
             primary=True
         )
 
@@ -103,11 +73,10 @@ class CustomerReceiptBody(EmailView):
             ''
         ])
         redemption_code = transaction.redemption_code()
-        quantity = transaction.quantity()
         price = transaction.offer.price_discount()
-        item_total = price * quantity
 
         local_context.update({
+            'transaction': transaction,
             'business_name': business_name,
             'browser_link': browser_link,
             'business_banner': business_banner,
@@ -120,9 +89,7 @@ class CustomerReceiptBody(EmailView):
             'offer_image': offer_image,
             'offer_link': offer_link,
             'business_url': business_url,
-            'quantity': quantity,
             'price': price,
-            'item_total': item_total,
             'offer_title': offer_title
         })
 
@@ -177,8 +144,8 @@ class MerchantReceiptBody(EmailView):
         customer = None
         participants = transaction.participants()
         for p in participants:
-            if p.owner != transaction.owner:
-                customer = p.owner
+            if p.pk != transaction.owner.pk:
+                customer = p
                 break
 
         username = transaction.owner.name
@@ -202,6 +169,7 @@ class MerchantReceiptBody(EmailView):
         price = transaction.offer.price_discount()
 
         local_context.update({
+            'transaction': transaction,
             'customer_name': customer.name,
             'business_name': business_name,
             'browser_link': browser_link,

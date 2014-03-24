@@ -35,111 +35,89 @@ border-radius: 500px;
 
 {% thumbnail business_banner.image.image '500x' crop=business_banner.crop as image %}
 <div class="cover center" style="background: url('{{ image.url }}'); max-width: 500px;">
-{% endthumbnail %}
-  <center>
+  {% empty %}
+  <div class="cover center" style="background: url('{{ STATIC_URL_ABSOLUTE }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:'darkgrey' }}.png'); max-width: 500px;">
+    {% endthumbnail %}
     {% thumbnail business_badge.image.image '170x170' crop=business_badge.crop as image %}
     <img class="logo" src="{{ image.url }}" />
     {% endthumbnail %}
-    <h2 class="header" style="color: white;">{{ business_name }}</h2>
-    <center>
-</div>
-<p>Hi {{ username }}!<br />
-  Congratulations on your purchase from {{ business_name }}.<br /><br />
-  Your redemption code is {{ order_number }}.
-</p>
-<hr />
-<h2>Order Details</h2>
-<hr />
-<p>
-  <strong>Payment Method</strong><br />
-  {{ payment_method }}
-</p>
-<p>
-  <em>Paid on {{ payment_date }}</em>
-</p>
-<hr />
-<br />
-{% thumbnail offer_image.image.image '' crop=offer_image.crop as image %}
-<img src="{{ image.url }}"><br />
-{% endthumbnail %}
-<a href="{{ product_link }}">{{ product_name }}</a><br />
-<br />
-Shop: <a href="{{ business_url }}">@{{ business_name }}</a><br />
-Transaction ID: {{ transaction_id }}<br />
-Quantity: {{ quantity }}<br />
-Price: {{ price }}<br />
-<br />
-<hr />
-<h2>Order Total</h2>
-<hr />
-<div class="order-total">
-  <label for="item-total">Item Total:</label>
-  <span class="item-total">{{ item_total }}</span><br />
-  
-  <label for="total">Total: </label>
-  <span class="total">{{ total }}</span><br />
-</div>
-<hr />
-<h2>Questions?</h2>
-<hr />
-<strong>If you have questions about this order,<br />
-  please contact the seller directly.</strong>
-<br />
-<br />
-<br />
-<hr />
-<p>If you were not involved in this transaction, please<br />
-  forward this email to support@knotis.com and we will<br />
-  investigate right away.
+  </div>
+  <p>Hi {{ transaction.owner.name }}!<br />
+    Congratulations on your purchase from {{ business_name }}.<br /><br />
+    Your redemption code is {{ redemption_code }}.
+  </p>
+  <hr />
+  <h2>Order Details</h2>
+  <hr />
+  <p>
+    <strong>Payment Method</strong><br />
+    {{ payment_method }}
+  </p>
+  <p>
+    <em>Paid on {{ payment_date }}</em>
+  </p>
+  <hr />
   <br />
-  Thanks,<br /><br />
-  The Knotis Team
+  {% thumbnail offer_image.image.image '240x240' crop=offer_image.crop as image %}
+  <img src="{{ image.url }}"><br />
+  {% endthumbnail %}
+  <a href="{{ BASE_URL }}/offers/{{ transaction.offer.pk }}/">{{ transaction.offer.title }}</a><br />
+  <br />
+  Shop: <a href="{{ business_url }}">@{{ business_name }}</a><br />
+  Transaction ID: {{ transaction_id }}<br />
+  Price: ${{ price }}<br />
+  <br />
+  <hr />
+  <h2>Questions?</h2>
+  <hr />
+  <strong>If you have questions about this order,<br />
+    please contact the seller directly.</strong>
   <br />
   <br />
+  <br />
+  <hr />
+  <p>If you were not involved in this transaction, please<br />
+    forward this email to support@knotis.com.<br />
+    <br />
+    Thanks,<br /><br />
+    The Knotis Team
+    <br />
+    <br />
 
-  {% endblock content %}
-  {% endif %}
+    {% endblock content %}
+    {% endif %}
 
-  {% if email_type == 'text' %}
-  {% block text_content %}
-  Here's your receipt from {{ business_name }}
-  To view this email in a browser click {{ browser_link }} .
+    {% if email_type == 'text' %}
+    {% block text_content %}
+    Here's your receipt from {{ business_name }}
+    To view this email in a browser click {{ browser_link }} .
 
-  Hi {{ username }}!
-  Congratulations on your purchase from {{ business_name }}.
-  Your order number is {{ order_number }}.
+    Hi {{ transaction.owner.name }}!
+    Congratulations on your purchase from {{ business_name }}.
+    Your order number is {{ order_number }}.
 
-  -----------------------------------------------------------
+    -----------------------------------------------------------
 
-  Order Details:
-  Payment Method: 
-  {{ payment_method }}
+    Order Details:
+    Payment Method: 
+    {{ payment_method }}
 
-  Paid on: 
-  {{ payment_date }}
+    Paid on: 
+    {{ payment_date }}
 
-  Product Name: {{ product_name }}
-  Shop: {{ business_name }}@ {{ business_url }}
-  Transaction ID: {{ transaction_id }}
-  Quantity: {{ quantity }}
-  Price: {{ price }}
+    Product Name: {{ product_name }}
+    Shop: {{ business_name }}@ {{ business_url }}
+    Transaction ID: {{ transaction_id }}
+    Price: ${{ price }}
 
-  -----------------------------------------------------------
+    -----------------------------------------------------------
 
-  Order Total
+    If you were not involved in this transaction, please
+    forward this email to support@knotis.com.
 
-  Item Total: {{ item_total }}
-  Total: {{ total }}
+    Thanks,
 
-  -----------------------------------------------------------
+    The Knotis Team
 
-  If you were not involved in this transaction, please
-  forward this email to support@knotis.com and we will
-  investigate right away.
-
-  Thanks,
-
-  The Knotis Team
-
-  {% endblock text_content %}
-  {% endif %}
+    {% endblock text_content %}
+    {% endif %}

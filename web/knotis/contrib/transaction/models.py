@@ -628,7 +628,7 @@ class Transaction(QuickModel):
     objects = TransactionManager()
 
     def participants(self):
-        transactions = self.objects.filter(
+        transactions = Transaction.objects.filter(
             transaction_type=self.transaction_type,
             transaction_context=self.transaction_context
         )
@@ -743,7 +743,7 @@ class Transaction(QuickModel):
         purchases = Transaction.objects.filter(
             owner=self.owner,
             transaction_type=TransactionTypes.PURCHASE,
-            transaction_context=self.tranaction_context
+            transaction_context=self.transaction_context
         )
 
         return len(purchases)

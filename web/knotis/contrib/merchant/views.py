@@ -33,15 +33,13 @@ from knotis.contrib.offer.views import (
 )
 
 from knotis.contrib.identity.views import (
-    IdentityTile
+    IdentityTile,
+    TransactionTileView
 )
 from knotis.contrib.transaction.models import (
     Transaction,
     TransactionItem,
     TransactionTypes
-)
-from knotis.contrib.transaction.views import (
-    TransactionTileView
 )
 
 

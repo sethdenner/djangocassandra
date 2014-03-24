@@ -21,6 +21,10 @@ from knotis.contrib.denormalize.models import DenormalizedField
 from knotis.contrib.facebook.views import get_facebook_avatar
 from knotis.contrib.gravatar.views import avatar as get_gravatar_avatar
 from knotis.contrib.identity.models import Identity
+from knotis.contrib.relation.models import (
+    Relation,
+    RelationTypes
+)
 
 
 class KnotisUserManager(UserManager):
@@ -49,6 +53,17 @@ class KnotisUserManager(UserManager):
         user_info.save()
 
         return new_user, user_info
+
+    def get_identity_user(
+        self,
+        identity,
+    ):
+        relations = Relation.objects.filter(
+            relation_type=RelationTypes.INDIVIDUAL,
+            related_object_id=identity.pk
+        )
+
+        return relations[0].subject
 
 
 class KnotisUser(DjangoUser):

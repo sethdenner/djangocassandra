@@ -3,10 +3,7 @@ import copy
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from django.shortcuts import get_object_or_404
-from django.http import Http404
 from django.template import (
-    Context,
     RequestContext
 )
 
@@ -17,16 +14,12 @@ from knotis.views import (
 from knotis.contrib.layout.views import GridSmallView
 
 
-from knotis.contrib.identity.models import (
-    Identity,
-    IdentityTypes
-)
+from knotis.contrib.identity.models import Identity
 from knotis.contrib.transaction.models import (
     Transaction,
-    TransactionItem,
     TransactionTypes
 )
-from knotis.contrib.transaction.views import (
+from knotis.contrib.identity.views import (
     TransactionTileView
 )
 
