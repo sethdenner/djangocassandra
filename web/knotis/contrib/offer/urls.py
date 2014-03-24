@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from django.conf.urls.defaults import (
     patterns,
     url
@@ -16,6 +18,7 @@ from views import (
     OfferEditSummaryView,
     OfferPurchaseView,
     OfferPurchaseSuccessView,
+    OfferPurchaseButton,
     NewOfferEmailBody
 )
 
@@ -85,5 +88,9 @@ urlpatterns = patterns(
         r'/create/summary/$',
         OfferEditSummaryView.as_view(),
         name=OfferEditSummaryView.view_name
+    ),
+    url(
+        r'/purchase/$',
+        login_required(OfferPurchaseButton.as_view())
     )
 )

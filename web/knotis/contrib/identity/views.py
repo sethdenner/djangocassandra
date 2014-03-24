@@ -1211,3 +1211,25 @@ class IdentitySwitcherView(FragmentView):
                 logger.exception('failed to get current identity')
 
         return local_context
+
+
+class TransactionTileView(FragmentView):
+    template_name = 'knotis/transaction/transaction_tile.html'
+    view_name = 'transaction_tile'
+
+    def process_context(self):
+        identity = self.context['identity']
+
+        profile_badge_image = get_identity_profile_badge(identity)
+        profile_banner_image = get_identity_profile_banner(identity)
+        profile_banner_color = get_identity_default_profile_banner_color(
+            identity
+        )
+
+        self.context.update({
+            'badge_image': profile_badge_image,
+            'banner_image': profile_banner_image,
+            'profile_banner_color': profile_banner_color
+        })
+
+        return self.context

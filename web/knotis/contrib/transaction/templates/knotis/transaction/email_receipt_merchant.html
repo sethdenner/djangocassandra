@@ -1,6 +1,6 @@
-
 {% extends 'knotis/layout/master_email.html' %}
 {% load render_template_fragment %}
+{% load thumbnail %}
 {% block browser_link %}{{ browser_link }}{% endblock browser_link %}
 
 {% if email_type == 'html' %}
@@ -41,9 +41,9 @@
     <center>
   </div>
 
-    <p>Hi {{ merchant_username }}!<br />
+    <p>Hi {{ transaction.owner.name }}!<br />
     Congratulations on your sale to {{ customer_name }}.<br /><br />
-    Your order number for this transaction is {{ order_number }}.
+    The redemption code for this transaction is {{ redemption_code }}.
     </p>
     <hr />
     <h2>Order Details</h2>
@@ -53,61 +53,24 @@
       {{ payment_method }}
     </p>
     <p>
-      <strong>Billing Address</strong><br />
-      {{ billing_name }}<br />
-      {{ billing_address }}
-    </p>
-    <p>
       <em>Paid on {{ payment_date }}</em>
-    </p>
-    <p>
-      <strong>Shipping Address</strong>
-      {{ shipping_name }}<br />
-      {{ shipping_address }}
     </p>
     <hr />
     <br />
-    <img src="{{ product_img_url }}"><br />
-    <a href="{{ product_link }}">{{ product_name }}</a><br />
+    {% thumbnail offer_image.image.image '240x240' crop=offer_image.crop as image %}
+    <img src="{{ image.url }}"><br />
+    {% endthumbnail %}
+    <a href="{{ BASE_URL }}/offers/{{ transaction.offer.pk }}/">{{ transaction.offer.title }}</a><br />
     <br />
     Shop: <a href="{{ business_url }}">@{{ business_name }}</a><br />
     Transaction ID: {{ transaction_id }}<br />
-    Quantity: {{ quantity }}<br />
-    Price: {{ price }}<br />
+    Price: ${{ price }}<br />
     <br />
-    <hr />
-    <h2>Order Total</h2>
-    <hr />
-    <div class="order-total">
-      <label for="item-total">Item Total:</label>
-      <span class="item-total">{{ item_total }}</span><br />
-      
-      <label for="shipping">Shipping:</label>
-      <span class="shipping">{{ shipping }}</span><br />
-      
-      <label for="sales-tax">Sales Tax:</label>
-      <span class="sales-tax">{{ sales_tax }}</span><br />
-      
-      <label for="processing">Processing:</label>
-      <span class="processing">{{ processing }}</span><br />
-      
-      <label for="total">Total: </label>
-      <span class="total">{{ total }}</span><br />
-    </div>
     <hr />
     <h2>Questions?</h2>
     <hr />
-    <strong>If you have questions about this order,<br />
-    please contact the seller directly.</strong>
-    <br />
-    <br />
-    <a class="button" href="{{ message_customer_link }}">Send Seller A Message</a>
-    <br />
-    <br />
-    <hr />
     <p style="text-align: center;">If you suspect any suspicious activity with this transaction, please<br />
-    forward is email to support@knotis.com and we will<br />
-    investigate right away.
+    forward is email to support@knotis.com.
     <br />
     Thanks,<br /><br />
     The Knotis Team
@@ -122,43 +85,25 @@
 Here's your receipt from {{ business_name }}
 To view this email in a browser click {{ browser_link }} .
   
-Hi {{ username }}!
+Hi {{ transaction.owner.name }}!
 Congratulations on your sale to {{ customer_name }}.
-Your order number for this transaction is {{ order_number }}.
+The redemption code for this transaction is {{ redemption_code }}.
   
 -----------------------------------------------------------
  
 Order Details:
   
 Payment Method: 
-{{ ayment_method }}
-
-Billing Address: 
-{{ billing_name }}
-{{ billing_address }}
+{{ payment_method }}
 
 Paid on: 
 {{ payment_date }}
-
-Shipping Address:
-{{ shipping_name }}
-{{ shipping_address }}
-
 
 Product Name: {{ product_name }}
 Shop: {{ business_name }}@ {{ business_url }}
 Transaction ID: {{ transaction_id }}
 Quantity: {{ quantity }}
-Price: {{ price }}
-
------------------------------------------------------------
-
-Order Total
-
-Item Total: {{ item_total }}
-Shipping: {{ shipping }}
-Sales Tax: {{ sales_tax }}
-Total: {{ total }}
+Price: ${{ price }}
 
 -----------------------------------------------------------
 
@@ -169,8 +114,7 @@ please contact the customer directly.
 {{ message_customer_link }}
 
 If you were not involved in this transaction, please
-forward this email to support@knotis.com and we will
-investigate right away.
+forward this email to support@knotis.com.
 
 Thanks,
 

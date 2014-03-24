@@ -5,11 +5,13 @@ from django.conf.urls.defaults import (
 
 from knotis.utils.regex import REGEX_UUID
 
-from views import MerchantReceiptBody, CustomerReceiptBody
+from views import (
+    MerchantReceiptBody,
+    CustomerReceiptBody
+)
 
 urlpatterns = patterns(
     'knotis.contrib.transaction.views',
-
     url(
         r'^transaction/merchantreceipt/$',
         MerchantReceiptBody.as_view()
@@ -21,5 +23,5 @@ urlpatterns = patterns(
             ')/$'
         ]),
         CustomerReceiptBody.as_view()
-    ),
+    )
 )
