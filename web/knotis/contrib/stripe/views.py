@@ -19,6 +19,7 @@ from knotis.contrib.product.models import (
 )
 from knotis.contrib.inventory.models import Inventory
 from knotis.contrib.offer.models import Offer
+from knotis.contrib.transaction.api import TransactionApi
 from knotis.contrib.transaction.models import Transaction
 
 from knotis.contrib.paypal.views import IPNCallbackView
@@ -134,10 +135,11 @@ class StripeCharge(AJAXView):
                     mode
                 ])
 
-                Transaction.objects.create_purchase(
-                    offer,
-                    current_identity,
-                    buyer_usd,
+                TransactionApi.create_purchase(
+                    request=request,
+                    offer=offer,
+                    buyer=current_identity,
+                    currency=buyer_usd,
                     transaction_context=transaction_context
                 )
 

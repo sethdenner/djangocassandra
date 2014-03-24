@@ -54,6 +54,7 @@ from knotis.contrib.endpoint.models import (
 )
 
 from knotis.contrib.transaction.models import Transaction
+from knotis.contrib.transaction.api import TransactionApi
 from knotis.contrib.transaction.views import (
     CustomerReceiptBody,
     MerchantReceiptBody
@@ -149,72 +150,13 @@ class OfferPurchaseButton(AJAXFragmentView):
                     create_empty=True
                 )
 
-                transactions = Transaction.objects.create_purchase(
-                    offer,
-                    current_identity,
-                    buyer_usd,
+                TransactionApi.create_purchase(
+                    request=request,
+                    offer=offer,
+                    buyer=current_identity,
+                    currency=buyer_usd,
                     transaction_context=transaction_context
                 )
-
-                for t in transactions:
-                    if offer.owner != t.owner:
-                        try:
-                            user_customer = (
-                                KnotisUser.objects.get_identity_user(
-                                    t.owner
-                                )
-                            )
-                            customer_receipt = (
-                                CustomerReceiptBody().generate_email(
-                                    'Knotis - Offer Receipt',
-                                    settings.EMAIL_HOST_USER,
-                                    [user_customer.username], RequestContext(
-                                        request, {
-                                            'transaction_id': t.pk
-                                        }
-                                    )
-                                )
-                            )
-                            customer_receipt.send()
-
-                        except Exception, e:
-                            import pdb; pdb.set_trace()
-                            #shouldn't fail if emails fail to send.
-                            logger.exception(e.message)
-
-                    else:
-                        try:
-                            manager_email_list = []
-                            manager_rels = Relation.objects.get_managers(
-                                t.owner
-                            )
-                            for rel in manager_rels:
-                                manager_user = (
-                                    KnotisUser.objects.get_identity_user(
-                                        rel.subject
-                                    )
-                                )
-                                manager_email_list.append(
-                                    manager_user.username
-                                )
-
-                            merchant_receipt = (
-                                MerchantReceiptBody().generate_email(
-                                    'Knotis - Offer Receipt',
-                                    settings.EMAIL_HOST_USER,
-                                    manager_email_list, RequestContext(
-                                        request, {
-                                            'transaction_id': t.pk
-                                        }
-                                    )
-                                )
-                            )
-                            merchant_receipt.send()
-
-                        except Exception, e:
-                            import pdb; pdb.set_trace()
-                            #shouldn't fail if emails fail to send.
-                            logger.exception(e.message)
 
         except Exception, e:
             logger.exception(e.message)
