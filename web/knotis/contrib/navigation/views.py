@@ -31,9 +31,9 @@ class NavigationTopView(FragmentView):
             return local_context.get(match.group('variable'))
 
         template_tag = re.compile(r'{{\s*(?P<variable>\w+)\s*}}')
-        
+
         if menu_name:
-            navigation_items = NavigationItem.objects.filter(
+            navigation_items = NavigationItem.objects.filter_ordered(
                 menu_name=menu_name
             )
 
@@ -44,15 +44,15 @@ class NavigationTopView(FragmentView):
                 }
                 for item in navigation_items
             ]
-            
+
             local_context.update({
                 'navigation_items': navigation_items,
                 'parsed_navigation_items': parsed_navigation_items
             })
-            
+
         return local_context
 
-        
+
 class NavigationSideView(FragmentView):
     template_name = 'navigation/nav_side.html'
     view_name = 'nav_side'
@@ -60,7 +60,7 @@ class NavigationSideView(FragmentView):
     def process_context(self):
         request = self.request
         local_context = copy.copy(self.context)
-        
+
         if request:
             current_identity_id = request.session.get('current_identity_id')
             try:

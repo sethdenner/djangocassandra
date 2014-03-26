@@ -61,6 +61,16 @@ class RedemptionsGrid(GridSmallView):
             logger.exception('Failed to get current identity')
             raise
 
+        redemption_filter = self.context.get(
+            'redemption_filter',
+            'unredeemed'
+        )
+        if None is redemption_filter:
+            redemption_filter = 'unredeemed'
+
+        redemption_filter = redemption_filter.lower()
+        redeemed = redemption_filter == 'redeemed'
+
         purchases = Transaction.objects.filter(
             owner=current_identity,
             transaction_type=TransactionTypes.PURCHASE
@@ -70,7 +80,7 @@ class RedemptionsGrid(GridSmallView):
             if purchase.reverted:
                 continue
 
-            if not purchase.redemptions():
+            if redeemed == purchase.has_redemptions():
                 transaction_items = TransactionItem.objects.filter(
                     transaction=purchase
                 )
@@ -88,7 +98,7 @@ class RedemptionsGrid(GridSmallView):
                 redemption_tile = TransactionTileView()
                 tile_context = RequestContext(
                     request, {
-                        'redeem': True,
+                        'redeem': not redeemed,
                         'transaction': purchase,
                         'identity': consumer,
                         'TransactionTypes': TransactionTypes
@@ -133,7 +143,8 @@ class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
-            'fixed_side_nav': True
+            'fixed_side_nav': True,
+            'top_menu_name': 'my_redemptions'
         })
 
         return local_context

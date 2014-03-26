@@ -709,6 +709,9 @@ class Transaction(QuickModel):
 
         return len(redemptions)
 
+    def has_redemptions(self):
+        return self.redemptions() != 0
+
     def unredeemed(self):
         return self.purchases() - self.redemptions()
 
