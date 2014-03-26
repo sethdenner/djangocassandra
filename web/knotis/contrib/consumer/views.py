@@ -42,6 +42,16 @@ class MyPurchasesGrid(GridSmallView):
             logger.exception('Failed to get current identity')
             raise
 
+        purchase_filter = self.context.get(
+            'purchase_filter',
+            'unused'
+        )
+        if None is purchase_filter:
+            purchase_filter = 'unused'
+
+        purchase_filter = purchase_filter.lower()
+        unused = purchase_filter == 'unused'
+
         purchases = Transaction.objects.filter(
             owner=current_identity,
             transaction_type=TransactionTypes.PURCHASE
@@ -51,7 +61,7 @@ class MyPurchasesGrid(GridSmallView):
             if purchase.reverted:
                 continue
 
-            if not purchase.redemptions():
+            if unused != purchase.has_redemptions():
                 merchant = purchase.offer.owner
 
                 redemption_tile = TransactionTileView()
@@ -103,6 +113,7 @@ class MyPurchasesView(ContextView):
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
+            'top_menu_name': 'my_purchases',
             'fixed_side_nav': True
         })
 

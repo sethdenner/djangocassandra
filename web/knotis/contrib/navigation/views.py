@@ -33,7 +33,7 @@ class NavigationTopView(FragmentView):
         template_tag = re.compile(r'{{\s*(?P<variable>\w+)\s*}}')
 
         if menu_name:
-            navigation_items = NavigationItem.objects.filter(
+            navigation_items = NavigationItem.objects.filter_ordered(
                 menu_name=menu_name
             )
 

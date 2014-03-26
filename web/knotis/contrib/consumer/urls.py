@@ -12,7 +12,7 @@ from views import (
 urlpatterns = patterns(
     '',
     url(
-        '^purchases(/(?P<filter>)\w*)?/$',
+        '^purchases(/(?P<purchase_filter>\w*))?/$',
         MyPurchasesView.as_view()
     ),
     url(
