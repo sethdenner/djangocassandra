@@ -62,219 +62,273 @@
         }
     },
     {
-        "pk": "d04454f5-2874-404d-ab80-8c34cc0da5de", 
-        "model": "navigation.navigationitem", 
+        "pk": "d04454f5-2874-404d-ab80-8c34cc0da5de",
+        "model": "navigation.navigationitem",
         "fields": {
-            "parent": null, 
-            "title": "Manage Business", 
-            "deleted": false, 
-            "uri": null, 
-            "menu_name": "merchant", 
-            "item_type": "header", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 17:55:09", 
+            "parent": null,
+            "title": "Manage Business",
+            "deleted": false,
+            "uri": null,
+            "menu_name": "merchant",
+            "item_type": "header",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2013-10-10 17:55:09",
             "order": 0
         }
-    }, 
+    },
     {
-        "pk": "2d1ca47b-5af8-4fa9-a48e-0f67d39cb96b", 
-        "model": "navigation.navigationitem", 
+        "pk": "2d1ca47b-5af8-4fa9-a48e-0f67d39cb96b",
+        "model": "navigation.navigationitem",
         "fields": {
-            "parent": null, 
-            "title": "My Offers", 
-            "deleted": false, 
-            "uri": "/my/offers/", 
-            "menu_name": "merchant", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 17:56:01", 
+            "parent": null,
+            "title": "My Offers",
+            "deleted": false,
+            "uri": "/my/offers/",
+            "menu_name": "merchant",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2013-10-10 17:56:01",
             "order": 1
         }
-    }, 
+    },
     {
-        "pk": "763c7422-6ae8-46f3-8bce-4cdd8595b1fa", 
-        "model": "navigation.navigationitem", 
+        "pk": "bbf7d24f-925b-437c-9ae7-f8c19579331d",
+        "model": "navigation.navigationitem",
         "fields": {
-            "parent": null, 
-            "title": "Businesses", 
-            "deleted": false, 
-            "uri": "/businesses/", 
-            "menu_name": "default", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 17:52:40", 
-            "order": 1
-        }
-    }, 
-    {
-        "pk": "56550ab3-6e4d-426c-867a-bab4e5880f4c", 
-        "model": "navigation.navigationitem", 
-        "fields": {
-            "parent": null, 
-            "title": "Offers", 
-            "deleted": false, 
-            "uri": "/offers/", 
-            "menu_name": "default", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 17:50:48", 
+            "parent": null,
+            "title": "Offers",
+            "deleted": false,
+            "uri": "/id/{{ establishment_id }}/offers",
+            "menu_name": "identity_profile",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2013-10-10 19:13:34",
             "order": 0
         }
-    }, 
+    },
     {
-        "pk": "bbf7d24f-925b-437c-9ae7-f8c19579331b", 
-        "model": "navigation.navigationitem", 
+        "pk": "763c7422-6ae8-46f3-8bce-4cdd8595b1fa",
+        "model": "navigation.navigationitem",
         "fields": {
-            "parent": null, 
-            "title": "Active", 
-            "deleted": false, 
-            "uri": "/my/offers/active/", 
-            "menu_name": "my_offers", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 19:13:34", 
-            "order": 1
-        }
-    }, 
-    {
-        "pk": "9c29a5b6-a575-4c0c-ade1-db35873f7cfc", 
-        "model": "navigation.navigationitem", 
-        "fields": {
-            "parent": null, 
-            "title": "Pending", 
-            "deleted": false, 
-            "uri": "/my/offers/pending/", 
-            "menu_name": "my_offers", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 19:13:05", 
+            "parent": null,
+            "title": "Businesses",
+            "deleted": false,
+            "uri": "/businesses/",
+            "menu_name": "default",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2013-10-10 17:52:40",
             "order": 0
         }
-    }, 
+    },
     {
-        "pk": "6e54890c-b93c-4c0d-9fd7-a50359d2d555", 
-        "model": "navigation.navigationitem", 
+        "pk": "56550ab3-6e4d-426c-867a-bab4e5880f4c",
+        "model": "navigation.navigationitem",
         "fields": {
-            "parent": null, 
-            "title": "Completed", 
-            "deleted": false, 
-            "uri": "/my/offers/completed/", 
-            "menu_name": "my_offers", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 19:13:56", 
-            "order": 2
-        }
-    }, 
-    {
-        "pk": "53b739b2-9a96-4360-b697-f1b6103c02e6", 
-        "model": "navigation.navigationitem", 
-        "fields": {
-            "parent": null, 
-            "title": "Redeem", 
-            "deleted": false, 
-            "uri": "/my/offers/redeem/", 
-            "menu_name": "my_offers", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 19:15:15", 
-            "order": 3
-        }
-    }, 
-    {
-        "pk": "bbf7d24f-925b-437c-9ae7-f8c19579331d", 
-        "model": "navigation.navigationitem", 
-        "fields": {
-            "parent": null, 
-            "title": "Offers", 
-            "deleted": false, 
-            "uri": "/id/{{ establishment_id }}/offers", 
-            "menu_name": "identity_profile", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 19:13:34", 
-            "order": 0
-        }
-    }, 
-    {
-        "pk": "bbf7d24f-925b-437c-9ae7-f8c19579331e", 
-        "model": "navigation.navigationitem", 
-        "fields": {
-            "parent": null, 
-            "title": "About", 
-            "deleted": false, 
-            "uri": "/id/{{ establishment_id }}/about", 
-            "menu_name": "identity_profile", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 19:13:34", 
+            "parent": null,
+            "title": "Offers",
+            "deleted": false,
+            "uri": "/offers/",
+            "menu_name": "default",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2013-10-10 17:50:48",
             "order": 1
         }
-    },     
+    },
     {
-        "pk": "e9b2c39c-46b0-4731-8e59-89e170be7351", 
-        "model": "navigation.navigationitem", 
+        "pk": "bbf7d24f-925b-437c-9ae7-f8c19579331c",
+        "model": "navigation.navigationitem",
         "fields": {
-            "parent": null, 
-            "title": "My Establishments", 
-            "deleted": false, 
-            "uri": "/my/establishments/", 
-            "menu_name": "merchant", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-10 17:56:26", 
+            "parent": null,
+            "title": "Contact",
+            "deleted": false,
+            "uri": "/id/{{ establishment_id }}/contact",
+            "menu_name": "identity_profile",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2013-10-10 19:13:34",
             "order": 2
         }
     },
     {
-        "pk": "edb53ec5-a362-40bb-a43c-e02334c8229b", 
-        "model": "navigation.navigationitem", 
+        "pk": "bbf7d24f-925b-437c-9ae7-f8c19579331e",
+        "model": "navigation.navigationitem",
         "fields": {
-            "parent": null, 
-            "title": "Manage QRCode", 
-            "deleted": false, 
-            "uri": "/my/qrcodes/", 
-            "menu_name": "merchant", 
-            "item_type": "link", 
-            "content_type": [
-                "navigation", 
-                "navigationitem"
-            ], 
-            "pub_date": "2013-10-14 18:51:09", 
+            "parent": null,
+            "title": "About",
+            "deleted": false,
+            "uri": "/id/{{ establishment_id }}/about",
+            "menu_name": "identity_profile",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2013-10-10 19:13:34",
+            "order": 1
+        }
+    },
+    {
+        "pk": "edb53ec5-a362-40bb-a43c-e02334c8229b",
+        "model": "navigation.navigationitem",
+        "fields": {
+            "parent": null,
+            "title": "Manage QRCode",
+            "deleted": false,
+            "uri": "/my/qrcodes/",
+            "menu_name": "merchant",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2013-10-14 18:51:09",
             "order": 3
+        }
+    },
+    {
+        "pk": "bbf7d24f-925b-437c-9ae7-f8c19579331b",
+        "model": "navigation.navigationitem",
+        "fields": {
+            "parent": null,
+            "title": "Active",
+            "deleted": false,
+            "uri": "/my/offers/active/",
+            "menu_name": "my_offers",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2013-10-10 19:13:34",
+            "order": 1
+        }
+    },
+    {
+        "pk": "1e88d927-5c3d-4571-83bf-9e7f36f1b4b5",
+        "model": "navigation.navigationitem",
+        "fields": {
+            "parent": null,
+            "title": "Redeem Offers",
+            "deleted": false,
+            "uri": "/my/redemptions/",
+            "menu_name": "merchant",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2014-03-10 13:22:56",
+            "order": 5
+        }
+    },
+    {
+        "pk": "296e531f-1734-4bd6-93b2-bd6aaf8ab66b",
+        "model": "navigation.navigationitem",
+        "fields": {
+            "parent": null,
+            "title": "My Customers",
+            "deleted": false,
+            "uri": "/my/customers/",
+            "menu_name": "merchant",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2014-03-10 13:23:17",
+            "order": 6
+        }
+    },
+    {
+        "pk": "9c29a5b6-a575-4c0c-ade1-db35873f7cfc",
+        "model": "navigation.navigationitem",
+        "fields": {
+            "parent": null,
+            "title": "Pending",
+            "deleted": false,
+            "uri": "/my/offers/pending/",
+            "menu_name": "my_offers",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2013-10-10 19:13:05",
+            "order": 0
+        }
+    },
+    {
+        "pk": "bfcaf764-ac49-478f-97cd-c3ffd3866f84",
+        "model": "navigation.navigationitem",
+        "fields": {
+            "parent": null,
+            "title": "Social Media",
+            "deleted": false,
+            "uri": "/settings/social/",
+            "menu_name": "merchant",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2014-03-10 13:22:29",
+            "order": 4
+        }
+    },
+    {
+        "pk": "4f715a66-f313-4b31-93d0-f1cb4fe58a8a",
+        "model": "navigation.navigationitem",
+        "fields": {
+            "parent": null,
+            "title": "My Purchases",
+            "deleted": false,
+            "uri": "/my/purchases/",
+            "menu_name": "consumer",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2014-03-10 13:24:06",
+            "order": 1
+        }
+    },
+    {
+        "pk": "6e54890c-b93c-4c0d-9fd7-a50359d2d555",
+        "model": "navigation.navigationitem",
+        "fields": {
+            "parent": null,
+            "title": "Completed",
+            "deleted": false,
+            "uri": "/my/offers/completed/",
+            "menu_name": "my_offers",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2013-10-10 19:13:56",
+            "order": 2
+        }
+    },
+    {
+        "pk": "53b739b2-9a96-4360-b697-f1b6103c02e6",
+        "model": "navigation.navigationitem",
+        "fields": {
+            "parent": null,
+            "title": "Redeem",
+            "deleted": false,
+            "uri": "/my/offers/redeem/",
+            "menu_name": "my_offers",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2013-10-10 19:15:15",
+            "order": 3
+        }
+    },
+    {
+        "pk": "e9b2c39c-46b0-4731-8e59-89e170be7351",
+        "model": "navigation.navigationitem",
+        "fields": {
+            "parent": null,
+            "title": "My Establishments",
+            "deleted": false,
+            "uri": "/my/establishments/",
+            "menu_name": "merchant",
+            "item_type": "link",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2013-10-10 17:56:26",
+            "order": 2
+        }
+    },
+    {
+        "pk": "bd55fae2-8246-4b6b-a831-93b2b22b94ef",
+        "model": "navigation.navigationitem",
+        "fields": {
+            "parent": null,
+            "title": "My Account",
+            "deleted": false,
+            "uri": null,
+            "menu_name": "consumer",
+            "item_type": "header",
+            "content_type": "c500e8e6-61c2-44b6-8d00-0c2923bd5a4e",
+            "pub_date": "2014-03-10 13:23:39",
+            "order": 0
         }
     },
     {
