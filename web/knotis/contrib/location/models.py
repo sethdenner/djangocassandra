@@ -15,9 +15,6 @@ from knotis.contrib.quick.fields import (
 
 from geopy.geocoders import Nominatim
 
-from django.utils.log import logging
-logger = logging.getLogger(__name__)
-
 from django.conf import settings
 
 
