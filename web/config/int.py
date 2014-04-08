@@ -118,3 +118,10 @@ TWITTER_DEFAULT_RESULT_COUNT = 10
 
 STRIPE_API_KEY = 'pk_test_rgfejLBPEm00QSaRxWcg97UF'
 STRIPE_API_SECRET = 'sk_test_aBN6tc1grlIWsE0nW7LX3Mh5'
+STRIPE_MODE_PERCENT = 0.029
+STRIPE_MODE_FLAT = 0.30
+
+KNOTIS_MODE_PERCENT = 0.05
+
+NOMINATIM_API = 'http://next.knotis.com/nominatim/search/'
+NOMINATIM_REVERSE_API = 'http://next.knotis.com/nominatim/reverse/'

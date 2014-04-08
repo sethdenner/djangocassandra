@@ -1,5 +1,3 @@
-from django.utils.log import logging
-logger = logging.getLogger(__name__)
 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.geos import Point
@@ -16,6 +14,11 @@ from knotis.contrib.quick.fields import (
 )
 
 from geopy.geocoders import Nominatim
+
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
+
+from django.conf import settings
 
 
 class Location(QuickModel):
@@ -46,12 +49,17 @@ class Location(QuickModel):
     def update_geocode(self):
         if not self.latitude or not self.longitude:
             geocoder = Nominatim()
-            address, (latitude, longitude) = geocoder.geocode(
+            # This is how one changes the api server.  Found by looking at
+            # geopy source:
+            # https://github.com/geopy/geopy/blob/master/geopy/geocoders/osm.py#L48
+            geocoder.api = settings.NOMINATIM_API
+            location = geocoder.geocode(
                 self.address,
                 exactly_one=True
             )
-            self.latitude = latitude
-            self.longitude = longitude
+
+            address, (self.latitude, self.longitude) = location
+
         return self
 
 
