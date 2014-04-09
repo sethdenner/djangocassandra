@@ -123,6 +123,28 @@ class ApiView(AJAXView):
     api_url = None
     api_version = 'v1'
 
+    class Status:
+        Error = 'ERROR'
+        Ok = 'OK'
+
+    class Errors:
+        PermissionDenied = (
+            'You do not have permission to access this resource.'
+        )
+        DoesNotExist = (
+            'The resource you requested does not exist.'
+        )
+        FieldRequired = (
+            'This field is required.'
+        )
+        ExceptionThrown = (
+            'An exception occured on the server while processing your request.'
+        )
+        Unknown = (
+            'An unknown error has occured. '
+            'Check your logs or contact support@knotis.com'
+        )
+
     @csrf_exempt
     @never_cache
     def dispatch(
@@ -155,7 +177,7 @@ class ApiView(AJAXView):
     @classmethod
     def urls(
         cls,
-        login_required=False
+        login_required=True
     ):
         if None == cls.api_url:
             raise Exception('must define a url for ApiView')

@@ -73,6 +73,17 @@ from knotis.contrib.endpoint.models import (
 )
 
 
+def get_current_identity(request):
+    current_identity_id = request.session['current_identity_id']
+    try:
+        current_identity = Identity.objects.get(pk=current_identity_id)
+        return current_identity
+
+    except:
+        logger.exception('Failed to get current identity')
+        return None
+
+
 def get_identity_image(identity, context):
     try:
         image = ImageInstance.objects.get(
