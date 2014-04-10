@@ -1,3 +1,4 @@
+{% load thumbnail %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -7,10 +8,11 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <link rel="shortcut icon" href="">
-        <title>Knotis Template | Voucher</title>
+        <title>Knotis | Offer Voucher</title>
 
         <!-- Custom Styles -->
-        <link href="{{ static_files }}knotis/consumer/css/printed_voucher_screen.css" rel="stylesheet" type="text/css"> 
+        <link href="{{ static_files }}knotis/consumer/css/printed_voucher_screen.css" rel="stylesheet" type="text/css">
+        <link href="{{ static_files }}knotis/consumer/css/printed_voucher_print.css" media="print" rel="stylesheet" type="text/css"> 
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -24,7 +26,7 @@
             <header>
                 <div class="row">
                     <div class="col-xs-12">
-                        <a href="#"><img src="{{ static_files }}knotis/consumer/img/_knotis_logo.png" alt="Knotis"/></a>
+                        <a target="_blank" href="{{ BASE_URL }}"><img src="{{ static_files }}knotis/consumer/img/_knotis_logo.png" alt="Knotis"/></a>
                     </div>
                 </div>
             </header>
@@ -34,34 +36,40 @@
                 <div class="voucher">
 
                     <div class="row">
-                        <img class="coverPhoto" src="{{ static_files }}knotis/consumer/img/bg_business.jpg"/>
+                        {% thumbnail business_cover.image.image 'x312' crop=business_cover.crop as img %}
+                        <img class="coverPhoto" src="{{ img.url }}"/>
+                        {% endthumbnail %}
                         <div class="col-xs-12">
-                            <a href="#"><img class="busLogo" src="{{ static_files }}knotis/consumer/img/logo_sushi.png"/></a>
+                            {% thumbnail business_logo.image.image 'x130' crop=business_logo.crop as img %}
+                            <a target="_blank" href="{{ BASE_URL }}/id/{{ transaction.offer.owner.pk }}/"><img class="busLogo" src="{{ img.url }}"/></a>
+                            {% endthumbnail %}
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-xs-12 offerTitle">
-                            <h1>$50 to spend on Sushi and Sake</h1>
+                            <h1>{{ transaction.offer.title }}</h1>
                         </div>
                     </div>
 
                     <div class="row busTitle">
                         <div class="col-xs-12">
-                            <a href="#">Blue C Sushi</a>
+                            <a target="_blank" href="{{ BASE_URL }}/id/{{ transaction.offer.owner.pk }}/">{{ transaction.offer.owner.name }}</a>
                         </div>
                     </div>
 
+                    {% if qrcode %}
                     <div class="row">
                         <div class="col-xs-12">
                             <img class="qrCode" src="{{ static_files }}knotis/consumer/img/img_qrCode.png"/>
                         </div>
                     </div>
+                    {% endif %}
 
                     <div class="row dataPoint">
                         <div class="col-xs-12">
                             <h4>Voucher Number</h4>
-                            <p>LSA1234567</p>
+                            <p>{{ transaction.redemption_code }}</p>
                         </div>
                     </div>                    
 
@@ -69,17 +77,19 @@
                     <div class="row dataPoint">
                         <div class="col-xs-12">
                             <h4>Owner Of Voucher</h4>
-                            <p>David D. Ortiz</p>
+                            <p>{{ transaction.owner.name }}</p>
                         </div>
                     </div>                    
 
 
+                    {% if transaction.offer.end_time %}
                     <div class="row dataPoint">
                         <div class="col-xs-12">
                             <h4>Valid Through</h4>
-                            <p>September, 30, 2014</p>
+                            <p>{{ transaction.offer.end_time|date:'F, j Y'|default:'Forever' }}</p>
                         </div>
                     </div>                    
+                    {% endif %}
 
 
                     <div class="row">
@@ -97,11 +107,7 @@
                         <div class="col-xs-12">
                             <h4>The Fine Print</h4>
                             <ol>
-                                <li>Limit (1) Per Person</li>
-                                <li>1 additional as a gift</li>
-                                <li>May be used across multiple visits/orders</li>
-                                <li>Residual funds may be applied toward shipping costs</li>
-                                <li>Tax not included</li>
+                                <li>{{ transaction.offer.restrictions|default:'No restrictions.' }}</li>
                             </ol>
                         </div>                   
                     </div>
@@ -115,18 +121,20 @@
                                 <li>Entire value must be used in one visit</li>
                                 <li>Cannot be combined with any other promotion</li>
                             </ol>
-                            <a href="#">Knotis Terms and Conditions</a>
+                            <a target="_blank" href="{{ BASE_URL }}/terms-and-conditions/">Knotis Terms and Conditions</a>
 
-                            <p>Promotional value <b>EXPIRES April, 01 2014</b></p>
-                            <p>You can always use this voucher for the amount paid ($40) which will never expire.</p>
+                            {% if transaction.offer.end_time %}
+                            <p>Promotional value <b>EXPIRES {{ transaction.offer.end_time|date:'F, j Y' }}</b></p>
+                            <p>You can always use this voucher for the amount paid (${{ transaction.offer.price_discount_formatted }}) which will never expire.</p>
+                            {% endif %}
                         </div>                   
                     </div>                      
 
                     <div class="row">
                         <div class="col-xs-12">
                             <h2>Need Assistance?</h2>
-                            <a href="#">Call: 206-429-5049</a>
-                            <a href="#">E-mail: support@knotis.com</a>
+                            <a target="_blank" href="tel:206-429-5049">Call: 206-429-5049</a>
+                            <a target="_blank" href="mailto:support@knotis.com">E-mail: support@knotis.com</a>
                         </div>
                     </div>
 

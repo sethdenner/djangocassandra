@@ -25,7 +25,7 @@
     {% if redeem %}
     <button data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action redeem-offer">Redeem</button>
     {% else %}
-    <button data-offer-id="{{ transaction.pk }}" class="btn btn-primary action redeem-offer">Download Voucher</button>
+    <button data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action print-voucher">View Printable Voucher</button>
     {% endif %}
     {% endif %}
   </div>

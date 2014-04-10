@@ -19,7 +19,7 @@ urlpatterns = patterns(
     '',
     url(
         '^purchases(/(?P<purchase_filter>\w*))?/$',
-        MyPurchasesView.as_view()
+        login_required(MyPurchasesView.as_view())
     ),
     url(
         '^following/$',

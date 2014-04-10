@@ -43,7 +43,7 @@ caption, th, td {
   vertical-align: middle;
 }
 
-/* line 30, ../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+n/* line 30, ../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.3/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 q, blockquote {
   quotes: none;
 }
@@ -343,11 +343,6 @@ th {
     text-decoration: underline;
   }
 
-  /* line 198, ../sass/_bootstrap.scss */
-  a[href]:after {
-    content: " (" attr(href) ")";
-  }
-
   /* line 201, ../sass/_bootstrap.scss */
   abbr[title]:after {
     content: " (" attr(title) ")";
@@ -375,11 +370,6 @@ th {
   tr,
   img {
     page-break-inside: avoid;
-  }
-
-  /* line 221, ../sass/_bootstrap.scss */
-  img {
-    max-width: 100% !important;
   }
 
   /* line 226, ../sass/_bootstrap.scss */
@@ -700,7 +690,7 @@ h6,
 
 /* line 468, ../sass/_bootstrap.scss */
 p {
-  margin: 0 0 10px;
+  margin: 0 0;
 }
 
 /* line 471, ../sass/_bootstrap.scss */
@@ -8355,7 +8345,7 @@ header img {
 }
 /* line 8, ../sass/_voucher.scss */
 .voucher ol li, .voucher ul li {
-  padding: 10px 0;
+  padding: 0 0;
 }
 /* line 11, ../sass/_voucher.scss */
 .voucher ul li {
@@ -8377,7 +8367,7 @@ h2 {
   line-height: 20px;
   font-size: 14px;
   padding-bottom: 10px;
-  margin: 50px 0;
+  margin: 0 0;
 }
 
 /* line 30, ../sass/_voucher.scss */
@@ -8421,4 +8411,8 @@ h2 {
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 12px;
+}
+
+.print-break-before {
+    page-break-before: always
 }
