@@ -9,15 +9,12 @@ from django.template import (
     RequestContext
 )
 from django.core.exceptions import PermissionDenied
-from django.http import (
-    HttpResponseServerError
-)
+from django.http import HttpResponseServerError
+
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from knotis.utils.view import format_currency
-
-from knotis.contrib.auth.models import KnotisUser
 
 from knotis.contrib.offer.models import (
     Offer,
@@ -38,8 +35,6 @@ from knotis.contrib.location.models import (
     LocationItem
 )
 
-from knotis.contrib.relation.models import Relation
-
 from knotis.contrib.identity.models import (
     Identity,
     IdentityBusiness,
@@ -53,12 +48,7 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes
 )
 
-from knotis.contrib.transaction.models import Transaction
 from knotis.contrib.transaction.api import TransactionApi
-from knotis.contrib.transaction.views import (
-    CustomerReceiptBody,
-    MerchantReceiptBody
-)
 
 from knotis.contrib.stripe.views import (
     StripeButton

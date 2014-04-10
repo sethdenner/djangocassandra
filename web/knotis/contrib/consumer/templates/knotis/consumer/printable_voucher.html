@@ -1,0 +1,145 @@
+{% load thumbnail %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="shortcut icon" href="">
+        <title>Knotis | Offer Voucher</title>
+
+        <!-- Custom Styles -->
+        <link href="{{ static_files }}knotis/consumer/css/printed_voucher_screen.css" rel="stylesheet" type="text/css">
+        <link href="{{ static_files }}knotis/consumer/css/printed_voucher_print.css" media="print" rel="stylesheet" type="text/css"> 
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+    </head>
+
+    <body>
+        <div class="container">
+            <header>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <a target="_blank" href="{{ BASE_URL }}"><img src="{{ static_files }}knotis/consumer/img/_knotis_logo.png" alt="Knotis"/></a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Insert template specific content here -->
+            <div class="contentBlock">
+                <div class="voucher">
+
+                    <div class="row">
+                        {% thumbnail business_cover.image.image 'x312' crop=business_cover.crop as img %}
+                        <img class="coverPhoto" src="{{ img.url }}"/>
+                        {% endthumbnail %}
+                        <div class="col-xs-12">
+                            {% thumbnail business_logo.image.image 'x130' crop=business_logo.crop as img %}
+                            <a target="_blank" href="{{ BASE_URL }}/id/{{ transaction.offer.owner.pk }}/"><img class="busLogo" src="{{ img.url }}"/></a>
+                            {% endthumbnail %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 offerTitle">
+                            <h1>{{ transaction.offer.title }}</h1>
+                        </div>
+                    </div>
+
+                    <div class="row busTitle">
+                        <div class="col-xs-12">
+                            <a target="_blank" href="{{ BASE_URL }}/id/{{ transaction.offer.owner.pk }}/">{{ transaction.offer.owner.name }}</a>
+                        </div>
+                    </div>
+
+                    {% if qrcode %}
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <img class="qrCode" src="{{ static_files }}knotis/consumer/img/img_qrCode.png"/>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="row dataPoint">
+                        <div class="col-xs-12">
+                            <h4>Voucher Number</h4>
+                            <p>{{ transaction.redemption_code }}</p>
+                        </div>
+                    </div>                    
+
+
+                    <div class="row dataPoint">
+                        <div class="col-xs-12">
+                            <h4>Owner Of Voucher</h4>
+                            <p>{{ transaction.owner.name }}</p>
+                        </div>
+                    </div>                    
+
+
+                    {% if transaction.offer.end_time %}
+                    <div class="row dataPoint">
+                        <div class="col-xs-12">
+                            <h4>Valid Through</h4>
+                            <p>{{ transaction.offer.end_time|date:'F, j Y'|default:'Forever' }}</p>
+                        </div>
+                    </div>                    
+                    {% endif %}
+
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h2>Instructions</h2>
+                            <ol>
+                                <li>1) Pull up voucher on mobile phone (or print it out).</li>
+                                <li>2) Present this voucher to the merchant upon arrival</li>
+                                <li><b>Enjoy!</b></li>
+                            </ol>
+                        </div>                   
+                    </div>                     
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h4>The Fine Print</h4>
+                            <ol>
+                                <li>{{ transaction.offer.restrictions|default:'No restrictions.' }}</li>
+                            </ol>
+                        </div>                   
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h4>Except where noted in the Fine Print:</h4>
+                            <ol>
+                                <li>No cash value back</li>
+                                <li>Tax and gratuity are not included</li>
+                                <li>Entire value must be used in one visit</li>
+                                <li>Cannot be combined with any other promotion</li>
+                            </ol>
+                            <a target="_blank" href="{{ BASE_URL }}/terms-and-conditions/">Knotis Terms and Conditions</a>
+
+                            {% if transaction.offer.end_time %}
+                            <p>Promotional value <b>EXPIRES {{ transaction.offer.end_time|date:'F, j Y' }}</b></p>
+                            <p>You can always use this voucher for the amount paid (${{ transaction.offer.price_discount_formatted }}) which will never expire.</p>
+                            {% endif %}
+                        </div>                   
+                    </div>                      
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h2>Need Assistance?</h2>
+                            <a target="_blank" href="tel:206-429-5049">Call: 206-429-5049</a>
+                            <a target="_blank" href="mailto:support@knotis.com">E-mail: support@knotis.com</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
