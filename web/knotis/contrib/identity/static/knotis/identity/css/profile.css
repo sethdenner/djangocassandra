@@ -398,3 +398,16 @@ img.away {
     position: relative;
     top: -7px;
 }
+
+a.delete-x {
+    position: relative;
+    top: 10px;
+    left: 10px;
+    font-size: 2em;
+    color: #fff;
+    font-weight: bold;
+    z-index: 1000;
+}
+a.delete-x:hover {
+    text-decoration: none;
+}

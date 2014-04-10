@@ -1,13 +1,28 @@
 import copy
 
+from weasyprint import HTML
+
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
+
+from django.conf import settings
+from django.shortcuts import get_object_or_404
+
+from django.core.exceptions import PermissionDenied
 
 from django.template import (
     RequestContext
 )
 
+from django.http import (
+    HttpResponse,
+    HttpResponseServerError
+)
+
+from django.views.generic import View
+
 from knotis.views import (
+    FragmentView,
     ContextView
 )
 
@@ -20,6 +35,9 @@ from knotis.contrib.transaction.models import (
     TransactionTypes
 )
 from knotis.contrib.identity.views import (
+    get_current_identity,
+    get_identity_profile_banner,
+    get_identity_profile_badge,
     TransactionTileView
 )
 
@@ -105,7 +123,7 @@ class MyPurchasesView(ContextView):
         post_scripts = [
             'knotis/layout/js/layout.js',
             'navigation/js/navigation.js',
-            'knotis/merchant/js/redemptions.js'
+            'knotis/consumer/js/purchases.js'
         ]
 
         local_context = copy.copy(self.context)
@@ -125,3 +143,94 @@ class MyRelationsView(ContextView):
 
     def process_context(self):
         return self.context
+
+
+class PrintedVoucher(FragmentView):
+    template_name = 'knotis/consumer/printable_voucher.html'
+    view_name = 'printed_voucher'
+
+    def process_context(self):
+        request = self.context.get('request')
+        current_identity = get_current_identity(request)
+
+        transaction_id = self.context.get('transaction_id')
+        transaction = get_object_or_404(
+            Transaction,
+            pk=transaction_id,
+            transaction_type=TransactionTypes.PURCHASE
+        )
+
+        if transaction.owner != current_identity:
+            message = 'This transaction does not belong to this user.'
+            logger.error(message)
+            raise PermissionDenied(message)
+
+        static_files = self.context.get('static_files')
+        if not static_files:
+            static_files = settings.STATIC_URL_ABSOLUTE
+
+        business_cover = get_identity_profile_banner(transaction.offer.owner)
+        business_logo = get_identity_profile_badge(transaction.offer.owner)
+
+        self.context.update({
+            'transaction': transaction,
+            'business_cover': business_cover,
+            'business_logo': business_logo,
+            'static_files': static_files,
+            'BASE_URL': settings.BASE_URL
+        })
+
+        return self.context
+
+
+class DownloadPrintedVoucher(View):
+    VOUCHER_SAVE_LOCATION = ''
+
+    def get(
+        self,
+        request,
+        transaction_id=None,
+        *args,
+        **kwargs
+    ):
+        voucher_view = PrintedVoucher()
+        voucher_html = voucher_view.render_template_fragment(RequestContext(
+            request, {
+                'transaction_id': transaction_id,
+                'static_files': ''.join([
+                    'file://',
+                    settings.STATIC_ROOT
+                ])
+            }
+        ))
+
+        filename = 'redemption_code.pdf'
+
+        html = HTML(
+            media_type='screen',
+            string=voucher_html
+        )
+
+        try:
+            html.write_pdf(filename)
+
+        except Exception:
+            logger.exception('Failed to write pdf file.')
+            return HttpResponseServerError(
+                'Failed to generate voucher pdf.'
+            )
+
+        fp = open(filename, 'rb')
+        response = HttpResponse(
+            fp.read(),
+            content_type='application/pdf'
+        )
+        fp.close()
+
+        response['Content-Disposition'] = ''.join([
+            'attachment; filename="',
+            filename,
+            '"'
+        ])
+
+        return response

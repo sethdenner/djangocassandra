@@ -25,20 +25,27 @@ from knotis.contrib.relation.api import (
     FollowApi
 )
 
+from knotis.contrib.media.api import (
+    ImageApiView,
+    ImageInstanceApiView
+)
+
 
 urlpatterns = patterns(
     '',
-    AuthUserApi.urls(),
-    AuthenticationApi.urls(),
-    AuthForgotPasswordApi.urls(),
-    IdentityApi.urls(login_required=True),
-    IdentityIndividualApi.urls(login_required=True),
-    IdentityBusinessApi.urls(login_required=True),
-    IdentityEstablishmentApi.urls(login_required=True),
-    OfferApi.urls(login_required=True),
-    OfferPublishApi.urls(login_required=True),
-    LocationApi.urls(login_required=True),
-    RedemptionApi.urls(login_required=True),
+    AuthUserApi.urls(login_required=False),
+    AuthenticationApi.urls(login_required=False),
+    AuthForgotPasswordApi.urls(login_required=True),
+    IdentityApi.urls(),
+    IdentityIndividualApi.urls(),
+    IdentityBusinessApi.urls(),
+    IdentityEstablishmentApi.urls(),
+    OfferApi.urls(),
+    OfferPublishApi.urls(),
+    LocationApi.urls(),
+    RedemptionApi.urls(),
     RelationApi.urls(),
-    FollowApi.urls()
+    FollowApi.urls(),
+    ImageApiView.urls(),
+    ImageInstanceApiView.urls()
 )

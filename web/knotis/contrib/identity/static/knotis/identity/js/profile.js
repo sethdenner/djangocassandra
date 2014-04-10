@@ -155,5 +155,33 @@
     $('.linked-phone-number').link_field('linkphonenum');
     $('.linkedaddress').link_field('linkaddress');
     $('.linkedwebsite').link_field('linkweb');
-    
+
+    $('a.delete-x').click(function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        var $this = $(this);
+        $.ajax(
+            $this.attr('href'), {
+                type: $this.attr('data-method'),
+                data: {
+                    pk: $this.attr('data-pk')
+                }
+            }
+        ).done(function(data, status, jqxhr){
+            if (data.errors) {
+                var message = 'An error has occured.';
+                if (data.errors.exception) {
+                    message = data.errors.exception;
+                } 
+                alert(message);
+            } else {
+                $('#about_carousel').carousel('next');
+                $this.parent().parent().remove();
+
+            }
+        });
+            
+    });
+   
 })(jQuery);

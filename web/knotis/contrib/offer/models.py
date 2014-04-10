@@ -403,7 +403,8 @@ class Offer(QuickModel):
         return self
 
     def complete(self):
-        pass
+        self.completed = True
+        self.save()
 
     def available(self):
         now = datetime.datetime.utcnow()
@@ -413,7 +414,8 @@ class Offer(QuickModel):
             self.published and
             self.start_time <= now and
             (self.end_time is None or self.end_time > now) and
-            (self.unlimited or self.purchased < self.stock)
+            (self.unlimited or self.purchased < self.stock) and
+            not self.completed
         )
 
     def description_formatted_html(self):

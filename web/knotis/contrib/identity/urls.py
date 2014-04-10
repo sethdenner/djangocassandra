@@ -98,9 +98,5 @@ urlpatterns = patterns(
     url(
         r'^identity/first/$',
         FirstIdentityView.as_view()
-    ),
-    IdentityApi.urls(),
-    IdentityIndividualApi.urls(),
-    IdentityBusinessApi.urls(),
-    IdentityEstablishmentApi.urls()
+    )
 )
