@@ -47,6 +47,9 @@ class QuickManager(polymodels.managers.PolymorphicManager):
             **kwargs
         )
 
+    def all(self, deleted=False):
+        self.filter(deleted=deleted)
+
 
 @staticmethod
 def get_form_class(model, extra=0):
@@ -83,7 +86,7 @@ class QuickModelBase(object):
     def model_type(self):
         #return str(type(self))
         return u'%s' % type(self).__name__
-    
+
     def get_fields_dict(self):
         fields = {
             field.name: (
@@ -126,7 +129,7 @@ class QuickModelBase(object):
         root = "/"+type(self).__name__.lower()
         try:
             return root+("/%i/" % self.id)
-        except: 
+        except:
             return root
 
     #FIXME -- I don't like this method name. Better way to do this?
@@ -143,8 +146,8 @@ class QuickModel(QuickModelBase, polymodels.models.PolymorphicModel ):
     pub_date = QuickDateTimeField('date published', auto_now_add=True)
     objects = QuickManager()
 
-    # looks at polymodels and generates a choice field based arround all the proxy classes of this class.	
-    # types = QuickSubTypeField() 
+    # looks at polymodels and generates a choice field based arround all the proxy classes of this class.
+    # types = QuickSubTypeField()
 
     class Meta:
         abstract = True
@@ -158,7 +161,7 @@ class QuickModel(QuickModelBase, polymodels.models.PolymorphicModel ):
     def delete(self):
         self.deleted = True
         super(QuickModel, self).save()
-    
+
     @classmethod
     def get_filterable_fields(cls):
         filterable_fields = []
@@ -167,4 +170,4 @@ class QuickModel(QuickModelBase, polymodels.models.PolymorphicModel ):
                 filterable_fields.append(field.name)
 
         return filterable_fields
-        
+
