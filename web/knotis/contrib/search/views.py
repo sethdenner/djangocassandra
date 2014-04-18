@@ -67,7 +67,7 @@ class SearchResultsView(FragmentView):
         for script in my_post_scripts:
             if not script in post_scripts:
                 post_scripts.append(script)
-        
+
         local_context = copy.copy(self.context)
         local_context.update({
             'styles': styles,
@@ -95,38 +95,42 @@ class SearchResultsGrid(GridSmallView):
         else:
             tiles = []
             search_results = None
-           
+
         if search_results:
             i = 0
             for result in search_results:
                 #if result.object.content_type == ContentType.objects.get('identity establishment'):
-                if result.object.content_type.name == 'identity establishment':
-                    business_tile = IdentityTile()
-                    result_context = Context({
-                        'identity': result.object,
-                        'request': self.request
-                    })
-                    tiles.append(
-                        business_tile.render_template_fragment(
-                            result_context
+                try:
+                    if result.object.content_type.name == 'identity establishment':
+                        business_tile = IdentityTile()
+                        result_context = Context({
+                            'identity': result.object,
+                            'request': self.request
+                        })
+                        tiles.append(
+                            business_tile.render_template_fragment(
+                                result_context
+                            )
                         )
-                    )
-                elif result.object.content_type == 'offer': 
-                    offer_tile = OfferTile()
-                    result_context = Context({
-                        'offer': result.object,
-                        'request': self.request
-                    })
-                    tiles.append(
-                        offer_tile.render_template_fragment(
-                            result_context
+                    elif result.object.content_type.name == 'offer':
+                        offer_tile = OfferTile()
+                        result_context = Context({
+                            'offer': result.object,
+                            'request': self.request
+                        })
+                        tiles.append(
+                            offer_tile.render_template_fragment(
+                                result_context
+                            )
                         )
-                    )
-                    pass
-                else:
-                    #tiles.append( "no template for this object type" )
-                    logger.exception(' no template available for this search result type. ')
-    
+                        pass
+                    else:
+                        #tiles.append( "no template for this object type" )
+                        logger.exception(' no template available for this search result type. ')
+
+                except:
+                    logger.exception('SEARCH RESULT FROM HAYSTACK BLEW THE STACK - FIX - SERIOUSLY')
+
         if not len(tiles):
             tiles.append("Sorry your search returned no results.")
 
