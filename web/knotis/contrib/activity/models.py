@@ -7,9 +7,13 @@ from knotis.contrib.quick.fields import (
     QuickCharField,
     QuickIPAddressField,
     QuickForeignKey,
-    QuickGenericForeignKey
+    QuickGenericForeignKey,
+    QuickIntegerField,
 )
+
 from knotis.contrib.auth.models import KnotisUser
+from knotis.utils.regex import REGEX_CC_ANY
+import re
 
 
 class ApplicationTypes:
@@ -23,18 +27,21 @@ class ApplicationTypes:
 
 
 class ActivityTypes:
-    REQUEST = 'request'
-    LOGIN = 'login'
-    REGISTRATION = 'registration'
-    PURCHASE = 'purchase'
-    CLICK = 'click'
+    UNDEFINED = -1
+    REQUEST = 0
+    LOGIN = 1
+    LOGOUT = 2
+    SIGN_UP = 3
+    PURCHASE = 4
+    REDEEM = 5
 
     CHOICES = (
         (REQUEST, 'Request'),
         (LOGIN, 'Login'),
-        (REGISTRATION, 'Registration'),
+        (LOGOUT, 'Logout'),
+        (SIGN_UP, 'Sign_up'),
         (PURCHASE, 'Purchase'),
-        (CLICK, 'Click')
+        (REDEEM, 'Redeem'),
     )
 
 
@@ -50,11 +57,11 @@ class Activity(QuickModel):
         default=None
     )
 
-    activity_type = QuickCharField(
-        null=True,
-        max_length=64,
+    activity_type = QuickIntegerField(
         choices=ActivityTypes.CHOICES,
-        db_index=True
+        default=ActivityTypes.UNDEFINED,
+        db_index=True,
+        blank=False
     )
 
     application = QuickCharField(
@@ -64,13 +71,13 @@ class Activity(QuickModel):
         db_index=True
     )
 
-    message = QuickCharField(
+    context = QuickCharField(
         null=True,
         default=None,
         max_length=1024
     )
 
-    context = QuickCharField(
+    url_path = QuickCharField(
         null=True,
         default=None,
         max_length=1024
@@ -96,6 +103,72 @@ class Activity(QuickModel):
                     logger.exception(
                         'failed to create activity object relation'
                     )
+
+    @classmethod
+    def create_activity(cls, request, activity_type):
+        if request.user.is_authenticated():
+            try:
+                authenticated_user = KnotisUser.objects.get(
+                    pk=request.user.id
+                )
+
+            except:
+                authenticated_user = None
+                logger.exception('failed to get knotis user')
+
+        else:
+            authenticated_user = None
+
+        try:
+            cls.objects.create(
+                ip_address=request.META.get('REMOTE_ADDR', None),
+                authenticated_user=authenticated_user,
+                activity_type=activity_type,
+                application=ApplicationTypes.KNOTIS_WEB,
+                context=clean_request_body(request),
+                url_path=request.path,
+            )
+        except:
+            logger.exception('failed to log web request activity')
+
+    @classmethod
+    def sign_up(cls, request):
+        cls.create_activity(request, ActivityTypes.SIGN_UP)
+
+    @classmethod
+    def login(cls, request):
+        cls.create_activity(request, ActivityTypes.LOGIN)
+
+    @classmethod
+    def logout(cls, request):
+        cls.create_activity(request, ActivityTypes.LOGOUT)
+
+    @classmethod
+    def purchase(cls, request):
+        cls.create_activity(request, ActivityTypes.PURCHASE)
+
+    @classmethod
+    def redeem(cls, request):
+        cls.create_activity(request, ActivityTypes.REDEEM)
+
+
+def clean_request_body(request):
+    """
+    This method should strip out credit card numbers
+    and passwords and any other sensitive information
+    from the request body so that it's suitable for
+    logging.
+    """
+
+    body = request.raw_post_data
+
+    # redact credit card numbers
+    body = re.sub(
+        ''.join(['/b', REGEX_CC_ANY, '/b']),
+        '<!-- REDACTED -->',
+        body
+    )
+    return body
 
 
 class ActivityRelation(QuickModel):
