@@ -20,6 +20,8 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
 EMAIL_BILLING_USER = 'knotis.int+billing@gmail.com'
 EMAIL_HOST_USER = 'knotis.int@gmail.com'
 EMAIL_HOST_PASSWORD = 'wheeling and dealing'
@@ -121,4 +123,7 @@ STRIPE_API_SECRET = 'sk_test_aBN6tc1grlIWsE0nW7LX3Mh5'
 STRIPE_MODE_PERCENT = 0.029
 STRIPE_MODE_FLAT = 0.30
 
-KNOTIS_MODE_PERCENT = 0.05 
+KNOTIS_MODE_PERCENT = 0.05
+
+NOMINATIM_API = 'http://next.knotis.com/nominatim/search/'
+NOMINATIM_REVERSE_API = 'http://next.knotis.com/nominatim/reverse/'

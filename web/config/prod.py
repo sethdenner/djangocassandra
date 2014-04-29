@@ -4,8 +4,8 @@ DATABASES = {
         'NAME': 'knotis', # Or path to database file if using sqlite3.
         'USER': '', # Not used with sqlite3.
         'PASSWORD': '', # Not used with sqlite3.
-        'HOST': '', # Set to empty string for localhost. Not used with sqlite3.                                                                           
-        'PORT': '', # Set to empty string for default. Not used with sqlite3.                                                                                       
+        'HOST': '', # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '', # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -16,6 +16,8 @@ HAYSTACK_CONNECTIONS = {
         'INDEX_NAME': 'haystack',
     },
 }
+
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 EMAIL_BILLING_USER = 'billing@knotis.com'
 EMAIL_HOST_USER = 'support@knotis.com'
@@ -118,4 +120,7 @@ STRIPE_API_SECRET = 'sk_live_5eCJauCVIUiAnBcCeYUq6cVD'
 STRIPE_MODE_PERCENT = 0.029
 STRIPE_MODE_FLAT = 0.30
 
-KNOTIS_MODE_PERCENT = 0.05 
+KNOTIS_MODE_PERCENT = 0.05
+
+NOMINATIM_API = 'http://next.knotis.com/nominatim/search/'
+NOMINATIM_REVERSE_API = 'http://next.knotis.com/nominatim/reverse/'

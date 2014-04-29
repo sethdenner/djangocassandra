@@ -164,7 +164,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'knotis.contrib.mobile.middleware.MobileDetectionMiddleware',
-    # 'knotis.contrib.activity.middleware.ActivityMiddleware'
+    'knotis.contrib.activity.middleware.ActivityMiddleware',
 )
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
@@ -278,7 +278,7 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'prod'
+ENVIRONMENT_NAME = 'stage'
 
 
 # You can key the configurations off of anything - I use project path.
