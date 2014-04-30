@@ -94,7 +94,15 @@ class Command(BaseCommand):
             dest='neighborhood',
             help=(
                 'The option for specifying the neighborhood. Includes: '
-                'seattl, capitol_hill, ballard, queen_ann, green_lake, lake_union')),
+                'seattle, '
+                'green_lake, '
+                'lake_union, '
+                'capitol_hill,'
+                'ballard, '
+                'queen_ann, '
+                'west_seattle, '
+                'kirkland'
+                )),
         make_option(
             '--output_file',
             dest='output_file',
