@@ -1,6 +1,5 @@
 from django.core.management.base import (
-    BaseCommand,
-    CommandError
+    BaseCommand
 )
 from optparse import make_option
 from datetime import datetime
@@ -12,6 +11,9 @@ from knotis.contrib.qrcode.models import Qrcode, Scan
 from knotis.contrib.identity.models import IdentityBusiness
 from knotis.contrib.location.models import LocationItem
 import csv
+
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
 
 
 def aggregate_qrcodes(
@@ -39,30 +41,36 @@ def aggregate_qrcodes(
         csv_writer = csv.writer(csv_file)
 
         for identity in sqs:
-            business = IdentityBusiness.objects.get_establishment_parent(
-                identity.object
-            )
-
-            qrcodes = Qrcode.objects.filter(owner=business)
-            for q in qrcodes:
-                scans = Scan.objects.filter(
-                    qrcode=q,
-                    pub_date__gt=start_time,
-                    pub_date__lt=end_time
+            try:
+                business = IdentityBusiness.objects.get_establishment_parent(
+                    identity.object
                 )
 
-                location_item = LocationItem.objects.get(
-                    related_object_id=identity.pk)
+                qrcodes = Qrcode.objects.filter(owner=business)
+                for q in qrcodes:
+                    scans = Scan.objects.filter(
+                        qrcode=q,
+                        pub_date__gt=start_time,
+                        pub_date__lt=end_time
+                    )
 
-                row = [
-                    q.pk,
-                    identity.pk,
-                    identity.object.name,
-                    location_item.location.address,
-                    len(scans),
-                    q.last_hit
-                ]
-                csv_writer.writerow(row)
+                    location_item = LocationItem.objects.get(
+                        related_object_id=identity.pk)
+
+                    row = [
+                        q.pk,
+                        identity.pk,
+                        identity.object.name,
+                        location_item.location.address,
+                        len(scans),
+                        q.last_hit
+                    ]
+                    csv_writer.writerow(row)
+            except:
+                logger.exception((
+                    'Failed get scan data for %s.'
+                    'May need no run update_index' % identity
+                ))
 
 
 class Command(BaseCommand):
@@ -86,7 +94,7 @@ class Command(BaseCommand):
             dest='neighborhood',
             help=(
                 'The option for specifying the neighborhood. Includes: '
-                'Capitol Hill, Ballard, Queen Ann, Green Lake, Lake Union')),
+                'seattl, capitol_hill, ballard, queen_ann, green_lake, lake_union')),
         make_option(
             '--output_file',
             dest='output_file',
@@ -104,12 +112,26 @@ class Command(BaseCommand):
             help='End time for the scan publish date'),
     )
 
-    neighborhood_map = {'test': [90, -180, 0, 0]}
+    neighborhood_map = {
+        'test': [90, -180, 0, 0],
+        'seattle': [47.665112, -122.300743, 47.585918, -122.340740],
+        'green_lake': [47.690525, -122.347177, 47.665011, -122.322887],
+        'lake_union': [47.644943, -122.347374, 47.618712, -122.320981],
+        'capitol_hill': [47.631005, -122.326732, 47.606214, -122.311497],
+        'ballard': [47.670698, -122.399418, 47.660525, -122.366159],
+        'queen_ann': [47.653818, -122.374913, 47.617150, -122.342040],
+        'west_seattle': [47.595612, -122.428359, 47.544362, -122.356304],
+        'kirkland': [47.685679, -122.220527, 47.669700, -122.179843],
+    }
 
     def handle(self, *args, **options):
 
         if options['neighborhood']:
-            area = self.neighborhood_map[options['neighborhood']]
+
+            area = self.neighborhood_map.get(
+                options['neighborhood'],
+                self.neighborhood_map['test']
+            )
         else:
             area = [float(x) for x in options['area'].split(',')]
 
