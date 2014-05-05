@@ -19,7 +19,6 @@ from knotis.contrib.offer.api import (
     OfferPublishApi
 )
 from knotis.contrib.location.api import LocationApi
-from knotis.contrib.merchant.api import RedemptionApi
 from knotis.contrib.relation.api import (
     RelationApi,
     FollowApi
@@ -43,7 +42,6 @@ urlpatterns = patterns(
     OfferApi.urls(),
     OfferPublishApi.urls(),
     LocationApi.urls(),
-    RedemptionApi.urls(),
     RelationApi.urls(),
     FollowApi.urls(),
     ImageApiView.urls(),
