@@ -35,7 +35,7 @@ urlpatterns = patterns(
     '',
     AuthUserApi.urls(login_required=False),
     AuthenticationApi.urls(login_required=False),
-    AuthForgotPasswordApi.urls(login_required=True),
+    AuthForgotPasswordApi.urls(login_required=False),
     IdentityApi.urls(),
     IdentityIndividualApi.urls(),
     IdentityBusinessApi.urls(),
