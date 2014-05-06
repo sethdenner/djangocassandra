@@ -3,26 +3,26 @@ from django.conf.urls.defaults import (
 )
 
 from knotis.contrib.auth.api import (
-    AuthUserApi,
-    AuthenticationApi,
-    AuthForgotPasswordApi
+    AuthUserApiView,
+    AuthenticationApiView,
+    AuthForgotPasswordApiView
 )
 from knotis.contrib.identity.api import (
-    IdentityApi,
-    IdentityIndividualApi,
-    IdentityBusinessApi,
-    IdentityEstablishmentApi
+    IdentityApiView,
+    IdentityIndividualApiView,
+    IdentityBusinessApiView,
+    IdentityEstablishmentApiView
 )
 
 from knotis.contrib.offer.api import (
-    OfferApi,
-    OfferPublishApi
+    OfferApiView,
+    OfferPublishApiView
 )
-from knotis.contrib.location.api import LocationApi
-from knotis.contrib.merchant.api import RedemptionApi
+from knotis.contrib.location.api import LocationApiView
+from knotis.contrib.merchant.api import RedemptionApiView
 from knotis.contrib.relation.api import (
-    RelationApi,
-    FollowApi
+    RelationApiView,
+    FollowApiView
 )
 
 from knotis.contrib.media.api import (
@@ -33,19 +33,19 @@ from knotis.contrib.media.api import (
 
 urlpatterns = patterns(
     '',
-    AuthUserApi.urls(login_required=False),
-    AuthenticationApi.urls(login_required=False),
-    AuthForgotPasswordApi.urls(login_required=True),
-    IdentityApi.urls(),
-    IdentityIndividualApi.urls(),
-    IdentityBusinessApi.urls(),
-    IdentityEstablishmentApi.urls(),
-    OfferApi.urls(),
-    OfferPublishApi.urls(),
-    LocationApi.urls(),
-    RedemptionApi.urls(),
-    RelationApi.urls(),
-    FollowApi.urls(),
+    AuthUserApiView.urls(login_required=False),
+    AuthenticationApiView.urls(login_required=False),
+    AuthForgotPasswordApiView.urls(login_required=True),
+    IdentityApiView.urls(),
+    IdentityIndividualApiView.urls(),
+    IdentityBusinessApiView.urls(),
+    IdentityEstablishmentApiView.urls(),
+    OfferApiView.urls(),
+    OfferPublishApiView.urls(),
+    LocationApiView.urls(),
+    RedemptionApiView.urls(),
+    RelationApiView.urls(),
+    FollowApiView.urls(),
     ImageApiView.urls(),
     ImageInstanceApiView.urls()
 )

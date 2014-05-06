@@ -35,7 +35,7 @@ from forms import (
 )
 
 
-class IdentityApi(ApiView):
+class IdentityApiView(ApiView):
     api_url = 'identity/identity'
 
     @staticmethod
@@ -192,7 +192,7 @@ class IdentityApi(ApiView):
         return self.generate_response(data)
 
 
-class IdentityIndividualApi(IdentityApi):
+class IdentityIndividualApiView(IdentityApiView):
     api_url = 'identity/individual'
 
     @staticmethod
@@ -208,7 +208,7 @@ class IdentityIndividualApi(IdentityApi):
             raise Exception('No user_id provided')
 
         kwargs['identity_type'] = IdentityTypes.INDIVIDUAL
-        individual = IdentityApi.create_identity(
+        individual = IdentityApiView.create_identity(
             form_class=IdentityIndividualForm,
             **kwargs
         )
@@ -268,7 +268,7 @@ class IdentityIndividualApi(IdentityApi):
         *args,
         **kwargs
     ):
-        return super(IdentityIndividualApi, self).put(
+        return super(IdentityIndividualApiView, self).put(
             request,
             noun='individual',
             *args,
@@ -292,7 +292,7 @@ class IdentityIndividualApi(IdentityApi):
         pass
 
 
-class IdentityBusinessApi(IdentityApi):
+class IdentityBusinessApiView(IdentityApiView):
     api_url = 'identity/business'
 
     @staticmethod
@@ -308,7 +308,7 @@ class IdentityBusinessApi(IdentityApi):
             raise Exception('No individual_id provided')
 
         kwargs['identity_type'] = IdentityTypes.BUSINESS
-        business = IdentityApi.create_identity(
+        business = IdentityApiView.create_identity(
             form_class=IdentityBusinessForm,
             **kwargs
         )
@@ -410,7 +410,7 @@ class IdentityBusinessApi(IdentityApi):
         *args,
         **kwargs
     ):
-        return super(IdentityBusinessApi, self).put(
+        return super(IdentityBusinessApiView, self).put(
             request,
             noun='business',
             *args,
@@ -418,7 +418,7 @@ class IdentityBusinessApi(IdentityApi):
         )
 
 
-class IdentityEstablishmentApi(IdentityApi):
+class IdentityEstablishmentApiView(IdentityApiView):
     api_url = 'identity/establishment'
 
     @staticmethod
@@ -434,7 +434,7 @@ class IdentityEstablishmentApi(IdentityApi):
             raise Exception('No business_id provided')
 
         kwargs['identity_type'] = IdentityTypes.ESTABLISHMENT
-        establishment = IdentityApi.create_identity(
+        establishment = IdentityApiView.create_identity(
             form_class=IdentityEstablishmentForm,
             **kwargs
         )
@@ -496,7 +496,7 @@ class IdentityEstablishmentApi(IdentityApi):
         *args,
         **kwargs
     ):
-        return super(IdentityEstablishmentApi, self).put(
+        return super(IdentityEstablishmentApiView, self).put(
             request,
             noun='establishment',
             *args,

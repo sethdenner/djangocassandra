@@ -13,7 +13,7 @@ from knotis.contrib.transaction.models import (
 )
 
 
-class RedemptionApi(ApiView):
+class RedemptionApiView(ApiView):
     api_url = 'merchant/redeem'
 
     def post(
