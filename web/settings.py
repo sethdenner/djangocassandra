@@ -185,6 +185,12 @@ AUTHENTICATION_BACKENDS = (
     'knotis.contrib.legacy.authentication.backends.HamburgertimeAuthenticationBackend'
 )
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.OAuth2Authentication'
+    )
+}
+
 AUTOLOAD_SITECONF = 'dbindexer'
 
 INSTALLED_APPS = (
@@ -198,6 +204,9 @@ INSTALLED_APPS = (
     'timezones',
     'sorl.thumbnail',
     'crispy_forms',
+    'haystack',
+    'rest_framework',
+    'doac',
     # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -207,7 +216,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'haystack',
     # knotis apps
     'knotis.contrib.layout',
     'knotis.contrib.search',
