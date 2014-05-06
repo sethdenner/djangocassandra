@@ -37,4 +37,5 @@ export INSTALLERS=(
     install_timezones.sh
     install_elasticsearch.sh
     install_django_haystack.sh
+    install_weasyprint.sh
 )

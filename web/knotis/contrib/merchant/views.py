@@ -41,6 +41,7 @@ from knotis.contrib.transaction.models import (
     TransactionItem,
     TransactionTypes
 )
+from knotis.contrib.transaction.api import TransactionApi
 
 
 class RedemptionsGrid(GridSmallView):
@@ -185,8 +186,11 @@ class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
             })
 
         try:
-            redemptions = Transaction.objects.create_redemption(
-                transaction
+
+            redemptions = TransactionApi.create_redemption(
+                request,
+                transaction,
+                current_identity
             )
 
         except Exception, e:

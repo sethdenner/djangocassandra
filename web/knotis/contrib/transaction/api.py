@@ -7,6 +7,7 @@ from django.template import RequestContext
 
 from knotis.contrib.auth.models import KnotisUser
 from knotis.contrib.relation.models import Relation
+from knotis.contrib.activity.models import Activity
 
 from models import Transaction
 from views import (
@@ -90,4 +91,34 @@ class TransactionApi(object):
                 except Exception, e:
                     #shouldn't fail if emails fail to send.
                     logger.exception(e.message)
+
+        Activity.purchase(request)
         return transactions
+
+    @staticmethod
+    def create_redemption(
+        request=None,
+        transaction=None,
+        current_identity=None,
+        *args,
+        **kwargs
+    ):
+        if current_identity.pk != transaction.owner.pk:
+            raise WrongOwnerException((
+                'The current identity, %s, does not match the owner identity, '
+                '%s' % (current_identity.pk, transaction.owner.pk)
+            ))
+
+        try:
+            redemptions = Transaction.objects.create_redemption(transaction)
+
+        except Exception, e:
+            logger.exception('failed to create redemption')
+            raise e
+
+        Activity.redeem(request)
+
+        return redemptions
+
+class WrongOwnerException(Exception):
+        pass
