@@ -3,6 +3,7 @@ from django.contrib import admin
 
 # This code is required for template fragments
 # to find the corresponding views
+from doac import views as doac_views
 
 from knotis.views import (
     RenderTemplateFragmentMixin
@@ -92,5 +93,9 @@ urlpatterns = patterns(
     url(
         r'',
         include('knotis.contrib.transaction.urls')
+    ),
+    url(
+        r'^oauth2/',
+        include('doac.urls')
     )
 )

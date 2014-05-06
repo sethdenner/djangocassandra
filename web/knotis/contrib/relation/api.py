@@ -18,7 +18,7 @@ from models import (
 )
 
 
-class FollowApi(ApiView):
+class FollowApiView(ApiView):
     api_url = 'relation/follow'
 
     def post(
@@ -72,7 +72,7 @@ class FollowApi(ApiView):
         })
 
 
-class RelationApi(ApiView):
+class RelationApiView(ApiView):
     api_url = ''.join([
         'relation(/(?P<relation_pk>',
         REGEX_UUID,

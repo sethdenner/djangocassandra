@@ -15,7 +15,7 @@ from models import (
 )
 
 
-class LocationApi(ApiView):
+class LocationApiView(ApiView):
     api_url = 'location/location'
 
     def post(
@@ -52,7 +52,7 @@ class LocationApi(ApiView):
 
         else:
             related = None
-            
+
         location = None
         new_location_item = None
         if form.is_valid():
@@ -79,7 +79,6 @@ class LocationApi(ApiView):
 
                     for li in current_location_items:
                         li.delete()
-                        
 
                 except Exception, e:
                     logger.exception(
@@ -92,7 +91,7 @@ class LocationApi(ApiView):
                     # Since we don't have a business profile page at the
                     # moment, we do not have to worry about the business
                     # having an address at the moment.
-                
+
                     # business = (
                     #     IdentityBusiness.objects.get_establishment_parent(
                     #         related
@@ -103,7 +102,7 @@ class LocationApi(ApiView):
                     #         related_object_id=related.pk
                     #     ):
                     #         li.delete()
-                        
+
                     #     li = LocationItem.objects.create(
                     #         location=location,
                     #         related=business
@@ -129,7 +128,7 @@ class LocationApi(ApiView):
 
             if new_location_item:
                 data['location_item_id'] = new_location_item.pk
-            
+
         else:
             data['errors'] = errors
             data['message'] = 'There was an error while saving location.'
