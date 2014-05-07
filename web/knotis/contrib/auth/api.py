@@ -60,7 +60,7 @@ class AuthenticationApi(object):
                 'An Exception occurred during account creation'
             )
 
-        if send_validation:
+        if not errors and send_validation:
             try:
                 endpoint = Endpoint.objects.get(
                     identity=identity,
