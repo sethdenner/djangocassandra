@@ -157,6 +157,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'corsheaders.middleware.CorsMiddleware',
     'autoload.middleware.AutoloadMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -205,6 +206,7 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     'crispy_forms',
     'haystack',
+    'corsheaders',
     'rest_framework',
     'doac',
     # Django standard apps.
@@ -244,6 +246,29 @@ INSTALLED_APPS = (
     'knotis.contrib.facebook',
     'knotis.contrib.twitter',
     'knotis.contrib.stripe'
+)
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_METHODS = (
+    'GET',
+    'POST',
+    'OPTIONS'
+)
+
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'x-csrftoken'
+)
+
+CORS_EXPOSE_HEADERS = (
+    'OPTIONS',
+    'POST',
+    'GET'
 )
 
 LOGIN_REDIRECT_URL = '/'
