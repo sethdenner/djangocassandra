@@ -15,6 +15,7 @@ LogLevel warn
 WSGIDaemonProcess stage.knotis.com user=knotis group=knotis processes=1 threads=15 maximum-requests=10000 python-path=/srv/knotis/venv/lib/python2.7/site-packages python-eggs=/srv/knotis/run/eggs
 WSGIProcessGroup stage.knotis.com
 WSGIScriptAlias / /srv/knotis/app/conf/apache/django.wsgi
+WSGIPassAuthorization On
 
 <Directory /srv/knotis/media>
 Order deny,allow

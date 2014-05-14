@@ -188,7 +188,8 @@ AUTHENTICATION_BACKENDS = (
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.OAuth2Authentication'
+        'rest_framework.authentication.SessionAuthentication',
+        'doac.contrib.rest_framework.authentication.DoacAuthentication'
     )
 }
 
@@ -209,6 +210,7 @@ INSTALLED_APPS = (
     'corsheaders',
     'rest_framework',
     'doac',
+    'test_utils',
     # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -311,7 +313,7 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'int'
+ENVIRONMENT_NAME = 'dev'
 
 
 # You can key the configurations off of anything - I use project path.

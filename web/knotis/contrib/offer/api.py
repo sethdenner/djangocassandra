@@ -18,7 +18,7 @@ from forms import (
 
 
 class OfferPublishApiView(ApiView):
-    api_url = 'offer/publish'
+    api_path = 'offer/publish'
 
     def put(
         self,
@@ -102,7 +102,7 @@ class OfferPublishApiView(ApiView):
 
 
 class OfferApiView(ApiView):
-    api_url = 'offer/offer'
+    api_path = 'offer/offer'
 
     def post(
         self,
