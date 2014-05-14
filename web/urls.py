@@ -1,10 +1,10 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 
+from doac import views
+
 # This code is required for template fragments
 # to find the corresponding views
-from doac import views as doac_views
-
 from knotis.views import (
     RenderTemplateFragmentMixin
 )

@@ -4,6 +4,11 @@ import inspect
 import json
 
 from django.conf import settings
+from django.conf.urls.defaults import (
+    patterns,
+    url
+)
+
 from django.template.loader import get_template
 from django.http import (
     HttpResponse,
@@ -113,3 +118,43 @@ class GenerateAJAXResponseMixin(object):
                 format,
                 '>.'
             ]))
+
+
+class GenerateApiUrlsMixin(object):
+    API_VERSION_MIN = 0
+    resource_name = None
+    api_path = None
+    api_version = 'v%s' % (API_VERSION_MIN,)
+
+    @classmethod
+    def urls(cls):
+        if None == cls.api_path:
+            raise Exception('must define a path for this api.')
+
+        if hasattr(cls, 'router_class'):
+            router = cls.router_class()
+            router.register(
+                r'/'.join([
+                    'api',
+                    cls.api_version,
+                    cls.api_path
+                ]),
+                cls,
+                base_name=cls.resource_name
+            )
+            return router.urls
+
+        else:
+            view = cls.as_view()
+            return patterns(
+                '',
+                url(
+                    r'/'.join([
+                        '^api',
+                        cls.api_version,
+                        cls.api_path,
+                        '$'
+                    ]),
+                    view
+                )
+            )

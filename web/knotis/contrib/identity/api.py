@@ -36,7 +36,8 @@ from forms import (
 
 
 class IdentityApiView(ApiView):
-    api_url = 'identity/identity'
+    api_version = 'v1'
+    api_path = 'identity/identity'
 
     @staticmethod
     def create_identity(
@@ -80,7 +81,7 @@ class IdentityApiView(ApiView):
 
         try:
             instance = self.create_identity(
-                **dict(request.POST.iteritems())
+                **dict(request.DATA.iteritems())
             )
 
         except ValidationError, e:
@@ -109,9 +110,10 @@ class IdentityApiView(ApiView):
 
         noun = noun.lower()
 
-        update_id = request.PUT.get('id')
+        update_id = request.DATA.get('id')
 
         try:
+
             identity = Identity.objects.get(pk=update_id)
 
         except Exception, e:
@@ -129,7 +131,7 @@ class IdentityApiView(ApiView):
             })
 
         form = IdentityForm(
-            data=request.PUT,
+            data=request.DATA,
             instance=identity
         )
 
@@ -193,7 +195,8 @@ class IdentityApiView(ApiView):
 
 
 class IdentityIndividualApiView(IdentityApiView):
-    api_url = 'identity/individual'
+    api_version = 'v1'
+    api_path = 'identity/individual'
 
     @staticmethod
     def create_individual(
@@ -236,7 +239,7 @@ class IdentityIndividualApiView(IdentityApiView):
 
         try:
             individual = self.create_individual(
-                **dict(request.POST.iteritems())
+                **dict(request.DATA.iteritems())
             )
 
         except ValidationError, e:
@@ -293,7 +296,8 @@ class IdentityIndividualApiView(IdentityApiView):
 
 
 class IdentityBusinessApiView(IdentityApiView):
-    api_url = 'identity/business'
+    api_version = 'v1'
+    api_path = 'identity/business'
 
     @staticmethod
     def create_business(
@@ -352,7 +356,7 @@ class IdentityBusinessApiView(IdentityApiView):
             logger.exception(e.message)
 
         try:
-            establishment = IdentityEstablishmentApi.create_establishment(
+            establishment = IdentityEstablishmentApiView.create_establishment(
                 business_id=business.pk,
                 **kwargs
             )
@@ -376,7 +380,7 @@ class IdentityBusinessApiView(IdentityApiView):
 
         try:
             business, establishment = self.create_business(
-                **dict(request.POST.iteritems())
+                **dict(request.DATA.iteritems())
             )
 
         except ValidationError, e:
@@ -419,7 +423,8 @@ class IdentityBusinessApiView(IdentityApiView):
 
 
 class IdentityEstablishmentApiView(IdentityApiView):
-    api_url = 'identity/establishment'
+    api_version = 'v1'
+    api_path = 'identity/establishment'
 
     @staticmethod
     def create_establishment(
@@ -463,7 +468,7 @@ class IdentityEstablishmentApiView(IdentityApiView):
 
         try:
             establishment = self.create_establishment(
-                **dict(request.POST.iteritems())
+                **dict(request.DATA.iteritems())
             )
 
         except ValidationError, e:

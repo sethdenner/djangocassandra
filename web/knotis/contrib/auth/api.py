@@ -126,7 +126,8 @@ class AuthenticationApi(object):
 
 
 class AuthenticationApiView(ApiView, AuthenticationApi):
-    api_url = 'auth/auth'
+    api_version = 'v1'
+    api_path = 'auth/auth'
 
     def post(
         self,
@@ -192,7 +193,8 @@ class AuthenticationApiView(ApiView, AuthenticationApi):
 
 
 class AuthUserApiView(ApiView, AuthenticationApi):
-    api_url = 'auth/user'
+    api_version = 'v1'
+    api_path = 'auth/user'
 
     def post(
         self,
@@ -243,7 +245,8 @@ class AuthUserApiView(ApiView, AuthenticationApi):
 
 
 class AuthForgotPasswordApiView(ApiView, AuthenticationApi):
-    api_url = 'auth/forgot'
+    api_version = 'v1'
+    api_path = 'auth/forgot'
 
     def post(
         self,

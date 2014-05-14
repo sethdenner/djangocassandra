@@ -16,7 +16,8 @@ from models import (
 
 
 class LocationApiView(ApiView):
-    api_url = 'location/location'
+    api_version = 'v1'
+    api_path = 'location/location'
 
     def post(
         self,
@@ -26,7 +27,7 @@ class LocationApiView(ApiView):
     ):
         errors = {}
 
-        update_id = request.POST.get('id')
+        update_id = request.DATA.get('id')
         if update_id:
             try:
                 location = Location.objects.get(pk=update_id)
@@ -42,11 +43,11 @@ class LocationApiView(ApiView):
             location = None
 
         form = LocationForm(
-            data=request.POST,
+            data=request.DATA,
             instance=location
         )
 
-        related_id = request.POST.get('related_id')
+        related_id = request.DATA.get('related_id')
         if related_id:
             related = Identity.objects.get(pk=related_id)
 

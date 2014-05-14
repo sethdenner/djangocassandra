@@ -33,11 +33,11 @@ class ImageInstanceApi(object):
 
 
 class ImageApiView(ImageApi, ApiView):
-    api_url = 'media/image'
+    api_path = 'media/image'
 
 
 class ImageInstanceApiView(ImageInstanceApi, ApiView):
-    api_url = 'media/imageinstance'
+    api_path = 'media/imageinstance'
 
     def delete(
         self,

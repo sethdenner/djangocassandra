@@ -1,7 +1,6 @@
 import copy
 
 from django.http import HttpResponse
-from django.contrib.contenttypes.models import ContentType
 
 from django.template import Context
 
@@ -17,6 +16,7 @@ from knotis.contrib.layout.views import GridSmallView
 from knotis.views import FragmentView
 
 from forms import SearchForm
+
 
 class SearchResultsView(FragmentView):
     template_name = 'search/search.html'

@@ -29,21 +29,28 @@ from knotis.contrib.media.api import (
     ImageInstanceApiView
 )
 
-
-urlpatterns = patterns(
-    '',
-    AuthUserApiView.urls(login_required=False),
-    AuthenticationApiView.urls(login_required=False),
-    AuthForgotPasswordApiView.urls(login_required=True),
-    IdentityApiView.urls(),
-    IdentityIndividualApiView.urls(),
-    IdentityBusinessApiView.urls(),
-    IdentityEstablishmentApiView.urls(),
-    OfferApiView.urls(),
-    OfferPublishApiView.urls(),
-    LocationApiView.urls(),
-    RelationApiView.urls(),
-    FollowApiView.urls(),
-    ImageApiView.urls(),
-    ImageInstanceApiView.urls()
+from knotis.contrib.endpoint.api import (
+    EndpointApi
 )
+
+from knotis.contrib.search.api import (
+    SearchApiViewSet
+)
+
+urlpatterns = patterns('')
+urlpatterns += AuthUserApiView.urls()
+urlpatterns += AuthenticationApiView.urls()
+urlpatterns += AuthForgotPasswordApiView.urls()
+urlpatterns += IdentityApiView.urls()
+urlpatterns += IdentityIndividualApiView.urls()
+urlpatterns += IdentityBusinessApiView.urls()
+urlpatterns += IdentityEstablishmentApiView.urls()
+urlpatterns += OfferApiView.urls()
+urlpatterns += OfferPublishApiView.urls()
+urlpatterns += LocationApiView.urls()
+urlpatterns += RelationApiView.urls()
+urlpatterns += FollowApiView.urls()
+urlpatterns += ImageApiView.urls()
+urlpatterns += ImageInstanceApiView.urls()
+urlpatterns += SearchApiViewSet.urls()
+urlpatterns += EndpointApi.urls()
