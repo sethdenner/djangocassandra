@@ -3,6 +3,7 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from haystack.query import SearchQuerySet
 
 from knotis.views import ApiViewSet
@@ -145,6 +146,8 @@ class InvalidRequest(APIException):
 class SearchApiViewSet(ApiViewSet):
     api_path = 'search'
     resource_name = 'search'
+
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def list(
         self,
