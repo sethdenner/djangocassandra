@@ -12,7 +12,10 @@ from django.core.mail import EmailMultiAlternatives
 
 
 from rest_framework.views import APIView as RestApiView
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import (
+    ViewSet,
+    ModelViewSet
+)
 from rest_framework.routers import DefaultRouter
 
 from .mixins import (
@@ -120,15 +123,9 @@ class AJAXFragmentView(
 class ApiViewSet(ViewSet, GenerateApiUrlsMixin):
     router_class = DefaultRouter
 
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
-        super(ApiViewSet, self).__init__(
-            *args,
-            **kwargs
-        )
+
+class ApiModelViewSet(ModelViewSet, GenerateApiUrlsMixin):
+    router_class = DefaultRouter
 
 
 class ApiView(RestApiView, GenerateApiUrlsMixin, GenerateAJAXResponseMixin):

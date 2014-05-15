@@ -5,7 +5,8 @@ from .views import (
     AJAXView,
     AJAXFragmentView,
     ApiView,
-    ApiViewSet
+    ApiViewSet,
+    ApiModelViewSet
 )
 
 from .mixins import (
