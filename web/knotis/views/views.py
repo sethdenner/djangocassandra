@@ -127,6 +127,40 @@ class ApiViewSet(ViewSet, GenerateApiUrlsMixin):
 class ApiModelViewSet(ModelViewSet, GenerateApiUrlsMixin):
     router_class = DefaultRouter
 
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(ApiModelViewSet, self).__init__(
+            *args,
+            **kwargs
+        )
+
+        if not self.model:
+            if self.queryset:
+                self.model = self.queryset.model
+
+    def get_queryset(self):
+        queryset = super(ApiModelViewSet, self).get_queryset()
+        if not self.model:
+            return queryset
+
+        query_params = self.request.QUERY_PARAMS
+
+        field_names = self.model._meta.get_all_field_names()
+        filter_params = {}
+        for key, value in query_params.iteritems():
+            if key in field_names:
+                field = self.model._meta.get_field(key)
+                if field.db_index:
+                    filter_params[key] = field.to_python(value)
+
+        if filter_params:
+            queryset = queryset.filter(**filter_params)
+
+        return queryset
+
 
 class ApiView(RestApiView, GenerateApiUrlsMixin, GenerateAJAXResponseMixin):
     '''
