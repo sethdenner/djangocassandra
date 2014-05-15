@@ -190,6 +190,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'doac.contrib.rest_framework.authentication.DoacAuthentication'
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
     )
 }
 
@@ -313,7 +316,7 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'dev'
+ENVIRONMENT_NAME = 'int'
 
 
 # You can key the configurations off of anything - I use project path.

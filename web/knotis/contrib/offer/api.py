@@ -1,20 +1,24 @@
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from knotis.views import ApiView
+from knotis.views import (
+    ApiView,
+    ApiModelViewSet
+)
 
 from knotis.contrib.inventory.models import Inventory
 
-from models import (
+from .models import (
     Offer,
     OfferPublish,
     OfferAvailability
 )
-from forms import (
+from .forms import (
     OfferForm,
     OfferPublishForm,
     OfferWithInventoryForm
 )
+from .serializers import OfferSerializer
 
 
 class OfferPublishApiView(ApiView):
@@ -249,3 +253,13 @@ class OfferApiView(ApiView):
             'offer_id': offer.id,
             'message': 'Offer updated sucessfully.'
         })
+
+
+class OfferApiModelViewSet(ApiModelViewSet):
+    api_path = 'offer'
+    resource_name = 'offer'
+
+    model = Offer
+    serializer_class = OfferSerializer
+
+    http_method_names = ['get', 'options']

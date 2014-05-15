@@ -7,6 +7,8 @@ from django.contrib.auth import (
     logout
 )
 
+from rest_framework.permissions import AllowAny
+
 from knotis.views import ApiView
 
 from knotis.contrib.identity.models import (
@@ -129,6 +131,8 @@ class AuthenticationApiView(ApiView, AuthenticationApi):
     api_version = 'v1'
     api_path = 'auth/auth'
 
+    permission_classes = (AllowAny,)
+
     def post(
         self,
         request,
@@ -247,6 +251,8 @@ class AuthUserApiView(ApiView, AuthenticationApi):
 class AuthForgotPasswordApiView(ApiView, AuthenticationApi):
     api_version = 'v1'
     api_path = 'auth/forgot'
+
+    permission_classes = (AllowAny,)
 
     def post(
         self,
