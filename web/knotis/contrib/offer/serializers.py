@@ -10,6 +10,7 @@ class OfferSerializer(ModelSerializer):
         model = Offer
         fields = (
             'id',
+            'owner',
             'offer_type',
             'title',
             'description',
