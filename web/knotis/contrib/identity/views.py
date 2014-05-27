@@ -39,6 +39,9 @@ from models import (
     IdentityEstablishment
 )
 
+from knotis.contrib.inventory.models import Inventory
+from knotis.contrib.product.models import Product
+
 from knotis.contrib.relation.models import (
     RelationTypes
 )
@@ -583,7 +586,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                 endpoint_id = endpoint['endpoint_id']
 
                 endpoint_value = endpoint['endpoint_value'].strip()
-                    
+
                 updated_endpoint = Endpoint.objects.update_or_create(
                     identity=business,
                     pk=endpoint_id,
@@ -591,7 +594,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                     value=endpoint_value,
                     primary=True
                 )
-                
+
                 if updated_endpoint.deleted:
                     deleted_endpoints.append(updated_endpoint)
                 else:
@@ -626,7 +629,7 @@ class EstablishmentAboutTwitterFeed(FragmentView):
         if(twitter_endpoint):
             feed_json = get_twitter_feed_json(twitter_endpoint['value'])
             if feed_json:
-                twitter_feed = json.loads(feed_json)                
+                twitter_feed = json.loads(feed_json)
                 self.has_feed = len(twitter_feed) > 0
                 local_context.update({
                     'twitter_feed': twitter_feed
@@ -1093,6 +1096,32 @@ class FirstIdentityView(FragmentView):
         })
 
         return local_context
+
+
+class KnotisPointsView(FragmentView):
+    template_name = 'knotis/identity/knotis_points.html'
+    view_name = 'knotis_points'
+    def process_context(self):
+
+        request = self.request
+        if not request:
+            return ''
+
+        if not request.user.is_authenticated():
+            return ''
+        try:
+            current_identity_id = request.session.get('current_identity_id')
+            points_product = Product.currency.get('kno')
+            my_inventory = Inventory.objects.get(
+                product=points_product,
+                provider=current_identity_id,
+                recipient=current_identity_id
+            )
+            self.context['knotis_points'] = int(my_inventory.stock)
+        except:
+            self.context['knotis_points'] = 0
+
+        return self.context
 
 
 class IdentitySwitcherView(FragmentView):
