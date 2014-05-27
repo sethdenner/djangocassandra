@@ -10,6 +10,9 @@ from knotis.contrib.quick.fields import (
 from knotis.contrib.media.models import (
     Image
 )
+#from knotis.contrib.offer.models import (
+#    Offer
+#)
 
 
 class ProductTypes:
@@ -55,11 +58,12 @@ class ProductManager(QuickManager):
     @staticmethod
     def _generate_credit_sku(
         price,
-        value
+        value,
+        currency_code,
     ):
         return '_'.join([
             Product.CREDIT_SKU_PREFIX,
-            CurrencyCodes.USD,
+            currency_code,
             ('%.2f' % price).rstrip('00').rstrip('.'),
             ('%.2f' % value).rstrip('00').rstrip('.')
         ])
@@ -74,11 +78,13 @@ class ProductManager(QuickManager):
     def get_or_create_credit(
         self,
         price,
-        value
+        value,
+        currency_code=CurrencyCodes.USD,
     ):
         sku = self._generate_credit_sku(
             price,
-            value
+            value,
+            currency_code,
         )
 
         try:
@@ -107,7 +113,8 @@ class ProductManager(QuickManager):
                 public=False,
                 sku=self._generate_credit_sku(
                     price,
-                    value
+                    value,
+                    currency_code
                 )
             )
 
