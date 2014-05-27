@@ -18,7 +18,10 @@ from .forms import (
     OfferPublishForm,
     OfferWithInventoryForm
 )
-from .serializers import OfferSerializer
+from .serializers import (
+    OfferSerializer,
+    OfferAvailabilitySerializer
+)
 
 
 class OfferPublishApiView(ApiView):
@@ -261,5 +264,16 @@ class OfferApiModelViewSet(ApiModelViewSet):
 
     model = Offer
     serializer_class = OfferSerializer
+
+    http_method_names = ['get', 'options']
+
+
+class OfferAvailabilityModelViewSet(ApiModelViewSet):
+    api_path = 'offers'
+    resource_name = 'offers'
+
+    model = OfferAvailability
+    queryset = OfferAvailability.objects.filter(available=True)
+    serializer_class = OfferAvailabilitySerializer
 
     http_method_names = ['get', 'options']
