@@ -35,6 +35,7 @@ from knotis.contrib.endpoint.models import (
     Credentials,
     Publish
 )
+from knotis.contrib.location.models import LocationItem
 
 
 class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
@@ -537,10 +538,11 @@ class Offer(QuickModel):
         return format_currency(gross - our_cut)
 
     def get_location(self):
-        locations = LocationItems.objects.filter(related_object_id = self.pk)
+        locations = LocationItem.objects.filter(related_object_id=self.pk)
         if locations.count > 0:
             return locations[0].location.get_location()
         return None
+
 
 class OfferItemManager(QuickManager):
     def clear_offer_items(
@@ -578,13 +580,8 @@ class OfferAvailabilityManager(QuickManager):
             kwargs['stock'] = offer.stock
             kwargs['purchased'] = offer.purchased
             kwargs['default_image'] = offer.default_image
-
-            offer_items = OfferItem.objects.filter(offer=offer)
-            price = 0.
-            for i in offer_items:
-                price += i.price_discount
-
-            kwargs['price'] = price
+            kwargs['end_time'] = offer.end_time
+            kwargs['price'] = offer.price_discount()
 
             identity_profile_badge = ImageInstance.objects.get(
                 related_object_id=offer.owner.id,
@@ -608,6 +605,7 @@ class OfferAvailabilityManager(QuickManager):
             o.stock = offer.stock
             o.purchased = offer.purchased
             o.default_image = offer.default_image
+            o.end_time = offer.end_time
             o.save()
 
         return offers
@@ -674,6 +672,10 @@ class OfferAvailability(QuickModel):
     available = QuickBooleanField(
         db_index=True,
         default=True
+    )
+    end_time = QuickDateTimeField(
+        blank=True,
+        default=None
     )
 
     objects = OfferAvailabilityManager()
