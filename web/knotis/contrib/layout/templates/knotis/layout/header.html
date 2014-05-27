@@ -15,6 +15,7 @@
 	    </div>
 	    <ul class="nav pull-right auth-links">
           {% if user.is_authenticated %}
+          {% render_fragment knotis_points %}
           {% render_fragment identity_switcher %}
           {% else %}
 	      <li><a id="login" class="modal-link" data-modal-id="auth-modal" data-modal-width="633px" href="/auth/login/">Login</a></li>
