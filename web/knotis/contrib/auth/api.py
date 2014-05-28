@@ -131,6 +131,7 @@ class AuthenticationApiView(ApiView, AuthenticationApi):
     api_version = 'v1'
     api_path = 'auth/auth'
 
+    authentication_classes = []
     permission_classes = (AllowAny,)
 
     def post(
@@ -200,6 +201,9 @@ class AuthUserApiView(ApiView, AuthenticationApi):
     api_version = 'v1'
     api_path = 'auth/user'
 
+    permission_classes = (AllowAny,)
+    authentication_classes = []
+
     def post(
         self,
         request,
@@ -252,6 +256,7 @@ class AuthForgotPasswordApiView(ApiView, AuthenticationApi):
     api_version = 'v1'
     api_path = 'auth/forgot'
 
+    authentication_classes = []
     permission_classes = (AllowAny,)
 
     def post(
