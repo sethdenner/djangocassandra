@@ -97,5 +97,9 @@ urlpatterns = patterns(
     url(
         r'^oauth2/',
         include('doac.urls')
-    )
+    ),
+    url(
+        r'',
+        include('knotis.contrib.terms.urls')
+    ),
 )
