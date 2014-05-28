@@ -75,15 +75,16 @@ class OfferManager(QuickManager):
             *args,
             **kwargs
         )
-        offer.save()
 
         for i in inventory:
             price_discount = i.price * discount_factor
-            OfferItem.objects.create(
+            new_offer_item = OfferItem.objects.create(
                 offer=offer,
                 inventory=i,
                 price_discount=price_discount
             )
+            new_offer_item.save()
+        offer.save()
 
         image = kwargs.get('image')
         if image:
