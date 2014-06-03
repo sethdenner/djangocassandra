@@ -39,6 +39,15 @@ from knotis.contrib.search.api import (
     SearchApiViewSet
 )
 
+from knotis.contrib.transaction.api import (
+    PurchaseApiModelViewSet,
+    RedemptionApiModelViewSet
+)
+
+from knotis.contrib.stripe.api import (
+    StripeCustomerModelViewSet
+)
+
 urlpatterns = patterns('')
 urlpatterns += AuthUserApiView.urls()
 urlpatterns += AuthenticationApiView.urls()
@@ -58,3 +67,6 @@ urlpatterns += ImageApiView.urls()
 urlpatterns += ImageInstanceApiView.urls()
 urlpatterns += SearchApiViewSet.urls()
 urlpatterns += EndpointApi.urls()
+urlpatterns += PurchaseApiModelViewSet.urls()
+urlpatterns += RedemptionApiModelViewSet.urls()
+urlpatterns += StripeCustomerModelViewSet.urls()
