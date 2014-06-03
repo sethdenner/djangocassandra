@@ -4,12 +4,15 @@ import string
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from django.shortcuts import get_object_or_404
 from django.conf import settings
 
 from django.template import RequestContext
 
-from rest_framework.exceptions import MethodNotAllowed
+from rest_framework.exceptions import (
+    APIException,
+    MethodNotAllowed
+)
+
 from rest_framework.renderers import JSONRenderer
 
 from knotis.views import ApiModelViewSet
@@ -26,6 +29,8 @@ from knotis.contrib.product.models import (
 from knotis.contrib.inventory.models import Inventory
 
 from knotis.contrib.paypal.views import IPNCallbackView
+
+from kontis.contrib.stripe.api import StripeApi
 
 from .models import (
     Transaction,
@@ -174,15 +179,22 @@ class PurchaseApiModelViewSet(ApiModelViewSet):
         request
     ):
         current_identity_pk = request.DATA.get('current_identity')
-        current_identity = get_object_or_404(
-            Identity,
-            pk=current_identity_pk
-        )
+        try:
+            current_identity = Identity.objects.get(pk=current_identity_pk)
+
+        except Exception, e:
+            logger.exception(e.message)
+            raise self.FailedToRetrieveCurrentIdentityException()
+
         offer_pk = request.DATA.get('offer')
-        offer = get_object_or_404(
-            Offer,
-            pk=offer_pk
-        )
+
+        try:
+            offer = Offer.objects.get(pk=offer_pk)
+
+        except Exception, e:
+            logger.exception(e.message)
+            raise self.FailedToRetrieveOfferException()
+
         redemption_code = ''.join(
             random.choice(
                 string.ascii_uppercase + string.digits
@@ -196,21 +208,82 @@ class PurchaseApiModelViewSet(ApiModelViewSet):
             mode
         ])
 
-        usd = Product.currency.get(CurrencyCodes.USD)
-        buyer_usd = Inventory.objects.create_stack_from_product(
-            current_identity,
-            usd,
-            stock=amount,
-            get_existing=True
-        )
+        amount = float(request.DATA.get('amount'))
 
-        purchases = TransactionApi.create_purchase(
-            request=request,
-            offer=offer.pk,
-            buyer=current_identity,
-            currency=buyer_usd,
-            transaction_context=transaction_context
-        )
+        if PurchaseMode.STRIPE == mode:
+            try:
+                charge = StripeApi.create_charge(
+                    current_identity,
+                    amount
+                )
+
+            except Exception, e:
+                logger.exception(e.message)
+                raise self.FailedToCreateStripeChargeException()
+
+        else:
+            charge = None
+
+        try:
+            usd = Product.currency.get(CurrencyCodes.USD)
+            buyer_usd = Inventory.objects.create_stack_from_product(
+                current_identity,
+                usd,
+                stock=amount,
+                get_existing=True
+            )
+
+        except Exception, e:
+            logger.exception(e.message)
+
+            if None is not charge:
+                if PurchaseMode.STRIPE == mode:
+                    try:
+                        charge.refund()
+                        charge = None
+
+                    except Exception, e:
+                        # THIS IS BAD NEED TO MANUALLY REFUND USER
+                        logger.exception(''.join([
+                            'THIS IS SUPER BAD! NEED TO MANUALLY REFUND USER ',
+                            current_identity.name,
+                            ' (',
+                            current_identity.pk,
+                            ' ) in the ammount of $',
+                            amount
+                        ]))
+
+            raise self.FailedToDepositCurrencyException()
+
+        try:
+            purchases = TransactionApi.create_purchase(
+                request=request,
+                offer=offer.pk,
+                buyer=current_identity,
+                currency=buyer_usd,
+                transaction_context=transaction_context
+            )
+
+        except Exception, e:
+            logger.exception(e.message)
+
+            if None is not charge:
+                if PurchaseMode.STRIPE == mode:
+                    try:
+                        charge.refund()
+
+                    except Exception, e:
+                        # THIS IS BAD NEED TO MANUALLY REFUND USER
+                        logger.exception(''.join([
+                            'THIS IS SUPER BAD! NEED TO MANUALLY REFUND USER ',
+                            current_identity.name,
+                            ' (',
+                            current_identity.pk,
+                            ' ) in the ammount of $',
+                            amount
+                        ]))
+
+            raise self.FailedToCreatePurchaseException()
 
         my_purchase = None
         for p in purchases:
@@ -241,6 +314,26 @@ class PurchaseApiModelViewSet(ApiModelViewSet):
         pk=None
     ):
         raise MethodNotAllowed(request.method)
+
+    class FailedToRetrieveCurrentIdentityException(APIException):
+        status_code = 500
+        default_detail = 'Failed to retrieve current identity.'
+
+    class FailedToRetrieveOfferException(APIException):
+        status_code = 500
+        default_detail = 'Failed to get the offer requested.'
+
+    class FailedToCreateStripeChargeException(APIException):
+        status_code = 500
+        default_detail = 'Failed to call to create Stripe charge.'
+
+    class FailedToDepositCurrencyException(APIException):
+        status_code = 500
+        default_detail = 'Failed to deposit currency.'
+
+    class FailedToCreatePurchaseException(APIException):
+        status_code = 500
+        default_detail = 'Failed to create purchase.'
 
 
 class RedemptionApiModelViewSet(ApiModelViewSet):
