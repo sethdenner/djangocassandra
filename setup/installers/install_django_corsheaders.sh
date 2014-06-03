@@ -1,3 +1,3 @@
 #!/bin/bash
 
-$install_location/venv/bin/pip install django-cors-headers
+$install_location/venv/bin/pip install --no-deps django-cors-headers
