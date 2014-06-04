@@ -1,0 +1,25 @@
+<form class="replace" action="support/" method="post" id="support_form">{% csrf_token %}
+    <select name=subject>
+        <option value="problem"> I want to report a problem with the site/app</option>
+        <option value="request_map"> I would like to request some maps</option>
+        <option value="get_on_map"> I want to be featured on one of your maps</option>
+        <option value="get_on_passport"> I want to be featured in one of your passport books</option>
+        <option value="comment_or_question"> I have a question/comment</option>
+        <option value="other"> Other</option>
+    </select>
+
+    <div class="support-forms">
+        <label> Email: </label><input type="text" name="email"/>
+        <label> Name: </label><input type="text" name="name"/>
+        <label> Phone: </label><input type="text" name="phone"/>
+        <label> Message: </label>
+        <textarea rows="5" name="message"/>
+
+        <div class="support-buttons">
+            <input class="button radius-general" type="submit" value="Submit">
+            <a class="txt-size close_sig_in" href="#">Cancel</a>
+        </div>
+    </div>
+</form>
+<script src="{{ STATIC_URL }}knotis/support/js/support.js"></script>
+<link href="{{ STATIC_URL }}knotis/support/css/support.css" type="text/css" rel="stylesheet"/>

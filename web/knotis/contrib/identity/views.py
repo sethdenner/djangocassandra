@@ -228,6 +228,7 @@ class BusinessesView(FragmentView):
             'knotis/layout/js/forms.js',
             'knotis/layout/js/header.js',
             'knotis/layout/js/create.js',
+            'knotis/layout/js/splash_tile.js',
             'knotis/layout/js/action_button.js',
             'navigation/js/navigation.js',
             'jcrop/js/jquery.Jcrop.js',
@@ -583,7 +584,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                 endpoint_id = endpoint['endpoint_id']
 
                 endpoint_value = endpoint['endpoint_value'].strip()
-                    
+
                 updated_endpoint = Endpoint.objects.update_or_create(
                     identity=business,
                     pk=endpoint_id,
@@ -591,7 +592,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                     value=endpoint_value,
                     primary=True
                 )
-                
+
                 if updated_endpoint.deleted:
                     deleted_endpoints.append(updated_endpoint)
                 else:
@@ -626,7 +627,7 @@ class EstablishmentAboutTwitterFeed(FragmentView):
         if(twitter_endpoint):
             feed_json = get_twitter_feed_json(twitter_endpoint['value'])
             if feed_json:
-                twitter_feed = json.loads(feed_json)                
+                twitter_feed = json.loads(feed_json)
                 self.has_feed = len(twitter_feed) > 0
                 local_context.update({
                     'twitter_feed': twitter_feed
