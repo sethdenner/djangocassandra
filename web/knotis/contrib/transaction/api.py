@@ -30,7 +30,7 @@ from knotis.contrib.inventory.models import Inventory
 
 from knotis.contrib.paypal.views import IPNCallbackView
 
-from kontis.contrib.stripe.api import StripeApi
+from knotis.contrib.stripe.api import StripeApi
 
 from .models import (
     Transaction,

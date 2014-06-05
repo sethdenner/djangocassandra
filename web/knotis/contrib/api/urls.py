@@ -5,13 +5,16 @@ from django.conf.urls.defaults import (
 from knotis.contrib.auth.api import (
     AuthUserApiView,
     AuthenticationApiView,
-    AuthForgotPasswordApiView
+    AuthForgotPasswordApiView,
+    UserInformationApiModelViewSet
 )
 from knotis.contrib.identity.api import (
     IdentityApiView,
     IdentityIndividualApiView,
     IdentityBusinessApiView,
-    IdentityEstablishmentApiView
+    IdentityEstablishmentApiView,
+    IdentityApiModelViewSet,
+    IdentitySwitcherApiViewSet
 )
 
 from knotis.contrib.offer.api import (
@@ -52,10 +55,13 @@ urlpatterns = patterns('')
 urlpatterns += AuthUserApiView.urls()
 urlpatterns += AuthenticationApiView.urls()
 urlpatterns += AuthForgotPasswordApiView.urls()
+urlpatterns += UserInformationApiModelViewSet.urls()
 urlpatterns += IdentityApiView.urls()
 urlpatterns += IdentityIndividualApiView.urls()
 urlpatterns += IdentityBusinessApiView.urls()
 urlpatterns += IdentityEstablishmentApiView.urls()
+urlpatterns += IdentitySwitcherApiViewSet.urls()
+urlpatterns += IdentityApiModelViewSet.urls()
 urlpatterns += OfferApiView.urls()
 urlpatterns += OfferPublishApiView.urls()
 urlpatterns += OfferApiModelViewSet.urls()
