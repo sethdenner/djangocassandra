@@ -1,0 +1,42 @@
+#support-modal {
+    display: block;
+    margin-top: 0px;
+    text-align: center;
+    padding: 25px;
+}
+
+.support-forms input, .support-forms textarea {
+    border: 0;
+    border-radius: 4px;
+    background: rgb(250, 250, 250);
+    padding: 8px;
+    margin-top: 9px;
+    display: inline-block;
+    width: 94%;
+}
+
+.support-forms label {
+    color: #808184;
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    height: 0;
+}
+.support-buttons input {
+    width: 300px;
+    color: white;
+    background-color: #0db09e;
+    border-radius: 5px;
+    outline: 0;
+}
+
+.support-message-box {
+    height: 80px;
+}
+
+#support-modal select  {
+    width: 100%;
+    height: 50px;
+    margin-bottom: 26px;
+}
+

@@ -92,5 +92,9 @@ urlpatterns = patterns(
     url(
         r'',
         include('knotis.contrib.transaction.urls')
-    )
+    ),
+    url(
+        r'',
+        include('knotis.contrib.support.urls')
+    ),
 )
