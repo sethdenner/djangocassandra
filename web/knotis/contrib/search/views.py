@@ -15,6 +15,8 @@ from knotis.contrib.identity.views import IdentityTile
 from knotis.contrib.offer.views import OfferTile
 from knotis.contrib.layout.views import GridSmallView
 from knotis.views import FragmentView
+from knotis.contrib.identity.views import get_current_identity
+from knotis.contrib.identity.models import IdentityTypes
 
 from forms import SearchForm
 
@@ -97,14 +99,27 @@ class SearchResultsGrid(GridSmallView):
             search_results = None
 
         if search_results:
-            i = 0
+
+            search_results = [result.object for result in search_results]
+            current_identity = get_current_identity(self.request)
+
+            if not current_identity.identity_type == IdentityTypes.SUPERUSER:
+                search_results = filter(
+                    lambda x: ( # This could use some refactoring.
+                        x.content_type.name == 'identity establishment' and x.available
+                    ) or (
+                        x.content_type.name == 'offer' and x.active
+                    ),
+                    search_results
+                )
+
             for result in search_results:
                 #if result.object.content_type == ContentType.objects.get('identity establishment'):
                 try:
-                    if result.object.content_type.name == 'identity establishment':
+                    if result.content_type.name == 'identity establishment':
                         business_tile = IdentityTile()
                         result_context = Context({
-                            'identity': result.object,
+                            'identity': result,
                             'request': self.request
                         })
                         tiles.append(
@@ -112,10 +127,10 @@ class SearchResultsGrid(GridSmallView):
                                 result_context
                             )
                         )
-                    elif result.object.content_type.name == 'offer':
+                    elif result.content_type.name == 'offer':
                         offer_tile = OfferTile()
                         result_context = Context({
-                            'offer': result.object,
+                            'offer': result,
                             'request': self.request
                         })
                         tiles.append(
