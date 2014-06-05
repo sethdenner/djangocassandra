@@ -2,9 +2,24 @@ from django.conf import settings
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import (
+    ValidationError
+)
 
-from knotis.views import ApiView
+from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
+from rest_framework.exceptions import (
+    APIException,
+    MethodNotAllowed
+)
+
+
+from knotis.views import (
+    ApiView,
+    ApiViewSet,
+    ApiModelViewSet
+)
+
 from knotis.contrib.auth.models import (
     KnotisUser,
     UserInformation
@@ -21,17 +36,21 @@ from knotis.contrib.qrcode.models import (
     QrcodeTypes
 )
 
-from models import (
+from .models import (
     Identity,
     IdentityIndividual,
     IdentityBusiness,
     IdentityTypes
 )
-from forms import (
+from .forms import (
     IdentityForm,
     IdentityIndividualForm,
     IdentityBusinessForm,
     IdentityEstablishmentForm
+)
+from .serializers import (
+    IdentitySerializer,
+    IdentitySwitcherSerializer
 )
 
 
@@ -507,3 +526,85 @@ class IdentityEstablishmentApiView(IdentityApiView):
             *args,
             **kwargs
         )
+
+
+class IdentityApiModelViewSet(ApiModelViewSet):
+    api_path = 'identity'
+    resource_name = 'identity'
+
+    model = Identity
+    queryset = Identity.objects.all()
+    serializer_class = IdentitySerializer
+
+    def list(
+        self,
+        request
+    ):
+        raise MethodNotAllowed(request.method)
+
+
+class IdentitySwitcherApiViewSet(ApiViewSet):
+    api_path = 'identity/switcher'
+    resource_name = 'switcher'
+
+    def retrieve(
+        self,
+        request,
+        pk=None
+    ):
+        raise MethodNotAllowed(request.method)
+
+    def list(
+        self,
+        request
+    ):
+        try:
+            available_identities = Identity.objects.get_available(request.user)
+
+        except:
+            available_identities = Identity.objects.none()
+
+        serializer = IdentitySwitcherSerializer(
+            available_identities,
+            many=True
+        )
+        return Response(serializer.data)
+
+    def update(
+        self,
+        request,
+        pk=None
+    ):
+        try:
+            available_identities = Identity.objects.get_available(
+                user=request.user
+            )
+            identity = None
+            for i in available_identities:
+                if i.id == pk:
+                    identity = i
+                    break
+
+            if not identity:
+                msg = ''.join([
+                    'identity {',
+                    pk,
+                    '} is not available to user {',
+                    request.user.id,
+                    '}'
+                ])
+                logger.warning(msg)
+                raise self.IdentityNotAvailableException(msg)
+
+            serializer = IdentitySwitcherSerializer(identity)
+            return Response(serializer.data)
+
+        except Exception, e:
+            logger.exception(
+                e.message
+            )
+            raise
+
+    class IdentityNotAvailableException(APIException):
+        status_code = '500'
+        default_detail = 'The identity requested is not available.'
