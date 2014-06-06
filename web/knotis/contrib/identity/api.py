@@ -378,6 +378,7 @@ class IdentityBusinessApi(IdentityApi):
             business, establishment = self.create_business(
                 **dict(request.POST.iteritems())
             )
+            request.session['current_identity_id'] = business.id
 
         except ValidationError, e:
             logger.exception(e.message)
