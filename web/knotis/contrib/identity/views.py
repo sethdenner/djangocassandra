@@ -17,7 +17,9 @@ from knotis.views import (
 
 from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.maps.forms import GeocompleteForm
-from knotis.contrib.media.models import ImageInstance
+from knotis.contrib.media.models import (
+    ImageInstance
+)
 from knotis.contrib.offer.models import OfferAvailability
 from knotis.contrib.offer.views import (
     OfferTile,

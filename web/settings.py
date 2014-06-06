@@ -157,6 +157,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'corsheaders.middleware.CorsMiddleware',
     'autoload.middleware.AutoloadMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -185,6 +186,16 @@ AUTHENTICATION_BACKENDS = (
     'knotis.contrib.legacy.authentication.backends.HamburgertimeAuthenticationBackend'
 )
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'doac.contrib.rest_framework.authentication.DoacAuthentication'
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
+
 AUTOLOAD_SITECONF = 'dbindexer'
 
 INSTALLED_APPS = (
@@ -198,6 +209,11 @@ INSTALLED_APPS = (
     'timezones',
     'sorl.thumbnail',
     'crispy_forms',
+    'haystack',
+    'corsheaders',
+    'rest_framework',
+    'doac',
+    'test_utils',
     # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -207,7 +223,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'haystack',
     # knotis apps
     'knotis.contrib.layout',
     'knotis.contrib.search',
@@ -237,6 +252,29 @@ INSTALLED_APPS = (
     'knotis.contrib.twitter',
     'knotis.contrib.stripe',
     'knotis.contrib.rewards',
+)
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_METHODS = (
+    'GET',
+    'POST',
+    'OPTIONS'
+)
+
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'x-csrftoken'
+)
+
+CORS_EXPOSE_HEADERS = (
+    'OPTIONS',
+    'POST',
+    'GET'
 )
 
 LOGIN_REDIRECT_URL = '/'

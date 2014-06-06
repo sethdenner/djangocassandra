@@ -7,7 +7,14 @@ from django.contrib.auth import (
     logout
 )
 
-from knotis.views import ApiView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework.exceptions import MethodNotAllowed
+
+from knotis.views import (
+    ApiView,
+    ApiModelViewSet
+)
 
 from knotis.contrib.identity.models import (
     Identity,
@@ -19,20 +26,119 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes
 )
 
-from forms import (
+from .forms import (
     LoginForm,
     CreateUserForm,
     CreateSuperUserForm,
     ForgotPasswordForm
 )
-from models import (
+from .models import (
     UserInformation
 )
-from views import send_validation_email
+from .views import send_validation_email
+from .serializers import UserInformationSerializer
 
 
-class AuthenticationApi(ApiView):
-    api_url = 'auth/auth'
+class AuthenticationApi(object):
+    @staticmethod
+    def create_user(
+        send_validation=True,
+        *args,
+        **kwargs
+    ):
+        form = CreateUserForm(data=kwargs)
+
+        errors = {}
+
+        user = identity = None
+        try:
+            user, identity = form.save()
+
+        except ValueError, e:
+            logger.exception(
+                'CreateUserForm validation failed'
+            )
+
+            for field, messages in form.errors.iteritems():
+                errors[field] = [message for message in messages]
+
+        except Exception, e:
+            errors['no-field'] = e.message
+            logger.exception(
+                'An Exception occurred during account creation'
+            )
+
+        if not errors and send_validation:
+            try:
+                endpoint = Endpoint.objects.get(
+                    identity=identity,
+                    endpoint_type=EndpointTypes.EMAIL,
+                    primary=True,
+                )
+
+                send_validation_email(
+                    user,
+                    endpoint
+                )
+
+            except Exception, e:
+                logger.exception(e.message)
+
+        return user, identity, errors
+
+    @staticmethod
+    def create_superuser(
+        self,
+        *args,
+        **kwargs
+    ):
+        form = CreateSuperUserForm(data=kwargs)
+
+        errors = {}
+
+        user = identity = None
+        try:
+            user, identity = form.save()
+
+        except ValueError, e:
+            logger.exception(
+                'CreateSuperUserForm validation failed'
+            )
+
+            for field, messages in form.errors.iteritems():
+                errors[field] = [message for message in messages]
+
+        except Exception, e:
+            errors['no-field'] = e.message
+            logger.exception(
+                'An Exception occurred during account creation'
+            )
+
+        return user, identity, errors
+
+    @staticmethod
+    def reset_password(
+        request,
+        *args,
+        **kwargs
+    ):
+        form = ForgotPasswordForm(
+            data=request.POST
+        )
+
+        if not form.is_valid():
+            pass  # rasise exception
+
+        if not form.send_reset_instructions():
+            pass  # raise exception
+
+
+class AuthenticationApiView(ApiView, AuthenticationApi):
+    api_version = 'v1'
+    api_path = 'auth/auth'
+
+    authentication_classes = []
+    permission_classes = (AllowAny,)
 
     def post(
         self,
@@ -97,83 +203,12 @@ class AuthenticationApi(ApiView):
         })
 
 
-class AuthUserApi(ApiView):
-    api_url = 'auth/user'
+class AuthUserApiView(ApiView, AuthenticationApi):
+    api_version = 'v1'
+    api_path = 'auth/user'
 
-    @staticmethod
-    def create_user(
-        send_validation=True,
-        *args,
-        **kwargs
-    ):
-        form = CreateUserForm(data=kwargs)
-
-        errors = {}
-
-        user = identity = None
-        try:
-            user, identity = form.save()
-
-        except ValueError, e:
-            logger.exception(
-                'CreateUserForm validation failed'
-            )
-
-            for field, messages in form.errors.iteritems():
-                errors[field] = [message for message in messages]
-
-        except Exception, e:
-            errors['no-field'] = e.message
-            logger.exception(
-                'An Exception occurred during account creation'
-            )
-
-        if not errors and send_validation:
-            try:
-                endpoint = Endpoint.objects.get(
-                    identity=identity,
-                    endpoint_type=EndpointTypes.EMAIL,
-                    primary=True,
-                )
-
-                send_validation_email(
-                    user,
-                    endpoint
-                )
-
-            except Exception, e:
-                logger.exception(e.message)
-
-        return user, identity, errors
-
-    def create_superuser(
-        self,
-        *args,
-        **kwargs
-    ):
-        form = CreateSuperUserForm(data=kwargs)
-
-        errors = {}
-
-        user = identity = None
-        try:
-            user, identity = form.save()
-
-        except ValueError, e:
-            logger.exception(
-                'CreateSuperUserForm validation failed'
-            )
-
-            for field, messages in form.errors.iteritems():
-                errors[field] = [message for message in messages]
-
-        except Exception, e:
-            errors['no-field'] = e.message
-            logger.exception(
-                'An Exception occurred during account creation'
-            )
-
-        return user, identity, errors
+    permission_classes = (AllowAny,)
+    authentication_classes = []
 
     def post(
         self,
@@ -223,8 +258,12 @@ class AuthUserApi(ApiView):
         return self.generate_response(response_data)
 
 
-class AuthForgotPasswordApi(ApiView):
-    api_url = 'auth/forgot'
+class AuthForgotPasswordApiView(ApiView, AuthenticationApi):
+    api_version = 'v1'
+    api_path = 'auth/forgot'
+
+    authentication_classes = []
+    permission_classes = (AllowAny,)
 
     def post(
         self,
@@ -232,16 +271,16 @@ class AuthForgotPasswordApi(ApiView):
         *args,
         **kwargs
     ):
-        form = ForgotPasswordForm(
-            data=request.POST
-        )
-
         errors = {}
 
-        if not form.is_valid():
-            pass  # errors
+        try:
+            self.reset_password(
+                request,
+                *args,
+                **kwargs
+            )
 
-        if not form.send_reset_instructions():
+        except:
             pass  # errors
 
         response_data = {}
@@ -258,3 +297,29 @@ class AuthForgotPasswordApi(ApiView):
             }
 
         return self.generate_response(response_data)
+
+
+class UserInformationApiModelViewSet(ApiModelViewSet):
+    api_path = 'auth/user'
+    resource_name = 'user'
+
+    model = UserInformation
+    queryset = UserInformation.objects.none()
+    serializer_class = UserInformationSerializer
+
+    allowed_methods = ['GET']
+
+    def retrieve(
+        self,
+        request,
+        pk=None
+    ):
+        raise MethodNotAllowed(request.method)
+
+    def list(
+        self,
+        request
+    ):
+        user_info = UserInformation.objects.get(user=request.user)
+        serializer = UserInformationSerializer(user_info)
+        return Response(serializer.data)

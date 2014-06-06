@@ -2,28 +2,21 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from models import (
-    Endpoint,
-    EndpointPhone,
-    EndpointYelp,
-    EndpointFacebook,
-    EndpointTwitter,
-    EndpointEmail,
-    EndpointTypes,
-    EndpointWebsite
+    EndpointTypes
 )
 
 from knotis.contrib.identity.models import (
-    Identity,
-    IdentityTypes
+    Identity
 )
 
 from knotis.views import ApiView
 
 get_class = lambda x: globals()[x]
 
+
 class EndpointApi(ApiView):
-    api_url = 'endpoint'
-    
+    api_path = 'endpoint'
+
     def get(
         self,
         request,
@@ -31,7 +24,7 @@ class EndpointApi(ApiView):
         **kwargs
     ):
         return self.generate_response({
-            data: {'something': None}
+            'data': {'something': None}
         })
 
     def post(
@@ -42,7 +35,7 @@ class EndpointApi(ApiView):
     ):
 
         errors = {}
-        
+
         try:
             identity_id = request.POST.get('identity_id')
             endpoint_type = request.POST.get('endpoint_type')
@@ -56,9 +49,9 @@ class EndpointApi(ApiView):
                 raise Exception('invalid endpoint_type')
             if not value:
                 raise Exception('no value supplied')
-            
+
             endpoint_id = request.POST.get('endpoint_id')
-            
+
             EndpointClass = get_class('Endpoint' + endpoint_type.capitalize())
 
             if endpoint_id:
@@ -72,7 +65,7 @@ class EndpointApi(ApiView):
                             'deleted_endpoints': endpoint_id
                         }
                     })
-                
+
             else:
                 endpoint = EndpointClass.objects.create(
                     endpoint_type=getattr(EndpointTypes, endpoint_type.upper()),
@@ -90,9 +83,8 @@ class EndpointApi(ApiView):
             })
 
         except Exception, e:
-            errors['no-field'] = '%s %s' % ( e.__class__, e.message )
+            errors['no-field'] = '%s %s' % (e.__class__, e.message)
             return self.generate_response({
                 'errors': errors,
                 'data': {}
             })
-
