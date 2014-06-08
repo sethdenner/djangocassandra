@@ -21,6 +21,7 @@
     cursor: pointer;
     width:100px;
 }
+.qq-upload-button input {height: 100%;}
 .qq-upload-button-hover {}
 .qq-upload-button-focus {}
 
