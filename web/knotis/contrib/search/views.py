@@ -91,60 +91,54 @@ class SearchResultsGrid(GridSmallView):
 
         query = self.request.GET.get('q',None)
         if query:
-            search_results = SearchQuerySet().filter(content=query)[start_range:end_range]
-            tiles = []
+            search_results = SearchQuerySet().filter(content=query)
 
         else:
-            tiles = []
-            search_results = None
+            search_results = SearchQuerySet()
 
-        if search_results:
+        current_identity = get_current_identity(self.request)
 
-            search_results = [result.object for result in search_results]
-            current_identity = get_current_identity(self.request)
+        if current_identity.identity_type != IdentityTypes.SUPERUSER:
+            search_results = search_results.filter(available=True)
 
-            if not current_identity.identity_type == IdentityTypes.SUPERUSER:
-                search_results = filter(
-                    lambda x: ( # This could use some refactoring.
-                        x.content_type.name == 'identity establishment' and x.available
-                    ) or (
-                        x.content_type.name == 'offer' and x.active
-                    ),
-                    search_results
-                )
+        if search_results is not None:
+            search_results = search_results[start_range:end_range]
+            search_results = [x.object for x in search_results]
 
-            for result in search_results:
-                #if result.object.content_type == ContentType.objects.get('identity establishment'):
-                try:
-                    if result.content_type.name == 'identity establishment':
-                        business_tile = IdentityTile()
-                        result_context = Context({
-                            'identity': result,
-                            'request': self.request
-                        })
-                        tiles.append(
-                            business_tile.render_template_fragment(
-                                result_context
-                            )
+        tiles = []
+
+        for result in search_results:
+            #if result.object.content_type == ContentType.objects.get('identity establishment'):
+            try:
+                if result.content_type.name == 'identity establishment':
+                    business_tile = IdentityTile()
+                    result_context = Context({
+                        'identity': result,
+                        'request': self.request
+                    })
+                    tiles.append(
+                        business_tile.render_template_fragment(
+                            result_context
                         )
-                    elif result.content_type.name == 'offer':
-                        offer_tile = OfferTile()
-                        result_context = Context({
-                            'offer': result,
-                            'request': self.request
-                        })
-                        tiles.append(
-                            offer_tile.render_template_fragment(
-                                result_context
-                            )
+                    )
+                elif result.content_type.name == 'offer':
+                    offer_tile = OfferTile()
+                    result_context = Context({
+                        'offer': result,
+                        'request': self.request
+                    })
+                    tiles.append(
+                        offer_tile.render_template_fragment(
+                            result_context
                         )
-                        pass
-                    else:
-                        #tiles.append( "no template for this object type" )
-                        logger.exception(' no template available for this search result type. ')
+                    )
+                    pass
+                else:
+                    #tiles.append( "no template for this object type" )
+                    logger.exception(' no template available for this search result type. ')
 
-                except:
-                    logger.exception('SEARCH RESULT FROM HAYSTACK BLEW THE STACK - FIX - SERIOUSLY')
+            except:
+                logger.exception('SEARCH RESULT FROM HAYSTACK BLEW THE STACK - FIX - SERIOUSLY')
 
         if not len(tiles):
             tiles.append("Sorry your search returned no results.")
