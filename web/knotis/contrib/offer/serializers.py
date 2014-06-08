@@ -35,7 +35,9 @@ class OfferSerializer(ModelSerializer):
             'active',
             'completed',
             'last_purchase',
-            'price'
+            'price',
+            'banner_image',
+            'badge_image'
         )
 
     owner = IdentitySerializer()
@@ -43,12 +45,12 @@ class OfferSerializer(ModelSerializer):
         source='price_discount',
         read_only=True
     )
-    banner_url = URLField(
-        source='banner_url',
+    banner_image = CroppedImageUrlSerializer(
+        source='banner_image',
         read_only=True
     )
-    badge_url = URLField(
-        source='badge_url',
+    badge_image = CroppedImageUrlSerializer(
+        source='badge_image',
         read_only=True
     )
 

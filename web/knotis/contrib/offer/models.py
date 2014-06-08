@@ -4,6 +4,9 @@ import datetime
 import twitter
 from facebook import GraphAPI
 
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
+
 from django.conf import settings
 from django.db.models.fields import Field as ModelField
 
@@ -542,6 +545,33 @@ class Offer(QuickModel):
         if locations.count > 0:
             return locations[0].location.get_location()
         return None
+
+    def banner_image(self):
+        try:
+            banner_image = ImageInstance.objects.get(
+                related_object_id=self.pk,
+                context='offer_banner',
+                primary=True
+            )
+
+        except:
+            logger.exception('failed to get offer banner image')
+            banner_image = None
+
+        return banner_image
+
+    def badge_image(self):
+        try:
+            badge_image = ImageInstance.objects.get(
+                related_object_id=self.owner.pk,
+                context='profile_badge',
+                primary=True
+            )
+
+        except:
+            badge_image = None
+
+        return badge_image
 
 
 class OfferItemManager(QuickManager):
