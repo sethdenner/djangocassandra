@@ -76,7 +76,7 @@ from knotis.contrib.endpoint.models import (
 
 
 def get_current_identity(request):
-    current_identity_id = request.session['current_identity_id']
+    current_identity_id = request.session['current_identity']
     try:
         current_identity = Identity.objects.get(pk=current_identity_id)
         return current_identity
@@ -260,7 +260,7 @@ class BusinessesGrid(GridSmallView):
     view_name = 'businesses_grid'
 
     def process_context(self):
-        current_identity_id = self.request.session.get('current_identity_id')
+        current_identity_id = self.request.session.get('current_identity')
         if current_identity_id:
             current_identity = Identity.objects.get(pk=current_identity_id)
 
@@ -364,7 +364,7 @@ class IdentityTile(FragmentView):
         identity = self.context.get('identity')
 
         if request.user.is_authenticated():
-            current_identity_id = request.session.get('current_identity_id')
+            current_identity_id = request.session.get('current_identity')
             current_identity = Identity.objects.get(
                 pk=current_identity_id
             )
@@ -399,7 +399,7 @@ class EstablishmentProfileGrid(GridSmallView):
 
         offer_action = None
         if request.user.is_authenticated():
-            current_identity_id = request.session.get('current_identity_id')
+            current_identity_id = request.session.get('current_identity')
             current_identity = Identity.objects.get(pk=current_identity_id)
             if current_identity.identity_type  == IdentityTypes.INDIVIDUAL:
                 offer_action = 'buy'
@@ -871,7 +871,7 @@ class EstablishmentProfileView(FragmentView):
 
         is_manager = False
         if request.user.is_authenticated():
-            current_identity_id = request.session.get('current_identity_id')
+            current_identity_id = request.session.get('current_identity')
             current_identity = Identity.objects.get(
                 pk=current_identity_id
             )
@@ -1142,7 +1142,7 @@ class IdentitySwitcherView(FragmentView):
                 logger.warning(msg)
                 return http.HttpResponseServerError(msg)
 
-            request.session['current_identity_id'] = identity.id
+            request.session['current_identity'] = identity.id
             return http.HttpResponseRedirect(
                 '/'
             )
@@ -1210,14 +1210,14 @@ class IdentitySwitcherView(FragmentView):
 
         local_context[key_available] = available_identities
 
-        current_identity_id = request.session.get('current_identity_id')
+        current_identity_id = request.session.get('current_identity')
         if not current_identity_id:
             try:
                 user_information = UserInformation.objects.get(
                     user=request.user
                 )
                 request.session[
-                    'current_identity_id'
+                    'current_identity'
                 ] = user_information.default_identity_id
 
             except:

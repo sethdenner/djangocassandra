@@ -92,7 +92,7 @@ class OfferPurchaseButton(AJAXFragmentView):
     ):
         current_identity = get_object_or_404(
             Identity,
-            pk=request.session['current_identity_id']
+            pk=request.session['current_identity']
         )
         offer_id = request.POST['offerId']
         quantity = request.POST['quantity']
@@ -167,7 +167,7 @@ class OffersGridView(GridSmallView):
         request = self.request
         current_identity = None
         if request.user.is_authenticated():
-            current_identity_id = request.session['current_identity_id']
+            current_identity_id = request.session['current_identity']
             try:
                 current_identity = Identity.objects.get(pk=current_identity_id)
 
@@ -420,7 +420,7 @@ class OfferEditProductFormView(OfferCreateStepView):
     ):
         current_identity = get_object_or_404(
             Identity,
-            pk=request.session.get('current_identity_id')
+            pk=request.session.get('current_identity')
         )
 
         if IdentityTypes.ESTABLISHMENT == current_identity.identity_type:
@@ -622,7 +622,7 @@ class OfferEditProductFormView(OfferCreateStepView):
         request = self.context.get('request')
         current_identity = get_object_or_404(
             Identity,
-            pk=request.session['current_identity_id']
+            pk=request.session['current_identity']
         )
 
         if IdentityTypes.ESTABLISHMENT == current_identity.identity_type:
@@ -734,7 +734,7 @@ class OfferEditLocationFormView(OfferCreateStepView):
         *args,
         **kwargs
     ):
-        current_identity_id = request.session.get('current_identity_id')
+        current_identity_id = request.session.get('current_identity')
         current_identity = Identity.objects.get(id=current_identity_id)
 
         offer_id = request.POST.get('offer')
@@ -806,7 +806,7 @@ class OfferEditLocationFormView(OfferCreateStepView):
 
     def process_context(self):
         request = self.context.get('request')
-        current_identity_id = request.session.get('current_identity_id')
+        current_identity_id = request.session.get('current_identity')
         current_identity = Identity.objects.get(id=current_identity_id)
 
         offer_id = request.GET.get('id')
@@ -850,7 +850,7 @@ class OfferEditPublishFormView(OfferCreateStepView):
         *args,
         **kwargs
     ):
-        current_identity_id = request.session.get('current_identity_id')
+        current_identity_id = request.session.get('current_identity')
         current_identity = Identity.objects.get(id=current_identity_id)
 
         offer_id = request.POST.get('offer')
@@ -922,7 +922,7 @@ class OfferEditPublishFormView(OfferCreateStepView):
 
     def process_context(self):
         request = self.context.get('request')
-        current_identity_id = request.session.get('current_identity_id')
+        current_identity_id = request.session.get('current_identity')
         current_identity = Identity.objects.get(id=current_identity_id)
 
         offer_id = request.GET.get('id')
@@ -1099,7 +1099,7 @@ class OfferDetailView(FragmentView):
             offer_image = None
 
         request = self.request
-        current_identity_id = request.session.get('current_identity_id')
+        current_identity_id = request.session.get('current_identity')
         try:
             current_identity = Identity.objects.get(pk=current_identity_id)
 
