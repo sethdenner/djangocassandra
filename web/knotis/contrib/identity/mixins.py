@@ -34,7 +34,7 @@ class GetCurrentIdentityMixin(object):
             return current_identity_pk
 
         # Then check for header.
-        current_identity_pk = request.META.get('KNOTIS_CURRENT_IDENTITY')
+        current_identity_pk = request.META.get('HTTP_CURRENT_IDENTITY')
 
         return current_identity_pk
 
