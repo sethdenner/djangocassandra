@@ -140,7 +140,7 @@ def _upload(request):
     response = {}
     try:
         identity = Identity.objects.get(
-            pk=request.session['current_identity_id']
+            pk=request.session['current_identity']
         )
         image = Image(
             owner=identity,

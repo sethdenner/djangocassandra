@@ -191,7 +191,7 @@ class AuthenticationApiView(ApiView, AuthenticationApi):
             logger.exception('could not get user identity.')
             logout(user)
 
-        request.session['current_identity_id'] = identity.id
+        request.session['current_identity'] = identity.id
 
         default_url = '/'
 

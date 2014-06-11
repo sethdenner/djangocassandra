@@ -50,7 +50,7 @@ class StripeCharge(AJAXView):
     ):
         current_identity = get_object_or_404(
             Identity,
-            pk=request.session['current_identity_id']
+            pk=request.session['current_identity']
         )
 
         stripe.api_key = settings.STRIPE_API_SECRET

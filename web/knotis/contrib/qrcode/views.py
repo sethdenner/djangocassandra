@@ -62,7 +62,7 @@ class ManageQRCodeView(ContextView):
         self.context = copy.copy(self.context)
         request = self.context.get('request')
 
-        current_identity_id = request.session.get('current_identity_id')
+        current_identity_id = request.session.get('current_identity')
         business = Identity.objects.get(pk=current_identity_id)
 
         try:
@@ -125,7 +125,7 @@ class ManageQRCodeView(ContextView):
         *args,
         **kwargs
     ):
-        current_identity_id = request.session.get('current_identity_id')
+        current_identity_id = request.session.get('current_identity')
         business = Identity.objects.get(pk=current_identity_id)
         qrcode = Qrcode.objects.get(owner=business)
 
