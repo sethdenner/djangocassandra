@@ -428,6 +428,7 @@ class MyOffersGrid(GridSmallView):
 
         elif 'active' == offer_filter or not offer_filter:
             offer_filter_dict['published'] = True
+            offer_filter_dict['completed'] = False
             offer_action = 'pause'
 
         elif 'redeem' == offer_filter:
