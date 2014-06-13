@@ -193,7 +193,8 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    )
+    ),
+    'EXCEPTION_HANDLER': 'knotis.contrib.api.views.knotis_exception_handler'
 }
 
 AUTOLOAD_SITECONF = 'dbindexer'
@@ -267,7 +268,8 @@ CORS_ALLOW_HEADERS = (
     'accept',
     'origin',
     'authorization',
-    'x-csrftoken'
+    'x-csrftoken',
+    'current-identity'
 )
 
 CORS_EXPOSE_HEADERS = (
