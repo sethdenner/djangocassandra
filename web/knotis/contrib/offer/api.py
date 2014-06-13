@@ -11,7 +11,7 @@ from knotis.contrib.inventory.models import Inventory
 from .models import (
     Offer,
     OfferPublish,
-    OfferAvailability
+    OfferAvailability,
 )
 from .forms import (
     OfferForm,
@@ -22,6 +22,17 @@ from .serializers import (
     OfferSerializer,
     OfferAvailabilitySerializer
 )
+
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityTypes
+)
+
+from knotis.contrib.product.models import (
+    Product,
+    ProductTypes
+)
+from knotis.contrib.endpoint.models import Endpoint, EndpointTypes
 
 
 class OfferPublishApiView(ApiView):
@@ -277,3 +288,89 @@ class OfferAvailabilityModelViewSet(ApiModelViewSet):
     serializer_class = OfferAvailabilitySerializer
 
     http_method_names = ['get', 'options']
+
+
+class OfferCreateApi(object):
+
+    @staticmethod
+    def create_offer(
+        dark_offer=True,
+        *args,
+        **kwargs
+    ):
+        owner_name = kwargs.get('owner')
+        try:
+            owner_identity = Identity.objects.get(
+                name=owner_name,
+                identity_type=IdentityTypes.BUSINESS
+            )
+        except:
+            logger.exception('Cannot find owner %s' % owner_name)
+            raise
+
+        currency_name = kwargs.get('currency')
+        try:
+            currency = Product.currency.get(currency_name)
+        except:
+            logger.exception('Cannot find currency %s' % currency_name)
+            raise
+
+        price = kwargs.get('price', 0.0)
+        value = kwargs.get('value', 0.0)
+        title = kwargs.get('title')
+        is_physical = kwargs.get('is_physical')
+        stock = kwargs.get('stock')
+        title = kwargs.get('title')
+        description = kwargs.get('description')
+        restrictions = kwargs.get('restrictions')
+
+        try:
+            product = Product.objects.create(
+                product_type=(ProductTypes.CREDIT, ProductTypes.PHYSICAL)[is_physical],
+                title=title,
+                sku=currency.sku
+            )
+        except:
+            logger.exception('Cannot find currency %s' % currency_name)
+            raise
+
+        inventory = Inventory.objects.create_stack_from_product(
+            owner_identity,
+            product,
+            price=value,
+            stock=(stock, 0.0)[stock == -1],
+            unlimited=(stock == -1),
+        )
+
+        split_inventory = Inventory.objects.split(
+            inventory,
+            owner_identity,
+            1
+        )
+
+        offer = Offer.objects.create(
+            owner=owner_identity,
+            title=title,
+            restrictions=restrictions,
+            description=description,
+            start_time=kwargs.get('start_time'),
+            end_time=kwargs.get('end_time'),
+            stock=(stock, 0.0)[stock == -1],
+            unlimited=(stock == -1),
+            inventory=[split_inventory],
+            discount_factor=price / value
+        )
+
+        offer.save()
+
+        endpoint_current_identity = Endpoint.objects.get(
+            endpoint_type=EndpointTypes.IDENTITY,
+            identity=owner_identity
+        )
+        OfferPublish.objects.create(
+            endpoint=endpoint_current_identity,
+            subject=offer,
+            publish_now=True
+        )
+
+        print offer
