@@ -15,14 +15,14 @@ from django.core.management.base import (
 )
 
 from knotis.contrib.auth.models import KnotisUser
-from knotis.contrib.auth.api import AuthUserApi
+from knotis.contrib.auth.api import AuthenticationApi
 from knotis.contrib.identity.models import (
     IdentityIndividual,
     IdentityBusiness
 )
 from knotis.contrib.identity.api import (
-    IdentityBusinessApi,
-    IdentityEstablishmentApi
+    IdentityBusinessApiView,
+    IdentityEstablishmentApiView
 )
 from knotis.contrib.endpoint.models import (
     Endpoint,
@@ -162,7 +162,7 @@ class Command(BaseCommand):
 
             else:
                 try:
-                    user, identity, errors = AuthUserApi.create_user(**{
+                    user, identity, errors = AuthenticationApi.create_user(**{
                         'email': manager_email,
                         'password': ''.join(random.choice(
                             string.printable
@@ -187,7 +187,7 @@ class Command(BaseCommand):
                     break
 
             if business:
-                establishment = IdentityEstablishmentApi.create_establishment(
+                establishment = IdentityEstablishmentApiView.create_establishment(
                     **{
                         'business_id': business.pk,
                         'name': business_name
@@ -199,7 +199,7 @@ class Command(BaseCommand):
                     (
                         business,
                         establishment
-                    ) = IdentityBusinessApi.create_business(
+                    ) = IdentityBusinessApiView.create_business(
                         **{
                             'individual_id': identity.pk,
                             'name': business_name
