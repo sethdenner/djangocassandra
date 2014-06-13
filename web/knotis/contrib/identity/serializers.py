@@ -15,7 +15,9 @@ class IdentitySwitcherSerializer(ModelSerializer):
         model = Identity
         fields = (
             'id',
-            'badge_image'
+            'badge_image',
+            'name',
+            'identity_type'
         )
 
     badge_image = CroppedImageUrlSerializer(
