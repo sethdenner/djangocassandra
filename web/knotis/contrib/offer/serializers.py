@@ -1,7 +1,7 @@
 from rest_framework.serializers import (
     ModelSerializer,
-    URLField,
-    FloatField
+    FloatField,
+    CharField
 )
 
 from knotis.contrib.identity.serializers import IdentitySerializer
@@ -65,7 +65,8 @@ class OfferAvailabilitySerializer(ModelSerializer):
             'purchased',
             'banner_image',
             'badge_image',
-            'price'
+            'price',
+            'business_name'
         )
 
     banner_image = CroppedImageUrlSerializer(
@@ -75,4 +76,8 @@ class OfferAvailabilitySerializer(ModelSerializer):
     badge_image = CroppedImageUrlSerializer(
         source='profile_badge',
         read_only=True
+    )
+    business_name = CharField(
+        read_only=True,
+        source='identity.name'
     )
