@@ -50,6 +50,7 @@ from .forms import (
 )
 from .serializers import (
     IdentitySerializer,
+    BusinessSerializer,
     IdentitySwitcherSerializer
 )
 
@@ -526,6 +527,18 @@ class IdentityEstablishmentApiView(IdentityApiView):
             *args,
             **kwargs
         )
+
+
+class BusinessApiModelViewSet(ApiModelViewSet):
+    api_path = 'identity/business'
+    resource_name = 'business'
+
+    model = Identity
+    queryset = Identity.objects.filter(
+        identity_type=IdentityTypes.BUSINESS,
+        available=True
+    )
+    serializer_class = BusinessSerializer
 
 
 class IdentityApiModelViewSet(ApiModelViewSet):
