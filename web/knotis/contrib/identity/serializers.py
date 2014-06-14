@@ -79,3 +79,16 @@ class IdentitySerializer(ModelSerializer):
                 pass
 
         return []
+
+
+class BusinessSerializer(IdentitySerializer):
+    class Meta:
+        model = Identity
+        fields = (
+            'id',
+            'name',
+            'backend_name',
+            'description',
+            'badge_image',
+            'banner_image'
+        )
