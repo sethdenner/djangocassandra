@@ -596,6 +596,10 @@ class IdentitySwitcherApiViewSet(ApiViewSet):
                 logger.warning(msg)
                 raise self.IdentityNotAvailableException(msg)
 
+            user_information = UserInformation.objects.get(user=request.user)
+            user_information.default_identity = identity
+            user_information.save()
+
             serializer = IdentitySwitcherSerializer(identity)
             return Response(serializer.data)
 
