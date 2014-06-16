@@ -60,6 +60,7 @@ class OfferAvailabilitySerializer(ModelSerializer):
         model = OfferAvailability
         fields = (
             'id',
+            'offer',
             'title',
             'stock',
             'purchased',
