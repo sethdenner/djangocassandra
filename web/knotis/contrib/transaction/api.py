@@ -147,10 +147,26 @@ class TransactionApi(object):
         **kwargs
     ):
         if current_identity.pk != transaction.owner.pk:
-            raise WrongOwnerException((
+            raise TransactionApi.WrongOwnerException(
                 'The current identity, %s, does not match the owner identity, '
                 '%s' % (current_identity.pk, transaction.owner.pk)
-            ))
+            )
+
+        try:
+            existing_redemptions = Transaction.objects.filter(
+                owner=transaction.owner,
+                transaction_type=TransactionTypes.REDEMPTION,
+                transaction_context=transaction.transaction_context
+            )
+
+        except Exception, e:
+            logger.exception('failed to check for existing redemptions.')
+            raise e
+
+        if (len(existing_redemptions)):
+            raise TransactionApi.AlreadyRedeemedException(
+                'This purchase has already been redeemed.'
+            )
 
         try:
             redemptions = Transaction.objects.create_redemption(transaction)
@@ -162,6 +178,12 @@ class TransactionApi(object):
         Activity.redeem(request)
 
         return redemptions
+
+    class WrongOwnerException(Exception):
+        pass
+
+    class AlreadyRedeemedException(Exception):
+        pass
 
 
 class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
@@ -265,7 +287,7 @@ class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
                             self.current_identity.name,
                             ' (',
                             self.current_identity.pk,
-                            ' ) in the ammount of $',
+                            ' ) in the amount of $',
                             amount
                         ]))
 
@@ -416,6 +438,3 @@ class RedemptionApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
             'Failed to find purchase matching pk'
         )
 
-
-class WrongOwnerException(Exception):
-    pass

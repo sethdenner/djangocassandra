@@ -1,8 +1,8 @@
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
+from rest_framework.response import Response
 from rest_framework.exceptions import APIException
-from rest_framework.renderers import JSONRenderer
 
 from knotis.views import ApiViewSet
 
@@ -64,6 +64,9 @@ class RedemptionScanApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
                 self.current_identity
             )
 
+        except TransactionApi.AlreadyRedeemedException, e:
+            raise self.PurchaseAlreadyRedeemedException()
+
         except Exception, e:
             logger.exception(e.message)
             raise self.FailedToCreateRedemptionException()
@@ -75,7 +78,7 @@ class RedemptionScanApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
                 break
 
         serializer = self.serializer_class(my_redemption)
-        return JSONRenderer().render(serializer.data)
+        return Response(serializer.data)
 
     class NoPurchasePkProvidedException(APIException):
         status_code = '500'
@@ -92,3 +95,7 @@ class RedemptionScanApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
     class FailedToCreateRedemptionException(APIException):
         status_code = 500
         default_detail = 'Failed to create redemption.'
+
+    class PurchaseAlreadyRedeemedException(APIException):
+        status_code = 500
+        default_detail = 'This purchase has already been redeemed'
