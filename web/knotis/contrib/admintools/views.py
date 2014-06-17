@@ -28,7 +28,7 @@ from knotis.views import (
 
 
 ### VIEW DEFINITIONS
-class HelloWorldView(ContextView):
+class AdminDefaultView(ContextView):
     template_name = 'knotis/admintools/admin_master.html'
 
 

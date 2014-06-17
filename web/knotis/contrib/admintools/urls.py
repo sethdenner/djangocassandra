@@ -14,7 +14,7 @@ from knotis.contrib.auth.admin import (
 )
 
 from views import (
-    HelloWorldView,
+    AdminDefaultView,
 )
 
 urlpatterns = patterns(
@@ -38,6 +38,6 @@ urlpatterns = patterns(
     ),
 ### FALL THROUGH DEFAULT
     url(
-        r'^admin/', HelloWorldView.as_view()
+        r'^admin/', AdminDefaultView.as_view()
     ),
 )
