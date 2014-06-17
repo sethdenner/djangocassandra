@@ -12,6 +12,7 @@ from django.contrib.auth.forms import (
 )
 from django.template import Context
 from django.forms import (
+    IntegerField,
     CharField,
     EmailField,
     BooleanField,
@@ -336,3 +337,29 @@ class ForgotPasswordForm(TemplateForm):
         except:
             logger.exception('failed to initiate password reset')
             return False
+
+class UserAdminQueryForm(TemplateForm):
+    template_name = 'knotis/auth/user_admin_form.html'
+
+    range_start = IntegerField(
+        label='Start',
+        required = True,
+        initial = 1,
+    )
+    range_end = IntegerField(
+        label='Stop',
+        required = True,
+        initial = 20,
+    )
+    range_step = IntegerField(
+        label='Step',
+        required = True,
+        initial = 20,
+    )
+    user_filter = CharField(
+        label='Filter',
+        max_length = 254,
+        required = True,
+        initial = '',
+    )
+
