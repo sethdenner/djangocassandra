@@ -12,6 +12,7 @@ class TransactionSerializer(ModelSerializer):
     class Meta:
         model = Transaction
         fields = (
+            'id',
             'owner',
             'transaction_type',
             'offer',
