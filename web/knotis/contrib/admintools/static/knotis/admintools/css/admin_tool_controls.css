@@ -1,0 +1,22 @@
+#admin_list_controls {
+    position: relative;
+    left: 280px;
+}
+
+.admin_list_entry {
+    position: relative;
+    margin: 10px;
+    left: 280px;
+    width: 75%;
+    background-color: white;
+}
+
+.admin_list_tag {
+    display: inline-block;
+    width: 10%;
+    position: relative;
+}
+
+.admin_list_value {
+    display: inline-block;
+}

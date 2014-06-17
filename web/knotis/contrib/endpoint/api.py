@@ -2,7 +2,13 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from models import (
-    EndpointTypes
+    EndpointTypes,
+    EndpointEmail,
+    EndpointPhone,
+    EndpointTwitter,
+    EndpointFacebook,
+    EndpointYelp,
+    EndpointWebsite
 )
 
 from knotis.contrib.identity.models import (
@@ -35,7 +41,6 @@ class EndpointApi(ApiView):
     ):
 
         errors = {}
-
         try:
             identity_id = request.POST.get('identity_id')
             endpoint_type = request.POST.get('endpoint_type')
@@ -55,7 +60,7 @@ class EndpointApi(ApiView):
             EndpointClass = get_class('Endpoint' + endpoint_type.capitalize())
 
             if endpoint_id:
-                endpoint = EndpointClass.objects.get(endpoint_id)
+                endpoint = EndpointClass.objects.get(id=endpoint_id)
 
                 if value.strip() == '':
                     endpoint.delete()

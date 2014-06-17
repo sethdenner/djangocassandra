@@ -102,4 +102,8 @@ urlpatterns = patterns(
         r'',
         include('knotis.contrib.terms.urls')
     ),
+    url(
+        r'',
+        include('knotis.contrib.admintools.urls')
+    ),
 )

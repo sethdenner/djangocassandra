@@ -250,7 +250,8 @@ INSTALLED_APPS = (
     'knotis.contrib.legacy',
     'knotis.contrib.facebook',
     'knotis.contrib.twitter',
-    'knotis.contrib.stripe'
+    'knotis.contrib.stripe',
+    'knotis.contrib.admintools',
 )
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -316,7 +317,7 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'int'
+ENVIRONMENT_NAME = 'dev'
 
 
 # You can key the configurations off of anything - I use project path.
