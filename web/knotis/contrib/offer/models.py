@@ -542,7 +542,7 @@ class Offer(QuickModel):
 
     def get_location(self):
         locations = LocationItem.objects.filter(related_object_id=self.pk)
-        if locations.count > 0:
+        if locations.count() > 0:
             return locations[0].location.get_location()
         return None
 
