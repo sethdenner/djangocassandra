@@ -18,7 +18,7 @@ from rest_framework.renderers import JSONRenderer
 from knotis.views import ApiModelViewSet
 
 from knotis.contrib.auth.models import KnotisUser
-from knotis.contrib.identity.models import Identity
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 from knotis.contrib.relation.models import Relation
 from knotis.contrib.activity.models import Activity
 from knotis.contrib.offer.models import Offer
@@ -164,7 +164,7 @@ class TransactionApi(object):
         return redemptions
 
 
-class PurchaseApiModelViewSet(ApiModelViewSet):
+class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
     api_path = 'transaction/purchase'
     resource_name = 'purchase'
 
@@ -174,16 +174,32 @@ class PurchaseApiModelViewSet(ApiModelViewSet):
     )
     serializer_class = TransactionSerializer
 
+    def initial(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        super(PurchaseApiModelViewSet, self).initial(
+            request,
+            *args,
+            **kwargs
+        )
+
+        self.get_current_identity(request)
+
+    def get_queryset(self):
+        if self.current_identity:
+            return self.queryset.filter(owner=self.current_identity)
+
+        else:
+            return self.model.objects.none()
+
     def create(
         self,
         request
     ):
-        current_identity_pk = request.DATA.get('current_identity')
-        try:
-            current_identity = Identity.objects.get(pk=current_identity_pk)
-
-        except Exception, e:
-            logger.exception(e.message)
+        if not self.current_identity:
             raise self.FailedToRetrieveCurrentIdentityException()
 
         offer_pk = request.DATA.get('offer')
@@ -202,8 +218,8 @@ class PurchaseApiModelViewSet(ApiModelViewSet):
         )
         mode = request.DATA.get('mode', 'none')
         transaction_context = '|'.join([
-            current_identity.pk,
-            IPNCallbackView.generate_ipn_hash(current_identity.pk),
+            self.current_identity.pk,
+            IPNCallbackView.generate_ipn_hash(self.current_identity.pk),
             redemption_code,
             mode
         ])
@@ -213,7 +229,7 @@ class PurchaseApiModelViewSet(ApiModelViewSet):
         if PurchaseMode.STRIPE == mode:
             try:
                 charge = StripeApi.create_charge(
-                    current_identity,
+                    self.current_identity,
                     amount
                 )
 
@@ -227,7 +243,7 @@ class PurchaseApiModelViewSet(ApiModelViewSet):
         try:
             usd = Product.currency.get(CurrencyCodes.USD)
             buyer_usd = Inventory.objects.create_stack_from_product(
-                current_identity,
+                self.current_identity,
                 usd,
                 stock=amount,
                 get_existing=True
@@ -246,9 +262,9 @@ class PurchaseApiModelViewSet(ApiModelViewSet):
                         # THIS IS BAD NEED TO MANUALLY REFUND USER
                         logger.exception(''.join([
                             'THIS IS SUPER BAD! NEED TO MANUALLY REFUND USER ',
-                            current_identity.name,
+                            self.current_identity.name,
                             ' (',
-                            current_identity.pk,
+                            self.current_identity.pk,
                             ' ) in the ammount of $',
                             amount
                         ]))
@@ -259,7 +275,7 @@ class PurchaseApiModelViewSet(ApiModelViewSet):
             purchases = TransactionApi.create_purchase(
                 request=request,
                 offer=offer.pk,
-                buyer=current_identity,
+                buyer=self.current_identity,
                 currency=buyer_usd,
                 transaction_context=transaction_context
             )
@@ -276,9 +292,9 @@ class PurchaseApiModelViewSet(ApiModelViewSet):
                         # THIS IS BAD NEED TO MANUALLY REFUND USER
                         logger.exception(''.join([
                             'THIS IS SUPER BAD! NEED TO MANUALLY REFUND USER ',
-                            current_identity.name,
+                            self.current_identity.name,
                             ' (',
-                            current_identity.pk,
+                            self.current_identity.pk,
                             ' ) in the ammount of $',
                             amount
                         ]))
@@ -287,7 +303,7 @@ class PurchaseApiModelViewSet(ApiModelViewSet):
 
         my_purchase = None
         for p in purchases:
-            if p.owner.pk == current_identity.pk:
+            if p.owner.pk == self.current_identity.pk:
                 my_purchase = p
                 break
 
@@ -336,15 +352,69 @@ class PurchaseApiModelViewSet(ApiModelViewSet):
         default_detail = 'Failed to create purchase.'
 
 
-class RedemptionApiModelViewSet(ApiModelViewSet):
-    api_path = 'transaction/purchase'
-    resource_name = 'purchase'
+class RedemptionApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
+    api_path = 'transaction/redemption'
+    resource_name = 'redemption'
 
     model = Transaction
     queryset = Transaction.objects.filter(
         transaction_type=TransactionTypes.REDEMPTION
     )
     serializer_class = TransactionSerializer
+
+    def initial(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        super(RedemptionApiModelViewSet, self).initial(
+            request,
+            *args,
+            **kwargs
+        )
+
+        self.get_current_identity(request)
+
+    def get_queryset(self):
+        if self.current_identity:
+            return self.queryset.filter(owner=self.current_identity)
+
+        else:
+            return self.model.objects.none()
+
+    def create(
+        self,
+        request
+    ):
+        transaction = request.DATA.get('transaction')
+        if not transaction:
+            raise self.CannotCreateRedemptionWithoutPurchaseException()
+
+        try:
+            transaction = Transaction.objects.get(pk=transaction)
+
+        except Exception, e:
+            logger.exception(e)
+            raise self.FailedToRetrievePurchaseException()
+
+        TransactionApi.create_redemption(
+            request,
+            transaction,
+            self.current_identity
+        )
+
+    class CannotCreateRedemptionWithoutPurchaseException(APIException):
+        status_code = 500
+        default_detail = (
+            'Cannot create redemption without an existing purchase.'
+        )
+
+    class FailedToRetrievePurchaseException(APIException):
+        status_code = 500
+        default_detail = (
+            'Failed to find purchase matching pk'
+        )
 
 
 class WrongOwnerException(Exception):

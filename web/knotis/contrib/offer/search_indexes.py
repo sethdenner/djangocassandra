@@ -8,6 +8,8 @@ class OfferIndex(indexes.SearchIndex, indexes.Indexable):
     author = indexes.CharField(model_attr='owner')
     pub_date = indexes.DateTimeField(model_attr='pub_date')
 
+    location = indexes.LocationField(model_attr='get_location')
+
     def get_model(self):
         return Offer
 

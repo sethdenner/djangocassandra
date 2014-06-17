@@ -13,7 +13,7 @@ from django.conf import settings
 
 from knotis.views import ApiModelViewSet
 
-from knotis.contrib.identity.models import Identity
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 from knotis.contrib.product.models import CurrencyCodes
 
 from .models import StripeCustomer
@@ -24,20 +24,6 @@ class StripeApi(object):
     @staticmethod
     def get_stripe_api_key():
         return settings.STRIPE_API_SECRET
-
-    @staticmethod
-    def get_purchase_parameters(request):
-        token = request.DATA.get('stripeToken')
-        amount = request.DATA.get('chargeAmount')
-        offer_id = request.DATA.get('offerId')
-        quantity = request.DATA.get('quantity')
-
-        return {
-            'token': token,
-            'amount': float(amount),
-            'offer_id': offer_id,
-            'quantity': float(quantity)
-        }
 
     @staticmethod
     def create_charge(
@@ -82,6 +68,11 @@ class StripeApi(object):
     def create_customer(customer_identity, token=None):
         stripe.api_key = StripeApi.get_stripe_api_key()
 
+        existing = StripeApi.get_customer(customer_identity)
+        if existing:
+            existing = StripeApi.update_customer_card(existing, token)
+            return existing
+
         customer = stripe.Customer.create(
             card=token,
             description=StripeApi._generate_stripe_customer_description(
@@ -92,7 +83,7 @@ class StripeApi(object):
         if not customer or not customer.id:
             return None
 
-        stripe_customer = StripeCustomer.objects.create(
+        StripeCustomer.objects.create(
             identity=customer_identity,
             stripe_id=customer.id,
             description=(
@@ -101,9 +92,8 @@ class StripeApi(object):
                 )
             )
         )
-        stripe_customer.customer = customer
 
-        return stripe_customer
+        return customer
 
     @staticmethod
     def get_customer(identity):
@@ -130,10 +120,10 @@ class StripeApi(object):
                 logger.exception(e.message)
                 raise
 
-        return stripe_customer
+        return customer
 
 
-class StripeCustomerModelViewSet(ApiModelViewSet):
+class StripeCustomerModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
     api_path = 'stripe/customer'
     resource_name = 'customer'
 
@@ -143,16 +133,25 @@ class StripeCustomerModelViewSet(ApiModelViewSet):
 
     allowed_methods = ['GET', 'POST', 'PUT', 'OPTIONS']
 
+    def initial(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        super(StripeCustomerModelViewSet, self).initial(
+            request,
+            *args,
+            **kwargs
+        )
+
+        self.get_current_identity(request)
+
     def create(
         self,
         request
     ):
-        current_identity_pk = request.DATA.get('current_identity')
-        try:
-            current_identity = Identity.objects.get(pk=current_identity_pk)
-
-        except Exception, e:
-            logger.exception(e.message)
+        if not self.current_identity:
             raise self.CurrentIdentityNotFoundException()
 
         stripe_token = request.DATA.get('stripeToken')
@@ -161,7 +160,7 @@ class StripeCustomerModelViewSet(ApiModelViewSet):
 
         try:
             stripe_customer = StripeApi.create_customer(
-                current_identity,
+                self.current_identity,
                 token=stripe_token
             )
 
@@ -180,15 +179,11 @@ class StripeCustomerModelViewSet(ApiModelViewSet):
         if not pk:
             raise self.NoIdentityPkProvidedException()
 
-        try:
-            current_identity = Identity.objects.get(pk=pk)
-
-        except Exception, e:
-            logger.exception(e.message)
+        if not self.current_identity or self.current_identity.pk != pk:
             raise self.CurrentIdentityNotFoundException()
 
         try:
-            customer = StripeApi.get_customer(current_identity)
+            customer = StripeApi.get_customer(self.current_identity)
 
         except Exception, e:
             logger.exception(e.message)
@@ -209,15 +204,11 @@ class StripeCustomerModelViewSet(ApiModelViewSet):
         if not pk:
             raise self.NoIdentityPkProvidedException()
 
-        try:
-            current_identity = Identity.objects.get(pk=pk)
-
-        except Exception, e:
-            logger.exception(e.message)
+        if not self.current_identity or self.current_identity.pk != pk:
             raise self.CurrentIdentityNotFoundException()
 
         try:
-            customer = StripeApi.get_customer(current_identity)
+            customer = StripeApi.get_customer(self.current_identity)
 
         except Exception, e:
             logger.exception(e.message)
@@ -228,7 +219,7 @@ class StripeCustomerModelViewSet(ApiModelViewSet):
             raise self.InvalidStripeTokenException()
 
         try:
-            StripeApi.update_customer_card(
+            customer = StripeApi.update_customer_card(
                 customer.customer,
                 stripe_token
             )

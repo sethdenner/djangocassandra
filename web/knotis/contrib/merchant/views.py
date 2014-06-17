@@ -53,7 +53,7 @@ class RedemptionsGrid(GridSmallView):
         request = self.request
         session = request.session
 
-        current_identity_id = session['current_identity_id']
+        current_identity_id = session['current_identity']
 
         try:
             current_identity = Identity.objects.get(pk=current_identity_id)
@@ -156,7 +156,7 @@ class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
         *args,
         **kwargs
     ):
-        current_identity_id = request.session.get('current_identity_id')
+        current_identity_id = request.session.get('current_identity')
 
         try:
             current_identity = Identity.objects.get(pk=current_identity_id)
@@ -222,7 +222,7 @@ class MyCustomersGrid(GridSmallView):
         request = self.request
         session = request.session
 
-        current_identity_id = session['current_identity_id']
+        current_identity_id = session['current_identity']
 
         try:
             current_identity = Identity.objects.get(pk=current_identity_id)
@@ -404,7 +404,7 @@ class MyOffersGrid(GridSmallView):
 
     def process_context(self):
         request = self.context.get('request')
-        current_identity_id = request.session.get('current_identity_id')
+        current_identity_id = request.session.get('current_identity')
         current_identity = get_object_or_404(Identity, pk=current_identity_id)
 
         try:
@@ -540,7 +540,7 @@ class OfferRedemptionView(FragmentView):
         offer_id = self.context.get('offer_id')
         offer = Offer.objects.get(pk=offer_id)
 
-        current_identity_id = request.session.get('current_identity_id')
+        current_identity_id = request.session.get('current_identity')
         current_identity = Identity.objects.get(pk=current_identity_id)
 
         purchases = Transaction.objects.filter(

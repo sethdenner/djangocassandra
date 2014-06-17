@@ -1,14 +1,18 @@
 from rest_framework.serializers import (
-    ModelSerializer
+    Serializer,
+    CharField,
+    IntegerField,
+    DateTimeField,
+    BooleanField,
+    EmailField
 )
 
-from .models import StripeCustomer
 
-
-class StripeCustomerSerializer(ModelSerializer):
-    class Meta:
-        model = StripeCustomer
-        exclude = (
-            'content_type',
-            'deleted',
-        )
+class StripeCustomerSerializer(Serializer):
+    pk = CharField(source='id')
+    livemode = BooleanField()
+    created = DateTimeField()
+    account_balance = IntegerField()
+    currency = CharField()
+    description = CharField()
+    email = EmailField()

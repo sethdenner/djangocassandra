@@ -14,7 +14,8 @@ from knotis.contrib.identity.api import (
     IdentityBusinessApiView,
     IdentityEstablishmentApiView,
     IdentityApiModelViewSet,
-    IdentitySwitcherApiViewSet
+    IdentitySwitcherApiViewSet,
+    BusinessApiModelViewSet
 )
 
 from knotis.contrib.offer.api import (
@@ -51,11 +52,14 @@ from knotis.contrib.stripe.api import (
     StripeCustomerModelViewSet
 )
 
+from knotis.contrib.qrcode.api import RedemptionScanApiViewSet
+
 urlpatterns = patterns('')
 urlpatterns += AuthUserApiView.urls()
 urlpatterns += AuthenticationApiView.urls()
 urlpatterns += AuthForgotPasswordApiView.urls()
 urlpatterns += UserInformationApiModelViewSet.urls()
+urlpatterns += BusinessApiModelViewSet.urls()
 urlpatterns += IdentityApiView.urls()
 urlpatterns += IdentityIndividualApiView.urls()
 urlpatterns += IdentityBusinessApiView.urls()
@@ -76,3 +80,4 @@ urlpatterns += EndpointApi.urls()
 urlpatterns += PurchaseApiModelViewSet.urls()
 urlpatterns += RedemptionApiModelViewSet.urls()
 urlpatterns += StripeCustomerModelViewSet.urls()
+urlpatterns += RedemptionScanApiViewSet.urls()

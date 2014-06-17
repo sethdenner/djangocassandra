@@ -10,13 +10,14 @@ from knotis.views import ApiViewSet
 
 from knotis.contrib.identity.models import (
     Identity,
+    IdentityEstablishment,
     IdentityTypes
 )
 from knotis.contrib.offer.models import Offer
 from knotis.contrib.transaction.models import TransactionTypes
 
 from .serializers import SearchSerializer
-
+from haystack.utils.geo import Point
 
 class SearchApi(object):
     @staticmethod
@@ -32,15 +33,34 @@ class SearchApi(object):
             model = Offer
 
         elif search_type == 'identity':
-            model = Identity
+            model = IdentityEstablishment
 
         else:
             model = None
 
+        latitude = filters.pop('latitude', None)
+        longitude = filters.pop('longitude', None)
+
         if None is not model:
             query_set = query_set.models(model)
 
+        else: # This will most definitely have to change.
+            query_set = query_set.models(Offer, IdentityEstablishment)
+
+
+        if latitude and longitude:
+            current_location = Point(
+                float(longitude),
+                float(latitude)
+            )
+
+            query_set.distance(
+                'get_location',
+                current_location
+            ).order_by('distance')
+
         results = query_set.filter(content=search_query)
+
         return results
 
     @staticmethod
@@ -178,10 +198,10 @@ class SearchApiViewSet(ApiViewSet):
             **filters
         )
 
-        data = {}
+        data = []
 
         for result in results:
             serializer = SearchSerializer(instance=result, many=False)
-            data.update(serializer.data)
+            data.append(serializer.data.get('object'))
 
         return Response(data)

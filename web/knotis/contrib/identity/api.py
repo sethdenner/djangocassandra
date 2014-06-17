@@ -50,6 +50,7 @@ from .forms import (
 )
 from .serializers import (
     IdentitySerializer,
+    BusinessSerializer,
     IdentitySwitcherSerializer
 )
 
@@ -528,6 +529,18 @@ class IdentityEstablishmentApiView(IdentityApiView):
         )
 
 
+class BusinessApiModelViewSet(ApiModelViewSet):
+    api_path = 'identity/business'
+    resource_name = 'business'
+
+    model = Identity
+    queryset = Identity.objects.filter(
+        identity_type=IdentityTypes.BUSINESS,
+        available=True
+    )
+    serializer_class = BusinessSerializer
+
+
 class IdentityApiModelViewSet(ApiModelViewSet):
     api_path = 'identity'
     resource_name = 'identity'
@@ -595,6 +608,10 @@ class IdentitySwitcherApiViewSet(ApiViewSet):
                 ])
                 logger.warning(msg)
                 raise self.IdentityNotAvailableException(msg)
+
+            user_information = UserInformation.objects.get(user=request.user)
+            user_information.default_identity_id = identity.pk
+            user_information.save()
 
             serializer = IdentitySwitcherSerializer(identity)
             return Response(serializer.data)

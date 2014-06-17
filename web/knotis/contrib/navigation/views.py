@@ -62,7 +62,7 @@ class NavigationSideView(FragmentView):
         local_context = copy.copy(self.context)
 
         if request:
-            current_identity_id = request.session.get('current_identity_id')
+            current_identity_id = request.session.get('current_identity')
             try:
                 current_identity = Identity.objects.get(id=current_identity_id)
 
