@@ -24,9 +24,10 @@ class SearchApi(object):
     def search(
         search_query,
         identity=None,
+        is_superuser=False,
         **filters
     ):
-        search_type = filters.get('t')
+        search_type = filters.pop('t', None)
         query_set = SearchQuerySet()
 
         if search_type == 'offer':
@@ -37,6 +38,11 @@ class SearchApi(object):
 
         else:
             model = None
+
+        if not is_superuser:
+            filters.pop('available', None)
+        else:
+            filters['available'] = True
 
         latitude = filters.pop('latitude', None)
         longitude = filters.pop('longitude', None)
@@ -59,7 +65,7 @@ class SearchApi(object):
                 current_location
             ).order_by('distance')
 
-        results = query_set.filter(content=search_query)
+        results = query_set.filter(content=search_query, **filters)
 
         return results
 
