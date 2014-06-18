@@ -97,9 +97,7 @@ class SearchResultsGrid(GridSmallView):
 
         search_results = SearchApi.search(
             query,
-            identity=current_identity,
-            is_superuser=
-                current_identity and current_identity.identity_type == IdentityTypes.SUPERUSER,
+            identity=current_identity
         )
 
         if search_results is not None:
