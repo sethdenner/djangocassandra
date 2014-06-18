@@ -259,6 +259,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_METHODS = (
     'GET',
     'POST',
+    'PUT',
+    'DELETE',
     'OPTIONS'
 )
 
@@ -270,12 +272,6 @@ CORS_ALLOW_HEADERS = (
     'authorization',
     'x-csrftoken',
     'current-identity'
-)
-
-CORS_EXPOSE_HEADERS = (
-    'OPTIONS',
-    'POST',
-    'GET'
 )
 
 LOGIN_REDIRECT_URL = '/'
