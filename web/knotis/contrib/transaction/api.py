@@ -8,12 +8,11 @@ from django.conf import settings
 
 from django.template import RequestContext
 
+from rest_framework.response import Response
 from rest_framework.exceptions import (
     APIException,
     MethodNotAllowed
 )
-
-from rest_framework.renderers import JSONRenderer
 
 from knotis.views import ApiModelViewSet
 
@@ -330,7 +329,32 @@ class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
                 break
 
         serializer = TransactionSerializer(my_purchase)
-        return JSONRenderer().render(serializer.data)
+        return Response(serializer.data)
+
+    def list(
+        self,
+        request
+    ):
+        if not self.current_identity:
+            raise self.FailedToRetrieveCurrentIdentityException()
+
+        try:
+            purchases = Transaction.objects.filter(
+                owner=self.current_identity,
+                transaction_type=TransactionTypes.PURCHASE
+            )
+
+        except Exception, e:
+            logger.exception(e.message)
+            raise self.FailedToRetrievePurchaseException()
+
+        unredeemed_purchases = []
+        for purchase in purchases:
+            if not purchase.has_redemptions():
+                unredeemed_purchases.append(purchase)
+
+        serializer = self.serializer_class(unredeemed_purchases, many=True)
+        return Response(serializer.data)
 
     def update(
         self,
@@ -437,4 +461,3 @@ class RedemptionApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
         default_detail = (
             'Failed to find purchase matching pk'
         )
-
