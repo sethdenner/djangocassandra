@@ -19,6 +19,9 @@ from knotis.contrib.transaction.models import TransactionTypes
 from .serializers import SearchSerializer
 from haystack.utils.geo import Point
 
+from rest_framework.exceptions import APIException
+
+
 class SearchApi(object):
     @staticmethod
     def search(
@@ -39,10 +42,12 @@ class SearchApi(object):
         else:
             model = None
 
-        if not is_superuser:
+        if is_superuser:
             filters.pop('available', None)
         else:
             filters['available'] = True
+
+        filters.pop('format', None)
 
         latitude = filters.pop('latitude', None)
         longitude = filters.pop('longitude', None)
@@ -52,7 +57,6 @@ class SearchApi(object):
 
         else: # This will most definitely have to change.
             query_set = query_set.models(Offer, IdentityEstablishment)
-
 
         if latitude and longitude:
             current_location = Point(
@@ -64,6 +68,7 @@ class SearchApi(object):
                 'get_location',
                 current_location
             ).order_by('distance')
+
 
         results = query_set.filter(content=search_query, **filters)
 
@@ -158,9 +163,6 @@ class SearchApi(object):
         )
 
 
-from rest_framework.exceptions import APIException
-
-
 class InvalidRequest(APIException):
     status_code = 500
     default_detail = (
@@ -195,7 +197,7 @@ class SearchApiViewSet(ApiViewSet):
             identity = None
 
         filters = {
-            key: value for (key, value) in request.QUERY_PARAMS.iteritems()
+            key: value for (key, value) in parameters.iteritems()
         }
 
         results = SearchApi.search(
@@ -203,6 +205,7 @@ class SearchApiViewSet(ApiViewSet):
             identity=identity,
             **filters
         )
+
 
         data = []
 
