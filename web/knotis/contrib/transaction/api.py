@@ -224,6 +224,16 @@ class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
             raise self.FailedToRetrieveCurrentIdentityException()
 
         offer_pk = request.DATA.get('offer')
+        mode = request.DATA.get('mode', 'none')
+
+        try:
+            amount = float(request.DATA.get('amount'))
+
+        except:
+            raise self.InvalidChargeAmountException()
+
+        if amount < 0.:
+            raise self.InvalidChargeAmountException()
 
         try:
             offer = Offer.objects.get(pk=offer_pk)
@@ -237,15 +247,12 @@ class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
                 string.ascii_uppercase + string.digits
             ) for _ in range(10)
         )
-        mode = request.DATA.get('mode', 'none')
         transaction_context = '|'.join([
             self.current_identity.pk,
             IPNCallbackView.generate_ipn_hash(self.current_identity.pk),
             redemption_code,
             mode
         ])
-
-        amount = float(request.DATA.get('amount'))
 
         if PurchaseMode.STRIPE == mode:
             try:
@@ -261,36 +268,40 @@ class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
         else:
             charge = None
 
-        try:
-            usd = Product.currency.get(CurrencyCodes.USD)
-            buyer_usd = Inventory.objects.create_stack_from_product(
-                self.current_identity,
-                usd,
-                stock=amount,
-                get_existing=True
-            )
+        if amount > 0.:
+            try:
+                usd = Product.currency.get(CurrencyCodes.USD)
+                buyer_usd = Inventory.objects.create_stack_from_product(
+                    self.current_identity,
+                    usd,
+                    stock=amount,
+                    get_existing=True
+                )
 
-        except Exception, e:
-            logger.exception(e.message)
+            except Exception, e:
+                logger.exception(e.message)
 
-            if None is not charge:
-                if PurchaseMode.STRIPE == mode:
-                    try:
-                        charge.refund()
-                        charge = None
+                if None is not charge:
+                    if PurchaseMode.STRIPE == mode:
+                        try:
+                            charge.refund()
+                            charge = None
 
-                    except Exception, e:
-                        # THIS IS BAD NEED TO MANUALLY REFUND USER
-                        logger.exception(''.join([
-                            'THIS IS SUPER BAD! NEED TO MANUALLY REFUND USER ',
-                            self.current_identity.name,
-                            ' (',
-                            self.current_identity.pk,
-                            ' ) in the amount of $',
-                            amount
-                        ]))
+                        except Exception, e:
+                            # THIS IS BAD NEED TO MANUALLY REFUND USER
+                            logger.exception(''.join([
+                                'THIS IS SUPER BAD! NEED TO MANUALLY REFUND USER ',
+                                self.current_identity.name,
+                                ' (',
+                                self.current_identity.pk,
+                                ' ) in the amount of $',
+                                amount
+                            ]))
 
-            raise self.FailedToDepositCurrencyException()
+                raise self.FailedToDepositCurrencyException()
+
+        else:
+            buyer_usd = None
 
         try:
             purchases = TransactionApi.create_purchase(
@@ -396,6 +407,10 @@ class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
     class FailedToCreatePurchaseException(APIException):
         status_code = 500
         default_detail = 'Failed to create purchase.'
+
+    class InvalidChargeAmountException(APIException):
+        status_code = 500
+        default_detail = 'Charge amount must be a positive int or float.'
 
 
 class RedemptionApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
