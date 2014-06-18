@@ -90,16 +90,13 @@ class SearchResultsGrid(GridSmallView):
 
         query = self.request.GET.get('q',None)
 
-        filters = {}
         current_identity = get_current_identity(self.request)
-
-        if current_identity.identity_type != IdentityTypes.SUPERUSER:
-            filters['available'] = True
 
         search_results = SearchApi.search(
             query,
             identity=None,
-            **filters
+            is_superuser=
+                current_identity.identity_type != IdentityTypes.SUPERUSER,
         )
 
         if search_results is not None:
