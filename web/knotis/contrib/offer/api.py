@@ -10,6 +10,7 @@ from knotis.contrib.inventory.models import Inventory
 
 from .models import (
     Offer,
+    OfferTypes,
     OfferPublish,
     OfferAvailability,
 )
@@ -33,6 +34,10 @@ from knotis.contrib.product.models import (
     ProductTypes
 )
 from knotis.contrib.endpoint.models import Endpoint, EndpointTypes
+
+from knotis.contrib.auth.api import AuthenticationApi
+import random
+import string
 
 
 class OfferPublishApiView(ApiView):
@@ -295,6 +300,7 @@ class OfferCreateApi(object):
     @staticmethod
     def create_offer(
         dark_offer=True,
+        create_business=False,
         *args,
         **kwargs
     ):
@@ -305,10 +311,27 @@ class OfferCreateApi(object):
                 identity_type=IdentityTypes.BUSINESS
             )
         except:
-            logger.exception('Cannot find owner %s' % owner_name)
-            raise
+            if create_business:
+
+                manager_email = kwargs.get('email')
+                if manager_email is None:
+                    raise Exception('No Email provided for creating business')
+
+                user, identity, errors = AuthenticationApi.create_user(**{
+                    'email': manager_email,
+                    'password': ''.join(random.choice(
+                        string.printable
+                    ) for _ in range(16)),
+                    'send_validation': False
+                })
+                identity.save()
+
+            else:
+                logger.exception('Cannot find owner %s' % owner_name)
+                raise
 
         currency_name = kwargs.get('currency')
+
         try:
             currency = Product.currency.get(currency_name)
         except:
@@ -358,7 +381,8 @@ class OfferCreateApi(object):
             stock=(stock, 0.0)[stock == -1],
             unlimited=(stock == -1),
             inventory=[split_inventory],
-            discount_factor=price / value
+            discount_factor=price / value,
+            offer_type=(OfferTypes.NORMAL, OfferTypes.DARK)[dark_offer]
         )
 
         offer.save()

@@ -48,10 +48,12 @@ class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
 class OfferTypes:
     NORMAL = 0
     PREMIUM = 1
+    DARK = 2
 
     CHOICES = (
         (NORMAL, 'Normal'),
-        (PREMIUM, 'Premium')
+        (PREMIUM, 'Premium'),
+        (DARK, 'Dark'),
     )
 
 
@@ -505,10 +507,13 @@ class Offer(QuickModel):
         )
 
     def savings_percent(self):
-        return '%.0f' % round(
-            (self.price_retail() - self.price_discount()) /
-            self.price_retail() * 100, 0
-        )
+        if self.price_retail():
+            return '%.0f' % round(
+                (self.price_retail() - self.price_discount()) /
+                self.price_retail() * 100, 0
+            )
+        else:
+            return 0.0
 
     def days_remaining(self):
         delta = self.end_time - datetime.datetime.utcnow()
