@@ -9,15 +9,18 @@ from haystack.query import SearchQuerySet
 from knotis.views import ApiViewSet
 
 from knotis.contrib.identity.models import (
-    Identity,
     IdentityEstablishment,
     IdentityTypes
 )
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 from knotis.contrib.offer.models import Offer
 from knotis.contrib.transaction.models import TransactionTypes
 
 from .serializers import SearchSerializer
 from haystack.utils.geo import Point
+
+from rest_framework.exceptions import APIException
+
 
 class SearchApi(object):
     @staticmethod
@@ -39,20 +42,22 @@ class SearchApi(object):
         else:
             model = None
 
-        if not is_superuser:
-            filters.pop('available', None)
-        else:
+        if (
+            identity is None or
+            identity.identity_type != IdentityTypes.SUPERUSER
+        ):
             filters['available'] = True
 
-        latitude = filters.pop('latitude', None)
-        longitude = filters.pop('longitude', None)
+        filters.pop('format', None)
+
+        latitude = filters.pop('lat', None)
+        longitude = filters.pop('long', None)
 
         if None is not model:
             query_set = query_set.models(model)
 
-        else: # This will most definitely have to change.
+        else:  # This will most definitely have to change.
             query_set = query_set.models(Offer, IdentityEstablishment)
-
 
         if latitude and longitude:
             current_location = Point(
@@ -158,9 +163,6 @@ class SearchApi(object):
         )
 
 
-from rest_framework.exceptions import APIException
-
-
 class InvalidRequest(APIException):
     status_code = 500
     default_detail = (
@@ -169,11 +171,25 @@ class InvalidRequest(APIException):
     )
 
 
-class SearchApiViewSet(ApiViewSet):
+class SearchApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
     api_path = 'search'
     resource_name = 'search'
 
     permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def initial(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        super(SearchApiViewSet, self).initial(
+            request,
+            *args,
+            **kwargs
+        )
+
+        self.get_current_identity(request)
 
     def list(
         self,
@@ -187,20 +203,13 @@ class SearchApiViewSet(ApiViewSet):
         if isinstance(search_query, list):
             search_query = ' '.join(search_query)
 
-        identity_pk = parameters.pop('ci', None)
-        if identity_pk:
-            identity = Identity.objects.get(pk=identity_pk)
-
-        else:
-            identity = None
-
         filters = {
-            key: value for (key, value) in request.QUERY_PARAMS.iteritems()
+            key: value for (key, value) in parameters.iteritems()
         }
 
         results = SearchApi.search(
             search_query,
-            identity=identity,
+            identity=self.current_identity,
             **filters
         )
 

@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 #from haystack.views import SearchView
 
 from knotis.contrib.identity.views import IdentityTile, get_current_identity
-from knotis.contrib.identity.models import IdentityTypes
 from knotis.contrib.offer.views import OfferTile
 from knotis.contrib.layout.views import GridSmallView
 from knotis.contrib.search.api import SearchApi
@@ -90,13 +89,14 @@ class SearchResultsGrid(GridSmallView):
 
         query = self.request.GET.get('q',None)
 
-        current_identity = get_current_identity(self.request)
+        try:
+            current_identity = get_current_identity(self.request)
+        except:
+            current_identity = None
 
         search_results = SearchApi.search(
             query,
-            identity=None,
-            is_superuser=
-                current_identity.identity_type != IdentityTypes.SUPERUSER,
+            identity=current_identity
         )
 
         if search_results is not None:
