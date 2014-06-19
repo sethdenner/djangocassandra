@@ -105,20 +105,18 @@ class StripeApi(object):
             )
 
         except StripeCustomer.DoesNotExist:
-            stripe_customer = None
+            return None
 
         except Exception, e:
             logger.exception(e.message)
             raise
 
-        if stripe_customer:
-            try:
-                customer = stripe.Customer.retrieve(stripe_customer.stripe_id)
-                stripe_customer.customer = customer
+        try:
+            customer = stripe.Customer.retrieve(stripe_customer.stripe_id)
 
-            except Exception, e:
-                logger.exception(e.message)
-                raise
+        except Exception, e:
+            logger.exception(e.message)
+            raise
 
         return customer
 
