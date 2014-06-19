@@ -41,7 +41,9 @@ class SearchApi(object):
         else:
             model = None
 
-        if identity.identity_type != IdentityTypes.SUPERUSER:
+        if (identity is not None and
+                identity.identity_type != IdentityTypes.SUPERUSER) or\
+                identity is None:
             filters['available'] = True
 
         filters.pop('format', None)
