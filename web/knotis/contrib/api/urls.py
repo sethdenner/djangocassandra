@@ -15,6 +15,8 @@ from knotis.contrib.identity.api import (
     IdentityEstablishmentApiView,
     IdentityApiModelViewSet,
     IdentitySwitcherApiViewSet,
+    IndividualApiModelViewSet,
+    EstablishmentApiModelViewSet,
     BusinessApiModelViewSet
 )
 
@@ -59,6 +61,8 @@ urlpatterns += AuthUserApiView.urls()
 urlpatterns += AuthenticationApiView.urls()
 urlpatterns += AuthForgotPasswordApiView.urls()
 urlpatterns += UserInformationApiModelViewSet.urls()
+urlpatterns += IndividualApiModelViewSet.urls()
+urlpatterns += EstablishmentApiModelViewSet.urls()
 urlpatterns += BusinessApiModelViewSet.urls()
 urlpatterns += IdentityApiView.urls()
 urlpatterns += IdentityIndividualApiView.urls()

@@ -19,7 +19,7 @@
                         });
 
                     }
-
+                    $('#id-identity-dropdown').text(data.data.individual_name);
                 },
                 method: 'put'
             });
@@ -37,7 +37,7 @@
                             details: '#id-location-form',
                             detailsAttribute: 'data-geo'
                         });
-                        
+
                         $('form#id-location-form input#related-id-input').val(
                             data.data.establishment_id
                         );
@@ -68,7 +68,7 @@
             $('#first-carousel button#id-button-business').click(function(event) {
                 event.preventDefault();
                 $('#first-carousel').carousel('next');
-                
+
             });
 
             $('#first-carousel button#id-button-offers').click(function(event) {

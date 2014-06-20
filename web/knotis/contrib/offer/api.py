@@ -207,7 +207,7 @@ class OfferApiView(ApiView):
     ):
         errors = {}
 
-        update_id = request.PUT.get('id')
+        update_id = request.DATA.get('id')
 
         try:
             offer = Offer.objects.get(pk=update_id)
@@ -229,7 +229,7 @@ class OfferApiView(ApiView):
         active = offer.active
 
         form = OfferForm(
-            data=request.PUT,
+            data=request.DATA,
             instance=offer
         )
 
