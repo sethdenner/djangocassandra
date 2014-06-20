@@ -299,7 +299,7 @@ class OfferCreateApi(object):
 
     @staticmethod
     def create_offer(
-        dark_offer=True,
+        dark_offer=False,
         create_business=False,
         *args,
         **kwargs
