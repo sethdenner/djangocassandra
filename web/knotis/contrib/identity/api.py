@@ -7,7 +7,6 @@ from django.core.exceptions import (
 )
 
 from rest_framework.response import Response
-from rest_framework.renderers import JSONRenderer
 from rest_framework.exceptions import (
     APIException,
     MethodNotAllowed
@@ -50,6 +49,8 @@ from .forms import (
 )
 from .serializers import (
     IdentitySerializer,
+    IndividualSerializer,
+    EstablishmentSerializer,
     BusinessSerializer,
     IdentitySwitcherSerializer
 )
@@ -527,6 +528,30 @@ class IdentityEstablishmentApiView(IdentityApiView):
             *args,
             **kwargs
         )
+
+
+class IndividualApiModelViewSet(ApiModelViewSet):
+    api_path = 'identity/individual'
+    resource_name = 'individual'
+
+    model = Identity
+    queryset = Identity.objects.filter(
+        identity_type=IdentityTypes.INDIVIDUAL,
+        available=True
+    )
+    serializer_class = IndividualSerializer
+
+
+class EstablishmentApiModelViewSet(ApiModelViewSet):
+    api_path = 'identity/establishment'
+    resource_name = 'establishment'
+
+    model = Identity
+    queryset = Identity.objects.filter(
+        identity_type=IdentityTypes.ESTABLISHMENT,
+        available=True
+    )
+    serializer_class = EstablishmentSerializer
 
 
 class BusinessApiModelViewSet(ApiModelViewSet):
