@@ -1,3 +1,7 @@
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+THUMBNAIL_DEBUG = DEBUG
+
 DATABASES = {
     'default': {
         'ENGINE': 'django_cassandra.db', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -124,3 +128,4 @@ KNOTIS_MODE_PERCENT = 0.05
 
 NOMINATIM_API = 'http://next.knotis.com/nominatim/search/'
 NOMINATIM_REVERSE_API = 'http://next.knotis.com/nominatim/reverse/'
+ANONYMOUS_USER_ID = -1
