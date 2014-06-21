@@ -1,7 +1,3 @@
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-THUMBNAIL_DEBUG = DEBUG
-
 DATABASES = {
     'default': {
         'ENGINE': 'django_cassandra.db', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
