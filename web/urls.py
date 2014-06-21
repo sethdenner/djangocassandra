@@ -1,9 +1,9 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 
+
 # This code is required for template fragments
 # to find the corresponding views
-
 from knotis.views import (
     RenderTemplateFragmentMixin
 )
@@ -92,5 +92,21 @@ urlpatterns = patterns(
     url(
         r'',
         include('knotis.contrib.transaction.urls')
-    )
+    ),
+    url(
+        r'',
+        include('knotis.contrib.support.urls')
+    ),
+    url(
+        r'^oauth2/',
+        include('doac.urls')
+    ),
+    url(
+        r'',
+        include('knotis.contrib.terms.urls')
+    ),
+    url(
+        r'',
+        include('knotis.contrib.admintools.urls')
+    ),
 )

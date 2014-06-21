@@ -2,9 +2,23 @@ from django.conf import settings
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import (
+    ValidationError
+)
 
-from knotis.views import ApiView
+from rest_framework.response import Response
+from rest_framework.exceptions import (
+    APIException,
+    MethodNotAllowed
+)
+
+
+from knotis.views import (
+    ApiView,
+    ApiViewSet,
+    ApiModelViewSet
+)
+
 from knotis.contrib.auth.models import (
     KnotisUser,
     UserInformation
@@ -21,22 +35,30 @@ from knotis.contrib.qrcode.models import (
     QrcodeTypes
 )
 
-from models import (
+from .models import (
     Identity,
     IdentityIndividual,
     IdentityBusiness,
     IdentityTypes
 )
-from forms import (
+from .forms import (
     IdentityForm,
     IdentityIndividualForm,
     IdentityBusinessForm,
     IdentityEstablishmentForm
 )
+from .serializers import (
+    IdentitySerializer,
+    IndividualSerializer,
+    EstablishmentSerializer,
+    BusinessSerializer,
+    IdentitySwitcherSerializer
+)
 
 
-class IdentityApi(ApiView):
-    api_url = 'identity/identity'
+class IdentityApiView(ApiView):
+    api_version = 'v1'
+    api_path = 'identity/identity'
 
     @staticmethod
     def create_identity(
@@ -80,7 +102,7 @@ class IdentityApi(ApiView):
 
         try:
             instance = self.create_identity(
-                **dict(request.POST.iteritems())
+                **dict(request.DATA.iteritems())
             )
 
         except ValidationError, e:
@@ -109,9 +131,10 @@ class IdentityApi(ApiView):
 
         noun = noun.lower()
 
-        update_id = request.PUT.get('id')
+        update_id = request.DATA.get('id')
 
         try:
+
             identity = Identity.objects.get(pk=update_id)
 
         except Exception, e:
@@ -129,7 +152,7 @@ class IdentityApi(ApiView):
             })
 
         form = IdentityForm(
-            data=request.PUT,
+            data=request.DATA,
             instance=identity
         )
 
@@ -192,8 +215,9 @@ class IdentityApi(ApiView):
         return self.generate_response(data)
 
 
-class IdentityIndividualApi(IdentityApi):
-    api_url = 'identity/individual'
+class IdentityIndividualApiView(IdentityApiView):
+    api_version = 'v1'
+    api_path = 'identity/individual'
 
     @staticmethod
     def create_individual(
@@ -208,7 +232,7 @@ class IdentityIndividualApi(IdentityApi):
             raise Exception('No user_id provided')
 
         kwargs['identity_type'] = IdentityTypes.INDIVIDUAL
-        individual = IdentityApi.create_identity(
+        individual = IdentityApiView.create_identity(
             form_class=IdentityIndividualForm,
             **kwargs
         )
@@ -236,7 +260,7 @@ class IdentityIndividualApi(IdentityApi):
 
         try:
             individual = self.create_individual(
-                **dict(request.POST.iteritems())
+                **dict(request.DATA.iteritems())
             )
 
         except ValidationError, e:
@@ -268,7 +292,7 @@ class IdentityIndividualApi(IdentityApi):
         *args,
         **kwargs
     ):
-        return super(IdentityIndividualApi, self).put(
+        return super(IdentityIndividualApiView, self).put(
             request,
             noun='individual',
             *args,
@@ -292,8 +316,9 @@ class IdentityIndividualApi(IdentityApi):
         pass
 
 
-class IdentityBusinessApi(IdentityApi):
-    api_url = 'identity/business'
+class IdentityBusinessApiView(IdentityApiView):
+    api_version = 'v1'
+    api_path = 'identity/business'
 
     @staticmethod
     def create_business(
@@ -308,7 +333,7 @@ class IdentityBusinessApi(IdentityApi):
             raise Exception('No individual_id provided')
 
         kwargs['identity_type'] = IdentityTypes.BUSINESS
-        business = IdentityApi.create_identity(
+        business = IdentityApiView.create_identity(
             form_class=IdentityBusinessForm,
             **kwargs
         )
@@ -352,7 +377,7 @@ class IdentityBusinessApi(IdentityApi):
             logger.exception(e.message)
 
         try:
-            establishment = IdentityEstablishmentApi.create_establishment(
+            establishment = IdentityEstablishmentApiView.create_establishment(
                 business_id=business.pk,
                 **kwargs
             )
@@ -376,8 +401,9 @@ class IdentityBusinessApi(IdentityApi):
 
         try:
             business, establishment = self.create_business(
-                **dict(request.POST.iteritems())
+                **dict(request.DATA.iteritems())
             )
+            request.session['current_identity_id'] = business.id
 
         except ValidationError, e:
             logger.exception(e.message)
@@ -410,7 +436,7 @@ class IdentityBusinessApi(IdentityApi):
         *args,
         **kwargs
     ):
-        return super(IdentityBusinessApi, self).put(
+        return super(IdentityBusinessApiView, self).put(
             request,
             noun='business',
             *args,
@@ -418,8 +444,9 @@ class IdentityBusinessApi(IdentityApi):
         )
 
 
-class IdentityEstablishmentApi(IdentityApi):
-    api_url = 'identity/establishment'
+class IdentityEstablishmentApiView(IdentityApiView):
+    api_version = 'v1'
+    api_path = 'identity/establishment'
 
     @staticmethod
     def create_establishment(
@@ -434,7 +461,7 @@ class IdentityEstablishmentApi(IdentityApi):
             raise Exception('No business_id provided')
 
         kwargs['identity_type'] = IdentityTypes.ESTABLISHMENT
-        establishment = IdentityApi.create_identity(
+        establishment = IdentityApiView.create_identity(
             form_class=IdentityEstablishmentForm,
             **kwargs
         )
@@ -463,7 +490,7 @@ class IdentityEstablishmentApi(IdentityApi):
 
         try:
             establishment = self.create_establishment(
-                **dict(request.POST.iteritems())
+                **dict(request.DATA.iteritems())
             )
 
         except ValidationError, e:
@@ -496,9 +523,131 @@ class IdentityEstablishmentApi(IdentityApi):
         *args,
         **kwargs
     ):
-        return super(IdentityEstablishmentApi, self).put(
+        return super(IdentityEstablishmentApiView, self).put(
             request,
             noun='establishment',
             *args,
             **kwargs
         )
+
+
+class IndividualApiModelViewSet(ApiModelViewSet):
+    api_path = 'identity/individual'
+    resource_name = 'individual'
+
+    model = Identity
+    queryset = Identity.objects.filter(
+        identity_type=IdentityTypes.INDIVIDUAL,
+        available=True
+    )
+    serializer_class = IndividualSerializer
+
+
+class EstablishmentApiModelViewSet(ApiModelViewSet):
+    api_path = 'identity/establishment'
+    resource_name = 'establishment'
+
+    model = Identity
+    queryset = Identity.objects.filter(
+        identity_type=IdentityTypes.ESTABLISHMENT,
+        available=True
+    )
+    serializer_class = EstablishmentSerializer
+
+
+class BusinessApiModelViewSet(ApiModelViewSet):
+    api_path = 'identity/business'
+    resource_name = 'business'
+
+    model = Identity
+    queryset = Identity.objects.filter(
+        identity_type=IdentityTypes.BUSINESS,
+        available=True
+    )
+    serializer_class = BusinessSerializer
+
+
+class IdentityApiModelViewSet(ApiModelViewSet):
+    api_path = 'identity'
+    resource_name = 'identity'
+
+    model = Identity
+    queryset = Identity.objects.all()
+    serializer_class = IdentitySerializer
+
+    def list(
+        self,
+        request
+    ):
+        raise MethodNotAllowed(request.method)
+
+
+class IdentitySwitcherApiViewSet(ApiViewSet):
+    api_path = 'identity/switcher'
+    resource_name = 'switcher'
+
+    def retrieve(
+        self,
+        request,
+        pk=None
+    ):
+        raise MethodNotAllowed(request.method)
+
+    def list(
+        self,
+        request
+    ):
+        try:
+            available_identities = Identity.objects.get_available(request.user)
+
+        except:
+            available_identities = Identity.objects.none()
+
+        serializer = IdentitySwitcherSerializer(
+            available_identities,
+            many=True
+        )
+        return Response(serializer.data)
+
+    def update(
+        self,
+        request,
+        pk=None
+    ):
+        try:
+            available_identities = Identity.objects.get_available(
+                user=request.user
+            )
+            identity = None
+            for i in available_identities:
+                if i.id == pk:
+                    identity = i
+                    break
+
+            if not identity:
+                msg = ''.join([
+                    'identity {',
+                    pk,
+                    '} is not available to user {',
+                    request.user.id,
+                    '}'
+                ])
+                logger.warning(msg)
+                raise self.IdentityNotAvailableException(msg)
+
+            user_information = UserInformation.objects.get(user=request.user)
+            user_information.default_identity_id = identity.pk
+            user_information.save()
+
+            serializer = IdentitySwitcherSerializer(identity)
+            return Response(serializer.data)
+
+        except Exception, e:
+            logger.exception(
+                e.message
+            )
+            raise
+
+    class IdentityNotAvailableException(APIException):
+        status_code = '500'
+        default_detail = 'The identity requested is not available.'

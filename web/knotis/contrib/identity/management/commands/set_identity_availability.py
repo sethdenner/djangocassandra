@@ -84,4 +84,4 @@ class Command(BaseCommand):
             page += 1
             establishments = IdentityEstablishment.objects.filter(
                 available=False
-            )[page:page + count]
+            )[page*count:(page*count) + count]

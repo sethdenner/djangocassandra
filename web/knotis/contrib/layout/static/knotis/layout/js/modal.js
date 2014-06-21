@@ -11,7 +11,7 @@
             modal_width: '',
             modal_template: '<div id="{{ modal_id }}" class="{{ modal_cssclass }}" tabindex="-1" data-width="{{ modal_width }}"></div>',
             modal_settings: {
-                backdrop: true,
+                backdrop: 'static',
                 keyboard: true
             },
             loading: false,
@@ -45,7 +45,7 @@
             settings.data,
             function(data, status, request) {
                 if (data) {
-                    $modal.modal();
+                    $modal.modal(settings.modal_settings);
                     settings.on_open(data, status, request);
                 } else {
                     $modal.modal('hide');

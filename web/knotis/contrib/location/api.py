@@ -15,8 +15,9 @@ from models import (
 )
 
 
-class LocationApi(ApiView):
-    api_url = 'location/location'
+class LocationApiView(ApiView):
+    api_version = 'v1'
+    api_path = 'location/location'
 
     def post(
         self,
@@ -26,7 +27,7 @@ class LocationApi(ApiView):
     ):
         errors = {}
 
-        update_id = request.POST.get('id')
+        update_id = request.DATA.get('id')
         if update_id:
             try:
                 location = Location.objects.get(pk=update_id)
@@ -42,17 +43,17 @@ class LocationApi(ApiView):
             location = None
 
         form = LocationForm(
-            data=request.POST,
+            data=request.DATA,
             instance=location
         )
 
-        related_id = request.POST.get('related_id')
+        related_id = request.DATA.get('related_id')
         if related_id:
             related = Identity.objects.get(pk=related_id)
 
         else:
             related = None
-            
+
         location = None
         new_location_item = None
         if form.is_valid():
@@ -79,7 +80,6 @@ class LocationApi(ApiView):
 
                     for li in current_location_items:
                         li.delete()
-                        
 
                 except Exception, e:
                     logger.exception(
@@ -92,7 +92,7 @@ class LocationApi(ApiView):
                     # Since we don't have a business profile page at the
                     # moment, we do not have to worry about the business
                     # having an address at the moment.
-                
+
                     # business = (
                     #     IdentityBusiness.objects.get_establishment_parent(
                     #         related
@@ -103,7 +103,7 @@ class LocationApi(ApiView):
                     #         related_object_id=related.pk
                     #     ):
                     #         li.delete()
-                        
+
                     #     li = LocationItem.objects.create(
                     #         location=location,
                     #         related=business
@@ -129,7 +129,7 @@ class LocationApi(ApiView):
 
             if new_location_item:
                 data['location_item_id'] = new_location_item.pk
-            
+
         else:
             data['errors'] = errors
             data['message'] = 'There was an error while saving location.'

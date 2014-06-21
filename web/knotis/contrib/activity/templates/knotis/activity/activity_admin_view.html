@@ -1,0 +1,6 @@
+{% extends 'knotis/admintools/admin_list_editor.html' %}
+
+{% block list_controls %}
+  {% csrf_token %}
+  {{ activity_view_form.as_template }}
+{% endblock list_controls %}

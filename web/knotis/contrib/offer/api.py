@@ -1,24 +1,31 @@
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from knotis.views import ApiView
+from knotis.views import (
+    ApiView,
+    ApiModelViewSet
+)
 
 from knotis.contrib.inventory.models import Inventory
 
-from models import (
+from .models import (
     Offer,
     OfferPublish,
     OfferAvailability
 )
-from forms import (
+from .forms import (
     OfferForm,
     OfferPublishForm,
     OfferWithInventoryForm
 )
+from .serializers import (
+    OfferSerializer,
+    OfferAvailabilitySerializer
+)
 
 
-class OfferPublishApi(ApiView):
-    api_url = 'offer/publish'
+class OfferPublishApiView(ApiView):
+    api_path = 'offer/publish'
 
     def put(
         self,
@@ -101,8 +108,8 @@ class OfferPublishApi(ApiView):
             })
 
 
-class OfferApi(ApiView):
-    api_url = 'offer/offer'
+class OfferApiView(ApiView):
+    api_path = 'offer/offer'
 
     def post(
         self,
@@ -184,7 +191,7 @@ class OfferApi(ApiView):
     ):
         errors = {}
 
-        update_id = request.PUT.get('id')
+        update_id = request.DATA.get('id')
 
         try:
             offer = Offer.objects.get(pk=update_id)
@@ -206,7 +213,7 @@ class OfferApi(ApiView):
         active = offer.active
 
         form = OfferForm(
-            data=request.PUT,
+            data=request.DATA,
             instance=offer
         )
 
@@ -249,3 +256,24 @@ class OfferApi(ApiView):
             'offer_id': offer.id,
             'message': 'Offer updated sucessfully.'
         })
+
+
+class OfferApiModelViewSet(ApiModelViewSet):
+    api_path = 'offer'
+    resource_name = 'offer'
+
+    model = Offer
+    serializer_class = OfferSerializer
+
+    http_method_names = ['get', 'options']
+
+
+class OfferAvailabilityModelViewSet(ApiModelViewSet):
+    api_path = 'offers'
+    resource_name = 'offers'
+
+    model = OfferAvailability
+    queryset = OfferAvailability.objects.filter(available=True)
+    serializer_class = OfferAvailabilitySerializer
+
+    http_method_names = ['get', 'options']

@@ -154,7 +154,7 @@ def crop(
         return HttpResponseNotFound()
 
     try:
-        current_identity_id = request.session['current_identity_id']
+        current_identity_id = request.session['current_identity']
         current_identity = Identity.objects.get(pk=current_identity_id)
 
     except Exception, e:

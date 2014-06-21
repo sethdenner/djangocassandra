@@ -12,6 +12,7 @@ from django.contrib.auth.forms import (
 )
 from django.template import Context
 from django.forms import (
+    IntegerField,
     CharField,
     EmailField,
     BooleanField,
@@ -35,10 +36,12 @@ from knotis.contrib.identity.models import (
     IdentitySuperUser
 )
 from knotis.contrib.identity.api import (
-    IdentityIndividualApi
+    IdentityIndividualApiView
 )
 
 from knotis.contrib.relation.models import Relation
+from knotis.contrib.inventory.models import Inventory
+from knotis.contrib.product.models import Product, CurrencyCodes
 
 from models import (
     KnotisUser,
@@ -184,10 +187,22 @@ class CreateUserForm(TemplateModelForm):
                 )
 
             else:
-                identity = IdentityIndividualApi.create_individual(
+                identity = IdentityIndividualApiView.create_individual(
                     user_id=user.pk,
                     name=IdentityIndividual.DEFAULT_NAME
                 )
+
+            try:
+                Inventory.objects.create_stack_from_product(
+                    identity,
+                    Product.currency.get(CurrencyCodes.KNOTIS_POINTS),
+                    stock=25, # TODO: Fix this will be dynamic. Probably need to
+                    # query the rewards table.
+                    # stock=settings.SIGNUP_POINTS,
+                )
+            except:
+                logging.exception('Failed to to create knotis points for user')
+                raise
 
             user_info.default_identity_id = identity.id
             user_info.save()
@@ -214,6 +229,7 @@ class CreateUserForm(TemplateModelForm):
             raise
 
         return user, identity
+
 
 
 class CreateSuperUserForm(CreateUserForm):
@@ -321,3 +337,29 @@ class ForgotPasswordForm(TemplateForm):
         except:
             logger.exception('failed to initiate password reset')
             return False
+
+class UserAdminQueryForm(TemplateForm):
+    template_name = 'knotis/auth/user_admin_form.html'
+
+    range_start = IntegerField(
+        label='Start',
+        required = True,
+        initial = 1,
+    )
+    range_end = IntegerField(
+        label='Stop',
+        required = True,
+        initial = 20,
+    )
+    range_step = IntegerField(
+        label='Step',
+        required = True,
+        initial = 20,
+    )
+    user_filter = CharField(
+        label='Filter',
+        max_length = 254,
+        required = True,
+        initial = '',
+    )
+

@@ -32,16 +32,18 @@
                         if (data.status == 'success') {
 			    $img = $('#profile-badge');
 			    $img.attr('src', data.image_url);
-			    
+
                         } else if (data.status == 'failure') {
-                            
+
                         } else {
                             // Invalid Status
                         }
                     },
                     related_object_id: identity_id,
                     context: 'profile_badge',
-                    jcrop_box_width: 560
+                    jcrop_box_width: 560,
+                    image_max_height: 400,
+                    image_max_width: 500,
                 });
             }
         })
@@ -71,13 +73,15 @@
                 aspect: 5.12,
                 related_object_id: identity_id,
                 context: 'profile_banner',
+                image_max_height: 400,
+                image_max_width: 500,
                 primary: true,
                 done: function(data){
                   $('modal-box').modal('hide');
                   $('#id-profile-cover').css('background-image', 'url("' + data.image_url + '")');
                 },
                 jcrop_box_width: 560
-            });   
+            });
           }
       });
     });
@@ -86,18 +90,18 @@
     $('#about_carousel').carousel({
         interval: 5000
     });
-    
+
     $('a.upload-photo').click(function(event){
       event.preventDefault();
       var identity_id = $(this).attr('data-business-id');
-        
+
       $.ajaxmodal({
           href: '/image/upload',
           modal_settings: {
             backdrop: 'static'
           },
           on_open: function(data, status, request){
-        
+
             $('#file-uploader').sickle({
                 do_upload: true,
                 params: {
@@ -107,8 +111,10 @@
                 related_object_id: identity_id,
                 context: 'business_profile_carousel',
                 primary: false,
+                image_max_height: 400,
+                image_max_width: 500,
                 done: function(data){
-                  
+
                         // stop the carousel
                         $('#about_carousel').carousel('pause').removeData();
 
@@ -122,7 +128,7 @@
                         // populate carousel-indicators
                         $indicator = $('<li data-target="#about_carousel" data-slide-to="' + $('#about_carousel>.carousel-indicators').children().size() + '" style="list-style: none;"></li>');
                         $('#about_carousel>.carousel-indicators').append($indicator);
-                        
+
                         // resume the carousel
                         $('#about_carousel').carousel('next');
 
@@ -150,7 +156,7 @@
         $('li.tab.yelp').addClass('active');
     });
 
-    // gather up all the address display elements on the page, and link them. 
+    // gather up all the address display elements on the page, and link them.
     $('.linked-business-name').link_field('linkbizname');
     $('.linked-phone-number').link_field('linkphonenum');
     $('.linkedaddress').link_field('linkaddress');
@@ -173,7 +179,7 @@
                 var message = 'An error has occured.';
                 if (data.errors.exception) {
                     message = data.errors.exception;
-                } 
+                }
                 alert(message);
             } else {
                 $('#about_carousel').carousel('next');
@@ -181,7 +187,7 @@
 
             }
         });
-            
+
     });
-   
+
 })(jQuery);
