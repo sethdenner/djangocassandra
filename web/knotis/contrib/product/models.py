@@ -32,9 +32,11 @@ class ProductTypes:
 
 class CurrencyCodes:
     USD = 'usd'
+    KNOTIS_POINTS = 'kno'
 
     CHOICES = (
-        (USD, 'United States Dollars ($)')
+        (USD, 'United States Dollars ($)'),
+        (KNOTIS_POINTS, 'Knotis Reward Points (k)'),
     )
 
 

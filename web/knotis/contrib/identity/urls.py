@@ -17,12 +17,6 @@ from views import (
     EstablishmentAboutAbout,
 )
 
-from api import (
-    IdentityApi,
-    IdentityIndividualApi,
-    IdentityBusinessApi,
-    IdentityEstablishmentApi
-)
 
 urlpatterns = patterns(
     'knotis.contrib.identity.views',

@@ -19,8 +19,10 @@ from knotis.contrib.product.models import (
 )
 from knotis.contrib.inventory.models import Inventory
 from knotis.contrib.offer.models import Offer
-from knotis.contrib.transaction.api import TransactionApi
-from knotis.contrib.transaction.models import Transaction
+from knotis.contrib.transaction.api import (
+    TransactionApi,
+    PurchaseMode
+)
 
 from knotis.contrib.paypal.views import IPNCallbackView
 
@@ -48,7 +50,7 @@ class StripeCharge(AJAXView):
     ):
         current_identity = get_object_or_404(
             Identity,
-            pk=request.session['current_identity_id']
+            pk=request.session['current_identity']
         )
 
         stripe.api_key = settings.STRIPE_API_SECRET
@@ -78,21 +80,39 @@ class StripeCharge(AJAXView):
             })
 
         try:
-            customer = stripe.Customer.create(
-                card=token,
-                description=''.join([
-                    current_identity.name,
-                    ' (',
-                    current_identity.pk,
-                    ')'
-                ])
+            stripe_customer = StripeCustomer.objects.get(
+                identity=current_identity
             )
 
-            StripeCustomer.objects.create(
-                identity=current_identity,
-                stripe_id=customer.id,
-                description=current_identity.name
-            )
+        except StripeCustomer.DoesNotExist:
+            stripe_customer = None
+
+        except Exception, e:
+            logger.exception(e.message)
+            stripe_customer = None
+
+        try:
+            if not stripe_customer:
+                customer = stripe.Customer.create(
+                    card=token,
+                    description=''.join([
+                        current_identity.name,
+                        ' (',
+                        current_identity.pk,
+                        ')'
+                    ])
+                )
+
+                StripeCustomer.objects.create(
+                    identity=current_identity,
+                    stripe_id=customer.id,
+                    description=current_identity.name
+                )
+
+            else:
+                customer = stripe.Customer.retrieve(stripe_customer.stripe_id)
+                customer.card = token
+                customer.save()
 
         except Exception, e:
             logger.exception(e.message)
@@ -120,7 +140,7 @@ class StripeCharge(AJAXView):
                 get_existing=True
             )
 
-            mode = 'stripe'
+            mode = PurchaseMode.STRIPE
             for i in range(int(quantity)):
                 redemption_code = ''.join(
                     random.choice(
@@ -140,7 +160,8 @@ class StripeCharge(AJAXView):
                     offer=offer,
                     buyer=current_identity,
                     currency=buyer_usd,
-                    transaction_context=transaction_context
+                    transaction_context=transaction_context,
+                    mode=mode
                 )
 
         except Exception, e:

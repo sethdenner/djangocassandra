@@ -19,6 +19,9 @@ from knotis.contrib.quick.fields import (
     QuickBooleanField
 )
 
+from knotis.contrib.media.models import (
+    ImageInstance
+)
 from knotis.contrib.relation.models import (
     Relation,
     RelationTypes
@@ -389,6 +392,52 @@ class Identity(QuickModel):
         if locations.count() > 0:
             return locations[0].location.get_location()
         return None
+
+    def get_image(
+        self,
+        context
+    ):
+        try:
+            image = ImageInstance.objects.get(
+                related_object_id=self.pk,
+                context=context,
+                primary=True
+            )
+
+        except ImageInstance.DoesNotExist:
+            image = None
+
+        except Exception, e:
+            logger.exception(e.message)
+            return None
+
+        if (
+            not image and
+            self.identity_type == IdentityTypes.ESTABLISHMENT
+        ):
+            try:
+                business = IdentityBusiness.objects.get_establishment_parent(
+                    self
+                )
+                image = ImageInstance.objects.get(
+                    related_object_id=business.pk,
+                    context=context,
+                    primary=True
+                )
+
+            except ImageInstance.DoesNotExist:
+                pass
+
+            except Exception, e:
+                logger.exception(e.message)
+
+        return image
+
+    def badge_image(self):
+        return self.get_image('profile_badge')
+
+    def banner_image(self):
+        return self.get_image('profile_banner')
 
 
 class IdentityIndividual(Identity):

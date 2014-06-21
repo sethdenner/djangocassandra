@@ -3,10 +3,6 @@ from django.conf.urls.defaults import (
     url
 )
 
-from api import (
-    EndpointApi
-)
-
 from views import(
     SocialMediaSettingsView,
     DeleteEndpointView
@@ -14,7 +10,6 @@ from views import(
 
 urlpatterns = patterns(
     '',
-    EndpointApi.urls(),
     url(
         r'^settings/social/$',
         SocialMediaSettingsView.as_view()

@@ -1,4 +1,11 @@
-from sorl.thumbnail import ImageField
+from django.conf import settings
+from django.utils import log
+logger = log.getLogger(__name__)
+
+from sorl.thumbnail import (
+    ImageField,
+    get_thumbnail
+)
 from knotis.contrib.sickle import generate_sorl_crop_string as crop
 
 from knotis.contrib.quick.models import (
@@ -12,11 +19,10 @@ from knotis.contrib.quick.fields import (
     QuickForeignKey,
     QuickBooleanField
 )
-from knotis.contrib.identity.models import Identity
 
 
 class Image(QuickModel):
-    owner = QuickForeignKey(Identity)
+    owner = QuickForeignKey('identity.Identity')
     image = ImageField(
         upload_to='images/',
         height_field='height',
@@ -53,7 +59,7 @@ class ImageInstanceManager(QuickManager):
 
 
 class ImageInstance(QuickModel):
-    owner = QuickForeignKey(Identity)
+    owner = QuickForeignKey('identity.Identity')
     image = QuickForeignKey(Image)
     related_object_id = QuickCharField(
         max_length=36,
@@ -89,6 +95,17 @@ class ImageInstance(QuickModel):
             self.crop_width,
             self.crop_height,
         )
+
+    def cropped_url(self):
+        thumb = get_thumbnail(
+            self.image.image,
+            'x'.join([
+                str(int(self.crop_width)),
+                str(int(self.crop_height))
+            ]),
+            crop=self.crop()
+        )
+        return settings.BASE_URL + thumb.url
 
     def save(self, *args, **kwargs):
         super(ImageInstance, self).save(*args, **kwargs)

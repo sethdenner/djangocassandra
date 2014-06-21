@@ -1,0 +1,70 @@
+{% load render_template_fragment %}
+
+<!DOCTYPE html>
+<html lang="en">
+  {% spaceless %}
+  <head>
+    <title>{% block title %}Knotis - Be in the kno!{% endblock title %}</title>
+
+    <!-- LINKS GO HERE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}bootstrap-modal/css/bootstrap-modal.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}jcrop/css/jquery.Jcrop.min.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}knotis/auth/css/auth.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}knotis/identity/css/switcher.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}knotis/layout/css/global.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}knotis/layout/css/header.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}navigation/css/nav_top.css" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}navigation/css/nav_side.css" rel="stylesheet" />
+
+    {% if styles %}
+    {% for style in styles %}
+    <link href="{{ STATIC_URL }}{{ style }}" rel="stylesheet" />
+    {% endfor %}
+    {% endif %}
+
+    {% block admin_app_styles %}{% endblock admin_app_styles %}
+
+    {% if pre_scripts %}
+    {% for script in pre_scripts %}
+    <script src="{{ STATIC_URL }}{{ script }}"></script>
+    {% endfor %}
+    {% endif %}
+
+  </head>
+  <body class="knotis">
+    {% block header %}
+        {% render_fragment header %}
+    {% endblock header %}
+    {% render_fragment nav_top %}
+    {% render_fragment nav_side %}
+    <div id="admin_content">
+    {% block content %}
+    {% endblock content %}
+    </div>    
+
+    {% block footer %}{% endblock footer %}
+
+
+    <!-- OTHER LINKS GO HERE -->
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="{{ STATIC_URL }}jquery.cookie/jquery.cookie.js"></script>
+    <script src="{{ STATIC_URL }}knotis/api/js/api.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}knotis/layout/js/layout.js"></script>
+    <script src="{{ STATIC_URL }}knotis/layout/js/forms.js"></script>
+    <script src="{{ STATIC_URL }}knotis/layout/js/header.js"></script>
+    <script src="{{ STATIC_URL }}navigation/js/navigation.js"></script>
+    <script src="{{ STATIC_URL }}knotis/api/js/api.js"></script>
+
+    {% if post_scripts %}
+    {% for script in post_scripts %}
+    <script src="{{ STATIC_URL }}{{ script }}"></script>
+    {% endfor %}
+    {% endif %}
+  </body>
+  {% endspaceless %}
+</html>

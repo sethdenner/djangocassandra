@@ -37,4 +37,9 @@ export INSTALLERS=(
     install_timezones.sh
     install_elasticsearch.sh
     install_django_haystack.sh
+    install_weasyprint.sh
+    install_django_corsheaders.sh
+    install_djangorestframework.sh
+    install_django_test_utils.sh
+    install_geopy.sh
 )

@@ -18,8 +18,8 @@ from models import (
 )
 
 
-class FollowApi(ApiView):
-    api_url = 'relation/follow'
+class FollowApiView(ApiView):
+    api_path = 'relation/follow'
 
     def post(
         self,
@@ -32,7 +32,7 @@ class FollowApi(ApiView):
 
         try:
             if request.user.is_authenticated():
-                subject_id = request.session.get('current_identity_id')
+                subject_id = request.session.get('current_identity')
                 subject = Identity.objects.get(pk=subject_id)
 
                 related_id = request.REQUEST.get('related_id')
@@ -72,8 +72,8 @@ class FollowApi(ApiView):
         })
 
 
-class RelationApi(ApiView):
-    api_url = ''.join([
+class RelationApiView(ApiView):
+    api_path = ''.join([
         'relation(/(?P<relation_pk>',
         REGEX_UUID,
         '))?'

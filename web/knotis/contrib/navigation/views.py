@@ -62,7 +62,7 @@ class NavigationSideView(FragmentView):
         local_context = copy.copy(self.context)
 
         if request:
-            current_identity_id = request.session.get('current_identity_id')
+            current_identity_id = request.session.get('current_identity')
             try:
                 current_identity = Identity.objects.get(id=current_identity_id)
 
@@ -89,6 +89,18 @@ class NavigationSideView(FragmentView):
             menu_name='default'
         )
 
+        
+        if (
+            current_identity and
+            IdentityTypes.SUPERUSER == current_identity.identity_type
+        ):
+           admin_navigation = NavigationItem.objects.filter_ordered(
+               menu_name='admin'
+           )
+        else:
+            admin_navigation = []
+
+
         if (
             current_identity and
             IdentityTypes.BUSINESS == current_identity.identity_type
@@ -111,7 +123,8 @@ class NavigationSideView(FragmentView):
         local_context['navigation_items'] = list(
             chain(
                 default_navigation,
-                merchant_navigation
+                merchant_navigation,
+                admin_navigation
             )
         )
 

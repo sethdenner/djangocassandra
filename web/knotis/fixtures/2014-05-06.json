@@ -1,0 +1,20 @@
+[
+    {
+        "pk": "2400d733-45d0-49ea-91a7-edcc4b1a62aa",
+        "model": "product.product",
+        "fields": {
+            "sku": "kno",
+            "product_type": "currency",
+            "description": "Knotis Reward Points (k)",
+            "title": "KNOTIS_POINTS",
+            "deleted": false,
+            "content_type": [
+                "product",
+                "product"
+            ],
+            "pub_date": "2014-05-6 09:20:13",
+            "public": false,
+            "primary_image": null
+        }
+    }
+]
