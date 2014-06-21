@@ -9,8 +9,6 @@ from knotis.views import (
 )
 RenderTemplateFragmentMixin.register_template_fragment_views()
 
-from doac import views
-
 admin.autodiscover()
 
 urlpatterns = patterns(
