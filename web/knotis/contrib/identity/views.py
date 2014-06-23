@@ -233,6 +233,7 @@ class BusinessesView(FragmentView):
             'knotis/layout/js/forms.js',
             'knotis/layout/js/header.js',
             'knotis/layout/js/create.js',
+            'knotis/layout/js/splash_tile.js',
             'knotis/layout/js/action_button.js',
             'navigation/js/navigation.js',
             'jcrop/js/jquery.Jcrop.js',
