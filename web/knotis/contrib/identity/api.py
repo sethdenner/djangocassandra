@@ -403,6 +403,7 @@ class IdentityBusinessApiView(IdentityApiView):
             business, establishment = self.create_business(
                 **dict(request.DATA.iteritems())
             )
+            request.session['current_identity_id'] = business.id
 
         except ValidationError, e:
             logger.exception(e.message)

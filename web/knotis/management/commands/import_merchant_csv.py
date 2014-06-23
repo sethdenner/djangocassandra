@@ -265,6 +265,8 @@ class Command(BaseCommand):
                 except Exception, e:
                     logger.exception(e.message)
                     continue
+            else:
+                endpoint_phone = None
 
             if business_website:
                 try:
@@ -280,6 +282,8 @@ class Command(BaseCommand):
                 except Exception, e:
                     logger.exception(e.message)
                     continue
+            else:
+                endpoint_website = None
 
             if business_address:
                 try:
@@ -295,6 +299,8 @@ class Command(BaseCommand):
                 except Exception, e:
                     logger.exception(e.message)
                     continue
+            else:
+                endpoint_address = None
 
             creation_counter += 1
 
@@ -321,11 +327,11 @@ class Command(BaseCommand):
                     '\n\tbusiness email: ',
                     endpoint_email.value,
                     '\n\tbusiness phone: ',
-                    endpoint_phone.value,
+                    endpoint_phone.value if endpoint_phone else '',
                     '\n\tbusiness website: ',
-                    endpoint_website.value,
+                    endpoint_website.value if endpoint_website else '',
                     '\n\tbusiness address: ',
-                    endpoint_address.value,
+                    endpoint_address.value if endpoint_address else '',
                     '\n\tqrcode: ',
                     qrcode_url,
                     '\n\n'

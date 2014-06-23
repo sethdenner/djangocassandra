@@ -21,6 +21,8 @@
                             type: 'image',
                         },
                         aspect: 240/135,
+                        image_max_height: 400,
+                        image_max_width: 500,
                         modal_selector: '#' + modal_id,
                         done: function(data) {
                             if (data.status == 'success') {
@@ -41,10 +43,10 @@
                                     .stop().animate({
                                         scrollTop: $item_row.offset().top
                                     }, 500);
-                                
+
 
                             } else if (data.status == 'failure') {
-                                
+
                             } else {
                                 // Invalid Status
                             }
@@ -54,7 +56,7 @@
                     });
                 }
             });
-            
+
         });
     });
 })(jQuery);

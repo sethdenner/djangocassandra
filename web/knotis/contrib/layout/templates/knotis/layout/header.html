@@ -13,12 +13,14 @@
 	    <div class="search-bar span4">
 	      {% render_fragment search_bar %}
 	    </div>
-	    <ul class="nav pull-right auth-links">
+        <ul class="nav pull-right auth-links">
           {% if user.is_authenticated %}
           {% render_fragment identity_switcher %}
           {% else %}
-	      <li><a id="login" class="modal-link" data-modal-id="auth-modal" data-modal-width="633px" href="/auth/login/">Login</a></li>
-	      <li><button id="sign-up" class="modal-link btn btn-primary" data-modal-id="auth-modal" data-modal-width="633px" href="/auth/signup/">Sign Up</button></li>
+          <li><a href="http://passports.knotis.com">Passports</a></li>
+          <li><a href="http://maps.knotis.com">Maps</a></li>
+          <li><a id="login" class="modal-link" data-modal-id="auth-modal" data-modal-width="633px" href="/auth/login/">Login</a></li>
+          <li><button id="sign-up" class="modal-link btn btn-primary" data-modal-id="auth-modal" data-modal-width="633px" href="/auth/signup/">Sign Up</button></li>
           {% endif %}
 	    </ul>
       </div>
@@ -26,3 +28,4 @@
   </div>
 </div>
 <div class="knotis-header-spacing">&nbsp;</div>
+<a id="support-link" href="support" style="position: fixed; bottom: 0px; right: 0px; padding: 10px;">Support</a>

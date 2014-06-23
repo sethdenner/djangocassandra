@@ -3,29 +3,29 @@
  * Copyright Knotis 2012
  * Author: Seth Denner
  * Date: 10/19/2012
- * 
- * This plugin uses this script to upload files: 
- * 
+ *
+ * This plugin uses this script to upload files:
+ *
  *      https://github.com/valums/file-uploader
- * 
+ *
  * We also rely on bootstrap-modal to render the cropping window:
- * 
+ *
  *      https://github.com/jschr/bootstrap-modal
- * 
+ *
  * And then, of course, we use jCrop for the actual cropping functionality:
- * 
+ *
  *      https://github.com/tapmodo/Jcrop
- * 
+ *
  * And the knotis fork of sorl-thumbnail to serve the cropped images:
- * 
+ *
  *      https://github.com/knotis/sorl-thumbnail
- * 
+ *
  * Make sure these scripts are included on your page before Sickle jQuery.
- * 
+ *
  *****************************************************************************/
 (function($) {
     var _options = null;
-    
+
     $.fn.sickle = function(options) {
         var _options = $.extend({
             action: '/image/ajax/',
@@ -45,7 +45,7 @@
             jcrop_box_width: 0,
             jcrop_box_height: 0
         }, options);
-        
+
         var _crop = function(image_id) {
             href = [
                 _options.crop_form_url,
@@ -80,7 +80,7 @@
                     sx = true_width/width;
                     sy = true_height/height;
                 });
-            
+
                 var _update_coordinates = function(coordinates) {
                     var $content = $('#sickle_content');
                     $content.find('#id_crop_left').val(Math.round(sx * coordinates.x));
@@ -89,14 +89,16 @@
                     $content.find('#id_crop_height').val(Math.round(sy * coordinates.h));
                 };
 
+                default_box = [0, 0, _options.image_max_width, _options.image_max_height];
                 $image.Jcrop({
                     aspectRatio: _options.aspect,
                     onChange: _update_coordinates,
                     onSelect: _update_coordinates,
+                    setSelect: default_box,
                     boxWidth: _options.jcrop_box_width,
                     boxHeight: _options.jcrop_box_height
                 });
-                
+
                 // Calculate this stuff after jcrop has loaded.
 
                 $('#sickle_form').submit(function(event) {
@@ -108,15 +110,15 @@
                     }).done(function(data) {
                         $modal.modal('hide');
                         _options.done(data);
-                        
+
                     }).fail(_options.fail)
                         .always(_options.always);
-                    
+
                     event.preventDefault();
-                    return false; 
+                    return false;
 
                 });
-                
+
             };
 
             $modal.load(
@@ -129,7 +131,7 @@
             );
 
         };
-        
+
         return this.each(function() {
             if (true == _options.do_upload) {
                 uploader = new qq.FileUploader({
@@ -145,20 +147,20 @@
                         _crop(response.image_id);
                     }
                 });
-                
+
              } else {
                  $(this).unbind('click.sickle').bind('click.sickle', function(event){
                      _crop($(this).attr('data-image-id'));
-                    
+
                     event.stopPropagation();
                     return false;
-                                         
+
                  });
-                 
+
              }
-            
+
         });
-        
+
     };
-    
+
 })(jQuery);

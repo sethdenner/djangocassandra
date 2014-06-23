@@ -15,6 +15,8 @@ from knotis.contrib.offer.views import OfferTile
 from knotis.contrib.layout.views import GridSmallView
 from knotis.contrib.search.api import SearchApi
 from knotis.views import FragmentView
+from knotis.contrib.identity.views import get_current_identity
+from knotis.contrib.identity.models import IdentityTypes
 
 from forms import SearchForm
 

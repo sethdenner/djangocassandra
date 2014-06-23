@@ -252,6 +252,7 @@ INSTALLED_APPS = (
     'knotis.contrib.facebook',
     'knotis.contrib.twitter',
     'knotis.contrib.stripe',
+    'knotis.contrib.support',
     'knotis.contrib.admintools',
 )
 
