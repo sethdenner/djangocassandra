@@ -227,15 +227,6 @@ class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
         mode = request.DATA.get('mode', 'none')
 
         try:
-            amount = float(request.DATA.get('amount'))
-
-        except:
-            raise self.InvalidChargeAmountException()
-
-        if amount < 0.:
-            raise self.InvalidChargeAmountException()
-
-        try:
             offer = Offer.objects.get(pk=offer_pk)
 
         except Exception, e:
@@ -253,6 +244,15 @@ class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
             redemption_code,
             mode
         ])
+
+        try:
+            amount = offer.price_discount()
+
+        except:
+            raise self.InvalidChargeAmountException()
+
+        if amount < 0.:
+            raise self.InvalidChargeAmountException()
 
         if PurchaseMode.STRIPE == mode:
             try:
