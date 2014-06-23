@@ -50,6 +50,13 @@ class TransactionManager(QuickManager):
         currency,
         transaction_context=None
     ):
+        if not offer.available():
+            raise Exception(
+                'Could not purchase offer {%s}. Offer is not available' % (
+                    self.id,
+                )
+            )
+
         # TODO: Figure out what transaction context should be...
         # Just a UUID or do we want to smuggle some data in here?
         if not transaction_context:
