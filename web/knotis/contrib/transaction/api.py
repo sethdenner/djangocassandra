@@ -306,7 +306,7 @@ class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
         try:
             purchases = TransactionApi.create_purchase(
                 request=request,
-                offer=offer.pk,
+                offer=offer,
                 buyer=self.current_identity,
                 currency=buyer_usd,
                 transaction_context=transaction_context
