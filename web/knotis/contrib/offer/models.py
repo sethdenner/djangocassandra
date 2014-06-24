@@ -274,6 +274,7 @@ class Offer(QuickModel):
     offer_type = QuickIntegerField(
         default=OfferTypes.NORMAL,
         choices=OfferTypes.CHOICES,
+        db_index=True,
     )
 
     title = QuickCharField(
@@ -871,3 +872,10 @@ class OfferPublish(Publish):
                 self.endpoint.endpoint_type,
                 '.'
             ]))
+
+
+class OfferCollection(QuickModel):
+    offer = QuickForeignKey(Offer)
+    page = QuickIntegerField()
+    neighborhood = QuickCharField(max_length=255, db_index=True)
+    objects = QuickManager()

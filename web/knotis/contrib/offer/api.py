@@ -347,6 +347,9 @@ class OfferCreateApi(object):
         description = kwargs.get('description')
         restrictions = kwargs.get('restrictions')
 
+        if title is None:
+            title = '$%s credit toward any purchase' % value
+
         try:
             product = Product.objects.create(
                 product_type=(ProductTypes.CREDIT, ProductTypes.PHYSICAL)[is_physical],
@@ -387,14 +390,15 @@ class OfferCreateApi(object):
 
         offer.save()
 
-        endpoint_current_identity = Endpoint.objects.get(
-            endpoint_type=EndpointTypes.IDENTITY,
-            identity=owner_identity
-        )
-        OfferPublish.objects.create(
-            endpoint=endpoint_current_identity,
-            subject=offer,
-            publish_now=True
-        )
+        if not dark_offer:
+            endpoint_current_identity = Endpoint.objects.get(
+                endpoint_type=EndpointTypes.IDENTITY,
+                identity=owner_identity
+            )
+            OfferPublish.objects.create(
+                endpoint=endpoint_current_identity,
+                subject=offer,
+                publish_now=True
+            )
 
-        print offer
+        return offer

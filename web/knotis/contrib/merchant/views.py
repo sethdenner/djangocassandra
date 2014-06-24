@@ -26,7 +26,7 @@ from knotis.contrib.identity.models import (
     IdentityEstablishment
 )
 
-from knotis.contrib.offer.models import Offer
+from knotis.contrib.offer.models import Offer, OfferTypes
 from knotis.contrib.offer.views import (
     OfferTile,
     OfferCreateTile
@@ -448,8 +448,11 @@ class MyOffersGrid(GridSmallView):
             offer_filter_dict['owner'] = i
 
             try:
-                offers_by_business[i.name] = Offer.objects.filter(
-                    **offer_filter_dict
+                offers_by_business[i.name] = filter(
+                    lambda x: x.offer_type != OfferTypes.DARK,
+                    Offer.objects.filter(
+                        **offer_filter_dict
+                    )
                 )
 
             except Exception:

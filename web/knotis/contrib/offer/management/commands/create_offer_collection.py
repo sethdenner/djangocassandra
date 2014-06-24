@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from knotis.contrib.offer.api import OfferCreateApi
+from knotis.contrib.offer.models import OfferCollection
 
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
@@ -17,10 +18,12 @@ class Command(BaseCommand):
 
         with open(args[0]) as f:
             csv_dict = DictReader(f)
+            page_num = 0
             for row in csv_dict:
                 value = row.get('offer amount')
                 try:
-                    OfferCreateApi.create_offer(
+                    new_offer = OfferCreateApi.create_offer(
+                        dark_offer=True,
                         create_business=True,
                         value=float(value),
                         description=row.get('catagory'),
@@ -31,5 +34,12 @@ class Command(BaseCommand):
                         stock=-1,
                         currency='usd',
                     )
+                    OfferCollection.objects.create(
+                        offer=new_offer,
+                        page=page_num,
+                        neighborhood=row.get('neighborhood', '')
+                    )
+                    page_num += 1
+
                 except:
                     logger.exception('Failed at creating offer')
