@@ -1,13 +1,17 @@
-#admin_list_controls {
+#admin_content {
     position: relative;
-    left: 280px;
+    left: 250px;
+    width: 80%;
+}
+
+.admin_list_forms {
+    background-color: white;
+    margin: 10px;
+    padding: 10px;
 }
 
 .admin_list_entry {
-    position: relative;
     margin: 10px;
-    left: 280px;
-    width: 75%;
     background-color: white;
 }
 

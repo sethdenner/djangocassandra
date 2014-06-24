@@ -69,7 +69,9 @@
             });
         }
     });
-
+    $('#admin_create_form').ajaxform({
+//        done: FIX ME LATER TO DISPLAY STATUS
+    });
 
 
 

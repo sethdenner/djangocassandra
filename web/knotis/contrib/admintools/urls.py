@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import (
 
 from knotis.contrib.activity.admin import (
     ActivityAdminView,
-    ActivityAdminAJAXView,
+    ActivityQueryAdminAJAXView,
 )
 from knotis.contrib.auth.admin import (
     UserAdminView,
@@ -25,7 +25,7 @@ urlpatterns = patterns(
     '',
 ### ACTIVITY VIEWER
     url(
-        r'^admin/activity/interact/$', login_required(ActivityAdminAJAXView.as_view())
+        r'^admin/activity/interact/$', login_required(ActivityQueryAdminAJAXView.as_view())
     ),
     url(
         r'^admin/activity/$', login_required(ActivityAdminView.as_view())
