@@ -553,7 +553,8 @@ class EstablishmentAboutAbout(AJAXFragmentView):
 
         data = json.loads(request.POST.get('data'))
         business_id = data['business_id']
-        business = IdentityEstablishment.objects.get(pk=business_id)
+        establishment = IdentityEstablishment.objects.get(pk=business_id)
+        business = IdentityBusiness.objects.get_establishment_parent(establishment)
         #business = IdentityBusiness.objects.get(pk=business_id)
 
         # business name
@@ -561,11 +562,14 @@ class EstablishmentAboutAbout(AJAXFragmentView):
         response['business_id'] = business_id
         if 'changed_name' in data:
             business.name = data['changed_name']
-            business.save()
+            establishment.name = data['changed_name']
 
         if 'changed_description' in data:
             business.description = data['changed_description']
-            business.save()
+            establishment.description = data['changed_description']
+
+        establishment.save()
+        business.save()
 
         # endpoints
         def endpoint_to_dict(endpoint):
