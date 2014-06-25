@@ -145,7 +145,10 @@ class TransactionApi(object):
         *args,
         **kwargs
     ):
-        if current_identity.pk != transaction.owner.pk:
+        if (
+            current_identity.pk != transaction.offer.owner.pk and
+            current_identity.pk != transaction.owner.pk
+        ):
             raise TransactionApi.WrongOwnerException(
                 'The current identity, %s, does not match the owner identity, '
                 '%s' % (current_identity.pk, transaction.owner.pk)
