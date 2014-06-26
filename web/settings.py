@@ -316,7 +316,7 @@ LOGGING = {
 }
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'int'
+ENVIRONMENT_NAME = 'stage'
 
 
 # You can key the configurations off of anything - I use project path.
