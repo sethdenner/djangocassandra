@@ -19,7 +19,7 @@
                         });
 
                     }
-                    $('#id-identity-dropdown').text(data.data.individual_name);
+                    $('#id-identity-dropdown').text(data.individual_name);
                 },
                 method: 'put'
             });
@@ -39,12 +39,12 @@
                         });
 
                         $('form#id-location-form input#related-id-input').val(
-                            data.data.establishment_id
+                            data.id
                         );
 
                         $('form#id-location-form').append(
                             '<input id="backend_name" type="hidden" value="' +
-                                data.data.business_backend_name +
+                                data.business_backend_name +
                                 '"/>'
                         );
 
