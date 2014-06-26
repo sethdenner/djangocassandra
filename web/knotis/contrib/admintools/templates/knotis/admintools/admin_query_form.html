@@ -1,0 +1,13 @@
+<form action="{{ form.target_uri.value }}" id="admin_query_form" method="post">
+  <div id="admin-thing-1">
+    &nbsp;&nbsp;START:&nbsp; <input name="{{ form.range_start.html_name }}" type="text" id="range-start" value="{{ form.range_start.value }}">
+    &nbsp;&nbsp;END:&nbsp; <input name="{{ form.range_end.html_name }}" type="text" id="range-end" value="{{ form.range_end.value }}">
+    &nbsp;&nbsp;STEP:&nbsp; <input name="{{ form.range_step.html_name }}" type="text" id="range-step" value="{{ form.range_step.value }}">
+  </div>
+  <div id="admin-thing-2">
+    &nbsp;&nbsp;FILTER:&nbsp; <input name="{{ form.user_filter.html_name }}" type="text" placeholder="Place your filter here." id="activity_filter" >
+  </div>
+  <div id="admin-thing-3">
+    <input type="submit" value="Query" id="query_button">
+  </div>
+</form>

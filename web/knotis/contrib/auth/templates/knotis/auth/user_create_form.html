@@ -1,0 +1,6 @@
+<form action="/api/v1/auth/user/" id="admin_create_form" method="post">
+    &nbsp;&nbsp;USERNAME:&nbsp;<input name="{{ form.email.html_name }}" maxlength="254" type="text" placeholder="you@example.com" class="textinput textInput" id="email-input" value="{{ form.email.value|default_if_none:'' }}"> 
+    &nbsp;&nbsp;PASSWORD:&nbsp;<input type="password" id="password-input" name="{{ form.password.html_name }}" class="textinput textInput" > 
+    <input type="hidden" name="{{ form.authenticate.html_name }}" value="{{ form.authenticate.value|default_if_none:'False' }}" > 
+    <input type="submit" name="signup" value="Create"> 
+</form>

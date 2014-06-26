@@ -1,29 +1,22 @@
-###### PYTHON LIBRARY IMPORTS ######
-import uuid
-import datetime
-
-
-###### IMPORTS FROM DJANGO ######
-from django.utils.log import logging
-logger = logging.getLogger(__name__)
-
-from django.conf import settings
-from django.utils.http import urlquote
 from django.template import Context
 from django.forms import (
-    CharField,
     IntegerField,
-    ValidationError,
+    CharField,
+    EmailField,
+    BooleanField,
+    PasswordInput,
+    HiddenInput,
+    ValidationError
 )
 
-###### IMPORTS FROM KNOTIS FILES ######
 from knotis.forms import (
     TemplateForm,
+    TemplateModelForm,
+    TemplateFormMixin
 )
 
-###### FORM DEFINITIONS ######
-class ActivityAdminQueryForm(TemplateForm):
-    template_name = 'knotis/activity/activity_admin_form.html'
+class AdminQueryForm(TemplateForm):
+    template_name = 'knotis/admintools/admin_query_form.html'
 
     range_start = IntegerField(
         label='Start',
@@ -40,9 +33,15 @@ class ActivityAdminQueryForm(TemplateForm):
         required = True,
         initial = 20,
     )
-    activity_filter = CharField(
+    user_filter = CharField(
         label='Filter',
         max_length = 254,
         required = True,
-        initial = '',
+        initial = ' ',
+    )
+    target_uri = CharField(
+        label='',
+        max_length = 254,
+        required = True,
+        initial = ' ',
     )
