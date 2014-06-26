@@ -560,12 +560,24 @@ class IdentityApiModelViewSet(ApiModelViewSet):
     model = Identity
     queryset = Identity.objects.all()
     serializer_class = IdentitySerializer
+    allow_listing = False
 
     def list(
         self,
-        request
+        request,
+        *args,
+        **kwargs
     ):
-        raise MethodNotAllowed(request.method)
+        if self.allow_listing:
+            return super(IdentityApiModelViewSet, self).list(
+                self,
+                request,
+                *args,
+                **kwargs
+            )
+
+        else:
+            raise MethodNotAllowed(request.method)
 
     def update(
         self,
@@ -669,7 +681,10 @@ class IdentityApiModelViewSet(ApiModelViewSet):
         default_detail = 'The identity endpoint did not update correctly.'
 
 
-class BusinessApiModelViewSet(IdentityApiModelViewSet, GetCurrentIdentityMixin):
+class BusinessApiModelViewSet(
+    IdentityApiModelViewSet,
+    GetCurrentIdentityMixin
+):
     api_path = 'identity/business'
     resource_name = 'business'
 
@@ -750,6 +765,7 @@ class EstablishmentApiModelViewSet(IdentityApiModelViewSet):
         available=True
     )
     serializer_class = EstablishmentSerializer
+    allow_listing = True
 
 
 class IdentitySwitcherApiViewSet(ApiViewSet):
