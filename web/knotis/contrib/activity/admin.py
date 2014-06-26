@@ -4,6 +4,7 @@ import copy
 
 ## SWITCH TO ADMIN LOAD AND BASE CLASSES
 from knotis.contrib.admintools.views import (
+    AdminListEditTags,
     AdminListEditView,
     AdminListQueryAJAXView,
 )
@@ -21,24 +22,48 @@ from models import (
 
 ###### LIST EDIT APP ######
 def format_activity(self, activity):
-    display_string_pre = '' #THIS ONE STYLES THE ACTIVITY PRINT
-    display_string_post = '\n' #CLOSING TAGS GO HERE
     activity_information = {
-        'id': activity.id,
-        'content_type_id': activity.content_type_id,
-        'deteld': activity.deleted,
-        'pub_date': activity.pub_date,
-        'ip_address': activity.ip_address,
-        'authenticated_user_ud': activity.authenticated_user_id,
-        'activity_type': activity.activity_type,
-        'application': activity.application,
-        'context': activity.context,
-        'url_path': activity.url_path,
+        'type': AdminListEditTags.DICT,
+        'data': {
+            'id': {
+                'type': AdminListEditTags.VALUE,
+                'data': activity.id,
+            },
+            'content_type_id': {
+                'type': AdminListEditTags.VALUE,
+                'data': activity.content_type_id,
+            },
+            'pub_date': {
+                'type': AdminListEditTags.VALUE,
+                'data': activity.pub_date,
+            },
+            'ip_address': {
+                'type': AdminListEditTags.VALUE,
+                'data': activity.ip_address,
+            },
+            'authenticated_user_id': {
+                'type': AdminListEditTags.VALUE,
+                'data': activity.authenticated_user_id,
+            },
+            'activity_type': {
+                'type': AdminListEditTags.VALUE,
+                'data': activity.activity_type,
+            },
+            'application': {
+                'type': AdminListEditTags.VALUE,
+                'data': activity.application,
+            },
+            'context': {
+                'type': AdminListEditTags.VALUE,
+                'data': activity.context,
+            },
+            'url_path': {
+                'type': AdminListEditTags.VALUE,
+                'data': activity.url_path,
+            },
+        },
     }
-    for key in activity_information.keys():
-        display_string_pre += (str(key) + str(activity_information[key]) + '; ')
-    display_string = display_string_pre + display_string_post
-    return display_string
+    return activity_information
 
 class ActivityQueryAdminAJAXView(AdminListQueryAJAXView):
     query_target = Activity.objects.all

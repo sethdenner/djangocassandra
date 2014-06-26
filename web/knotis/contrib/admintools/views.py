@@ -25,6 +25,11 @@ from forms import (
 )
 
 
+
+
+
+
+
 ###### BASE VIEW DEFINITIONS ######
 class AdminDefaultView(ContextView):
     template_name = 'knotis/admintools/admin_master.html'
@@ -36,11 +41,18 @@ class AdminAJAXView(AJAXView):
 
 
 ###### LIST EDIT APP ######
+class AdminListEditTags:
+    VALUE = 'value'
+    LIST = 'list'
+    DICT = 'dict'
+    FORM = 'form'
+    FIELD = 'field'
+
 class AdminListEditView(AdminDefaultView):
 
     template_name = 'knotis/admintools/admin_list_editor.html'
     my_styles = [ 'knotis/admintools/css/admin_tool_controls.css', ]
-    my_post_scripts = [ 'knotis/admintools/js/admin_list_edit_v2.js', ]
+    my_post_scripts = [ 'knotis/admintools/js/admin_list_edit_v3.js', ]
     query_form = AdminQueryForm
     create_form = None
 
@@ -98,14 +110,18 @@ class AdminListQueryAJAXView(AdminAJAXView):
             query = self.query_target()
             query = query[range_start - 1 : range_end] # Offset to account for starting form indexing at 1.
 
-        items = []
+        results = []
         if(self.format_item):
             for item in query:
-                items.append(self.format_item(item))
+                results.append(self.format_item(item))
 
-        return self.generate_response({
+        params = {
             'start': range_start,
             'end': range_end,
             'step': range_step,
-            'results': items,
+        }
+
+        return self.generate_response({
+            'params': params,
+            'results': results,
         })

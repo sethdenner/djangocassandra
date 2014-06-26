@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_protect
 ###### IMPORTS FROM KNOTIS FILES ######
 
 from knotis.contrib.admintools.views import (
+    AdminListEditTags,
     AdminListEditView,
     AdminListQueryAJAXView,
     AdminAJAXView,
@@ -34,25 +35,97 @@ def format_user(self, user):
     user_info = []
     identities = Identity.objects.get_available(user=user)
     for identity in identities:
-        id_endpoint = []
+        id_endpoints = []
         endpoints = identity.endpoint_set.all()
         for endpoint in endpoints:
             etype = endpoint.get_endpoint_type_display().lower()
             if not 'identity' == etype:
-                id_endpoint.append({
-                    'value': endpoint.value,
-                    'type': etype,
+                id_endpoints.append({
+                    'type': AdminListEditTags.FORM,
+                    'action': '../../api/v0/endpoint/',
+                    'method': 'post',
+                    'button': 'Update',
                     'id': endpoint.pk,
+                    'data': {
+                         'value': {
+                             'type': AdminListEditTags.FIELD,
+                             'ftype': 'text',
+                             'fname': 'value',
+                             'data': endpoint.value,
+                         },
+                         'display_type': {
+                             'type': AdminListEditTags.VALUE,
+                             'data': etype,
+                         },
+                         'endpoint_type': {
+                             'type': AdminListEditTags.FIELD,
+                             'ftype': 'hidden',
+                             'fname': 'endpoint_type',
+                             'data': etype,
+                         },
+                         'endpoint_id': {
+                             'type': AdminListEditTags.FIELD,
+                             'ftype': 'hidden',
+                             'fname': 'endpoint_id',
+                             'data': endpoint.pk,
+                         },
+                         'identity_id': {
+                             'type': AdminListEditTags.FIELD,
+                             'ftype': 'hidden',
+                             'fname': 'identity_id',
+                             'data': identity.pk,
+                         },
+                    },
                 })
         user_info.append({
-            'name': identity.name,
-            'id': identity.pk,
-            'type': identity.get_identity_type_display(),
-            'endpoints': id_endpoint,
+            'type': AdminListEditTags.DICT,
+            'data': {
+                'name': {
+                    'type': AdminListEditTags.VALUE,
+                    'data': identity.name,
+                },
+                'id': {
+                    'type': AdminListEditTags.VALUE,
+                    'data': identity.pk,
+                },
+                'type': {
+                    'type': AdminListEditTags.VALUE,
+                    'data': identity.get_identity_type_display(),
+                },
+                'endpoints': {
+                    'type': AdminListEditTags.LIST,
+                    'data': id_endpoints,
+                },
+            },
         })
-           
-        
-    return ({'username': user.username, 'id': user.id, 'identities':user_info})
+    return ({
+        'type': AdminListEditTags.DICT,
+        'data': {
+            'username': {
+                'type': AdminListEditTags.FORM,
+                'action': ('/admin/user/interact/update-' + user.pk + '/'),
+                'method': 'post',
+                'button': 'Update',
+                'id': user.pk,
+                'data': {
+                    'value': {
+                        'type': AdminListEditTags.FIELD,
+                        'ftype': 'text',
+                        'fname': 'username',
+                        'data': user.username,
+                    },
+                },
+            },
+            'id': {
+                'type': AdminListEditTags.VALUE,
+                'data': user.pk,
+            },
+            'identities': {
+                'type': AdminListEditTags.LIST,
+                'data': user_info,
+            },
+        },
+    })
 
 class UserQueryAdminAJAXView(AdminListQueryAJAXView):
     query_target = KnotisUser.objects.all
