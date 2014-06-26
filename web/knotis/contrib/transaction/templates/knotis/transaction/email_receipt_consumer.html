@@ -33,7 +33,7 @@ border-radius: 500px;
 {% block content %}
 <h1>Here's your receipt from {{ business_name }}</h1>
 
-{% thumbnail business_banner.image.image '500x' crop=business_banner.crop as image %}
+{% thumbnail business_banner.image.image '500' crop=business_banner.crop as image %}
 <div class="cover center" style="background: url('{{ image.url }}'); max-width: 500px;">
   {% empty %}
   <div class="cover center" style="background: url('{{ STATIC_URL_ABSOLUTE }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:'darkgrey' }}.png'); max-width: 500px;">
@@ -61,7 +61,7 @@ border-radius: 500px;
   {% thumbnail offer_image.image.image '240x240' crop=offer_image.crop as image %}
   <img src="{{ image.url }}"><br />
   {% endthumbnail %}
-  <a href="{{ BASE_URL }}/offers/{{ transaction.offer.pk }}/">{{ transaction.offer.title }}</a><br />
+  <a href="{{ offer_link }}/">{{ transaction.offer.title }}</a><br />
   <br />
   Shop: <a href="{{ business_url }}">@{{ business_name }}</a><br />
   Transaction ID: {{ transaction_id }}<br />
@@ -99,10 +99,10 @@ border-radius: 500px;
     -----------------------------------------------------------
 
     Order Details:
-    Payment Method: 
+    Payment Method:
     {{ payment_method }}
 
-    Paid on: 
+    Paid on:
     {{ payment_date }}
 
     Product Name: {{ product_name }}
