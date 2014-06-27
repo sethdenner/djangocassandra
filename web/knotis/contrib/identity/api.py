@@ -57,8 +57,8 @@ from .serializers import (
     IdentitySwitcherSerializer
 )
 
-class IdentityApi(object):
 
+class IdentityApi(object):
     @staticmethod
     def create_identity(
         form_class=IdentityForm,
@@ -358,7 +358,6 @@ class IdentityIndividualApiView(IdentityApiView):
     api_version = 'v1'
     api_path = 'identity/individual'
 
-
     def post(
         self,
         request,
@@ -495,7 +494,6 @@ class IdentityBusinessApiView(IdentityApiView):
 class IdentityEstablishmentApiView(IdentityApiView):
     api_version = 'v1'
     api_path = 'identity/establishment'
-
 
     def post(
         self,
@@ -765,6 +763,10 @@ class EstablishmentApiModelViewSet(IdentityApiModelViewSet):
         available=True
     )
     serializer_class = EstablishmentSerializer
+    paginate_by = 20
+    paginate_by_param = 'count'
+    max_paginate_by = 200
+
     allow_listing = True
 
 

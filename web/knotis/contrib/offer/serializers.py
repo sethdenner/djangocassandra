@@ -3,6 +3,7 @@ from rest_framework.serializers import (
     FloatField,
     CharField
 )
+from rest_framework.pagination import PaginationSerializer
 
 from knotis.contrib.identity.serializers import IdentitySerializer
 from knotis.contrib.media.serializers import (
@@ -53,6 +54,11 @@ class OfferSerializer(ModelSerializer):
         source='badge_image',
         read_only=True
     )
+
+
+class PaginatedOfferSerializer(PaginationSerializer):
+    class Meta:
+        object_serializer_class = OfferSerializer
 
 
 class OfferAvailabilitySerializer(ModelSerializer):
