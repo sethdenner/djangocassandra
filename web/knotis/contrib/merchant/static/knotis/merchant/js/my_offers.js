@@ -40,10 +40,9 @@
                 offer_id = $button.parent().parent('.grid-tile.small-tile').attr('data-offer-id'),
                 active = $button.text().toLowerCase() == 'resume';
             $.ajax({
-                url: '/api/v0/offer/offer/',
+                url: '/api/v0/offer/'+ offer_id + '/',
                 type: 'PUT',
                 data: {
-                    id: offer_id,
                     active: active
                 }
             }).done(function(data, status, jqxhr){
