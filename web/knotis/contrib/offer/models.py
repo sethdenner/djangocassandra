@@ -656,14 +656,21 @@ class OfferAvailabilityManager(QuickManager):
         identity
     ):
         offers = self.filter(identity=identity)
-        identity_profile_badge = ImageInstance.objects.get(
-            related_object_id=identity.id,
-            context='profile_badge',
-            primary=True
-        )
-        for o in offers:
-            o.profile_badge = identity_profile_badge
-            o.save()
+        try:
+            identity_profile_badge = ImageInstance.objects.get(
+                related_object_id=identity.id,
+                context='profile_badge',
+                primary=True
+            )
+            for o in offers:
+                o.profile_badge = identity_profile_badge
+                o.save()
+
+        except ImageInstance.DoesNotExist:
+            pass
+
+        except Exception, e:
+            logger.exception(e.message)
 
         return offers
 
