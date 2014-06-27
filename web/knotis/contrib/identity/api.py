@@ -447,7 +447,7 @@ class IdentityBusinessApiView(IdentityApiView):
             business, establishment = IdentityApi.create_business(
                 **dict(request.DATA.iteritems())
             )
-            request.session['current_identity_id'] = business.id
+            request.session['current_identity'] = business.id
 
         except ValidationError, e:
             logger.exception(e.message)
@@ -713,7 +713,7 @@ class BusinessApiModelViewSet(
                 **dict(request.DATA.iteritems())
             )
 
-            request.session['current_identity_id'] = business.id
+            request.session['current_identity'] = business.id
 
         except ValidationError, e:
             logger.exception(e.message)
