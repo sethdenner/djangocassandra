@@ -69,7 +69,7 @@ class IdentitySimpleForm(IdentityForm):
     def __init__(
         self,
         form_id='id-identity-form',
-        form_action='/api/v1/identity/identity/',
+        form_action='/api/v0/identity/identity/',
         subject_field=None,
         description_text=None,
         placeholder_text=None,
@@ -174,13 +174,21 @@ class IdentityIndividualSimpleForm(IdentitySimpleForm):
 
     def __init__(
         self,
+        instance=None,
         *args,
         **kwargs
     ):
+        if instance is not None:
+            form_action = '/api/v0/identity/individual/' + instance.pk + '/'
+
+        else:
+            form_action='/api/v0/identity/individual/'
+
         super(IdentityIndividualSimpleForm, self).__init__(
-            form_action='/api/v1/identity/individual/',
+            form_action=form_action,
             placeholder_text='Your Name',
             subject_field='user_id',
+            instance=instance,
             *args,
             **kwargs
         )
@@ -207,7 +215,7 @@ class IdentityBusinessSimpleForm(IdentitySimpleForm):
         **kwargs
     ):
         super(IdentityBusinessSimpleForm, self).__init__(
-            form_action='/api/v1/identity/business/',
+            form_action='/api/v0/identity/business/',
             placeholder_text='Business Name',
             subject_field='individual_id',
             *args,
@@ -236,7 +244,7 @@ class IdentityEstablishmentSimpleForm(IdentitySimpleForm):
         **kwargs
     ):
         super(IdentityEstablishmentSimpleForm, self).__init__(
-            form_action='/api/v1/identity/establishment/',
+            form_action='/api/v0/identity/establishment/',
             placeholder_text='Establishment Name',
             subject_field='business_id',
             *args,
