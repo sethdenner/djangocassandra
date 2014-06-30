@@ -7,9 +7,14 @@ from django.contrib.auth import (
     logout
 )
 
+from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.exceptions import MethodNotAllowed
 
-from knotis.views import ApiView
+from knotis.views import (
+    ApiView,
+    ApiModelViewSet
+)
 
 from knotis.contrib.identity.models import (
     Identity,
@@ -21,16 +26,17 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes
 )
 
-from forms import (
+from .forms import (
     LoginForm,
     CreateUserForm,
     CreateSuperUserForm,
     ForgotPasswordForm
 )
-from models import (
+from .models import (
     UserInformation
 )
-from views import send_validation_email
+from .views import send_validation_email
+from .serializers import UserInformationSerializer
 
 
 class AuthenticationApi(object):
@@ -185,7 +191,7 @@ class AuthenticationApiView(ApiView, AuthenticationApi):
             logger.exception('could not get user identity.')
             logout(user)
 
-        request.session['current_identity_id'] = identity.id
+        request.session['current_identity'] = identity.id
 
         default_url = '/'
 
@@ -291,3 +297,29 @@ class AuthForgotPasswordApiView(ApiView, AuthenticationApi):
             }
 
         return self.generate_response(response_data)
+
+
+class UserInformationApiModelViewSet(ApiModelViewSet):
+    api_path = 'auth/user'
+    resource_name = 'user'
+
+    model = UserInformation
+    queryset = UserInformation.objects.none()
+    serializer_class = UserInformationSerializer
+
+    allowed_methods = ['GET']
+
+    def retrieve(
+        self,
+        request,
+        pk=None
+    ):
+        raise MethodNotAllowed(request.method)
+
+    def list(
+        self,
+        request
+    ):
+        user_info = UserInformation.objects.get(user=request.user)
+        serializer = UserInformationSerializer(user_info)
+        return Response(serializer.data)

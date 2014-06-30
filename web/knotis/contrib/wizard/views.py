@@ -52,7 +52,7 @@ class WizardStepView(AJAXFragmentView):
     ):
         try:
             self.current_identity = Identity.objects.get(
-                pk=request.session.get('current_identity_id')
+                pk=request.session.get('current_identity')
             )
 
         except:
@@ -130,7 +130,7 @@ class WizardView(FragmentView):
 
         request = local_context.get('request')
         if request:
-            current_identity_id = request.session.get('current_identity_id')
+            current_identity_id = request.session.get('current_identity')
             try:
                 current_identity = Identity.objects.get(pk=current_identity_id)
 

@@ -127,3 +127,4 @@ KNOTIS_MODE_PERCENT = 0.05
 
 NOMINATIM_API = 'http://next.knotis.com/nominatim/search/'
 NOMINATIM_REVERSE_API = 'http://next.knotis.com/nominatim/reverse/'
+ANONYMOUS_USER_ID = -1

@@ -32,7 +32,7 @@ class FollowApiView(ApiView):
 
         try:
             if request.user.is_authenticated():
-                subject_id = request.session.get('current_identity_id')
+                subject_id = request.session.get('current_identity')
                 subject = Identity.objects.get(pk=subject_id)
 
                 related_id = request.REQUEST.get('related_id')

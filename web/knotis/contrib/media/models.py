@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.utils import log
+logger = log.getLogger(__name__)
 
 from sorl.thumbnail import (
     ImageField,
@@ -17,11 +19,10 @@ from knotis.contrib.quick.fields import (
     QuickForeignKey,
     QuickBooleanField
 )
-from knotis.contrib.identity.models import Identity
 
 
 class Image(QuickModel):
-    owner = QuickForeignKey(Identity)
+    owner = QuickForeignKey('identity.Identity')
     image = ImageField(
         upload_to='images/',
         height_field='height',
@@ -58,7 +59,7 @@ class ImageInstanceManager(QuickManager):
 
 
 class ImageInstance(QuickModel):
-    owner = QuickForeignKey(Identity)
+    owner = QuickForeignKey('identity.Identity')
     image = QuickForeignKey(Image)
     related_object_id = QuickCharField(
         max_length=36,

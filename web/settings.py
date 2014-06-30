@@ -193,7 +193,8 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    )
+    ),
+    'EXCEPTION_HANDLER': 'knotis.contrib.api.views.knotis_exception_handler'
 }
 
 AUTOLOAD_SITECONF = 'dbindexer'
@@ -251,6 +252,7 @@ INSTALLED_APPS = (
     'knotis.contrib.facebook',
     'knotis.contrib.twitter',
     'knotis.contrib.stripe',
+    'knotis.contrib.support',
     'knotis.contrib.admintools',
 )
 
@@ -259,6 +261,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_METHODS = (
     'GET',
     'POST',
+    'PUT',
+    'DELETE',
     'OPTIONS'
 )
 
@@ -268,13 +272,8 @@ CORS_ALLOW_HEADERS = (
     'accept',
     'origin',
     'authorization',
-    'x-csrftoken'
-)
-
-CORS_EXPOSE_HEADERS = (
-    'OPTIONS',
-    'POST',
-    'GET'
+    'x-csrftoken',
+    'current-identity'
 )
 
 LOGIN_REDIRECT_URL = '/'

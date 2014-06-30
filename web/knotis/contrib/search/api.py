@@ -9,13 +9,17 @@ from haystack.query import SearchQuerySet
 from knotis.views import ApiViewSet
 
 from knotis.contrib.identity.models import (
-    Identity,
+    IdentityEstablishment,
     IdentityTypes
 )
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 from knotis.contrib.offer.models import Offer
 from knotis.contrib.transaction.models import TransactionTypes
 
 from .serializers import SearchSerializer
+from haystack.utils.geo import Point
+
+from rest_framework.exceptions import APIException
 
 
 class SearchApi(object):
@@ -25,22 +29,48 @@ class SearchApi(object):
         identity=None,
         **filters
     ):
-        search_type = filters.get('t')
+        search_type = filters.pop('t', None)
         query_set = SearchQuerySet()
 
         if search_type == 'offer':
             model = Offer
 
         elif search_type == 'identity':
-            model = Identity
+            model = IdentityEstablishment
 
         else:
             model = None
 
+        if (
+            identity is None or
+            identity.identity_type != IdentityTypes.SUPERUSER
+        ):
+            filters['available'] = True
+
+        filters.pop('format', None)
+
+        latitude = filters.pop('lat', None)
+        longitude = filters.pop('long', None)
+
         if None is not model:
             query_set = query_set.models(model)
 
-        results = query_set.filter(content=search_query)
+        else:  # This will most definitely have to change.
+            query_set = query_set.models(Offer, IdentityEstablishment)
+
+        if latitude and longitude:
+            current_location = Point(
+                float(longitude),
+                float(latitude)
+            )
+
+            query_set.distance(
+                'get_location',
+                current_location
+            ).order_by('distance')
+
+        results = query_set.filter(content=search_query, **filters)
+
         return results
 
     @staticmethod
@@ -132,9 +162,6 @@ class SearchApi(object):
         )
 
 
-from rest_framework.exceptions import APIException
-
-
 class InvalidRequest(APIException):
     status_code = 500
     default_detail = (
@@ -143,11 +170,25 @@ class InvalidRequest(APIException):
     )
 
 
-class SearchApiViewSet(ApiViewSet):
+class SearchApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
     api_path = 'search'
     resource_name = 'search'
 
     permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def initial(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        super(SearchApiViewSet, self).initial(
+            request,
+            *args,
+            **kwargs
+        )
+
+        self.get_current_identity(request)
 
     def list(
         self,
@@ -161,27 +202,20 @@ class SearchApiViewSet(ApiViewSet):
         if isinstance(search_query, list):
             search_query = ' '.join(search_query)
 
-        identity_pk = parameters.pop('ci', None)
-        if identity_pk:
-            identity = Identity.objects.get(pk=identity_pk)
-
-        else:
-            identity = None
-
         filters = {
-            key: value for (key, value) in request.QUERY_PARAMS.iteritems()
+            key: value for (key, value) in parameters.iteritems()
         }
 
         results = SearchApi.search(
             search_query,
-            identity=identity,
+            identity=self.current_identity,
             **filters
         )
 
-        data = {}
+        data = []
 
         for result in results:
             serializer = SearchSerializer(instance=result, many=False)
-            data.update(serializer.data)
+            data.append(serializer.data.get('object'))
 
         return Response(data)

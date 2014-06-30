@@ -36,7 +36,7 @@ from knotis.contrib.identity.models import (
     IdentitySuperUser
 )
 from knotis.contrib.identity.api import (
-    IdentityIndividualApiView
+    IdentityApi
 )
 
 from knotis.contrib.relation.models import Relation
@@ -186,7 +186,7 @@ class CreateUserForm(TemplateModelForm):
                 )
 
             else:
-                identity = IdentityIndividualApiView.create_individual(
+                identity = IdentityApi.create_individual(
                     user_id=user.pk,
                     name=IdentityIndividual.DEFAULT_NAME
                 )
