@@ -451,6 +451,9 @@ class RedemptionApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
         self,
         request
     ):
+        if not self.current_identity:
+            raise self.FailedToRetrieveCurrentIdentityException()
+
         transaction = request.DATA.get('transaction')
         if not transaction:
             raise self.CannotCreateRedemptionWithoutPurchaseException()
@@ -462,11 +465,26 @@ class RedemptionApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
             logger.exception(e)
             raise self.FailedToRetrievePurchaseException()
 
-        TransactionApi.create_redemption(
-            request,
-            transaction,
-            self.current_identity
-        )
+        try:
+            redemptions = TransactionApi.create_redemption(
+                request,
+                transaction,
+                self.current_identity
+            )
+
+        except Exception, e:
+            logger.exception(e)
+
+            raise self.FailedToCreateRedemptionException()
+
+        my_redemption = None
+        for r in redemptions:
+            if r.owner.pk == self.current_identity.pk:
+                my_redemption = r
+                break
+
+        serializer = TransactionSerializer(my_redemption)
+        return Response(serializer.data)
 
     class CannotCreateRedemptionWithoutPurchaseException(APIException):
         status_code = 500
@@ -479,3 +497,7 @@ class RedemptionApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
         default_detail = (
             'Failed to find purchase matching pk'
         )
+
+    class FailedToCreateRedemptionException(APIException):
+        status_code = 500
+        default_detail = 'Failed to create redemption.'
