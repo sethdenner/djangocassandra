@@ -73,7 +73,7 @@ class SocialIntegrationsGridView(GridSmallView):
         request = self.context.get('request')
         current_identity = get_object_or_404(
             Identity,
-            pk=request.session['current_identity_id']
+            pk=request.session['current_identity']
         )
 
         facebook_tile = SocialIntegrationTile(service='facebook')
@@ -168,7 +168,7 @@ class DeleteEndpointView(AJAXView):
     ):
         current_identity = get_object_or_404(
             Identity,
-            pk=request.session['current_identity_id']
+            pk=request.session['current_identity']
         )
 
         endpoint_pk = request.POST.get('endpoint_pk')

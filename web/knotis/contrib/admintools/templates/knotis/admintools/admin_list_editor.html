@@ -1,0 +1,18 @@
+{% extends 'knotis/admintools/admin_master.html' %}
+
+{% block title %} [SU] Knotis - Be in the kno! {% endblock title %}
+
+{% block content %}
+    {% if query_form %}
+    <div id="admin_list_control_panel" class="admin_list_forms">
+    {{ query_form.as_template }}
+    </div>
+    <div id="admin_list_results">
+    </div>
+    {% endif %}
+    {% if create_form %}
+    <div id="admin_list_entry_create" class="admin_list_forms">
+    {{ create_form.as_template }}
+    </div>
+    {% endif %}
+{% endblock content %}

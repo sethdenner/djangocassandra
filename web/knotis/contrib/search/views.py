@@ -1,7 +1,6 @@
 import copy
 
 from django.http import HttpResponse
-from django.contrib.contenttypes.models import ContentType
 
 from django.template import Context
 
@@ -9,16 +8,18 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 #from haystack.views import SearchView
-from haystack.query import SearchQuerySet
 
-from knotis.contrib.identity.views import IdentityTile
+from knotis.contrib.identity.views import IdentityTile, get_current_identity
+from knotis.contrib.identity.models import IdentityTypes
 from knotis.contrib.offer.views import OfferTile
 from knotis.contrib.layout.views import GridSmallView
+from knotis.contrib.search.api import SearchApi
 from knotis.views import FragmentView
 from knotis.contrib.identity.views import get_current_identity
 from knotis.contrib.identity.models import IdentityTypes
 
 from forms import SearchForm
+
 
 class SearchResultsView(FragmentView):
     template_name = 'search/search.html'
@@ -90,16 +91,16 @@ class SearchResultsGrid(GridSmallView):
         end_range = start_range + count
 
         query = self.request.GET.get('q',None)
-        if query:
-            search_results = SearchQuerySet().filter(content=query)
 
-        else:
-            search_results = SearchQuerySet()
+        try:
+            current_identity = get_current_identity(self.request)
+        except:
+            current_identity = None
 
-        current_identity = get_current_identity(self.request)
-
-        if current_identity.identity_type != IdentityTypes.SUPERUSER:
-            search_results = search_results.filter(available=True)
+        search_results = SearchApi.search(
+            query,
+            identity=current_identity
+        )
 
         if search_results is not None:
             search_results = search_results[start_range:end_range]

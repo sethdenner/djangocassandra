@@ -5,7 +5,7 @@
     $(function(){
         $('.redeem-offer').click(function(event){
             event.preventDefault();
-            
+
             var offer_id = $(this).parent().parent('.grid-tile.small-tile').attr('data-offer-id');
             $.ajaxmodal({
                 href: [
@@ -40,10 +40,9 @@
                 offer_id = $button.parent().parent('.grid-tile.small-tile').attr('data-offer-id'),
                 active = $button.text().toLowerCase() == 'resume';
             $.ajax({
-                url: '/api/v1/offer/offer/',
+                url: '/api/v0/offer/'+ offer_id + '/',
                 type: 'PUT',
                 data: {
-                    id: offer_id,
                     active: active
                 }
             }).done(function(data, status, jqxhr){
@@ -51,7 +50,7 @@
 
                 var remove_class = active ? 'btn-success' : 'btn-danger',
                     add_class = active ? 'btn-danger' : 'btn-success';
-                $button.removeClass(remove_class).remove_class(add_class)
+                $button.removeClass(remove_class).removeClass(add_class)
                     .addClass(add_class)
                     .text(active ? 'Pause' : 'Resume');
             });
@@ -61,7 +60,7 @@
             var $button = $(this),
                 offer_id = $button.parent().parent('.grid-tile.small-tile').attr('data-offer-id');
             $.ajax({
-                url: '/api/v1/offer/publish/',
+                url: '/api/v0/offer/publish/',
                 type: 'PUT',
                 data: {
                     offer_id: offer_id,
@@ -91,5 +90,5 @@
             });
         });
     });
-    
+
 })(jQuery);

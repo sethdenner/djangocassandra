@@ -16,6 +16,7 @@ LogLevel warn
 WSGIDaemonProcess dev.knotis.com user=knotis group=knotis processes=1 threads=15 maximum-requests=10000 python-path=/srv/knotis/venv/lib/python2.7/site-packages python-eggs=/srv/knotis/run/eggs
 WSGIProcessGroup dev.knotis.com
 WSGIScriptAlias / /srv/knotis/app/conf/apache/knotis.wsgi
+WSGIPassAuthorization On
 
 <Directory /srv/knotis/app/static>
 Order deny,allow

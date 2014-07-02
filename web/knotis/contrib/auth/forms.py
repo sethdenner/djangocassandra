@@ -12,6 +12,7 @@ from django.contrib.auth.forms import (
 )
 from django.template import Context
 from django.forms import (
+    IntegerField,
     CharField,
     EmailField,
     BooleanField,
@@ -35,10 +36,12 @@ from knotis.contrib.identity.models import (
     IdentitySuperUser
 )
 from knotis.contrib.identity.api import (
-    IdentityIndividualApi
+    IdentityApi
 )
 
 from knotis.contrib.relation.models import Relation
+from knotis.contrib.inventory.models import Inventory
+from knotis.contrib.product.models import Product, CurrencyCodes
 
 from models import (
     KnotisUser,
@@ -99,7 +102,6 @@ class LoginForm(TemplateFormMixin, AuthenticationForm):
 
 class ResetPasswordForm(TemplateFormMixin, SetPasswordForm):
     template_name = 'knotis/auth/reset_form.html'
-
 
 class CreateUserForm(TemplateModelForm):
     template_name = 'knotis/auth/sign_up_form.html'
@@ -184,10 +186,22 @@ class CreateUserForm(TemplateModelForm):
                 )
 
             else:
-                identity = IdentityIndividualApi.create_individual(
+                identity = IdentityApi.create_individual(
                     user_id=user.pk,
                     name=IdentityIndividual.DEFAULT_NAME
                 )
+
+            try:
+                Inventory.objects.create_stack_from_product(
+                    identity,
+                    Product.currency.get(CurrencyCodes.KNOTIS_POINTS),
+                    stock=25, # TODO: Fix this will be dynamic. Probably need to
+                    # query the rewards table.
+                    # stock=settings.SIGNUP_POINTS,
+                )
+            except:
+                logging.exception('Failed to to create knotis points for user')
+                raise
 
             user_info.default_identity_id = identity.id
             user_info.save()
@@ -216,6 +230,7 @@ class CreateUserForm(TemplateModelForm):
         return user, identity
 
 
+
 class CreateSuperUserForm(CreateUserForm):
     def save(
         self,
@@ -227,6 +242,11 @@ class CreateSuperUserForm(CreateUserForm):
             *args,
             **kwargs
         )
+
+
+class AdminCreateUserForm(CreateUserForm):
+    template_name = 'knotis/auth/user_create_form.html'
+
 
 
 class ForgotPasswordForm(TemplateForm):
@@ -321,3 +341,6 @@ class ForgotPasswordForm(TemplateForm):
         except:
             logger.exception('failed to initiate password reset')
             return False
+
+
+

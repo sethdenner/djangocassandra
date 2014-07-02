@@ -4,8 +4,14 @@ import datetime
 import twitter
 from facebook import GraphAPI
 
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
+
 from django.conf import settings
 from django.db.models.fields import Field as ModelField
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from knotis.contrib.quick.models import (
     QuickModel,
@@ -35,6 +41,7 @@ from knotis.contrib.endpoint.models import (
     Credentials,
     Publish
 )
+from knotis.contrib.location.models import LocationItem
 
 
 class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
@@ -361,7 +368,7 @@ class Offer(QuickModel):
         self.last_purchase = datetime.datetime.utcnow()
         self.save()
 
-        if self.purchased >= self.stock:
+        if not self.unlimited and self.purchased >= self.stock:
             self.complete()
 
     def update(
@@ -403,6 +410,13 @@ class Offer(QuickModel):
         return self
 
     def complete(self):
+        availability = OfferAvailability.objects.filter(
+            offer=self
+        )
+        for a in availability:
+            a.available = False
+            a.save()
+
         self.completed = True
         self.save()
 
@@ -537,10 +551,38 @@ class Offer(QuickModel):
         return format_currency(gross - our_cut)
 
     def get_location(self):
-        locations = LocationItems.objects.filter(related_object_id = self.pk)
-        if locations.count > 0:
+        locations = LocationItem.objects.filter(related_object_id=self.pk)
+        if locations.count() > 0:
             return locations[0].location.get_location()
         return None
+
+    def banner_image(self):
+        try:
+            banner_image = ImageInstance.objects.get(
+                related_object_id=self.pk,
+                context='offer_banner',
+                primary=True
+            )
+
+        except:
+            logger.exception('failed to get offer banner image')
+            banner_image = None
+
+        return banner_image
+
+    def badge_image(self):
+        try:
+            badge_image = ImageInstance.objects.get(
+                related_object_id=self.owner.pk,
+                context='profile_badge',
+                primary=True
+            )
+
+        except:
+            badge_image = None
+
+        return badge_image
+
 
 class OfferItemManager(QuickManager):
     def clear_offer_items(
@@ -578,13 +620,8 @@ class OfferAvailabilityManager(QuickManager):
             kwargs['stock'] = offer.stock
             kwargs['purchased'] = offer.purchased
             kwargs['default_image'] = offer.default_image
-
-            offer_items = OfferItem.objects.filter(offer=offer)
-            price = 0.
-            for i in offer_items:
-                price += i.price_discount
-
-            kwargs['price'] = price
+            kwargs['end_time'] = offer.end_time
+            kwargs['price'] = offer.price_discount()
 
             identity_profile_badge = ImageInstance.objects.get(
                 related_object_id=offer.owner.id,
@@ -602,12 +639,14 @@ class OfferAvailabilityManager(QuickManager):
         self,
         offer
     ):
-        offers = self.objects.filter(offer=offer)
+        offers = self.filter(offer=offer)
         for o in offers:
             o.title = offer.title
             o.stock = offer.stock
             o.purchased = offer.purchased
             o.default_image = offer.default_image
+            o.end_time = offer.end_time
+            o.available = offer.available()
             o.save()
 
         return offers
@@ -616,15 +655,22 @@ class OfferAvailabilityManager(QuickManager):
         self,
         identity
     ):
-        offers = self.objects.filter(identity=identity)
-        identity_profile_badge = ImageInstance.objects.get(
-            related_object_id=identity.id,
-            context='profile_badge',
-            primary=True
-        )
-        for o in offers:
-            o.profile_badge = identity_profile_badge
-            o.save()
+        offers = self.filter(identity=identity)
+        try:
+            identity_profile_badge = ImageInstance.objects.get(
+                related_object_id=identity.id,
+                context='profile_badge',
+                primary=True
+            )
+            for o in offers:
+                o.profile_badge = identity_profile_badge
+                o.save()
+
+        except ImageInstance.DoesNotExist:
+            pass
+
+        except Exception, e:
+            logger.exception(e.message)
 
         return offers
 
@@ -675,8 +721,36 @@ class OfferAvailability(QuickModel):
         db_index=True,
         default=True
     )
+    end_time = QuickDateTimeField(
+        blank=True,
+        default=None
+    )
 
     objects = OfferAvailabilityManager()
+
+    @staticmethod
+    @receiver(post_save, sender=Offer)
+    def offer_post_save(
+        sender,
+        instance=None,
+        **kwargs
+    ):
+        if None is instance or not instance.pk:
+            return
+
+        OfferAvailability.objects.update_denormalized_offer_fields(instance)
+
+    @staticmethod
+    @receiver(post_save, sender=Identity)
+    def identity_post_save(
+        sender,
+        instance=None,
+        **kwargs
+    ):
+        if None is instance or not instance.pk:
+            return
+
+        OfferAvailability.objects.update_denormalized_identity_fields(instance)
 
 
 class OfferPublish(Publish):

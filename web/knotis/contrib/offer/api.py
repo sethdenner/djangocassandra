@@ -1,24 +1,37 @@
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from knotis.views import ApiView
+from knotis.views import (
+    ApiView,
+    ApiModelViewSet
+)
+
+from rest_framework.exceptions import APIException
+from rest_framework.response import Response
+
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
+from knotis.contrib.identity.models import IdentityTypes
 
 from knotis.contrib.inventory.models import Inventory
 
-from models import (
+from .models import (
     Offer,
     OfferPublish,
     OfferAvailability
 )
-from forms import (
+from .forms import (
     OfferForm,
     OfferPublishForm,
     OfferWithInventoryForm
 )
+from .serializers import (
+    OfferSerializer,
+    OfferAvailabilitySerializer
+)
 
 
-class OfferPublishApi(ApiView):
-    api_url = 'offer/publish'
+class OfferPublishApiView(ApiView):
+    api_path = 'offer/publish'
 
     def put(
         self,
@@ -101,8 +114,8 @@ class OfferPublishApi(ApiView):
             })
 
 
-class OfferApi(ApiView):
-    api_url = 'offer/offer'
+class OfferApiView(ApiView):
+    api_path = 'offer/offer'
 
     def post(
         self,
@@ -176,76 +189,99 @@ class OfferApi(ApiView):
             }
         })
 
-    def put(
+
+class OfferApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
+    api_path = 'offer'
+    resource_name = 'offer'
+
+    model = Offer
+    serializer_class = OfferSerializer
+    paginate_by = 20
+    paginate_by_param = 'count'
+    max_paginate_by = 200
+
+    http_method_names = ['get', 'put', 'options']
+
+    def initial(
         self,
         request,
         *args,
         **kwargs
     ):
-        errors = {}
+        super(OfferApiModelViewSet, self).initial(
+            request,
+            *args,
+            **kwargs
+        )
 
-        update_id = request.PUT.get('id')
+        self.get_current_identity(request)
 
-        try:
-            offer = Offer.objects.get(pk=update_id)
+    def get_queryset(self):
+        if (
+            self.current_identity and
+            self.current_identity.identity_type == IdentityTypes.SUPERUSER
+        ):
+            return self.model.objects.all()
 
-        except Exception, e:
-            error_message = ''.join([
-                'Could not find offer with id <',
-                update_id,
-                '>.'
-            ])
-            logger.exception(error_message)
-            errors['no-field'] = error_message
+        else:
+            return self.model.objects.filter(
+                published=True,
+                active=True,
+                completed=False
+            )
 
-            return self.generate_response({
-                'message': e.message,
-                'errors': errors
-            })
+    def update(
+        self,
+        request,
+        pk=None,
+        *args,
+        **kwargs
+    ):
+        offer = Offer.objects.get(pk=pk)
+
+        if (
+            self.current_identity.pk != offer.owner_id and
+            self.current_identity.identity_type != IdentityTypes.SUPERUSER
+        ):
+            raise self.PermissionDeniedException()
 
         active = offer.active
 
         form = OfferForm(
-            data=request.PUT,
+            data=request.DATA,
             instance=offer
         )
 
-        if form.is_valid():
+        offer = form.save()
+
+        if active != offer.active:
             try:
-                offer = form.save()
+                availability = OfferAvailability.objects.filter(
+                    offer=offer
+                )
+                for a in availability:
+                    a.available = offer.active
+                    a.save()
 
-            except Exception, e:
-                error_message = 'An error occurred during offer update'
-                logger.exception(error_message)
-                errors['no-field'] = error_message
+            except:
+                logger.exception('failed to update offer availability')
 
-                return self.generate_response({
-                    'message': e.message,
-                    'errors': errors
-                })
+        serializer = OfferSerializer(offer)
+        return Response(serializer.data)
 
-            if active != offer.active:
-                try:
-                    availability = OfferAvailability.objects.filter(
-                        offer=offer
-                    )
-                    for a in availability:
-                        a.available = offer.active
-                        a.save()
+    class PermissionDeniedException(APIException):
+        status_code = 500
+        default_detail = (
+            'You do not have permission to access or modify this resource.'
+        )
 
-                except:
-                    logger.exception('failed to update offer availability')
 
-        else:
-            for field, messages in form.errors.iteritems():
-                errors[field] = [message for message in messages]
+class OfferAvailabilityModelViewSet(ApiModelViewSet):
+    api_path = 'offers'
+    resource_name = 'offers'
 
-            return self.generate_response({
-                'message': 'An exception occurred during offer update',
-                'errors': errors
-            })
+    model = OfferAvailability
+    queryset = OfferAvailability.objects.filter(available=True)
+    serializer_class = OfferAvailabilitySerializer
 
-        return self.generate_response({
-            'offer_id': offer.id,
-            'message': 'Offer updated sucessfully.'
-        })
+    http_method_names = ['get', 'options']

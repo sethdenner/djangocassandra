@@ -2,11 +2,10 @@
 ServerAdmin seth@knotis.com
 ServerName stage.knotis.com
 
-Alias /media/ /srv/knotis/media/
-Alias /static/ /srv/knotis/static/
-Alias /admin/media/ /srv/knotis/venv/lib/python2.7/site-packages/django/contrib/admin/media/
-Alias /robots.txt /srv/knotis/web/app/robots.txt
-Alias /favicon.ico /srv/knotis/web/app/media/favicon.ico
+Alias /static/ /srv/knotis/app/static/
+Alias /admin/static/ /srv/knotis/venv/lib/python2.7/site-packages/django/contrib/admin/static/
+Alias /robots.txt /srv/knotis/app/static/robots.txt
+Alias /favicon.ico /srv/knotis/app/static/favicon.ico
 
 CustomLog "|/usr/sbin/rotatelogs /srv/knotis/logs/access.log.%Y%m%d-%H%M%S 5M" combined
 ErrorLog "|/usr/sbin/rotatelogs /srv/knotis/logs/error.log.%Y%m%d-%H%M%S 5M"
@@ -14,15 +13,10 @@ LogLevel warn
 
 WSGIDaemonProcess stage.knotis.com user=knotis group=knotis processes=1 threads=15 maximum-requests=10000 python-path=/srv/knotis/venv/lib/python2.7/site-packages python-eggs=/srv/knotis/run/eggs
 WSGIProcessGroup stage.knotis.com
-WSGIScriptAlias / /srv/knotis/app/conf/apache/django.wsgi
+WSGIScriptAlias / /srv/knotis/app/conf/apache/knotis.wsgi
+WSGIPassAuthorization On
 
-<Directory /srv/knotis/media>
-Order deny,allow
-Allow from all
-Options -Indexes FollowSymLinks
-</Directory>
-
-<Directory /srv/knotis/static>
+<Directory /srv/knotis/app/static>
 Order deny,allow
 Allow from all
 Options -Indexes FollowSymLinks

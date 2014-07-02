@@ -9,6 +9,8 @@ class OfferIndex(indexes.SearchIndex, indexes.Indexable):
     pub_date = indexes.DateTimeField(model_attr='pub_date')
     available = indexes.BooleanField(model_attr='active')
 
+    location = indexes.LocationField(model_attr='get_location')
+
     def get_model(self):
         return Offer
 
