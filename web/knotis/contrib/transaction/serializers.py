@@ -14,6 +14,8 @@ class TransactionSerializer(ModelSerializer):
         fields = (
             'id',
             'owner',
+            'owner_name',
+            'redemption_code',
             'transaction_type',
             'offer',
             'transaction_context',
@@ -22,6 +24,16 @@ class TransactionSerializer(ModelSerializer):
             'offer_banner_image',
             'offer_title'
         )
+
+    owner_name = CharField(
+        source='owner.name',
+        read_only=True
+    )
+
+    redemption_code = CharField(
+        source='redemption_code',
+        read_only=True
+    )
 
     offer_badge_image = CroppedImageUrlSerializer(
         source='offer.badge_image',
@@ -34,4 +46,5 @@ class TransactionSerializer(ModelSerializer):
     offer_title = CharField(
         source='offer.title',
         read_only=True
+
     )
