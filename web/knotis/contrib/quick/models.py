@@ -89,10 +89,8 @@ class QuickModelBase(object):
 
     def get_fields_dict(self):
         fields = {
-            field.name: (
-                field.value_to_string(self) for
-                field in type(self)._meta.fields
-            )
+            field.name: field.value_to_string(self)
+            for field in type(self)._meta.fields
         }
         #print self.yelp_extra
         #fields.update(self._meta.local_fields)
