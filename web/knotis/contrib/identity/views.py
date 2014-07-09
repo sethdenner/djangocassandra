@@ -554,8 +554,9 @@ class EstablishmentAboutAbout(AJAXFragmentView):
         data = json.loads(request.POST.get('data'))
         business_id = data['business_id']
         establishment = IdentityEstablishment.objects.get(pk=business_id)
-        business = IdentityBusiness.objects.get_establishment_parent(establishment)
-        #business = IdentityBusiness.objects.get(pk=business_id)
+        business = IdentityBusiness.objects.get_establishment_parent(
+            establishment
+        )
 
         # business name
         response = {}
@@ -921,11 +922,16 @@ class EstablishmentProfileView(FragmentView):
         maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
         maps_scripts = maps.render_api_js()
 
-        endpoints = Endpoint.objects.filter(
+        endpoints_business = Endpoint.objects.filter(
+            identity=business,
+            primary=True
+        ).select_subclasses()
+        endpoints_establishment = Endpoint.objects.filter(
             identity=establishment,
             primary=True
-        )
-        endpoints = endpoints.select_subclasses()
+        ).select_subclasses()
+
+        endpoints = list(endpoints_business) + list(endpoints_establishment)
 
         endpoint_dicts = []
         for endpoint_class in (
