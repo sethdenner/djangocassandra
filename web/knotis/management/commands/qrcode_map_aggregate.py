@@ -23,14 +23,14 @@ def aggregate_qrcodes(
     filename
 ):
 
-    downtown_bottom_left = Point(lon_left, lat_bot)
-    downtown_top_right = Point(lon_right, lat_top)
+    bottom_left = Point(lon_left, lat_bot)
+    top_right = Point(lon_right, lat_top)
 
     # Do the bounding box query.
     sqs = SearchQuerySet().within(
         'location',
-        downtown_bottom_left,
-        downtown_top_right
+        bottom_left,
+        top_right
     )
 
     with open(filename, 'w') as csv_file:
