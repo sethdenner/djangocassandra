@@ -1,12 +1,5 @@
 ###### IMPORTS ######
 import copy
-from django import http
-from django.conf import settings
-from django.template import Context
-from django.shortcuts import (
-    get_object_or_404,
-)
-
 from knotis.contrib.identity.models import (
     IdentityTypes,
     Identity,
@@ -14,12 +7,10 @@ from knotis.contrib.identity.models import (
 from knotis.contrib.identity.views import (
     get_current_identity,
 )
-
 from knotis.views import (
     ContextView,
     AJAXView,
 )   
-    
 from forms import (
     AdminQueryForm,
 )
@@ -52,12 +43,11 @@ class AdminListEditView(AdminDefaultView):
 
     template_name = 'knotis/admintools/admin_list_editor.html'
     my_styles = [ 'knotis/admintools/css/admin_tool_controls.css', ]
-    my_post_scripts = [ 'knotis/admintools/js/admin_list_edit_v3.js', ]
+    my_post_scripts = [ 'knotis/admintools/js/admin_list_edit.js', ]
     query_form = AdminQueryForm
     create_form = None
 
     def process_context(self):
-        request = self.request
         local_context = copy.copy(self.context)
         styles = local_context.get('styles', [])
         post_scripts = local_context.get('post_scripts', [])
