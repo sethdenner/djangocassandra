@@ -12,10 +12,11 @@ class SupportView(AJAXFragmentView):
             'knotis/support/css/support.css'
         ]
 
-        pre_scripts = []
+        pre_scripts = [
+            'knotis/support/js/support.js'
+        ]
 
         post_scripts = [
-            'knotis/support/js/support.js'
         ]
 
         local_context = copy.copy(self.context)
@@ -64,7 +65,7 @@ class SupportView(AJAXFragmentView):
             message_body,
             email,
             [settings.EMAIL_HOST_USER],
-            fail_silently=True,
+            fail_silently=False,
         )
 
         return self.generate_response({
