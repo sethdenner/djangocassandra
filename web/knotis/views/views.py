@@ -1,12 +1,18 @@
 import copy
+import warnings
 
+from django.conf.urls.defaults import (
+    patterns,
+    url
+)
 from django.views.generic import (
-    View,
+    View as DjangoView,
     TemplateView
 )
 from django.template import (
     RequestContext
 )
+from django.template.loader import render_to_string
 
 from django.core.mail import EmailMultiAlternatives
 
@@ -79,6 +85,140 @@ class FragmentView(
         )
 
 
+class EmbeddedView(FragmentView):
+    '''
+    The EmbeddedView class provides support for rendering a view that is
+    intended to be rendered as a sub-view of a parent view potentially
+    after fetching it with an AJAX request.
+
+    However it is sometimes desired make a request to the view that
+    originates from a context other than the one the view is normally
+    rendered in. In this case the parent view that the markup is normally
+    embedded in needs to also be rendered and returned in the response.
+    '''
+
+    urls = None
+    default_parent_view_class = None
+    template_placeholders = ['content']
+
+    def __init__(
+        self,
+        parent_view_class=None,
+        parent_template_placeholder=None,
+        *args,
+        **kwargs
+    ):
+        if parent_view_class:
+            self.parent_view_class = parent_view_class
+
+        else:
+            self.parent_view_class = self.default_parent_view_class
+
+        if None is parent_template_placeholder:
+            self.parent_template_placeholder = (
+                self.parent_view_class.template_placeholders[0]
+            )
+
+        else:
+            self.parent_template_placeholder = parent_template_placeholder
+
+        super(EmbeddedView, self).__init__(
+            *args,
+            **kwargs
+        )
+
+    def render_to_response(
+        self,
+        context,
+        **response_kwargs
+    ):
+        if None is self.parent_view_class:
+            return super(EmbeddedView, self).render_to_response(
+                context,
+                **response_kwargs
+            )
+
+        else:
+            if (
+                not self.parent_template_placeholder in
+                self.parent_view_class.template_placeholders
+            ):
+                warnings.warn(''.join([
+                    'WARNING!: The parent view class ',
+                    self.parent_view_class.__name__,
+                    ' has does not define "',
+                    self.parent_template_placeholder,
+                    '" as a template placeholder!'
+                ]))
+
+            context[self.parent_template_placeholder] = render_to_string(
+                self.get_template_names()[0],
+                context
+            )
+
+            parent_instance = self.parent_view_class()
+            return parent_instance.render_to_response(
+                context,
+                **response_kwargs
+            )
+
+    @classmethod
+    def urls(cls):
+        '''
+        This method returns a urlpatterns value to be used in url.py files.
+        '''
+        if not cls.urls:
+            raise cls.UrlsUndefinedException(cls)
+
+        view_patterns = patterns('')
+        for u in cls.urls:
+            if '$' == u[-1]:
+                view_url = ''.join([
+                    u[:-1],
+                    '((?P<format>)/)?',
+                    u[-1:]
+                ])
+
+            else:
+                view_url = ''.join([
+                    u,
+                    '((?P<format>)/)?'
+                ])
+
+            view_patterns += patterns(
+                '',
+                url(
+                    view_url,
+                    cls.as_view()
+                )
+            )
+
+        return view_patterns
+
+    class UrlsUndefinedException(Exception):
+        def __init__(
+            self,
+            view_class
+        ):
+            self.view_class = view_class
+
+        def __str__(self):
+            return ''.join([
+                'The View class ',
+                self.view_class.__name__,
+                'has no urls defined.'
+            ])
+
+
+class ModalView(EmbeddedView):
+    '''
+    The ModalView class provides support for rendering a view that is
+    intended to be displayed in a modal dialog box after fetching it
+    with an AJAX request.
+    '''
+    parent_view = None
+
+
 class EmailView(FragmentView):
     text_template_name = None
 
@@ -107,7 +247,7 @@ class EmailView(FragmentView):
 
 
 class AJAXView(
-    View,
+    DjangoView,
     GenerateAJAXResponseMixin
 ):
     pass

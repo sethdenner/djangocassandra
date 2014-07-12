@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% spaceless %}
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="shortcut icon" href="">
+        <title>{% block title %}Knotis - Be in the kno!{% endblock title %}</title>
+        <!-- Bootstrap core CSS -->
+        <link href="{{ STATIC_URL }}knotis/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Generated SASS -->
+        <link href="{{ STATIC_URL }}knotis/layout/css/screen.css" rel="stylesheet">
+        {% for style in styles %}
+        <link href="{{ STATIC_URL }}{{ style }}" rel="stylesheet" />
+        {% endfor %}
+        {% for script in pre_scripts %}
+        <script src="{{ STATIC_URL }}{{ script }}"></script>
+        {% endfor %}
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="{{ STATIC_URL }}knotis/js/html5shiv.js"></script>
+            <script src="{{ STATIC_URL }}knotis/js/respond.min.js"></script>
+            <![endif]-->
+        {% block head %}{% endblock head %}
+    </head>
+    <body>
+        {% block first %}{% endblock first %}
+        {% block header %}{% endblock header %}
+        {% block content %}{% endblock content %}
+        {% block footer %}{% endblock footer %}
+        <div class="modals"></div>
+        <div class="nav"></div>
+        <!-- <div class="subNav"></div> -->
+        <div class="sideBar"></div>
+        <!-- <div class="offers"></div> -->
+        <div class="profileBusiness"></div>
+        {% block last %}{% endblock last %}
+        <script src="{{ STATIC_URL }}knotis/js/jquery.min.js"></script>
+        <script src="{{ STATIC_URL }}knotis/js/bootstrap.min.js"></script>
+        <script src="{{ STATIC_URL }}knotis/layout/js/base.js"></script>
+        {% for script in post_scripts %}
+        <script src="{{ STATIC_URL }}{{ script }}?8374873485"></script>
+        {% endfor %}
+    </body>
+    {% endspaceless %}
+</html>

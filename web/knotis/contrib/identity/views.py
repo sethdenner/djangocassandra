@@ -11,6 +11,7 @@ from django.utils import log
 logger = log.getLogger(__name__)
 
 from knotis.views import (
+    EmbeddedView,
     ContextView,
     FragmentView
 )
@@ -150,6 +151,11 @@ def get_identity_default_profile_banner_color(identity):
     ]
 
     return profile_banner_color
+
+
+class EstablishmentsView(EmbeddedView):
+    urls = ['^businesses/$']
+    template_name = 'knotis/identity/establishments.html'
 
 
 class IdentityView(ContextView):
