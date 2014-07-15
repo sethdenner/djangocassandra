@@ -593,7 +593,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                 endpoint_value = endpoint['endpoint_value'].strip()
 
                 updated_endpoint = Endpoint.objects.update_or_create(
-                    identity=business,
+                    identity=establishment,
                     pk=endpoint_id,
                     endpoint_type=int(endpoint['endpoint_type']),
                     value=endpoint_value,
