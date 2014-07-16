@@ -1,14 +1,7 @@
 // Render Forth
 
-$('.modals').load('views/authModals.html');
-$('.nav').load('views/nav.html');
-$('.subNav').load('views/subNav.html');
-$('.sideBar').load('views/sideBar.html');
-$('.offers').load('views/offers.html');
-$('.profileBusiness').load('views/profileBusiness.html');
-
 $( ".sideBar" ).hover(
-    function() {
+    function () {
         var hideOverlay = $('html').click(function () {
             $('.sidebar-overlay').fadeOut('fast');
             $('.sidebar-label').fadeOut('fast');
@@ -25,15 +18,14 @@ $( ".sideBar" ).hover(
         $('.sidebar-overlay').fadeIn('fast');
         hideOverlay();
     },  
-    function(){
+    function (){
         //
     });
 
-$('.sidebar-nav li').each(function() {
-    $(this).hover(function(){
+$('.sidebar-nav li').each(function (){
+    $(this).hover(function (){
         $(this).find('.circle').css('background', '#303030');
-    }, 
-                  function(){
-                      $(this).find('.circle').css('background', '#595959');
-                  });
+    }, function (){
+        $(this).find('.circle').css('background', '#595959');
+    });
 });

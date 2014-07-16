@@ -1,0 +1,95 @@
+{% extends 'knotis/layout/base.html' %}
+
+{% block header %}
+<!-- Primary Navigation -->
+<div class="nav">
+    <nav role="navigation">
+        <div class="container">
+            <div class="row">
+
+                <!-- Search Form -->
+                <div class="col-lg-3 col-xs-4">
+                    <div class="search">
+                        <input type="search" name="knotisSearch" placeholder="Search">
+                    </div>
+                </div>
+                <!-- // End Search Form -->
+
+                <div class="col-lg-6 col-xs-4">
+                    <div class="logo">
+                        <a href="#"><img src="{{ STATIC_URL }}knots/navigation/img/knotis_logo_nav.png" alt="Knotis"/></a>
+                    </div>
+                </div>
+
+                <!-- Identity Switcher Signed Out -->
+                <!--
+                    <div class="col-lg-3 col-xs-4">
+                        <button class="btn btn-primary btn-lg logIn" data-toggle="modal" data-target="#login-modal">
+                            Log In
+                        </button>
+                        <button class="btn btn-primary btn-lg signUp" data-toggle="modal" data-target="#signup-modal">
+                            Sign Up
+                        </button>
+                    </div> -->
+                <!-- // End Identity Signed Out Switcher -->
+
+                <!-- Identity Switcher Signed In  -->
+                <div class="col-lg-2 col-xs-4">
+                    <div class="dropdown">
+                        <a data-toggle="dropdown" href="#">
+                            <span>David D. Ortiz</span>
+                            <img class="userImg" src="http://placekitten.com/30/30"/>
+                        </a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            <li><a href="#">
+                                    Another Account
+                                    <img src="http://placekitten.com/30/30"/>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Another Account
+                                    <img src="http://placekitten.com/30/30"/>
+                                </a>
+                            </li>
+                            <li class="addLink">
+                                <a href="#">+ Add An Identity</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- // End Identity Signed In Switcher -->
+
+            </div>
+        </div>
+    </nav>
+    <!-- // End Primary Navigation -->
+</div>
+{% endblock header %}
+
+{% block content %}
+<!-- Sidebar -->
+<div class="sideBar">
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <li><a href="#"><span class="circle"><i class="icon-business"></i></span><span class="sidebar-label">Businesses</span></a></li>
+            <li><a href="#"><span class="circle"><i class="icon-offers"></i></span><span class="sidebar-label">Offers</span></a></li>
+            <li><a href="#"><span class="circle"><i class="icon-dashboard"></i></span><span class="sidebar-label">Dashboard</span></a></li>
+            <li><a href="#"><span class="circle"><i class="icon-profile-guy"></i></span><span class="sidebar-label">Profile</span></a></li>
+            <li><a href="#"><span class="circle"><i class="icon-message"></i></span><span class="sidebar-label">Message</span></a></li>
+            <li><a href="#"><span class="circle"><i class="icon-promotions"></i></span><span class="sidebar-label">Promotions</span></a></li>
+            <li><a href="#"><span class="circle"><i class="icon-customers"></i></span><span class="sidebar-label">Customers</span></a></li>
+            <li><a href="#"><span class="circle"><i class="icon-following"></i></span><span class="sidebar-label">Following</span></a></li>
+            <li><a href="#"><span class="circle"><i class="icon-redeem"></i></span><span class="sidebar-label">Redeem</span></a></li>
+            <li><a href="#"><span class="circle"><i class="icon-banking"></i></span><span class="sidebar-label">Banking</span></a></li>
+            <li><a href="#"><span class="circle"><i class="icon-reports"></i></span><span class="sidebar-label">Reports</span></a></li>
+            <li><a href="#"><span class="circle"><i class="icon-settings"></i></span><span class="sidebar-label">Settings<
+                                                                                                                              /span></a></li>
+        </ul>
+    </div>
+    <!-- // End SideBar -->
+
+    <div class="sidebar-overlay"></div>
+</div>
+{{ content }}
+{% endblock content %}

@@ -1,7 +1,8 @@
 import copy
 
 from knotis.views import (
-    FragmentView
+    FragmentView,
+    EmbeddedView
 )
 
 
@@ -63,3 +64,7 @@ class ActionButton(FragmentView):
 class SplashTile(FragmentView):
     template_name = 'knotis/layout/splash_tile.html'
     view_name = 'splash_tile'
+
+
+class DefaultBaseView(EmbeddedView):
+    template_name = 'knotis/layout/default_base.html'

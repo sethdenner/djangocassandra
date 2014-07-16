@@ -1,0 +1,1078 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+/* line 17, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+/* line 22, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+html {
+  line-height: 1;
+}
+
+/* line 24, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 26, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 28, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+/* line 30, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+q, blockquote {
+  quotes: none;
+}
+/* line 103, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+q:before, q:after, blockquote:before, blockquote:after {
+  content: "";
+  content: none;
+}
+
+/* line 32, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+a img {
+  border: none;
+}
+
+/* line 116, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+  display: block;
+}
+
+@font-face {
+  font-family: 'LatoBold';
+  src: url("../assets/fonts/lato-bold.eot");
+  /* IE9 Compat Modes */
+  src: url("../assets/fonts/lato-bold.eot?#iefix") format("embedded-opentype"), url("../assets/fonts/lato-bold.woff") format("woff"), url("../assets/fonts/lato-bold.ttf") format("truetype"), url("../assets/fonts/lato-bold.svg#svgFontName") format("svg");
+  /* Legacy iOS */
+}
+
+@font-face {
+  font-family: 'LatoReg';
+  src: url("../assets/fonts/lato-regular.eot");
+  /* IE9 Compat Modes */
+  src: url("../assets/fonts/lato-regular.eot?#iefix") format("embedded-opentype"), url("../assets/fonts/lato-regular.woff") format("woff"), url("../assets/fonts/lato-regular.ttf") format("truetype"), url("../assets/fonts/lato-regular.svg#svgFontName") format("svg");
+  /* Legacy iOS */
+}
+
+@font-face {
+  font-family: 'LatoLight';
+  src: url("../assets/fonts/lato-light.eot");
+  /* IE9 Compat Modes */
+  src: url("../assets/fonts/lato-light.eot?#iefix") format("embedded-opentype"), url("../assets/fonts/lato-light.woff") format("woff"), url("../assets/fonts/lato-light.ttf") format("truetype"), url("../assets/fonts/lato-light.svg#svgFontName") format("svg");
+  /* Legacy iOS */
+}
+
+/* line 1, ../sass/_custom.scss */
+body {
+  background: #f5f5f5;
+  color: #ecf8f3;
+  font-family: 'LatoReg', sans-serif;
+}
+
+/* line 7, ../sass/_custom.scss */
+h1 {
+  font-size: 60px;
+  margin-bottom: 40px;
+  color: #a0a0a0;
+  font-family: "LatoLight", sans-serif;
+}
+
+/* line 14, ../sass/_custom.scss */
+a:hover {
+  text-decoration: none;
+}
+
+/* line 18, ../sass/_custom.scss */
+.mainContent {
+  margin-top: 160px;
+  margin-left: 72px;
+  max-width: 100%;
+  padding: 0 26px;
+}
+
+/* General Navigation Styles */
+/* line 2, ../sass/_nav.scss */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 55px;
+  background: #2cc397;
+  padding: 8px 8px 8px 0;
+  z-index: 1000;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 14px;
+  /* End General Nav Styles */
+  /* Search Styles */
+  /* // End Search Styles */
+  /* Styles for Identity Switcher */
+  /* // End Styles for Identity Switcher */
+}
+/* line 13, ../sass/_nav.scss */
+nav .logo {
+  text-align: center;
+  width: 80px;
+  margin: 0 auto;
+}
+/* line 17, ../sass/_nav.scss */
+nav .logo img {
+  max-width: 100%;
+}
+/* line 21, ../sass/_nav.scss */
+nav a {
+  color: white;
+  text-decoration: none;
+}
+/* line 25, ../sass/_nav.scss */
+nav a:hover {
+  color: white;
+}
+/* line 28, ../sass/_nav.scss */
+nav a:visited {
+  text-decoration: none;
+}
+/* line 35, ../sass/_nav.scss */
+nav .search input {
+  background-color: transparent;
+  border: 0;
+  focus: 0;
+  outline: 0;
+  border-bottom: 1px solid #a6e5cd;
+  color: white;
+  font-size: 12px;
+  padding-bottom: 6px;
+  margin-top: 6px;
+  width: 100%;
+}
+/* line 47, ../sass/_nav.scss */
+nav .search img {
+  width: 12px;
+  position: relative;
+  top: 4px;
+  right: 50px;
+}
+/* line 53, ../sass/_nav.scss */
+nav .search ::-webkit-input-placeholder {
+  color: #ecf8f3;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+}
+/* line 59, ../sass/_nav.scss */
+nav .search :-moz-placeholder {
+  /* Firefox 18- */
+  color: #ecf8f3;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+}
+/* line 66, ../sass/_nav.scss */
+nav .search ::-moz-placeholder {
+  /* Firefox 19+ */
+  color: #ecf8f3;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+}
+/* line 73, ../sass/_nav.scss */
+nav .search :-ms-input-placeholder {
+  color: #ecf8f3;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+}
+/* line 83, ../sass/_nav.scss */
+nav .dropdown {
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 15px 0 15px 9px;
+  width: 100%;
+  position: absolute;
+  right: 0;
+  top: -2px;
+  border: 1px solid #2cc397;
+  transition: all 0.2s ease;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+/* line 95, ../sass/_nav.scss */
+nav .dropdown a {
+  color: white;
+  text-decoration: none;
+  padding: 13px 0 13px 0;
+  outline: 0;
+}
+/* line 102, ../sass/_nav.scss */
+nav .dropdown:hover {
+  border: 1px solid white;
+}
+/* line 105, ../sass/_nav.scss */
+nav .dropdown-menu {
+  border: 0;
+  padding: 2px;
+  font-family: 'LatoReg';
+  top: 46px;
+  width: 110%;
+  overflow: hidden;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+/* line 114, ../sass/_nav.scss */
+nav .dropdown-menu a {
+  color: black;
+  padding: 20px 0 20px 10px;
+  font-size: 11px;
+  display: inline-flex;
+  text-decoration: none;
+  width: 100%;
+}
+/* line 122, ../sass/_nav.scss */
+nav .dropdown-menu a:hover {
+  background: #f4f4f4;
+  color: black;
+  transition: all 0.3s ease;
+}
+/* line 127, ../sass/_nav.scss */
+nav .dropdown-menu li img {
+  border-radius: 50%;
+  position: absolute;
+  margin-top: -8px;
+  right: 12px;
+}
+
+/* line 137, ../sass/_nav.scss */
+.userImg {
+  border-radius: 50%;
+  position: absolute;
+  top: 5px;
+  right: 12px;
+}
+
+/* line 144, ../sass/_nav.scss */
+nav button, nav button:active, nav button:visted {
+  outline: 0;
+}
+
+/* line 148, ../sass/_nav.scss */
+nav button.logIn:hover, nav button.signUp:hover {
+  background: #2cc397;
+  border: 2px solid white;
+}
+
+/* line 153, ../sass/_nav.scss */
+nav button.logIn {
+  border: 2px solid transparent;
+  background: transparent;
+  padding: 10px 30px;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+/* line 161, ../sass/_nav.scss */
+nav button.signUp {
+  border: 2px solid transparent;
+  background: #36A887;
+  padding: 10px 30px;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+/* line 169, ../sass/_nav.scss */
+.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+  background: transparent;
+}
+
+/* line 173, ../sass/_nav.scss */
+nav li.addLink {
+  background: #555555;
+  border-radius: 3px;
+}
+/* line 176, ../sass/_nav.scss */
+nav li.addLink a {
+  color: white;
+}
+
+/* line 1, ../sass/_subNav.scss */
+.subNav {
+  position: fixed;
+  top: 55px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid #dedede;
+  padding: 14px;
+  font-family: 'LatoReg';
+  text-align: center;
+  z-index: 4;
+  height: 40px;
+}
+/* line 12, ../sass/_subNav.scss */
+.subNav ul li {
+  display: inline-flex;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 20px 0 20px;
+  text-align: center;
+  vertical-align: middle;
+}
+/* line 20, ../sass/_subNav.scss */
+.subNav ul li a {
+  color: #5f5f5f;
+  padding-bottom: 10px;
+}
+/* line 26, ../sass/_subNav.scss */
+.subNav ul li.active {
+  color: #2cc397;
+  border-bottom: 4px solid #2cc397;
+}
+
+/* line 1, ../sass/_sideBar.scss */
+#sidebar-wrapper {
+  margin-left: -250px;
+  left: 250px;
+  width: 72px;
+  background: white;
+  position: fixed;
+  height: 100%;
+  top: 50px;
+  z-index: 100;
+  transition: all 0.4s ease 0s;
+  padding-top: 20px;
+  overflow-y: auto;
+}
+
+/* line 15, ../sass/_sideBar.scss */
+.sidebar-nav {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  padding: 0 0 50px 0;
+}
+
+/* line 22, ../sass/_sideBar.scss */
+.sidebar-nav li a {
+  color: #727272;
+  display: inline-block;
+  text-decoration: none;
+  width: 100%;
+  position: relative;
+  top: -6px;
+  padding: 8px 0;
+}
+/* line 30, ../sass/_sideBar.scss */
+.sidebar-nav li a img {
+  max-width: 100%;
+  padding: 10px;
+}
+/* line 34, ../sass/_sideBar.scss */
+.sidebar-nav li a i {
+  font-size: 20px;
+  color: white;
+}
+
+/* line 40, ../sass/_sideBar.scss */
+.sidebar-nav li a:hover {
+  color: white;
+}
+
+/* line 44, ../sass/_sideBar.scss */
+.sidebar-nav li:hover {
+  color: #fff;
+  background: #595959;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+/* line 51, ../sass/_sideBar.scss */
+.sidebar-label {
+  display: none;
+  position: absolute;
+  margin-top: 20px;
+  left: 70px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+}
+
+/* line 61, ../sass/_sideBar.scss */
+.sidebar-overlay {
+  height: 100%;
+  width: 100%;
+  background: #3f3f3f;
+  position: absolute;
+  top: 0;
+  opacity: 0.9;
+  z-index: 5;
+  display: none;
+}
+
+/* line 72, ../sass/_sideBar.scss */
+.sidebar-nav .circle {
+  border-radius: 50%;
+  border: 2px solid white;
+  background: #595959;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  position: relative;
+  top: 6px;
+  left: 12px;
+}
+
+/* line 85, ../sass/_sideBar.scss */
+.sidebar-nav .icon-banking {
+  position: relative;
+  top: 1px;
+  left: 3px;
+  font-size: 32px;
+}
+/* line 92, ../sass/_sideBar.scss */
+.sidebar-nav .icon-redeem {
+  position: relative;
+  right: 3px;
+  top: 4px;
+  font-size: 28px;
+}
+/* line 99, ../sass/_sideBar.scss */
+.sidebar-nav .icon-profile-guy {
+  position: relative;
+  top: 4px;
+  left: 7px;
+  font-size: 24px;
+}
+/* line 105, ../sass/_sideBar.scss */
+.sidebar-nav .icon-dashboard {
+  position: relative;
+  top: 6px;
+  left: 4px;
+  font-size: 18px;
+}
+/* line 111, ../sass/_sideBar.scss */
+.sidebar-nav .icon-offers {
+  position: relative;
+  top: 6px;
+  left: 5px;
+  font-size: 22px;
+}
+/* line 117, ../sass/_sideBar.scss */
+.sidebar-nav .icon-message {
+  position: relative;
+  top: 6px;
+  left: 6px;
+  font-size: 22px;
+}
+/* line 123, ../sass/_sideBar.scss */
+.sidebar-nav .icon-promotions {
+  position: relative;
+  top: 6px;
+  left: 5px;
+  font-size: 24px;
+}
+/* line 130, ../sass/_sideBar.scss */
+.sidebar-nav .icon-customers {
+  position: relative;
+  top: 3px;
+  left: 4px;
+  font-size: 28px;
+}
+/* line 137, ../sass/_sideBar.scss */
+.sidebar-nav .icon-following {
+  position: relative;
+  top: 2px;
+  right: 5px;
+  font-size: 31px;
+}
+/* line 144, ../sass/_sideBar.scss */
+.sidebar-nav .icon-reports {
+  position: relative;
+  top: 4px;
+  left: 6px;
+  font-size: 26px;
+}
+/* line 151, ../sass/_sideBar.scss */
+.sidebar-nav .icon-settings {
+  position: relative;
+  top: 3px;
+  left: 4px;
+  font-size: 27px;
+}
+/* line 158, ../sass/_sideBar.scss */
+.sidebar-nav .icon-business {
+  position: relative;
+  top: 5px;
+  left: 5px;
+  font-size: 25px;
+}
+
+/* Styles for Offer Grid Item */
+/* line 2, ../sass/_offerItem.scss */
+.offerItem {
+  background: white;
+  padding: 0;
+  border-radius: 4px;
+  max-width: 250px;
+  height: 370px;
+  margin-right: 14px;
+  margin-bottom: 14px;
+}
+/* line 10, ../sass/_offerItem.scss */
+.offerItem .dropdown-menu {
+  position: absolute;
+  left: -134px;
+  top: 34px;
+  border: 0;
+  border-top-right-radius: 0;
+  padding: 0px 0;
+  font-family: 'LatoReg';
+}
+/* line 18, ../sass/_offerItem.scss */
+.offerItem .dropdown-menu a {
+  color: black;
+  padding: 8px 16px;
+  border-radius: 3px;
+  border-top-right-radius: 0;
+}
+/* line 24, ../sass/_offerItem.scss */
+.offerItem .dropdown-menu a:hover {
+  background: #2cc397;
+  color: white;
+  transition: all 0.3s ease;
+}
+/* line 30, ../sass/_offerItem.scss */
+.offerItem .busCover img {
+  border-radius: 3px;
+}
+
+/* line 35, ../sass/_offerItem.scss */
+.offerContent {
+  position: relative;
+  top: -60px;
+  padding: 14px;
+  color: #989fac;
+  line-height: 28px;
+}
+/* line 41, ../sass/_offerItem.scss */
+.offerContent h1 {
+  font-size: 24px;
+  margin: 0;
+}
+/* line 45, ../sass/_offerItem.scss */
+.offerContent a {
+  color: #989fac;
+}
+
+/* line 50, ../sass/_offerItem.scss */
+.iconMore {
+  max-width: 18px;
+  position: relative;
+  right: 6px;
+  top: 12px;
+  opacity: 0.6;
+}
+
+/* line 57, ../sass/_offerItem.scss */
+.iconMore:hover {
+  opacity: 1.0;
+}
+
+/* line 61, ../sass/_offerItem.scss */
+.overlay {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, transparent), color-stop(100%, #4a4a4a));
+  background-image: -webkit-linear-gradient(transparent, #4a4a4a);
+  background-image: -moz-linear-gradient(transparent, #4a4a4a);
+  background-image: -o-linear-gradient(transparent, #4a4a4a);
+  background-image: linear-gradient(transparent, #4a4a4a);
+  width: 100%;
+  height: 142px;
+  position: absolute;
+  top: 0;
+}
+
+/* line 69, ../sass/_offerItem.scss */
+.busLogo {
+  border-radius: 50%;
+  border: 3px solid white;
+  max-width: 92px;
+  max-height: 92px;
+}
+
+/* line 76, ../sass/_offerItem.scss */
+.busLink:hover {
+  color: #2cc397;
+}
+
+/* line 80, ../sass/_offerItem.scss */
+.btnFollow {
+  color: #989fac;
+  text-align: center;
+  padding: 20px 0;
+  width: 100%;
+  display: inline-block;
+  border-radius: 4px;
+  border: 2px solid #e6e8ec;
+  transition: all 0.2s ease;
+  line-height: 0;
+  margin-top: 20px;
+}
+/* line 91, ../sass/_offerItem.scss */
+.btnFollow a:hover {
+  color: white;
+}
+
+/* line 95, ../sass/_offerItem.scss */
+.btnFollow:hover {
+  background: #2cc397;
+  color: white;
+  border: 2px solid #2cc397;
+}
+
+/* line 100, ../sass/_offerItem.scss */
+.btnFollow:active {
+  box-shadow: inset 2px 3px 3px #2b8d68;
+}
+
+/* line 104, ../sass/_offerItem.scss */
+.location {
+  margin-top: 8px;
+  text-align: center;
+  vertical-align: middle;
+}
+/* line 108, ../sass/_offerItem.scss */
+.location img {
+  max-width: 10px;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+@font-face {
+  font-family: 'icomoon';
+  src: url("../assets/fonts/icomoon.eot?iv5qrk");
+  src: url("../assets/fonts/icomoon.eot?#iefixiv5qrk") format("embedded-opentype"), url("../assets/fonts/icomoon.woff?iv5qrk") format("woff"), url("../assets/fonts/icomoon.ttf?iv5qrk") format("truetype"), url("../assets/fonts/icomoon.svg?iv5qrk#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* line 12, ../sass/_iconFont.scss */
+[class^="icon-"], [class*=" icon-"] {
+  font-family: 'icomoon';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* line 26, ../sass/_iconFont.scss */
+.icon-redeem:before {
+  content: "\e600";
+}
+
+/* line 29, ../sass/_iconFont.scss */
+.icon-profile-guy:before {
+  content: "\e601";
+}
+
+/* line 32, ../sass/_iconFont.scss */
+.icon-profile-girl:before {
+  content: "\e602";
+}
+
+/* line 35, ../sass/_iconFont.scss */
+.icon-settings:before {
+  content: "\e603";
+}
+
+/* line 38, ../sass/_iconFont.scss */
+.icon-reports:before {
+  content: "\e604";
+}
+
+/* line 41, ../sass/_iconFont.scss */
+.icon-Purchases:before {
+  content: "\e605";
+}
+
+/* line 44, ../sass/_iconFont.scss */
+.icon-promotions:before {
+  content: "\e606";
+}
+
+/* line 47, ../sass/_iconFont.scss */
+.icon-offers:before {
+  content: "\e607";
+}
+
+/* line 50, ../sass/_iconFont.scss */
+.icon-message:before {
+  content: "\e608";
+}
+
+/* line 53, ../sass/_iconFont.scss */
+.icon-following:before {
+  content: "\e609";
+}
+
+/* line 56, ../sass/_iconFont.scss */
+.icon-feed:before {
+  content: "\e60a";
+}
+
+/* line 59, ../sass/_iconFont.scss */
+.icon-dashboard:before {
+  content: "\e60b";
+}
+
+/* line 62, ../sass/_iconFont.scss */
+.icon-customers:before {
+  content: "\e60c";
+}
+
+/* line 65, ../sass/_iconFont.scss */
+.icon-business:before {
+  content: "\e60d";
+}
+
+/* line 68, ../sass/_iconFont.scss */
+.icon-business-profile:before {
+  content: "\e60e";
+}
+
+/* line 71, ../sass/_iconFont.scss */
+.icon-banking:before {
+  content: "\e60f";
+}
+
+@media all and (max-width: 650px) {
+  /* line 2, ../sass/_mediaQueries.scss */
+  body {
+    background: black;
+  }
+
+  /* line 5, ../sass/_mediaQueries.scss */
+  nav .dropdown {
+    border: 0;
+  }
+
+  /* line 8, ../sass/_mediaQueries.scss */
+  nav .dropdown a span {
+    display: none;
+  }
+}
+/* line 1, ../sass/_modals.scss */
+.modal-title {
+  color: #272727;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: 600;
+  font-size: 20px;
+  position: relative;
+  top: 10px;
+}
+
+/* line 12, ../sass/_modals.scss */
+.modal-header {
+  border: 0;
+}
+
+/* Auth Inputs for Log In, Sign Up. */
+/* line 18, ../sass/_modals.scss */
+.singleAuth {
+  padding-bottom: 20px;
+}
+
+/* line 22, ../sass/_modals.scss */
+.authInputs, .authButtons {
+  text-align: center;
+}
+
+/* line 26, ../sass/_modals.scss */
+.authButtons {
+  margin-top: 20px;
+}
+
+/* line 30, ../sass/_modals.scss */
+.authInputs input {
+  display: inline-block;
+  width: 50%;
+  padding: 16px;
+  border-radius: 4px;
+  border: 0;
+  outline: 0;
+  background: #f4f4f4;
+  font-size: 15px;
+  margin: 10px 0;
+  color: #A5A5A5;
+}
+
+/* line 43, ../sass/_modals.scss */
+.authBtn.login {
+  background: white;
+  color: #c0c0c0;
+  border: 2px solid #c0c0c0;
+}
+
+/* line 49, ../sass/_modals.scss */
+.authBtn {
+  display: inline-block;
+  padding: 16px 40px;
+  border: 2px solid #2cc397;
+  outline: 0;
+  border-radius: 2px;
+  margin: 0px 0 15px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: #2cc397;
+  color: white;
+}
+
+/* line 63, ../sass/_modals.scss */
+.tos-text a {
+  color: #2cc397;
+}
+
+/* line 67, ../sass/_modals.scss */
+.tos-text {
+  color: #838383;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 2px;
+  font-size: 12px;
+}
+
+/* Offer Modal Styles */
+/* line 79, ../sass/_modals.scss */
+#offer-modal .modal-body {
+  padding: 0;
+}
+/* line 82, ../sass/_modals.scss */
+#offer-modal .modal-dialog {
+  width: 70%;
+  margin: 30px auto;
+  overflow: hidden;
+  border-radius: 4px;
+}
+/* line 88, ../sass/_modals.scss */
+#offer-modal .modal-content {
+  background: url("http://placekitten.com/1000/1000") no-repeat center top;
+  background-size: cover;
+  border-radius: 0;
+  border: 0;
+}
+
+/* line 97, ../sass/_modals.scss */
+.offerDetails {
+  background: white;
+  padding: 30px 50px 26px;
+}
+/* line 100, ../sass/_modals.scss */
+.offerDetails h1 {
+  color: #3A3A3A;
+  font-size: 35px;
+}
+/* line 104, ../sass/_modals.scss */
+.offerDetails p {
+  color: black;
+  font-family: LatoLight, sans-serif;
+}
+/* line 108, ../sass/_modals.scss */
+.offerDetails ul {
+  margin-top: 30px;
+}
+/* line 111, ../sass/_modals.scss */
+.offerDetails ul li {
+  color: #666666;
+  font-size: 12px;
+  margin: 10px auto;
+  padding: 6px 7px 16px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-bottom: 1px solid #E4E4E4;
+}
+/* line 120, ../sass/_modals.scss */
+.offerDetails span {
+  font-family: LatoBold, sans-serif;
+  padding-right: 3px;
+}
+/* line 124, ../sass/_modals.scss */
+.offerDetails button {
+  background: #2cc397;
+  border: 0;
+  outline: 0;
+  padding: 17px 28px;
+  border-radius: 3px;
+  margin-top: 15px;
+}
+
+/* line 135, ../sass/_modals.scss */
+.offerHero img {
+  border-radius: 50%;
+  border: 3px solid white;
+  display: inline-block;
+  margin: 15px 5px;
+}
+/* line 141, ../sass/_modals.scss */
+.offerHero h1 {
+  color: white;
+  display: inline-block;
+  position: absolute;
+  top: 25px;
+}
+/* line 147, ../sass/_modals.scss */
+.offerHero h2 {
+  display: inline-block;
+  color: white;
+  font-size: 18px;
+  font-size: 18px;
+  position: absolute;
+  top: 100px;
+  left: 155px;
+}
+
+/* line 1, ../sass/_profile.scss */
+h1.sectionHeader {
+  font-size: 26px;
+  color: #797979;
+  margin: 40px 0;
+}
+
+/* line 7, ../sass/_profile.scss */
+.profileBusiness .hero {
+  background: url("http://placekitten.com/1900/1000");
+  width: 100%;
+  height: 448px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 90px 115px 55px;
+  background-size: cover;
+}
+
+/* line 18, ../sass/_profile.scss */
+.profileContent {
+  position: relative;
+  top: 300px;
+}
+
+/* line 23, ../sass/_profile.scss */
+.profileBusiness section {
+  background: white;
+  padding: 30px;
+  border-radius: 2px;
+  margin-top: -20px;
+  color: #888;
+  font-family: "LatoLight", sans-serif;
+  m5argin: -20px 0 40px;
+}
+
+/* line 33, ../sass/_profile.scss */
+.heroOverlay {
+  background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.26));
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+}
+
+/* line 43, ../sass/_profile.scss */
+.heroInfo {
+  border-right: 1px solid #777777;
+  width: 345px;
+  background: rgba(56, 56, 56, 0.36);
+  position: relative;
+  top: -35px;
+  right: 43px;
+  padding: 30px 30px 83px;
+}
+/* line 51, ../sass/_profile.scss */
+.heroInfo img {
+  border-radius: 50%;
+  border: 4px solid white;
+}
+/* line 55, ../sass/_profile.scss */
+.heroInfo h1 {
+  font-size: 35px;
+  color: white;
+  margin: 20px 0 0;
+}
+/* line 60, ../sass/_profile.scss */
+.heroInfo h2 {
+  display: inline-block;
+  width: 100%;
+  padding: 8px 0;
+  font-size: 17px;
+  font-family: "LatoLight", sans-serif;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+}
+/* line 69, ../sass/_profile.scss */
+.heroInfo a {
+  background: #2cc397;
+  padding: 17px 70px;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 13px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* line 81, ../sass/_profile.scss */
+section .profileInfo {
+  width: 50%;
+}
+
+/* line 85, ../sass/_profile.scss */
+section .profileInfo a {
+  background: #2cc397;
+  padding: 13px 20px;
+  border-radius: 2px;
+  display: inline-block;
+  color: white;
+  width: 70%;
+  text-align: center;
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+/* line 97, ../sass/_profile.scss */
+section .profileInfo:nth-child(5) {
+  background: #c0c0c0;
+}

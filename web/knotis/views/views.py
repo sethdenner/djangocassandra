@@ -10,6 +10,7 @@ from django.views.generic import (
     TemplateView
 )
 from django.template import (
+    Context,
     RequestContext
 )
 from django.template.loader import render_to_string
@@ -39,14 +40,29 @@ class ContextView(TemplateView):
 
     get_context_data now just returns self.context
     '''
+    def __init__(
+        self,
+        context=Context(),
+        *args,
+        **kwargs
+    ):
+        self.context = context
+
+        super(ContextView, self).__init__(
+            *args,
+            **kwargs
+        )
+
     def dispatch(
         self,
         request,
         *args,
         **kwargs
     ):
-        self.context = RequestContext(request)
-        self.context.update(kwargs)
+        self.context = RequestContext(
+            request,
+            kwargs
+        )
 
         return super(ContextView, self).dispatch(
             request,
@@ -67,6 +83,27 @@ class ContextView(TemplateView):
     ):
         return self.process_context()
 
+    def update_context(
+        self,
+        other={}
+    ):
+        if isinstance(other, Context):
+            flattened_context = {}
+            for d in reversed(other.dicts):
+                flattened_context.update(d)
+
+            self.context.update(flattened_context)
+
+        elif isinstance(other, dict):
+            self.context.update(other)
+
+        else:
+            raise Exception(
+                'Can only update context with dict or context object'
+            )
+
+        return self.context
+
 
 class FragmentView(
     ContextView,
@@ -76,7 +113,7 @@ class FragmentView(
         self,
         context
     ):
-        self.context = context
+        self.update_context(context)
         self.request = context.get('request')
 
         processed_context = self.process_context()
@@ -97,7 +134,7 @@ class EmbeddedView(FragmentView):
     embedded in needs to also be rendered and returned in the response.
     '''
 
-    urls = None
+    url_patterns = None
     default_parent_view_class = None
     template_placeholders = ['content']
 
@@ -114,7 +151,7 @@ class EmbeddedView(FragmentView):
         else:
             self.parent_view_class = self.default_parent_view_class
 
-        if None is parent_template_placeholder:
+        if self.parent_view_class and None is parent_template_placeholder:
             self.parent_template_placeholder = (
                 self.parent_view_class.template_placeholders[0]
             )
@@ -132,7 +169,10 @@ class EmbeddedView(FragmentView):
         context,
         **response_kwargs
     ):
-        if None is self.parent_view_class:
+        self.update_context(context)
+
+        response_format = self.context.get('format')
+        if response_format == 'ajax' or None is self.parent_view_class:
             return super(EmbeddedView, self).render_to_response(
                 context,
                 **response_kwargs
@@ -156,7 +196,9 @@ class EmbeddedView(FragmentView):
                 context
             )
 
-            parent_instance = self.parent_view_class()
+            parent_instance = self.parent_view_class(**{
+                'request': self.request
+            })
             return parent_instance.render_to_response(
                 context,
                 **response_kwargs
@@ -167,22 +209,22 @@ class EmbeddedView(FragmentView):
         '''
         This method returns a urlpatterns value to be used in url.py files.
         '''
-        if not cls.urls:
-            raise cls.UrlsUndefinedException(cls)
+        if not cls.url_patterns:
+            raise cls.UrlPatternsUndefinedException(cls)
 
         view_patterns = patterns('')
-        for u in cls.urls:
+        for u in cls.url_patterns:
             if '$' == u[-1]:
                 view_url = ''.join([
                     u[:-1],
-                    '((?P<format>)/)?',
+                    '((?P<format>.+)/)?',
                     u[-1:]
                 ])
 
             else:
                 view_url = ''.join([
                     u,
-                    '((?P<format>)/)?'
+                    '((?P<format>.+)/)?'
                 ])
 
             view_patterns += patterns(
@@ -195,7 +237,7 @@ class EmbeddedView(FragmentView):
 
         return view_patterns
 
-    class UrlsUndefinedException(Exception):
+    class UrlPatternsUndefinedException(Exception):
         def __init__(
             self,
             view_class

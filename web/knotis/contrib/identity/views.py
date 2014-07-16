@@ -31,7 +31,8 @@ from knotis.contrib.layout.views import (
     GridSmallView,
     ActionButton,
     ButtonAction,
-    SplashTile
+    SplashTile,
+    DefaultBaseView
 )
 
 from models import (
@@ -154,8 +155,9 @@ def get_identity_default_profile_banner_color(identity):
 
 
 class EstablishmentsView(EmbeddedView):
-    urls = ['^businesses/$']
+    url_patterns = ['^businesses/$']
     template_name = 'knotis/identity/establishments.html'
+    default_parent_view_class = DefaultBaseView
 
 
 class IdentityView(ContextView):
