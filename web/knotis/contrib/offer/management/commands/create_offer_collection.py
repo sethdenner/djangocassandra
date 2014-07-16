@@ -16,9 +16,10 @@ class Command(BaseCommand):
         if not args:
             raise Exception("Not enough arguements")
 
-        with open(args[0]) as f:
+        input_file = args[0]
+        with open(input_file) as f:
             csv_dict = DictReader(f)
-            page_num = 0
+            page_num = 1
             for row in csv_dict:
                 value = row.get('offer amount')
                 try:
@@ -29,9 +30,9 @@ class Command(BaseCommand):
                         description=row.get('catagory'),
                         restrictions=row.get('restrictions'),
                         is_physical=False,
-                        owner=row.get('business name'),
+                        business_name=row.get('business name'),
                         email=row.get('email'),
-                        stock=-1,
+                        stock=row.get('stock'),
                         currency='usd',
                     )
                     OfferCollection.objects.create(

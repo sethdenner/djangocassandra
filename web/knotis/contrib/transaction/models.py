@@ -12,6 +12,7 @@ from knotis.contrib.quick.models import (
 )
 from knotis.contrib.quick.fields import (
     QuickCharField,
+    QuickIntegerField,
     QuickBooleanField,
     QuickForeignKey
 )
@@ -31,6 +32,8 @@ class TransactionTypes:
     RETURN = 'return'
     REFUND = 'refund'
     TRANSFER = 'transfer'
+    TRANSACTION_TRANSFER = 'transaction_transfer'
+    DARK_PURCHASE = 'dark_purchase'
 
     CHOICES = (
         (PURCHASE, 'Purchase'),
@@ -38,7 +41,9 @@ class TransactionTypes:
         (CANCELATION, 'Cancelation'),
         (RETURN, 'Return'),
         (REFUND, 'Refund'),
-        (TRANSFER, 'Transfer')
+        (TRANSFER, 'Transfer'),
+        (TRANSACTION_TRANSFER, 'Transaction Transfer'),
+        (DARK_PURCHASE, 'Dark Purchase'),
     )
 
 
@@ -495,6 +500,20 @@ class TransactionManager(QuickManager):
             TransactionTypes.REFUND
         )
 
+    def create_transaction_transfer(
+        self,
+        *args,
+        **kwargs
+    ):
+        return super(TransactionManager, self).create(*args,**kwargs)
+
+    def create_dark_purchase(
+        self,
+        *args,
+        **kwargs
+    ):
+        return super(TransactionManager, self).create(*args,**kwargs)
+
     def create(
         self,
         **kwargs
@@ -775,3 +794,10 @@ class TransactionItem(QuickModel):
     inventory = QuickForeignKey(Inventory)
 
     objects = TransactionItemManager()
+
+
+class TransactionCollection(QuickModel):
+    transaction = QuickForeignKey(Transaction)
+    neighborhood = QuickCharField(max_length=255, db_index=True)
+    page = QuickIntegerField()
+    objects = QuickManager()

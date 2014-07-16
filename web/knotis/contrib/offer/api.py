@@ -35,10 +35,6 @@ from knotis.contrib.product.models import (
 )
 from knotis.contrib.endpoint.models import Endpoint, EndpointTypes
 
-from knotis.contrib.auth.api import AuthenticationApi
-import random
-import string
-
 
 class OfferPublishApiView(ApiView):
     api_path = 'offer/publish'
@@ -304,31 +300,15 @@ class OfferCreateApi(object):
         *args,
         **kwargs
     ):
-        owner_name = kwargs.get('owner')
+        business_name = kwargs.get('business_name')
         try:
             owner_identity = Identity.objects.get(
-                name=owner_name,
+                name=business_name,
                 identity_type=IdentityTypes.BUSINESS
             )
         except:
-            if create_business:
-
-                manager_email = kwargs.get('email')
-                if manager_email is None:
-                    raise Exception('No Email provided for creating business')
-
-                user, identity, errors = AuthenticationApi.create_user(**{
-                    'email': manager_email,
-                    'password': ''.join(random.choice(
-                        string.printable
-                    ) for _ in range(16)),
-                    'send_validation': False
-                })
-                identity.save()
-
-            else:
-                logger.exception('Cannot find owner %s' % owner_name)
-                raise
+            logger.exception('Cannot find owner %s' % business_name)
+            raise
 
         currency_name = kwargs.get('currency')
 
@@ -342,7 +322,7 @@ class OfferCreateApi(object):
         value = kwargs.get('value', 0.0)
         title = kwargs.get('title')
         is_physical = kwargs.get('is_physical')
-        stock = kwargs.get('stock')
+        stock = float(kwargs.get('stock', 0.0))
         title = kwargs.get('title')
         description = kwargs.get('description')
         restrictions = kwargs.get('restrictions')
@@ -364,14 +344,8 @@ class OfferCreateApi(object):
             owner_identity,
             product,
             price=value,
-            stock=(stock, 0.0)[stock == -1],
-            unlimited=(stock == -1),
-        )
-
-        split_inventory = Inventory.objects.split(
-            inventory,
-            owner_identity,
-            1
+            stock=stock,
+            unlimited=(stock == 0.0),
         )
 
         offer = Offer.objects.create(
@@ -381,9 +355,9 @@ class OfferCreateApi(object):
             description=description,
             start_time=kwargs.get('start_time'),
             end_time=kwargs.get('end_time'),
-            stock=(stock, 0.0)[stock == -1],
-            unlimited=(stock == -1),
-            inventory=[split_inventory],
+            stock=stock,
+            unlimited=(stock == 0.0),
+            inventory=[inventory],
             discount_factor=price / value,
             offer_type=(OfferTypes.NORMAL, OfferTypes.DARK)[dark_offer]
         )

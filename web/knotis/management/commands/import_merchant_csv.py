@@ -21,8 +21,7 @@ from knotis.contrib.identity.models import (
     IdentityBusiness
 )
 from knotis.contrib.identity.api import (
-    IdentityBusinessApiView,
-    IdentityEstablishmentApiView
+    IdentityApi,
 )
 from knotis.contrib.endpoint.models import (
     Endpoint,
@@ -187,7 +186,7 @@ class Command(BaseCommand):
                     break
 
             if business:
-                establishment = IdentityEstablishmentApiView.create_establishment(
+                establishment = IdentityApi.create_establishment(
                     **{
                         'business_id': business.pk,
                         'name': business_name
@@ -199,7 +198,7 @@ class Command(BaseCommand):
                     (
                         business,
                         establishment
-                    ) = IdentityBusinessApiView.create_business(
+                    ) = IdentityApi.create_business(
                         **{
                             'individual_id': identity.pk,
                             'name': business_name
