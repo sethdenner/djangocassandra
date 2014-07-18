@@ -155,7 +155,8 @@ def get_identity_default_profile_banner_color(identity):
 
 
 class EstablishmentsView(EmbeddedView):
-    url_patterns = ['^businesses/$']
+    view_name = 'establishments'
+    url_patterns = [r'^businesses/$']
     template_name = 'knotis/identity/establishments.html'
     default_parent_view_class = DefaultBaseView
 

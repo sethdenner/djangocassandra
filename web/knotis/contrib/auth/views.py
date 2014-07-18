@@ -29,8 +29,12 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes
 )
 from knotis.contrib.identity.models import IdentityIndividual
+from knotis.contrib.layout.views import DefaultBaseView
 
-from knotis.views import FragmentView
+from knotis.views import (
+    FragmentView,
+    EmbeddedView
+)
 
 from forms import (
     CreateUserForm,
@@ -70,15 +74,28 @@ def send_validation_email(
         })).send()
 
 
-class LoginView(FragmentView):
+class LoginView(EmbeddedView):
+    url_patterns = [r'^login/$']
     template_name = 'knotis/auth/login.html'
     view_name = 'login'
+    default_parent_view_class = DefaultBaseView
+    parent_template_placeholder = 'modal_content'
 
     def process_context(self):
         self.request.session.set_test_cookie()
-        return self.context.update({
+
+        params = {
             'login_form': LoginForm()
-        })
+        }
+
+        if self.context.get('format') != 'ajax':
+            params['post_scripts'] = [
+                'knotis/layout/js/forms.js',
+                'knotis/layout/js/modal.js',
+                'knotis/auth/js/login.js'
+            ]
+
+        return self.context.update(params)
 
 
 class SignUpView(FragmentView):

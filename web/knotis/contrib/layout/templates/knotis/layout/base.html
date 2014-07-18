@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load render_template_fragment %}<!DOCTYPE html>
 <html lang="en">
     {% spaceless %}
     <head>
@@ -30,14 +30,16 @@
     <body>
         {% block first %}{% endblock first %}
         {% block header %}{% endblock header %}
-        {% block content %}{% endblock content %}
+        {% block navigation %}{% endblock navigation %}
+        {% block content %}{% render_fragment establishments %}{% endblock content %}
         {% block footer %}{% endblock footer %}
-        <div class="modals"></div>
         <!-- <div class="subNav"></div> -->
         <!-- <div class="offers"></div> -->
+        {% block modal %}{% endblock modal %}
         {% block last %}{% endblock last %}
         <script src="{{ STATIC_URL }}knotis/js/jquery.min.js"></script>
         <script src="{{ STATIC_URL }}knotis/js/bootstrap.min.js"></script>
+        <script src="{{ STATIC_URL }}knotis/layout/js/layout.js"></script>
         <script src="{{ STATIC_URL }}knotis/layout/js/base.js"></script>
         {% for script in post_scripts %}
         <script src="{{ STATIC_URL }}{{ script }}?8374873485"></script>

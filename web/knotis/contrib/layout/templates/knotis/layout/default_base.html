@@ -1,4 +1,5 @@
 {% extends 'knotis/layout/base.html' %}
+{% load render_template_fragment %}
 
 {% block header %}
 <!-- Primary Navigation -->
@@ -17,49 +18,22 @@
 
                 <div class="col-lg-6 col-xs-4">
                     <div class="logo">
-                        <a href="#"><img src="{{ STATIC_URL }}knots/navigation/img/knotis_logo_nav.png" alt="Knotis"/></a>
+                        <a href="#"><img src="{{ STATIC_URL }}knotis/img/knotis_logo_nav.png" alt="Knotis"/></a>
                     </div>
                 </div>
 
-                <!-- Identity Switcher Signed Out -->
-                <!--
-                    <div class="col-lg-3 col-xs-4">
-                        <button class="btn btn-primary btn-lg logIn" data-toggle="modal" data-target="#login-modal">
-                            Log In
-                        </button>
-                        <button class="btn btn-primary btn-lg signUp" data-toggle="modal" data-target="#signup-modal">
-                            Sign Up
-                        </button>
-                    </div> -->
-                <!-- // End Identity Signed Out Switcher -->
-
-                <!-- Identity Switcher Signed In  -->
-                <div class="col-lg-2 col-xs-4">
-                    <div class="dropdown">
-                        <a data-toggle="dropdown" href="#">
-                            <span>David D. Ortiz</span>
-                            <img class="userImg" src="http://placekitten.com/30/30"/>
-                        </a>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                            <li><a href="#">
-                                    Another Account
-                                    <img src="http://placekitten.com/30/30"/>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Another Account
-                                    <img src="http://placekitten.com/30/30"/>
-                                </a>
-                            </li>
-                            <li class="addLink">
-                                <a href="#">+ Add An Identity</a>
-                            </li>
-                        </ul>
-                    </div>
+                {% if user.is_authenticated %}
+                {% render_fragment identity_switcher %}
+                {% else %}
+                <div class="col-lg-3 col-xs-4">
+                    <a href="/login/" class="btn btn-primary btn-lg logIn modal-link" data-modal-id="auth-modal">
+                        Log In
+                    </a>
+                    <a href="/signup/" class="btn btn-primary btn-lg signUp modal-link" data-modal-id="auth-modal">
+                        Sign Up
+                    </a>
                 </div>
-                <!-- // End Identity Signed In Switcher -->
-
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -67,7 +41,7 @@
 </div>
 {% endblock header %}
 
-{% block content %}
+{% block navigation %}
 <!-- Sidebar -->
 <div class="sideBar">
     <div id="sidebar-wrapper">
@@ -83,13 +57,27 @@
             <li><a href="#"><span class="circle"><i class="icon-redeem"></i></span><span class="sidebar-label">Redeem</span></a></li>
             <li><a href="#"><span class="circle"><i class="icon-banking"></i></span><span class="sidebar-label">Banking</span></a></li>
             <li><a href="#"><span class="circle"><i class="icon-reports"></i></span><span class="sidebar-label">Reports</span></a></li>
-            <li><a href="#"><span class="circle"><i class="icon-settings"></i></span><span class="sidebar-label">Settings<
-                                                                                                                              /span></a></li>
+            <li><a href="#"><span class="circle"><i class="icon-settings"></i></span><span class="sidebar-label">Settings</span></a></li>
         </ul>
     </div>
     <!-- // End SideBar -->
 
     <div class="sidebar-overlay"></div>
 </div>
+{% endblock navigation %}
+
+{% block content %}
+{% if content %}
 {{ content }}
+{% else %}
+{{ block.super }}
+{% endif %}
 {% endblock content %}
+
+{% block modal %}
+{% if modal_content %}
+{{ modal_content }}
+{% else %}
+{{ block.super }}
+{% endif %}
+{% endblock modal %}

@@ -137,6 +137,7 @@ class EmbeddedView(FragmentView):
     url_patterns = None
     default_parent_view_class = None
     template_placeholders = ['content']
+    parent_template_placeholder = None
 
     def __init__(
         self,
@@ -151,13 +152,14 @@ class EmbeddedView(FragmentView):
         else:
             self.parent_view_class = self.default_parent_view_class
 
-        if self.parent_view_class and None is parent_template_placeholder:
-            self.parent_template_placeholder = (
-                self.parent_view_class.template_placeholders[0]
-            )
+        if self.parent_view_class:
+            if None is not parent_template_placeholder:
+                self.parent_template_placeholder = parent_template_placeholder
 
-        else:
-            self.parent_template_placeholder = parent_template_placeholder
+            elif None is self.parent_template_placeholder:
+                self.parent_template_placeholder = (
+                    self.parent_view_class.template_placeholders[0]
+                )
 
         super(EmbeddedView, self).__init__(
             *args,
@@ -193,14 +195,14 @@ class EmbeddedView(FragmentView):
 
             context[self.parent_template_placeholder] = render_to_string(
                 self.get_template_names()[0],
-                context
+                self.context
             )
 
             parent_instance = self.parent_view_class(**{
                 'request': self.request
             })
             return parent_instance.render_to_response(
-                context,
+                self.context,
                 **response_kwargs
             )
 
@@ -250,15 +252,6 @@ class EmbeddedView(FragmentView):
                 self.view_class.__name__,
                 'has no urls defined.'
             ])
-
-
-class ModalView(EmbeddedView):
-    '''
-    The ModalView class provides support for rendering a view that is
-    intended to be displayed in a modal dialog box after fetching it
-    with an AJAX request.
-    '''
-    parent_view = None
 
 
 class EmailView(FragmentView):

@@ -68,3 +68,4 @@ class SplashTile(FragmentView):
 
 class DefaultBaseView(EmbeddedView):
     template_name = 'knotis/layout/default_base.html'
+    template_placeholders = ['content', 'modal_content']
