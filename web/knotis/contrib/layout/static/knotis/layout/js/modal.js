@@ -5,9 +5,9 @@
     $.ajaxmodal = function(options){
         var defaults = {
             href: '#',
-            data: '',
+            data: 'format=ajax',
             modal_id: 'modal-box',
-            modal_cssclass: 'modal hide fade',
+            modal_cssclass: 'modal fade',
             modal_width: '',
             modal_template: '<div id="{{ modal_id }}" class="{{ modal_cssclass }}" tabindex="-1" data-width="{{ modal_width }}"></div>',
             modal_settings: {
@@ -46,6 +46,20 @@
             function(data, status, request) {
                 if (data) {
                     $modal.modal(settings.modal_settings);
+
+                    $('a[data-dismiss]').click(function (event) {
+                        event.preventDefault();
+
+                        var $this = $(this);
+                        $('#' + $this.attr('data-dismiss')).modal('hide');
+                        $.address.autoUpdate(false);
+                        $.address.history(false);
+                        $.address.value($this.attr('href'));
+                        $.address.update();
+                        $.address.autoUpdate(true);
+
+                    });
+
                     settings.on_open(data, status, request);
                 } else {
                     $modal.modal('hide');

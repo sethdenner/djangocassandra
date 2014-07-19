@@ -1,31 +1,37 @@
+;
 // Render Forth
 
-$( ".sideBar" ).hover(
-    function () {
-        var hideOverlay = $('html').click(function () {
-            $('.sidebar-overlay').fadeOut('fast');
-            $('.sidebar-label').fadeOut('fast');
-            $( "#sidebar-wrapper" ).animate({
-                width: "70px",
-            },  100, "linear");
-        });
+(function ($) {
+    "use strict";
 
+    var hideOverlay = function () {
+        $('.sidebar-overlay').fadeOut('fast');
+        $('.sidebar-label').fadeOut('fast');
+        $( "#sidebar-wrapper" ).animate({
+            width: "70px",
+        },  100, "linear");
+    };
+    $('html').click(hideOverlay);
+
+    $( ".sideBar" ).hover(function () {
         $( "#sidebar-wrapper" ).animate({
             width: "250px",
         },  100, "linear");
 
         $('.sidebar-label').fadeIn('fast');
         $('.sidebar-overlay').fadeIn('fast');
-        hideOverlay();
-    },  
-    function (){
+    }, function () {
         //
     });
 
-$('.sidebar-nav li').each(function (){
-    $(this).hover(function (){
-        $(this).find('.circle').css('background', '#303030');
-    }, function (){
-        $(this).find('.circle').css('background', '#595959');
+    $('.sidebar-nav li').each(function (){
+        $(this).hover(function (){
+            $(this).find('.circle').css('background', '#303030');
+        }, function (){
+            $(this).find('.circle').css('background', '#595959');
+        });
+
     });
-});
+
+})(jQuery);
+

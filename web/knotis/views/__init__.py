@@ -1,5 +1,6 @@
 from .views import (
     EmbeddedView,
+    ModalView,
     ContextView,
     FragmentView,
     EmailView,

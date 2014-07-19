@@ -1,3 +1,4 @@
+import re
 import copy
 import datetime
 
@@ -33,7 +34,8 @@ from knotis.contrib.layout.views import DefaultBaseView
 
 from knotis.views import (
     FragmentView,
-    EmbeddedView
+    EmbeddedView,
+    ModalView
 )
 
 from forms import (
@@ -74,18 +76,15 @@ def send_validation_email(
         })).send()
 
 
-class LoginView(EmbeddedView):
+class LoginView(ModalView):
     url_patterns = [r'^login/$']
     template_name = 'knotis/auth/login.html'
     view_name = 'login'
     default_parent_view_class = DefaultBaseView
-    parent_template_placeholder = 'modal_content'
 
     def process_context(self):
-        self.request.session.set_test_cookie()
-
         params = {
-            'login_form': LoginForm()
+            'login_form': LoginForm(),
         }
 
         if self.context.get('format') != 'ajax':
@@ -95,7 +94,9 @@ class LoginView(EmbeddedView):
                 'knotis/auth/js/login.js'
             ]
 
-        return self.context.update(params)
+        self.context.update(params)
+
+        return super(LoginView, self).process_context()
 
 
 class SignUpView(FragmentView):

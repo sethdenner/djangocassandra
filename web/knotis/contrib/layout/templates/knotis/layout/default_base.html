@@ -76,7 +76,12 @@
 
 {% block modal %}
 {% if modal_content %}
-{{ modal_content }}
+<div class="modal-scrollable" style="z-index: 1060;">
+    <div id="auth-modal" class="modal fade in modal-overflow" tabindex="-1" style="display: block;" aria-hidden="false">
+        {{ modal_content }}
+    </div>
+</div>
+<div class="modal-backdrop fade in" style="z-index: 1050;"></div>
 {% else %}
 {{ block.super }}
 {% endif %}

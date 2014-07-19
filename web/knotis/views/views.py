@@ -1,3 +1,4 @@
+import re
 import copy
 import warnings
 
@@ -172,15 +173,17 @@ class EmbeddedView(FragmentView):
         **response_kwargs
     ):
         self.update_context(context)
+        self.response_format = (
+            self.request.GET.get('format', 'html').lower()
+        )
 
-        response_format = self.context.get('format')
-        if response_format == 'ajax' or None is self.parent_view_class:
+        if self.response_format == 'ajax' or None is self.parent_view_class:
             return super(EmbeddedView, self).render_to_response(
                 context,
                 **response_kwargs
             )
 
-        else:
+        elif self.response_format == 'html':
             if (
                 not self.parent_template_placeholder in
                 self.parent_view_class.template_placeholders
@@ -216,23 +219,10 @@ class EmbeddedView(FragmentView):
 
         view_patterns = patterns('')
         for u in cls.url_patterns:
-            if '$' == u[-1]:
-                view_url = ''.join([
-                    u[:-1],
-                    '((?P<format>.+)/)?',
-                    u[-1:]
-                ])
-
-            else:
-                view_url = ''.join([
-                    u,
-                    '((?P<format>.+)/)?'
-                ])
-
             view_patterns += patterns(
                 '',
                 url(
-                    view_url,
+                    u,
                     cls.as_view()
                 )
             )
@@ -252,6 +242,61 @@ class EmbeddedView(FragmentView):
                 self.view_class.__name__,
                 'has no urls defined.'
             ])
+
+
+class ModalView(EmbeddedView):
+    default_close_href = '/'
+    parent_template_placeholder = 'modal_content'
+
+    @staticmethod
+    def url_path_to_dict(path):
+        if not path:
+            path = ''
+
+        pattern = (
+            r'^'
+            r'((?P<schema>.+?)://)?'
+            r'((?P<user>.+?)(:(?P<password>.*?))?@)?'
+            r'(?P<host>.*?)'
+            r'(:(?P<port>\d+?))?'
+            r'(?P<path>/.*?)?'
+            r'(?P<query>[?].*?)?'
+            r'$'
+        )
+
+        regex = re.compile(pattern)
+        m = regex.match(path)
+        d = m.groupdict() if m is not None else None
+
+        return d
+
+    def process_context(self):
+        referer_dict = self.url_path_to_dict(
+            self.request.META.get(
+                'HTTP_REFERER'
+            )
+        )
+
+        host_dict = self.url_path_to_dict(
+            self.request.META.get(
+                'HTTP_HOST'
+            )
+        )
+
+        if (
+            not referer_dict.get('path') or
+            host_dict.get('host') != referer_dict.get('host')
+        ):
+            close_href = self.default_close_href
+
+        else:
+            close_href = referer_dict.get('path')
+
+        self.context.update({
+            'close_href': close_href
+        })
+
+        return self.context
 
 
 class EmailView(FragmentView):

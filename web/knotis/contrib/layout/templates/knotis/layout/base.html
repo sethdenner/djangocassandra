@@ -9,8 +9,11 @@
         <meta name="author" content="">
         <link rel="shortcut icon" href="">
         <title>{% block title %}Knotis - Be in the kno!{% endblock title %}</title>
-        <!-- Bootstrap core CSS -->
+        <!-- Bootstrap Core CSS -->
         <link href="{{ STATIC_URL }}knotis/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Bootstrap Modal CSS -->
+        <link href="{{ STATIC_URL }}bootstrap-modal/css/bootstrap-modal.css" rel="stylesheet">
+        <link href="{{ STATIC_URL }}bootstrap-modal/css/bootstrap-modal-bs3patch.css" rel="stylesheet">
         <!-- Generated SASS -->
         <link href="{{ STATIC_URL }}knotis/layout/css/screen.css" rel="stylesheet">
         {% for style in styles %}
@@ -39,8 +42,12 @@
         {% block last %}{% endblock last %}
         <script src="{{ STATIC_URL }}knotis/js/jquery.min.js"></script>
         <script src="{{ STATIC_URL }}knotis/js/bootstrap.min.js"></script>
-        <script src="{{ STATIC_URL }}knotis/layout/js/layout.js"></script>
+        <script src="{{ STATIC_URL }}bootstrap-modal/js/bootstrap-modalmanager.js"></script>
+        <script src="{{ STATIC_URL }}bootstrap-modal/js/bootstrap-modal.js"></script>
+        <script src="{{ STATIC_URL }}knotis/js/jquery.address.js"></script>
         <script src="{{ STATIC_URL }}knotis/layout/js/base.js"></script>
+        <script src="{{ STATIC_URL }}knotis/layout/js/modal.js"></script>
+        <script src="{{ STATIC_URL }}knotis/navigation/js/navigation.js"></script>
         {% for script in post_scripts %}
         <script src="{{ STATIC_URL }}{{ script }}?8374873485"></script>
         {% endfor %}
