@@ -1,12 +1,5 @@
 ###### IMPORTS ######
 import copy
-from django import http
-from django.conf import settings
-from django.template import Context
-from django.shortcuts import (
-    get_object_or_404,
-)
-
 from knotis.contrib.identity.models import (
     IdentityTypes,
     Identity,
@@ -14,12 +7,10 @@ from knotis.contrib.identity.models import (
 from knotis.contrib.identity.views import (
     get_current_identity,
 )
-
 from knotis.views import (
     ContextView,
     AJAXView,
 )   
-    
 from forms import (
     AdminQueryForm,
 )
@@ -48,42 +39,62 @@ class AdminListEditTags:
     FORM = 'form'
     FIELD = 'field'
 
-class AdminListEditView(AdminDefaultView):
-
-    template_name = 'knotis/admintools/admin_list_editor.html'
-    my_styles = [ 'knotis/admintools/css/admin_tool_controls.css', ]
-    my_post_scripts = [ 'knotis/admintools/js/admin_list_edit_v3.js', ]
-    query_form = AdminQueryForm
-    create_form = None
-
-    def process_context(self):
-        request = self.request
-        local_context = copy.copy(self.context)
-        styles = local_context.get('styles', [])
-        post_scripts = local_context.get('post_scripts', [])
-
-        for style in self.my_styles:
-            if not style in styles:
-                styles.append(style)
-
-        for script in self.my_post_scripts:
-            if not script in post_scripts:
-                post_scripts.append(script)
-
-        local_context.update({
-            'styles': styles,
-            'post_scripts': post_scripts,
-            'fixed_side_nav': True,
-            'query_form': self.query_form,
-            'create_form': self.create_form,
+def default_format(
+    self,
+    item,
+):
+    if self.make_form:
+        field_set = item.get_fields_dict().keys()
+        banned_set = set(self.edit_excludes)
+        edit_set = field_set - banned_set
+        view_set = field_set & banned_set
+        data = {}
+        data['target_pk'] = {
+            'type' AdminListEditTags.FIELD,
+            'ftype': 'hidden',
+            'fname': 'target_pk',
+            'data': item.get(pk),
+        }
+        for key in edit_set:
+            data[key] = {
+                'type': AdminListEditTags.FIELD,
+                'ftype': 'text',
+                'fname': key,
+                'data': str(item.get(key)),
+            }
+        for key in view_set:
+            data[key] = {
+                'type': AdminListEditTags.VALUE,
+                'data': str(item.get(key)),
+            }
+        return ({
+            'type': AdminListEditTags.FORM,
+            'data': data,
+            'action': self. ,
+            'method': 'post',
+            'button': 'Update',
+            'id': item.pk,
         })
-
-        return local_context
+    else:
+        field_values = {}
+        for key, value in item.get_fields_dict():
+            field_values[key] = {
+                'type': AdminListEditTags.VALUE,
+                'data': value,
+            }
+        return ({
+            'type': AdminListEditTags.DICT,
+            'data': field_values,
+        })
+            
 
 class AdminListQueryAJAXView(AdminAJAXView):
     query_form_constructor = AdminQueryForm
     query_target = None
-    format_item = None
+
+    format_item = default_format
+    make_form = False
+    edit_excludes = ['id', 'pk']
 
     def post(
         self,
@@ -125,3 +136,37 @@ class AdminListQueryAJAXView(AdminAJAXView):
             'params': params,
             'results': results,
         })
+
+
+
+class AdminListEditView(AdminDefaultView):
+
+    template_name = 'knotis/admintools/admin_list_editor.html'
+    my_styles = [ 'knotis/admintools/css/admin_tool_controls.css', ]
+    my_post_scripts = [ 'knotis/admintools/js/admin_list_edit.js', ]
+    query_form = AdminQueryForm
+    create_form = None
+
+    def process_context(self):
+        local_context = copy.copy(self.context)
+        styles = local_context.get('styles', [])
+        post_scripts = local_context.get('post_scripts', [])
+
+        for style in self.my_styles:
+            if not style in styles:
+                styles.append(style)
+
+        for script in self.my_post_scripts:
+            if not script in post_scripts:
+                post_scripts.append(script)
+
+        local_context.update({
+            'styles': styles,
+            'post_scripts': post_scripts,
+            'fixed_side_nav': True,
+            'query_form': self.query_form,
+            'create_form': self.create_form,
+        })
+
+        return local_context
+

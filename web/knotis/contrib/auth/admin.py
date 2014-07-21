@@ -101,18 +101,24 @@ def format_user(self, user):
     return ({
         'type': AdminListEditTags.DICT,
         'data': {
-            'username': {
+            'userdata': {
                 'type': AdminListEditTags.FORM,
                 'action': ('/admin/user/interact/update-' + user.pk + '/'),
                 'method': 'post',
                 'button': 'Update',
                 'id': user.pk,
                 'data': {
-                    'value': {
+                    'username': {
                         'type': AdminListEditTags.FIELD,
                         'ftype': 'text',
                         'fname': 'username',
                         'data': user.username,
+                    },
+                    'password': {
+                        'type': AdminListEditTags.FIELD,
+                        'ftype': 'text',
+                        'fname': 'password',
+                        'data': '',
                     },
                 },
             },
@@ -133,9 +139,6 @@ class UserQueryAdminAJAXView(AdminListQueryAJAXView):
 
 
 class UserAdminView(AdminListEditView):
-    query_form = AdminQueryForm(initial={
-        'target_uri' : 'interact/',
-    })
     create_form = AdminCreateUserForm()
 
 
@@ -158,9 +161,15 @@ class UserUpdateAdminAJAXView(AdminAJAXView):
                 user = KnotisUser.objects.get(id=user_id)
                 data = request.POST
                 new_email = data.get('username')
-                user.email = new_email
-                user.username = new_email
-                user.save()
+                new_password = data.get('password')
+                if(user):
+                    if(new_email):
+                        user.email = new_email
+                        user.username = new_email
+                        user.save()
+                    if(new_password):
+                        user.set_password(new_password)
+                        user.save()
                 status = 'good'
             else:
                 status = 'fail'

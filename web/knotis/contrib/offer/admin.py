@@ -16,16 +16,16 @@ from knotis.contrib.admintools.forms import (
 ###### IMPORTS FROM MODULE FILES ######
 
 from models import (
-    Activity,
+    Offer,
 )
 
 
 ###### LIST EDIT APP ######
+class OfferQueryAdminAJAXView(AdminListQueryAJAXView):
+    query_target = Offer.objects.all
+    make_form = True
 
-class ActivityQueryAdminAJAXView(AdminListQueryAJAXView):
-    query_target = Activity.objects.all
-
-class ActivityAdminView(AdminListEditView):
+class OfferAdminView(AdminListEditView):
     query_form = AdminQueryForm(initial={
         'target_uri' : 'query/',
     })
