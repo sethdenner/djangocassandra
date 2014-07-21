@@ -15,7 +15,6 @@
 	    </div>
         <ul class="nav pull-right auth-links">
           {% if user.is_authenticated %}
-          {% render_fragment knotis_points %}
           {% render_fragment identity_switcher %}
           {% else %}
           <li><a href="http://passports.knotis.com">Passports</a></li>
