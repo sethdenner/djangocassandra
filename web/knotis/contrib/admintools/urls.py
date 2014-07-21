@@ -29,6 +29,9 @@ urlpatterns = patterns(
     '',
 ### OFFER VIEWER
     url(
+        r'^admin/offer/update/$', login_required(OfferUpdateAdminAJAXView.as_view())
+    ),
+    url(
         r'^admin/offer/query/$', login_required(OfferQueryAdminAJAXView.as_view())
     ),
     url(

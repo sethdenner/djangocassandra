@@ -7,6 +7,7 @@ from knotis.contrib.admintools.views import (
     AdminListEditTags,
     AdminListEditView,
     AdminListQueryAJAXView,
+    AdminListUpdateAJAXView,
 )
 from knotis.contrib.admintools.forms import (
     AdminQueryForm,
@@ -22,8 +23,11 @@ from models import (
 
 ###### LIST EDIT APP ######
 class OfferQueryAdminAJAXView(AdminListQueryAJAXView):
-    query_target = Offer.objects.all
+    query_target = Offer.objects
     make_form = True
+
+class OfferUpdateAdminAJAXView(AdminListUpdateAJAXView):
+    query_target = Offer.objects
 
 class OfferAdminView(AdminListEditView):
     query_form = AdminQueryForm(initial={

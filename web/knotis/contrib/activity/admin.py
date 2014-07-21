@@ -23,7 +23,7 @@ from models import (
 ###### LIST EDIT APP ######
 
 class ActivityQueryAdminAJAXView(AdminListQueryAJAXView):
-    query_target = Activity.objects.all
+    query_target = Activity.objects
 
 class ActivityAdminView(AdminListEditView):
     query_form = AdminQueryForm(initial={

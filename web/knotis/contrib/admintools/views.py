@@ -70,7 +70,7 @@ def default_format(
         return ({
             'type': AdminListEditTags.FORM,
             'data': data,
-            'action': self. ,
+            'action': self.post_target,
             'method': 'post',
             'button': 'Update',
             'id': item.pk,
@@ -93,6 +93,7 @@ class AdminListQueryAJAXView(AdminAJAXView):
     query_target = None
 
     format_item = default_format
+    post_target = 'admin/update/'
     make_form = False
     edit_excludes = ['id', 'pk']
 
@@ -118,7 +119,7 @@ class AdminListQueryAJAXView(AdminAJAXView):
 
         query = None
         if(self.query_target):
-            query = self.query_target()
+            query = self.query_target.all()
             query = query[range_start - 1 : range_end] # Offset to account for starting form indexing at 1.
 
         results = []
@@ -137,6 +138,44 @@ class AdminListQueryAJAXView(AdminAJAXView):
             'results': results,
         })
 
+
+
+class AdminListUpdateAJAXView(AdminAJAXView):
+    query_target = None
+    edit_excludes = ['id', 'pk']
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        current_identity = get_current_identity(self.request)
+        if not (
+            current_identity and
+            current_identity.identity_type == IdentityTypes.SUPERUSER
+        ):
+            return self.generate_response({
+                'errors': ['Not a super user.',]
+            })
+        item_id = str(request.POST.get('target_pk')
+        if (item_id):
+            item = self.query_target.get(id=item_id)
+            field_set = set(item.get_fields_dict().keys())
+            banned_set = set(self.edit_excludes)
+            edit_set = field_set - banned_set
+            for key in edit_set:
+                datum = request.POST.get(key)
+                if hasattr(item, key) and datum is not None:
+                    setattr(item, key, datum)
+            return self.generate_response({
+                'status': status,
+            })
+        else:
+            return self.genereate_response({
+                'status': 'fail',
+            })
+            
 
 
 class AdminListEditView(AdminDefaultView):

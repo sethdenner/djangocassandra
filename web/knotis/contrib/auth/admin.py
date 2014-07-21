@@ -134,7 +134,7 @@ def format_user(self, user):
     })
 
 class UserQueryAdminAJAXView(AdminListQueryAJAXView):
-    query_target = KnotisUser.objects.all
+    query_target = KnotisUser.objects
     format_item = format_user
 
 
