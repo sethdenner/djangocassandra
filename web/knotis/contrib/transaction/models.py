@@ -138,7 +138,8 @@ class TransactionManager(QuickManager):
                     currencies_thrid_party.append(split_currency)
 
                 provider_stack = Inventory.objects.get_provider_stack(
-                    item.inventory
+                    item.inventory,
+                    create_empty=True,
                 )
 
                 if (

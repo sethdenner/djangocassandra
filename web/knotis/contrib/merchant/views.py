@@ -105,11 +105,16 @@ class RedemptionsGrid(GridSmallView):
                         'TransactionTypes': TransactionTypes
                     }
                 )
-                tiles.append(
-                    redemption_tile.render_template_fragment(
-                        tile_context
+
+                try:
+                    tiles.append(
+                        redemption_tile.render_template_fragment(
+                            tile_context
+                        )
                     )
-                )
+                except:
+                    logger.exception('Failed to render transaction view for %s' % purchase)
+                    continue
 
         self.context.update({
             'tiles': tiles

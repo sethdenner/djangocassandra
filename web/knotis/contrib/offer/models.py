@@ -82,15 +82,14 @@ class OfferManager(QuickManager):
             **kwargs
         )
 
+        offer.save()
         for i in inventory:
             price_discount = i.price * discount_factor
-            new_offer_item = OfferItem.objects.create(
+            OfferItem.objects.create(
                 offer=offer,
                 inventory=i,
                 price_discount=price_discount
             )
-            new_offer_item.save()
-        offer.save()
 
         image = kwargs.get('image')
         if image:
@@ -424,7 +423,7 @@ class Offer(QuickModel):
             (self.end_time is None or self.end_time > now) and
             (self.unlimited or self.purchased < self.stock) and
             not self.completed
-        )
+        ) or self.offer_type == OfferTypes.DARK
 
     def description_formatted_html(self):
         if not self.description:

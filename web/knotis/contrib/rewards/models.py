@@ -33,7 +33,7 @@ class RewardOfferManager(QuickManager):
 class RewardOffer(QuickModel):
 
     @staticmethod
-    @receiver(post_save, sender=Offer)
+    #@receiver(post_save, sender=Offer)
     def offer_handler(**kwargs):
         offer = kwargs['instance']
         offer_items = OfferItem.objects.filter(offer=offer)
