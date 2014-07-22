@@ -49,7 +49,7 @@ class OfferPublishApiView(ApiView):
             logger.exception(error_message)
             errors['no-field'] = error_message
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': errors
             })
@@ -68,7 +68,7 @@ class OfferPublishApiView(ApiView):
             logger.exception(error_message)
             errors['no-field'] = error_message
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': errors
             })
@@ -96,13 +96,13 @@ class OfferPublishApiView(ApiView):
                 'The following OfferPublish objects failed to publish:\n\t',
                 '\n\t'.join(failed_publish_ids)
             ]))
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'failed',
                 'errors': errors
             })
 
         else:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'offer_id': offer.id,
                 'message': 'This offer will be published shortly.'
             })
@@ -127,7 +127,7 @@ class OfferApiView(ApiView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'Offer form did not validate',
                 'errors': errors
             })
@@ -156,7 +156,7 @@ class OfferApiView(ApiView):
             )
 
             errors['no-field'] = 'Could not find inventory specified.'
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': errors
             })
@@ -171,12 +171,12 @@ class OfferApiView(ApiView):
             logger.exception('an error occured while saving offer.')
 
             errors['no-field'] = 'There was an error saving your offer.'
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': errors
             })
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'message': 'offer saved.',
             'data': {
                 'offer_id': offer.id
@@ -205,7 +205,7 @@ class OfferApiView(ApiView):
             logger.exception(error_message)
             errors['no-field'] = error_message
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': errors
             })
@@ -226,7 +226,7 @@ class OfferApiView(ApiView):
                 logger.exception(error_message)
                 errors['no-field'] = error_message
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': e.message,
                     'errors': errors
                 })
@@ -247,12 +247,12 @@ class OfferApiView(ApiView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'An exception occurred during offer update',
                 'errors': errors
             })
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'offer_id': offer.id,
             'message': 'Offer updated sucessfully.'
         })

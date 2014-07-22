@@ -17,11 +17,6 @@ from views import (
 
 urlpatterns = patterns(
     'knotis.contrib.auth.views',
-
-    url(
-        r'^auth/login/$',
-        LoginView.as_view()
-    ),
     url(
         r'^auth/logout/$',
         'logout',
@@ -61,3 +56,5 @@ urlpatterns = patterns(
         ResetPasswordView.as_view()
     )
 )
+
+urlpatterns += LoginView.urls()

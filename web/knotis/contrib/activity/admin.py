@@ -82,7 +82,7 @@ class ActivityAdminAJAXView(AJAXView):
                 activity_display = format_activity(activity)
                 activities.append(activity_display)
         
-        return self.generate_response({
+        return self.generate_ajax_response({
             'start': range_start,
             'end': range_end,
             'step': range_step,

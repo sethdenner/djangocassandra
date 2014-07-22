@@ -11,6 +11,7 @@ from django.utils import log
 logger = log.getLogger(__name__)
 
 from knotis.views import (
+    EmbeddedView,
     ContextView,
     FragmentView
 )
@@ -30,7 +31,8 @@ from knotis.contrib.layout.views import (
     GridSmallView,
     ActionButton,
     ButtonAction,
-    SplashTile
+    SplashTile,
+    DefaultBaseView
 )
 
 from models import (
@@ -150,6 +152,13 @@ def get_identity_default_profile_banner_color(identity):
     ]
 
     return profile_banner_color
+
+
+class EstablishmentsView(EmbeddedView):
+    view_name = 'establishments'
+    url_patterns = [r'^businesses/$']
+    template_name = 'knotis/identity/establishments.html'
+    default_parent_view_class = DefaultBaseView
 
 
 class IdentityView(ContextView):
@@ -604,7 +613,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                 else:
                     updated_endpoints.append(updated_endpoint)
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'status': 'ok',
             'updated_endpoints': map(endpoint_to_dict, updated_endpoints),
             'deleted_endpoints': map(endpoint_to_dict, deleted_endpoints)

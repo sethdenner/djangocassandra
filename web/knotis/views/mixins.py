@@ -9,9 +9,15 @@ from django.conf.urls.defaults import (
     url
 )
 
-from django.template.loader import get_template
+from django.template.loader import (
+    get_template,
+    render_to_string
+)
+
 from django.http import (
     HttpResponse,
+    HttpResponseRedirect,
+    HttpResponsePermanentRedirect,
     HttpResponseServerError
 )
 
@@ -98,10 +104,42 @@ class RenderTemplateFragmentMixin(object):
                     cls.register_template_fragment()
 
 
-class GenerateAJAXResponseMixin(object):
-    @classmethod
-    def generate_response(
-        cls,
+class GenerateRedirectResponseMixin(object):
+    def generate_redirect_response(
+        self,
+        redirect_url,
+        permanent=False
+    ):
+        if permanent:
+            response_class = HttpResponsePermanentRedirect
+
+        else:
+            response_class = HttpResponseRedirect
+
+        return response_class(
+            redirect_url
+        )
+
+
+class GenerateHtmlResponseMixin(object):
+    def generate_html_response(
+        self,
+        context,
+        template_name,
+        **response_kwargs
+    ):
+        return HttpResponse(
+            render_to_string(
+                template_name,
+                context_instance=context
+            ),
+            content_type='text/html'
+        )
+
+
+class GenerateAjaxResponseMixin(object):
+    def generate_ajax_response(
+        self,
         data,
         format='json'
     ):
@@ -113,7 +151,7 @@ class GenerateAJAXResponseMixin(object):
 
         else:
             return HttpResponseServerError(''.join([
-                cls.__name__,
+                self.__class__.__name__,
                 ' does not support response format <',
                 format,
                 '>.'

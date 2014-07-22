@@ -16,7 +16,7 @@ from knotis.contrib.layout.views import GridSmallView
 from knotis.views import (
     ContextView,
     FragmentView,
-    GenerateAJAXResponseMixin
+    GenerateAjaxResponseMixin
 )
 
 from knotis.contrib.identity.models import (
@@ -118,7 +118,7 @@ class RedemptionsGrid(GridSmallView):
         return self.context
 
 
-class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
+class MyRedemptionsView(ContextView, GenerateAjaxResponseMixin):
     template_name = 'knotis/merchant/my_redemptions_view.html'
 
     def process_context(self):
@@ -162,7 +162,7 @@ class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
             current_identity = Identity.objects.get(pk=current_identity_id)
 
         except Exception, e:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {
                     'no-field': e.message
                 },
@@ -178,7 +178,7 @@ class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
         )
 
         if current_identity.pk != transaction.owner.pk:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {
                     'no-field': 'This transaction does not belong to you'
                 },
@@ -194,7 +194,7 @@ class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
             )
 
         except Exception, e:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {
                     'no-field': e.message
                 },
@@ -207,7 +207,7 @@ class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
         else:
             my_redemption = redemptions[1]
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'status': 'OK',
             'redemptionid': my_redemption.pk
         })

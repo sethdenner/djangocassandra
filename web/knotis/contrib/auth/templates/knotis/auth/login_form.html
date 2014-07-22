@@ -1,31 +1,13 @@
-<form action="/api/v1/auth/auth/" id="id-login-form" method="post">
-  <div class="hide error-row row-fluid">
-    <div class="span12">
-      <p id="error-text">&nbsp;</p>
-    </div>
-  </div>
-  <div class="row-fluid">
-    <div class="span6">
-      <div class="control-group">
-        <div class="controls">
-          <label>Email</label>
-          <input name="{{ form.username.html_name }}" maxlength="254" type="text" placeholder="you@example.com" class="textinput textInput" id="email-input" value="{{ form.username.value|default_if_none:'' }}"> 
+<form action="/login/" id="id-login-form" method="post">{% csrf_token %}
+    <div class="singleAuth">
+        <div class="authInputs">
+            <input id="auth_username" name="{{ form.username.html_name }}" value="{{ form.username.value|default_if_none:'' }}" type="email" class="username" placeholder="Your E-mail"/>
+            <input id="auth_password" name="{{ form.password.html_name }}" type="password" class="password" placeholder="Your Password"/>
         </div>
-      </div>
-      <div id="div_id_password" class="control-group">
-        <div class="controls">
-          <label>Password</label>
-          <input type="password" id="password-input" name="{{ form.password.html_name }}" class="textinput textInput" > 
+        <div class="authButtons">
+            <button class="authBtn">Sign Up</button>
+            <input name="login" type="submit" class="authBtn login">Log In</input>
         </div>
-      </div>
-    </div>
-    <div class="auth-info span6">
-      <p>Don't have an account?</p>
-      <p><a id="id-signup-link" href="/auth/signup/">Sign-up for free</a></p>
-    </div>
-  </div>
-  <div class="buttonHolder modal-footer">
-    <input type="submit" name="login" value="Login" class="btn btn-primary btn btn-primary" id="submit-id-signup"> 
-    <aside><a id="id-forgot-link" href="/auth/forgot/">Forgot your password?</a></aside>
-  </div>
+        <p class="tos-text">I agree to the <a href="#">Terms Of Service</a>
+    </div> 
 </form>
