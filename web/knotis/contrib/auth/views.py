@@ -94,6 +94,7 @@ class LoginView(ModalView):
     def process_context(self):
         params = {
             'login_form': LoginForm(
+                request=self.request,
                 data=self.request.POST if self.request.POST else None
             )
         }
@@ -108,7 +109,6 @@ class LoginView(ModalView):
         *args,
         **kwargs
     ):
-        import pdb; pdb.set_trace()
         form = LoginForm(
             request=request,
             data=request.POST

@@ -234,7 +234,6 @@ class EmbeddedView(
         errors={},
         **response_kwargs
     ):
-        import pdb; pdb.set_trace()
         if not context:
             context = self.context
 
@@ -245,22 +244,24 @@ class EmbeddedView(
             self.request.POST.get('format', self.response_format).lower()
         )
 
+        context['format'] = self.response_format
+
         if self.RESPONSE_FORMATS.is_ajax(self.response_format):
             if errors:
                 data['errors'] = errors
 
-            return self.generate_ajax_response(
-                data={
-                    'html': render_to_string(
-                        self.get_template_names()[0],
-                        context_instance=context
-                    )
-                },
-                format=self.response_format
+            flattened_context = {}
+            for d in reversed(context.dicts):
+                flattened_context.update(d)
+
+            data['html'] = render_to_string(
+                self.get_template_names()[0],
+                flattened_context
             )
-            return super(EmbeddedView, self).render_to_response(
-                context,
-                **response_kwargs
+
+            return self.generate_ajax_response(
+                data=data,
+                format=self.response_format
             )
 
         elif self.response_format == self.RESPONSE_FORMATS.HTML:
