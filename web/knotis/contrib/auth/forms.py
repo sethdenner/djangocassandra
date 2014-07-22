@@ -40,8 +40,6 @@ from knotis.contrib.identity.api import (
 )
 
 from knotis.contrib.relation.models import Relation
-from knotis.contrib.inventory.models import Inventory
-from knotis.contrib.product.models import Product, CurrencyCodes
 
 from models import (
     KnotisUser,

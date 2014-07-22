@@ -14,7 +14,8 @@ from knotis.contrib.quick.fields import (
     QuickCharField,
     QuickIntegerField,
     QuickBooleanField,
-    QuickForeignKey
+    QuickForeignKey,
+    QuickUUIDField,
 )
 from knotis.contrib.identity.models import Identity
 from knotis.contrib.inventory.models import Inventory
@@ -798,7 +799,12 @@ class TransactionItem(QuickModel):
 
 
 class TransactionCollection(QuickModel):
-    transaction = QuickForeignKey(Transaction)
+    objects = QuickManager()
     neighborhood = QuickCharField(max_length=255, db_index=True)
+
+
+class TransactionCollectionItem(QuickModel):
+    transaction_collection = QuickForeignKey(TransactionCollection)
+    transaction = QuickForeignKey(Transaction)
     page = QuickIntegerField()
     objects = QuickManager()

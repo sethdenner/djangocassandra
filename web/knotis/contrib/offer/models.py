@@ -874,7 +874,11 @@ class OfferPublish(Publish):
 
 
 class OfferCollection(QuickModel):
-    offer = QuickForeignKey(Offer)
     neighborhood = QuickCharField(max_length=255, db_index=True)
+
+
+class OfferCollectionItem(QuickModel):
+    offer_collection = QuickForeignKey(OfferCollection)
+    offer = QuickForeignKey(Offer)
     page = QuickIntegerField()
     objects = QuickManager()
