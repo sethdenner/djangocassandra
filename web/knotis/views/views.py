@@ -258,6 +258,12 @@ class EmbeddedView(
         if not context:
             context = self.context
 
+        if not isinstance(context, Context):
+            context = RequestContext(
+                self.request,
+                context
+            )
+
         if not hasattr(self, 'response_format'):
             self.response_format = (
                 self.request.GET.get(

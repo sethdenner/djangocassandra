@@ -7,7 +7,6 @@
     <nav role="navigation">
         <div class="container">
             <div class="row">
-
                 <!-- Search Form -->
                 <div class="col-lg-3 col-xs-4">
                     <div class="search">
@@ -15,13 +14,11 @@
                     </div>
                 </div>
                 <!-- // End Search Form -->
-
                 <div class="col-lg-6 col-xs-4">
                     <div class="logo">
                         <a href="#"><img src="{{ STATIC_URL }}knotis/img/knotis_logo_nav.png" alt="Knotis"/></a>
                     </div>
                 </div>
-
                 {% if user.is_authenticated %}
                 {% render_fragment identity_switcher %}
                 {% else %}
