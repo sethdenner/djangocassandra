@@ -54,7 +54,8 @@ class TransactionManager(QuickManager):
         offer,
         buyer,
         currency,
-        transaction_context=None
+        transaction_context=None,
+        dark_purchase=False
     ):
         # TODO: Figure out what transaction context should be...
         # Just a UUID or do we want to smuggle some data in here?
@@ -109,7 +110,7 @@ class TransactionManager(QuickManager):
             for participant in participants:
                 transaction = super(TransactionManager, self).create(
                     owner=participant,
-                    transaction_type=TransactionTypes.PURCHASE,
+                    transaction_type=(TransactionTypes.PURCHASE, TransactionTypes.DARK_PURCHASE)[dark_purchase],
                     offer=offer,
                     transaction_context=transaction_context
                 )
@@ -502,19 +503,41 @@ class TransactionManager(QuickManager):
             TransactionTypes.REFUND
         )
 
-    def create_transaction_transfer(
-        self,
-        *args,
-        **kwargs
-    ):
-        return super(TransactionManager, self).create(*args,**kwargs)
-
     def create_dark_purchase(
         self,
-        *args,
-        **kwargs
+        offer,
+        buyer,
+        currency,
+        transaction_context=None,
     ):
-        return super(TransactionManager, self).create(*args,**kwargs)
+        self.create_purchase(
+            offer,
+            buyer,
+            currency,
+            transaction_context,
+            dark_purchase=True
+        )
+
+    def create_transaction_transfer(
+        self,
+        transaction_collection,
+        new_owner
+    ):
+        transaction_collection_items = TransactionCollectionItem.objects.filter(
+            transaction_collection=transaction_collection
+        )
+        for t in transaction_collection_items:
+            for owner in [new_owner, t.transaction.owner]:
+                super(TransactionManager, self).create(
+                    owner=owner,
+                    transaction_type=TransactionTypes.TRANSACTION_TRANSFER,
+                    offer=t.transaction.offer,
+                    transaction_context=t.transaction.transaction_context
+                )
+            t.transaction.owner = new_owner
+            t.transaction.save()
+
+
 
     def create(
         self,

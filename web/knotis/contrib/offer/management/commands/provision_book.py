@@ -38,13 +38,14 @@ class Command(BaseCommand):
         numb_books = int(args[2])
         output_csv = args[3]
 
-        offer_collection = OfferCollection.objects.get(
+        offer_collection = OfferCollection.objects.filter(
             neighborhood=neighborhood
-        )
+        ).order_by('-pub_date')[0]
 
         offer_collection_items = OfferCollectionItem.objects.filter(
             offer_collection=offer_collection
-        )
+        ).order_by('page')
+
         knotis_passport = Identity.objects.get(name=provision_user)
 
         usd = Product.currency.get(CurrencyCodes.USD)
@@ -53,6 +54,7 @@ class Command(BaseCommand):
             usd,
             create_empty=True
         )
+
         with open(output_csv, 'w') as f:
             csv_file = csv.writer(f)
             for book_numb in xrange(1, numb_books + 1):
