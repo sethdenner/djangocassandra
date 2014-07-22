@@ -78,17 +78,10 @@ urlpatterns = patterns(
         EstablishmentProfileView.as_view()
     ),
     url(
-        r''.join([
-            '^identity/switcher(/(?P<identity_id>',
-            REGEX_UUID,
-            '))?/$'
-        ]),
-        IdentitySwitcherView.as_view()
-    ),
-    url(
         r'^identity/first/$',
         FirstIdentityView.as_view()
     )
 )
 
 urlpatterns += EstablishmentsView.urls()
+urlpatterns += IdentitySwitcherView.urls()

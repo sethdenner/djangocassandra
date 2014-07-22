@@ -16,6 +16,8 @@ from knotis.views import (
     FragmentView
 )
 
+from knotis.utils.regex import REGEX_UUID
+
 from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.maps.forms import GeocompleteForm
 from knotis.contrib.media.models import (
@@ -1111,7 +1113,14 @@ class FirstIdentityView(FragmentView):
         return local_context
 
 
-class IdentitySwitcherView(FragmentView):
+class IdentitySwitcherView(EmbeddedView):
+    url_patterns = [
+        r''.join([
+            '^identity/switcher(/(?P<identity_id>',
+            REGEX_UUID,
+            '))?/$'
+        ])
+    ]
     template_name = 'knotis/identity/switcher.html'
     view_name = 'identity_switcher'
 
@@ -1182,12 +1191,11 @@ class IdentitySwitcherView(FragmentView):
                 **kwargs
             )
 
-        else:
-            return super(IdentitySwitcherView, self).get(
-                request,
-                *args,
-                **kwargs
-            )
+        return super(IdentitySwitcherView, self).get(
+            request,
+            *args,
+            **kwargs
+        )
 
     def process_context(self):
         request = self.request
