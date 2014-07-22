@@ -25,7 +25,8 @@
 
             }
 
-            window.location = '/';
+            $('#auth-modal').modal('hide');
+            $.address.value('/');
 
         }
     });
