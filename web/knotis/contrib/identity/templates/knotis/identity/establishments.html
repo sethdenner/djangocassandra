@@ -1,3 +1,4 @@
+{% load render_template_fragment %}
 <div class="businesses">
     <div class="container-fluid mainContent">
         <div class="row">
@@ -5,43 +6,8 @@
                 <h1>Businesses</h1>
             </div>
         </div>
-
         <div class="row">
-        <!-- Single Offer Grid Item -->
-            <div class="col-lg-4 col-xs-12 offerItem">
-                <a href="#" data-toggle="modal" data-target="#offer-modal">
-                    <div class="busCover">                    
-                        <img src="http://placekitten.com/250/142"/>
-                        <div class="overlay"></div>
-                    </div>
-                </a>
-                <div class="offerContent">
-                    <div class="row">
-                        <div class="col-lg-10 col-xs-10">
-                            <img class="busLogo" src="http://placekitten.com/93/92"/>
-                        </div>
-                        <div class="col-lg-1 col-xs-1">
-                            <div class="dropdown">
-                                <a data-toggle="dropdown" href="#"><img class="iconMore" src="{{ STATIC_URL}}knotis/layout/img/icon_more_offerItem.png"/></a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                    <li><a href="#">Extra Link</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-12 col-xs-12">
-                            <h1>$25 Cat Credit</h1>
-                            <a class="busLink" href="#">placekitten.com</a>
-                            <a class="btnFollow" href="#">Follow</a>
-                            <p class="location"><img src="{{ STATIC_URL }}knotis/layout/img/icon_location.png"/> <span>0.2 Miles</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <!-- // End Grid Item -->
+            {% render_fragment establishments_grid %}
         </div>
-
     </div>
 </div>

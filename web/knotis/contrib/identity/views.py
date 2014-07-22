@@ -268,8 +268,8 @@ class BusinessesView(FragmentView):
         return local_context
 
 
-class BusinessesGrid(GridSmallView):
-    view_name = 'businesses_grid'
+class EstablishmentsGrid(GridSmallView):
+    view_name = 'establishments_grid'
 
     def process_context(self):
         current_identity_id = self.request.session.get('current_identity')
@@ -283,16 +283,16 @@ class BusinessesGrid(GridSmallView):
         count = int(self.context.get('count', '20'))
         start_range = page * count
         end_range = start_range + count
-        businesses = IdentityBusiness.objects.all()
+        establishments = IdentityEstablishment.objects.all()
         if (
             not current_identity or
             not current_identity.identity_type == IdentityTypes.SUPERUSER
         ):
-            businesses = businesses.filter(
+            establishments = establishments.filter(
                 available=True
             )
 
-        businesses = businesses[start_range:end_range]
+        establishments = establishments[start_range:end_range]
 
         tiles = []
 
@@ -301,28 +301,28 @@ class BusinessesGrid(GridSmallView):
                 SplashTile().render_template_fragment(Context())
             )
 
-        if businesses:
-            for business in businesses:
+        if establishments:
+            for establishment in establishments:
 
                 location_items = LocationItem.objects.filter(
-                    related_object_id=business.pk
+                    related_object_id=establishment.pk
                 )
                 if len(location_items) > 0:
                     address = location_items[0].location.address
                 else:
                     address = ''
 
-                business_tile = IdentityTile()
-                business_context = Context({
-                    'identity': business,
+                establishment_tile = IdentityTile()
+                establishment_context = Context({
+                    'identity': establishment,
                     'request': self.request,
                 })
                 if address:
-                    business_context.update({'address': address})
+                    establishment_context.update({'address': address})
 
                 tiles.append(
-                    business_tile.render_template_fragment(
-                        business_context
+                    establishment_tile.render_template_fragment(
+                        establishment_context
                     )
                 )
 
