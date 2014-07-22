@@ -6,7 +6,7 @@
                     {% thumbnail offer_banner_image.image.image '240x161' crop=offer_banner_image.crop as image %}
                     <img src="{{ image.url }}" alt="{{ offer.title }}"/>
                     {% empty %}
-                    <img class="tile-image"  alt="{{ offer.title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
+                    <img class="tile-image"  alt="{{ offer.title }}" src="http://placekitten.com/240/161/" />
                     {% endthumbnail %}
                     <div class="overlay"></div>
                 </div>
@@ -17,7 +17,7 @@
                         {% thumbnail business_badge_image.image.image '80x80' crop=business_badge_image.crop as image %}
                         <img class="busLogo" src="{{ iamge.url }}" alt="{{ offer.title }}"/>
                         {% empty %}
-                        <img class="tile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
+                        <img class="tile-badge" src="http://placekitten.com/80/80/" />
                         {% endthumbnail %}
                     </div>
                     <div class="col-lg-1 col-xs-1">
@@ -36,7 +36,7 @@
                     <div class="col-lg-12 col-xs-12">
                         <h1>{{ offer.title }}</h1>
                         {% if offer.owner %}
-                            <a href="" class="busLink" href="id/{{ offer.owner.id }}/">Profile</a>
+                            <a class="busLink" href="id/{{ offer.owner.id }}/">Profile</a>
                         {% endif %}
 <!--                        <a href="" class="btnFollow" href="">Follow</a>                                          -->
 <!--                        <p class="location"><img src="assets/img/icon_location.png"/> <span>0.2 Miles</span></p> -->
