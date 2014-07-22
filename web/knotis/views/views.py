@@ -157,6 +157,7 @@ class EmbeddedView(
 
     class RESPONSE_FORMATS(object):
         HTML = 'html'
+        REDIRECT = 'redirect'
 
         class AJAX(object):
             JSON = 'json'
@@ -227,22 +228,46 @@ class EmbeddedView(
             **kwargs
         )
 
+    def dispatch(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        self.response_format = (
+            request.GET.get('format', self.RESPONSE_FORMATS.HTML).lower()
+        )
+        self.response_format = (
+            request.POST.get('format', self.response_format).lower()
+        )
+
+        return super(EmbeddedView, self).dispatch(
+            request,
+            *args,
+            **kwargs
+        )
+
     def render_to_response(
         self,
         context=None,
         data={},
         errors={},
+        render_template=True,
         **response_kwargs
     ):
         if not context:
             context = self.context
 
-        self.response_format = (
-            self.request.GET.get('format', self.RESPONSE_FORMATS.HTML).lower()
-        )
-        self.response_format = (
-            self.request.POST.get('format', self.response_format).lower()
-        )
+        if not hasattr(self, 'response_format'):
+            self.response_format = (
+                self.request.GET.get(
+                    'format',
+                    self.RESPONSE_FORMATS.HTML
+                ).lower()
+            )
+            self.response_format = (
+                self.request.POST.get('format', self.response_format).lower()
+            )
 
         context['format'] = self.response_format
 
@@ -250,14 +275,11 @@ class EmbeddedView(
             if errors:
                 data['errors'] = errors
 
-            flattened_context = {}
-            for d in reversed(context.dicts):
-                flattened_context.update(d)
-
-            data['html'] = render_to_string(
-                self.get_template_names()[0],
-                flattened_context
-            )
+            if render_template:
+                data['html'] = render_to_string(
+                    self.get_template_names()[0],
+                    context_instance=context
+                )
 
             return self.generate_ajax_response(
                 data=data,

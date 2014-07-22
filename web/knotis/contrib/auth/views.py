@@ -159,8 +159,19 @@ class LoginView(ModalView):
 
         if self.response_format == self.RESPONSE_FORMATS.HTML:
             self.response_fromat = self.RESPONSE_FORMATS.REDIRECT
+            data = None
 
-        return self.render_to_response()
+        else:
+            data = {
+                'status': 'OK' if not errors else 'ERROR',
+            }
+            if errors:
+                data['errors'] = errors
+
+            else:
+                data['next_url'] = '/'
+
+        return self.render_to_response(data=data, render_template=False)
 
 
 class SignUpView(FragmentView):
