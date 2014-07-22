@@ -176,7 +176,7 @@ class DeleteEndpointView(AJAXView):
         endpoint = Endpoint.objects.get(pk=endpoint_pk)
 
         if endpoint.identity != current_identity:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {
                     'no-field': 'This endpoint does not belong to you.',
                     'status': 'ERROR'
@@ -195,11 +195,11 @@ class DeleteEndpointView(AJAXView):
                 break
 
         if errors:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': errors,
                 'status': 'ERROR'
             })
 
         else:
             endpoint.delete()
-            return self.generate_response({'status': 'OK', 'errors': None})
+            return self.generate_ajax_response({'status': 'OK', 'errors': None})

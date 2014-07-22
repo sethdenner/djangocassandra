@@ -61,7 +61,7 @@ class FollowApiView(ApiView):
             logger.exception('failed to follow')
             errors['no-field'] = e.message
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'errors': errors,
             'relation': {
                 'pk': relation.pk,
@@ -131,7 +131,7 @@ class RelationApiView(ApiView):
                     'description': relation.description
                 }
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'errors': errors,
             'relations': relation_data
         })
@@ -192,7 +192,7 @@ class RelationApiView(ApiView):
         else:
             relation_data = None
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'relation': relation_data,
         })
 
@@ -207,7 +207,7 @@ class RelationApiView(ApiView):
         relation.deleted = True
         relation.save()
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'relation_id': relation_pk,
             'deleted': relation.deleted
         })

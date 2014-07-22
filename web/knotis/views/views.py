@@ -17,6 +17,9 @@ from django.template import (
 from django.template.loader import render_to_string
 
 from django.core.mail import EmailMultiAlternatives
+from django.http import (
+    HttpResponseServerError
+)
 
 
 from rest_framework.views import APIView as RestApiView
@@ -28,7 +31,9 @@ from rest_framework.routers import DefaultRouter
 
 from .mixins import (
     RenderTemplateFragmentMixin,
-    GenerateAJAXResponseMixin,
+    GenerateAjaxResponseMixin,
+    GenerateHtmlResponseMixin,
+    GenerateRedirectResponseMixin,
     GenerateApiUrlsMixin
 )
 
@@ -60,6 +65,7 @@ class ContextView(TemplateView):
         *args,
         **kwargs
     ):
+        self.request = request
         self.context = RequestContext(
             request,
             kwargs
@@ -123,7 +129,12 @@ class FragmentView(
         )
 
 
-class EmbeddedView(FragmentView):
+class EmbeddedView(
+    FragmentView,
+    GenerateAjaxResponseMixin,
+    GenerateHtmlResponseMixin,
+    GenerateRedirectResponseMixin
+):
     '''
     The EmbeddedView class provides support for rendering a view that is
     intended to be rendered as a sub-view of a parent view potentially
@@ -139,6 +150,47 @@ class EmbeddedView(FragmentView):
     default_parent_view_class = None
     template_placeholders = ['content']
     parent_template_placeholder = None
+
+    styles = []
+    pre_scripts = []
+    post_scripts = []
+
+    class RESPONSE_FORMATS(object):
+        HTML = 'html'
+
+        class AJAX(object):
+            JSON = 'json'
+            DEFAULT = JSON
+
+        @classmethod
+        def is_ajax(cls, response_format):
+            response_format = response_format.lower()
+            return (
+                response_format in
+                cls.AJAX.__dict__.values()
+            )
+
+    @staticmethod
+    def url_path_to_dict(path):
+        if not path:
+            path = ''
+
+        pattern = (
+            r'^'
+            r'((?P<schema>.+?)://)?'
+            r'((?P<user>.+?)(:(?P<password>.*?))?@)?'
+            r'(?P<host>.*?)'
+            r'(:(?P<port>\d+?))?'
+            r'(?P<path>/.*?)?'
+            r'(?P<query>[?].*?)?'
+            r'$'
+        )
+
+        regex = re.compile(pattern)
+        m = regex.match(path)
+        d = m.groupdict() if m is not None else None
+
+        return d
 
     def __init__(
         self,
@@ -162,52 +214,122 @@ class EmbeddedView(FragmentView):
                     self.parent_view_class.template_placeholders[0]
                 )
 
+        request = kwargs.get('request')
+        if request:
+            context = RequestContext(request)
+
+        else:
+            context = Context()
+
         super(EmbeddedView, self).__init__(
+            context=context,
             *args,
             **kwargs
         )
 
     def render_to_response(
         self,
-        context,
+        context=None,
+        data={},
+        errors={},
         **response_kwargs
     ):
-        self.update_context(context)
+        import pdb; pdb.set_trace()
+        if not context:
+            context = self.context
+
         self.response_format = (
-            self.request.GET.get('format', 'html').lower()
+            self.request.GET.get('format', self.RESPONSE_FORMATS.HTML).lower()
+        )
+        self.response_format = (
+            self.request.POST.get('format', self.response_format).lower()
         )
 
-        if self.response_format == 'ajax' or None is self.parent_view_class:
+        if self.RESPONSE_FORMATS.is_ajax(self.response_format):
+            if errors:
+                data['errors'] = errors
+
+            return self.generate_ajax_response(
+                data={
+                    'html': render_to_string(
+                        self.get_template_names()[0],
+                        context_instance=context
+                    )
+                },
+                format=self.response_format
+            )
             return super(EmbeddedView, self).render_to_response(
                 context,
                 **response_kwargs
             )
 
-        elif self.response_format == 'html':
-            if (
-                not self.parent_template_placeholder in
-                self.parent_view_class.template_placeholders
-            ):
-                warnings.warn(''.join([
-                    'WARNING!: The parent view class ',
-                    self.parent_view_class.__name__,
-                    ' has does not define "',
-                    self.parent_template_placeholder,
-                    '" as a template placeholder!'
-                ]))
+        elif self.response_format == self.RESPONSE_FORMATS.HTML:
+            post_scripts = context.get('post_scripts', [])
+            context['post_scripts'] = post_scripts + self.post_scripts
+            pre_scripts = context.get('pre_scripts', [])
+            context['pre_scripts'] = pre_scripts + self.pre_scripts
+            styles = context.get('styles', [])
+            context['styles'] = styles + self.styles
 
-            context[self.parent_template_placeholder] = render_to_string(
-                self.get_template_names()[0],
-                self.context
-            )
+            if data:
+                context['data'] = data
 
-            parent_instance = self.parent_view_class(**{
-                'request': self.request
-            })
-            return parent_instance.render_to_response(
-                self.context,
-                **response_kwargs
-            )
+            if errors:
+                context['errors'] = errors
+
+            if None is self.parent_view_class:
+                return self.generate_html_response(
+                    context,
+                    self.get_template_names()[0]
+                )
+
+            else:
+                if (
+                    not self.parent_template_placeholder in
+                    self.parent_view_class.template_placeholders
+                ):
+                    warnings.warn(''.join([
+                        'WARNING!: The parent view class ',
+                        self.parent_view_class.__name__,
+                        ' has does not define "',
+                        self.parent_template_placeholder,
+                        '" as a template placeholder!'
+                    ]))
+
+                context[self.parent_template_placeholder] = render_to_string(
+                    self.get_template_names()[0],
+                    context_instance=context
+                )
+
+                parent_instance = self.parent_view_class(
+                    request=self.request
+                )
+
+                return parent_instance.render_to_response(
+                    context,
+                    **response_kwargs
+                )
+
+        elif self.response_format == self.RESPONSE_FORMATS.REDIRECT:
+            if 'next' not in data.keys:
+                next_url = self.request.GET.get('next', '/')
+                next_url = self.reqeust.POST.get('next', next_url)
+
+            else:
+                next_url = data.get('next', '/')
+
+            next_url_dict = self.url_path_to_dict(next_url)
+            next_url_relative = next_url_dict.get('path', '/')
+
+            return self.generate_redirect_response(next_url_relative)
+
+        else:
+            return HttpResponseServerError(''.join([
+                self.__class__.__name__,
+                ' does not support response format <',
+                self.response_format,
+                '>.'
+            ]))
 
     @classmethod
     def urls(cls):
@@ -248,52 +370,19 @@ class ModalView(EmbeddedView):
     default_close_href = '/'
     parent_template_placeholder = 'modal_content'
 
-    @staticmethod
-    def url_path_to_dict(path):
-        if not path:
-            path = ''
-
-        pattern = (
-            r'^'
-            r'((?P<schema>.+?)://)?'
-            r'((?P<user>.+?)(:(?P<password>.*?))?@)?'
-            r'(?P<host>.*?)'
-            r'(:(?P<port>\d+?))?'
-            r'(?P<path>/.*?)?'
-            r'(?P<query>[?].*?)?'
-            r'$'
-        )
-
-        regex = re.compile(pattern)
-        m = regex.match(path)
-        d = m.groupdict() if m is not None else None
-
-        return d
-
     def process_context(self):
-        referer_dict = self.url_path_to_dict(
-            self.request.META.get(
-                'HTTP_REFERER'
+        close_href_dict  = self.url_path_to_dict(
+            self.request.GET.get(
+                'close',
+                self.default_close_href
             )
         )
-
-        host_dict = self.url_path_to_dict(
-            self.request.META.get(
-                'HTTP_HOST'
-            )
-        )
-
-        if (
-            not referer_dict.get('path') or
-            host_dict.get('host') != referer_dict.get('host')
-        ):
-            close_href = self.default_close_href
-
-        else:
-            close_href = referer_dict.get('path')
 
         self.context.update({
-            'close_href': close_href
+            'close_href': close_href_dict.get(
+                'path',
+                self.default_close_href
+            )
         })
 
         return self.context
@@ -328,14 +417,14 @@ class EmailView(FragmentView):
 
 class AJAXView(
     DjangoView,
-    GenerateAJAXResponseMixin
+    GenerateAjaxResponseMixin
 ):
     pass
 
 
 class AJAXFragmentView(
     FragmentView,
-    GenerateAJAXResponseMixin
+    GenerateAjaxResponseMixin
 ):
     pass
 
@@ -382,9 +471,9 @@ class ApiModelViewSet(ModelViewSet, GenerateApiUrlsMixin):
         return queryset
 
 
-class ApiView(RestApiView, GenerateApiUrlsMixin, GenerateAJAXResponseMixin):
+class ApiView(RestApiView, GenerateApiUrlsMixin, GenerateAjaxResponseMixin):
     '''
-    TODO: Need to remove GenerateAJAXResponseMixin once all the legacy api's
+    TODO: Need to remove GenerateAjaxResponseMixin once all the legacy api's
           are ported to rest_framework
     '''
     pass

@@ -104,13 +104,13 @@ class OfferPurchaseButton(AJAXFragmentView):
             offer = None
 
         if not offer:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {'no-field': 'Could not find offer'},
                 'status': 'ERROR'
             })
 
         if not offer.available():
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {
                     'no-field': 'This offer is no longer available'
                 },
@@ -150,12 +150,12 @@ class OfferPurchaseButton(AJAXFragmentView):
 
         except Exception, e:
             logger.exception(e.message)
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': {'no-field': e.message}
             })
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'status': 'OK'
         })
 
@@ -444,7 +444,7 @@ class OfferEditProductFormView(OfferCreateStepView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'the data entered is invalid',
                 'errors': errors
             })
@@ -457,7 +457,7 @@ class OfferEditProductFormView(OfferCreateStepView):
             except Exception, e:
                 logger.exception('failed to get offer')
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': 'a server error occurred',
                     'errors': {'no-field': e.message}
                 })
@@ -487,7 +487,7 @@ class OfferEditProductFormView(OfferCreateStepView):
             except Exception, e:
                 logger.exception('failed to get or create product')
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': 'a server error occurred',
                     'errors': {'no-field': e.message}
                 })
@@ -509,7 +509,7 @@ class OfferEditProductFormView(OfferCreateStepView):
             except Exception, e:
                 logger.exception('failed to get or create product')
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': 'a server error occurred',
                     'errors': {'no-field': e.message}
                 })
@@ -540,7 +540,7 @@ class OfferEditProductFormView(OfferCreateStepView):
         except Exception, e:
             logger.exception('failed to create inventory')
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'a server error occurred',
                 'errors': {'no-field': e.message}
             })
@@ -555,7 +555,7 @@ class OfferEditProductFormView(OfferCreateStepView):
         except Exception, e:
             logger.exception('failed to split inventory')
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'a server error occurred',
                 'errors': {'no-field': e.message}
             })
@@ -580,7 +580,7 @@ class OfferEditProductFormView(OfferCreateStepView):
             except Exception, e:
                 logger.exception('failed to update offer')
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': 'a server error occurred',
                     'errors': {'no-field': e.message}
                 })
@@ -599,7 +599,7 @@ class OfferEditProductFormView(OfferCreateStepView):
             except Exception, e:
                 logger.exception('failed to create offer')
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': 'a server error occurred',
                     'errors': {'no-field': e.message}
                 })
@@ -612,7 +612,7 @@ class OfferEditProductFormView(OfferCreateStepView):
         except:
             logger.exception('could not advance wizard progress')
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'message': 'OK',
             'offer_id': offer.id,
             'wizard_query': self.build_query_string()
@@ -681,7 +681,7 @@ class OfferEditDetailsFormView(OfferCreateStepView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'the data entered is invalid',
                 'errors': errors
             })
@@ -691,7 +691,7 @@ class OfferEditDetailsFormView(OfferCreateStepView):
 
         except Exception, e:
             logger.exception('error while saving offer detail form')
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': {
                     'no-field': 'A server error occurred. Please try again.'
@@ -704,7 +704,7 @@ class OfferEditDetailsFormView(OfferCreateStepView):
         except:
             logger.exception('could not advance wizard progress')
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'message': 'OK',
             'offer_id': offer.id
         })
@@ -767,7 +767,7 @@ class OfferEditLocationFormView(OfferCreateStepView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'the data entered is invalid',
                 'errors': errors
             })
@@ -786,7 +786,7 @@ class OfferEditLocationFormView(OfferCreateStepView):
 
         except Exception, e:
             logger.exception('error while saving offer detail form')
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': {
                     'no-field': 'A server error occurred. Please try again.'
@@ -799,7 +799,7 @@ class OfferEditLocationFormView(OfferCreateStepView):
         except:
             logger.exception('could not advance wizard progress')
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'message': 'OK',
             'offer_id': self.offer.id
         })
@@ -871,7 +871,7 @@ class OfferEditPublishFormView(OfferCreateStepView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'the data entered is invalid',
                 'errors': errors
             })
@@ -902,7 +902,7 @@ class OfferEditPublishFormView(OfferCreateStepView):
 
         except Exception, e:
             logger.exception('error while saving offer publication form')
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': {
                     'no-field': 'A server error occurred. Please try again.'
@@ -915,7 +915,7 @@ class OfferEditPublishFormView(OfferCreateStepView):
         except:
             logger.exception('could not advance wizard progress')
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'message': 'OK',
             'offer_id': offer.id
         })
@@ -967,7 +967,7 @@ class OfferEditSummaryView(OfferCreateStepView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'the data entered is invalid',
                 'errors': errors
             })
@@ -977,7 +977,7 @@ class OfferEditSummaryView(OfferCreateStepView):
 
         except Exception, e:
             logger.exception('error while publishing offer')
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': {
                     'no-field': 'A server error occurred. Please try again.'
@@ -990,7 +990,7 @@ class OfferEditSummaryView(OfferCreateStepView):
         except:
             logger.exception('could not advance wizard progress')
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'message': 'OK',
             'offer_id': self.offer.id
         })

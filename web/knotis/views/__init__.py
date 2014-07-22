@@ -13,6 +13,6 @@ from .views import (
 
 from .mixins import (
     RenderTemplateFragmentMixin,
-    GenerateAJAXResponseMixin,
+    GenerateAjaxResponseMixin,
     GenerateApiUrlsMixin
 )

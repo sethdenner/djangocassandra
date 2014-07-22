@@ -5,7 +5,7 @@
     $.ajaxmodal = function(options){
         var defaults = {
             href: '#',
-            data: 'format=ajax',
+            data: 'format=json',
             modal_id: 'modal-box',
             modal_cssclass: 'modal fade',
             modal_width: '',
@@ -40,11 +40,12 @@
         if (0 == $modal.length) {
             $modal = build_modal();
         }
-        $modal.load(
+        $.get(
             settings.href,
             settings.data,
             function(data, status, request) {
                 if (data) {
+                    $modal.html(data.html)
                     $modal.modal(settings.modal_settings);
 
                     $('a[data-dismiss]').click(function (event) {
@@ -52,11 +53,12 @@
 
                         var $this = $(this);
                         $('#' + $this.attr('data-dismiss')).modal('hide');
+                        var autoUpdate = $.address.autoUpdate();
                         $.address.autoUpdate(false);
                         $.address.history(false);
                         $.address.value($this.attr('href'));
                         $.address.update();
-                        $.address.autoUpdate(true);
+                        $.address.autoUpdate(autoUpdate);
 
                     });
 

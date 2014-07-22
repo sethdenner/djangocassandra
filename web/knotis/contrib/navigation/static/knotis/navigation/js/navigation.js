@@ -76,9 +76,9 @@
 
             $.ajax({
                 url: value,
-                data: 'format=ajax',
+                data: 'format=json',
                 complete: function (request, status) {
-                    data = $.parseJSON(request.responseText);
+                    var data = $.parseJSON(request.responseText);
                     if (data.title) {
                         $.address.title(data.title);
                         

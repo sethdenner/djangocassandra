@@ -30,7 +30,7 @@ class ProductApi(ApiView):
                 logger.exception(error_message)
                 errors['no-field'] = error_message
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': e.message,
                     'errors': errors
                 })
@@ -39,12 +39,12 @@ class ProductApi(ApiView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'An exception occurred during product creation',
                 'errors': errors
             })
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'product_id': product.id,
             'message': 'Product created sucessfully.'
         })
@@ -78,7 +78,7 @@ class ProductApi(ApiView):
                 logger.exception(error_message)
                 errors['no-field'] = error_message
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': e.message,
                     'errors': errors
                 })
@@ -87,12 +87,12 @@ class ProductApi(ApiView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'An exception occurred during product update',
                 'errors': errors
             })
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'product_id': product.id,
             'message': 'Product updated sucessfully.'
         })
@@ -103,7 +103,7 @@ class ProductApi(ApiView):
         *args,
         **kwargs
     ):
-        return self.generate_response({})
+        return self.generate_ajax_response({})
 
 
 class CurrencyApi(ApiView):

@@ -1,13 +1,14 @@
-<form action="/api/v1/auth/auth/" id="id-login-form" method="post">
-  <div class="singleAuth">
-      <div class="authInputs">
-          <input id="auth_username" name="{{ form.username.html_name }}" value="{{ form.username.value|default_if_none:'' }}" type="email" class="username" placeholder="Your E-mail"/>
-          <input id="auth_password" name="{{ form.password.html_name }}" type="password" class="password" placeholder="Your Password"/>
-      </div>
-      <div class="authButtons">
-          <button class="authBtn">Sign Up</button>
-          <input name="login" type="submit" class="authBtn login">Log In</input>
-      </div>
-      <p class="tos-text">I agree to the <a href="#">Terms Of Service</a>
-  </div> 
+<form action="/login/" id="id-login-form" method="post">{% csrf_token %}
+    <div class="singleAuth">
+        <div class="authInputs">
+            <input id="auth_username" name="{{ form.username.html_name }}" value="{{ form.username.value|default_if_none:'' }}" type="email" class="username" placeholder="Your E-mail"/>
+            <input id="auth_password" name="{{ form.password.html_name }}" type="password" class="password" placeholder="Your Password"/>
+        </div>
+        <div class="authButtons">
+            <button class="authBtn">Sign Up</button>
+            <input name="login" type="submit" class="authBtn login">Log In</input>
+        </div>
+        <p class="tos-text">I agree to the <a href="#">Terms Of Service</a>
+    </div> 
 </form>
+{% if format != 'html' %}<script src="{{ STATIC_URL }}knotis/auth/js/login.js" ></script>{% endif %}

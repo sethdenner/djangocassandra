@@ -29,7 +29,11 @@ from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
 )
-from knotis.contrib.identity.models import IdentityIndividual
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityIndividual
+)
+
 from knotis.contrib.layout.views import DefaultBaseView
 
 from knotis.views import (
@@ -46,6 +50,7 @@ from forms import (
 )
 
 from models import (
+    UserInformation,
     PasswordReset
 )
 
@@ -82,21 +87,80 @@ class LoginView(ModalView):
     view_name = 'login'
     default_parent_view_class = DefaultBaseView
 
+    post_scripts = [
+        'knotis/auth/js/login.js'
+    ]
+
     def process_context(self):
         params = {
-            'login_form': LoginForm(),
+            'login_form': LoginForm(
+                data=self.request.POST if self.request.POST else None
+            )
         }
-
-        if self.context.get('format') != 'ajax':
-            params['post_scripts'] = [
-                'knotis/layout/js/forms.js',
-                'knotis/layout/js/modal.js',
-                'knotis/auth/js/login.js'
-            ]
 
         self.context.update(params)
 
         return super(LoginView, self).process_context()
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        import pdb; pdb.set_trace()
+        form = LoginForm(
+            request=request,
+            data=request.POST
+        )
+
+        errors = {}
+
+        if not form.is_valid():
+            if form.errors:
+                for field, messages in form.errors.iteritems():
+                    errors[field] = [messages for message in messages]
+
+            non_field_errors = form.non_field_errors()
+            if non_field_errors:
+                errors['no-field'] = non_field_errors
+
+            # Message user about failed login attempt.
+            return self.render_to_response(
+                errors=errors
+            )
+
+        user = form.get_user()
+
+        django_login(
+            request,
+            user
+        )
+
+        try:
+            user_information = UserInformation.objects.get(user=user)
+            if not user_information.default_identity_id:
+                identity = IdentityIndividual.objects.get_individual(user)
+                user_information.default_identity_id = identity.id
+                user_information.save()
+
+            else:
+                identity = Identity.objects.get(
+                    pk=user_information.default_identity_id
+                )
+
+        except Exception, e:
+            logout(user)
+            logger.exception(e.message)
+            errors['no-field'] = e.message
+            return self.render_to_response(errors=errors)
+
+        request.session['current_identity'] = identity.id
+
+        if self.response_format == self.RESPONSE_FORMATS.HTML:
+            self.response_fromat = self.RESPONSE_FORMATS.REDIRECT
+
+        return self.render_to_response()
 
 
 class SignUpView(FragmentView):

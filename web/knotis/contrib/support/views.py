@@ -39,7 +39,7 @@ class SupportView(AJAXFragmentView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'the data entered is invalid',
                 'errors': errors
             })
@@ -67,7 +67,7 @@ class SupportView(AJAXFragmentView):
             fail_silently=True,
         )
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'status': 'OK'
         })
 
