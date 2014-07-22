@@ -22,14 +22,6 @@ urlpatterns = patterns(
         'logout',
     ),
     url(
-        r'^auth/signup/success/$',
-        SignUpSuccessView.as_view()
-    ),
-    url(
-        r'^auth/signup/(?P<account_type>[^/]+)*$',
-        SignUpView.as_view()
-    ),
-    url(
         r'^auth/validate/(?P<user_id>[^/]+)/(?P<validation_key>[^/]+)',
         'validate',
     ),
@@ -58,3 +50,5 @@ urlpatterns = patterns(
 )
 
 urlpatterns += LoginView.urls()
+urlpatterns += SignUpView.urls()
+urlpatterns += SignUpSuccessView.urls()
