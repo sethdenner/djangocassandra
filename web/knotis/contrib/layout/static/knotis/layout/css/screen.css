@@ -757,6 +757,10 @@ nav li.addLink a {
   margin: 10px 0 15px;
   color: #919191;
   font-family: "LatoLight", sans-serif;
+  width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* line 1, ../sass/_offerCreate.scss */
