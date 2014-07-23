@@ -122,24 +122,21 @@ class RedemptionsGrid(GridSmallView):
         return self.context
 
 
-class MyRedemptionsView(ContextView, GenerateAjaxResponseMixin):
+class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
+    url_patterns = [
+        r'^redemptions(/(?P<redemption_filter>\w*))?/$',
+    ]
+
+    default_parent_view_class = DefaultBaseView
     template_name = 'knotis/merchant/my_redemptions_view.html'
 
     def process_context(self):
         styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
         ]
 
         pre_scripts = []
 
         post_scripts = [
-            'knotis/layout/js/layout.js',
-            'navigation/js/navigation.js',
             'knotis/merchant/js/redemptions.js'
         ]
 
@@ -148,7 +145,6 @@ class MyRedemptionsView(ContextView, GenerateAjaxResponseMixin):
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
-            'fixed_side_nav': True,
             'top_menu_name': 'my_redemptions'
         })
 
@@ -293,24 +289,23 @@ class MyCustomersGrid(GridSmallView):
         return self.context
 
 
-class MyCustomersView(ContextView):
+
+
+class MyCustomersView(EmbeddedView):
+    url_patterns = [
+        r'^customers/$',
+    ]
+
+    default_parent_view_class = DefaultBaseView
     template_name = 'knotis/merchant/my_customers.html'
 
     def process_context(self):
         styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
         ]
 
         pre_scripts = []
 
         post_scripts = [
-            'knotis/layout/js/layout.js',
-            'navigation/js/navigation.js',
         ]
 
         local_context = copy.copy(self.context)

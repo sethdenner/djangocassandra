@@ -4,18 +4,18 @@
             <a href="" data-toggle="modal" data-target="#offer-modal">
                 <div class="busCover">
                     {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
-                    <img src="{{ image.url }}" alt="{{ offer.title }}"/>
+                    <img src="{{ image.url }}" alt="{{ identity.name }}"/>
                     {% empty %}
-                    <img class="tile-image"  alt="{{ offer.title }}" src="http://placekitten.com/240/135/" />
+                    <img class="tile-image"  alt="{{ identity.name }}" src="http://placekitten.com/240/135/" />
                     {% endthumbnail %}
                     <div class="overlay"></div>
                 </div>
             </a>
-            <div class="offerContent">
+            <div class="identityContent">
                 <div class="row">
                     <div class="col-lg-10 col-xs-10">
                         {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
-                        <img class="busLogo" src="{{ iamge.url }}" alt="{{ offer.title }}"/>
+                        <img class="busLogo" src="{{ image.url }}" alt="{{ identity.name }}"/>
                         {% empty %}
                         <img class="tile-badge" src="http://placekitten.com/80/80/" />
                         {% endthumbnail %}
