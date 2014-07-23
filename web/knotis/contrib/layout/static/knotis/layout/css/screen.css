@@ -69,25 +69,25 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 
 @font-face {
   font-family: 'LatoBold';
-  src: url("../static/knotis/fonts/lato-bold.eot");
+  src: url("/static/knotis/layout/layout/fonts/lato-bold.eot");
   /* IE9 Compat Modes */
-  src: url("../static/knotis/fonts/lato-bold.eot?#iefix") format("embedded-opentype"), url("../static/knotis/fonts/lato-bold.woff") format("woff"), url("../static/knotis/fonts/lato-bold.ttf") format("truetype"), url("../static/knotis/fonts/lato-bold.svg#svgFontName") format("svg");
+  src: url("/static/knotis/layout/fonts/lato-bold.eot?#iefix") format("embedded-opentype"), url("/static/knotis/layout/fonts/lato-bold.woff") format("woff"), url("/static/knotis/layout/fonts/lato-bold.ttf") format("truetype"), url("/static/knotis/layout/fonts/lato-bold.svg#svgFontName") format("svg");
   /* Legacy iOS */
 }
 
 @font-face {
   font-family: 'LatoReg';
-  src: url("../static/knotis/fonts/lato-regular.eot");
+  src: url("/static/knotis/layout/fonts/lato-regular.eot");
   /* IE9 Compat Modes */
-  src: url("../static/knotis/fonts/lato-regular.eot?#iefix") format("embedded-opentype"), url("../static/knotis/fonts/lato-regular.woff") format("woff"), url("../static/knotis/fonts/lato-regular.ttf") format("truetype"), url("../static/knotis/fonts/lato-regular.svg#svgFontName") format("svg");
+  src: url("/static/knotis/layout/fonts/lato-regular.eot?#iefix") format("embedded-opentype"), url("/static/knotis/layout/fonts/lato-regular.woff") format("woff"), url("/static/knotis/layout/fonts/lato-regular.ttf") format("truetype"), url("/static/knotis/layout/fonts/lato-regular.svg#svgFontName") format("svg");
   /* Legacy iOS */
 }
 
 @font-face {
   font-family: 'LatoLight';
-  src: url("../static/knotis/fonts/lato-light.eot");
+  src: url("/static/knotis/layout/fonts/lato-light.eot");
   /* IE9 Compat Modes */
-  src: url("../static/knotis/fonts/lato-light.eot?#iefix") format("embedded-opentype"), url("../static/knotis/fonts/lato-light.woff") format("woff"), url("../static/knotis/fonts/lato-light.ttf") format("truetype"), url("../static/knotis/fonts/lato-light.svg#svgFontName") format("svg");
+  src: url("/static/knotis/layout/fonts/lato-light.eot?#iefix") format("embedded-opentype"), url("/static/knotis/layout/fonts/lato-light.woff") format("woff"), url("/static/knotis/layout/fonts/lato-light.ttf") format("truetype"), url("/static/knotis/layout/fonts/lato-light.svg#svgFontName") format("svg");
   /* Legacy iOS */
 }
 
@@ -902,8 +902,8 @@ nav li.addLink a {
 
 @font-face {
   font-family: 'iconFont';
-  src: url("../static/knotis/fonts/iconFont.eot?rz2jyh");
-  src: url("../static/knotis/fonts/iconFont.eot?#iefixrz2jyh") format("embedded-opentype"), url("../static/knotis/fonts/iconFont.woff?rz2jyh") format("woff"), url("../static/knotis/fonts/iconFont.ttf?rz2jyh") format("truetype"), url("../static/knotis/fonts/iconFont.svg?rz2jyh#icomoon") format("svg");
+  src: url("/static/knotis/layout/fonts/iconFont.eot?rz2jyh");
+  src: url("/static/knotis/layout/fonts/iconFont.eot?#iefixrz2jyh") format("embedded-opentype"), url("/static/knotis/layout/fonts/iconFont.woff?rz2jyh") format("woff"), url("/static/knotis/layout/fonts/iconFont.ttf?rz2jyh") format("truetype"), url("/static/knotis/layout/fonts/iconFont.svg?rz2jyh#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
 }

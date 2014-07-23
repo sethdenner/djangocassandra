@@ -11,7 +11,6 @@ from views import (
     MyEstablishmentsView,
     MyOffersView,
     MyCustomersView,
-    MyFollowersView,
     MyAnalyticsView,
     MyRedemptionsView,
     OfferRedemptionView

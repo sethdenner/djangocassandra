@@ -5,10 +5,13 @@ from django.conf.urls.defaults import (
 
 from views import (
     NewPermissionEmailBody,
-    NewFollowerEmailBody
+    NewFollowerEmailBody,
+    MyFollowingView
 )
 
 
 urlpatterns = patterns(
     'knotis.contrib.relation.views',
 )
+
+urlpatterns += MyFollowingView.urls()
