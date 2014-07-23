@@ -59,6 +59,7 @@ from knotis.contrib.stripe.views import (
 from knotis.views import (
     ContextView,
     EmbeddedView,
+    ModalView,
     AJAXFragmentView,
     FragmentView,
     EmailView
@@ -1070,9 +1071,17 @@ class OfferEditSummaryView(OfferCreateStepView):
         return local_context
 
 
-class OfferDetailView(FragmentView):
+class OfferDetailView(ModalView):
     template_name = 'knotis/offer/detail.html'
     view_name = 'offer_detail'
+    url_patterns = [
+        r''.join([
+            'detail/(?P<offer_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+    ]
+    default_parent_view_class = DefaultBaseView
 
     def process_context(self):
         offer_id = self.context.get('offer_id')
@@ -1098,17 +1107,6 @@ class OfferDetailView(FragmentView):
             logger.exception('failed to get business badge image')
             business_badge_image = None
 
-        try:
-            offer_image = ImageInstance.objects.get(
-                related_object_id=offer.pk,
-                context='offer_banner',
-                primary=True
-            )
-
-        except:
-            logger.exception('failed to get offer image')
-            offer_image = None
-
         request = self.request
         current_identity_id = request.session.get('current_identity')
         try:
@@ -1123,7 +1121,6 @@ class OfferDetailView(FragmentView):
             'IdentityTypes': IdentityTypes,
             'offer': offer,
             'offer_items': offer_items,
-            'offer_image': offer_image,
             'business_badge_image': business_badge_image
         })
 
