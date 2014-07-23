@@ -364,8 +364,9 @@ nav li.addLink a {
   font-size: 13px;
   border-radius: 3px;
 }
-/* line 188, ../sass/_nav.scss */
-#auth-controls a .signUp {
+
+/* line 190, ../sass/_nav.scss */
+#auth-controls a.signUp {
   background: rgba(0, 0, 0, 0.16);
   border: rgba(0, 0, 0, 0.16);
   padding: 10px 25px;
