@@ -651,6 +651,11 @@ nav li.addLink a {
 }
 
 /* line 69, ../sass/_offerItem.scss */
+.busCover {
+  overflow: hidden;
+}
+
+/* line 73, ../sass/_offerItem.scss */
 .busLogo {
   border-radius: 50%;
   border: 3px solid white;
@@ -658,12 +663,12 @@ nav li.addLink a {
   max-height: 92px;
 }
 
-/* line 76, ../sass/_offerItem.scss */
+/* line 80, ../sass/_offerItem.scss */
 .busLink:hover {
   color: #2cc397;
 }
 
-/* line 80, ../sass/_offerItem.scss */
+/* line 84, ../sass/_offerItem.scss */
 .btnFollow {
   color: #989fac;
   text-align: center;
@@ -676,30 +681,30 @@ nav li.addLink a {
   line-height: 0;
   margin-top: 20px;
 }
-/* line 91, ../sass/_offerItem.scss */
+/* line 95, ../sass/_offerItem.scss */
 .btnFollow a:hover {
   color: white;
 }
 
-/* line 95, ../sass/_offerItem.scss */
+/* line 99, ../sass/_offerItem.scss */
 .btnFollow:hover {
   background: #2cc397;
   color: white;
   border: 2px solid #2cc397;
 }
 
-/* line 100, ../sass/_offerItem.scss */
+/* line 104, ../sass/_offerItem.scss */
 .btnFollow:active {
   box-shadow: inset 2px 3px 3px #2b8d68;
 }
 
-/* line 104, ../sass/_offerItem.scss */
+/* line 108, ../sass/_offerItem.scss */
 .location {
   margin-top: 8px;
   text-align: center;
   vertical-align: middle;
 }
-/* line 108, ../sass/_offerItem.scss */
+/* line 112, ../sass/_offerItem.scss */
 .location img {
   max-width: 10px;
   display: inline-block;
