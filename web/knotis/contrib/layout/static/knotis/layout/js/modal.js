@@ -11,11 +11,11 @@
             modal_width: '',
             modal_template: '<div id="{{ modal_id }}" class="{{ modal_cssclass }}" tabindex="-1" data-width="{{ modal_width }}"></div>',
             modal_settings: {
-                backdrop: 'static',
+                backdrop: true,
                 keyboard: true
             },
             loading: false,
-            on_open: function(data, status, request) {}
+            on_open: function(data, status, request) {},
         };
         var settings = $.extend(
             {},
@@ -53,12 +53,6 @@
 
                         var $this = $(this);
                         $('#' + $this.attr('data-dismiss')).modal('hide');
-                        var autoUpdate = $.address.autoUpdate();
-                        $.address.autoUpdate(false);
-                        $.address.history(false);
-                        $.address.value($this.attr('href'));
-                        $.address.update();
-                        $.address.autoUpdate(autoUpdate);
 
                     });
 

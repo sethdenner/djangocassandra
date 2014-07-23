@@ -15,7 +15,7 @@
                 <div class="row">
                     <div class="col-lg-10 col-xs-10">
                         {% thumbnail business_badge_image.image.image '80x80' crop=business_badge_image.crop as image %}
-                        <img class="busLogo" src="{{ iamge.url }}" alt="{{ offer.title }}"/>
+                        <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
                         {% empty %}
                         <img class="tile-badge" src="http://placekitten.com/80/80/" />
                         {% endthumbnail %}
