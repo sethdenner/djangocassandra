@@ -754,7 +754,7 @@ nav li.addLink a {
 /* line 139, ../sass/_offerItem.scss */
 .identityContent h1 {
   font-size: 23px;
-  margin: 10px 20px;
+  margin: 10px 0 15px;
   color: #919191;
   font-family: "LatoLight", sans-serif;
 }
