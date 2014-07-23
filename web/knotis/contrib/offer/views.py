@@ -14,6 +14,8 @@ from django.http import HttpResponseServerError
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
+from knotis.utils.regex import REGEX_UUID
+
 from knotis.utils.view import format_currency
 
 from knotis.contrib.offer.models import (
@@ -56,6 +58,7 @@ from knotis.contrib.stripe.views import (
 
 from knotis.views import (
     ContextView,
+    EmbeddedView,
     AJAXFragmentView,
     FragmentView,
     EmailView
@@ -76,6 +79,7 @@ from knotis.contrib.wizard.views import (
 
 from knotis.contrib.layout.views import (
     ActionButton,
+    DefaultBaseView,
     GridSmallView
 )
 
@@ -214,7 +218,16 @@ class OffersGridView(GridSmallView):
         return local_context
 
 
-class OffersView(ContextView):
+class OffersView(EmbeddedView):
+    url_patterns = [
+        r''.join([
+            '^s/(?P<offer_id>',
+            REGEX_UUID,
+            '/)?$'
+        ])
+    ]
+
+    default_parent_view_class = DefaultBaseView
     template_name = 'knotis/offer/offers_view.html'
 
     def process_context(self):
@@ -244,7 +257,6 @@ class OffersView(ContextView):
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
-            'fixed_side_nav': True,
         })
         return local_context
 
@@ -376,7 +388,6 @@ class OfferTile(FragmentView):
             'offer_banner_image': offer_banner_image,
             'business_badge_image': business_badge_image,
         })
-
         return self.context
 
 

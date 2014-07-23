@@ -9,7 +9,7 @@ from knotis.utils.regex import REGEX_UUID
 
 from views import (
     EstablishmentsView,
-    BusinessesGrid,
+    EstablishmentsGrid,
     EstablishmentProfileView,
     IdentitySwitcherView,
     FirstIdentityView,
@@ -25,7 +25,7 @@ urlpatterns = patterns(
     ),
     url(
         r'^businesses/grid/(?P<page>\d+)/(?P<count>\d+)/$',
-        BusinessesGrid.as_view()
+        EstablishmentsGrid.as_view()
     ),
     url(
         r''.join([
@@ -47,8 +47,14 @@ urlpatterns = patterns(
     url(
         r'^identity/first/$',
         FirstIdentityView.as_view()
+    ),
+    url(
+        r'^merchants/(?P<backend_name>[^/]+)/$',
+        EstablishmentProfileView.as_view()
     )
 )
 
 urlpatterns += EstablishmentsView.urls()
 urlpatterns += EstablishmentProfileView.urls()
+urlpatterns += IdentitySwitcherView.urls()
+urlpatterns += FirstIdentityView.urls()

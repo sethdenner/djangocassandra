@@ -69,32 +69,32 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 
 @font-face {
   font-family: 'LatoBold';
-  src: url("/static/knotis/fonts/fonts/lato-bold.eot");
+  src: url("../static/knotis/fonts/lato-bold.eot");
   /* IE9 Compat Modes */
-  src: url("/static/knotis/fonts/lato-bold.eot?#iefix") format("embedded-opentype"), url("/static/knotis/fonts/lato-bold.woff") format("woff"), url("/static/knotis/fonts/lato-bold.ttf") format("truetype"), url("/static/knotis/fonts/lato-bold.svg#svgFontName") format("svg");
+  src: url("../static/knotis/fonts/lato-bold.eot?#iefix") format("embedded-opentype"), url("../static/knotis/fonts/lato-bold.woff") format("woff"), url("../static/knotis/fonts/lato-bold.ttf") format("truetype"), url("../static/knotis/fonts/lato-bold.svg#svgFontName") format("svg");
   /* Legacy iOS */
 }
 
 @font-face {
   font-family: 'LatoReg';
-  src: url("/static/knotis/fonts/lato-regular.eot");
+  src: url("../static/knotis/fonts/lato-regular.eot");
   /* IE9 Compat Modes */
-  src: url("/static/knotis/fonts/lato-regular.eot?#iefix") format("embedded-opentype"), url("/static/knotis/fonts/lato-regular.woff") format("woff"), url("/static/knotis/fonts/lato-regular.ttf") format("truetype"), url("/static/knotis/fonts/lato-regular.svg#svgFontName") format("svg");
+  src: url("../static/knotis/fonts/lato-regular.eot?#iefix") format("embedded-opentype"), url("../static/knotis/fonts/lato-regular.woff") format("woff"), url("../static/knotis/fonts/lato-regular.ttf") format("truetype"), url("../static/knotis/fonts/lato-regular.svg#svgFontName") format("svg");
   /* Legacy iOS */
 }
 
 @font-face {
   font-family: 'LatoLight';
-  src: url("/static/knotis/fonts/lato-light.eot");
+  src: url("../static/knotis/fonts/lato-light.eot");
   /* IE9 Compat Modes */
-  src: url("/static/knotis/fonts/lato-light.eot?#iefix") format("embedded-opentype"), url("/static/knotis/fonts/lato-light.woff") format("woff"), url("/static/knotis/fonts/lato-light.ttf") format("truetype"), url("/static/knotis/fonts/lato-light.svg#svgFontName") format("svg");
+  src: url("../static/knotis/fonts/lato-light.eot?#iefix") format("embedded-opentype"), url("../static/knotis/fonts/lato-light.woff") format("woff"), url("../static/knotis/fonts/lato-light.ttf") format("truetype"), url("../static/knotis/fonts/lato-light.svg#svgFontName") format("svg");
   /* Legacy iOS */
 }
 
 /* line 1, ../sass/_custom.scss */
 body {
   background: #f5f5f5;
-  color: #ecf8f3;
+  color: #777777;
   font-family: 'LatoReg', sans-serif;
 }
 
@@ -117,6 +117,39 @@ a:hover {
   margin-left: 72px;
   max-width: 100%;
   padding: 0 26px;
+}
+
+/* line 25, ../sass/_custom.scss */
+.modal-dialog {
+  width: 100%;
+  margin: 0;
+}
+
+/* line 30, ../sass/_custom.scss */
+.modal-body {
+  padding: 20px 0;
+}
+
+/* line 34, ../sass/_custom.scss */
+.modal-content {
+  border-radius: 3px;
+}
+
+/* line 38, ../sass/_custom.scss */
+#offer-modal.modal {
+  left: 0;
+  bottom: auto;
+  right: 0;
+  width: 50%;
+  margin-left: 0;
+  margin: 0 auto;
+  background-color: transparent;
+  border: 0;
+  border: 0;
+  border-radius: 3px;
+  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0);
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0);
+  background-clip: padding-box;
 }
 
 /* General Navigation Styles */
@@ -183,7 +216,7 @@ nav .search img {
 }
 /* line 53, ../sass/_nav.scss */
 nav .search ::-webkit-input-placeholder {
-  color: #ecf8f3;
+  color: #777777;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 11px;
@@ -191,7 +224,7 @@ nav .search ::-webkit-input-placeholder {
 /* line 59, ../sass/_nav.scss */
 nav .search :-moz-placeholder {
   /* Firefox 18- */
-  color: #ecf8f3;
+  color: #777777;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 11px;
@@ -199,14 +232,14 @@ nav .search :-moz-placeholder {
 /* line 66, ../sass/_nav.scss */
 nav .search ::-moz-placeholder {
   /* Firefox 19+ */
-  color: #ecf8f3;
+  color: #777777;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 11px;
 }
 /* line 73, ../sass/_nav.scss */
 nav .search :-ms-input-placeholder {
-  color: #ecf8f3;
+  color: #777777;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 11px;
@@ -395,7 +428,7 @@ nav li.addLink a {
   padding: 10px;
 }
 /* line 34, ../sass/_sideBar.scss */
-.sidebar-nav li a i {
+.sidebar-nav li a span {
   font-size: 20px;
   color: white;
 }
@@ -417,8 +450,8 @@ nav li.addLink a {
 .sidebar-label {
   display: none;
   position: absolute;
-  margin-top: 20px;
-  left: 70px;
+  left: 75px;
+  top: 29px;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 12px;
@@ -674,17 +707,210 @@ nav li.addLink a {
   margin-right: 5px;
 }
 
+/* line 1, ../sass/_offerCreate.scss */
+#offer-create {
+  text-align: center;
+}
+/* line 3, ../sass/_offerCreate.scss */
+#offer-create h1 {
+  font-size: 34px;
+  text-align: center;
+  color: black;
+  margin: 20px 0;
+}
+/* line 10, ../sass/_offerCreate.scss */
+#offer-create input, #offer-create textarea {
+  border: 1px solid rgba(192, 192, 192, 0.5);
+  background: #fdfdfd;
+  padding: 10px 20px;
+  border-radius: 2px;
+  color: #807F7F;
+  font-size: 15px;
+  outline: 0;
+}
+/* line 20, ../sass/_offerCreate.scss */
+#offer-create .navBtns a {
+  background: #2cc397;
+  color: white;
+  margin: 30px auto;
+  width: 230px;
+  padding: 13px 0;
+}
+/* line 28, ../sass/_offerCreate.scss */
+#offer-create a:hover {
+  color: white;
+}
+/* line 32, ../sass/_offerCreate.scss */
+#offer-create a.back {
+  background: #FFFFFF;
+  color: #B8B8B8;
+  border: 1px solid #B8B8B8;
+}
+/* line 38, ../sass/_offerCreate.scss */
+#offer-create label {
+  color: #777777;
+}
+
+/* line 43, ../sass/_offerCreate.scss */
+.wrapper {
+  width: 70%;
+  margin: 0 auto;
+}
+
+/* line 49, ../sass/_offerCreate.scss */
+.stepOne input {
+  width: 120px;
+  margin: 13px;
+}
+/* line 53, ../sass/_offerCreate.scss */
+.stepOne .block {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  left: 85px;
+  font-size: 14px;
+  color: #727171;
+  top: -5px;
+}
+/* line 63, ../sass/_offerCreate.scss */
+.stepOne input.radioBtn {
+  display: inline-block;
+  position: absolute;
+  top: 3px;
+  width: 35px;
+  height: 35px;
+  left: -15px;
+}
+
+/* line 74, ../sass/_offerCreate.scss */
+.stepTwo .block {
+  font-size: 15px;
+  color: #727171;
+  width: 30px;
+}
+/* line 79, ../sass/_offerCreate.scss */
+.stepTwo div:nth-child(3) {
+  padding-right: 135px;
+}
+
+/* line 85, ../sass/_offerCreate.scss */
+.stepThree textarea {
+  width: 50%;
+  height: 160px;
+}
+
+/* line 92, ../sass/_offerCreate.scss */
+.stepFour label {
+  font-size: 15px;
+}
+/* line 95, ../sass/_offerCreate.scss */
+.stepFour input {
+  margin: 0 15px;
+}
+/* line 98, ../sass/_offerCreate.scss */
+.stepFour textarea {
+  width: 50%;
+  height: 160px;
+  margin: 20px 0;
+}
+
+/* line 106, ../sass/_offerCreate.scss */
+.stepFive .imgGallery li {
+  background: white;
+  width: 90px;
+  height: 90px;
+  border: 1px solid #c0c0c0;
+  display: inline-flex;
+  margin: -2px;
+  overflow: hidden;
+  transition: all 0.1s ease;
+}
+/* line 115, ../sass/_offerCreate.scss */
+.stepFive .imgGallery li img {
+  width: 100%;
+}
+/* line 119, ../sass/_offerCreate.scss */
+.stepFive .imgGallery li:hover {
+  border: 3px solid white;
+}
+/* line 122, ../sass/_offerCreate.scss */
+.stepFive button, .stepFive .dropdown {
+  background: #FFFFFF;
+  color: #777777;
+  margin: 0 10px;
+  width: 170px;
+  padding: 13px 0;
+  border: 1px solid #E9E9E9;
+  border-radius: 3px;
+  outline: 0;
+  display: inline-block;
+}
+/* line 133, ../sass/_offerCreate.scss */
+.stepFive .mainImg {
+  width: 70%;
+  border: 1px solid #c0c0c0;
+  height: 230px;
+  margin: 20px auto;
+  overflow: hidden;
+}
+/* line 139, ../sass/_offerCreate.scss */
+.stepFive .mainImg img {
+  width: 100%;
+}
+/* line 143, ../sass/_offerCreate.scss */
+.stepFive .photoOptions {
+  margin: 0 auto;
+}
+/* line 147, ../sass/_offerCreate.scss */
+.stepFive .dropdown a {
+  padding: 13px 30px;
+}
+/* line 150, ../sass/_offerCreate.scss */
+.stepFive .dropdown a:hover {
+  color: #777777;
+}
+
+/* line 157, ../sass/_offerCreate.scss */
+.stepSix .wrapper {
+  width: 60%;
+  margin: 30px auto;
+}
+/* line 161, ../sass/_offerCreate.scss */
+.stepSix input.block {
+  width: 150px;
+  text-align: center;
+}
+/* line 165, ../sass/_offerCreate.scss */
+.stepSix .radioBtn {
+  width: 90px;
+  position: absolute;
+}
+/* line 169, ../sass/_offerCreate.scss */
+.stepSix .wrapper div {
+  margin: 16px 0;
+  text-align: left;
+}
+/* line 173, ../sass/_offerCreate.scss */
+.stepSix label {
+  margin-left: 30px;
+}
+/* line 176, ../sass/_offerCreate.scss */
+.stepSix .marginMid {
+  margin: 0 20px;
+}
+
 @font-face {
-  font-family: 'icomoon';
-  src: url("/static/knotis/fonts/icomoon.eot?iv5qrk");
-  src: url("/static/knotis/fonts/icomoon.eot?#iefixiv5qrk") format("embedded-opentype"), url("/static/knotis/fonts/icomoon.woff?iv5qrk") format("woff"), url("/static/knotis/fonts/icomoon.ttf?iv5qrk") format("truetype"), url("/static/knotis/fonts/icomoon.svg?iv5qrk#icomoon") format("svg");
+  font-family: 'iconFont';
+  src: url("../static/knotis/fonts/iconFont.eot?rz2jyh");
+  src: url("../static/knotis/fonts/iconFont.eot?#iefixrz2jyh") format("embedded-opentype"), url("../static/knotis/fonts/iconFont.woff?rz2jyh") format("woff"), url("../static/knotis/fonts/iconFont.ttf?rz2jyh") format("truetype"), url("../static/knotis/fonts/iconFont.svg?rz2jyh#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
 }
 
 /* line 12, ../sass/_iconFont.scss */
 [class^="icon-"], [class*=" icon-"] {
-  font-family: 'icomoon';
+  font-family: 'iconFont';
   speak: none;
   font-style: normal;
   font-weight: normal;
@@ -697,83 +923,138 @@ nav li.addLink a {
 }
 
 /* line 26, ../sass/_iconFont.scss */
+.icon-search:before {
+  content: "\e601";
+}
+
+/* line 29, ../sass/_iconFont.scss */
+.icon-arrow-small-left:before {
+  content: "\e604";
+}
+
+/* line 32, ../sass/_iconFont.scss */
+.icon-arrow-small-down:before {
+  content: "\e605";
+}
+
+/* line 35, ../sass/_iconFont.scss */
+.icon-arrow-small-up:before {
+  content: "\e606";
+}
+
+/* line 38, ../sass/_iconFont.scss */
+.icon-arrow-small-right:before {
+  content: "\e607";
+}
+
+/* line 41, ../sass/_iconFont.scss */
+.icon-knotis:before {
+  content: "\e609";
+}
+
+/* line 44, ../sass/_iconFont.scss */
+.icon-receipt:before {
+  content: "\e60a";
+}
+
+/* line 47, ../sass/_iconFont.scss */
+.icon-arrow-left:before {
+  content: "\e60d";
+}
+
+/* line 50, ../sass/_iconFont.scss */
+.icon-arrow-down:before {
+  content: "\e60f";
+}
+
+/* line 53, ../sass/_iconFont.scss */
+.icon-arrow-up:before {
+  content: "\e610";
+}
+
+/* line 56, ../sass/_iconFont.scss */
+.icon-arrow-right:before {
+  content: "\e611";
+}
+
+/* line 59, ../sass/_iconFont.scss */
 .icon-redeem:before {
   content: "\e600";
 }
 
-/* line 29, ../sass/_iconFont.scss */
+/* line 62, ../sass/_iconFont.scss */
 .icon-profile-guy:before {
-  content: "\e601";
-}
-
-/* line 32, ../sass/_iconFont.scss */
-.icon-profile-girl:before {
   content: "\e602";
 }
 
-/* line 35, ../sass/_iconFont.scss */
-.icon-settings:before {
+/* line 65, ../sass/_iconFont.scss */
+.icon-profile-woman:before {
   content: "\e603";
 }
 
-/* line 38, ../sass/_iconFont.scss */
-.icon-reports:before {
-  content: "\e604";
-}
-
-/* line 41, ../sass/_iconFont.scss */
-.icon-Purchases:before {
-  content: "\e605";
-}
-
-/* line 44, ../sass/_iconFont.scss */
-.icon-promotions:before {
-  content: "\e606";
-}
-
-/* line 47, ../sass/_iconFont.scss */
-.icon-offers:before {
-  content: "\e607";
-}
-
-/* line 50, ../sass/_iconFont.scss */
-.icon-message:before {
+/* line 68, ../sass/_iconFont.scss */
+.icon-settings:before {
   content: "\e608";
 }
 
-/* line 53, ../sass/_iconFont.scss */
-.icon-following:before {
-  content: "\e609";
-}
-
-/* line 56, ../sass/_iconFont.scss */
-.icon-feed:before {
-  content: "\e60a";
-}
-
-/* line 59, ../sass/_iconFont.scss */
-.icon-dashboard:before {
+/* line 71, ../sass/_iconFont.scss */
+.icon-reports:before {
   content: "\e60b";
 }
 
-/* line 62, ../sass/_iconFont.scss */
-.icon-customers:before {
+/* line 74, ../sass/_iconFont.scss */
+.icon-cart:before {
   content: "\e60c";
 }
 
-/* line 65, ../sass/_iconFont.scss */
-.icon-business:before {
-  content: "\e60d";
-}
-
-/* line 68, ../sass/_iconFont.scss */
-.icon-business-profile:before {
+/* line 77, ../sass/_iconFont.scss */
+.icon-promotions:before {
   content: "\e60e";
 }
 
-/* line 71, ../sass/_iconFont.scss */
+/* line 80, ../sass/_iconFont.scss */
+.icon-offers:before {
+  content: "\e612";
+}
+
+/* line 83, ../sass/_iconFont.scss */
+.icon-message:before {
+  content: "\e613";
+}
+
+/* line 86, ../sass/_iconFont.scss */
+.icon-following:before {
+  content: "\e614";
+}
+
+/* line 89, ../sass/_iconFont.scss */
+.icon-dashboard:before {
+  content: "\e616";
+}
+
+/* line 92, ../sass/_iconFont.scss */
+.icon-customers:before {
+  content: "\e617";
+}
+
+/* line 95, ../sass/_iconFont.scss */
+.icon-business:before {
+  content: "\e618";
+}
+
+/* line 98, ../sass/_iconFont.scss */
+.icon-feed:before {
+  content: "\e619";
+}
+
+/* line 101, ../sass/_iconFont.scss */
 .icon-banking:before {
-  content: "\e60f";
+  content: "\e61a";
+}
+
+/* line 104, ../sass/_iconFont.scss */
+.icon-help:before {
+  content: "\e615";
 }
 
 @media all and (max-width: 650px) {
@@ -881,13 +1162,6 @@ nav li.addLink a {
   padding: 0;
 }
 /* line 82, ../sass/_modals.scss */
-#offer-modal .modal-dialog {
-  width: 70%;
-  margin: 30px auto;
-  overflow: hidden;
-  border-radius: 4px;
-}
-/* line 88, ../sass/_modals.scss */
 #offer-modal .modal-content {
   background: url("http://placekitten.com/1000/1000") no-repeat center top;
   background-size: cover;
@@ -895,26 +1169,26 @@ nav li.addLink a {
   border: 0;
 }
 
-/* line 97, ../sass/_modals.scss */
+/* line 90, ../sass/_modals.scss */
 .offerDetails {
   background: white;
   padding: 30px 50px 26px;
 }
-/* line 100, ../sass/_modals.scss */
+/* line 93, ../sass/_modals.scss */
 .offerDetails h1 {
   color: #3A3A3A;
   font-size: 35px;
 }
-/* line 104, ../sass/_modals.scss */
+/* line 97, ../sass/_modals.scss */
 .offerDetails p {
   color: black;
   font-family: LatoLight, sans-serif;
 }
-/* line 108, ../sass/_modals.scss */
+/* line 101, ../sass/_modals.scss */
 .offerDetails ul {
   margin-top: 30px;
 }
-/* line 111, ../sass/_modals.scss */
+/* line 104, ../sass/_modals.scss */
 .offerDetails ul li {
   color: #666666;
   font-size: 12px;
@@ -924,12 +1198,12 @@ nav li.addLink a {
   letter-spacing: 2px;
   border-bottom: 1px solid #E4E4E4;
 }
-/* line 120, ../sass/_modals.scss */
+/* line 113, ../sass/_modals.scss */
 .offerDetails span {
   font-family: LatoBold, sans-serif;
   padding-right: 3px;
 }
-/* line 124, ../sass/_modals.scss */
+/* line 117, ../sass/_modals.scss */
 .offerDetails button {
   background: #2cc397;
   border: 0;
@@ -939,21 +1213,21 @@ nav li.addLink a {
   margin-top: 15px;
 }
 
-/* line 135, ../sass/_modals.scss */
+/* line 128, ../sass/_modals.scss */
 .offerHero img {
   border-radius: 50%;
   border: 3px solid white;
   display: inline-block;
   margin: 15px 5px;
 }
-/* line 141, ../sass/_modals.scss */
+/* line 134, ../sass/_modals.scss */
 .offerHero h1 {
   color: white;
   display: inline-block;
   position: absolute;
   top: 25px;
 }
-/* line 147, ../sass/_modals.scss */
+/* line 140, ../sass/_modals.scss */
 .offerHero h2 {
   display: inline-block;
   color: white;
@@ -962,6 +1236,119 @@ nav li.addLink a {
   position: absolute;
   top: 100px;
   left: 155px;
+}
+
+/* line 1, ../sass/_onBoarding.scss */
+#onboarding {
+  text-align: center;
+  color: white;
+}
+/* line 4, ../sass/_onBoarding.scss */
+#onboarding h1 {
+  color: white;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-bottom: 5px solid white;
+  padding: 14px 0;
+  font-family: "Lato", sans-serif;
+  width: 60%;
+  margin: 0 auto;
+}
+/* line 15, ../sass/_onBoarding.scss */
+#onboarding button {
+  width: 50%;
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 3px;
+  padding: 15px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  outline: 0;
+  color: white;
+}
+/* line 27, ../sass/_onBoarding.scss */
+#onboarding button:hover {
+  color: white;
+}
+/* line 30, ../sass/_onBoarding.scss */
+#onboarding .modal-body {
+  overflow: hidden;
+}
+/* line 33, ../sass/_onBoarding.scss */
+#onboarding .modal-content {
+  background: #2cc397;
+  border-radius: 3px;
+  padding: 0 20px 30px;
+}
+/* line 39, ../sass/_onBoarding.scss */
+#onboarding section:nth-child(1) input, #onboarding section:nth-child(2) input, #onboarding section:nth-child(3) input {
+  border: 0;
+  outline: 0;
+  background: white;
+  color: #2cc397;
+  padding: 20px 10px;
+  border-radius: 3px;
+  margin: 0 0 35px;
+  text-align: center;
+  width: 50%;
+}
+/* line 50, ../sass/_onBoarding.scss */
+#onboarding section:nth-child(1) p, #onboarding section:nth-child(2) p, #onboarding section:nth-child(3) p {
+  margin: 35px 25px;
+  font-size: 30px;
+  font-family: "LatoLight", sans-serif;
+}
+/* line 55, ../sass/_onBoarding.scss */
+#onboarding section:nth-child(1) button, #onboarding section:nth-child(2) button, #onboarding section:nth-child(3) button {
+  width: 50%;
+  background: #25AD86;
+  padding: 20px;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+  margin: 20px 0 0;
+  border: 0;
+}
+/* line 68, ../sass/_onBoarding.scss */
+#onboarding section:nth-child(2) input {
+  padding: 12px 10px;
+  margin: 23px 0 0;
+}
+/* line 72, ../sass/_onBoarding.scss */
+#onboarding section:nth-child(2) .clearBtn {
+  background: transparent;
+  border: 2px solid #25AD86;
+}
+/* line 76, ../sass/_onBoarding.scss */
+#onboarding section:nth-child(2) button {
+  position: relative;
+  top: 20px;
+}
+/* line 80, ../sass/_onBoarding.scss */
+#onboarding section:nth-child(2) h2 {
+  font-size: 23px;
+  font-family: "LatoLight", sans-serif;
+  margin-top: 20px;
+}
+/* line 87, ../sass/_onBoarding.scss */
+#onboarding section:nth-child(3) button {
+  width: 50%;
+  background: #25AD86;
+  padding: 20px;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+  margin: 20px 0 0;
+  border: 0;
+}
+/* line 98, ../sass/_onBoarding.scss */
+#onboarding section:nth-child(3) .clearBtn {
+  background: transparent;
+  border: 2px solid #25AD86;
 }
 
 /* line 1, ../sass/_profile.scss */
@@ -1075,4 +1462,44 @@ section .profileInfo a {
 /* line 97, ../sass/_profile.scss */
 section .profileInfo:nth-child(5) {
   background: #c0c0c0;
+}
+
+/* line 2, ../sass/_settings.scss */
+.settings h1 {
+  position: relative;
+  top: 115px;
+  left: 100px;
+}
+/* line 7, ../sass/_settings.scss */
+.settings a {
+  position: absolute;
+  margin: 0 auto;
+  display: inline-block;
+  background: white;
+  padding: 20px 25px;
+  color: #8D8D8D;
+  border-radius: 3px;
+  width: 87%;
+  left: 19px;
+  bottom: 17px;
+  border: 2px solid #8D8D8D;
+  transition: all 0.2s ease;
+}
+/* line 21, ../sass/_settings.scss */
+.settings a:hover {
+  background: #2cc397;
+  color: white;
+  border: 2px solid #2cc397;
+}
+/* line 26, ../sass/_settings.scss */
+.settings .gridItem {
+  background: white;
+  height: 330px;
+  position: relative;
+  top: 104px;
+  text-align: center;
+  display: inline-block;
+  left: 95px;
+  box-shadow: inset 1px 1px 1px 3px #f5f5f5;
+  width: 270px;
 }

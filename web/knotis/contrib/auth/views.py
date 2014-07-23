@@ -1,4 +1,3 @@
-import re
 import copy
 import datetime
 
@@ -18,7 +17,6 @@ from django.http import (
     HttpResponseNotFound,
     HttpResponseRedirect
 )
-from django.template import Context
 from knotis.utils.email import (
     generate_email,
     generate_validation_key
@@ -38,7 +36,6 @@ from knotis.contrib.layout.views import DefaultBaseView
 
 from knotis.views import (
     FragmentView,
-    EmbeddedView,
     ModalView
 )
 
@@ -54,31 +51,9 @@ from models import (
     PasswordReset
 )
 
-from emails import ActivationEmailBody
+from api import AuthenticationApi
 
-
-def send_validation_email(
-    user,
-    endpoint
-):
-    activation_link = '/'.join([
-        settings.BASE_URL,
-        'auth/validate',
-        user.id,
-        endpoint.validation_key,
-        ''
-    ])
-
-    message = ActivationEmailBody()
-    message.generate_email(
-        'Knotis.com - Activate Your Account',
-        settings.EMAIL_HOST_USER,
-        [endpoint.value], Context({
-            'activation_link': activation_link,
-            'BASE_URL': settings.BASE_URL,
-            'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
-            'SERVICE_NAME': settings.SERVICE_NAME
-        })).send()
+from emails import send_validation_email
 
 
 class LoginView(ModalView):
@@ -174,19 +149,65 @@ class LoginView(ModalView):
         return self.render_to_response(data=data, render_template=False)
 
 
-class SignUpView(FragmentView):
+class SignUpView(ModalView):
     template_name = 'knotis/auth/sign_up.html'
     view_name = 'sign_up'
+    default_parent_view_class = DefaultBaseView
+
+    url_patterns = [
+        r'^signup/(?P<account_type>[^/]+)*$'
+    ]
+    post_scripts = [
+        'knotis/auth/js/signup.js'
+    ]
 
     def process_context(self):
         return self.context.update({
-            'signup_form': CreateUserForm()
+            'signup_form': CreateUserForm(request=self.request)
         })
 
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        user, identity, errors = AuthenticationApi.create_user(
+            **dict(request.POST.iteritems())
+        )
 
-class SignUpSuccessView(FragmentView):
+        data = {}
+        if not errors and self.response_format == self.RESPONSE_FORMATS.HTML:
+            self.response_fromat = self.RESPONSE_FORMATS.REDIRECT
+            data = None
+
+        elif self.RESPONSE_FORMATS.is_ajax(self.response_format):
+            if errors:
+                data['message'] = (
+                    'An error occurred during account creation'
+                )
+
+            else:
+                data['data'] = {
+                    'userid': user.id,
+                    'username': user.username
+                }
+                data['message'] = 'Account created successfully'
+                data['status'] = 'OK' if not errors else 'ERROR'
+                data['next_url'] = '/'
+
+        return self.render_to_response(
+            data=data,
+            errors=errors,
+            render_template=False
+        )
+
+
+class SignUpSuccessView(ModalView):
+    url_patterns = [r'^auth/signup/success/$']
     template_name = 'knotis/auth/sign_up_success.html'
     view_name = 'sign_up_success'
+    default_parent_view_class = DefaultBaseView
 
 
 class ForgotPasswordView(FragmentView):
@@ -477,13 +498,8 @@ def validate(
         )
 
         if not authenticated_user:
-            user = KnotisUser.objects.get(pk=user_id)
-
-            if Endpoint.objects.validate_endpoints(
-                validation_key,
-                user
-            ):
-                redirect_url = settings.LOGIN_URL
+            redirect_url = '/signup/'
+            return redirect(redirect_url)
 
         else:
             send_new_user_email(authenticated_user.username)
@@ -491,6 +507,30 @@ def validate(
                 request,
                 authenticated_user
             )
+
+        try:
+            user_information = UserInformation.objects.get(
+                user=authenticated_user
+            )
+            if not user_information.default_identity_id:
+                identity = IdentityIndividual.objects.get_individual(
+                    authenticated_user
+                )
+                user_information.default_identity_id = identity.id
+                user_information.save()
+
+            else:
+                identity = Identity.objects.get(
+                    pk=user_information.default_identity_id
+                )
+
+            request.session['current_identity'] = identity.id
+
+        except Exception, e:
+            logout(authenticated_user)
+            logger.exception(e.message)
+            redirect_url = settings.LOGIN_URL
+            raise
 
     except:
         logger.exception('exception while validating endpoint')
