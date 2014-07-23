@@ -1,7 +1,7 @@
 {% load thumbnail %}
 
         <div class="col-lg-4 col-xs-12 offerItem">
-            <a href="" data-toggle="modal" data-target="#offer-modal">
+            <a href="/offer/detail/{{ offer.pk }}/" class="modal-link">
                 <div class="busCover">
                     {% thumbnail offer_banner_image.image.image '240x161' crop=offer_banner_image.crop as image %}
                     <img src="{{ image.url }}" alt="{{ offer.title }}"/>

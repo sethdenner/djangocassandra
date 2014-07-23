@@ -47,14 +47,6 @@ urlpatterns = patterns(
         OfferPurchaseSuccessView.as_view()
     ),
     url(
-        r''.join([
-            'detail/(?P<offer_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        OfferDetailView.as_view()
-    ),
-    url(
         r'/create/$',
         OfferEditView.as_view()
     ),
@@ -90,3 +82,4 @@ urlpatterns = patterns(
 )
 
 urlpatterns += OffersView.urls()
+urlpatterns += OfferDetailView.urls()
