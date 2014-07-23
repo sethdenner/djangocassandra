@@ -151,7 +151,7 @@
             } else {
                 // Hide all modals before rendering this view.
                 var target_element_id = $next_anchor.attr('data-target-id');
-                if (typeof dismiss_modal_attr === typeof undefined || dismiss_modal_attr === false) {
+                if (typeof target_element_id === typeof undefined || target_element_id === false) {
                     alert('Anchor element has no "data-target-id" attribute defined!');
                     return;
                 }
@@ -163,7 +163,7 @@
                 }
 
                 $.ajax({
-                    url: value,
+                    url: address,
                     data: 'format=json',
                     complete: function (request, status) {
                         var data = $.parseJSON(request.responseText);
