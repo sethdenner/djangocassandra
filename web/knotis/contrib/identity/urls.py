@@ -8,7 +8,6 @@ from django.views.generic.simple import redirect_to
 from knotis.utils.regex import REGEX_UUID
 
 from views import (
-    IdentityView,
     EstablishmentsView,
     BusinessesGrid,
     EstablishmentProfileView,
@@ -25,34 +24,6 @@ urlpatterns = patterns(
         EstablishmentAboutAbout.as_view()
     ),
     url(
-        r''.join([
-            '^id/(?P<id>',
-            REGEX_UUID,
-            ')(/(?P<view_name>',
-            '\w{1,50}',
-            '))?/$'
-        ]),
-        IdentityView.as_view()
-    ),
-    url(
-        r''.join([
-            '^id/(?P<id>',
-            REGEX_UUID,
-            ')(/offer/(?P<offer_id>',
-            REGEX_UUID,
-            '))?/$'
-        ]),
-        IdentityView.as_view()
-    ),
-    url(
-        r''.join([
-            '^id/(?P<id>',
-            REGEX_UUID,
-            ')/offers/$'
-        ]),
-        IdentityView.as_view()
-    ),
-    url(
         r'^businesses/grid/(?P<page>\d+)/(?P<count>\d+)/$',
         BusinessesGrid.as_view()
     ),
@@ -64,18 +35,6 @@ urlpatterns = patterns(
         ]),
         redirect_to,
         {'url': '/id/%(business_id)s/'}
-    ),
-    url(
-        r''.join([
-            '^merchants/(?P<establishment_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        EstablishmentProfileView.as_view()
-    ),
-    url(
-        r'^merchants/(?P<backend_name>[^/]+)/$',
-        EstablishmentProfileView.as_view()
     ),
     url(
         r''.join([
@@ -92,3 +51,4 @@ urlpatterns = patterns(
 )
 
 urlpatterns += EstablishmentsView.urls()
+urlpatterns += EstablishmentProfileView.urls()
