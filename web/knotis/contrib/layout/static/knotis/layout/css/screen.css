@@ -358,11 +358,17 @@ nav li.addLink a {
 /* line 181, ../sass/_nav.scss */
 #auth-controls a {
   background: transparent;
-  border: 2px solid white;
+  border: 2px solid rgba(255, 255, 255, 0.29);
   padding: 8px 25px;
   margin: 0 5px;
   font-size: 13px;
   border-radius: 3px;
+}
+/* line 188, ../sass/_nav.scss */
+#auth-controls a .signUp {
+  background: rgba(0, 0, 0, 0.16);
+  border: rgba(0, 0, 0, 0.16);
+  padding: 10px 25px;
 }
 
 /* line 1, ../sass/_subNav.scss */
