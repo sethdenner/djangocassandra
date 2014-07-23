@@ -11,7 +11,6 @@ from views import (
     MyEstablishmentsView,
     MyOffersView,
     MyCustomersView,
-    MyFollowersView,
     MyAnalyticsView,
     MyRedemptionsView,
     OfferRedemptionView
@@ -34,10 +33,6 @@ urlpatterns = patterns(
     url(
         r'^offers(/(?P<offer_filter>\w*))?/$',
         login_required(MyOffersView.as_view())
-    ),
-    url(
-        r'^followers/$',
-        login_required(MyFollowersView.as_view())
     ),
     url(
         r'^customers/$',
