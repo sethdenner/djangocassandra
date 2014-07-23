@@ -358,7 +358,6 @@ class IdentityIndividualApiView(IdentityApiView):
     api_version = 'v1'
     api_path = 'identity/individual'
 
-
     def post(
         self,
         request,

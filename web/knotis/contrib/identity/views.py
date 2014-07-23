@@ -12,6 +12,7 @@ logger = log.getLogger(__name__)
 
 from knotis.views import (
     EmbeddedView,
+    ModalView,
     ContextView,
     FragmentView
 )
@@ -19,7 +20,6 @@ from knotis.views import (
 from knotis.utils.regex import REGEX_UUID
 
 from knotis.contrib.auth.models import UserInformation
-from knotis.contrib.maps.forms import GeocompleteForm
 from knotis.contrib.media.models import (
     ImageInstance
 )
@@ -50,8 +50,7 @@ from knotis.contrib.relation.models import (
 )
 
 from forms import (
-    IdentityIndividualSimpleForm,
-    IdentityBusinessSimpleForm
+    IdentityForm
 )
 
 from knotis.contrib.location.models import (
@@ -75,7 +74,8 @@ from knotis.contrib.endpoint.models import (
     EndpointFacebook,
     EndpointYelp,
     EndpointTwitter,
-    EndpointWebsite
+    EndpointWebsite,
+    EndpointIdentity
 )
 
 
@@ -1073,9 +1073,11 @@ class EstablishmentProfileView(FragmentView):
         return local_context
 
 
-class FirstIdentityView(FragmentView):
+class FirstIdentityView(ModalView):
+    url_patterns = [r'^identity/first/$']
     template_name = 'knotis/identity/first.html'
     view_name = 'identity_edit'
+    default_parent_view_class = DefaultBaseView
 
     def process_context(self):
         request = self.request
@@ -1090,27 +1092,98 @@ class FirstIdentityView(FragmentView):
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'individual_form': IdentityIndividualSimpleForm(
-                form_id='id-individual-form',
-                description_text=(
-                    'First thing\'s first. Tell us '
-                    'your name so we can personalize '
-                    'your Knotis account.'
-                ),
-                help_text=(
-                    'This is the name that will be displayed '
-                    'publicly in Knotis services.'
-                ),
-                instance=individual
-            ),
-            'business_form': IdentityBusinessSimpleForm(
-                form_id='id-business-form',
-                initial={'individual_id': individual.id}
-            ),
-            'location_form': GeocompleteForm()
+            'identity_id': individual.pk
         })
 
         return local_context
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        data = {}
+        errors = {}
+
+        noun = 'individual'
+
+        identity_id = request.POST.get('id')
+
+        try:
+            identity = Identity.objects.get(pk=identity_id)
+
+        except Exception, e:
+            message = ''.join([
+                'Failed to get ',
+                noun,
+                ' to update.'
+            ])
+            logger.exception(message)
+            errors['no-field'] = message
+
+        if not errors:
+            form = IdentityForm(
+                data=request.POST,
+                instance=identity
+            )
+
+            if not form.is_valid():
+                for field, messages in form.errors.iteritems():
+                    errors[field] = [m for m in messages]
+
+                data['message'] = ''.join([
+                    'An error occurred during ',
+                    noun,
+                    ' update.'
+                ])
+
+        if not errors:
+            try:
+                identity = form.save()
+
+            except Exception, e:
+                message = ''.join([
+                    'An error occurred while updating ',
+                    noun,
+                    '.'
+                ])
+                logger.exception(message)
+                errors['no-field']  = e.message
+
+        if not errors:
+            try:
+                EndpointIdentity.objects.update_identity_endpoints(identity)
+
+            except Exception, e:
+                message = ''.join([
+                    'An error occurred while updating ',
+                    noun,
+                    '.'
+                ])
+                logger.exception(message)
+                errors['no-field']  = e.message
+
+        if not errors:
+            data['data'] = {
+                noun + '_id': identity.id,
+                noun + '_name': identity.name
+            }
+
+            data['message'] = ''.join([
+                noun.capitalize(),
+                ' updated successfully.'
+            ])
+
+        if not errors and self.response_format == self.RESPONSE_FORMATS.HTML:
+            self.response_fromat = self.RESPONSE_FORMATS.REDIRECT
+            data = None
+
+        return self.render_to_response(
+            data=data,
+            errors=errors,
+            render_template=False
+        )
 
 
 class IdentitySwitcherView(EmbeddedView):

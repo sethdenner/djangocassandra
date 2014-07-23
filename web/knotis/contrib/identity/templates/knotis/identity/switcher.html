@@ -4,7 +4,7 @@
         <a data-toggle="dropdown" href="#">
             {% for identity in available_identities %}
             {% if identity.id == request.session.current_identity %}
-            <span>{{ identity.name }}{% if identity.identity_type == IdentityTypes.SUPERUSER %} (su){% endif %}</span>
+            <span id="id-current-identity-name">{{ identity.name }}{% if identity.identity_type == IdentityTypes.SUPERUSER %} (su){% endif %}</span>
             {% thumbnail identity.badge_image.image.image '28x28' crop=identity.badge_image.crop as img %}
             <img class="userImg" src="{{ img.url }}"/>
             {% empty %}
