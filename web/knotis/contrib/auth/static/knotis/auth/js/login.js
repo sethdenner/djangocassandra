@@ -25,7 +25,16 @@
 
             }
 
-            window.location = '/';
+            $.get(
+                '/identity/switcher/',
+                'format=json',
+                function(data, status, jqxhr) {
+                    $('#auth-controls').replaceWith(data.html);
+                }
+            );
+
+            $('#auth-modal').modal('hide');
+            $.address.value('/');
 
         }
     });

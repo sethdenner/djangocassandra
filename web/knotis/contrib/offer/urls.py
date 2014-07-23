@@ -22,19 +22,13 @@ from views import (
     NewOfferEmailBody
 )
 
+
+
 urlpatterns = patterns(
     'knotis.contrib.offer.views',
     url(
         r'^newoffer$',
         NewOfferEmailBody.as_view()
-    ),
-    url(
-        r''.join([
-            '^s/(?P<offer_id>',
-            REGEX_UUID,
-            '/)?$'
-        ]),
-        OffersView.as_view()
     ),
     url(
         r''.join([
@@ -51,14 +45,6 @@ urlpatterns = patterns(
             ')/buy/success/$'
         ]),
         OfferPurchaseSuccessView.as_view()
-    ),
-    url(
-        r''.join([
-            'detail/(?P<offer_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        OfferDetailView.as_view()
     ),
     url(
         r'/create/$',
@@ -94,3 +80,6 @@ urlpatterns = patterns(
         login_required(OfferPurchaseButton.as_view())
     )
 )
+
+urlpatterns += OffersView.urls()
+urlpatterns += OfferDetailView.urls()

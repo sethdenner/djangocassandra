@@ -1,11 +1,11 @@
 (function($){
-  
+
     if (!String.prototype.trim) {
       String.prototype.trim = function () {
           return this.replace(/^\s+|\s+$/g, '');
       };
     }
-    
+
     // endpoint editing
     var comparator = function($element){
       var init = ($element.attr('data-initial-value') || '').trim();
@@ -79,7 +79,7 @@
 
     var form_display_updated_endpoint = function(updated){
         var $form_endpoint = $('[data-endpoint-type="' + updated['endpoint_type'] + '"]');
-        
+
         var new_value = updated['value'];
         var endpoint_id = updated['pk'] || $form_endpoint.attr('data-endpoint-id');
 
@@ -98,18 +98,18 @@
       $('.edit-endpoint:not(.description):not(#business-address)').each(function(idx, element){
           $(element).val($(element).attr('data-initial-value') || '');
       });
-      
+
       // submit form handler
       $('#submit-business-info').click(function(e){
           e.preventDefault();
           e.stopPropagation();
-          
+
           // collect form info
           var changed_endpoints = {};
           var changed_name;
           var changed_description;
 
-          var business_id = $('#id-business-id').val();
+          var establishment_id = $('#establishment-id').val();
 
           $('.edit-endpoint').each(function(idx, element){
             var $element = $(element);
@@ -132,7 +132,7 @@
           });
 
           var info = {};
-          info.business_id = business_id;
+          info.establishment_id = establishment_id;
           if(changed_name){
             info.changed_name = changed_name;
           }
@@ -145,40 +145,8 @@
             method: 'POST',
             success: function(response){
                 if(response.status == 'ok'){
-                  
+
                         location.reload(true);
-/*
-                  // backpopulate changed info
-                  for(var endpoint in response.changed_endpoints){
-                      $(endpoint.endpoint_id).attr({
-                        'data-initial-value': endpoint.endpoint_value,
-                        'data-endpoint-id': endpoint.pk
-                      });
-                  }
-
-                  // update social buttons
-                  for(var i=0; i<response.updated_endpoints.length; i++){
-                      var endpoint = response.updated_endpoints[i];
-                            
-                            form_display_updated_endpoint(endpoint);
-                            header_display_updated_endpoint(endpoint);
-                  }
-
-                        for(var i=0; i<response.deleted_endpoints.length; i++){
-                            var endpoint = response.deleted_endpoints[i];
-                            
-                            $('.cover-endpoint.' + endpoint_id_to_type[endpoint['endpoint_type']]).remove();
-                            $('#about-us-form>[data-endpoint-type="' + endpoint['endpoint_type'] + ']').val('');
-                        }
-
-                  // Update business name on profile page
-                        $('#about-us-form.toggleable').hide();
-
-                        // replace the close without saving button with the edit button
-                        $('.close_edit_about').hide();
-                        $('.edit_about').show();
-
-*/                        
                 }
             }
           });
@@ -205,7 +173,7 @@
             keyboard: true
           },
           on_open: function(data, status, request){
-            
+
             $('#id-location-form').ajaxform({
                 done: function(data, status, jqxhr){
                   if(!data.errors){
@@ -216,17 +184,17 @@
                       });
                       $('#modal-box').modal('hide');
                       $('.cover-endpoint.address>.cover-endpoint-text').text(data.location_address);
-                      
+
                       $.fn.link_field.external_update('linkaddress', $('#id_address').val());
-                      
+
                       var latLng = new google.maps.LatLng(parseFloat(data.latitude),
                                                           parseFloat(data.longitude));
-                      
-                      
+
+
                   }
                 }
             });
-            
+
             $('#id-location-form #address-input #id_address').geocomplete({
                 map: '.map_canvas',
                 location: $this.text(),
@@ -242,15 +210,15 @@
     };
 
     $updateable_addresses.on('click', update_address);
-    
-    // display the map on the about page. 
 
-    // display the map on the about page. 
-    
+    // display the map on the about page.
+
+    // display the map on the about page.
+
     var latLng = new google.maps.LatLng(parseFloat($('#establishment-contact-loc-details').attr('data-latitude')),
                               parseFloat($('#establishment-contact-loc-details').attr('data-longitude')));
-  
-    var setupMap = function(latLng){   
+
+    var setupMap = function(latLng){
         var map;
         var initialize = function(){
           var mapOptions = {
@@ -271,7 +239,7 @@
           var marker = new google.maps.Marker(markerOptions);
             map.setZoom(16);
         }
-        
+
         google.maps.event.addDomListener(window, 'load', initialize);
         google.maps.event.trigger(map, 'resize');
 

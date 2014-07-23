@@ -35,7 +35,7 @@ from .forms import (
 from .models import (
     UserInformation
 )
-from .views import send_validation_email
+from .emails import send_validation_email
 from .serializers import UserInformationSerializer
 
 

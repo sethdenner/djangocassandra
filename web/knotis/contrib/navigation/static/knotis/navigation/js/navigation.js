@@ -6,12 +6,23 @@
     var Navigation = function () {
     };
 
+    var $clicked_anchor = null;
+
     Navigation.address_init = function (force) {
         if (!force && true === this.address_initialized) {
             return false;
         }
 
-        $('a:not([data-dismiss])').address();
+        $('a').off('click.address').on(
+            'click.address',
+            function (event) {
+                event.preventDefault();
+                $clicked_anchor = $(this);
+                $.address.value($(this).attr('href'));
+
+            }
+        );
+
         this.address_initialized = true;
         return true;
     };
@@ -37,12 +48,10 @@
 
             var value = event.value;
 
-            var $clicked_anchor = null;
             // Selects the proper navigation link
             $('.nav a').each(function() {
                 if ($(this).attr('href') == value) {
-                    $clicked_anchor = $(this);
-                    $clicked_anchor.addClass('on').focus();
+                    $(this).addClass('on').focus();
 
                 } else {
                     $(this).removeClass('on');
@@ -51,9 +60,10 @@
 
             });
 
-            if (null !== $clicked_anchor) {
-                var dismiss_modal = $clicked_anchor.attr('data-dismiss');
+            if ($clicked_anchor) {
+                var dismiss_modal = $clicked_anchor.attr('data-dismiss-modal');
                 if (dismiss_modal !== undefined && dismiss_modal !== false) {
+                    $('#' + dismiss_modal).modal('hide');
                     return;
                 }
 
@@ -66,11 +76,15 @@
                     $.ajaxmodal({
                         href: $clicked_anchor.attr('href'),
                         modal_width: modal_width,
-                        modal_id: modal_id
+                        modal_id: modal_id,
+                        on_open: function (data, status, request) {
+                            Navigation.address_init(true);
+                        }
                     });
                     return;
 
                 }
+                $clicked_anchor = null;
 
             }
 

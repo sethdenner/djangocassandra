@@ -11,11 +11,15 @@ from django.template import (
     RequestContext
 )
 
-from knotis.contrib.layout.views import GridSmallView
+from knotis.contrib.layout.views import (
+    GridSmallView,
+    DefaultBaseView,
+)
 
 from knotis.views import (
     ContextView,
     FragmentView,
+    EmbeddedView,
     GenerateAjaxResponseMixin
 )
 
@@ -485,7 +489,12 @@ class MyOffersGrid(GridSmallView):
         return local_context
 
 
-class MyOffersView(ContextView):
+class MyOffersView(EmbeddedView):
+    url_patterns = [
+        r'offers(/(?P<offer_filter>\w*))?/$',
+    ]
+
+    default_parent_view_class = DefaultBaseView
     template_name = 'knotis/merchant/my_offers_view.html'
 
     def process_context(self):
@@ -521,8 +530,6 @@ class MyOffersView(ContextView):
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
             'top_menu_name': 'my_offers',
-            'fixed_top_nav': True,
-            'fixed_side_nav': True
         })
         return local_context
 
@@ -566,12 +573,6 @@ class OfferRedemptionView(FragmentView):
 
         return self.context
 
-
-class MyFollowersView(ContextView):
-    template_name = 'knotis/merchant/my_followers_view.html'
-
-    def process_context(self):
-        return self.context
 
 
 class MyAnalyticsView(ContextView):

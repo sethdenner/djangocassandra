@@ -1,25 +1,47 @@
-{% load render_template_fragment %}
 {% load thumbnail %}
-<div class="grid-tile small-tile identity-tile">
-  <input type="hidden" class="tile-user" value="{{ current_identity.id }}" />
-  <input type="hidden" class="tile-identity" value="{{ identity.id }}"/>
-  <div class="tile-header">
-    {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
-    <div class="tile-image" style="background-image: url('{{ image.url }}');">&nbsp;</div>
-    {% empty %}
-    <div class="tile-image" style="background-image: url('{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:'darkgrey' }}.png')" >&nbsp;</div>
-    {% endthumbnail %}
-    {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
-    <img class="tile-badge" src="{{ image.url }}" />
-    {% empty %}
-    <img class="tile-badge"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/profile_default.png" />
-    {% endthumbnail %}
-  </div>
-  <div class="tile-body">
-    <p class="tile-title">{{ identity.name }}</p>
-    {% render_fragment identity_tile_action %}
-  </div>
-  <div class="tile-footer">
-    {{ address }}
-  </div>
-</div>
+
+        <div class="col-lg-4 col-xs-12 offerItem">
+            <a href="" data-toggle="modal" data-target="#offer-modal">
+                <div class="busCover">
+                    {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
+                    <img src="{{ image.url }}" alt="{{ identity.name }}"/>
+                    {% empty %}
+                    <img class="tile-image"  alt="{{ identity.name }}" src="http://placekitten.com/240/135/" />
+                    {% endthumbnail %}
+                    <div class="overlay"></div>
+                </div>
+            </a>
+            <div class="identityContent">
+                <div class="row">
+                    <div class="col-lg-10 col-xs-10">
+                        {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
+                        <img class="busLogo" src="{{ image.url }}" alt="{{ identity.name }}"/>
+                        {% empty %}
+                        <img class="tile-badge" src="http://placekitten.com/80/80/" />
+                        {% endthumbnail %}
+                    </div>
+                    <div class="col-lg-1 col-xs-1">
+<!-- 
+                       <div class="dropdown">
+                            <a data-toggle="dropdown" href=""><img class="iconMore" src="/assets/img/icon_more_offerItem.png"/></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <li><a href="">Extra Link</a></li>
+                            </ul>
+                        </div>
+-->
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12">
+                        <h1>{{ identity.name }}</h1>
+                        {% if identity %}
+                            <a class="busLink" href="id/{{ identity.id }}/">Profile</a>
+                        {% endif %}
+<!--                        <a href="" class="btnFollow" href="">Follow</a>                                          -->
+<!--                        <p class="location"><img src="assets/img/icon_location.png"/> <span>0.2 Miles</span></p> -->
+                            <p class="location"> {{ address }} </p>
+                    </div>
+                </div>
+            </div>
+        </div>
