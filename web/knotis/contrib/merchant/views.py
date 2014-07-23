@@ -122,7 +122,12 @@ class RedemptionsGrid(GridSmallView):
         return self.context
 
 
-class MyRedemptionsView(ContextView, GenerateAjaxResponseMixin):
+class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
+    url_patterns = [
+        ######################################
+    ]
+
+    default_parent_view_class = DefaultBaseView
     template_name = 'knotis/merchant/my_redemptions_view.html'
 
     def process_context(self):
@@ -148,7 +153,6 @@ class MyRedemptionsView(ContextView, GenerateAjaxResponseMixin):
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
-            'fixed_side_nav': True,
             'top_menu_name': 'my_redemptions'
         })
 
