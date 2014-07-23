@@ -355,6 +355,23 @@ nav li.addLink a {
   color: white;
 }
 
+/* line 181, ../sass/_nav.scss */
+#auth-controls a {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.29);
+  padding: 8px 25px;
+  margin: 0 5px;
+  font-size: 13px;
+  border-radius: 3px;
+}
+
+/* line 190, ../sass/_nav.scss */
+#auth-controls a.signUp {
+  background: rgba(0, 0, 0, 0.16);
+  border: rgba(0, 0, 0, 0.16);
+  padding: 10px 25px;
+}
+
 /* line 1, ../sass/_subNav.scss */
 .subNav {
   position: fixed;
@@ -601,29 +618,32 @@ nav li.addLink a {
   transition: all 0.3s ease;
 }
 /* line 30, ../sass/_offerItem.scss */
+.offerItem .busCover {
+  overflow: hidden;
+}
+/* line 33, ../sass/_offerItem.scss */
 .offerItem .busCover img {
   border-radius: 3px;
 }
 
-/* line 35, ../sass/_offerItem.scss */
+/* line 38, ../sass/_offerItem.scss */
 .offerContent {
-  position: relative;
-  top: -60px;
   padding: 14px;
   color: #989fac;
   line-height: 28px;
+  text-align: center;
 }
-/* line 41, ../sass/_offerItem.scss */
+/* line 43, ../sass/_offerItem.scss */
 .offerContent h1 {
   font-size: 24px;
   margin: 0;
 }
-/* line 45, ../sass/_offerItem.scss */
+/* line 47, ../sass/_offerItem.scss */
 .offerContent a {
   color: #989fac;
 }
 
-/* line 50, ../sass/_offerItem.scss */
+/* line 52, ../sass/_offerItem.scss */
 .iconMore {
   max-width: 18px;
   position: relative;
@@ -632,12 +652,12 @@ nav li.addLink a {
   opacity: 0.6;
 }
 
-/* line 57, ../sass/_offerItem.scss */
+/* line 59, ../sass/_offerItem.scss */
 .iconMore:hover {
   opacity: 1.0;
 }
 
-/* line 61, ../sass/_offerItem.scss */
+/* line 63, ../sass/_offerItem.scss */
 .overlay {
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, transparent), color-stop(100%, #4a4a4a));
   background-image: -webkit-linear-gradient(transparent, #4a4a4a);
@@ -650,12 +670,7 @@ nav li.addLink a {
   top: 0;
 }
 
-/* line 69, ../sass/_offerItem.scss */
-.busCover {
-  overflow: hidden;
-}
-
-/* line 73, ../sass/_offerItem.scss */
+/* line 71, ../sass/_offerItem.scss */
 .busLogo {
   border-radius: 50%;
   border: 3px solid white;
@@ -663,12 +678,12 @@ nav li.addLink a {
   max-height: 92px;
 }
 
-/* line 80, ../sass/_offerItem.scss */
+/* line 78, ../sass/_offerItem.scss */
 .busLink:hover {
   color: #2cc397;
 }
 
-/* line 84, ../sass/_offerItem.scss */
+/* line 82, ../sass/_offerItem.scss */
 .btnFollow {
   color: #989fac;
   text-align: center;
@@ -681,30 +696,28 @@ nav li.addLink a {
   line-height: 0;
   margin-top: 20px;
 }
-/* line 95, ../sass/_offerItem.scss */
+/* line 93, ../sass/_offerItem.scss */
 .btnFollow a:hover {
   color: white;
 }
 
-/* line 99, ../sass/_offerItem.scss */
+/* line 97, ../sass/_offerItem.scss */
 .btnFollow:hover {
   background: #2cc397;
   color: white;
   border: 2px solid #2cc397;
 }
 
-/* line 104, ../sass/_offerItem.scss */
+/* line 102, ../sass/_offerItem.scss */
 .btnFollow:active {
   box-shadow: inset 2px 3px 3px #2b8d68;
 }
 
-/* line 108, ../sass/_offerItem.scss */
+/* line 106, ../sass/_offerItem.scss */
 .location {
   margin-top: 8px;
-  text-align: center;
-  vertical-align: middle;
 }
-/* line 112, ../sass/_offerItem.scss */
+/* line 108, ../sass/_offerItem.scss */
 .location img {
   max-width: 10px;
   display: inline-block;
