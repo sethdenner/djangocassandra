@@ -428,7 +428,7 @@ nav li.addLink a {
   padding: 10px;
 }
 /* line 34, ../sass/_sideBar.scss */
-.sidebar-nav li a span {
+.sidebar-nav li a .circle i {
   font-size: 20px;
   color: white;
 }
