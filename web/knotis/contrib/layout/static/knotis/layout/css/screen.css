@@ -216,7 +216,7 @@ nav .search img {
 }
 /* line 53, ../sass/_nav.scss */
 nav .search ::-webkit-input-placeholder {
-  color: #777777;
+  color: white;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 11px;
@@ -224,7 +224,7 @@ nav .search ::-webkit-input-placeholder {
 /* line 59, ../sass/_nav.scss */
 nav .search :-moz-placeholder {
   /* Firefox 18- */
-  color: #777777;
+  color: white;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 11px;
@@ -232,14 +232,14 @@ nav .search :-moz-placeholder {
 /* line 66, ../sass/_nav.scss */
 nav .search ::-moz-placeholder {
   /* Firefox 19+ */
-  color: #777777;
+  color: white;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 11px;
 }
 /* line 73, ../sass/_nav.scss */
 nav .search :-ms-input-placeholder {
-  color: #777777;
+  color: white;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 11px;
