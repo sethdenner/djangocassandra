@@ -79,17 +79,13 @@ class MyFollowingView(EmbeddedView):
     ]
 
     # Refactor me! I want to live in a grid view class!
-    def post(
+    def process_context(
         self,
-        request,
-        *args,
-        **kwargs
     ):
         current_identity = get_object_or_404(
             Identity,
-            pk=request.session['current_identity']
+            pk=self.request.session['current_identity']
         )
-
 
         term = ''
         related_parties = []
@@ -99,7 +95,7 @@ class MyFollowingView(EmbeddedView):
         ):
             term = 'Following'
             relations = Relation.objects.filter(
-                relation_type = RelationType.FOLLOWING,
+                relation_type = RelationTypes.FOLLOWING,
                 subject_object_id = current_identity.id
             )
             for relation in relations:
@@ -109,7 +105,7 @@ class MyFollowingView(EmbeddedView):
         ):
             term = 'Followers'
             relations = Relation.objects.filter(
-                relation_type = RelationType.FOLLOWING,
+                relation_type = RelationTypes.FOLLOWING,
                 related_object_id = current_identity.id
             )
             for relation in relations:
