@@ -751,6 +751,13 @@ nav li.addLink a {
   top: -40px;
   left: 15px;
 }
+/* line 139, ../sass/_offerItem.scss */
+.identityContent h1 {
+  font-size: 23px;
+  margin-bottom: 20px;
+  color: #919191;
+  font-family: "LatoLight", sans-serif;
+}
 
 /* line 1, ../sass/_offerCreate.scss */
 #offer-create {
