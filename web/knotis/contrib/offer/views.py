@@ -14,6 +14,8 @@ from django.http import HttpResponseServerError
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
+from knotis.utils.regex import REGEX_UUID
+
 from knotis.utils.view import format_currency
 
 from knotis.contrib.offer.models import (
@@ -56,6 +58,8 @@ from knotis.contrib.stripe.views import (
 
 from knotis.views import (
     ContextView,
+    EmbeddedView,
+    ModalView,
     AJAXFragmentView,
     FragmentView,
     EmailView
@@ -76,6 +80,7 @@ from knotis.contrib.wizard.views import (
 
 from knotis.contrib.layout.views import (
     ActionButton,
+    DefaultBaseView,
     GridSmallView
 )
 
@@ -104,13 +109,13 @@ class OfferPurchaseButton(AJAXFragmentView):
             offer = None
 
         if not offer:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {'no-field': 'Could not find offer'},
                 'status': 'ERROR'
             })
 
         if not offer.available():
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {
                     'no-field': 'This offer is no longer available'
                 },
@@ -150,12 +155,12 @@ class OfferPurchaseButton(AJAXFragmentView):
 
         except Exception, e:
             logger.exception(e.message)
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': {'no-field': e.message}
             })
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'status': 'OK'
         })
 
@@ -214,7 +219,16 @@ class OffersGridView(GridSmallView):
         return local_context
 
 
-class OffersView(ContextView):
+class OffersView(EmbeddedView):
+    url_patterns = [
+        r''.join([
+            '^s/(?P<offer_id>',
+            REGEX_UUID,
+            '/)?$'
+        ])
+    ]
+
+    default_parent_view_class = DefaultBaseView
     template_name = 'knotis/offer/offers_view.html'
 
     def process_context(self):
@@ -244,7 +258,6 @@ class OffersView(ContextView):
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
-            'fixed_side_nav': True,
         })
         return local_context
 
@@ -376,7 +389,6 @@ class OfferTile(FragmentView):
             'offer_banner_image': offer_banner_image,
             'business_badge_image': business_badge_image,
         })
-
         return self.context
 
 
@@ -444,7 +456,7 @@ class OfferEditProductFormView(OfferCreateStepView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'the data entered is invalid',
                 'errors': errors
             })
@@ -457,7 +469,7 @@ class OfferEditProductFormView(OfferCreateStepView):
             except Exception, e:
                 logger.exception('failed to get offer')
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': 'a server error occurred',
                     'errors': {'no-field': e.message}
                 })
@@ -487,7 +499,7 @@ class OfferEditProductFormView(OfferCreateStepView):
             except Exception, e:
                 logger.exception('failed to get or create product')
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': 'a server error occurred',
                     'errors': {'no-field': e.message}
                 })
@@ -509,7 +521,7 @@ class OfferEditProductFormView(OfferCreateStepView):
             except Exception, e:
                 logger.exception('failed to get or create product')
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': 'a server error occurred',
                     'errors': {'no-field': e.message}
                 })
@@ -540,7 +552,7 @@ class OfferEditProductFormView(OfferCreateStepView):
         except Exception, e:
             logger.exception('failed to create inventory')
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'a server error occurred',
                 'errors': {'no-field': e.message}
             })
@@ -555,7 +567,7 @@ class OfferEditProductFormView(OfferCreateStepView):
         except Exception, e:
             logger.exception('failed to split inventory')
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'a server error occurred',
                 'errors': {'no-field': e.message}
             })
@@ -580,7 +592,7 @@ class OfferEditProductFormView(OfferCreateStepView):
             except Exception, e:
                 logger.exception('failed to update offer')
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': 'a server error occurred',
                     'errors': {'no-field': e.message}
                 })
@@ -599,7 +611,7 @@ class OfferEditProductFormView(OfferCreateStepView):
             except Exception, e:
                 logger.exception('failed to create offer')
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': 'a server error occurred',
                     'errors': {'no-field': e.message}
                 })
@@ -612,7 +624,7 @@ class OfferEditProductFormView(OfferCreateStepView):
         except:
             logger.exception('could not advance wizard progress')
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'message': 'OK',
             'offer_id': offer.id,
             'wizard_query': self.build_query_string()
@@ -681,7 +693,7 @@ class OfferEditDetailsFormView(OfferCreateStepView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'the data entered is invalid',
                 'errors': errors
             })
@@ -691,7 +703,7 @@ class OfferEditDetailsFormView(OfferCreateStepView):
 
         except Exception, e:
             logger.exception('error while saving offer detail form')
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': {
                     'no-field': 'A server error occurred. Please try again.'
@@ -704,7 +716,7 @@ class OfferEditDetailsFormView(OfferCreateStepView):
         except:
             logger.exception('could not advance wizard progress')
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'message': 'OK',
             'offer_id': offer.id
         })
@@ -767,7 +779,7 @@ class OfferEditLocationFormView(OfferCreateStepView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'the data entered is invalid',
                 'errors': errors
             })
@@ -786,7 +798,7 @@ class OfferEditLocationFormView(OfferCreateStepView):
 
         except Exception, e:
             logger.exception('error while saving offer detail form')
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': {
                     'no-field': 'A server error occurred. Please try again.'
@@ -799,7 +811,7 @@ class OfferEditLocationFormView(OfferCreateStepView):
         except:
             logger.exception('could not advance wizard progress')
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'message': 'OK',
             'offer_id': self.offer.id
         })
@@ -871,7 +883,7 @@ class OfferEditPublishFormView(OfferCreateStepView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'the data entered is invalid',
                 'errors': errors
             })
@@ -902,7 +914,7 @@ class OfferEditPublishFormView(OfferCreateStepView):
 
         except Exception, e:
             logger.exception('error while saving offer publication form')
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': {
                     'no-field': 'A server error occurred. Please try again.'
@@ -915,7 +927,7 @@ class OfferEditPublishFormView(OfferCreateStepView):
         except:
             logger.exception('could not advance wizard progress')
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'message': 'OK',
             'offer_id': offer.id
         })
@@ -967,7 +979,7 @@ class OfferEditSummaryView(OfferCreateStepView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'the data entered is invalid',
                 'errors': errors
             })
@@ -977,7 +989,7 @@ class OfferEditSummaryView(OfferCreateStepView):
 
         except Exception, e:
             logger.exception('error while publishing offer')
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': {
                     'no-field': 'A server error occurred. Please try again.'
@@ -990,7 +1002,7 @@ class OfferEditSummaryView(OfferCreateStepView):
         except:
             logger.exception('could not advance wizard progress')
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'message': 'OK',
             'offer_id': self.offer.id
         })
@@ -1059,9 +1071,17 @@ class OfferEditSummaryView(OfferCreateStepView):
         return local_context
 
 
-class OfferDetailView(FragmentView):
+class OfferDetailView(ModalView):
     template_name = 'knotis/offer/detail.html'
     view_name = 'offer_detail'
+    url_patterns = [
+        r''.join([
+            'detail/(?P<offer_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+    ]
+    default_parent_view_class = DefaultBaseView
 
     def process_context(self):
         offer_id = self.context.get('offer_id')
@@ -1087,17 +1107,6 @@ class OfferDetailView(FragmentView):
             logger.exception('failed to get business badge image')
             business_badge_image = None
 
-        try:
-            offer_image = ImageInstance.objects.get(
-                related_object_id=offer.pk,
-                context='offer_banner',
-                primary=True
-            )
-
-        except:
-            logger.exception('failed to get offer image')
-            offer_image = None
-
         request = self.request
         current_identity_id = request.session.get('current_identity')
         try:
@@ -1112,7 +1121,6 @@ class OfferDetailView(FragmentView):
             'IdentityTypes': IdentityTypes,
             'offer': offer,
             'offer_items': offer_items,
-            'offer_image': offer_image,
             'business_badge_image': business_badge_image
         })
 

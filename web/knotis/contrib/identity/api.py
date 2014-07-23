@@ -254,7 +254,7 @@ class IdentityApiView(ApiView):
 
         warnings.warn("deprecated", DeprecationWarning)
 
-        return self.generate_response(instance, errors)
+        return self.generate_ajax_response(instance, errors)
 
     def put(
         self,
@@ -283,7 +283,7 @@ class IdentityApiView(ApiView):
             logger.exception(message)
             errors['no-field'] = message
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': errors
             })
@@ -303,7 +303,7 @@ class IdentityApiView(ApiView):
                 ' update.'
             ])
             data['errors'] = errors
-            return self.generate_response(data)
+            return self.generate_ajax_response(data)
 
         try:
             identity = form.save()
@@ -317,7 +317,7 @@ class IdentityApiView(ApiView):
             logger.exception(message)
             errors['no-field']  = e.message
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': message,
                 'errors': errors
             })
@@ -334,7 +334,7 @@ class IdentityApiView(ApiView):
             logger.exception(message)
             errors['no-field']  = e.message
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': message,
                 'errors': errors
             })
@@ -351,13 +351,12 @@ class IdentityApiView(ApiView):
 
         warnings.warn("deprecated", DeprecationWarning)
 
-        return self.generate_response(data)
+        return self.generate_ajax_response(data)
 
 
 class IdentityIndividualApiView(IdentityApiView):
     api_version = 'v1'
     api_path = 'identity/individual'
-
 
     def post(
         self,
@@ -383,7 +382,7 @@ class IdentityIndividualApiView(IdentityApiView):
             errors['no-field'] = e.message
 
         if errors:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': errors
             })
@@ -396,7 +395,7 @@ class IdentityIndividualApiView(IdentityApiView):
         data['message'] = 'Individual created successfully'
 
         warnings.warn("deprecated", DeprecationWarning)
-        return self.generate_response(data)
+        return self.generate_ajax_response(data)
 
     def put(
         self,
@@ -459,7 +458,7 @@ class IdentityBusinessApiView(IdentityApiView):
             errors['no-field'] = e.message
 
         if errors:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': errors
             })
@@ -474,7 +473,7 @@ class IdentityBusinessApiView(IdentityApiView):
         data['message'] = 'Business created successfully'
 
         warnings.warn("deprecated", DeprecationWarning)
-        return self.generate_response(data)
+        return self.generate_ajax_response(data)
 
     def put(
         self,
@@ -521,7 +520,7 @@ class IdentityEstablishmentApiView(IdentityApiView):
             errors['no-field'] = e.message
 
         if errors:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': errors
             })
@@ -535,7 +534,7 @@ class IdentityEstablishmentApiView(IdentityApiView):
         data['message'] = 'Establishment created successfully'
 
         warnings.warn("deprecated", DeprecationWarning)
-        return self.generate_response(data)
+        return self.generate_ajax_response(data)
 
     def put(
         self,
@@ -710,7 +709,7 @@ class BusinessApiModelViewSet(IdentityApiModelViewSet, GetCurrentIdentityMixin):
             errors['no-field'] = e.message
 
         if errors:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': errors
             })

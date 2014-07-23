@@ -1,4 +1,8 @@
+;
+
 (function($) {
+    "use strict";
+
     $('#id-login-form').ajaxform({
         done: function(data, status, jqxhr) {
             if (data.errors) {
@@ -21,7 +25,16 @@
 
             }
 
-            window.location = '/';
+            $.get(
+                '/identity/switcher/',
+                'format=json',
+                function(data, status, jqxhr) {
+                    $('#auth-controls').replaceWith(data.html);
+                }
+            );
+
+            $('#auth-modal').modal('hide');
+            $.address.value('/');
 
         }
     });

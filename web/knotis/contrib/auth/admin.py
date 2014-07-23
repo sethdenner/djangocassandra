@@ -84,7 +84,7 @@ class UserUpdateAdminAJAXView(AJAXView):
                 status = 'good'
             else:
                 status = 'fail'
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': status,
             })
         else:
@@ -126,7 +126,7 @@ class UserQueryAdminAJAXView(AJAXView):
             for user in user_query:
                 users.append(format_user(user))
         
-        return self.generate_response({
+        return self.generate_ajax_response({
             'start': range_start,
             'end': range_end,
             'step': range_step,

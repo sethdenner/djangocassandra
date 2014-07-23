@@ -507,13 +507,14 @@ class Offer(QuickModel):
         )
 
     def savings_percent(self):
-        if self.price_retail():
-            return '%.0f' % round(
+        try:
+            savings_str = '%.0f' % round(
                 (self.price_retail() - self.price_discount()) /
-                self.price_retail() * 100, 0
+                    self.price_retail() * 100, 0
             )
-        else:
-            return 0.0
+        except:
+            savings_str = 'ERROR'
+        return savings_str
 
     def days_remaining(self):
         delta = self.end_time - datetime.datetime.utcnow()

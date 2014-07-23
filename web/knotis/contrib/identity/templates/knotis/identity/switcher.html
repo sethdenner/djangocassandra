@@ -1,36 +1,36 @@
 {% load thumbnail %}
-<div id="id-identity-switcher" class="dropdown">
-  <a class="dropdown-toggle" id="id-identity-dropdown" role="button" data-toggle="dropdown" data-target="#" href="#">
-    {% for identity in available_identities %}
-    {% if identity.id == request.session.current_identity %}
-    {{ identity.name }}{% if identity.identity_type == IdentityTypes.SUPERUSER %} (su){% endif %}&nbsp;&nbsp;
-    <div class="image-container">
-      {% thumbnail identity.badge_image.image.image '28x28' crop=identity.badge_image.crop as img %}
-      <img class="img-circle" src="{{ img.url }}" />
-      {% empty %}
-      <img class="img-circle" src="{{ STATIC_URL }}/knotis/img/default_profile_badge.png" />
-      {% endthumbnail %}
+<div id="identity-switcher" class="col-lg-2 col-xs-4">
+    <div class="dropdown">
+        <a data-toggle="dropdown" href="#">
+            {% for identity in available_identities %}
+            {% if identity.id == request.session.current_identity %}
+            <span id="id-current-identity-name">{{ identity.name }}{% if identity.identity_type == IdentityTypes.SUPERUSER %} (su){% endif %}</span>
+            {% thumbnail identity.badge_image.image.image '28x28' crop=identity.badge_image.crop as img %}
+            <img class="userImg" src="{{ img.url }}"/>
+            {% empty %}
+            <img class="userImg" src="http://placekitten.com/30/30"/>
+            {% endthumbnail %}
+            {% endif %}
+            {% endfor %}
+        </a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            {% for identity in available_identities %}
+            {% if identity.id != request.session.current_identity %}
+            <li><a href="/identity/switcher/{{ identity.id }}/">
+                    {{ identity.name }}{% if identity.identity_type == IdentityTypes.SUPERUSER %} (su){% endif %}
+                    {% thumbnail identity.badge_image.image.image '28x28' crop=identity.badge_image.crop as img %}
+                    <img class="img-circle" src="{{ img.url }}" />
+                    {% empty %}
+                    <img class="img-circle" src="http://placekitten.com/30/30"/>
+                    {% endthumbnail %}
+                </a>
+            </li>
+            {% endif%}
+            {% endfor %}
+            <li class="addLink">
+                <a href="/auth/logout/">Logout</a>
+            </li>
+        </ul>
     </div>
-    <b class="caret"></b>
-    {% endif%}
-    {% endfor %}
-  </a>
-  <ul class="dropdown-menu" role="menu" aria-labelledby="id-identity-dropdown">
-    {% for identity in available_identities %}
-    {% if identity.id != request.session.current_identity %}
-    <li>
-      <a href="/identity/switcher/{{ identity.id }}/">
-        {% thumbnail identity.badge_image.image.image '28x28' crop=identity.badge_image.crop as img %}
-        <img class="img-circle" src="{{ img.url }}" />
-        {% empty %}
-        <img class="img-circle" src="{{ STATIC_URL }}/knotis/img/default_profile_badge.png" />
-        {% endthumbnail %}
-        {{ identity.name }}{% if identity.identity_type == IdentityTypes.SUPERUSER %} (su){% endif %}
-      </a>
-    </li>
-    {% endif%}
-    {% endfor %}
-    <li class="divider" role="presentation"></li>
-    <li><a id="logout" href="/auth/logout/">Logout</a></li>
-  </ul>
 </div>
+

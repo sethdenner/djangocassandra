@@ -11,12 +11,16 @@ from django.template import (
     RequestContext
 )
 
-from knotis.contrib.layout.views import GridSmallView
+from knotis.contrib.layout.views import (
+    GridSmallView,
+    DefaultBaseView,
+)
 
 from knotis.views import (
     ContextView,
     FragmentView,
-    GenerateAJAXResponseMixin
+    EmbeddedView,
+    GenerateAjaxResponseMixin
 )
 
 from knotis.contrib.identity.models import (
@@ -123,24 +127,21 @@ class RedemptionsGrid(GridSmallView):
         return self.context
 
 
-class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
+class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
+    url_patterns = [
+        r'^redemptions(/(?P<redemption_filter>\w*))?/$',
+    ]
+
+    default_parent_view_class = DefaultBaseView
     template_name = 'knotis/merchant/my_redemptions_view.html'
 
     def process_context(self):
         styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
         ]
 
         pre_scripts = []
 
         post_scripts = [
-            'knotis/layout/js/layout.js',
-            'navigation/js/navigation.js',
             'knotis/merchant/js/redemptions.js'
         ]
 
@@ -149,7 +150,6 @@ class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
             'styles': styles,
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
-            'fixed_side_nav': True,
             'top_menu_name': 'my_redemptions'
         })
 
@@ -167,7 +167,7 @@ class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
             current_identity = Identity.objects.get(pk=current_identity_id)
 
         except Exception, e:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {
                     'no-field': e.message
                 },
@@ -183,7 +183,7 @@ class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
         )
 
         if current_identity.pk != transaction.owner.pk:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {
                     'no-field': 'This transaction does not belong to you'
                 },
@@ -199,7 +199,7 @@ class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
             )
 
         except Exception, e:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {
                     'no-field': e.message
                 },
@@ -212,7 +212,7 @@ class MyRedemptionsView(ContextView, GenerateAJAXResponseMixin):
         else:
             my_redemption = redemptions[1]
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'status': 'OK',
             'redemptionid': my_redemption.pk
         })
@@ -294,24 +294,23 @@ class MyCustomersGrid(GridSmallView):
         return self.context
 
 
-class MyCustomersView(ContextView):
+
+
+class MyCustomersView(EmbeddedView):
+    url_patterns = [
+        r'^customers/$',
+    ]
+
+    default_parent_view_class = DefaultBaseView
     template_name = 'knotis/merchant/my_customers.html'
 
     def process_context(self):
         styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
         ]
 
         pre_scripts = []
 
         post_scripts = [
-            'knotis/layout/js/layout.js',
-            'navigation/js/navigation.js',
         ]
 
         local_context = copy.copy(self.context)
@@ -494,7 +493,12 @@ class MyOffersGrid(GridSmallView):
         return local_context
 
 
-class MyOffersView(ContextView):
+class MyOffersView(EmbeddedView):
+    url_patterns = [
+        r'offers(/(?P<offer_filter>\w*))?/$',
+    ]
+
+    default_parent_view_class = DefaultBaseView
     template_name = 'knotis/merchant/my_offers_view.html'
 
     def process_context(self):
@@ -530,8 +534,6 @@ class MyOffersView(ContextView):
             'pre_scripts': pre_scripts,
             'post_scripts': post_scripts,
             'top_menu_name': 'my_offers',
-            'fixed_top_nav': True,
-            'fixed_side_nav': True
         })
         return local_context
 
@@ -575,12 +577,6 @@ class OfferRedemptionView(FragmentView):
 
         return self.context
 
-
-class MyFollowersView(ContextView):
-    template_name = 'knotis/merchant/my_followers_view.html'
-
-    def process_context(self):
-        return self.context
 
 
 class MyAnalyticsView(ContextView):
