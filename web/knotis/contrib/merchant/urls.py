@@ -40,10 +40,6 @@ urlpatterns = patterns(
         login_required(MyFollowersView.as_view())
     ),
     url(
-        r'^customers/$',
-        login_required(MyCustomersView.as_view())
-    ),
-    url(
         r'^redemptions(/(?P<redemption_filter>\w*))?/$',
         login_required(MyRedemptionsView.as_view())
     ),
@@ -52,3 +48,4 @@ urlpatterns = patterns(
         login_required(MyAnalyticsView.as_view())
     )
 )
+urlpatterns += MyCustomersView.urls()
