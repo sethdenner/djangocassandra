@@ -498,13 +498,8 @@ def validate(
         )
 
         if not authenticated_user:
-            user = KnotisUser.objects.get(pk=user_id)
-
-            if Endpoint.objects.validate_endpoints(
-                validation_key,
-                user
-            ):
-                redirect_url = settings.LOGIN_URL
+            redirect_url = '/signup/'
+            return redirect(redirect_url)
 
         else:
             send_new_user_email(authenticated_user.username)
@@ -512,6 +507,30 @@ def validate(
                 request,
                 authenticated_user
             )
+
+        try:
+            user_information = UserInformation.objects.get(
+                user=authenticated_user
+            )
+            if not user_information.default_identity_id:
+                identity = IdentityIndividual.objects.get_individual(
+                    authenticated_user
+                )
+                user_information.default_identity_id = identity.id
+                user_information.save()
+
+            else:
+                identity = Identity.objects.get(
+                    pk=user_information.default_identity_id
+                )
+
+            request.session['current_identity'] = identity.id
+
+        except Exception, e:
+            logout(authenticated_user)
+            logger.exception(e.message)
+            redirect_url = settings.LOGIN_URL
+            raise
 
     except:
         logger.exception('exception while validating endpoint')

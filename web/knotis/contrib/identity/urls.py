@@ -76,12 +76,9 @@ urlpatterns = patterns(
     url(
         r'^merchants/(?P<backend_name>[^/]+)/$',
         EstablishmentProfileView.as_view()
-    ),
-    url(
-        r'^identity/first/$',
-        FirstIdentityView.as_view()
     )
 )
 
 urlpatterns += EstablishmentsView.urls()
 urlpatterns += IdentitySwitcherView.urls()
+urlpatterns += FirstIdentityView.urls()
