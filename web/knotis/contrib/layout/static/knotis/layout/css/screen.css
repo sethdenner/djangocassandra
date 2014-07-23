@@ -355,6 +355,16 @@ nav li.addLink a {
   color: white;
 }
 
+/* line 181, ../sass/_nav.scss */
+#auth-controls a {
+  background: transparent;
+  border: 2px solid white;
+  padding: 8px 25px;
+  margin: 0 5px;
+  font-size: 13px;
+  border-radius: 3px;
+}
+
 /* line 1, ../sass/_subNav.scss */
 .subNav {
   position: fixed;
