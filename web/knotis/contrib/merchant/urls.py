@@ -35,16 +35,11 @@ urlpatterns = patterns(
         login_required(MyOffersView.as_view())
     ),
     url(
-        r'^followers/$',
-        login_required(MyFollowersView.as_view())
-    ),
-    url(
-        r'^redemptions(/(?P<redemption_filter>\w*))?/$',
-        login_required(MyRedemptionsView.as_view())
-    ),
-    url(
         r'^analytics(/(?P<graph_type>\w*))?/$',
         login_required(MyAnalyticsView.as_view())
     )
 )
+
 urlpatterns += MyCustomersView.urls()
+urlpatterns += MyRedemptionsView.urls()
+urlpatterns += MyOffersView.urls()
