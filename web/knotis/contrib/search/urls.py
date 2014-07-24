@@ -15,8 +15,6 @@ urlpatterns = patterns(
         r'^search/grid/(?P<page>\d+)/(?P<count>\d+)/$',
         SearchResultsGrid.as_view()
     ),
-    url(
-        r'^search/',
-        SearchResultsView.as_view()
-    )
 )
+
+urlpatterns += SearchResultsView.urls()

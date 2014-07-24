@@ -215,12 +215,14 @@ class EmbeddedView(
                     self.parent_view_class.template_placeholders[0]
                 )
 
-        request = kwargs.get('request')
-        if request:
-            context = RequestContext(request)
+        context = kwargs.pop('context', None)
+        if not context:
+            request = kwargs.get('request')
+            if request:
+                context = RequestContext(request)
 
-        else:
-            context = Context()
+            else:
+                context = Context()
 
         super(EmbeddedView, self).__init__(
             context=context,
@@ -331,11 +333,13 @@ class EmbeddedView(
                 )
 
                 parent_instance = self.parent_view_class(
+                    context=context,
                     request=self.request
                 )
 
+                parent_context = parent_instance.get_context_data()
                 return parent_instance.render_to_response(
-                    context,
+                    parent_context,
                     **response_kwargs
                 )
 

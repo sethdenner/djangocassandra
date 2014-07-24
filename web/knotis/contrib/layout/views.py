@@ -69,3 +69,11 @@ class SplashTile(FragmentView):
 class DefaultBaseView(EmbeddedView):
     template_name = 'knotis/layout/default_base.html'
     template_placeholders = ['content', 'modal_content']
+
+    def process_context(self):
+        current_identity_pk = self.context.get('current_identity_pk')
+        if not current_identity_pk:
+            current_identity_pk = self.request.session.get('current_identity')
+            self.context['current_identity_pk'] = current_identity_pk
+
+        return self.context
