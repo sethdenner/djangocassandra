@@ -1666,3 +1666,16 @@ span.help-inline {
     z-index: 4;
     height: 40px;
 }
+
+.defaultImg {
+    height: 90px;
+    background: rgba(255, 255, 255, 0.94);
+}
+
+.identityContent .icon-knotis {
+    position: absolute;
+    left: 39px;
+    top: 15px;
+    font-size: 50px;
+    color: rgb(207, 207, 207);
+}

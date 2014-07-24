@@ -8,7 +8,7 @@
                 <img class="tile-badge" src="{{ image.url }}" />
             </a>
             {% empty %}
-            <img class="tile-image"  alt="{{ identity.name }}" src="{{ image.url }}" />
+            <img class="tile-image defaultImg"  alt="{{ identity.name }}" src="" />
             {% endthumbnail %}
             <div class="overlay"></div>
         </div>
@@ -17,9 +17,9 @@
         <div class="row">
             <div class="col-lg-10 col-xs-10">
                 {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
-                <img class="busLogo" src="{{ image.url }}" alt="{{ identity.name }}"/>
+                <a href="id/{{ identity.id }}/"><img class="busLogo" src="{{ image.url }}" alt="{{ identity.name }}"/></a>
                 {% empty %}
-                <a href="id/{{ identity.id }}/"><img class="tile-badge" src="http://placekitten.com/80/80/" /></a>
+                <a href="id/{{ identity.id }}/"><span class="icon-knotis"></span><img class="tile-badge defaultImg" src="{{ image.url }}" /></a>
                 {% endthumbnail %}
             </div>
             <div class="col-lg-1 col-xs-1">
