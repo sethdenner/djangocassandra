@@ -16,7 +16,7 @@
                 <!-- // End Search Form -->
                 <div class="col-lg-6 col-xs-4">
                     <div class="logo">
-                        <a href="#"><img src="{{ STATIC_URL }}knotis/img/knotis_logo_nav.png" alt="Knotis"/></a>
+                        <a href="/" data-target-id="main-content" ><img src="{{ STATIC_URL }}knotis/img/knotis_logo_nav.png" alt="Knotis"/></a>
                     </div>
                 </div>
                 {% if user.is_authenticated %}
@@ -46,7 +46,7 @@
             <li><a href="/businesses/" data-target-id="main-content" ><span class="circle"><i class="icon-business"></i></span><span class="sidebar-label">Businesses</span></a></li>
             <li><a href="/offers/" data-target-id="main-content" ><span class="circle"><i class="icon-offers"></i></span><span class="sidebar-label">Offers</span></a></li><!--
             <li><a href="#"><span class="circle"><i class="icon-dashboard"></i></span><span class="sidebar-label">Dashboard</span></a></li>-->
-            <li><a a href="/id/{{ current_identity.pk }}/" data-target-id="main-content" ><span class="circle"><i class="icon-profile-guy"></i></span><span class="sidebar-label">Profile</span></a></li><!--
+            <li><a a href="/id/{{ current_identity_pk }}/" data-target-id="main-content" ><span class="circle"><i class="icon-profile-guy"></i></span><span class="sidebar-label">Profile</span></a></li><!--
             <li><a href="#"><span class="circle"><i class="icon-message"></i></span><span class="sidebar-label">Messages</span></a></li>
             <li><a href="#"><span class="circle"><i class="icon-promotions"></i></span><span class="sidebar-label">Promotions</span></a></li>-->
             <li><a href="/my/customers" data-target-id="main-content" ><span class="circle"><i class="icon-customers"></i></span><span class="sidebar-label">Customers</span></a></li>
