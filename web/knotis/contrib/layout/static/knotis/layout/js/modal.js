@@ -46,7 +46,16 @@
             settings.data,
             function(data, status, request) {
                 if (data) {
-                    $modal.html(data.html)
+		    var html = null;
+		    if (typeof data.html !== typeof undefined) {
+			html = data.html;
+
+		    } else {
+			html = data;
+
+		    }
+			
+                    $modal.html(html)
                     $modal.modal(settings.modal_settings);
                     $modal.on('hidden.bs.modal', settings.on_close);
 
