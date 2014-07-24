@@ -5,7 +5,7 @@
         <div class="busCover">
             {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
             <a href="id/{{ identity.id }}/">
-                <img class="tile-badge" src="http://placekitten.com/80/80/" />
+                <img class="tile-badge" src="{{ image.url }}" />
             </a>
             {% empty %}
             <img class="tile-image"  alt="{{ identity.name }}" src="{{ image.url }}" />
