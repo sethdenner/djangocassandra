@@ -16,6 +16,7 @@
             },
             loading: false,
             on_open: function(data, status, request) {},
+            on_close: function(modal) {}
         };
         var settings = $.extend(
             {},
@@ -47,6 +48,7 @@
                 if (data) {
                     $modal.html(data.html)
                     $modal.modal(settings.modal_settings);
+                    $modal.on('hidden.bs.modal', settings.on_close);
 
                     $('a[data-dismiss]').click(function (event) {
                         event.preventDefault();

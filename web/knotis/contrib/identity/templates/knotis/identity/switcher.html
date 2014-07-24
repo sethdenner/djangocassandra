@@ -1,7 +1,7 @@
 {% load thumbnail %}
 <div id="identity-switcher" class="col-lg-2 col-xs-4">
     <div class="dropdown">
-        <a data-toggle="dropdown" href="#">
+        <a class="no-deep" data-toggle="dropdown" href="#">
             {% for identity in available_identities %}
             {% if identity.id == request.session.current_identity %}
             <span id="id-current-identity-name">{{ identity.name }}{% if identity.identity_type == IdentityTypes.SUPERUSER %} (su){% endif %}</span>
@@ -16,7 +16,7 @@
         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
             {% for identity in available_identities %}
             {% if identity.id != request.session.current_identity %}
-            <li><a href="/identity/switcher/{{ identity.id }}/">
+            <li><a class="no-deep" href="/identity/switcher/{{ identity.id }}/">
                     {{ identity.name }}{% if identity.identity_type == IdentityTypes.SUPERUSER %} (su){% endif %}
                     {% thumbnail identity.badge_image.image.image '28x28' crop=identity.badge_image.crop as img %}
                     <img class="img-circle" src="{{ img.url }}" />

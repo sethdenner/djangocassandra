@@ -34,7 +34,8 @@
             );
 
             $('#auth-modal').modal('hide');
-            $.address.value('/');
+            var next_url = data.next_url ? data.next_url : '/';
+            window.location = next_url;
 
         }
     });
