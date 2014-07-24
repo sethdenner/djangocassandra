@@ -739,15 +739,17 @@ nav li.addLink a {
 
 /* line 128, ../sass/_offerItem.scss */
 .location {
-    margin-top: 56px;
-    font-size: 15px;
+    margin-top: 68px;
+    font-size: 14px;
     display: inline-block;
-    width: 90%;
+    width: 100%;
     border-top: 1px solid #e4e4e4;
     font-family: 'LatoLight', sans-serif;
     position: absolute;
     left: 0;
-    padding: 20px 20px 10px;
+    padding: 10px 20px 10px;
+    line-height: 18px;
+    background: #FCFCFC;
 }
 /* line 138, ../sass/_offerItem.scss */
 .location img {
@@ -1419,12 +1421,6 @@ h1.sectionHeader {
     background-size: cover;
 }
 
-/* line 18, ../sass/_profile.scss */
-.profileContent {
-    position: relative;
-    top: 300px;
-}
-
 /* line 23, ../sass/_profile.scss */
 .profileBusiness section {
     background: white;
@@ -1579,6 +1575,16 @@ section .profileInfo:nth-child(5) {
     margin: 0 auto;
 }
 
+.forgotLink {
+    text-align: center;
+    margin: 20px 0 0;
+    font-size: 14px;
+}
+
+.forgotLink  a {
+    color: #2cc397;
+}
+
 .underConstruction h4 {
     font-size: 60px;
     font-family: 'LatoLight', sans-serif;
@@ -1594,4 +1600,43 @@ section .profileInfo:nth-child(5) {
 
 .underConstruction .icon-knotis {
     font-size: 60px;
+}
+
+span.help-inline {
+    display: inline-block;
+    width: 100%;
+    color: rgb(252, 169, 169);
+    font-size: 13px;
+}
+
+#about-us-form input {
+    border: 1px solid #E6E6E6;
+    background: white;
+    padding: 12px;
+    border-radius: 3px;
+    width: 50%;
+    display: inline-block;
+    margin: 10px 0;
+}
+
+#about-us-form label {
+    font-family: 'LatoReg', sans-serif;
+    font-size: 14px;
+    display: inline-block;
+    padding: 10px 20px;
+    width: 50%;
+}
+
+#about-us-form a {
+    width: 50%;
+    display: inline-block;
+    margin: 15px 0;
+}
+
+#modal-box {
+    text-align: center;
+}
+
+#modal-box .btn {
+    margin: 40px 0 10px;
 }
