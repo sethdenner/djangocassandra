@@ -739,15 +739,17 @@ nav li.addLink a {
 
 /* line 128, ../sass/_offerItem.scss */
 .location {
-    margin-top: 56px;
-    font-size: 15px;
+    margin-top: 68px;
+    font-size: 14px;
     display: inline-block;
-    width: 90%;
+    width: 100%;
     border-top: 1px solid #e4e4e4;
     font-family: 'LatoLight', sans-serif;
     position: absolute;
     left: 0;
-    padding: 20px 20px 10px;
+    padding: 10px 20px 10px;
+    line-height: 18px;
+    background: #FCFCFC;
 }
 /* line 138, ../sass/_offerItem.scss */
 .location img {
