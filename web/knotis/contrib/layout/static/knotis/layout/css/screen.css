@@ -1605,3 +1605,10 @@ section .profileInfo:nth-child(5) {
 .underConstruction .icon-knotis {
     font-size: 60px;
 }
+
+span.help-inline {
+    display: inline-block;
+    width: 100%;
+    color: rgb(252, 169, 169);
+    font-size: 13px;
+}

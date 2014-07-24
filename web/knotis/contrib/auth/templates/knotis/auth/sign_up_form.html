@@ -4,9 +4,7 @@
             <input id="auth_username" name="{{ form.email.html_name }}" maxlength="254" type="email" placeholder="Your E-mail" value="{{ form.email.value|default_if_none:'' }}"> 
             <input id="auth_password" type="password" name="{{ form.password.html_name }}" class="password" placeholder="Your Password" > 
         </div>
-
-        <p class="forgotLink"><a href="">Forgot Password?</a></p>
-
+        
         <div class="authButtons">
             <input type="submit" class="authBtn" value="Sign Up" />
             <a href="/login/" class="authBtn login modal-link" data-modal-id="auth-modal" >Log In</a>
