@@ -1579,6 +1579,7 @@ section .profileInfo:nth-child(5) {
     margin: 0 auto;
 }
 
+<<<<<<< HEAD
 .forgotLink {
     text-align: center;
     margin: 20px 0 0;
@@ -1587,4 +1588,21 @@ section .profileInfo:nth-child(5) {
 
 .forgotLink  a {
     color: #2cc397;
+=======
+.underConstruction h4 {
+    font-size: 60px;
+    font-family: 'LatoLight', sans-serif;
+    text-align: center;
+    width: 40%;
+    margin: 0 auto;
+    padding-bottom: 20px;
+}
+
+.underConstruction {
+    text-align: center;
+}
+
+.underConstruction .icon-knotis {
+    font-size: 60px;
+>>>>>>> 6d35a30c8a75d9434ec408acfecdbf98fff8c8c6
 }
