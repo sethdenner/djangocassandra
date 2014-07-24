@@ -48,10 +48,12 @@ class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
 class OfferTypes:
     NORMAL = 0
     PREMIUM = 1
+    DARK = 2
 
     CHOICES = (
         (NORMAL, 'Normal'),
-        (PREMIUM, 'Premium')
+        (PREMIUM, 'Premium'),
+        (DARK, 'Dark'),
     )
 
 
@@ -79,8 +81,8 @@ class OfferManager(QuickManager):
             *args,
             **kwargs
         )
-        offer.save()
 
+        offer.save()
         for i in inventory:
             price_discount = i.price * discount_factor
             OfferItem.objects.create(
@@ -271,6 +273,7 @@ class Offer(QuickModel):
     offer_type = QuickIntegerField(
         default=OfferTypes.NORMAL,
         choices=OfferTypes.CHOICES,
+        db_index=True,
     )
 
     title = QuickCharField(
@@ -420,7 +423,7 @@ class Offer(QuickModel):
             (self.end_time is None or self.end_time > now) and
             (self.unlimited or self.purchased < self.stock) and
             not self.completed
-        )
+        ) or self.offer_type == OfferTypes.DARK
 
     def description_formatted_html(self):
         if not self.description:
@@ -869,3 +872,14 @@ class OfferPublish(Publish):
                 self.endpoint.endpoint_type,
                 '.'
             ]))
+
+
+class OfferCollection(QuickModel):
+    neighborhood = QuickCharField(max_length=255, db_index=True)
+
+
+class OfferCollectionItem(QuickModel):
+    offer_collection = QuickForeignKey(OfferCollection)
+    offer = QuickForeignKey(Offer)
+    page = QuickIntegerField()
+    objects = QuickManager()

@@ -30,7 +30,7 @@ from knotis.contrib.identity.models import (
     IdentityEstablishment
 )
 
-from knotis.contrib.offer.models import Offer
+from knotis.contrib.offer.models import Offer, OfferTypes
 from knotis.contrib.offer.views import (
     OfferTile,
     OfferCreateTile
@@ -109,11 +109,16 @@ class RedemptionsGrid(GridSmallView):
                         'TransactionTypes': TransactionTypes
                     }
                 )
-                tiles.append(
-                    redemption_tile.render_template_fragment(
-                        tile_context
+
+                try:
+                    tiles.append(
+                        redemption_tile.render_template_fragment(
+                            tile_context
+                        )
                     )
-                )
+                except:
+                    logger.exception('Failed to render transaction view for %s' % purchase)
+                    continue
 
         self.context.update({
             'tiles': tiles
@@ -427,6 +432,7 @@ class MyOffersGrid(GridSmallView):
 
         elif 'active' == offer_filter or not offer_filter:
             offer_filter_dict['published'] = True
+            offer_filter_dict['completed'] = False
             offer_action = 'pause'
 
         elif 'redeem' == offer_filter:
@@ -446,8 +452,11 @@ class MyOffersGrid(GridSmallView):
             offer_filter_dict['owner'] = i
 
             try:
-                offers_by_business[i.name] = Offer.objects.filter(
-                    **offer_filter_dict
+                offers_by_business[i.name] = filter(
+                    lambda x: x.offer_type != OfferTypes.DARK,
+                    Offer.objects.filter(
+                        **offer_filter_dict
+                    )
                 )
 
             except Exception:

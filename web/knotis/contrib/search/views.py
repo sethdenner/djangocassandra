@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 #from haystack.views import SearchView
 
 from knotis.contrib.identity.views import IdentityTile, get_current_identity
-from knotis.contrib.identity.models import IdentityTypes
 from knotis.contrib.offer.views import OfferTile
 from knotis.contrib.layout.views import GridSmallView
 from knotis.contrib.search.api import SearchApi
