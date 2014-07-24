@@ -4,6 +4,15 @@
     <div class="container-fluid mainContent">
         <div class="hero">
             <div class="row">
+
+                <div class="heroOverLay">
+                    {% thumbnail profile_banner.image.image '1920x500' crop=profile_banner.crop as header %}
+                        <div style="background-image: url('{{ header.url }}');">
+                    {% empty%}
+                        <div style="background-image: url({{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:'darkgrey' }}.png));">
+                    {% endthumbnail %}
+                </div>
+
                 <div class="col-lg-12 columns">
                     <div class="heroInfo">
                         {% thumbnail profile_badge.image.image '120x120' crop=profile_badge.crop as img %}
