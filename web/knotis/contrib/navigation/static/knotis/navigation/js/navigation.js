@@ -11,6 +11,24 @@
     var first_change = true;
 
     var modal_onclose = function () {
+        var $close = $(this).find('a[data-dismiss-modal]');
+        var href = '/';
+
+        if (!$close.length) {
+            $close = $('<a></a>');
+            $close.attr('href', href);
+            $close.attr('data-target-id', 'main-content');
+
+        } else {
+            href = $close.attr('href');
+
+        }
+
+        next_history = {
+            address: href,
+            anchor: $close
+        }
+        $.address.value(href);
 
     };
 
@@ -38,7 +56,6 @@
         var $default_anchor = $('<a></a>');
         $default_anchor.attr('href', window.location.pathname);
         $default_anchor.attr('data-target-id', 'main-content');
-        $default_anchor.addClass('defaultAnchor');
 
         next_history = {
             address: window.location.pathname,
