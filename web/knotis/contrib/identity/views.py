@@ -32,7 +32,7 @@ from knotis.contrib.layout.views import (
     GridSmallView,
     ActionButton,
     ButtonAction,
-    SplashTile,
+#    SplashTile,
     DefaultBaseView
 )
 
@@ -514,10 +514,10 @@ class EstablishmentsGrid(GridSmallView):
 
         tiles = []
 
-        if 0 == start_range:
-            tiles.append(
-                SplashTile().render_template_fragment(Context())
-            )
+#        if 0 == start_range:
+#            tiles.append(
+#                SplashTile().render_template_fragment(Context())
+#            )
 
         if establishments:
             for establishment in establishments:
