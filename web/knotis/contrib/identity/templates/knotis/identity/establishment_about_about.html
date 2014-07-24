@@ -10,7 +10,7 @@
 
           <div id="about-us">
             {% if is_manager %}
-            <form id="about-us-form" class="editable toggleable" style="display: none;">
+            <form id="about-us-form" class="toggleable" style="display: none;">
               <input id="establishment-id" type="hidden" value="{{ establishment.id }}" />
 
               <label for="business-name">Business Name:</label>
@@ -163,13 +163,5 @@
         {% endif %}
     </section>
 </div>
-
-<div class="col-lg-6 col-xs-12">
-    <h1 class="sectionHeader">Photos</h1>
-    <section> <!-- Render Photos Here --> </section>
-</div>
-
-
-
 
 {% endif %}
