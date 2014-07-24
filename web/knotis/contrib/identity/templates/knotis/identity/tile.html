@@ -1,7 +1,7 @@
 {% load thumbnail %}
 
 <div class="col-lg-4 col-xs-12 offerItem">
-    <a href="" data-toggle="modal" data-target="#offer-modal">
+    <a href="id/{{ identity.id }}/" data-target-id="main-content">
         <div class="busCover">
             {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
                 <img class="tile-badge" src="{{ image.url }}" />
@@ -10,17 +10,14 @@
             {% endthumbnail %}
             <div class="overlay"></div>
         </div>
-    </a>
     <div class="identityContent">
         <div class="row">
             <div class="col-lg-10 col-xs-10">
-                <a href="id/{{ identity.id }}/">
                     {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
                         <img class="busLogo" src="{{ image.url }}" alt="{{ identity.name }}"/>
                     {% empty %}
                     <span class="icon-knotis"></span><img class="tile-badge defaultImg busLogo" />
                     {% endthumbnail %}
-                </a>
             </div>
             <div class="col-lg-1 col-xs-1">
                 <!--
@@ -36,13 +33,16 @@
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <h1 style="white-space:nowrap;">{{ identity.name }}</h1>
+                <!--
                 {% if identity %}
                 <a class="busLink" href="id/{{ identity.id }}/">Profile</a>
                 {% endif %}
+                --!>
                 <!--                        <a href="" class="btnFollow" href="">Follow</a>                                          -->
                 <!--                        <p class="location"><img src="assets/img/icon_location.png"/> <span>0.2 Miles</span></p> -->
                 <p class="location"> {{ address }} </p>
             </div>
         </div>
     </div>
+</a>
 </div>
