@@ -756,13 +756,13 @@ nav li.addLink a {
 }
 
 /* line 145, ../sass/_offerItem.scss */
-.identityContent {
+.identityContent, .transactionContent {
   position: relative;
   top: -40px;
   left: 15px;
 }
 /* line 149, ../sass/_offerItem.scss */
-.identityContent h1 {
+.identityContent h1, .transactionContent h1 {
   font-size: 23px;
   margin: 10px 0 15px;
   color: #919191;

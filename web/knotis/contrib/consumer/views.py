@@ -23,10 +23,14 @@ from django.views.generic import View
 
 from knotis.views import (
     FragmentView,
-    ContextView
+    ContextView,
+    EmbeddedView,
 )
 
-from knotis.contrib.layout.views import GridSmallView
+from knotis.contrib.layout.views import (
+    GridSmallView,
+    DefaultBaseView
+)
 
 
 from knotis.contrib.identity.models import Identity
@@ -105,24 +109,20 @@ class MyPurchasesGrid(GridSmallView):
         return self.context
 
 
-class MyPurchasesView(ContextView):
+class MyPurchasesView(EmbeddedView):
     template_name = 'knotis/consumer/my_purchases_view.html'
+    url_patterns = [
+        '^purchases(/(?P<purchase_filter>\w*))?/$',
+    ]
+    default_parent_view_class = DefaultBaseView
 
     def process_context(self):
         styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
         ]
 
         pre_scripts = []
 
         post_scripts = [
-            'knotis/layout/js/layout.js',
-            'navigation/js/navigation.js',
             'knotis/consumer/js/purchases.js'
         ]
 
