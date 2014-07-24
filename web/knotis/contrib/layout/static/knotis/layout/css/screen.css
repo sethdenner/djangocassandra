@@ -1626,3 +1626,9 @@ span.help-inline {
     padding: 10px 20px;
     width: 50%;
 }
+
+#about-us-form a {
+    width: 50%;
+    display: inline-block;
+    margin: 15px 0;
+}
