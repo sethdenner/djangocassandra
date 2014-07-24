@@ -30,7 +30,8 @@
 <![endif]-->
         {% block head %}{% endblock head %}
     </head>
-    <body>{% csrf_token %}
+    <body>
+        {% csrf_token %}
         {% block first %}{% endblock first %}
         {% block header %}{% endblock header %}
         {% block navigation %}{% endblock navigation %}

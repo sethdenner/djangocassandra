@@ -61,9 +61,9 @@ class ActionButton(FragmentView):
         return []
 
 
-class SplashTile(FragmentView):
-    template_name = 'knotis/layout/splash_tile.html'
-    view_name = 'splash_tile'
+class underConstruction(FragmentView):
+    template_name = 'knotis/layout/underConstruction.html'
+    view_name = 'underConstruction'
 
 
 class DefaultBaseView(EmbeddedView):
