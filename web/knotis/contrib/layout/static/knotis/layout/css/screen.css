@@ -1472,6 +1472,7 @@ h1.sectionHeader {
     font-family: "LatoLight", sans-serif;
     letter-spacing: 1px;
     margin-bottom: 15px;
+    color: white;
 }
 /* line 69, ../sass/_profile.scss */
 .heroInfo a {
@@ -1650,4 +1651,18 @@ span.help-inline {
     border-radius: 3px;
     font-size: 14px;
     cursor: pointer;
+}
+
+.profileBusiness .subNav {
+    position: absolute;
+    top: 448px;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid #dedede;
+    padding: 14px;
+    font-family: 'LatoReg';
+    text-align: center;
+    z-index: 4;
+    height: 40px;
 }
