@@ -21,7 +21,7 @@ from knotis.contrib.identity.models import (
     IdentityBusiness
 )
 from knotis.contrib.identity.api import (
-    IdentityApi
+    IdentityApi,
 )
 from knotis.contrib.endpoint.models import (
     Endpoint,

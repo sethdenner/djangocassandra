@@ -44,6 +44,7 @@ from models import (
     IdentityEstablishment
 )
 
+
 from knotis.contrib.relation.models import (
     RelationTypes
 )
