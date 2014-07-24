@@ -100,8 +100,8 @@ body {
 
 /* line 7, ../sass/_custom.scss */
 h1 {
-  font-size: 60px;
-  margin-bottom: 40px;
+  font-size: 50px;
+  margin-bottom: 30px;
   color: #a0a0a0;
   font-family: "LatoLight", sans-serif;
 }
@@ -629,26 +629,26 @@ nav li.addLink a {
 }
 
 /* line 40, ../sass/_offerItem.scss */
-.offerContent {
+.offerContent, .identityContent, .transactionContent {
   padding: 14px;
   color: #989fac;
   line-height: 28px;
   position: absolute;
   top: 80px;
+  width: 100%;
 }
-/* line 46, ../sass/_offerItem.scss */
-.offerContent h1 {
+/* line 47, ../sass/_offerItem.scss */
+.offerContent h1, .identityContent h1, .transactionContent h1 {
   font-size: 23px;
   margin: 10px 0 15px;
   color: #919191;
   font-family: "LatoLight", sans-serif;
-  width: 90%;
-  white-space: nowrap;
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 /* line 56, ../sass/_offerItem.scss */
-.offerContent a {
+.offerContent a, .identityContent a, .transactionContent a {
   color: #989fac;
 }
 
@@ -753,24 +753,6 @@ nav li.addLink a {
   max-width: 10px;
   display: inline-block;
   margin-right: 5px;
-}
-
-/* line 145, ../sass/_offerItem.scss */
-.identityContent, .transactionContent {
-  position: relative;
-  top: -40px;
-  left: 15px;
-}
-/* line 149, ../sass/_offerItem.scss */
-.identityContent h1, .transactionContent h1 {
-  font-size: 23px;
-  margin: 10px 0 15px;
-  color: #919191;
-  font-family: "LatoLight", sans-serif;
-  width: 90%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* line 1, ../sass/_offerCreate.scss */
