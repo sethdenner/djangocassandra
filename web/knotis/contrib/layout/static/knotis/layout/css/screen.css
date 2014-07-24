@@ -1650,4 +1650,5 @@ span.help-inline {
     margin: 16px;
     border-radius: 3px;
     font-size: 14px;
+    cursor: pointer;
 }

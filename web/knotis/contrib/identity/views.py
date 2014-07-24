@@ -513,14 +513,6 @@ class EstablishmentsGrid(GridSmallView):
 
         tiles = []
 
-<<<<<<< HEAD
-=======
-#        if 0 == start_range:
-#            tiles.append(
-#                SplashTile().render_template_fragment(Context())
-#            )
-
->>>>>>> 6ced7588a3d16eb882c189c25fa87455965766d3
         if establishments:
             for establishment in establishments:
 
