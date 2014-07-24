@@ -1578,3 +1578,13 @@ section .profileInfo:nth-child(5) {
     width: 20%;
     margin: 0 auto;
 }
+
+.forgotLink {
+    text-align: center;
+    margin: 20px 0 0;
+    font-size: 14px;
+}
+
+.forgotLink  a {
+    color: #2cc397;
+}
