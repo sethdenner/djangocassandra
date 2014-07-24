@@ -252,7 +252,6 @@ INSTALLED_APPS = (
     'knotis.contrib.facebook',
     'knotis.contrib.twitter',
     'knotis.contrib.stripe',
-    'knotis.contrib.rewards',
     'knotis.contrib.support',
     'knotis.contrib.admintools',
 )
@@ -318,7 +317,6 @@ LOGGING = {
 
 # Import additional settings.
 ENVIRONMENT_NAME = 'int'
-SIGNUP_POINTS = 25
 
 
 # You can key the configurations off of anything - I use project path.

@@ -27,7 +27,6 @@ class SearchApi(object):
     def search(
         search_query,
         identity=None,
-        is_superuser=False,
         **filters
     ):
         search_type = filters.pop('t', None)
