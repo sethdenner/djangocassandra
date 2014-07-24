@@ -1578,3 +1578,20 @@ section .profileInfo:nth-child(5) {
     width: 20%;
     margin: 0 auto;
 }
+
+.underConstruction h4 {
+    font-size: 60px;
+    font-family: 'LatoLight', sans-serif;
+    text-align: center;
+    width: 40%;
+    margin: 0 auto;
+    padding-bottom: 20px;
+}
+
+.underConstruction {
+    text-align: center;
+}
+
+.underConstruction .icon-knotis {
+    font-size: 60px;
+}
