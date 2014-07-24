@@ -275,7 +275,7 @@ nav .dropdown-menu {
     padding: 2px;
     font-family: 'LatoReg';
     top: 46px;
-    width: 110%;
+    width: 100%;
     overflow: hidden;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
@@ -299,16 +299,18 @@ nav .dropdown-menu a:hover {
 nav .dropdown-menu li img {
     border-radius: 50%;
     position: absolute;
-    margin-top: -8px;
-    right: 12px;
+    margin-top: -10px;
+    right: 10px;
+    height: 30px;
 }
 
 /* line 137, ../sass/_nav.scss */
 .userImg {
     border-radius: 50%;
     position: absolute;
-    top: 5px;
-    right: 12px;
+    margin-top: -10px;
+    right: 10px;
+    height: 30px;
 }
 
 /* line 144, ../sass/_nav.scss */
