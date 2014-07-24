@@ -192,10 +192,19 @@ class EstablishmentProfileView(EmbeddedView):
         if not establishment:
             try:
                 if establishment_id:
-                    establishment = get_object_or_404(
-                        IdentityEstablishment,
-                        pk=establishment_id
+
+                    #TODO: FIX THIS GARBAGE.
+                    # This means making an identity view and a business view
+                    # and and dispatching accordingly.
+                    identity = Identity.objects.get(
+                        id=establishment_id
                     )
+                    if identity.identity_type == IdentityTypes.BUSINESS:
+                        establishments = IdentityEstablishment.objects.get_establishments(identity)
+                        establishment =  establishments[0]
+                        establishment_id = establishment.id
+                    elif identity.identity_type == IdentityTypes.ESTABLISHMENT:
+                        establishment = identity
 
                 elif backend_name:
                     establishment = get_object_or_404(
@@ -207,6 +216,7 @@ class EstablishmentProfileView(EmbeddedView):
                     raise IdentityEstablishment.DoesNotExist()
 
             except:
+
                 logger.exception(
                     'failed to get establishment with id ' + establishment_id
                 )
@@ -387,9 +397,17 @@ class EstablishmentProfileView(EmbeddedView):
             profile_content = 'establishments'
 
         post_scripts = self.context.get('post_scripts', [])
-        my_post_scripts = ['knotis/identity/js/update_profile.js']
+        my_post_scripts = [
+            'knotis/identity/js/update_profile.js',
+            'knotis/identity/js/profile.js',
+            'jcrop/js/jquery.Jcrop.js',
+            'scripts/fileuploader.js',
+            'scripts/jquery.colorbox.js',
+            'scripts/jquery.sickle.js',
+        ]
         for script in my_post_scripts:
             post_scripts.append(script)
+
 
         local_context = copy.copy(self.context)
         local_context.update({
@@ -413,6 +431,7 @@ class EstablishmentProfileView(EmbeddedView):
         })
 
         return local_context
+
 
 class BusinessesView(FragmentView):
     template_name = 'knotis/identity/businesses_view.html'
@@ -942,17 +961,15 @@ class EstablishmentProfileAbout(FragmentView):
         if about_markup:
             sections.append({
                 'markup': about_markup,
-                'css_class': 'about'
             })
 
-        carousel = EstablishmentAboutCarousel()
-        carousel_markup = carousel.render_template_fragment(local_context)
-        carousel_markup = carousel_markup.strip()
-        if carousel_markup:
-            sections.append({
-                'markup': carousel_markup,
-                'css_class': 'photo'
-            })
+        #carousel = EstablishmentAboutCarousel()
+        #carousel_markup = carousel.render_template_fragment(local_context)
+        #carousel_markup = carousel_markup.strip()
+        #if carousel_markup:
+        #    sections.append({
+        #        'markup': carousel_markup,
+        #    })
 
         feeds = EstablishmentAboutFeeds()
         feeds_markup = feeds.render_template_fragment(local_context)
@@ -960,7 +977,6 @@ class EstablishmentProfileAbout(FragmentView):
         if feeds_markup:
             sections.append({
                 'markup': feeds_markup,
-                'css_class': 'ratings'
             })
 
         location = EstablishmentProfileLocation()
@@ -969,7 +985,6 @@ class EstablishmentProfileAbout(FragmentView):
         if location_markup:
             sections.append({
                 'markup': location_markup,
-                'css_class': 'location'
             })
 
         local_context.update({
@@ -983,14 +998,6 @@ get_class = lambda x: globals()[x]
 class BusinessProfileView(FragmentView):
     template_name = 'knotis/identity/profile_business.html'
     view_name = 'business_profile'
-
-    def get(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        pass
 
     def process_context(self):
         pass
