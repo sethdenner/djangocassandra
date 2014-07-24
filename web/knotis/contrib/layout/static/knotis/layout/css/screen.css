@@ -1632,3 +1632,11 @@ span.help-inline {
     display: inline-block;
     margin: 15px 0;
 }
+
+#modal-box {
+    text-align: center;
+}
+
+#modal-box .btn {
+    margin: 40px 0 10px;
+}
