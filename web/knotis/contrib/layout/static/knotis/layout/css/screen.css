@@ -1421,12 +1421,6 @@ h1.sectionHeader {
     background-size: cover;
 }
 
-/* line 18, ../sass/_profile.scss */
-.profileContent {
-    position: relative;
-    top: 300px;
-}
-
 /* line 23, ../sass/_profile.scss */
 .profileBusiness section {
     background: white;
@@ -1620,6 +1614,9 @@ span.help-inline {
     background: white;
     padding: 12px;
     border-radius: 3px;
+    width: 50%;
+    display: inline-block;
+    margin: 10px 0;
 }
 
 #about-us-form label {
@@ -1627,4 +1624,5 @@ span.help-inline {
     font-size: 14px;
     display: inline-block;
     padding: 10px 20px;
+    width: 50%;
 }
