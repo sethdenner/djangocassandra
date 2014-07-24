@@ -243,11 +243,14 @@ class EmbeddedView(
             request.POST.get('format', self.response_format).lower()
         )
 
-        return super(EmbeddedView, self).dispatch(
+        response = super(EmbeddedView, self).dispatch(
             request,
             *args,
             **kwargs
         )
+        self.context['format'] = self.response_format
+
+        return response
 
     def render_to_response(
         self,
