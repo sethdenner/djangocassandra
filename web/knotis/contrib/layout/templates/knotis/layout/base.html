@@ -30,7 +30,9 @@
 <![endif]-->
         {% block head %}{% endblock head %}
     </head>
-    <body>{% csrf_token %}
+    <body>
+        <div class="underConstruction hide"><h4>Coming Soon.</h4></div>
+        {% csrf_token %}
         {% block first %}{% endblock first %}
         {% block header %}{% endblock header %}
         {% block navigation %}{% endblock navigation %}
