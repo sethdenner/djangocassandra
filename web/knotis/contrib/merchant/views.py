@@ -227,7 +227,7 @@ class MyCustomersGrid(GridSmallView):
         request = self.request
         session = request.session
 
-        current_identity_id = session['current_identity']
+        current_identity_id = session.get('current_identity')
 
         try:
             current_identity = Identity.objects.get(pk=current_identity_id)
