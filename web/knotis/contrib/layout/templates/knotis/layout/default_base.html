@@ -10,7 +10,13 @@
                 <!-- Search Form -->
                 <div class="col-lg-3 col-xs-4">
                     <div class="search">
-                        <input type="search" name="knotisSearch" placeholder="Search">
+                        <form action="search/" method="get">
+                            {% if search_query %}
+                                <input type="/search" name="q" value="{{search_query}}">
+                            {% else %}
+                                <input type="/search" name="q" placeholder="Search">
+                            {% endif %}
+                        </form>
                     </div>
                 </div>
                 <!-- // End Search Form -->
