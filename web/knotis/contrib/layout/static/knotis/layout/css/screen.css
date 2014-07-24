@@ -1640,3 +1640,14 @@ span.help-inline {
 #modal-box .btn {
     margin: 40px 0 10px;
 }
+
+.change-profile-cover-link {
+    position: absolute;
+    color: white;
+    background: rgba(0, 0, 0, 0.21);
+    padding: 12px 14px;
+    right: 0;
+    margin: 16px;
+    border-radius: 3px;
+    font-size: 14px;
+}
