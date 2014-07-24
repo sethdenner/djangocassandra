@@ -1678,3 +1678,7 @@ span.help-inline {
     font-size: 50px;
     color: rgb(207, 207, 207);
 }
+.profileContent {
+    position: relative;
+    top: 310px;
+}
