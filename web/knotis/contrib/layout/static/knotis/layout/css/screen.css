@@ -1215,7 +1215,6 @@ nav li.addLink a {
 }
 /* line 82, ../sass/_modals.scss */
 #offer-modal .modal-content {
-    background: url("http://placekitten.com/1000/1000") no-repeat center top;
     background-size: cover;
     border-radius: 0;
     border: 0;

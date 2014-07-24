@@ -4,11 +4,9 @@
     <a href="" data-toggle="modal" data-target="#offer-modal">
         <div class="busCover">
             {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
-            <a href="id/{{ identity.id }}/">
                 <img class="tile-badge" src="{{ image.url }}" />
-            </a>
             {% empty %}
-            <img class="tile-image defaultImg"  alt="{{ identity.name }}" src="" />
+                <img class="tile-image defaultImg"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:'darkgrey' }}.png" />
             {% endthumbnail %}
             <div class="overlay"></div>
         </div>
@@ -16,14 +14,16 @@
     <div class="identityContent">
         <div class="row">
             <div class="col-lg-10 col-xs-10">
-                {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
-                <a href="id/{{ identity.id }}/"><img class="busLogo" src="{{ image.url }}" alt="{{ identity.name }}"/></a>
-                {% empty %}
-                <a href="id/{{ identity.id }}/"><span class="icon-knotis"></span><img class="tile-badge defaultImg" src="{{ image.url }}" /></a>
-                {% endthumbnail %}
+                <a href="id/{{ identity.id }}/">
+                    {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
+                        <img class="busLogo" src="{{ image.url }}" alt="{{ identity.name }}"/>
+                    {% empty %}
+                    <span class="icon-knotis"></span><img class="tile-badge defaultImg busLogo" />
+                    {% endthumbnail %}
+                </a>
             </div>
             <div class="col-lg-1 col-xs-1">
-                <!-- 
+                <!--
 <div class="dropdown">
 <a data-toggle="dropdown" href=""><img class="iconMore" src="/assets/img/icon_more_offerItem.png"/></a>
 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">

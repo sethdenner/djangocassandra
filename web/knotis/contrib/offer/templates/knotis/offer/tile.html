@@ -6,7 +6,7 @@
                     {% thumbnail offer_banner_image.image.image '240x161' crop=offer_banner_image.crop as image %}
                     <img src="{{ image.url }}" alt="{{ offer.title }}"/>
                     {% empty %}
-                    <img class="tile-image"  alt="{{ offer.title }}" src="http://placekitten.com/240/161/" />
+                    <img alt="{{ offer.title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
                     {% endthumbnail %}
                     <div class="overlay"></div>
                 </div>
@@ -17,11 +17,11 @@
                         {% thumbnail business_badge_image.image.image '80x80' crop=business_badge_image.crop as image %}
                         <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
                         {% empty %}
-                        <img class="tile-badge" src="http://placekitten.com/80/80/" />
+                        <img class="busLogo" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
                         {% endthumbnail %}
                     </div>
                     <div class="col-lg-1 col-xs-1">
-<!-- 
+<!--
                        <div class="dropdown">
                             <a data-toggle="dropdown" href=""><img class="iconMore" src="/assets/img/icon_more_offerItem.png"/></a>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
