@@ -1579,6 +1579,16 @@ section .profileInfo:nth-child(5) {
     margin: 0 auto;
 }
 
+.forgotLink {
+    text-align: center;
+    margin: 20px 0 0;
+    font-size: 14px;
+}
+
+.forgotLink  a {
+    color: #2cc397;
+}
+
 .underConstruction h4 {
     font-size: 60px;
     font-family: 'LatoLight', sans-serif;
@@ -1594,4 +1604,25 @@ section .profileInfo:nth-child(5) {
 
 .underConstruction .icon-knotis {
     font-size: 60px;
+}
+
+span.help-inline {
+    display: inline-block;
+    width: 100%;
+    color: rgb(252, 169, 169);
+    font-size: 13px;
+}
+
+#about-us-form input {
+    border: 1px solid #E6E6E6;
+    background: white;
+    padding: 12px;
+    border-radius: 3px;
+}
+
+#about-us-form label {
+    font-family: 'LatoReg', sans-serif;
+    font-size: 14px;
+    display: inline-block;
+    padding: 10px 20px;
 }

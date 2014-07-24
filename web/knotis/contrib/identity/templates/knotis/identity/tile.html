@@ -1,47 +1,49 @@
 {% load thumbnail %}
 
-        <div class="col-lg-4 col-xs-12 offerItem">
-            <a href="" data-toggle="modal" data-target="#offer-modal">
-                <div class="busCover">
-                    {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
-                    <img src="{{ image.url }}" alt="{{ identity.name }}"/>
-                    {% empty %}
-                    <img class="tile-image"  alt="{{ identity.name }}" src="http://placekitten.com/240/135/" />
-                    {% endthumbnail %}
-                    <div class="overlay"></div>
-                </div>
+<div class="col-lg-4 col-xs-12 offerItem">
+    <a href="" data-toggle="modal" data-target="#offer-modal">
+        <div class="busCover">
+            {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
+            <a href="id/{{ identity.id }}/">
+                <img class="tile-badge" src="http://placekitten.com/80/80/" />
             </a>
-            <div class="identityContent">
-                <div class="row">
-                    <div class="col-lg-10 col-xs-10">
-                        {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
-                        <img class="busLogo" src="{{ image.url }}" alt="{{ identity.name }}"/>
-                        {% empty %}
-                        <img class="tile-badge" src="http://placekitten.com/80/80/" />
-                        {% endthumbnail %}
-                    </div>
-                    <div class="col-lg-1 col-xs-1">
-<!-- 
-                       <div class="dropdown">
-                            <a data-toggle="dropdown" href=""><img class="iconMore" src="/assets/img/icon_more_offerItem.png"/></a>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                <li><a href="">Extra Link</a></li>
-                            </ul>
-                        </div>
+            {% empty %}
+            <img class="tile-image"  alt="{{ identity.name }}" src="http://placekitten.com/240/135/" />
+            {% endthumbnail %}
+            <div class="overlay"></div>
+        </div>
+    </a>
+    <div class="identityContent">
+        <div class="row">
+            <div class="col-lg-10 col-xs-10">
+                {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
+                <img class="busLogo" src="{{ image.url }}" alt="{{ identity.name }}"/>
+                {% empty %}
+                <a href="id/{{ identity.id }}/"><img class="tile-badge" src="http://placekitten.com/80/80/" /></a>
+                {% endthumbnail %}
+            </div>
+            <div class="col-lg-1 col-xs-1">
+                <!-- 
+<div class="dropdown">
+<a data-toggle="dropdown" href=""><img class="iconMore" src="/assets/img/icon_more_offerItem.png"/></a>
+<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+<li><a href="">Extra Link</a></li>
+</ul>
+</div>
 -->
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-12 col-xs-12">
-                        <h1 style="white-space:nowrap;">{{ identity.name }}</h1>
-                        {% if identity %}
-                            <a class="busLink" href="id/{{ identity.id }}/">Profile</a>
-                        {% endif %}
-<!--                        <a href="" class="btnFollow" href="">Follow</a>                                          -->
-<!--                        <p class="location"><img src="assets/img/icon_location.png"/> <span>0.2 Miles</span></p> -->
-                            <p class="location"> {{ address }} </p>
-                    </div>
-                </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <h1 style="white-space:nowrap;">{{ identity.name }}</h1>
+                {% if identity %}
+                <a class="busLink" href="id/{{ identity.id }}/">Profile</a>
+                {% endif %}
+                <!--                        <a href="" class="btnFollow" href="">Follow</a>                                          -->
+                <!--                        <p class="location"><img src="assets/img/icon_location.png"/> <span>0.2 Miles</span></p> -->
+                <p class="location"> {{ address }} </p>
+            </div>
+        </div>
+    </div>
+</div>
