@@ -1,7 +1,7 @@
 /* Welcome to Compass.
- * In this file you should write your main styles. (or centralize your imports)
- * Import this file using the following HTML or equivalent:
- * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+* In this file you should write your main styles. (or centralize your imports)
+* Import this file using the following HTML or equivalent:
+* <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
 /* line 17, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -16,1538 +16,1564 @@ article, aside, canvas, details, embed,
 figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font: inherit;
-  font-size: 100%;
-  vertical-align: baseline;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    font-size: 100%;
+    vertical-align: baseline;
 }
 
 /* line 22, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 html {
-  line-height: 1;
+    line-height: 1;
 }
 
 /* line 24, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 ol, ul {
-  list-style: none;
+    list-style: none;
 }
 
 /* line 26, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 table {
-  border-collapse: collapse;
-  border-spacing: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
 /* line 28, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 caption, th, td {
-  text-align: left;
-  font-weight: normal;
-  vertical-align: middle;
+    text-align: left;
+    font-weight: normal;
+    vertical-align: middle;
 }
 
 /* line 30, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 q, blockquote {
-  quotes: none;
+    quotes: none;
 }
 /* line 103, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 q:before, q:after, blockquote:before, blockquote:after {
-  content: "";
-  content: none;
+    content: "";
+    content: none;
 }
 
 /* line 32, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 a img {
-  border: none;
+    border: none;
 }
 
 /* line 116, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
-  display: block;
+    display: block;
 }
 
 @font-face {
-  font-family: 'LatoBold';
-  src: url("/static/knotis/layout/layout/fonts/lato-bold.eot");
-  /* IE9 Compat Modes */
-  src: url("/static/knotis/layout/fonts/lato-bold.eot?#iefix") format("embedded-opentype"), url("/static/knotis/layout/fonts/lato-bold.woff") format("woff"), url("/static/knotis/layout/fonts/lato-bold.ttf") format("truetype"), url("/static/knotis/layout/fonts/lato-bold.svg#svgFontName") format("svg");
-  /* Legacy iOS */
+    font-family: 'LatoBold';
+    src: url("/static/knotis/layout/layout/fonts/lato-bold.eot");
+    /* IE9 Compat Modes */
+    src: url("/static/knotis/layout/fonts/lato-bold.eot?#iefix") format("embedded-opentype"), url("/static/knotis/layout/fonts/lato-bold.woff") format("woff"), url("/static/knotis/layout/fonts/lato-bold.ttf") format("truetype"), url("/static/knotis/layout/fonts/lato-bold.svg#svgFontName") format("svg");
+    /* Legacy iOS */
 }
 
 @font-face {
-  font-family: 'LatoReg';
-  src: url("/static/knotis/layout/fonts/lato-regular.eot");
-  /* IE9 Compat Modes */
-  src: url("/static/knotis/layout/fonts/lato-regular.eot?#iefix") format("embedded-opentype"), url("/static/knotis/layout/fonts/lato-regular.woff") format("woff"), url("/static/knotis/layout/fonts/lato-regular.ttf") format("truetype"), url("/static/knotis/layout/fonts/lato-regular.svg#svgFontName") format("svg");
-  /* Legacy iOS */
+    font-family: 'LatoReg';
+    src: url("/static/knotis/layout/fonts/lato-regular.eot");
+    /* IE9 Compat Modes */
+    src: url("/static/knotis/layout/fonts/lato-regular.eot?#iefix") format("embedded-opentype"), url("/static/knotis/layout/fonts/lato-regular.woff") format("woff"), url("/static/knotis/layout/fonts/lato-regular.ttf") format("truetype"), url("/static/knotis/layout/fonts/lato-regular.svg#svgFontName") format("svg");
+    /* Legacy iOS */
 }
 
 @font-face {
-  font-family: 'LatoLight';
-  src: url("/static/knotis/layout/fonts/lato-light.eot");
-  /* IE9 Compat Modes */
-  src: url("/static/knotis/layout/fonts/lato-light.eot?#iefix") format("embedded-opentype"), url("/static/knotis/layout/fonts/lato-light.woff") format("woff"), url("/static/knotis/layout/fonts/lato-light.ttf") format("truetype"), url("/static/knotis/layout/fonts/lato-light.svg#svgFontName") format("svg");
-  /* Legacy iOS */
+    font-family: 'LatoLight';
+    src: url("/static/knotis/layout/fonts/lato-light.eot");
+    /* IE9 Compat Modes */
+    src: url("/static/knotis/layout/fonts/lato-light.eot?#iefix") format("embedded-opentype"), url("/static/knotis/layout/fonts/lato-light.woff") format("woff"), url("/static/knotis/layout/fonts/lato-light.ttf") format("truetype"), url("/static/knotis/layout/fonts/lato-light.svg#svgFontName") format("svg");
+    /* Legacy iOS */
 }
 
 /* line 1, ../sass/_custom.scss */
 body {
-  background: #f5f5f5;
-  color: #777777;
-  font-family: 'LatoReg', sans-serif;
+    background: #f5f5f5;
+    color: #777777;
+    font-family: 'LatoReg', sans-serif;
 }
 
 /* line 7, ../sass/_custom.scss */
 h1 {
-  font-size: 50px;
-  margin-bottom: 30px;
-  color: #a0a0a0;
-  font-family: "LatoLight", sans-serif;
+    font-size: 50px;
+    margin-bottom: 30px;
+    color: #a0a0a0;
+    font-family: "LatoLight", sans-serif;
 }
 
 /* line 14, ../sass/_custom.scss */
 a:hover {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 /* line 18, ../sass/_custom.scss */
 .mainContent {
-  margin-top: 160px;
-  margin-left: 72px;
-  max-width: 100%;
-  padding: 0 26px;
+    margin-top: 160px;
+    margin-left: 72px;
+    max-width: 100%;
+    padding: 0 26px;
 }
 
 /* line 25, ../sass/_custom.scss */
 .modal-dialog {
-  width: 100%;
-  margin: 0;
+    width: 100%;
+    margin: 0;
 }
 
 /* line 30, ../sass/_custom.scss */
 .modal-body {
-  padding: 20px 0;
+    padding: 20px 0;
 }
 
 /* line 34, ../sass/_custom.scss */
 .modal-content {
-  border-radius: 3px;
+    border-radius: 3px;
 }
 
 /* line 38, ../sass/_custom.scss */
 #offer-modal.modal {
-  left: 0;
-  bottom: auto;
-  right: 0;
-  width: 50%;
-  margin-left: 0;
-  margin: 0 auto;
-  background-color: transparent;
-  border: 0;
-  border: 0;
-  border-radius: 3px;
-  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0);
-  box-shadow: 0 3px 9px rgba(0, 0, 0, 0);
-  background-clip: padding-box;
+    left: 0;
+    bottom: auto;
+    right: 0;
+    width: 50%;
+    margin-left: 0;
+    margin: 0 auto;
+    background-color: transparent;
+    border: 0;
+    border: 0;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0);
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0);
+    background-clip: padding-box;
 }
 
 /* General Navigation Styles */
 /* line 2, ../sass/_nav.scss */
 nav {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 55px;
-  background: #2cc397;
-  padding: 8px 8px 8px 0;
-  z-index: 1000;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 14px;
-  /* End General Nav Styles */
-  /* Search Styles */
-  /* // End Search Styles */
-  /* Styles for Identity Switcher */
-  /* // End Styles for Identity Switcher */
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 55px;
+    background: #2cc397;
+    padding: 8px 8px 8px 0;
+    z-index: 1000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 14px;
+    /* End General Nav Styles */
+    /* Search Styles */
+    /* // End Search Styles */
+    /* Styles for Identity Switcher */
+    /* // End Styles for Identity Switcher */
 }
 /* line 13, ../sass/_nav.scss */
 nav .logo {
-  text-align: center;
-  width: 80px;
-  margin: 0 auto;
+    text-align: center;
+    width: 80px;
+    margin: 0 auto;
 }
 /* line 17, ../sass/_nav.scss */
 nav .logo img {
-  max-width: 100%;
+    max-width: 100%;
 }
 /* line 21, ../sass/_nav.scss */
 nav a {
-  color: white;
-  text-decoration: none;
+    color: white;
+    text-decoration: none;
 }
 /* line 25, ../sass/_nav.scss */
 nav a:hover {
-  color: white;
+    color: white;
 }
 /* line 28, ../sass/_nav.scss */
 nav a:visited {
-  text-decoration: none;
+    text-decoration: none;
 }
 /* line 35, ../sass/_nav.scss */
 nav .search input {
-  background-color: transparent;
-  border: 0;
-  focus: 0;
-  outline: 0;
-  border-bottom: 1px solid #a6e5cd;
-  color: white;
-  font-size: 12px;
-  padding-bottom: 6px;
-  margin-top: 6px;
-  width: 100%;
+    background-color: transparent;
+    border: 0;
+    focus: 0;
+    outline: 0;
+    border-bottom: 1px solid #a6e5cd;
+    color: white;
+    font-size: 12px;
+    padding-bottom: 6px;
+    margin-top: 6px;
+    width: 100%;
 }
 /* line 47, ../sass/_nav.scss */
 nav .search img {
-  width: 12px;
-  position: relative;
-  top: 4px;
-  right: 50px;
+    width: 12px;
+    position: relative;
+    top: 4px;
+    right: 50px;
 }
 /* line 53, ../sass/_nav.scss */
 nav .search ::-webkit-input-placeholder {
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 11px;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 11px;
 }
 /* line 59, ../sass/_nav.scss */
 nav .search :-moz-placeholder {
-  /* Firefox 18- */
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 11px;
+    /* Firefox 18- */
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 11px;
 }
 /* line 66, ../sass/_nav.scss */
 nav .search ::-moz-placeholder {
-  /* Firefox 19+ */
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 11px;
+    /* Firefox 19+ */
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 11px;
 }
 /* line 73, ../sass/_nav.scss */
 nav .search :-ms-input-placeholder {
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 11px;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 11px;
 }
 /* line 83, ../sass/_nav.scss */
 nav .dropdown {
-  font-size: 12px;
-  border-radius: 4px;
-  padding: 15px 0 15px 9px;
-  width: 100%;
-  position: absolute;
-  right: 0;
-  top: -2px;
-  border: 1px solid #2cc397;
-  transition: all 0.2s ease;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+    font-size: 12px;
+    border-radius: 4px;
+    padding: 15px 0 15px 9px;
+    width: 100%;
+    position: absolute;
+    right: 0;
+    top: -2px;
+    border: 1px solid #2cc397;
+    transition: all 0.2s ease;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 /* line 95, ../sass/_nav.scss */
 nav .dropdown a {
-  color: white;
-  text-decoration: none;
-  padding: 13px 0 13px 0;
-  outline: 0;
+    color: white;
+    text-decoration: none;
+    padding: 13px 0 13px 0;
+    outline: 0;
 }
 /* line 102, ../sass/_nav.scss */
 nav .dropdown:hover {
-  border: 1px solid white;
+    border: 1px solid white;
 }
 /* line 105, ../sass/_nav.scss */
 nav .dropdown-menu {
-  border: 0;
-  padding: 2px;
-  font-family: 'LatoReg';
-  top: 46px;
-  width: 110%;
-  overflow: hidden;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+    border: 0;
+    padding: 2px;
+    font-family: 'LatoReg';
+    top: 46px;
+    width: 110%;
+    overflow: hidden;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 /* line 114, ../sass/_nav.scss */
 nav .dropdown-menu a {
-  color: black;
-  padding: 20px 0 20px 10px;
-  font-size: 11px;
-  display: inline-flex;
-  text-decoration: none;
-  width: 100%;
+    color: black;
+    padding: 20px 0 20px 10px;
+    font-size: 11px;
+    display: inline-flex;
+    text-decoration: none;
+    width: 100%;
 }
 /* line 122, ../sass/_nav.scss */
 nav .dropdown-menu a:hover {
-  background: #f4f4f4;
-  color: black;
-  transition: all 0.3s ease;
+    background: #f4f4f4;
+    color: black;
+    transition: all 0.3s ease;
 }
 /* line 127, ../sass/_nav.scss */
 nav .dropdown-menu li img {
-  border-radius: 50%;
-  position: absolute;
-  margin-top: -8px;
-  right: 12px;
+    border-radius: 50%;
+    position: absolute;
+    margin-top: -8px;
+    right: 12px;
 }
 
 /* line 137, ../sass/_nav.scss */
 .userImg {
-  border-radius: 50%;
-  position: absolute;
-  top: 5px;
-  right: 12px;
+    border-radius: 50%;
+    position: absolute;
+    top: 5px;
+    right: 12px;
 }
 
 /* line 144, ../sass/_nav.scss */
 nav button, nav button:active, nav button:visted {
-  outline: 0;
+    outline: 0;
 }
 
 /* line 148, ../sass/_nav.scss */
 nav button.logIn:hover, nav button.signUp:hover {
-  background: #2cc397;
-  border: 2px solid white;
+    background: #2cc397;
+    border: 2px solid white;
 }
 
 /* line 153, ../sass/_nav.scss */
 nav button.logIn {
-  border: 2px solid transparent;
-  background: transparent;
-  padding: 10px 30px;
-  text-transform: uppercase;
-  font-size: 12px;
+    border: 2px solid transparent;
+    background: transparent;
+    padding: 10px 30px;
+    text-transform: uppercase;
+    font-size: 12px;
 }
 
 /* line 161, ../sass/_nav.scss */
 nav button.signUp {
-  border: 2px solid transparent;
-  background: #36A887;
-  padding: 10px 30px;
-  text-transform: uppercase;
-  font-size: 12px;
+    border: 2px solid transparent;
+    background: #36A887;
+    padding: 10px 30px;
+    text-transform: uppercase;
+    font-size: 12px;
 }
 
 /* line 169, ../sass/_nav.scss */
 .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
-  background: transparent;
+    background: transparent;
 }
 
 /* line 173, ../sass/_nav.scss */
 nav li.addLink {
-  background: #555555;
-  border-radius: 3px;
+    background: #555555;
+    border-radius: 3px;
 }
 /* line 176, ../sass/_nav.scss */
 nav li.addLink a {
-  color: white;
+    color: white;
 }
 
 /* line 181, ../sass/_nav.scss */
 #auth-controls a {
-  background: transparent;
-  border: 2px solid rgba(255, 255, 255, 0.29);
-  padding: 8px 25px;
-  margin: 0 5px;
-  font-size: 13px;
-  border-radius: 3px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.29);
+    padding: 8px 25px;
+    margin: 0 5px;
+    font-size: 13px;
+    border-radius: 3px;
 }
 
 /* line 190, ../sass/_nav.scss */
 #auth-controls a.signUp {
-  background: rgba(0, 0, 0, 0.16);
-  border: rgba(0, 0, 0, 0.16);
-  padding: 10px 25px;
+    background: rgba(0, 0, 0, 0.16);
+    border: rgba(0, 0, 0, 0.16);
+    padding: 10px 25px;
 }
 
 /* line 1, ../sass/_subNav.scss */
 .subNav {
-  position: fixed;
-  top: 55px;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid #dedede;
-  padding: 14px;
-  font-family: 'LatoReg';
-  text-align: center;
-  z-index: 4;
-  height: 40px;
+    position: fixed;
+    top: 55px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid #dedede;
+    padding: 14px;
+    font-family: 'LatoReg';
+    text-align: center;
+    z-index: 4;
+    height: 40px;
 }
 /* line 12, ../sass/_subNav.scss */
 .subNav ul li {
-  display: inline-flex;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 0 20px 0 20px;
-  text-align: center;
-  vertical-align: middle;
+    display: inline-flex;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0 20px 0 20px;
+    text-align: center;
+    vertical-align: middle;
 }
 /* line 20, ../sass/_subNav.scss */
 .subNav ul li a {
-  color: #5f5f5f;
-  padding-bottom: 10px;
+    color: #5f5f5f;
+    padding-bottom: 10px;
 }
 /* line 26, ../sass/_subNav.scss */
 .subNav ul li.active {
-  color: #2cc397;
-  border-bottom: 4px solid #2cc397;
+    color: #2cc397;
+    border-bottom: 4px solid #2cc397;
 }
 
 /* line 1, ../sass/_sideBar.scss */
 #sidebar-wrapper {
-  margin-left: -250px;
-  left: 250px;
-  width: 72px;
-  background: white;
-  position: fixed;
-  height: 100%;
-  top: 50px;
-  z-index: 100;
-  transition: all 0.4s ease 0s;
-  padding-top: 20px;
-  overflow-y: auto;
+    margin-left: -250px;
+    left: 250px;
+    width: 72px;
+    background: white;
+    position: fixed;
+    height: 100%;
+    top: 50px;
+    z-index: 100;
+    transition: all 0.4s ease 0s;
+    padding-top: 20px;
+    overflow-y: auto;
 }
 
 /* line 15, ../sass/_sideBar.scss */
 .sidebar-nav {
-  position: absolute;
-  top: 5px;
-  width: 100%;
-  padding: 0 0 50px 0;
+    position: absolute;
+    top: 5px;
+    width: 100%;
+    padding: 0 0 50px 0;
 }
 
 /* line 22, ../sass/_sideBar.scss */
 .sidebar-nav li a {
-  color: #727272;
-  display: inline-block;
-  text-decoration: none;
-  width: 100%;
-  position: relative;
-  top: -6px;
-  padding: 8px 0;
+    color: #727272;
+    display: inline-block;
+    text-decoration: none;
+    width: 100%;
+    position: relative;
+    top: -6px;
+    padding: 8px 0;
 }
 /* line 30, ../sass/_sideBar.scss */
 .sidebar-nav li a img {
-  max-width: 100%;
-  padding: 10px;
+    max-width: 100%;
+    padding: 10px;
 }
 /* line 34, ../sass/_sideBar.scss */
 .sidebar-nav li a .circle i {
-  color: white;
+    color: white;
 }
 
 /* line 39, ../sass/_sideBar.scss */
 .sidebar-nav li a:hover {
-  color: white;
+    color: white;
 }
 
 /* line 43, ../sass/_sideBar.scss */
 .sidebar-nav li:hover {
-  color: #fff;
-  background: #595959;
-  text-decoration: none;
-  transition: all 0.2s ease;
+    color: #fff;
+    background: #595959;
+    text-decoration: none;
+    transition: all 0.2s ease;
 }
 
 /* line 50, ../sass/_sideBar.scss */
 .sidebar-label {
-  display: none;
-  position: absolute;
-  left: 75px;
-  top: 29px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 12px;
+    display: none;
+    position: absolute;
+    left: 75px;
+    top: 29px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 12px;
 }
 
 /* line 60, ../sass/_sideBar.scss */
 .sidebar-overlay {
-  height: 100%;
-  width: 100%;
-  background: #3f3f3f;
-  position: fixed;
-  top: 0;
-  opacity: 0.9;
-  z-index: 5;
-  display: none;
+    height: 100%;
+    width: 100%;
+    background: #3f3f3f;
+    position: fixed;
+    top: 0;
+    opacity: 0.9;
+    z-index: 5;
+    display: none;
 }
 
 /* line 71, ../sass/_sideBar.scss */
 .sidebar-nav .circle {
-  border-radius: 50%;
-  border: 2px solid white;
-  background: #595959;
-  width: 40px;
-  height: 40px;
-  display: inline-block;
-  position: relative;
-  top: 6px;
-  left: 12px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: #595959;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    position: relative;
+    top: 6px;
+    left: 12px;
 }
 
 /* line 84, ../sass/_sideBar.scss */
 .sidebar-nav .icon-banking {
-  position: relative;
-  top: 1px;
-  left: 3px;
-  font-size: 32px;
+    position: relative;
+    top: 1px;
+    left: 3px;
+    font-size: 32px;
 }
 /* line 91, ../sass/_sideBar.scss */
 .sidebar-nav .icon-redeem {
-  position: relative;
-  right: 3px;
-  top: 4px;
-  font-size: 28px;
+    position: relative;
+    right: 3px;
+    top: 4px;
+    font-size: 28px;
 }
 /* line 98, ../sass/_sideBar.scss */
 .sidebar-nav .icon-profile-guy {
-  position: relative;
-  top: 4px;
-  left: 7px;
-  font-size: 24px;
+    position: relative;
+    top: 4px;
+    left: 7px;
+    font-size: 24px;
 }
 /* line 104, ../sass/_sideBar.scss */
 .sidebar-nav .icon-dashboard {
-  position: relative;
-  top: 6px;
-  left: 4px;
-  font-size: 18px;
+    position: relative;
+    top: 6px;
+    left: 4px;
+    font-size: 18px;
 }
 /* line 110, ../sass/_sideBar.scss */
 .sidebar-nav .icon-offers {
-  position: relative;
-  top: 6px;
-  left: 5px;
-  font-size: 22px;
+    position: relative;
+    top: 6px;
+    left: 5px;
+    font-size: 22px;
 }
 /* line 116, ../sass/_sideBar.scss */
 .sidebar-nav .icon-message {
-  position: relative;
-  top: 6px;
-  left: 6px;
-  font-size: 22px;
+    position: relative;
+    top: 6px;
+    left: 6px;
+    font-size: 22px;
 }
 /* line 122, ../sass/_sideBar.scss */
 .sidebar-nav .icon-promotions {
-  position: relative;
-  top: 6px;
-  left: 5px;
-  font-size: 24px;
+    position: relative;
+    top: 6px;
+    left: 5px;
+    font-size: 24px;
 }
 /* line 129, ../sass/_sideBar.scss */
 .sidebar-nav .icon-customers {
-  position: relative;
-  top: 3px;
-  left: 4px;
-  font-size: 28px;
+    position: relative;
+    top: 3px;
+    left: 4px;
+    font-size: 28px;
 }
 /* line 136, ../sass/_sideBar.scss */
 .sidebar-nav .icon-following {
-  position: relative;
-  top: 2px;
-  right: 5px;
-  font-size: 31px;
+    position: relative;
+    top: 2px;
+    right: 5px;
+    font-size: 31px;
 }
 /* line 143, ../sass/_sideBar.scss */
 .sidebar-nav .icon-reports {
-  position: relative;
-  top: 4px;
-  left: 6px;
-  font-size: 26px;
+    position: relative;
+    top: 4px;
+    left: 6px;
+    font-size: 26px;
 }
 /* line 150, ../sass/_sideBar.scss */
 .sidebar-nav .icon-settings {
-  position: relative;
-  top: 3px;
-  left: 4px;
-  font-size: 27px;
+    position: relative;
+    top: 3px;
+    left: 4px;
+    font-size: 27px;
 }
 /* line 157, ../sass/_sideBar.scss */
 .sidebar-nav .icon-business {
-  position: relative;
-  top: 5px;
-  left: 5px;
-  font-size: 25px;
+    position: relative;
+    top: 5px;
+    left: 5px;
+    font-size: 25px;
 }
 
 /* Styles for Offer Grid Item */
 /* line 2, ../sass/_offerItem.scss */
 .offerItem {
-  background: white;
-  padding: 0;
-  border-radius: 4px;
-  max-width: 250px;
-  height: 370px;
-  margin-right: 14px;
-  margin-bottom: 14px;
+    background: white;
+    padding: 0;
+    border-radius: 4px;
+    max-width: 250px;
+    height: 370px;
+    margin-right: 14px;
+    margin-bottom: 14px;
 }
 /* line 10, ../sass/_offerItem.scss */
 .offerItem .dropdown-menu {
-  position: absolute;
-  left: -134px;
-  top: 34px;
-  border: 0;
-  border-top-right-radius: 0;
-  padding: 0px 0;
-  font-family: 'LatoReg';
+    position: absolute;
+    left: -134px;
+    top: 34px;
+    border: 0;
+    border-top-right-radius: 0;
+    padding: 0px 0;
+    font-family: 'LatoReg';
 }
 /* line 18, ../sass/_offerItem.scss */
 .offerItem .dropdown-menu a {
-  color: black;
-  padding: 8px 16px;
-  border-radius: 3px;
-  border-top-right-radius: 0;
+    color: black;
+    padding: 8px 16px;
+    border-radius: 3px;
+    border-top-right-radius: 0;
 }
 /* line 24, ../sass/_offerItem.scss */
 .offerItem .dropdown-menu a:hover {
-  background: #2cc397;
-  color: white;
-  transition: all 0.3s ease;
+    background: #2cc397;
+    color: white;
+    transition: all 0.3s ease;
 }
 /* line 30, ../sass/_offerItem.scss */
 .offerItem .busCover {
-  overflow: hidden;
+    overflow: hidden;
 }
 /* line 33, ../sass/_offerItem.scss */
 .offerItem .busCover img {
-  border-radius: 3px;
-  min-width: 100%;
-  height: 140px;
+    border-radius: 3px;
+    min-width: 100%;
+    height: 140px;
 }
 
 /* line 40, ../sass/_offerItem.scss */
 .offerContent, .identityContent, .transactionContent {
-  padding: 14px;
-  color: #989fac;
-  line-height: 28px;
-  position: absolute;
-  top: 80px;
-  width: 100%;
+    padding: 14px;
+    color: #989fac;
+    line-height: 28px;
+    position: absolute;
+    top: 80px;
+    width: 100%;
 }
 /* line 47, ../sass/_offerItem.scss */
 .offerContent h1, .identityContent h1, .transactionContent h1 {
-  font-size: 23px;
-  margin: 10px 0 15px;
-  color: #919191;
-  font-family: "LatoLight", sans-serif;
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    font-size: 23px;
+    margin: 10px 0 15px;
+    color: #919191;
+    font-family: "LatoLight", sans-serif;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 /* line 56, ../sass/_offerItem.scss */
 .offerContent a, .identityContent a, .transactionContent a {
-  color: #989fac;
+    color: #989fac;
 }
 
 /* line 61, ../sass/_offerItem.scss */
 .iconMore {
-  max-width: 18px;
-  position: relative;
-  right: 6px;
-  top: 12px;
-  opacity: 0.6;
+    max-width: 18px;
+    position: relative;
+    right: 6px;
+    top: 12px;
+    opacity: 0.6;
 }
 
 /* line 68, ../sass/_offerItem.scss */
 .iconMore:hover {
-  opacity: 1.0;
+    opacity: 1.0;
 }
 
 /* line 72, ../sass/_offerItem.scss */
 .overlay {
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, transparent), color-stop(100%, #4a4a4a));
-  background-image: -webkit-linear-gradient(transparent, #4a4a4a);
-  background-image: -moz-linear-gradient(transparent, #4a4a4a);
-  background-image: -o-linear-gradient(transparent, #4a4a4a);
-  background-image: linear-gradient(transparent, #4a4a4a);
-  width: 100%;
-  height: 142px;
-  position: absolute;
-  top: 0;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, transparent), color-stop(100%, #4a4a4a));
+    background-image: -webkit-linear-gradient(transparent, #4a4a4a);
+    background-image: -moz-linear-gradient(transparent, #4a4a4a);
+    background-image: -o-linear-gradient(transparent, #4a4a4a);
+    background-image: linear-gradient(transparent, #4a4a4a);
+    width: 100%;
+    height: 142px;
+    position: absolute;
+    top: 0;
 }
 
 /* line 80, ../sass/_offerItem.scss */
 .busLogo {
-  border-radius: 50%;
-  border: 3px solid white;
-  max-width: 92px;
-  max-height: 92px;
+    border-radius: 50%;
+    border: 3px solid white;
+    max-width: 92px;
+    max-height: 92px;
 }
 
 /* line 87, ../sass/_offerItem.scss */
 .busLink {
-  font-size: 13px;
-  background: transparent;
-  display: inline-block;
-  text-align: center;
-  padding: 10px 50px;
-  border-radius: 3px;
-  color: #929292;
-  border: 2px solid #ebebeb;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+    font-size: 13px;
+    background: transparent;
+    display: inline-block;
+    text-align: center;
+    padding: 10px 50px;
+    border-radius: 3px;
+    color: #929292;
+    border: 2px solid #ebebeb;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* line 100, ../sass/_offerItem.scss */
 .busLink:hover {
-  color: #2cc397;
+    color: #2cc397;
 }
 
 /* line 104, ../sass/_offerItem.scss */
 .btnFollow {
-  color: #989fac;
-  text-align: center;
-  padding: 20px 0;
-  width: 100%;
-  display: inline-block;
-  border-radius: 4px;
-  border: 2px solid #e6e8ec;
-  transition: all 0.2s ease;
-  line-height: 0;
-  margin-top: 20px;
+    color: #989fac;
+    text-align: center;
+    padding: 20px 0;
+    width: 100%;
+    display: inline-block;
+    border-radius: 4px;
+    border: 2px solid #e6e8ec;
+    transition: all 0.2s ease;
+    line-height: 0;
+    margin-top: 20px;
 }
 /* line 115, ../sass/_offerItem.scss */
 .btnFollow a:hover {
-  color: white;
+    color: white;
 }
 
 /* line 119, ../sass/_offerItem.scss */
 .btnFollow:hover {
-  background: #2cc397;
-  color: white;
-  border: 2px solid #2cc397;
+    background: #2cc397;
+    color: white;
+    border: 2px solid #2cc397;
 }
 
 /* line 124, ../sass/_offerItem.scss */
 .btnFollow:active {
-  box-shadow: inset 2px 3px 3px #2b8d68;
+    box-shadow: inset 2px 3px 3px #2b8d68;
 }
 
 /* line 128, ../sass/_offerItem.scss */
 .location {
-  margin-top: 56px;
-  font-size: 15px;
-  display: inline-block;
-  width: 90%;
-  border-top: 1px solid #e4e4e4;
-  font-family: 'LatoLight', sans-serif;
-  position: absolute;
-  left: 0;
-  padding: 20px 20px 10px;
+    margin-top: 56px;
+    font-size: 15px;
+    display: inline-block;
+    width: 90%;
+    border-top: 1px solid #e4e4e4;
+    font-family: 'LatoLight', sans-serif;
+    position: absolute;
+    left: 0;
+    padding: 20px 20px 10px;
 }
 /* line 138, ../sass/_offerItem.scss */
 .location img {
-  max-width: 10px;
-  display: inline-block;
-  margin-right: 5px;
+    max-width: 10px;
+    display: inline-block;
+    margin-right: 5px;
 }
 
 /* line 1, ../sass/_offerCreate.scss */
 #offer-create {
-  text-align: center;
+    text-align: center;
 }
 /* line 3, ../sass/_offerCreate.scss */
 #offer-create h1 {
-  font-size: 34px;
-  text-align: center;
-  color: black;
-  margin: 20px 0;
+    font-size: 34px;
+    text-align: center;
+    color: black;
+    margin: 20px 0;
 }
 /* line 10, ../sass/_offerCreate.scss */
 #offer-create input, #offer-create textarea {
-  border: 1px solid rgba(192, 192, 192, 0.5);
-  background: #fdfdfd;
-  padding: 10px 20px;
-  border-radius: 2px;
-  color: #807F7F;
-  font-size: 15px;
-  outline: 0;
+    border: 1px solid rgba(192, 192, 192, 0.5);
+    background: #fdfdfd;
+    padding: 10px 20px;
+    border-radius: 2px;
+    color: #807F7F;
+    font-size: 15px;
+    outline: 0;
 }
 /* line 20, ../sass/_offerCreate.scss */
 #offer-create .navBtns a {
-  background: #2cc397;
-  color: white;
-  margin: 30px auto;
-  width: 230px;
-  padding: 13px 0;
+    background: #2cc397;
+    color: white;
+    margin: 30px auto;
+    width: 230px;
+    padding: 13px 0;
 }
 /* line 28, ../sass/_offerCreate.scss */
 #offer-create a:hover {
-  color: white;
+    color: white;
 }
 /* line 32, ../sass/_offerCreate.scss */
 #offer-create a.back {
-  background: #FFFFFF;
-  color: #B8B8B8;
-  border: 1px solid #B8B8B8;
+    background: #FFFFFF;
+    color: #B8B8B8;
+    border: 1px solid #B8B8B8;
 }
 /* line 38, ../sass/_offerCreate.scss */
 #offer-create label {
-  color: #777777;
+    color: #777777;
 }
 
 /* line 43, ../sass/_offerCreate.scss */
 .wrapper {
-  width: 70%;
-  margin: 0 auto;
+    width: 70%;
+    margin: 0 auto;
 }
 
 /* line 49, ../sass/_offerCreate.scss */
 .stepOne input {
-  width: 120px;
-  margin: 13px;
+    width: 120px;
+    margin: 13px;
 }
 /* line 53, ../sass/_offerCreate.scss */
 .stepOne .block {
-  display: inline-block;
-  width: 100%;
-  text-align: center;
-  position: relative;
-  left: 85px;
-  font-size: 14px;
-  color: #727171;
-  top: -5px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    left: 85px;
+    font-size: 14px;
+    color: #727171;
+    top: -5px;
 }
 /* line 63, ../sass/_offerCreate.scss */
 .stepOne input.radioBtn {
-  display: inline-block;
-  position: absolute;
-  top: 3px;
-  width: 35px;
-  height: 35px;
-  left: -15px;
+    display: inline-block;
+    position: absolute;
+    top: 3px;
+    width: 35px;
+    height: 35px;
+    left: -15px;
 }
 
 /* line 74, ../sass/_offerCreate.scss */
 .stepTwo .block {
-  font-size: 15px;
-  color: #727171;
-  width: 30px;
+    font-size: 15px;
+    color: #727171;
+    width: 30px;
 }
 /* line 79, ../sass/_offerCreate.scss */
 .stepTwo div:nth-child(3) {
-  padding-right: 135px;
+    padding-right: 135px;
 }
 
 /* line 85, ../sass/_offerCreate.scss */
 .stepThree textarea {
-  width: 50%;
-  height: 160px;
+    width: 50%;
+    height: 160px;
 }
 
 /* line 92, ../sass/_offerCreate.scss */
 .stepFour label {
-  font-size: 15px;
+    font-size: 15px;
 }
 /* line 95, ../sass/_offerCreate.scss */
 .stepFour input {
-  margin: 0 15px;
+    margin: 0 15px;
 }
 /* line 98, ../sass/_offerCreate.scss */
 .stepFour textarea {
-  width: 50%;
-  height: 160px;
-  margin: 20px 0;
+    width: 50%;
+    height: 160px;
+    margin: 20px 0;
 }
 
 /* line 106, ../sass/_offerCreate.scss */
 .stepFive .imgGallery li {
-  background: white;
-  width: 90px;
-  height: 90px;
-  border: 1px solid #c0c0c0;
-  display: inline-flex;
-  margin: -2px;
-  overflow: hidden;
-  transition: all 0.1s ease;
+    background: white;
+    width: 90px;
+    height: 90px;
+    border: 1px solid #c0c0c0;
+    display: inline-flex;
+    margin: -2px;
+    overflow: hidden;
+    transition: all 0.1s ease;
 }
 /* line 115, ../sass/_offerCreate.scss */
 .stepFive .imgGallery li img {
-  width: 100%;
+    width: 100%;
 }
 /* line 119, ../sass/_offerCreate.scss */
 .stepFive .imgGallery li:hover {
-  border: 3px solid white;
+    border: 3px solid white;
 }
 /* line 122, ../sass/_offerCreate.scss */
 .stepFive button, .stepFive .dropdown {
-  background: #FFFFFF;
-  color: #777777;
-  margin: 0 10px;
-  width: 170px;
-  padding: 13px 0;
-  border: 1px solid #E9E9E9;
-  border-radius: 3px;
-  outline: 0;
-  display: inline-block;
+    background: #FFFFFF;
+    color: #777777;
+    margin: 0 10px;
+    width: 170px;
+    padding: 13px 0;
+    border: 1px solid #E9E9E9;
+    border-radius: 3px;
+    outline: 0;
+    display: inline-block;
 }
 /* line 133, ../sass/_offerCreate.scss */
 .stepFive .mainImg {
-  width: 70%;
-  border: 1px solid #c0c0c0;
-  height: 230px;
-  margin: 20px auto;
-  overflow: hidden;
+    width: 70%;
+    border: 1px solid #c0c0c0;
+    height: 230px;
+    margin: 20px auto;
+    overflow: hidden;
 }
 /* line 139, ../sass/_offerCreate.scss */
 .stepFive .mainImg img {
-  width: 100%;
+    width: 100%;
 }
 /* line 143, ../sass/_offerCreate.scss */
 .stepFive .photoOptions {
-  margin: 0 auto;
+    margin: 0 auto;
 }
 /* line 147, ../sass/_offerCreate.scss */
 .stepFive .dropdown a {
-  padding: 13px 30px;
+    padding: 13px 30px;
 }
 /* line 150, ../sass/_offerCreate.scss */
 .stepFive .dropdown a:hover {
-  color: #777777;
+    color: #777777;
 }
 
 /* line 157, ../sass/_offerCreate.scss */
 .stepSix .wrapper {
-  width: 60%;
-  margin: 30px auto;
+    width: 60%;
+    margin: 30px auto;
 }
 /* line 161, ../sass/_offerCreate.scss */
 .stepSix input.block {
-  width: 150px;
-  text-align: center;
+    width: 150px;
+    text-align: center;
 }
 /* line 165, ../sass/_offerCreate.scss */
 .stepSix .radioBtn {
-  width: 90px;
-  position: absolute;
+    width: 90px;
+    position: absolute;
 }
 /* line 169, ../sass/_offerCreate.scss */
 .stepSix .wrapper div {
-  margin: 16px 0;
-  text-align: left;
+    margin: 16px 0;
+    text-align: left;
 }
 /* line 173, ../sass/_offerCreate.scss */
 .stepSix label {
-  margin-left: 30px;
+    margin-left: 30px;
 }
 /* line 176, ../sass/_offerCreate.scss */
 .stepSix .marginMid {
-  margin: 0 20px;
+    margin: 0 20px;
 }
 
 @font-face {
-  font-family: 'iconFont';
-  src: url("/static/knotis/layout/fonts/iconFont.eot?rz2jyh");
-  src: url("/static/knotis/layout/fonts/iconFont.eot?#iefixrz2jyh") format("embedded-opentype"), url("/static/knotis/layout/fonts/iconFont.woff?rz2jyh") format("woff"), url("/static/knotis/layout/fonts/iconFont.ttf?rz2jyh") format("truetype"), url("/static/knotis/layout/fonts/iconFont.svg?rz2jyh#icomoon") format("svg");
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'iconFont';
+    src: url("/static/knotis/layout/fonts/iconFont.eot?rz2jyh");
+    src: url("/static/knotis/layout/fonts/iconFont.eot?#iefixrz2jyh") format("embedded-opentype"), url("/static/knotis/layout/fonts/iconFont.woff?rz2jyh") format("woff"), url("/static/knotis/layout/fonts/iconFont.ttf?rz2jyh") format("truetype"), url("/static/knotis/layout/fonts/iconFont.svg?rz2jyh#icomoon") format("svg");
+    font-weight: normal;
+    font-style: normal;
 }
 
 /* line 12, ../sass/_iconFont.scss */
 [class^="icon-"], [class*=" icon-"] {
-  font-family: 'iconFont';
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-family: 'iconFont';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* line 26, ../sass/_iconFont.scss */
 .icon-search:before {
-  content: "\e601";
+    content: "\e601";
 }
 
 /* line 29, ../sass/_iconFont.scss */
 .icon-arrow-small-left:before {
-  content: "\e604";
+    content: "\e604";
 }
 
 /* line 32, ../sass/_iconFont.scss */
 .icon-arrow-small-down:before {
-  content: "\e605";
+    content: "\e605";
 }
 
 /* line 35, ../sass/_iconFont.scss */
 .icon-arrow-small-up:before {
-  content: "\e606";
+    content: "\e606";
 }
 
 /* line 38, ../sass/_iconFont.scss */
 .icon-arrow-small-right:before {
-  content: "\e607";
+    content: "\e607";
 }
 
 /* line 41, ../sass/_iconFont.scss */
 .icon-knotis:before {
-  content: "\e609";
+    content: "\e609";
 }
 
 /* line 44, ../sass/_iconFont.scss */
 .icon-receipt:before {
-  content: "\e60a";
+    content: "\e60a";
 }
 
 /* line 47, ../sass/_iconFont.scss */
 .icon-arrow-left:before {
-  content: "\e60d";
+    content: "\e60d";
 }
 
 /* line 50, ../sass/_iconFont.scss */
 .icon-arrow-down:before {
-  content: "\e60f";
+    content: "\e60f";
 }
 
 /* line 53, ../sass/_iconFont.scss */
 .icon-arrow-up:before {
-  content: "\e610";
+    content: "\e610";
 }
 
 /* line 56, ../sass/_iconFont.scss */
 .icon-arrow-right:before {
-  content: "\e611";
+    content: "\e611";
 }
 
 /* line 59, ../sass/_iconFont.scss */
 .icon-redeem:before {
-  content: "\e600";
+    content: "\e600";
 }
 
 /* line 62, ../sass/_iconFont.scss */
 .icon-profile-guy:before {
-  content: "\e602";
+    content: "\e602";
 }
 
 /* line 65, ../sass/_iconFont.scss */
 .icon-profile-woman:before {
-  content: "\e603";
+    content: "\e603";
 }
 
 /* line 68, ../sass/_iconFont.scss */
 .icon-settings:before {
-  content: "\e608";
+    content: "\e608";
 }
 
 /* line 71, ../sass/_iconFont.scss */
 .icon-reports:before {
-  content: "\e60b";
+    content: "\e60b";
 }
 
 /* line 74, ../sass/_iconFont.scss */
 .icon-cart:before {
-  content: "\e60c";
+    content: "\e60c";
 }
 
 /* line 77, ../sass/_iconFont.scss */
 .icon-promotions:before {
-  content: "\e60e";
+    content: "\e60e";
 }
 
 /* line 80, ../sass/_iconFont.scss */
 .icon-offers:before {
-  content: "\e612";
+    content: "\e612";
 }
 
 /* line 83, ../sass/_iconFont.scss */
 .icon-message:before {
-  content: "\e613";
+    content: "\e613";
 }
 
 /* line 86, ../sass/_iconFont.scss */
 .icon-following:before {
-  content: "\e614";
+    content: "\e614";
 }
 
 /* line 89, ../sass/_iconFont.scss */
 .icon-dashboard:before {
-  content: "\e616";
+    content: "\e616";
 }
 
 /* line 92, ../sass/_iconFont.scss */
 .icon-customers:before {
-  content: "\e617";
+    content: "\e617";
 }
 
 /* line 95, ../sass/_iconFont.scss */
 .icon-business:before {
-  content: "\e618";
+    content: "\e618";
 }
 
 /* line 98, ../sass/_iconFont.scss */
 .icon-feed:before {
-  content: "\e619";
+    content: "\e619";
 }
 
 /* line 101, ../sass/_iconFont.scss */
 .icon-banking:before {
-  content: "\e61a";
+    content: "\e61a";
 }
 
 /* line 104, ../sass/_iconFont.scss */
 .icon-help:before {
-  content: "\e615";
+    content: "\e615";
 }
 
 @media all and (max-width: 650px) {
-  /* line 2, ../sass/_mediaQueries.scss */
-  body {
-    background: black;
-  }
+    /* line 2, ../sass/_mediaQueries.scss */
+    body {
+        background: black;
+    }
 
-  /* line 5, ../sass/_mediaQueries.scss */
-  nav .dropdown {
-    border: 0;
-  }
+    /* line 5, ../sass/_mediaQueries.scss */
+    nav .dropdown {
+        border: 0;
+    }
 
-  /* line 8, ../sass/_mediaQueries.scss */
-  nav .dropdown a span {
-    display: none;
-  }
+    /* line 8, ../sass/_mediaQueries.scss */
+    nav .dropdown a span {
+        display: none;
+    }
 }
 /* line 1, ../sass/_modals.scss */
 .modal-title {
-  color: #272727;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  font-weight: 600;
-  font-size: 20px;
-  position: relative;
-  top: 10px;
+    color: #272727;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 600;
+    font-size: 20px;
+    position: relative;
+    top: 10px;
 }
 
 /* line 12, ../sass/_modals.scss */
 .modal-header {
-  border: 0;
+    border: 0;
 }
 
 /* Auth Inputs for Log In, Sign Up. */
 /* line 18, ../sass/_modals.scss */
 .singleAuth {
-  padding-bottom: 20px;
+    padding-bottom: 20px;
 }
 
 /* line 22, ../sass/_modals.scss */
 .authInputs, .authButtons {
-  text-align: center;
+    text-align: center;
 }
 
 /* line 26, ../sass/_modals.scss */
 .authButtons {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 /* line 30, ../sass/_modals.scss */
 .authInputs input {
-  display: inline-block;
-  width: 50%;
-  padding: 16px;
-  border-radius: 4px;
-  border: 0;
-  outline: 0;
-  background: #f4f4f4;
-  font-size: 15px;
-  margin: 10px 0;
-  color: #A5A5A5;
+    display: inline-block;
+    width: 50%;
+    padding: 16px;
+    border-radius: 4px;
+    border: 0;
+    outline: 0;
+    background: #f4f4f4;
+    font-size: 15px;
+    margin: 10px 0;
+    color: #A5A5A5;
 }
 
 /* line 43, ../sass/_modals.scss */
 .authBtn.login {
-  background: white;
-  color: #c0c0c0;
-  border: 2px solid #c0c0c0;
+    background: white;
+    color: #c0c0c0;
+    border: 2px solid #c0c0c0;
 }
 
 /* line 49, ../sass/_modals.scss */
 .authBtn {
-  display: inline-block;
-  padding: 16px 40px;
-  border: 2px solid #2cc397;
-  outline: 0;
-  border-radius: 2px;
-  margin: 0px 0 15px;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  background: #2cc397;
-  color: white;
+    display: inline-block;
+    padding: 16px 40px;
+    border: 2px solid #2cc397;
+    outline: 0;
+    border-radius: 2px;
+    margin: 0px 0 15px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background: #2cc397;
+    color: white;
 }
 
 /* line 63, ../sass/_modals.scss */
 .tos-text a {
-  color: #2cc397;
+    color: #2cc397;
 }
 
 /* line 67, ../sass/_modals.scss */
 .tos-text {
-  color: #838383;
-  text-transform: uppercase;
-  text-align: center;
-  letter-spacing: 2px;
-  font-size: 12px;
+    color: #838383;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 2px;
+    font-size: 12px;
 }
 
 /* Offer Modal Styles */
 /* line 79, ../sass/_modals.scss */
 #offer-modal .modal-body {
-  padding: 0;
+    padding: 0;
 }
 /* line 82, ../sass/_modals.scss */
 #offer-modal .modal-content {
-  background: url("http://placekitten.com/1000/1000") no-repeat center top;
-  background-size: cover;
-  border-radius: 0;
-  border: 0;
+    background: url("http://placekitten.com/1000/1000") no-repeat center top;
+    background-size: cover;
+    border-radius: 0;
+    border: 0;
 }
 
 /* line 90, ../sass/_modals.scss */
 .offerDetails {
-  background: white;
-  padding: 30px 50px 26px;
+    background: white;
+    padding: 30px 50px 26px;
 }
 /* line 93, ../sass/_modals.scss */
 .offerDetails h1 {
-  color: #3A3A3A;
-  font-size: 35px;
+    color: #3A3A3A;
+    font-size: 35px;
 }
 /* line 97, ../sass/_modals.scss */
 .offerDetails p {
-  color: black;
-  font-family: LatoLight, sans-serif;
+    color: black;
+    font-family: LatoLight, sans-serif;
 }
 /* line 101, ../sass/_modals.scss */
 .offerDetails ul {
-  margin-top: 30px;
+    margin-top: 30px;
 }
 /* line 104, ../sass/_modals.scss */
 .offerDetails ul li {
-  color: #666666;
-  font-size: 12px;
-  margin: 10px auto;
-  padding: 6px 7px 16px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  border-bottom: 1px solid #E4E4E4;
+    color: #666666;
+    font-size: 12px;
+    margin: 10px auto;
+    padding: 6px 7px 16px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 1px solid #E4E4E4;
 }
 /* line 113, ../sass/_modals.scss */
 .offerDetails span {
-  font-family: LatoBold, sans-serif;
-  padding-right: 3px;
+    font-family: LatoBold, sans-serif;
+    padding-right: 3px;
 }
 /* line 117, ../sass/_modals.scss */
 .offerDetails button {
-  background: #2cc397;
-  border: 0;
-  outline: 0;
-  padding: 17px 28px;
-  border-radius: 3px;
-  margin-top: 15px;
+    background: #2cc397;
+    border: 0;
+    outline: 0;
+    padding: 17px 28px;
+    border-radius: 3px;
+    margin-top: 15px;
 }
 
 /* line 128, ../sass/_modals.scss */
 .offerHero img {
-  border-radius: 50%;
-  border: 3px solid white;
-  display: inline-block;
-  margin: 15px 5px;
+    border-radius: 50%;
+    border: 3px solid white;
+    display: inline-block;
+    margin: 15px 5px;
 }
 /* line 134, ../sass/_modals.scss */
 .offerHero h1 {
-  color: white;
-  display: inline-block;
-  position: absolute;
-  top: 25px;
+    color: white;
+    display: inline-block;
+    position: absolute;
+    top: 25px;
 }
 /* line 140, ../sass/_modals.scss */
 .offerHero h2 {
-  display: inline-block;
-  color: white;
-  font-size: 18px;
-  font-size: 18px;
-  position: absolute;
-  top: 100px;
-  left: 155px;
+    display: inline-block;
+    color: white;
+    font-size: 18px;
+    font-size: 18px;
+    position: absolute;
+    top: 100px;
+    left: 155px;
 }
 
 /* line 1, ../sass/_onBoarding.scss */
 #onboarding {
-  text-align: center;
-  color: white;
+    text-align: center;
+    color: white;
 }
 /* line 4, ../sass/_onBoarding.scss */
 #onboarding h1 {
-  color: white;
-  font-size: 18px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  border-bottom: 5px solid white;
-  padding: 14px 0;
-  font-family: "Lato", sans-serif;
-  width: 60%;
-  margin: 0 auto;
+    color: white;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 5px solid white;
+    padding: 14px 0;
+    font-family: "Lato", sans-serif;
+    width: 60%;
+    margin: 0 auto;
 }
 /* line 15, ../sass/_onBoarding.scss */
 #onboarding button {
-  width: 50%;
-  background: transparent;
-  border: 1px solid white;
-  border-radius: 3px;
-  padding: 15px;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  outline: 0;
-  color: white;
+    width: 50%;
+    background: transparent;
+    border: 1px solid white;
+    border-radius: 3px;
+    padding: 15px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    outline: 0;
+    color: white;
 }
 /* line 27, ../sass/_onBoarding.scss */
 #onboarding button:hover {
-  color: white;
+    color: white;
 }
 /* line 30, ../sass/_onBoarding.scss */
 #onboarding .modal-body {
-  overflow: hidden;
+    overflow: hidden;
 }
 /* line 33, ../sass/_onBoarding.scss */
 #onboarding .modal-content {
-  background: #2cc397;
-  border-radius: 3px;
-  padding: 0 20px 30px;
+    background: #2cc397;
+    border-radius: 3px;
+    padding: 0 20px 30px;
 }
 /* line 39, ../sass/_onBoarding.scss */
 #onboarding section:nth-child(1) input, #onboarding section:nth-child(2) input, #onboarding section:nth-child(3) input {
-  border: 0;
-  outline: 0;
-  background: white;
-  color: #2cc397;
-  padding: 20px 10px;
-  border-radius: 3px;
-  margin: 0 0 35px;
-  text-align: center;
-  width: 50%;
+    border: 0;
+    outline: 0;
+    background: white;
+    color: #2cc397;
+    padding: 20px 10px;
+    border-radius: 3px;
+    margin: 0 0 35px;
+    text-align: center;
+    width: 50%;
 }
 /* line 50, ../sass/_onBoarding.scss */
 #onboarding section:nth-child(1) p, #onboarding section:nth-child(2) p, #onboarding section:nth-child(3) p {
-  margin: 35px 25px;
-  font-size: 30px;
-  font-family: "LatoLight", sans-serif;
+    margin: 35px 25px;
+    font-size: 30px;
+    font-family: "LatoLight", sans-serif;
 }
 /* line 55, ../sass/_onBoarding.scss */
 #onboarding section:nth-child(1) button, #onboarding section:nth-child(2) button, #onboarding section:nth-child(3) button {
-  width: 50%;
-  background: #25AD86;
-  padding: 20px;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 12px;
-  margin: 20px 0 0;
-  border: 0;
+    width: 50%;
+    background: #25AD86;
+    padding: 20px;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 12px;
+    margin: 20px 0 0;
+    border: 0;
 }
 /* line 68, ../sass/_onBoarding.scss */
 #onboarding section:nth-child(2) input {
-  padding: 12px 10px;
-  margin: 23px 0 0;
+    padding: 12px 10px;
+    margin: 23px 0 0;
 }
 /* line 72, ../sass/_onBoarding.scss */
 #onboarding section:nth-child(2) .clearBtn {
-  background: transparent;
-  border: 2px solid #25AD86;
+    background: transparent;
+    border: 2px solid #25AD86;
 }
 /* line 76, ../sass/_onBoarding.scss */
 #onboarding section:nth-child(2) button {
-  position: relative;
-  top: 20px;
+    position: relative;
+    top: 20px;
 }
 /* line 80, ../sass/_onBoarding.scss */
 #onboarding section:nth-child(2) h2 {
-  font-size: 23px;
-  font-family: "LatoLight", sans-serif;
-  margin-top: 20px;
+    font-size: 23px;
+    font-family: "LatoLight", sans-serif;
+    margin-top: 20px;
 }
 /* line 87, ../sass/_onBoarding.scss */
 #onboarding section:nth-child(3) button {
-  width: 50%;
-  background: #25AD86;
-  padding: 20px;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 12px;
-  margin: 20px 0 0;
-  border: 0;
+    width: 50%;
+    background: #25AD86;
+    padding: 20px;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 12px;
+    margin: 20px 0 0;
+    border: 0;
 }
 /* line 98, ../sass/_onBoarding.scss */
 #onboarding section:nth-child(3) .clearBtn {
-  background: transparent;
-  border: 2px solid #25AD86;
+    background: transparent;
+    border: 2px solid #25AD86;
 }
 
 /* line 1, ../sass/_profile.scss */
 h1.sectionHeader {
-  font-size: 26px;
-  color: #797979;
-  margin: 40px 0;
+    font-size: 26px;
+    color: #797979;
+    margin: 40px 0;
 }
 
 /* line 7, ../sass/_profile.scss */
 .profileBusiness .hero {
-  background: url("http://placekitten.com/1900/1000");
-  width: 100%;
-  height: 448px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 90px 115px 55px;
-  background-size: cover;
+    background: url("http://placekitten.com/1900/1000");
+    width: 100%;
+    height: 448px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 90px 115px 55px;
+    background-size: cover;
 }
 
 /* line 18, ../sass/_profile.scss */
 .profileContent {
-  position: relative;
-  top: 300px;
+    position: relative;
+    top: 300px;
 }
 
 /* line 23, ../sass/_profile.scss */
 .profileBusiness section {
-  background: white;
-  padding: 30px;
-  border-radius: 2px;
-  margin-top: -20px;
-  color: #888;
-  font-family: "LatoLight", sans-serif;
-  m5argin: -20px 0 40px;
+    background: white;
+    padding: 30px;
+    border-radius: 2px;
+    margin-top: -20px;
+    color: #888;
+    font-family: "LatoLight", sans-serif;
+    m5argin: -20px 0 40px;
 }
 
 /* line 33, ../sass/_profile.scss */
 .heroOverlay {
-  background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.26));
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  z-index: -1;
+    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.26));
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
 }
 
 /* line 43, ../sass/_profile.scss */
 .heroInfo {
-  border-right: 1px solid #777777;
-  width: 345px;
-  background: rgba(56, 56, 56, 0.36);
-  position: relative;
-  top: -35px;
-  right: 43px;
-  padding: 30px 30px 83px;
+    border-right: 1px solid #777777;
+    width: 345px;
+    background: rgba(56, 56, 56, 0.36);
+    position: relative;
+    top: -35px;
+    right: 43px;
+    padding: 30px 30px 83px;
 }
 /* line 51, ../sass/_profile.scss */
 .heroInfo img {
-  border-radius: 50%;
-  border: 4px solid white;
+    border-radius: 50%;
+    border: 4px solid white;
 }
 /* line 55, ../sass/_profile.scss */
 .heroInfo h1 {
-  font-size: 35px;
-  color: white;
-  margin: 20px 0 0;
+    font-size: 35px;
+    color: white;
+    margin: 20px 0 0;
 }
 /* line 60, ../sass/_profile.scss */
 .heroInfo h2 {
-  display: inline-block;
-  width: 100%;
-  padding: 8px 0;
-  font-size: 17px;
-  font-family: "LatoLight", sans-serif;
-  letter-spacing: 1px;
-  margin-bottom: 15px;
+    display: inline-block;
+    width: 100%;
+    padding: 8px 0;
+    font-size: 17px;
+    font-family: "LatoLight", sans-serif;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
 }
 /* line 69, ../sass/_profile.scss */
 .heroInfo a {
-  background: #2cc397;
-  padding: 17px 70px;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 13px;
-  border-radius: 2px;
-  display: inline-block;
+    background: #2cc397;
+    padding: 17px 70px;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 13px;
+    border-radius: 2px;
+    display: inline-block;
 }
 
 /* line 81, ../sass/_profile.scss */
 section .profileInfo {
-  width: 50%;
+    width: 50%;
 }
 
 /* line 85, ../sass/_profile.scss */
 section .profileInfo a {
-  background: #2cc397;
-  padding: 13px 20px;
-  border-radius: 2px;
-  display: inline-block;
-  color: white;
-  width: 70%;
-  text-align: center;
-  margin: 5px 0;
-  font-size: 14px;
+    background: #2cc397;
+    padding: 13px 20px;
+    border-radius: 2px;
+    display: inline-block;
+    color: white;
+    width: 70%;
+    text-align: center;
+    margin: 5px 0;
+    font-size: 14px;
 }
 
 /* line 97, ../sass/_profile.scss */
 section .profileInfo:nth-child(5) {
-  background: #c0c0c0;
+    background: #c0c0c0;
 }
 
 /* line 2, ../sass/_settings.scss */
 .settings h1 {
-  position: relative;
-  top: 115px;
-  left: 100px;
+    position: relative;
+    top: 115px;
+    left: 100px;
 }
 /* line 7, ../sass/_settings.scss */
 .settings a {
-  position: absolute;
-  margin: 0 auto;
-  display: inline-block;
-  background: white;
-  padding: 20px 25px;
-  color: #8D8D8D;
-  border-radius: 3px;
-  width: 87%;
-  left: 19px;
-  bottom: 17px;
-  border: 2px solid #8D8D8D;
-  transition: all 0.2s ease;
+    position: absolute;
+    margin: 0 auto;
+    display: inline-block;
+    background: white;
+    padding: 20px 25px;
+    color: #8D8D8D;
+    border-radius: 3px;
+    width: 87%;
+    left: 19px;
+    bottom: 17px;
+    border: 2px solid #8D8D8D;
+    transition: all 0.2s ease;
 }
 /* line 21, ../sass/_settings.scss */
 .settings a:hover {
-  background: #2cc397;
-  color: white;
-  border: 2px solid #2cc397;
+    background: #2cc397;
+    color: white;
+    border: 2px solid #2cc397;
 }
 /* line 26, ../sass/_settings.scss */
 .settings .gridItem {
-  background: white;
-  height: 330px;
-  position: relative;
-  top: 104px;
-  text-align: center;
-  display: inline-block;
-  left: 95px;
-  box-shadow: inset 1px 1px 1px 3px #f5f5f5;
-  width: 270px;
+    background: white;
+    height: 330px;
+    position: relative;
+    top: 104px;
+    text-align: center;
+    display: inline-block;
+    left: 95px;
+    box-shadow: inset 1px 1px 1px 3px #f5f5f5;
+    width: 270px;
+}
+
+.loadState {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(248, 248, 248, 0.82);
+    text-align: center;
+}
+
+.loadState h1 {
+    color: gray;
+    position: relative;
+    top: 200px;
+    font-size: 20px;
+}
+
+.loadState .progressBar {
+    border-bottom: 4px solid #2cc397;
+    border-bottom: 4px solid #2cc397;
+    position: relative;
+    top: 180px;
+    width: 20%;
+    margin: 0 auto;
 }
