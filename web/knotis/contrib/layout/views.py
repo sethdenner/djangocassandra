@@ -2,6 +2,7 @@ import copy
 
 from knotis.views import (
     FragmentView,
+    ModalView,
     EmbeddedView
 )
 
@@ -61,10 +62,6 @@ class ActionButton(FragmentView):
         return []
 
 
-class underConstruction(FragmentView):
-    template_name = 'knotis/layout/underConstruction.html'
-    view_name = 'underConstruction'
-
 
 class DefaultBaseView(EmbeddedView):
     template_name = 'knotis/layout/default_base.html'
@@ -77,3 +74,15 @@ class DefaultBaseView(EmbeddedView):
             self.context['current_identity_pk'] = current_identity_pk
 
         return self.context
+
+
+class UnderConstructionView(ModalView):
+    url_patterns = [
+        r'^underconstruction/$',
+    ]
+
+    template_name = 'knotis/layout/under_construction.html'
+    view_name = 'under_construction'
+    default_parent_view_class = DefaultBaseView
+    
+
