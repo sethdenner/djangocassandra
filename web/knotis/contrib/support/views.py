@@ -1,31 +1,19 @@
-from knotis.views import AJAXFragmentView, FragmentView
+from knotis.views import ModalView, FragmentView
+from knotis.contrib.layout.views import DefaultBaseView
 from forms import SupportForm
-import copy
 from django.core.mail import send_mail
 import settings
 
-class SupportView(AJAXFragmentView):
+class SupportView(ModalView):
+    url_patterns = [
+        r'^support/$',
+    ]
     template_name = 'knotis/support/support.html'
+    default_parent_view_class = DefaultBaseView
 
-    def process_context(self):
-        styles = [
-            'knotis/support/css/support.css'
-        ]
-
-        pre_scripts = []
-
-        post_scripts = [
-            'knotis/support/js/support.js'
-        ]
-
-        local_context = copy.copy(self.context)
-        local_context.update({
-            'styles': styles,
-            'pre_scripts': pre_scripts,
-            'post_scripts': post_scripts,
-            'fixed_side_nav': True,
-        })
-        return local_context
+    post_scripts = [
+        'knotis/support/js/support.js'
+    ]
 
     def post(
         self,
@@ -71,6 +59,10 @@ class SupportView(AJAXFragmentView):
             'status': 'OK'
         })
 
-class SupportSuccessView(FragmentView):
+class SupportSuccessView(ModalView):
     template_name = 'knotis/support/support_success.html'
     view_name = 'support_success'
+    url_patterns = [
+        r'^support/success/$',
+    ]
+    default_parent_view_class = DefaultBaseView
