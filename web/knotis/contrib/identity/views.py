@@ -160,6 +160,22 @@ class EstablishmentsView(EmbeddedView):
     url_patterns = [r'^businesses/$']
     template_name = 'knotis/identity/establishments.html'
     default_parent_view_class = DefaultBaseView
+    def process_context(self):
+        post_scripts = self.context.get('post_scripts', [])
+        my_post_scripts = [
+            'knotis/identity/js/business-tile.js',
+            'knotis/identity/js/businesses.js',
+        ]
+        for script in my_post_scripts:
+            if not script in post_scripts:
+                post_scripts.append(script)
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'post_scripts': post_scripts,
+        })
+        return local_context
+
 
 
 class EstablishmentProfileView(EmbeddedView):
@@ -705,10 +721,6 @@ class EstablishmentAboutAbout(AJAXFragmentView):
 
         establishment = IdentityEstablishment.objects.get(pk=establishment_id)
 
-        #business = IdentityBusiness.objects.get_establishment_parent(
-        #    establishment
-        #)
-
         local_context = copy.copy(self.context)
         local_context.update({
             'description': establishment.description
@@ -738,6 +750,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
 
         # add business name to local_context
         local_context.update({
+            'STATIC_URL': settings.STATIC_URL,
             'establishment': establishment
         })
 

@@ -9,15 +9,7 @@
             <div class="row">
                 <!-- Search Form -->
                 <div class="col-lg-3 col-xs-4">
-                    <div class="search">
-                        <form action="search/" method="get">
-                            {% if search_query %}
-                                <input type="/search" name="q" value="{{search_query}}">
-                            {% else %}
-                                <input type="/search" name="q" placeholder="Search">
-                            {% endif %}
-                        </form>
-                    </div>
+                    {% render_fragment search_bar %}
                 </div>
                 <!-- // End Search Form -->
                 <div class="col-lg-6 col-xs-4">
