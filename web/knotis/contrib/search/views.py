@@ -13,7 +13,10 @@ from knotis.contrib.identity.views import IdentityTile, get_current_identity
 from knotis.contrib.offer.views import OfferTile
 from knotis.contrib.layout.views import GridSmallView, DefaultBaseView
 from knotis.contrib.search.api import SearchApi
-from knotis.views import EmbeddedView
+from knotis.views import (
+    EmbeddedView,
+    FragmentView,
+)
 
 
 class SearchResultsView(EmbeddedView):
@@ -109,6 +112,30 @@ class SearchResultsGrid(GridSmallView):
             'tiles': tiles,
             'search_results': search_results,
             'query': query
+        })
+
+        return local_context
+
+
+
+class SearchBarView(FragmentView):
+    template_name = 'search/search_bar.html'
+    view_name = 'search_bar'
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        return HttpResponse('OK')
+
+    def process_context(self):
+        search_query = self.request.GET.get('q',None)
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'search_query': search_query
         })
 
         return local_context
