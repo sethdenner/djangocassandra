@@ -646,6 +646,7 @@ nav li.addLink a {
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 /* line 56, ../sass/_offerItem.scss */
 .offerContent a, .identityContent a, .transactionContent a {
