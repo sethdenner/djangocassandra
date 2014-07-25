@@ -209,8 +209,6 @@ class IdentityProfileView(EmbeddedView):
 
             else:
                 raise Exception('Business profile not implemented yet.')
-                #profile_view = BusinessProfileView()
-                #self.context['establishments'] = establishments
 
         else:
             raise Exception('Identity profile not implemented yet.')
@@ -283,7 +281,10 @@ class EstablishmentProfileView(EmbeddedView):
                 pk=current_identity_id
             )
 
-            self.is_manager =current_identity.is_manager(self.establishment)
+            self.is_manager = (
+                current_identity.is_manager(self.establishment) or
+                current_identity.pk == self.establishment.pk
+            )
 
     def set_business(self):
         if not hasattr(self, 'establishment'):
