@@ -26,12 +26,12 @@
 
         var build_modal = function() {
             var $modal = $(settings.modal_template.replace('{{ modal_id }}', settings.modal_id)
-                .replace('{{ modal_cssclass }}', settings.modal_cssclass)
-                .replace('{{ modal_width }}', settings.modal_width));
+                           .replace('{{ modal_cssclass }}', settings.modal_cssclass)
+                           .replace('{{ modal_width }}', settings.modal_width));
             $('body').append($modal);
             $modal.modal(settings.modal_settings);
             return $modal;
-         };
+        };
 
         if (settings.loading) {
             $('body').modalmanager('loading');
@@ -46,16 +46,23 @@
             settings.data,
             function(data, status, request) {
                 if (data) {
-		    var html = null;
-		    if (typeof data.html !== typeof undefined) {
-			html = data.html;
+		            var $html = null;
+		            if (typeof data.html !== typeof undefined) {
+			            $html = $(data.html);
 
-		    } else {
-			html = data;
+		            } else {
+			            $html = $(data);
 
-		    }
-			
-                    $modal.html(html)
+		            }
+			        
+                    if ($html.hasClass('modal')) {
+                        $modal = $html;
+
+                    } else {
+                        $modal.html($html);
+
+                    }
+
                     $modal.modal(settings.modal_settings);
                     $modal.on('hidden.bs.modal', settings.on_close);
 

@@ -13,7 +13,7 @@
                         return;
                     }
 
-                    $('#modal-box').modal('hide');
+                    $('#first-id').modal('hide');
                     $('#id-current-identity-name').text(data.data.individual_name);
                 }
             });
