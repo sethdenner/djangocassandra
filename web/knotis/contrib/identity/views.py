@@ -1012,7 +1012,8 @@ class FirstIdentityView(ModalView):
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'identity_id': individual.pk
+            'identity_id': individual.pk,
+            'modal_id': 'first-id'
         })
 
         return local_context
@@ -1097,7 +1098,6 @@ class FirstIdentityView(ModalView):
 
         if not errors and self.response_format == self.RESPONSE_FORMATS.HTML:
             self.response_fromat = self.RESPONSE_FORMATS.REDIRECT
-            data = None
 
         return self.render_to_response(
             data=data,
@@ -1212,6 +1212,9 @@ class IdentitySwitcherView(EmbeddedView):
             raise
 
         for i in available_identities:
+            if IdentityTypes.ESTABLISHMENT == i.identity_type:
+                local_context['has_business'] = True
+
             try:
                 badge_image = ImageInstance.objects.get(
                     related_object_id=i.pk,

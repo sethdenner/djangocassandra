@@ -444,6 +444,7 @@ class ModalView(EmbeddedView):
         data['modal'] = True
 
         return super(ModalView, self).render_to_response(
+            context=context,
             data=data,
             **response_kwargs
         )
