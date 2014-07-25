@@ -484,59 +484,6 @@ class EstablishmentProfileView(EmbeddedView):
         return local_context
 
 
-class BusinessesView(FragmentView):
-    template_name = 'knotis/identity/businesses_view.html'
-
-    def process_context(self):
-        styles = self.context.get('styles', [])
-        post_scripts = self.context.get('post_scripts', [])
-
-        my_styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
-            'styles/default/fileuploader.css'
-        ]
-
-        for style in my_styles:
-            if not style in styles:
-                styles.append(style)
-
-        my_post_scripts = [
-            'knotis/layout/js/layout.js',
-            'knotis/layout/js/forms.js',
-            'knotis/layout/js/header.js',
-            'knotis/layout/js/create.js',
-            'knotis/layout/js/splash_tile.js',
-            'knotis/layout/js/action_button.js',
-            'navigation/js/navigation.js',
-            'jcrop/js/jquery.Jcrop.js',
-            'scripts/fileuploader.js',
-            'scripts/jquery.colorbox.js',
-            'scripts/jquery.sickle.js',
-            'knotis/identity/js/profile.js',
-            'knotis/api/js/api.js',
-            'knotis/identity/js/business-tile.js',
-            'knotis/identity/js/businesses.js',
-            'knotis/layout/js/to_top.js'
-        ]
-
-        for script in my_post_scripts:
-            if not script in post_scripts:
-                post_scripts.append(script)
-
-        local_context = copy.copy(self.context)
-        local_context.update({
-            'styles': styles,
-            'post_scripts': post_scripts,
-            'fixed_side_nav': True
-        })
-        return local_context
-
-
 class EstablishmentsGrid(GridSmallView):
     view_name = 'establishments_grid'
 
