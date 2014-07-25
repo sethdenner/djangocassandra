@@ -37,7 +37,7 @@
             }
         );
 
-        var $modals = $('div.modal:visible');
+        var $modals = $('div.modal');
         $modals.each(function() {
             var $modal = $(this);
             $modal.modal();
