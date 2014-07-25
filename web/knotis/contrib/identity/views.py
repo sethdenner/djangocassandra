@@ -170,22 +170,70 @@ class EstablishmentsView(EmbeddedView):
             if not script in post_scripts:
                 post_scripts.append(script)
 
-        local_context = copy.copy(self.context)
-        local_context.update({
+        self.context.update({
             'post_scripts': post_scripts,
         })
-        return local_context
+        return self.context
 
+
+class IdentityProfileView(EmbeddedView):
+    view_name = 'identity_profile'
+    url_patterns = [
+        r''.join([
+            '^id/(?P<identity_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+    ]
+    default_parent_view_class = DefaultBaseView
+
+    def process_context(self):
+        identity_id = self.context.get('identity_id')
+        identity = Identity.objects.get(pk=identity_id)
+        if not identity:
+            raise Exception('Identity not found')
+
+        if identity.identity_type == IdentityTypes.ESTABLISHMENT:
+            profile_view = EstablishmentProfileView()
+            self.context['establishment_id'] = identity_id
+            self.context['establishment'] = identity
+
+        elif identity.identity_type == IdentityTypes.BUSINESS:
+            try:
+                establishments = (
+                    IdentityEstablishment.objects.get_establishments(
+                        identity
+                    )
+                )
+            except:
+                establishments = None
+                logger.exception('Failed to get establishments for business')
+
+            if len(establishments) > 0:
+                profile_view = EstablishmentProfileView()
+                self.context['establishment_id'] = establishments[0].pk
+                self.context['establishment'] = establishments[0]
+
+            else:
+                raise Exception('Business profile not implemented yet.')
+                #profile_view = BusinessProfileView()
+                #self.context['establishments'] = establishments
+
+        else:
+            raise Exception('Identity profile not implemented yet.')
+
+        self.context.update({
+            'profile_markup': profile_view.render_template_fragment(
+                self.context
+            )
+        })
+
+        return self.context
 
 
 class EstablishmentProfileView(EmbeddedView):
     view_name = 'establishment_profile'
     url_patterns = [
-        r''.join([
-            '^id/(?P<establishment_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
         r''.join([
             '^id/(?P<establishment_id>',
             REGEX_UUID,
@@ -207,19 +255,7 @@ class EstablishmentProfileView(EmbeddedView):
         if not establishment:
             try:
                 if establishment_id:
-
-                    #TODO: FIX THIS GARBAGE.
-                    # This means making an identity view and a business view
-                    # and and dispatching accordingly.
-                    identity = Identity.objects.get(
-                        id=establishment_id
-                    )
-                    if identity.identity_type == IdentityTypes.BUSINESS:
-                        establishments = IdentityEstablishment.objects.get_establishments(identity)
-                        establishment =  establishments[0]
-                        establishment_id = establishment.id
-                    elif identity.identity_type == IdentityTypes.ESTABLISHMENT:
-                        establishment = identity
+                    establishment = IdentityEstablishment.objects.get(pk=establishment_id)
 
                 elif backend_name:
                     establishment = get_object_or_404(
