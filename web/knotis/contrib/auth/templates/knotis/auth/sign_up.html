@@ -1,10 +1,9 @@
-<div class="modal-content">
-    <div class="modal-header">
-        <a class="close" data-dismiss-modal="auth-modal" href="{{ close_href }}"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></a>
-        <h4 class="modal-title" id="myModalLabel">Sign Up</h4>
-    </div>
-    <div class="modal-body">
-        {{ signup_form.as_template }}
-    </div>
-</div>
+{% extends 'knotis/layout/modal_base.html' %}
+{% block body %}
+{{ signup_form.as_template }}
+{% endblock body %}
+{% block last %}
+{% if format == 'json' %}
 <script src="{{ STATIC_URL }}knotis/auth/js/sign_up.js"></script>
+{% endif %}
+{% endblock last %}
