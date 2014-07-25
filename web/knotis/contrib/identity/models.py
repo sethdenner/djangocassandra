@@ -78,7 +78,16 @@ class IdentityManager(QuickManager):
                 subject_object_id=user_identity.id,
             )
             for relation in identity_relations:
-                identities.add(relation.related)
+                if IdentityTypes.BUSINESS == relation.related.identity_type:
+                    establishments = (
+                        IdentityEstablishment.objects.get_establishments(
+                            relation.related
+                        )
+                    )
+                    identities |= set(establishments)
+
+                else:
+                    identities.add(relation.related)
 
         return identities
 

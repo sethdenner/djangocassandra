@@ -150,6 +150,7 @@ class EmbeddedView(
     default_parent_view_class = None
     template_placeholders = ['content']
     parent_template_placeholder = None
+    default_target_element_id = 'main-content'
 
     styles = []
     pre_scripts = []
@@ -242,12 +243,22 @@ class EmbeddedView(
         self.response_format = (
             request.POST.get('format', self.response_format).lower()
         )
+        self.target_element_id = (
+            request.GET.get('teid', self.default_target_element_id)
+        )
+        self.target_element_id = (
+            request.POST.get('teid', self.target_element_id)
+        )
 
         return super(EmbeddedView, self).dispatch(
             request,
             *args,
             **kwargs
         )
+
+    def process_context(self):
+        self.context['target_element_id'] = self.target_element_id
+        return super(EmbeddedView, self).process_context()
 
     def render_to_response(
         self,
@@ -288,6 +299,7 @@ class EmbeddedView(
                     self.get_template_names()[0],
                     context_instance=context
                 )
+                data['targetid'] = self.target_element_id
 
             return self.generate_ajax_response(
                 data=data,
@@ -419,6 +431,19 @@ class ModalView(EmbeddedView):
         })
 
         return self.context
+
+    def render_to_response(
+        self,
+        context=None,
+        data={},
+        **response_kwargs
+    ):
+        data['modal'] = True
+
+        return super(ModalView, self).render_to_response(
+            data=data,
+            **response_kwargs
+        )
 
 
 class EmailView(FragmentView):
