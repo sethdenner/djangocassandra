@@ -1,29 +1,26 @@
 {% load thumbnail %}
 
 <div class="col-lg-4 col-xs-12 offerItem">
-    <a href="" data-toggle="modal" data-target="#offer-modal">
+    <a class="tileLink" href="id/{{ identity.id }}/" data-target-id="main-content">
         <div class="busCover">
             {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
-            <a href="id/{{ identity.id }}/">
                 <img class="tile-badge" src="{{ image.url }}" />
-            </a>
             {% empty %}
-            <img class="tile-image defaultImg"  alt="{{ identity.name }}" src="" />
+                <img class="tile-image defaultImg"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:'darkgrey' }}.png" />
             {% endthumbnail %}
             <div class="overlay"></div>
         </div>
-    </a>
     <div class="identityContent">
         <div class="row">
             <div class="col-lg-10 col-xs-10">
-                {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
-                <a href="id/{{ identity.id }}/"><img class="busLogo" src="{{ image.url }}" alt="{{ identity.name }}"/></a>
-                {% empty %}
-                <a href="id/{{ identity.id }}/"><span class="icon-knotis"></span><img class="tile-badge defaultImg" src="{{ image.url }}" /></a>
-                {% endthumbnail %}
+                    {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
+                        <img class="busLogo" src="{{ image.url }}" alt="{{ identity.name }}"/>
+                    {% empty %}
+                    <span class="icon-knotis"></span><img class="tile-badge defaultImg busLogo" />
+                    {% endthumbnail %}
             </div>
             <div class="col-lg-1 col-xs-1">
-                <!-- 
+                <!--
 <div class="dropdown">
 <a data-toggle="dropdown" href=""><img class="iconMore" src="/assets/img/icon_more_offerItem.png"/></a>
 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -35,14 +32,17 @@
         </div>
         <div class="row">
             <div class="col-lg-12 col-xs-12">
-                <h1 style="white-space:nowrap;">{{ identity.name }}</h1>
+                <h1>{{ identity.name }}</h1>
+                <!--
                 {% if identity %}
                 <a class="busLink" href="id/{{ identity.id }}/">Profile</a>
                 {% endif %}
+                --!>
                 <!--                        <a href="" class="btnFollow" href="">Follow</a>                                          -->
                 <!--                        <p class="location"><img src="assets/img/icon_location.png"/> <span>0.2 Miles</span></p> -->
                 <p class="location"> {{ address }} </p>
             </div>
         </div>
     </div>
+</a>
 </div>
