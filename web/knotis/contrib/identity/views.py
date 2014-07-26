@@ -77,6 +77,9 @@ from knotis.contrib.endpoint.models import (
     EndpointIdentity
 )
 
+from .mixins import GetCurrentIdentityMixin
+from .api import IdentityApi
+
 
 def get_current_identity(request):
     current_identity_id = request.session['current_identity']
@@ -160,6 +163,7 @@ class EstablishmentsView(EmbeddedView):
     url_patterns = [r'^businesses/$']
     template_name = 'knotis/identity/establishments.html'
     default_parent_view_class = DefaultBaseView
+
     def process_context(self):
         post_scripts = self.context.get('post_scripts', [])
         my_post_scripts = [
@@ -993,6 +997,77 @@ class BusinessProfileView(FragmentView):
         pass
 
 
+class CreateBusinessView(ModalView, GetCurrentIdentityMixin):
+    url_patterns = [
+        r'^identity/business/create/$'
+    ]
+    template_name = 'knotis/identity/business_create.html'
+    view_name = 'business_create'
+    default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/identity/js/business_create.js'
+    ]
+
+    def process_context(self):
+        self.context['modal_id'] = 'business-create'
+        return self.context
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        data = {}
+        errors = {}
+
+        current_identity = self.get_current_identity(request)
+        if (
+            IdentityTypes.BUSINESS == current_identity.identity_type or
+            IdentityTypes.ESTABLISHMENT == current_identity.identity_type
+        ):
+            errors['no-field'] = (
+                'This type of identity cannot create businesses.'
+            )
+
+        name = request.POST.get('name')
+        if not name:
+            errors['fields'] = {
+                'name': 'Name is required to create a business.'
+            }
+
+        if not errors:
+            try:
+                business, establishment = IdentityApi.create_business(
+                    current_identity.pk,
+                    name=name
+                )
+
+                data['business_pk'] = business.pk
+                data['establishment_pk'] = establishment.pk
+
+            except Exception, e:
+                logger.exception(e.message)
+                errors['exception'] = e.message
+
+            try:
+                user_information = UserInformation.objects.get(
+                    user=request.user
+                )
+                user_information.default_identity_id = establishment.pk
+                user_information.save()
+                request.session['current_identity'] = establishment.pk
+
+            except Exception, e:
+                logger.exception(e.message)
+
+        return self.render_to_response(
+            data=data,
+            errors=errors,
+            render_template=False
+        )
+
+
 class FirstIdentityView(ModalView):
     url_patterns = [r'^identity/first/$']
     template_name = 'knotis/identity/first.html'
@@ -1158,7 +1233,16 @@ class IdentitySwitcherView(EmbeddedView):
                 logger.warning(msg)
                 return http.HttpResponseServerError(msg)
 
-            request.session['current_identity'] = identity.id
+            request.session['current_identity'] = identity.pk
+            try:
+                user_information = UserInformation.objects.get(
+                    user=request.user
+                )
+                user_information.default_identity_id = identity.pk
+                user_information.save()
+            except Exception, e:
+                logger.exception(e.message)
+
             return http.HttpResponseRedirect(
                 '/'
             )

@@ -13,5 +13,11 @@
             </div>
         </div>
     </div>
-    {% block last %}{% endblock last %}
+    {% block last %}
+    {% if format == 'json' %}
+    {% for script in post_scripts %}
+    <script src="{{ STATIC_URL }}{{ script }}"></script>
+    {% endfor %}
+    {% endif %}
+    {% endblock last %}
 </div>
