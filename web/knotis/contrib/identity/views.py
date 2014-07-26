@@ -163,25 +163,13 @@ class EstablishmentsView(EmbeddedView):
     url_patterns = [r'^businesses/$']
     template_name = 'knotis/identity/establishments.html'
     default_parent_view_class = DefaultBaseView
-
-    def process_context(self):
-        post_scripts = self.context.get('post_scripts', [])
-        my_post_scripts = [
-            'knotis/identity/js/business-tile.js',
-            'knotis/identity/js/businesses.js',
-        ]
-        for script in my_post_scripts:
-            if not script in post_scripts:
-                post_scripts.append(script)
-
-        self.context.update({
-            'post_scripts': post_scripts,
-        })
-        return self.context
+    post_scripts = [
+        'knotis/identity/js/businesses.js',
+        'knotis/identity/js/business-tile.js',
+    ]
 
 
 class IdentityProfileView(EmbeddedView):
-    view_name = 'identity_profile'
     url_patterns = [
         r''.join([
             '^id/(?P<identity_id>',
@@ -189,6 +177,7 @@ class IdentityProfileView(EmbeddedView):
             ')/$'
         ]),
     ]
+    template_name = 'knotis/identity/profile_identity.html'
     default_parent_view_class = DefaultBaseView
 
     def process_context(self):
@@ -220,8 +209,6 @@ class IdentityProfileView(EmbeddedView):
 
             else:
                 raise Exception('Business profile not implemented yet.')
-                #profile_view = BusinessProfileView()
-                #self.context['establishments'] = establishments
 
         else:
             raise Exception('Identity profile not implemented yet.')
@@ -248,10 +235,16 @@ class EstablishmentProfileView(EmbeddedView):
     ]
     template_name = 'knotis/identity/profile_establishment.html'
     default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/identity/js/update_profile.js',
+        'knotis/identity/js/profile.js',
+        'jcrop/js/jquery.Jcrop.js',
+        'scripts/fileuploader.js',
+        'scripts/jquery.colorbox.js',
+        'scripts/jquery.sickle.js',
+    ]
 
-    def process_context(self):
-
-        request = self.request
+    def set_establishment(self):
         establishment_id = self.context.get('establishment_id')
         establishment = self.context.get('establishment')
         backend_name = self.context.get('backend_name')
@@ -276,59 +269,75 @@ class EstablishmentProfileView(EmbeddedView):
                     'failed to get establishment with id ' + establishment_id
                 )
                 raise http.Http404
+        self.establishment = establishment
+        self.establishment_id = establishment_id
 
-        try:
-            business = IdentityBusiness.objects.get_establishment_parent(
-                establishment
-            )
-
-        except:
-            logger.exception(
-                ' '.join([
-                    'failed to get business for establishment with id ',
-                    establishment_id
-                ])
-            )
-            raise http.Http404
-
-        is_manager = False
+    def is_manager(self):
+        request = self.request
+        self.is_manager = False
         if request.user.is_authenticated():
             current_identity_id = request.session.get('current_identity')
             current_identity = Identity.objects.get(
                 pk=current_identity_id
             )
 
-            is_manager = current_identity.is_manager(establishment)
+            self.is_manager = (
+                current_identity.is_manager(self.establishment) or
+                current_identity.pk == self.establishment.pk
+            )
 
-        if is_manager:
-            default_profile_logo_uri = ''.join([
+    def set_business(self):
+        if not hasattr(self, 'establishment'):
+            self.set_establishment()
+
+        try:
+            self.business = IdentityBusiness.objects.get_establishment_parent(
+                self.establishment
+            )
+
+        except:
+            logger.exception(
+                ' '.join([
+                    'failed to get business for establishment with id ',
+                    self.establishment_id
+                ])
+            )
+            raise http.Http404
+
+    def set_images(self):
+
+        if not hasattr(self, 'business'):
+            self.set_establishment()
+
+        if self.is_manager:
+            self.default_profile_logo_uri = ''.join([
                 settings.STATIC_URL,
                 'knotis/identity/img/add_logo.png'
             ])
 
         else:
-            default_profile_logo_uri = ''.join([
+            self.default_profile_logo_uri = ''.join([
                 settings.STATIC_URL,
                 'knotis/identity/img/profile_default.png'
             ])
 
-        profile_badge_image = get_identity_profile_badge(business)
-        profile_banner_image = get_identity_profile_banner(business)
-        profile_banner_color = get_identity_default_profile_banner_color(
-            business
+        self.profile_badge_image = get_identity_profile_badge(self.business)
+        self.profile_banner_image = get_identity_profile_banner(self.business)
+        self.profile_banner_color = get_identity_default_profile_banner_color(
+            self.business
         )
 
-        try:
-            establishment_offers = OfferAvailability.objects.filter(
-                identity=establishment,
-                available=True
-            )
+    def process_context(self):
 
-        except:
-            logger.exception('failed to get establishment offers')
+        request = self.request
+        self.set_establishment()
+
+        self.is_manager()
+        self.set_business()
+        self.set_images()
 
         locationItem = LocationItem.objects.filter(
-            related_object_id=establishment.id
+            related_object_id=self.establishment.id
         )
         if len(locationItem):
             address = locationItem[0].location.address
@@ -339,7 +348,7 @@ class EstablishmentProfileView(EmbeddedView):
         maps_scripts = maps.render_api_js()
 
         endpoints = Endpoint.objects.filter(
-            identity=establishment,
+            identity=self.establishment,
             primary=True
         )
         endpoints = endpoints.select_subclasses()
@@ -369,6 +378,9 @@ class EstablishmentProfileView(EmbeddedView):
                     display = 'Yelp'
                 elif endpoint.endpoint_type == EndpointTypes.FACEBOOK:
                     display = 'Facebook'
+
+                elif endpoint.endpoint_type == EndpointTypes.ADDRESS:
+                    address = endpoint.value
 
                 endpoint_dict = {
                     'id': endpoint.id,
@@ -414,10 +426,19 @@ class EstablishmentProfileView(EmbeddedView):
         # determine nav view
         context_context = Context({
             'request': request,
-            'establishment_id': establishment_id,
+            'establishment_id': self.establishment_id,
             'endpoints': endpoint_dicts,
-            'is_manager': is_manager
+            'is_manager': self.is_manager
         })
+
+        try:
+            establishment_offers = OfferAvailability.objects.filter(
+                identity=self.establishment,
+                available=True
+            )
+
+        except:
+            logger.exception('failed to get establishment offers')
 
         if establishment_offers:
             default_view_name = 'offers'
@@ -451,38 +472,25 @@ class EstablishmentProfileView(EmbeddedView):
             content_plexer = 'establishments'
             profile_content = 'establishments'
 
-        post_scripts = self.context.get('post_scripts', [])
-        my_post_scripts = [
-            'knotis/identity/js/update_profile.js',
-            'knotis/identity/js/profile.js',
-            'jcrop/js/jquery.Jcrop.js',
-            'scripts/fileuploader.js',
-            'scripts/jquery.colorbox.js',
-            'scripts/jquery.sickle.js',
-        ]
-        for script in my_post_scripts:
-            post_scripts.append(script)
-
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'establishment': establishment,
-            'business': business,
-            'is_manager': is_manager,
-            'default_profile_logo_uri': default_profile_logo_uri,
+            'establishment': self.establishment,
+            'is_manager': self.is_manager,
             'address': address,
             'phone': phone,
             'website': website,
-            'post_scripts': post_scripts,
             'maps_scripts': maps_scripts,
-            'profile_badge': profile_badge_image,
-            'profile_banner': profile_banner_image,
+            'business': self.business,
+            'default_profile_logo_uri': self.default_profile_logo_uri,
+            'profile_badge': self.profile_badge_image,
+            'profile_banner': self.profile_banner_image,
+            'profile_banner_color': self.profile_banner_color,
             'establishment_offers': establishment_offers,
             'top_menu_name': 'identity_profile',
             'profile_content': profile_content,
             'view_name': view_name,
             'content_plexer': content_plexer,
-            'profile_banner_color': profile_banner_color
         })
 
         return local_context
@@ -668,6 +676,7 @@ class EstablishmentProfileOffers(FragmentView):
     def process_context(self):
         local_context = copy.copy(self.context)
         return local_context
+
 
 
 class EstablishmentProfileLocation(FragmentView):
