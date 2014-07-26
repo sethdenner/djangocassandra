@@ -300,11 +300,12 @@ class MyCustomersView(EmbeddedView):
     url_patterns = [
         r'^customers/$',
     ]
-
+    
     default_parent_view_class = DefaultBaseView
     template_name = 'knotis/merchant/my_customers.html'
 
     def process_context(self):
+        import pdb; pdb.set_trace()
         styles = [
         ]
 
