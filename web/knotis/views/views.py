@@ -292,6 +292,12 @@ class EmbeddedView(
             )
 
         context['format'] = self.response_format
+        post_scripts = context.get('post_scripts', [])
+        context['post_scripts'] = post_scripts + self.post_scripts
+        pre_scripts = context.get('pre_scripts', [])
+        context['pre_scripts'] = pre_scripts + self.pre_scripts
+        styles = context.get('styles', [])
+        context['styles'] = styles + self.styles
 
         if self.RESPONSE_FORMATS.is_ajax(self.response_format):
             if errors:
@@ -310,13 +316,6 @@ class EmbeddedView(
             )
 
         elif self.response_format == self.RESPONSE_FORMATS.HTML:
-            post_scripts = context.get('post_scripts', [])
-            context['post_scripts'] = post_scripts + self.post_scripts
-            pre_scripts = context.get('pre_scripts', [])
-            context['pre_scripts'] = pre_scripts + self.pre_scripts
-            styles = context.get('styles', [])
-            context['styles'] = styles + self.styles
-
             if data:
                 context['data'] = data
 
