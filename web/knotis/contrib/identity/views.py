@@ -77,6 +77,9 @@ from knotis.contrib.endpoint.models import (
     EndpointIdentity
 )
 
+from .mixins import GetCurrentIdentityMixin
+from .api import IdentityApi
+
 
 def get_current_identity(request):
     current_identity_id = request.session['current_identity']
@@ -160,32 +163,68 @@ class EstablishmentsView(EmbeddedView):
     url_patterns = [r'^businesses/$']
     template_name = 'knotis/identity/establishments.html'
     default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/identity/js/businesses.js',
+        'knotis/identity/js/business-tile.js',
+    ]
+
+
+class IdentityProfileView(EmbeddedView):
+    url_patterns = [
+        r''.join([
+            '^id/(?P<identity_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+    ]
+    template_name = 'knotis/identity/profile_identity.html'
+    default_parent_view_class = DefaultBaseView
+
     def process_context(self):
-        post_scripts = self.context.get('post_scripts', [])
-        my_post_scripts = [
-            'knotis/identity/js/business-tile.js',
-            'knotis/identity/js/businesses.js',
-        ]
-        for script in my_post_scripts:
-            if not script in post_scripts:
-                post_scripts.append(script)
+        identity_id = self.context.get('identity_id')
+        identity = Identity.objects.get(pk=identity_id)
+        if not identity:
+            raise Exception('Identity not found')
 
-        local_context = copy.copy(self.context)
-        local_context.update({
-            'post_scripts': post_scripts,
+        if identity.identity_type == IdentityTypes.ESTABLISHMENT:
+            profile_view = EstablishmentProfileView()
+            self.context['establishment_id'] = identity_id
+            self.context['establishment'] = identity
+
+        elif identity.identity_type == IdentityTypes.BUSINESS:
+            try:
+                establishments = (
+                    IdentityEstablishment.objects.get_establishments(
+                        identity
+                    )
+                )
+            except:
+                establishments = None
+                logger.exception('Failed to get establishments for business')
+
+            if len(establishments) > 0:
+                profile_view = EstablishmentProfileView()
+                self.context['establishment_id'] = establishments[0].pk
+                self.context['establishment'] = establishments[0]
+
+            else:
+                raise Exception('Business profile not implemented yet.')
+
+        else:
+            raise Exception('Identity profile not implemented yet.')
+
+        self.context.update({
+            'profile_markup': profile_view.render_template_fragment(
+                self.context
+            )
         })
-        return local_context
 
+        return self.context
 
 
 class EstablishmentProfileView(EmbeddedView):
     view_name = 'establishment_profile'
     url_patterns = [
-        r''.join([
-            '^id/(?P<establishment_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
         r''.join([
             '^id/(?P<establishment_id>',
             REGEX_UUID,
@@ -196,10 +235,16 @@ class EstablishmentProfileView(EmbeddedView):
     ]
     template_name = 'knotis/identity/profile_establishment.html'
     default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/identity/js/update_profile.js',
+        'knotis/identity/js/profile.js',
+        'jcrop/js/jquery.Jcrop.js',
+        'scripts/fileuploader.js',
+        'scripts/jquery.colorbox.js',
+        'scripts/jquery.sickle.js',
+    ]
 
-    def process_context(self):
-
-        request = self.request
+    def set_establishment(self):
         establishment_id = self.context.get('establishment_id')
         establishment = self.context.get('establishment')
         backend_name = self.context.get('backend_name')
@@ -207,19 +252,7 @@ class EstablishmentProfileView(EmbeddedView):
         if not establishment:
             try:
                 if establishment_id:
-
-                    #TODO: FIX THIS GARBAGE.
-                    # This means making an identity view and a business view
-                    # and and dispatching accordingly.
-                    identity = Identity.objects.get(
-                        id=establishment_id
-                    )
-                    if identity.identity_type == IdentityTypes.BUSINESS:
-                        establishments = IdentityEstablishment.objects.get_establishments(identity)
-                        establishment =  establishments[0]
-                        establishment_id = establishment.id
-                    elif identity.identity_type == IdentityTypes.ESTABLISHMENT:
-                        establishment = identity
+                    establishment = IdentityEstablishment.objects.get(pk=establishment_id)
 
                 elif backend_name:
                     establishment = get_object_or_404(
@@ -236,59 +269,75 @@ class EstablishmentProfileView(EmbeddedView):
                     'failed to get establishment with id ' + establishment_id
                 )
                 raise http.Http404
+        self.establishment = establishment
+        self.establishment_id = establishment_id
 
-        try:
-            business = IdentityBusiness.objects.get_establishment_parent(
-                establishment
-            )
-
-        except:
-            logger.exception(
-                ' '.join([
-                    'failed to get business for establishment with id ',
-                    establishment_id
-                ])
-            )
-            raise http.Http404
-
-        is_manager = False
+    def is_manager(self):
+        request = self.request
+        self.is_manager = False
         if request.user.is_authenticated():
             current_identity_id = request.session.get('current_identity')
             current_identity = Identity.objects.get(
                 pk=current_identity_id
             )
 
-            is_manager = current_identity.is_manager(establishment)
+            self.is_manager = (
+                current_identity.is_manager(self.establishment) or
+                current_identity.pk == self.establishment.pk
+            )
 
-        if is_manager:
-            default_profile_logo_uri = ''.join([
+    def set_business(self):
+        if not hasattr(self, 'establishment'):
+            self.set_establishment()
+
+        try:
+            self.business = IdentityBusiness.objects.get_establishment_parent(
+                self.establishment
+            )
+
+        except:
+            logger.exception(
+                ' '.join([
+                    'failed to get business for establishment with id ',
+                    self.establishment_id
+                ])
+            )
+            raise http.Http404
+
+    def set_images(self):
+
+        if not hasattr(self, 'business'):
+            self.set_establishment()
+
+        if self.is_manager:
+            self.default_profile_logo_uri = ''.join([
                 settings.STATIC_URL,
                 'knotis/identity/img/add_logo.png'
             ])
 
         else:
-            default_profile_logo_uri = ''.join([
+            self.default_profile_logo_uri = ''.join([
                 settings.STATIC_URL,
                 'knotis/identity/img/profile_default.png'
             ])
 
-        profile_badge_image = get_identity_profile_badge(business)
-        profile_banner_image = get_identity_profile_banner(business)
-        profile_banner_color = get_identity_default_profile_banner_color(
-            business
+        self.profile_badge_image = get_identity_profile_badge(self.business)
+        self.profile_banner_image = get_identity_profile_banner(self.business)
+        self.profile_banner_color = get_identity_default_profile_banner_color(
+            self.business
         )
 
-        try:
-            establishment_offers = OfferAvailability.objects.filter(
-                identity=establishment,
-                available=True
-            )
+    def process_context(self):
 
-        except:
-            logger.exception('failed to get establishment offers')
+        request = self.request
+        self.set_establishment()
+
+        self.is_manager()
+        self.set_business()
+        self.set_images()
 
         locationItem = LocationItem.objects.filter(
-            related_object_id=establishment.id
+            related_object_id=self.establishment.id
         )
         if len(locationItem):
             address = locationItem[0].location.address
@@ -299,7 +348,7 @@ class EstablishmentProfileView(EmbeddedView):
         maps_scripts = maps.render_api_js()
 
         endpoints = Endpoint.objects.filter(
-            identity=establishment,
+            identity=self.establishment,
             primary=True
         )
         endpoints = endpoints.select_subclasses()
@@ -329,6 +378,9 @@ class EstablishmentProfileView(EmbeddedView):
                     display = 'Yelp'
                 elif endpoint.endpoint_type == EndpointTypes.FACEBOOK:
                     display = 'Facebook'
+
+                elif endpoint.endpoint_type == EndpointTypes.ADDRESS:
+                    address = endpoint.value
 
                 endpoint_dict = {
                     'id': endpoint.id,
@@ -374,10 +426,19 @@ class EstablishmentProfileView(EmbeddedView):
         # determine nav view
         context_context = Context({
             'request': request,
-            'establishment_id': establishment_id,
+            'establishment_id': self.establishment_id,
             'endpoints': endpoint_dicts,
-            'is_manager': is_manager
+            'is_manager': self.is_manager
         })
+
+        try:
+            establishment_offers = OfferAvailability.objects.filter(
+                identity=self.establishment,
+                available=True
+            )
+
+        except:
+            logger.exception('failed to get establishment offers')
 
         if establishment_offers:
             default_view_name = 'offers'
@@ -411,93 +472,27 @@ class EstablishmentProfileView(EmbeddedView):
             content_plexer = 'establishments'
             profile_content = 'establishments'
 
-        post_scripts = self.context.get('post_scripts', [])
-        my_post_scripts = [
-            'knotis/identity/js/update_profile.js',
-            'knotis/identity/js/profile.js',
-            'jcrop/js/jquery.Jcrop.js',
-            'scripts/fileuploader.js',
-            'scripts/jquery.colorbox.js',
-            'scripts/jquery.sickle.js',
-        ]
-        for script in my_post_scripts:
-            post_scripts.append(script)
-
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'establishment': establishment,
-            'business': business,
-            'is_manager': is_manager,
-            'default_profile_logo_uri': default_profile_logo_uri,
+            'establishment': self.establishment,
+            'is_manager': self.is_manager,
             'address': address,
             'phone': phone,
             'website': website,
-            'post_scripts': post_scripts,
             'maps_scripts': maps_scripts,
-            'profile_badge': profile_badge_image,
-            'profile_banner': profile_banner_image,
+            'business': self.business,
+            'default_profile_logo_uri': self.default_profile_logo_uri,
+            'profile_badge': self.profile_badge_image,
+            'profile_banner': self.profile_banner_image,
+            'profile_banner_color': self.profile_banner_color,
             'establishment_offers': establishment_offers,
             'top_menu_name': 'identity_profile',
             'profile_content': profile_content,
             'view_name': view_name,
             'content_plexer': content_plexer,
-            'profile_banner_color': profile_banner_color
         })
 
-        return local_context
-
-
-class BusinessesView(FragmentView):
-    template_name = 'knotis/identity/businesses_view.html'
-
-    def process_context(self):
-        styles = self.context.get('styles', [])
-        post_scripts = self.context.get('post_scripts', [])
-
-        my_styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
-            'styles/default/fileuploader.css'
-        ]
-
-        for style in my_styles:
-            if not style in styles:
-                styles.append(style)
-
-        my_post_scripts = [
-            'knotis/layout/js/layout.js',
-            'knotis/layout/js/forms.js',
-            'knotis/layout/js/header.js',
-            'knotis/layout/js/create.js',
-            'knotis/layout/js/splash_tile.js',
-            'knotis/layout/js/action_button.js',
-            'navigation/js/navigation.js',
-            'jcrop/js/jquery.Jcrop.js',
-            'scripts/fileuploader.js',
-            'scripts/jquery.colorbox.js',
-            'scripts/jquery.sickle.js',
-            'knotis/identity/js/profile.js',
-            'knotis/api/js/api.js',
-            'knotis/identity/js/business-tile.js',
-            'knotis/identity/js/businesses.js',
-            'knotis/layout/js/to_top.js'
-        ]
-
-        for script in my_post_scripts:
-            if not script in post_scripts:
-                post_scripts.append(script)
-
-        local_context = copy.copy(self.context)
-        local_context.update({
-            'styles': styles,
-            'post_scripts': post_scripts,
-            'fixed_side_nav': True
-        })
         return local_context
 
 
@@ -681,6 +676,7 @@ class EstablishmentProfileOffers(FragmentView):
     def process_context(self):
         local_context = copy.copy(self.context)
         return local_context
+
 
 
 class EstablishmentProfileLocation(FragmentView):
@@ -1010,6 +1006,77 @@ class BusinessProfileView(FragmentView):
         pass
 
 
+class CreateBusinessView(ModalView, GetCurrentIdentityMixin):
+    url_patterns = [
+        r'^identity/business/create/$'
+    ]
+    template_name = 'knotis/identity/business_create.html'
+    view_name = 'business_create'
+    default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/identity/js/business_create.js'
+    ]
+
+    def process_context(self):
+        self.context['modal_id'] = 'business-create'
+        return self.context
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        data = {}
+        errors = {}
+
+        current_identity = self.get_current_identity(request)
+        if (
+            IdentityTypes.BUSINESS == current_identity.identity_type or
+            IdentityTypes.ESTABLISHMENT == current_identity.identity_type
+        ):
+            errors['no-field'] = (
+                'This type of identity cannot create businesses.'
+            )
+
+        name = request.POST.get('name')
+        if not name:
+            errors['fields'] = {
+                'name': 'Name is required to create a business.'
+            }
+
+        if not errors:
+            try:
+                business, establishment = IdentityApi.create_business(
+                    current_identity.pk,
+                    name=name
+                )
+
+                data['business_pk'] = business.pk
+                data['establishment_pk'] = establishment.pk
+
+            except Exception, e:
+                logger.exception(e.message)
+                errors['exception'] = e.message
+
+            try:
+                user_information = UserInformation.objects.get(
+                    user=request.user
+                )
+                user_information.default_identity_id = establishment.pk
+                user_information.save()
+                request.session['current_identity'] = establishment.pk
+
+            except Exception, e:
+                logger.exception(e.message)
+
+        return self.render_to_response(
+            data=data,
+            errors=errors,
+            render_template=False
+        )
+
+
 class FirstIdentityView(ModalView):
     url_patterns = [r'^identity/first/$']
     template_name = 'knotis/identity/first.html'
@@ -1029,7 +1096,8 @@ class FirstIdentityView(ModalView):
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'identity_id': individual.pk
+            'identity_id': individual.pk,
+            'modal_id': 'first-id'
         })
 
         return local_context
@@ -1114,7 +1182,6 @@ class FirstIdentityView(ModalView):
 
         if not errors and self.response_format == self.RESPONSE_FORMATS.HTML:
             self.response_fromat = self.RESPONSE_FORMATS.REDIRECT
-            data = None
 
         return self.render_to_response(
             data=data,
@@ -1175,7 +1242,16 @@ class IdentitySwitcherView(EmbeddedView):
                 logger.warning(msg)
                 return http.HttpResponseServerError(msg)
 
-            request.session['current_identity'] = identity.id
+            request.session['current_identity'] = identity.pk
+            try:
+                user_information = UserInformation.objects.get(
+                    user=request.user
+                )
+                user_information.default_identity_id = identity.pk
+                user_information.save()
+            except Exception, e:
+                logger.exception(e.message)
+
             return http.HttpResponseRedirect(
                 '/'
             )
@@ -1229,6 +1305,9 @@ class IdentitySwitcherView(EmbeddedView):
             raise
 
         for i in available_identities:
+            if IdentityTypes.ESTABLISHMENT == i.identity_type:
+                local_context['has_business'] = True
+
             try:
                 badge_image = ImageInstance.objects.get(
                     related_object_id=i.pk,

@@ -13,8 +13,8 @@
                         return;
                     }
 
-                    $('#modal-box').modal('hide');
                     $('#id-current-identity-name').text(data.data.individual_name);
+                    $('#first-id').modal('hide');
                 }
             });
 

@@ -3,31 +3,22 @@
 (function($) {
     "use strict";
 
-    var history = [];
-    var history_index = null;
-    var current_history = null;
-    var next_history = null;
-
     var first_change = true;
+    var $clicked_anchor = null;
 
     var modal_onclose = function () {
         var $close = $(this).find('a[data-dismiss-modal]');
         var href = '/';
+        var modal = false;
+        var target_id = 'main-content';
 
-        if (!$close.length) {
-            $close = $('<a></a>');
-            $close.attr('href', href);
-            $close.attr('data-target-id', 'main-content');
-
-        } else {
+        if ($close.length) {
             href = $close.attr('href');
+            modal = $close.hasClass('modal-link');
+            target_id = $close.attr('data-target-id');
 
         }
 
-        next_history = {
-            address: href,
-            anchor: $close
-        }
         $.address.value(href);
 
     };
@@ -46,21 +37,13 @@
             }
         );
 
-        $('div.modal').each(function() {
+        var $modals = $('div.modal');
+        $modals.each(function() {
             var $modal = $(this);
             $modal.modal();
             $modal.on('hidden.bs.modal', modal_onclose);
 
         });
-
-        var $default_anchor = $('<a></a>');
-        $default_anchor.attr('href', window.location.pathname);
-        $default_anchor.attr('data-target-id', 'main-content');
-
-        next_history = {
-            address: window.location.pathname,
-            anchor: $default_anchor
-        }
 
     };
 
@@ -70,13 +53,8 @@
             function (event) {
                 event.preventDefault();
 
-                var $anchor = $(this);
-                var href = $anchor.attr('href');
-                next_history = {
-                    address: href,
-                    anchor: $anchor
-                };
-                $.address.value(href);
+                $clicked_anchor = $(this);
+                $.address.value($clicked_anchor.attr('href'));
 
             }
         );
@@ -107,136 +85,76 @@
         initialize_always();
 
         $.address.state('/').change(function (event) {
-            if (next_history == 'noop') {
-                next_history = null;
-                return;
-
-            }
-
             var address = event.value;
 
             if (first_change) {
                 // The change event gets triggered in the inital
                 // page request. Since the page is already
                 // rendered no action is necessary here.
-                current_history = next_history;
-                next_history = null;
                 first_change = false;
                 return;
 
             }
 
-            var back = false;
-            var forward = false;
-            if (!next_history) {
-                if (history.length) {
-                    if (
-                        history_index >= 1 &&
-                        history[history_index - 1].address === address
-                    ) {
-                        back = true;
-                        --history_index;
-
-                    } else if (
-                        history_index < history.length - 1 &&
-                        history[history_index + 1].address === address
-                    ) {
-                        forward = true;
-                        ++history_index;
-
-                    } else {
-                        alert('There was a navigation error :(');
-
-                    }
-                    next_history = history[history_index];
-
-                } else {
-                    return;
-
-                }
-
-            }
-
-            var current_is_modal = current_history.anchor.hasClass('modal-link');
-            var next_is_modal = next_history.anchor.hasClass('modal-link');
-            if (current_is_modal && !next_is_modal) {
-                $('div.modal').modal('hide');
-
-            }
-
-            var $next_anchor = next_history.anchor;
-
-            var dismiss_modal = false;
-            var dismiss_modal_attr = $next_anchor.attr('data-dismiss-modal');
-            if (typeof undefined !== typeof dismiss_modal_attr && false !== dismiss_modal_attr) {
-                dismiss_modal = true;
-
-            }
-
-            if (!dismiss_modal) {
-                if ($next_anchor.hasClass('modal-link')) {
-                    var modal_width = $next_anchor.attr('data-modal-width');
-                    $.ajaxmodal({
-                        href: $next_anchor.attr('href'),
-                        modal_width: modal_width,
-                        on_open: function (data, status, request) {
-                            initialize_always();
-
-                        },
-                        on_close: modal_onclose
-                    });
-
-                } else {
-                    // Hide all modals before rendering this view.
-                    var target_element_id = $next_anchor.attr('data-target-id');
-                    if (typeof target_element_id === typeof undefined || target_element_id === false) {
-                        alert('Anchor element has no "data-target-id" attribute defined!');
+            $.ajax({
+                url: address,
+                data: 'format=json',
+                complete: function (request, status) {
+                    var data = $.parseJSON(request.responseText);
+                    if (data.errors || status === 'error') {
+                        alert([
+                            'There was an error processing your request.',
+                            '\n    status: ',
+                            status,,
+                            '\n    response: ',
+                            request.responseText
+                        ].join(''));
                         return;
                     }
+                    var $html = $(data.html);
 
-                    var $target_element = $('#' + target_element_id);
-                    if (!$target_element.length) {
-                        alert('Target element #' + target_element_id + 'does not exist in page.');
-                        return;
-                    }
+                    if (typeof undefined !== typeof data.modal) {
+                        var $existing_modal = $('#' + $html.attr('id'));
+                        if ($existing_modal.length) {
+                            $existing_modal.html($html.html());
+                            $html = $existing_modal;
 
-                    $.ajax({
-                        url: address,
-                        data: 'format=json',
-                        complete: function (request, status) {
-                            var data = $.parseJSON(request.responseText);
-                            if (data.errors || status === 'error') {
-                                alert([
-                                    'There was an error processing your request.',
-                                    '\n    status: ',
-                                    status,,
-                                    '\n    response: ',
-                                    request.responseText
-                                ].join(''));
-                                return;
-                            }
-
-                            $('div.modal').modal('hide');
-                            if (data.title) {
-                                $.address.title(data.title);
-                                
-                            }
-                            $target_element.html(data.html);
-                            initialize_always();
+                        } else {
+                            $('body').append($html);
 
                         }
-                    });
+
+                        $html.modal();
+                        $html.on('hidden.bs.modal', modal_onclose);
+
+                    } else {
+                        var target_id = data.targetid;
+                        if (!target_id) {
+                            alert('View needs to set a data.targetid!');
+                            return;
+                        }
+
+                        var $target_element = $('#' + target_id);
+                        if (0 === $target_element.length) {
+                            alert('Target element #' + target_id + ' not found in DOM.');
+                            return;
+                        }
+
+                        if (data.title) {
+                            $.address.title(data.title);
+                            
+                        }
+                        $target_element.html(data.html);
+
+                        $('div.modal').modal('hide');
+
+                    }
+                    initialize_always();
+
                 }
-            }
+            });
 
-            if (!forward && !back) {
-                history.push(current_history);
-                history_index = history.length;
-
-            }
-            current_history = next_history;
-            next_history = null;
-
+            $clicked_anchor = null;
         });
 
     };
