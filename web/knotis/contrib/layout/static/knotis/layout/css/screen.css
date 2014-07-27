@@ -403,7 +403,7 @@ nav li.addLink a {
     padding-bottom: 10px;
 }
 /* line 26, ../sass/_subNav.scss */
-.subNav ul li.active {
+.subNav ul li a.active {
     color: #2cc397;
     border-bottom: 4px solid #2cc397;
 }
