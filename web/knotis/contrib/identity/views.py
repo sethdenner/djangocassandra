@@ -179,7 +179,7 @@ class IdentityProfileView(EmbeddedView):
             ')/$'
         ]),
     ]
-    template_name = 'knotis/identity/profile_identity.html'
+    template_name = 'knotis/identity/identity_profile.html'
     default_parent_view_class = DefaultBaseView
     post_scripts = [
         'knotis/identity/js/update_profile.js',
@@ -243,7 +243,7 @@ class EstablishmentProfileView(EmbeddedView):
             '))?/$'
         ])
     ]
-    template_name = 'knotis/identity/profile_establishment.html'
+    template_name = 'knotis/identity/establishment_profile.html'
     default_parent_view_class = DefaultBaseView
     post_scripts = [
         'knotis/identity/js/update_profile.js',
