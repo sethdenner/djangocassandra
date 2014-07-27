@@ -119,7 +119,9 @@ class SocialIntegrationsGridView(GridSmallView):
         return self.context
 
 
-class SocialMediaSettingsView(ContextView):
+class SocialMediaSettingsView(EmbeddedView):
+    url_patterns = [ r'^settings/social/$' ]
+	default_parent_view_class = DefaultBaseView
     template_name = 'knotis/endpoint/social_media_settings.html'
 
     def process_context(self):
