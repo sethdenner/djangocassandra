@@ -47,10 +47,6 @@ urlpatterns = patterns(
         OfferPurchaseSuccessView.as_view()
     ),
     url(
-        r'/create/$',
-        OfferEditView.as_view()
-    ),
-    url(
         r'/create/product/$',
         OfferEditProductFormView.as_view(),
         name=OfferEditProductFormView.view_name
@@ -83,3 +79,5 @@ urlpatterns = patterns(
 
 urlpatterns += OffersView.urls()
 urlpatterns += OfferDetailView.urls()
+urlpatterns += OfferEditView.urls()
+

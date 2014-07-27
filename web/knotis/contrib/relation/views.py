@@ -77,6 +77,11 @@ class MyFollowingView(EmbeddedView):
         r'^my/followers/$',
         r'^my/following/$',
     ]
+    post_scripts = [
+        'knotis/layout/js/action_button.js',
+        'knotis/identity/js/businesses.js',
+        'knotis/identity/js/business-tile.js',
+    ]
 
     # Refactor me! I want to live in a grid view class!
     def process_context(
@@ -91,7 +96,7 @@ class MyFollowingView(EmbeddedView):
         related_parties = []
         if (
             IdentityTypes.INDIVIDUAL == current_identity.identity_type or
-            IdentityTypes.SUPERUSER == current_identity.identity_type  
+            IdentityTypes.SUPERUSER == current_identity.identity_type
         ):
             term = 'Following'
             relations = Relation.objects.filter(
@@ -135,5 +140,5 @@ class MyFollowingView(EmbeddedView):
 #            'tile_link_template': '/id/', # + identity.id<wut
             'request': self.request,
         })
-    
+
         return local_context

@@ -294,8 +294,6 @@ class MyCustomersGrid(GridSmallView):
         return self.context
 
 
-
-
 class MyCustomersView(EmbeddedView):
     url_patterns = [
         r'^customers/$',
@@ -419,7 +417,7 @@ class MyOffersGrid(GridSmallView):
             logger.exception('could not get managed identities')
             return self.context
 
-        offers_by_business = {}
+        offers_by_establishment = {}
 
         offer_filter = self.context.get('offer_filter')
         offer_filter_dict = {}
@@ -447,13 +445,13 @@ class MyOffersGrid(GridSmallView):
         identities = list(chain(identities, managed_identities))
 
         for i in identities:
-            if i.identity_type != IdentityTypes.BUSINESS:
+            if i.identity_type != IdentityTypes.ESTABLISHMENT:
                 continue
 
             offer_filter_dict['owner'] = i
 
             try:
-                offers_by_business[i.name] = filter(
+                offers_by_establishment[i.name] = filter(
                     lambda x: x.offer_type != OfferTypes.DARK,
                     Offer.objects.filter(
                         **offer_filter_dict
@@ -479,7 +477,7 @@ class MyOffersGrid(GridSmallView):
             }))
         )
 
-        for key, value in offers_by_business.iteritems():
+        for key, value in offers_by_establishment.iteritems():
             for offer in value:
                 tile = OfferTile()
                 tiles.append(tile.render_template_fragment(Context({
@@ -495,48 +493,25 @@ class MyOffersGrid(GridSmallView):
 
 
 class MyOffersView(EmbeddedView):
-    url_patterns = [
-        r'offers(/(?P<offer_filter>\w*))?/$',
-    ]
-
-    default_parent_view_class = DefaultBaseView
+    view_name = 'my_offers'
     template_name = 'knotis/merchant/my_offers_view.html'
-
-    def process_context(self):
-        styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
-            'styles/default/fileuploader.css'
-            'knotis/merchant/css/my_offers.css'
-        ]
-
-        pre_scripts = []
-
-        post_scripts = [
-            'jcrop/js/jquery.Jcrop.js',
-            'scripts/fileuploader.js',
-            'scripts/jquery.colorbox.js',
-            'scripts/jquery.sickle.js',
-            'knotis/layout/js/layout.js',
-            'knotis/layout/js/forms.js',
-            'knotis/layout/js/header.js',
-            'knotis/layout/js/create.js',
-            'navigation/js/navigation.js',
-            'knotis/merchant/js/my_offers.js'
-        ]
-
-        local_context = copy.copy(self.context)
-        local_context.update({
-            'styles': styles,
-            'pre_scripts': pre_scripts,
-            'post_scripts': post_scripts,
-            'top_menu_name': 'my_offers',
-        })
-        return local_context
+    url_patterns = [
+        r'^offers(/(?P<offer_filter>\w*))?/$',
+    ]
+    default_parent_view_class = DefaultBaseView
+    pre_scripts = []
+    post_scripts = [
+        'jcrop/js/jquery.Jcrop.js',
+        'scripts/fileuploader.js',
+        'scripts/jquery.colorbox.js',
+        'scripts/jquery.sickle.js',
+        'knotis/layout/js/layout.js',
+        'knotis/layout/js/forms.js',
+        'knotis/layout/js/header.js',
+        'knotis/layout/js/create.js',
+        'navigation/js/navigation.js',
+        'knotis/merchant/js/my_offers.js'
+    ]
 
 
 class OfferRedemptionView(FragmentView):
@@ -577,7 +552,6 @@ class OfferRedemptionView(FragmentView):
         })
 
         return self.context
-
 
 
 class MyAnalyticsView(ContextView):

@@ -402,9 +402,22 @@ class OfferEditHeaderView(FragmentView):
     view_name = 'offer_edit_header'
 
 
-class OfferEditView(ContextView):
+class OfferEditView(ModalView):
+    url_patterns = [
+        r'/create/$'
+    ]
     template_name = 'knotis/offer/edit.html'
     view_name = 'offer_edit'
+    default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/wizard/js/wizard.js',
+        'knotis/offer/js/offer_create_wizard.js'
+    ]
+
+    def process_context(self):
+        self.context['modal_id'] = 'offer-create'
+
+        return super(OfferEditView, self).process_context()
 
 
 class OfferCreateStepView(WizardStepView):
@@ -435,16 +448,11 @@ class OfferEditProductFormView(OfferCreateStepView):
             pk=request.session.get('current_identity')
         )
 
-        if IdentityTypes.ESTABLISHMENT == current_identity.identity_type:
-            owner = IdentityBusiness.objects.get_establishment_parent(
-                current_identity
-            )
-
-        elif IdentityTypes.BUSINESS == current_identity.identity_type:
-            owner = current_identity
+        if IdentityTypes.ESTABLISHMENT != current_identity.identity_type:
+            raise PermissionDenied()
 
         else:
-            raise PermissionDenied()
+            owner = current_identity
 
         form = OfferProductPriceForm(
             data=request.POST,

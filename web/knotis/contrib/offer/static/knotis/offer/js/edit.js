@@ -1,4 +1,7 @@
+;
+
 (function($) {
+    'use strict';
 
     var $carousel = $('div#offer-edit-carousel');
     $carousel.carousel({

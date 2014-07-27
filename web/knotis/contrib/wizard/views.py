@@ -1,3 +1,4 @@
+import re
 import copy
 
 from django.utils.log import logging
@@ -98,6 +99,7 @@ class WizardView(FragmentView):
     template_name = 'knotis/wizard/wizard.html'
     view_name = 'wizard'
     wizard_name = None
+    exclude_query_parameters = ['format']
 
     steps = []
 
@@ -142,11 +144,23 @@ class WizardView(FragmentView):
                 ]))
 
             if current_identity:
+                query_string = request.META.get('QUERY_STRING', '')
+                for param in self.exclude_query_parameters:
+                    query_string = re.sub(
+                        r''.join([
+                            r'[&]?',
+                            param,
+                            r'=[^&]*'
+                        ]),
+                        '',
+                        query_string
+                    )
+
                 try:
                     progress = WizardProgress.objects.get(
                         identity=current_identity,
                         wizard_name=self.wizard_name,
-                        query_string=request.META.get('QUERY_STRING', ''),
+                        query_string=query_string,
                         completed=False
                     )
 
@@ -154,6 +168,7 @@ class WizardView(FragmentView):
                     progress = WizardProgress.objects.create(
                         identity=current_identity,
                         wizard_name=self.wizard_name,
+                        query_string=query_string,
                         current_step=self.steps[0]
                     )
 
