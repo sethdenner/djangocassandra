@@ -1,4 +1,3 @@
-{% load crispy_forms_tags %}
 <div id="wizard-carousel" data-wizard-name="{{ wizard_name }}" data-wizard-query="{{ progress.query_string }}" class="carousel slide" data-interval="" data-current-step="{{ progress.current_step.order }}">
   <div class="carousel-inner">
     {% for step in steps %}
