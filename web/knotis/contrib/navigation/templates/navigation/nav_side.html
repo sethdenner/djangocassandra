@@ -9,7 +9,7 @@
             {% endif %}
             {% if current_identity.identity_type == IdentityTypes.ESTABLISHMENT %}
             <li><a a href="/id/{{ current_identity.pk }}/" data-target-id="main-content" ><span class="circle"><i class="icon-profile-guy"></i></span><span class="sidebar-label">Profile</span></a></li>
-            <li><a href="#"><span class="circle"><i class="icon-promotions"></i></span><span class="sidebar-label">Promotions</span></a></li>
+            <li><a href="/my/offers/"><span class="circle"><i class="icon-promotions"></i></span><span class="sidebar-label">Promotions</span></a></li>
             <li><a href="/my/customers" data-target-id="main-content" ><span class="circle"><i class="icon-customers"></i></span><span class="sidebar-label">Customers</span></a></li>
             <li><a href="/my/redemptions/" data-target-id="main-content" ><span class="circle"><i class="icon-redeem"></i></span><span class="sidebar-label">Redemption</span></a></li>
             {% endif %}

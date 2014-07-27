@@ -1,9 +1,22 @@
 {% load render_template_fragment %}
+<!-- SubNav-->
+<div class="subNav">
+    <div class="row">
+        <div class="col-lg-12">
+            <ul>
+                <li><a href="/my/offers/active/">Active</a></li>
+                <li><a href="/my/offers/pending/">Pending</a></li>
+                <li><a href="/my/offers/completed">Completed</a></li>
+            </ul>
+        </div>
+    </div>    
+</div>
+<!-- // End SubNav -->
 <div class="offers">
     <div class="container-fluid mainContent">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
-                <h1>My Offers</h1>
+                <h1>Promotions</h1>
             </div>
         </div>
         <div class="row">
@@ -11,3 +24,8 @@
         </div>
     </div>
 </div>
+{% if format == 'json' %}
+{% for script in post_scripts %}
+<script src="{{ STATIC_URL}}{{ script }}" ></script>
+{% endfor %}
+{% endif %}
