@@ -21,43 +21,32 @@ from models import (
 class FollowApiView(ApiView):
     api_path = 'relation/follow'
 
+    def get_needed_identities(self, request):
+        if request.user.is_authenticated():
+            self.subject_id = request.session.get('current_identity')
+            self.subject = Identity.objects.get(pk=self.subject_id)
+
+            self.related_id = request.DATA.get('related_id')
+            self.related = Identity.objects.get(pk=self.related_id)
+
+
     def post(
         self,
         request,
         *args,
         **kwargs
     ):
-
+        self.get_needed_identities(request)
         errors = {}
 
         try:
-            if request.user.is_authenticated():
-                subject_id = request.session.get('current_identity')
-                subject = Identity.objects.get(pk=subject_id)
-
-                related_id = request.REQUEST.get('related_id')
-                related = Identity.objects.get(pk=related_id)
-
-                verb = request.REQUEST.get('verb')
-
-                if verb == 'follow':
-                    relation = Relation.objects.create_following(
-                        subject,
-                        related
-                    ).save()
-
-                elif verb == 'unfollow':
-                    follows = Relation.objects.get_following(subject)
-                    for follow in follows:
-                        if (
-                            (not follow.deleted) and
-                            (follow.related.id == related.id)
-                        ):
-                            follow.deleted = True
-                            follow.save()
+            relation = Relation.objects.create_following(
+                self.subject,
+                self.related
+            )
+            relation.save()
 
         except Exception, e:
-            raise e
             logger.exception('failed to follow')
             errors['no-field'] = e.message
 
@@ -67,6 +56,34 @@ class FollowApiView(ApiView):
                 'pk': relation.pk,
                 'subject_id': relation.subject_object_id,
                 'related_id': relation.related_object_id,
+                'description': relation.description
+            }
+        })
+
+    def delete(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        self.get_needed_identities(request)
+        errors = {}
+        try:
+            relations = Relation.objects.follows(self.subject, self.related)
+            for relation in relations:
+                relation.delete()
+
+        except Exception, e:
+            logger.exception('failed to unfollow')
+            errors['no-field'] = e.message
+
+        return self.generate_ajax_response({
+            'errors': errors,
+            'relation': {
+                'pk': relation.pk,
+                'subject_id': relation.subject_object_id,
+                'related_id': relation.related_object_id,
+                'deleted': True if not errors else False,
                 'description': relation.description
             }
         })

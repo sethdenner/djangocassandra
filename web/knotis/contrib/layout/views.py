@@ -33,12 +33,14 @@ class ButtonAction(object):
         title,
         href,
         data={},
-        method='get'
+        method='get',
+        deep=False,
     ):
         self.title = title
         self.href = href
         self.data = data
         self.method = method.lower()
+        self.deep = deep
 
 
 class ActionButton(FragmentView):
@@ -50,7 +52,7 @@ class ActionButton(FragmentView):
 
         self.context.update({
             'actions': self.actions(),
-            'css_class': 'btn-knotis-action'
+            'css_class': 'btnFollow'
         })
 
         return self.context
@@ -84,5 +86,5 @@ class UnderConstructionView(ModalView):
     template_name = 'knotis/layout/under_construction.html'
     view_name = 'under_construction'
     default_parent_view_class = DefaultBaseView
-    
+
 
