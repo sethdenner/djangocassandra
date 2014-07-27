@@ -45,7 +45,8 @@ from models import (
 
 
 from knotis.contrib.relation.models import (
-    RelationTypes
+    RelationTypes,
+    Relation,
 )
 
 from forms import (
@@ -164,6 +165,7 @@ class EstablishmentsView(EmbeddedView):
     template_name = 'knotis/identity/establishments.html'
     default_parent_view_class = DefaultBaseView
     post_scripts = [
+        'knotis/layout/js/action_button.js',
         'knotis/identity/js/businesses.js',
         'knotis/identity/js/business-tile.js',
     ]
@@ -179,6 +181,14 @@ class IdentityProfileView(EmbeddedView):
     ]
     template_name = 'knotis/identity/profile_identity.html'
     default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/identity/js/update_profile.js',
+        'knotis/identity/js/profile.js',
+        'jcrop/js/jquery.Jcrop.js',
+        'scripts/fileuploader.js',
+        'scripts/jquery.colorbox.js',
+        'scripts/jquery.sickle.js',
+    ]
 
     def process_context(self):
         identity_id = self.context.get('identity_id')
@@ -537,9 +547,11 @@ class EstablishmentsGrid(GridSmallView):
 
                 establishment_tile = IdentityTile()
                 establishment_context = Context({
+                    'request': self.request,
                     'identity': establishment,
                     'request': self.request,
                 })
+
                 if address:
                     establishment_context.update({'address': address})
 
@@ -563,29 +575,32 @@ class IdentityTileActionButton(ActionButton):
     view_name = 'identity_tile_action'
 
     def actions(self):
-        identity = self.context.get('identity')
+        tile_identity = self.context.get('identity')
         current_identity = self.context.get('current_identity')
 
         if not current_identity:
             return [
                 ButtonAction(
                     'Sign Up',
-                    '/auth/signup/', {
-                        'modalid': 'auth-modal'
-                    },
-                    'modal'
+                    '/signup/',
+                    {},
+                    'get',
+                    deep=True,
                 )
             ]
-
+        following = Relation.objects.follows(current_identity, tile_identity)
+        is_following = len(following) == 0
+        action_text = 'Follow' if is_following  else 'Unfollow'
         return [
             ButtonAction(
-                'Follow',
-                '/api/v1/relation/', {
+                action_text,
+                '/api/v0/relation/follow/',
+                {
                     'relation-type': RelationTypes.FOLLOWING,
-                    'subject': current_identity.pk,
-                    'related': identity.pk
+                    'subject_id': current_identity.pk,
+                    'related_id': tile_identity.pk,
                 },
-                'get'
+                'post' if is_following else 'delete'
             )
         ]
 
@@ -612,12 +627,21 @@ class IdentityTile(FragmentView):
         profile_banner_color = get_identity_default_profile_banner_color(
             identity
         )
+        identity_tile_context = Context({
+            'current_identity': current_identity,
+            'identity': identity
+        })
+        action_button = IdentityTileActionButton()
+        action_button_content = action_button.render_template_fragment(
+            identity_tile_context
+        )
 
         local_context = copy.copy(self.context)
         local_context.update({
             'current_identity': current_identity,
             'banner_image': profile_banner_image,
             'badge_image': profile_badge_image,
+            'action_button': action_button_content,
             'STATIC_URL': settings.STATIC_URL,
             'profile_banner_color': profile_banner_color
         })
