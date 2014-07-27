@@ -6,7 +6,7 @@
                     {% thumbnail banner_image.image.image '240x161' crop=banner_image.crop as image %}
                     <img src="{{ image.url }}" alt="{{ identity.name }}"/>
                     {% empty %}
-                    <img class="tile-image"  alt="{{ identity.name }}" src="http://placekitten.com/240/161/" />
+                    <img class="tile-image"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png" />
                     {% endthumbnail %}
                     <div class="overlay"></div>
                 </div>
@@ -17,7 +17,7 @@
                         {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
                         <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
                         {% empty %}
-                        <img class="tile-badge" src="http://placekitten.com/80/80/" />
+                        <img class="tile-badge" src="{{ STATIC_URL }}knotis/identity/img/profile_default.png" />
                         {% endthumbnail %}
                     </div>
                 </div>

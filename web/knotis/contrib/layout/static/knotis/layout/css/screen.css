@@ -403,7 +403,7 @@ nav li.addLink a {
     padding-bottom: 10px;
 }
 /* line 26, ../sass/_subNav.scss */
-.subNav ul li.active {
+.subNav ul li a.active {
     color: #2cc397;
     border-bottom: 4px solid #2cc397;
 }
@@ -1215,7 +1215,6 @@ nav li.addLink a {
 }
 /* line 82, ../sass/_modals.scss */
 #offer-modal .modal-content {
-    background: url("http://placekitten.com/1000/1000") no-repeat center top;
     background-size: cover;
     border-radius: 0;
     border: 0;
@@ -1680,7 +1679,14 @@ span.help-inline {
     font-size: 50px;
     color: rgb(207, 207, 207);
 }
+
 .profileContent {
     position: relative;
     top: 310px;
+}
+
+.tileLink {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
 }

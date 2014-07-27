@@ -7,13 +7,15 @@ from django.views.generic.simple import redirect_to
 
 from knotis.utils.regex import REGEX_UUID
 
-from views import (
+from .views import (
     EstablishmentsView,
     EstablishmentsGrid,
     EstablishmentProfileView,
+    IdentityProfileView,
     IdentitySwitcherView,
     FirstIdentityView,
     EstablishmentAboutAbout,
+    CreateBusinessView
 )
 
 
@@ -55,6 +57,8 @@ urlpatterns = patterns(
 )
 
 urlpatterns += EstablishmentsView.urls()
+urlpatterns += IdentityProfileView.urls()
 urlpatterns += EstablishmentProfileView.urls()
 urlpatterns += IdentitySwitcherView.urls()
 urlpatterns += FirstIdentityView.urls()
+urlpatterns += CreateBusinessView.urls()

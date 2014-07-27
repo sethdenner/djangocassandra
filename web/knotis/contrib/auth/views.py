@@ -29,7 +29,9 @@ from knotis.contrib.endpoint.models import (
 )
 from knotis.contrib.identity.models import (
     Identity,
-    IdentityIndividual
+    IdentityIndividual,
+    IdentityEstablishment,
+    IdentityTypes
 )
 
 from knotis.contrib.layout.views import DefaultBaseView
@@ -71,7 +73,9 @@ class LoginView(ModalView):
             'login_form': LoginForm(
                 request=self.request,
                 data=self.request.POST if self.request.POST else None
-            )
+            ),
+            'header_title': 'Log In',
+            'modal_id': 'auth-modal'
         }
 
         self.context.update(params)
@@ -124,8 +128,19 @@ class LoginView(ModalView):
                     pk=user_information.default_identity_id
                 )
 
+            if IdentityTypes.BUSINESS == identity.identity_type:
+                establishments = (
+                    IdentityEstablishment.objects.get_establishments(
+                        identity
+                    )
+                )
+                identity = establishments[0]
+
+                user_information.default_identity_id = identity.id
+                user_information.save()
+
         except Exception, e:
-            logout(user)
+            logout(request)
             logger.exception(e.message)
             errors['no-field'] = e.message
             return self.render_to_response(errors=errors)
@@ -163,7 +178,9 @@ class SignUpView(ModalView):
 
     def process_context(self):
         return self.context.update({
-            'signup_form': CreateUserForm(request=self.request)
+            'signup_form': CreateUserForm(request=self.request),
+            'header_title': 'Sign Up',
+            'modal_id': 'auth-modal'
         })
 
     def post(

@@ -1,3 +1,5 @@
+{% extends 'knotis/layout/modal_base.html' %}
+{% block body %}
 <form class="replace" action="/support/" method="post" id="support_form">{% csrf_token %}
     <select name=subject>
         <option value="problem"> I want to report a problem with the site/app</option>
@@ -21,3 +23,4 @@
         </div>
     </div>
 </form>
+{% endblock body %}
