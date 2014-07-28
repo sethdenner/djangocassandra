@@ -13,7 +13,7 @@
     var upload_logo = function(event) {
         event.preventDefault();
 
-        var identity_id = $('div#id-identity-id').attr('data-business-id')
+        var identity_id = $('div#id-identity-id').attr('data-establishment-id')
 
         $.ajaxmodal({
             href: '/image/upload/',
@@ -56,7 +56,7 @@
 
     $('a.change-profile-cover-link').click(function(event){
       event.preventDefault();
-      var identity_id = $('#id-identity-id').attr('data-business-id');
+      var identity_id = $('#id-identity-id').attr('data-establishment-id');
 
       $.ajaxmodal({
           href: '/image/upload',
@@ -93,7 +93,7 @@
 
     $('a.upload-photo').click(function(event){
       event.preventDefault();
-      var identity_id = $(this).attr('data-business-id');
+      var identity_id = $(this).attr('data-establishment-id');
 
       $.ajaxmodal({
           href: '/image/upload',

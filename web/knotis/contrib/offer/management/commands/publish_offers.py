@@ -46,7 +46,6 @@ class Command(BaseCommand):
                     '.\n'
                 ]))
 
-
             except Exception, e:
                 self.stderr.write(''.join([
                     'Failed to publish offer <',

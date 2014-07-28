@@ -43,8 +43,7 @@ from knotis.contrib.identity.models import (
     Identity,
     IdentityTypes,
     IdentityIndividual,
-    IdentityEstablishment,
-    IdentityBusiness
+    IdentityEstablishment
 )
 
 from knotis.contrib.offer.models import (
@@ -855,16 +854,11 @@ class OfferEditProductFormView(OfferCreateStepView):
             pk=request.session['current_identity']
         )
 
-        if IdentityTypes.ESTABLISHMENT == current_identity.identity_type:
-            owner = IdentityBusiness.objects.get_establishment_parent(
-                current_identity
-            )
-
-        elif IdentityTypes.BUSINESS == current_identity.identity_type:
-            owner = current_identity
+        if IdentityTypes.ESTABLISHMENT != current_identity.identity_type:
+            raise PermissionDenied()
 
         else:
-            raise PermissionDenied()
+            owner = current_identity
 
         offer_id = request.GET.get('id')
         if offer_id:
