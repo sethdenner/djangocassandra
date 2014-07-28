@@ -1430,11 +1430,12 @@ h1.sectionHeader {
     border-right: 1px solid #777777;
     width: 345px;
     background: rgba(56, 56, 56, 0.36);
-    position: relative;
-    top: -52px;
-    right: 43px;
+    position: absolute;
+    top: -105px;
+    left: -12px;
     padding: 30px 30px 83px;
     overflow: hidden;
+    height: 395px;
 }
 /* line 51, ../sass/_profile.scss */
 .heroInfo img {
@@ -1472,6 +1473,7 @@ h1.sectionHeader {
     font-size: 13px;
     border-radius: 2px;
     display: inline-block;
+    margin-top: 15px;
 }
 
 /* line 81, ../sass/_profile.scss */
@@ -1632,13 +1634,14 @@ span.help-inline {
 .change-profile-cover-link {
     position: absolute;
     color: white;
-    background: rgba(0, 0, 0, 0.21);
     padding: 12px 14px;
     right: 0;
     margin: 16px;
     border-radius: 3px;
     font-size: 14px;
     cursor: pointer;
+    bottom: 200px;
+    border: 2px solid white;
 }
 
 .profileBusiness .subNav {
