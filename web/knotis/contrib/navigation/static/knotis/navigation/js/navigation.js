@@ -4,21 +4,24 @@
     "use strict";
 
     var first_change = true;
+    var closing_modal = false;
     var $clicked_anchor = null;
+    var last_non_modal = null;
 
     var modal_onclose = function () {
-        var $close = $(this).find('a[data-dismiss-modal]');
+        var $modal = $(this);
+        var $close = $modal.find('a[data-dismiss-modal]');
         var href = '/';
-        var modal = false;
-        var target_id = 'main-content';
 
-        if ($close.length) {
+        if (null !== last_non_modal) {
+            href = last_non_modal;
+
+        } else if ($close.length) {
             href = $close.attr('href');
-            modal = $close.hasClass('modal-link');
-            target_id = $close.attr('data-target-id');
 
         }
 
+        closing_modal = true;
         $.address.value(href);
 
     };
@@ -38,13 +41,21 @@
         );
 
         var $modals = $('div.modal');
-        $modals.each(function() {
+        $modals.each(function () {
             var $modal = $(this);
             $modal.modal();
-            $modal.on('hidden.bs.modal', modal_onclose);
+            $modal.off('hidden.bs.modal.navigation')
+                .on(
+                    'hidden.bs.modal.navigation',
+                    modal_onclose
+                );
 
         });
 
+        if (0 === $('div.modal:visible').length) {
+            last_non_modal = $.address.value();
+
+        }
     };
 
     var initialize_address = function (force) {
@@ -96,6 +107,12 @@
 
             }
 
+            if (closing_modal) {
+                closing_modal = false;
+                return;
+
+            }
+
             $.ajax({
                 url: address,
                 data: 'format=json',
@@ -125,9 +142,12 @@
                         }
 
                         $html.modal();
-                        $html.on('hidden.bs.modal', modal_onclose);
+                        $html.off('hidden.bs.modal.navigation')
+                            .on('hidden.bs.modal.navigation', modal_onclose);
 
                     } else {
+                        last_non_modal = address;
+
                         var target_id = data.targetid;
                         if (!target_id) {
                             alert('View needs to set a data.targetid!');
@@ -145,7 +165,6 @@
                             
                         }
                         $target_element.html(data.html);
-
                         $('div.modal').modal('hide');
 
                     }
