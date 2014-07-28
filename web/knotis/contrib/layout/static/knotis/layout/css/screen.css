@@ -1701,3 +1701,20 @@ span.help-inline {
     height: 90px;
     background: rgba(255, 255, 255, 0.94);
 }
+
+.support-forms label {
+    display: inline-block;
+    border: 0;
+    border-radius: 2px;
+    padding: 10px;
+    width: 80%;
+}
+
+.support-forms input {
+    display: inline-block;
+    border: 0;
+    border: 1px solid rgb(224, 224, 224);
+    border-radius: 2px;
+    padding: 10px;
+    width: 80%;
+}
