@@ -39,13 +39,13 @@
                 <div class="col-lg-12">
                     <ul>
                         <li>
-                            <a class="active" href="/id/{{establishment.id}}/about/">About</a>
+                        <a {% if view_name == 'about' %} class="active" {% endif %} href="/id/{{establishment.id}}/about/">About</a>
                         </li>
                         <li>
-                            <a href="/id/{{establishment.id}}/contact/">Contact</a>
+                            <a {% if view_name == 'contact' %} class="active" {% endif %} href="/id/{{establishment.id}}/contact/">Contact</a>
                         </li>
                         <li>
-                            <a href="/id/{{establishment.id}}/location/">Location</a>
+                            <a {% if view_name == 'location' %} class="active" {% endif %} href="/id/{{establishment.id}}/location/">Location</a>
                         </li>
                     </ul>
                 </div>
@@ -64,6 +64,5 @@
             <script src="{{STATIC_URL}}{{script}}"></script>
         {% endfor %}
     {% endif %}
-    {{ maps_scripts }}
     <div id="id-identity-id" data-establishment-id="{{ establishment.id }}" data-business-id="{{ business.id }}" ></div>
 </div>
