@@ -20,19 +20,19 @@ from knotis.contrib.identity.views import (
 
 class SettingTile(FragmentView):
     template_name = 'knotis/settings/tile.html'
-    view_name = 'setting_tile'
 
 class SocialSettingTile(SettingTile):
     template_name = 'knotis/settings/social_tile.html'
 	
 class QRSettingTile(SettingTile):
-    tempalte_name = 'knotis/settings/QR_tile.html'
+    template_name = 'knotis/settings/qr_tile.html'
 
 class SettingsGrid(GridSmallView):
     view_name = 'settings_grid'
 
     def process_context(self):
         tiles = []
+        import pdb; pdb.set_trace()
         setting_tiles = [SocialSettingTile, QRSettingTile]
         for setting in setting_tiles:
             setting_context = Context()
