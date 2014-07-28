@@ -19,8 +19,6 @@ from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.media.models import (
     ImageInstance
 )
-from knotis.contrib.offer.models import OfferAvailability
-from knotis.contrib.offer.views import OfferTile
 
 from knotis.contrib.layout.views import (
     GridSmallView,
@@ -256,7 +254,6 @@ class EstablishmentProfileView(EmbeddedView):
             raise http.Http404
 
     def set_images(self):
-
         if not hasattr(self, 'business'):
             self.set_establishment()
 
@@ -272,19 +269,22 @@ class EstablishmentProfileView(EmbeddedView):
                 'knotis/identity/img/profile_default.png'
             ])
 
-        self.profile_badge_image = get_identity_profile_badge(self.business)
-        self.profile_banner_image = get_identity_profile_banner(self.business)
+        self.profile_badge_image = get_identity_profile_badge(
+            self.establishment
+        )
+        self.profile_banner_image = get_identity_profile_banner(
+            self.establishment
+        )
         self.profile_banner_color = get_identity_default_profile_banner_color(
-            self.business
+            self.establishment
         )
 
     def process_context(self):
         self.set_establishment()
+        self.set_business()
 
         self.is_manager()
-        self.set_business()
         self.set_images()
-
 
         locationItem = LocationItem.objects.filter(
             related_object_id=self.establishment.id
@@ -380,6 +380,7 @@ class EstablishmentProfileView(EmbeddedView):
             'is_manager': self.is_manager
         })
 
+        """
         try:
             establishment_offers = OfferAvailability.objects.filter(
                 identity=self.establishment,
@@ -393,7 +394,8 @@ class EstablishmentProfileView(EmbeddedView):
             default_view_name = 'offers'
 
         else:
-            default_view_name = 'about'
+        """
+        default_view_name = 'about'
 
         view_name = self.context.get('view_name', default_view_name)
 
@@ -421,7 +423,6 @@ class EstablishmentProfileView(EmbeddedView):
             content_plexer = 'establishments'
             profile_content = 'establishments'
 
-
         local_context = copy.copy(self.context)
         local_context.update({
             'establishment': self.establishment,
@@ -434,7 +435,7 @@ class EstablishmentProfileView(EmbeddedView):
             'profile_badge': self.profile_badge_image,
             'profile_banner': self.profile_banner_image,
             'profile_banner_color': self.profile_banner_color,
-            'establishment_offers': establishment_offers,
+            #  'establishment_offers': establishment_offers,
             'top_menu_name': 'identity_profile',
             'profile_content': profile_content,
             'view_name': view_name,
@@ -586,7 +587,7 @@ class IdentityTile(FragmentView):
 
         return local_context
 
-
+"""
 class EstablishmentProfileGrid(GridSmallView):
     view_name = 'establishment_profile_grid'
 
@@ -603,7 +604,6 @@ class EstablishmentProfileGrid(GridSmallView):
 
         tiles = []
 
-        """
         is_manager = self.context.get('is_manager')
         if is_manager:
             offer_create_tile = OfferCreateTile()
@@ -614,7 +614,7 @@ class EstablishmentProfileGrid(GridSmallView):
                     'action_type': 'modal'
                 }))
             )
-        """
+
         if establishment_offers:
             for offer in establishment_offers:
                 offer_tile = OfferTile()
@@ -639,7 +639,7 @@ class EstablishmentProfileOffers(FragmentView):
     def process_context(self):
         local_context = copy.copy(self.context)
         return local_context
-
+"""
 
 
 class EstablishmentProfileLocation(FragmentView):
@@ -887,14 +887,10 @@ class EstablishmentAboutCarousel(FragmentView):
 
     def process_context(self):
         establishment_id = self.context.get('establishment_id')
-
         establishment = IdentityEstablishment.objects.get(pk=establishment_id)
-        business = IdentityBusiness.objects.get_establishment_parent(
-            establishment
-        )
 
         images = ImageInstance.objects.filter(
-            related_object_id=business.pk,
+            related_object_id=establishment.pk,
             context='business_profile_carousel'
         )
 
@@ -907,7 +903,6 @@ class EstablishmentAboutCarousel(FragmentView):
         local_context = copy.copy(self.context)
         local_context.update({
             'images': image_infos,
-            'establishment_parent': business
         })
 
         return local_context

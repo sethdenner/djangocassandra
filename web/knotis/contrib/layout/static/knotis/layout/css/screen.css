@@ -248,22 +248,23 @@ nav .search :-ms-input-placeholder {
 nav .dropdown {
     font-size: 12px;
     border-radius: 4px;
-    padding: 15px 0 15px 9px;
+    padding: 25px 0 15px 9px;
     width: 100%;
     position: absolute;
     right: 0;
     top: -2px;
-    border: 1px solid #2cc397;
     transition: all 0.2s ease;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    border: 1px solid #2cc397;
 }
 /* line 95, ../sass/_nav.scss */
 nav .dropdown a {
     color: white;
     text-decoration: none;
-    padding: 13px 0 13px 0;
     outline: 0;
+    width: 100%;
+    display: inline-block;
+    height: 100%;
+    padding: 14px;
 }
 /* line 102, ../sass/_nav.scss */
 nav .dropdown:hover {
@@ -283,11 +284,11 @@ nav .dropdown-menu {
 /* line 114, ../sass/_nav.scss */
 nav .dropdown-menu a {
     color: black;
-    padding: 20px 0 20px 10px;
+    padding: 20px 40px 20px 12px;
     font-size: 11px;
-    display: inline-flex;
     text-decoration: none;
-    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 /* line 122, ../sass/_nav.scss */
 nav .dropdown-menu a:hover {
@@ -308,7 +309,7 @@ nav .dropdown-menu li img {
 .userImg {
     border-radius: 50%;
     position: absolute;
-    margin-top: -10px;
+    margin-top: -9px;
     right: 10px;
     height: 30px;
 }
@@ -345,16 +346,6 @@ nav button.signUp {
 /* line 169, ../sass/_nav.scss */
 .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
     background: transparent;
-}
-
-/* line 173, ../sass/_nav.scss */
-nav li.addLink {
-    background: #555555;
-    border-radius: 3px;
-}
-/* line 176, ../sass/_nav.scss */
-nav li.addLink a {
-    color: white;
 }
 
 /* line 181, ../sass/_nav.scss */
@@ -680,14 +671,6 @@ nav li.addLink a {
     height: 142px;
     position: absolute;
     top: 0;
-}
-
-/* line 80, ../sass/_offerItem.scss */
-.busLogo {
-    border-radius: 50%;
-    border: 3px solid white;
-    max-width: 92px;
-    max-height: 92px;
 }
 
 /* line 87, ../sass/_offerItem.scss */
@@ -1447,10 +1430,12 @@ h1.sectionHeader {
     border-right: 1px solid #777777;
     width: 345px;
     background: rgba(56, 56, 56, 0.36);
-    position: relative;
-    top: -52px;
-    right: 43px;
+    position: absolute;
+    top: -105px;
+    left: -12px;
     padding: 30px 30px 83px;
+    overflow: hidden;
+    height: 395px;
 }
 /* line 51, ../sass/_profile.scss */
 .heroInfo img {
@@ -1462,6 +1447,10 @@ h1.sectionHeader {
     font-size: 35px;
     color: white;
     margin: 20px 0 0;
+    display: inline-block;
+    overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
 }
 /* line 60, ../sass/_profile.scss */
 .heroInfo h2 {
@@ -1484,6 +1473,7 @@ h1.sectionHeader {
     font-size: 13px;
     border-radius: 2px;
     display: inline-block;
+    margin-top: 15px;
 }
 
 /* line 81, ../sass/_profile.scss */
@@ -1644,13 +1634,14 @@ span.help-inline {
 .change-profile-cover-link {
     position: absolute;
     color: white;
-    background: rgba(0, 0, 0, 0.21);
     padding: 12px 14px;
     right: 0;
     margin: 16px;
     border-radius: 3px;
     font-size: 14px;
     cursor: pointer;
+    bottom: 200px;
+    border: 2px solid white;
 }
 
 .profileBusiness .subNav {
@@ -1665,11 +1656,6 @@ span.help-inline {
     text-align: center;
     z-index: 4;
     height: 40px;
-}
-
-.defaultImg {
-    height: 90px;
-    background: rgba(255, 255, 255, 0.94);
 }
 
 .identityContent .icon-knotis {
@@ -1689,4 +1675,49 @@ span.help-inline {
     display: inline-block;
     height: 100%;
     width: 100%;
+}
+
+.currentId {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#id-current-identity-name {
+    overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
+    display: inline-block;
+    padding: 0 30px 0 0;
+    white-space: nowrap;
+}
+
+/* line 80, ../sass/_offerItem.scss */
+.busLogo {
+    border-radius: 50%;
+    max-width: 92px;
+    max-height: 92px;
+}
+
+.defaultImg {
+    width: 90px;
+    height: 90px;
+    background: rgba(255, 255, 255, 0.94);
+}
+
+.support-forms label {
+    display: inline-block;
+    border: 0;
+    border-radius: 2px;
+    padding: 10px;
+    width: 80%;
+}
+
+.support-forms input {
+    display: inline-block;
+    border: 0;
+    border: 1px solid rgb(224, 224, 224);
+    border-radius: 2px;
+    padding: 10px;
+    width: 80%;
 }

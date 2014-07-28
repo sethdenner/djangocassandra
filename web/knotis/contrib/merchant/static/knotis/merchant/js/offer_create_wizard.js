@@ -1,4 +1,8 @@
+;
+
 (function($){
+    'use strict';
+
     $(function(){
         var $carousel = $('[data-wizard-name=offer_create].carousel'),
         $create_header_title = $('.create-header .create-header-title');
@@ -35,7 +39,7 @@
         
         var current_step = parseInt(current_step_string);
         $('.create-step').each(function(index, element) {
-            $element = $(element);
+            var $element = $(element);
             var step_order = parseInt($element.attr('data-step-order'));
             if (step_order <= current_step) {
                 $element.removeClass('off').addClass('on');

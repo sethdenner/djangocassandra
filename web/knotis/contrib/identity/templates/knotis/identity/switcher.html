@@ -1,7 +1,7 @@
 {% load thumbnail %}
 <div id="identity-switcher" class="col-lg-2 col-xs-4">
     <div class="dropdown">
-        <a class="no-deep" data-toggle="dropdown" href="#">
+        <a class="no-deep currentId" data-toggle="dropdown" href="#">
             {% for identity in available_identities %}
             {% if identity.id == request.session.current_identity %}
             <span id="id-current-identity-name">{{ identity.name }}{% if identity.identity_type == IdentityTypes.SUPERUSER %} (su){% endif %}</span>
@@ -28,12 +28,12 @@
             {% endif%}
             {% endfor %}
             {% if not has_business %}
-            <li class="addLink">
-                <a href="/identity/business/create/">&plus; Add A Business</a>
+            <li>
+                <a class="addLink" href="/identity/business/create/">&plus; Add A Business</a>
             </li>            
             {% endif %}
-            <li class="addLink">
-                <a class="no-deep" href="/auth/logout/">Logout</a>
+            <li>
+                <a class="no-deep addLink" href="/auth/logout/">Logout</a>
             </li>
         </ul>
     </div>

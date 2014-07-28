@@ -21,8 +21,6 @@ urlpatterns = patterns(
         ]),
         ScanView.as_view(),
     ),
-    url(
-        r'^my/qrcodes/$',
-        login_required(ManageQRCodeView.as_view()),
-    ),
 )
+
+urlpatterns += ManageQRCodeView.urls()

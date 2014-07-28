@@ -4,7 +4,8 @@ from django.shortcuts import redirect
 from django.conf import settings
 from django.views.generic import View
 
-from knotis.views import ContextView
+from knotis.views import EmbeddedView
+from knotis.contrib.layout.views import DefaultBaseView
 
 from knotis.contrib.offer.models import (
     Offer,
@@ -55,8 +56,10 @@ class ScanView(View):
         )
 
 
-class ManageQRCodeView(ContextView):
+class ManageQRCodeView(EmbeddedView):
     template_name = 'knotis/qrcode/manage_qrcode.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [r'^settings/qrcode/$']
 
     def process_context(self):
         self.context = copy.copy(self.context)

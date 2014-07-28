@@ -43,8 +43,7 @@ from knotis.contrib.identity.models import (
     Identity,
     IdentityTypes,
     IdentityIndividual,
-    IdentityEstablishment,
-    IdentityBusiness
+    IdentityEstablishment
 )
 
 from knotis.contrib.offer.models import (
@@ -344,11 +343,12 @@ class MyCustomersView(EmbeddedView):
     url_patterns = [
         r'^customers/$',
     ]
-
+    
     default_parent_view_class = DefaultBaseView
     template_name = 'knotis/merchant/my_customers.html'
 
     def process_context(self):
+        import pdb; pdb.set_trace()
         styles = [
         ]
 
@@ -538,7 +538,7 @@ class MyOffersView(EmbeddedView):
     view_name = 'my_offers'
     template_name = 'knotis/merchant/my_offers_view.html'
     url_patterns = [
-        r'^offers(/(?P<offer_filter>\w*))?/$',
+        r'^my/offers(/(?P<offer_filter>\w*))?/$',
     ]
     default_parent_view_class = DefaultBaseView
     pre_scripts = []
@@ -603,12 +603,12 @@ class MyAnalyticsView(ContextView):
 
 
 class OfferCreateTile(FragmentView):
-    template_name = 'knotis/offer/create_tile.html'
+    template_name = 'knotis/merchant/create_tile.html'
     view_name = 'offer_edit_tile'
 
 
 class OfferEditHeaderView(FragmentView):
-    template_name = 'knotis/offer/edit_header.html'
+    template_name = 'knotis/merchant/edit_header.html'
     view_name = 'offer_edit_header'
 
 
@@ -616,12 +616,12 @@ class OfferEditView(ModalView):
     url_patterns = [
         r'/create/$'
     ]
-    template_name = 'knotis/offer/edit.html'
+    template_name = 'knotis/merchant/edit.html'
     view_name = 'offer_edit'
     default_parent_view_class = MyOffersView
     post_scripts = [
         'knotis/wizard/js/wizard.js',
-        'knotis/offer/js/offer_create_wizard.js'
+        'knotis/merchant/js/offer_create_wizard.js'
     ]
 
     def process_context(self):
@@ -644,7 +644,7 @@ class OfferCreateStepView(WizardStepView):
 
 
 class OfferEditProductFormView(OfferCreateStepView):
-    template_name = 'knotis/offer/edit_product_price.html'
+    template_name = 'knotis/merchant/edit_product_price.html'
     view_name = 'offer_edit_product_form'
 
     def post(
@@ -855,16 +855,11 @@ class OfferEditProductFormView(OfferCreateStepView):
             pk=request.session['current_identity']
         )
 
-        if IdentityTypes.ESTABLISHMENT == current_identity.identity_type:
-            owner = IdentityBusiness.objects.get_establishment_parent(
-                current_identity
-            )
-
-        elif IdentityTypes.BUSINESS == current_identity.identity_type:
-            owner = current_identity
+        if IdentityTypes.ESTABLISHMENT != current_identity.identity_type:
+            raise PermissionDenied()
 
         else:
-            raise PermissionDenied()
+            owner = current_identity
 
         offer_id = request.GET.get('id')
         if offer_id:
@@ -890,7 +885,7 @@ class OfferEditProductFormView(OfferCreateStepView):
 
 
 class OfferEditDetailsFormView(OfferCreateStepView):
-    template_name = 'knotis/offer/edit_details.html'
+    template_name = 'knotis/merchant/edit_details.html'
     view_name = 'offer_edit_details_form'
 
     def post(
@@ -955,7 +950,7 @@ class OfferEditDetailsFormView(OfferCreateStepView):
 
 
 class OfferEditLocationFormView(OfferCreateStepView):
-    template_name = 'knotis/offer/edit_photos_location.html'
+    template_name = 'knotis/merchant/edit_photos_location.html'
     view_name = 'offer_edit_location_form'
 
     def post(
@@ -1071,7 +1066,7 @@ class OfferEditLocationFormView(OfferCreateStepView):
 
 
 class OfferEditPublishFormView(OfferCreateStepView):
-    template_name = 'knotis/offer/edit_publish.html'
+    template_name = 'knotis/merchant/edit_publish.html'
     view_name = 'offer_edit_publish_form'
 
     def post(
@@ -1175,7 +1170,7 @@ class OfferEditPublishFormView(OfferCreateStepView):
 
 
 class OfferEditSummaryView(OfferCreateStepView):
-    template_name = 'knotis/offer/edit_summary.html'
+    template_name = 'knotis/merchant/edit_summary.html'
     view_name = 'offer_edit_summary'
 
     def post(

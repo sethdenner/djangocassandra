@@ -34,7 +34,7 @@ urlpatterns = patterns(
         include('knotis.contrib.auth.urls')
     ),
     url(
-        r'^my/',
+        r'',
         include('knotis.contrib.merchant.urls')
     ),
     url(
@@ -112,5 +112,9 @@ urlpatterns = patterns(
     url(
         r'',
         include('knotis.contrib.layout.urls')
+    ),
+    url(
+        r'',
+        include('knotis.contrib.settings.urls')
     ),
 )
