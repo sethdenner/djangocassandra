@@ -32,7 +32,6 @@ class SettingsGrid(GridSmallView):
 
     def process_context(self):
         tiles = []
-        import pdb; pdb.set_trace()
         setting_tiles = [SocialSettingTile, QRSettingTile]
         for setting in setting_tiles:
             setting_context = Context()
