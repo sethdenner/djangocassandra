@@ -603,12 +603,12 @@ class MyAnalyticsView(ContextView):
 
 
 class OfferCreateTile(FragmentView):
-    template_name = 'knotis/offer/create_tile.html'
+    template_name = 'knotis/merchant/create_tile.html'
     view_name = 'offer_edit_tile'
 
 
 class OfferEditHeaderView(FragmentView):
-    template_name = 'knotis/offer/edit_header.html'
+    template_name = 'knotis/merchant/edit_header.html'
     view_name = 'offer_edit_header'
 
 
@@ -616,12 +616,12 @@ class OfferEditView(ModalView):
     url_patterns = [
         r'/create/$'
     ]
-    template_name = 'knotis/offer/edit.html'
+    template_name = 'knotis/merchant/edit.html'
     view_name = 'offer_edit'
     default_parent_view_class = MyOffersView
     post_scripts = [
         'knotis/wizard/js/wizard.js',
-        'knotis/offer/js/offer_create_wizard.js'
+        'knotis/merchant/js/offer_create_wizard.js'
     ]
 
     def process_context(self):
@@ -644,7 +644,7 @@ class OfferCreateStepView(WizardStepView):
 
 
 class OfferEditProductFormView(OfferCreateStepView):
-    template_name = 'knotis/offer/edit_product_price.html'
+    template_name = 'knotis/merchant/edit_product_price.html'
     view_name = 'offer_edit_product_form'
 
     def post(
@@ -890,7 +890,7 @@ class OfferEditProductFormView(OfferCreateStepView):
 
 
 class OfferEditDetailsFormView(OfferCreateStepView):
-    template_name = 'knotis/offer/edit_details.html'
+    template_name = 'knotis/merchant/edit_details.html'
     view_name = 'offer_edit_details_form'
 
     def post(
@@ -955,7 +955,7 @@ class OfferEditDetailsFormView(OfferCreateStepView):
 
 
 class OfferEditLocationFormView(OfferCreateStepView):
-    template_name = 'knotis/offer/edit_photos_location.html'
+    template_name = 'knotis/merchant/edit_photos_location.html'
     view_name = 'offer_edit_location_form'
 
     def post(
@@ -1071,7 +1071,7 @@ class OfferEditLocationFormView(OfferCreateStepView):
 
 
 class OfferEditPublishFormView(OfferCreateStepView):
-    template_name = 'knotis/offer/edit_publish.html'
+    template_name = 'knotis/merchant/edit_publish.html'
     view_name = 'offer_edit_publish_form'
 
     def post(
@@ -1175,7 +1175,7 @@ class OfferEditPublishFormView(OfferCreateStepView):
 
 
 class OfferEditSummaryView(OfferCreateStepView):
-    template_name = 'knotis/offer/edit_summary.html'
+    template_name = 'knotis/merchant/edit_summary.html'
     view_name = 'offer_edit_summary'
 
     def post(
