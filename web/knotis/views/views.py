@@ -231,38 +231,6 @@ class EmbeddedView(
             **kwargs
         )
 
-    def dispatch(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        self.response_format = (
-            request.GET.get('format', self.RESPONSE_FORMATS.HTML).lower()
-        )
-        self.response_format = (
-            request.POST.get('format', self.response_format).lower()
-        )
-        self.target_element_id = (
-            request.GET.get('teid', self.default_target_element_id)
-        )
-        self.target_element_id = (
-            request.POST.get('teid', self.target_element_id)
-        )
-
-        response = super(EmbeddedView, self).dispatch(
-            request,
-            *args,
-            **kwargs
-        )
-        self.context['format'] = self.response_format
-
-        return response
-
-    def process_context(self):
-        self.context['target_element_id'] = self.target_element_id
-        return super(EmbeddedView, self).process_context()
-
     def render_to_response(
         self,
         context=None,
@@ -280,16 +248,18 @@ class EmbeddedView(
                 context
             )
 
-        if not hasattr(self, 'response_format'):
-            self.response_format = (
-                self.request.GET.get(
-                    'format',
-                    self.RESPONSE_FORMATS.HTML
-                ).lower()
-            )
-            self.response_format = (
-                self.request.POST.get('format', self.response_format).lower()
-            )
+        self.response_format = (
+            self.request.GET.get('format', self.RESPONSE_FORMATS.HTML).lower()
+        )
+        self.response_format = (
+            self.request.POST.get('format', self.response_format).lower()
+        )
+        self.target_element_id = (
+            self.request.GET.get('teid', self.default_target_element_id)
+        )
+        self.target_element_id = (
+            self.request.POST.get('teid', self.target_element_id)
+        )
 
         context['format'] = self.response_format
         post_scripts = context.get('post_scripts', [])

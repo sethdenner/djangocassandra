@@ -23,10 +23,7 @@ from knotis.contrib.media.models import (
     ImageInstance
 )
 from knotis.contrib.offer.models import OfferAvailability
-from knotis.contrib.offer.views import (
-    OfferTile,
-    OfferCreateTile
-)
+from knotis.contrib.offer.views import OfferTile
 
 from knotis.contrib.layout.views import (
     GridSmallView,
@@ -665,6 +662,7 @@ class EstablishmentProfileGrid(GridSmallView):
 
         tiles = []
 
+        """
         is_manager = self.context.get('is_manager')
         if is_manager:
             offer_create_tile = OfferCreateTile()
@@ -675,7 +673,7 @@ class EstablishmentProfileGrid(GridSmallView):
                     'action_type': 'modal'
                 }))
             )
-
+        """
         if establishment_offers:
             for offer in establishment_offers:
                 offer_tile = OfferTile()

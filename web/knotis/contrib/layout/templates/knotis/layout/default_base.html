@@ -50,10 +50,7 @@
 
 {% block modal %}
 {% if modal_content %}
-<div class="modal-scrollable" style="z-index: 1060;">
-    {{ modal_content }}
-</div>
-<div class="modal-backdrop fade in" style="z-index: 1050;"></div>
+{{ modal_content }}
 {% else %}
 {{ block.super }}
 {% endif %}

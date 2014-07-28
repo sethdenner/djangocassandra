@@ -7,6 +7,10 @@ from knotis.views import (
 )
 
 from knotis.contrib.inventory.models import Inventory
+from knotis.contrib.merchant.forms import (
+    OfferPublishForm,
+    OfferWithInventoryForm
+)
 
 from .models import (
     Offer,
@@ -14,11 +18,7 @@ from .models import (
     OfferPublish,
     OfferAvailability,
 )
-from .forms import (
-    OfferForm,
-    OfferPublishForm,
-    OfferWithInventoryForm
-)
+from .forms import OfferForm
 from .serializers import (
     OfferSerializer,
     OfferAvailabilitySerializer
