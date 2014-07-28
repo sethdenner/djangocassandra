@@ -49,4 +49,4 @@ urlpatterns = patterns(
         login_required(DownloadPrintedVoucher.as_view())
     )
 )
-urlpatterns += MyPurchasesView.urls()
+urlpatterns += MyPurchasesView.urls(require_login=True)

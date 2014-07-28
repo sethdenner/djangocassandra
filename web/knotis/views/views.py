@@ -6,6 +6,7 @@ from django.conf.urls.defaults import (
     patterns,
     url
 )
+from django.contrib.auth.decorators import login_required
 from django.views.generic import (
     View as DjangoView,
     TemplateView
@@ -73,6 +74,9 @@ class ContextView(TemplateView):
             request,
             kwargs
         )
+
+        self.response_format = self.get_response_format(request)
+        self.target_element_id = self.get_target_element_id(request)
 
         return super(ContextView, self).dispatch(
             request,
@@ -175,6 +179,35 @@ class EmbeddedView(
                 cls.AJAX.__dict__.values()
             )
 
+    @classmethod
+    def get_response_format(cls, request):
+        response_format = (
+            request.GET.get(
+                'format',
+                cls.RESPONSE_FORMATS.HTML
+            ).lower()
+        )
+        response_format = (
+            request.POST.get('format', response_format).lower()
+        )
+
+        return response_format
+
+    @classmethod
+    def get_target_element_id(cls, request):
+        target_element_id = (
+            request.GET.get('teid', cls.default_target_element_id)
+        )
+        target_element_id = (
+            request.POST.get('teid', target_element_id)
+        )
+
+        return target_element_id
+
+    @staticmethod
+    def get_parent_view():
+        pass
+
     @staticmethod
     def url_path_to_dict(path):
         if not path:
@@ -251,18 +284,11 @@ class EmbeddedView(
                 context
             )
 
-        self.response_format = (
-            self.request.GET.get('format', self.RESPONSE_FORMATS.HTML).lower()
-        )
-        self.response_format = (
-            self.request.POST.get('format', self.response_format).lower()
-        )
-        self.target_element_id = (
-            self.request.GET.get('teid', self.default_target_element_id)
-        )
-        self.target_element_id = (
-            self.request.POST.get('teid', self.target_element_id)
-        )
+        if not hasattr(self, 'response_format'):
+            self.response_format = self.get_response_format(self.request)
+
+        if not hasattr(self, 'target_element_id'):
+            self.target_element_id = self.get_target_element_id(self.request)
 
         context['format'] = self.response_format
         post_scripts = context.get('post_scripts', [])
@@ -352,12 +378,21 @@ class EmbeddedView(
             ]))
 
     @classmethod
-    def urls(cls):
+    def urls(
+        cls,
+        require_login=False
+    ):
         '''
         This method returns a urlpatterns value to be used in url.py files.
         '''
         if not cls.url_patterns:
             raise cls.UrlPatternsUndefinedException(cls)
+
+        if require_login:
+            view = login_required(cls.as_view())
+
+        else:
+            view = cls.as_view()
 
         view_patterns = patterns('')
         for u in cls.url_patterns:
@@ -365,7 +400,7 @@ class EmbeddedView(
                 '',
                 url(
                     u,
-                    cls.as_view()
+                    view
                 )
             )
 
