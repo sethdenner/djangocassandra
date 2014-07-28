@@ -538,7 +538,7 @@ class MyOffersView(EmbeddedView):
     view_name = 'my_offers'
     template_name = 'knotis/merchant/my_offers_view.html'
     url_patterns = [
-        r'^offers(/(?P<offer_filter>\w*))?/$',
+        r'^my/offers(/(?P<offer_filter>\w*))?/$',
     ]
     default_parent_view_class = DefaultBaseView
     pre_scripts = []
