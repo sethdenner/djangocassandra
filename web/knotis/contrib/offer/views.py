@@ -29,6 +29,7 @@ from knotis.contrib.identity.models import (
     Identity,
     IdentityTypes
 )
+from knotis.contrib.identity.views import get_identity_profile_badge
 
 from knotis.contrib.paypal.views import IPNCallbackView
 
@@ -343,11 +344,7 @@ class OfferTile(FragmentView):
             offer_banner_image = None
 
         try:
-            business_badge_image = ImageInstance.objects.get(
-                related_object_id=offer.owner_id,
-                context='profile_badge',
-                primary=True
-            )
+            business_badge_image = get_identity_profile_badge(offer.owner)
 
         except:
             logger.exception('failed to get business badge image')

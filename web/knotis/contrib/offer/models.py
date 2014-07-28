@@ -29,6 +29,7 @@ from knotis.utils.view import (
 from knotis.contrib.media.models import ImageInstance
 from knotis.contrib.identity.models import (
     Identity,
+    IdentityBusiness,
     IdentityEstablishment,
     IdentityTypes
 )
@@ -575,6 +576,20 @@ class Offer(QuickModel):
                 primary=True
             )
 
+        except ImageInstance.DoesNotExist:
+            try:
+                business = IdentityBusiness.objects.get_establishment_parent(
+                    self.owner
+                )
+                badge_image = ImageInstance.objects.get(
+                    related_object_id=business.owner.pk,
+                    context='profile_badge',
+                    primary=True
+                )
+
+            except:
+                badge_image = None
+
         except:
             badge_image = None
 
@@ -620,11 +635,23 @@ class OfferAvailabilityManager(QuickManager):
             kwargs['end_time'] = offer.end_time
             kwargs['price'] = offer.price_discount()
 
-            identity_profile_badge = ImageInstance.objects.get(
-                related_object_id=offer.owner.id,
-                context='profile_badge',
-                primary=True
-            )
+            try:
+                identity_profile_badge = ImageInstance.objects.get(
+                    related_object_id=offer.owner.id,
+                    context='profile_badge',
+                    primary=True
+                )
+
+            except ImageInstance.DoesNotExist:
+                business = IdentityBusiness.objects.get_establishment_parent(
+                    offer.owner
+                )
+                identity_profile_badge = ImageInstance.objects.get(
+                    related_object_id=business.pk,
+                    context='profile_badge',
+                    primary=True
+                )
+
             kwargs['profile_badge'] = identity_profile_badge
 
         return super(OfferAvailabilityManager, self).create(
