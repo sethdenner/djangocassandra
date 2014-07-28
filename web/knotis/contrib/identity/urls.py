@@ -11,7 +11,6 @@ from .views import (
     EstablishmentsView,
     EstablishmentsGrid,
     EstablishmentProfileView,
-    IdentityProfileView,
     IdentitySwitcherView,
     FirstIdentityView,
     EstablishmentAboutAbout,
@@ -57,7 +56,6 @@ urlpatterns = patterns(
 )
 
 urlpatterns += EstablishmentsView.urls()
-urlpatterns += IdentityProfileView.urls()
 urlpatterns += EstablishmentProfileView.urls()
 urlpatterns += IdentitySwitcherView.urls()
 urlpatterns += FirstIdentityView.urls()

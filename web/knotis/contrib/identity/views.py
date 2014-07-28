@@ -4,9 +4,6 @@ from django.conf import settings
 from django.template import Context
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.shortcuts import (
-    get_object_or_404
-)
 from django.utils import log
 from knotis.utils.regex import REGEX_UUID
 logger = log.getLogger(__name__)
@@ -168,35 +165,43 @@ class EstablishmentsView(EmbeddedView):
     ]
 
 
-class IdentityProfileView(EmbeddedView):
+class EstablishmentProfileView(EmbeddedView):
+    view_name = 'establishment_profile'
     url_patterns = [
         r''.join([
             '^id/(?P<identity_id>',
             REGEX_UUID,
             ')/$'
         ]),
+        r''.join([
+            '^id/(?P<identity_id>',
+            REGEX_UUID,
+            ')(/(?P<view_name>',
+            '\w{1,50}',
+            '))?/$'
+        ])
     ]
-    template_name = 'knotis/identity/profile_identity.html'
+    template_name = 'knotis/identity/establishment_profile.html'
     default_parent_view_class = DefaultBaseView
     post_scripts = [
-        'knotis/identity/js/update_profile.js',
-        'knotis/identity/js/profile.js',
         'jcrop/js/jquery.Jcrop.js',
         'scripts/fileuploader.js',
         'scripts/jquery.colorbox.js',
         'scripts/jquery.sickle.js',
+        'knotis/identity/js/profile.js',
+        'knotis/identity/js/update_profile.js',
     ]
 
-    def process_context(self):
+    def set_establishment(self):
+
         identity_id = self.context.get('identity_id')
         identity = Identity.objects.get(pk=identity_id)
         if not identity:
             raise Exception('Identity not found')
 
         if identity.identity_type == IdentityTypes.ESTABLISHMENT:
-            profile_view = EstablishmentProfileView()
-            self.context['establishment_id'] = identity_id
-            self.context['establishment'] = identity
+            self.establishment_id = identity_id
+            self.establishment = identity
 
         elif identity.identity_type == IdentityTypes.BUSINESS:
             try:
@@ -210,74 +215,14 @@ class IdentityProfileView(EmbeddedView):
                 logger.exception('Failed to get establishments for business')
 
             if len(establishments) > 0:
-                profile_view = EstablishmentProfileView()
-                self.context['establishment_id'] = establishments[0].pk
-                self.context['establishment'] = establishments[0]
+                self.establishment_id = establishments[0].pk
+                self.establishment = establishments[0]
 
             else:
                 raise Exception('Business profile not implemented yet.')
 
         else:
             raise Exception('Identity profile not implemented yet.')
-
-        self.context.update({
-            'profile_markup': profile_view.render_template_fragment(
-                self.context
-            )
-        })
-
-        return self.context
-
-
-class EstablishmentProfileView(EmbeddedView):
-    view_name = 'establishment_profile'
-    url_patterns = [
-        r''.join([
-            '^id/(?P<establishment_id>',
-            REGEX_UUID,
-            ')(/(?P<view_name>',
-            '\w{1,50}',
-            '))?/$'
-        ])
-    ]
-    template_name = 'knotis/identity/profile_establishment.html'
-    default_parent_view_class = DefaultBaseView
-    post_scripts = [
-        'knotis/identity/js/update_profile.js',
-        'knotis/identity/js/profile.js',
-        'jcrop/js/jquery.Jcrop.js',
-        'scripts/fileuploader.js',
-        'scripts/jquery.colorbox.js',
-        'scripts/jquery.sickle.js',
-    ]
-
-    def set_establishment(self):
-        establishment_id = self.context.get('establishment_id')
-        establishment = self.context.get('establishment')
-        backend_name = self.context.get('backend_name')
-
-        if not establishment:
-            try:
-                if establishment_id:
-                    establishment = IdentityEstablishment.objects.get(pk=establishment_id)
-
-                elif backend_name:
-                    establishment = get_object_or_404(
-                        IdentityEstablishment,
-                        backend_name=backend_name
-                    )
-
-                else:
-                    raise IdentityEstablishment.DoesNotExist()
-
-            except:
-
-                logger.exception(
-                    'failed to get establishment with id ' + establishment_id
-                )
-                raise http.Http404
-        self.establishment = establishment
-        self.establishment_id = establishment_id
 
     def is_manager(self):
         request = self.request
@@ -335,13 +280,12 @@ class EstablishmentProfileView(EmbeddedView):
         )
 
     def process_context(self):
-
-        request = self.request
         self.set_establishment()
 
         self.is_manager()
         self.set_business()
         self.set_images()
+
 
         locationItem = LocationItem.objects.filter(
             related_object_id=self.establishment.id
@@ -431,6 +375,7 @@ class EstablishmentProfileView(EmbeddedView):
                 break
 
         # determine nav view
+        request = self.request
         context_context = Context({
             'request': request,
             'establishment_id': self.establishment_id,

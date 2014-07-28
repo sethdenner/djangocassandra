@@ -48,11 +48,14 @@ class ContextView(TemplateView):
     '''
     def __init__(
         self,
-        context=Context(),
+        context=None,
         *args,
         **kwargs
     ):
-        self.context = context
+        if context is None:
+            self.context = Context()
+        else:
+            self.context = context
 
         super(ContextView, self).__init__(
             *args,
