@@ -1,17 +1,8 @@
-{% extends 'knotis/layout/master.html' %}
 {% load thumbnail %}
 {% load render_template_fragment %}
-{% block title %}Knotis - Manage QR Code{% endblock title %}
-{% block first %}{% endblock first %}
-{% block header %}
-{% render_fragment header %}
-{% endblock header %}
-{% block content %}
+
 <div class="container-fluid">
   <div class="row-fluid main-row">
-    <div class="span2 side-nav">
-      {% render_fragment nav_side %}
-    </div>
     <div class="span10 content">
       <h2>Manage QR Code Scans</h2>
       <div class="relative closeinfo">
@@ -87,6 +78,3 @@
     </div>
   </div>
 </div>
-{% endblock content %}
-{% block footer %}{% endblock footer %}
-{% block last %}{% endblock last %}

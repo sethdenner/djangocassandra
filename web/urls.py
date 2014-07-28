@@ -113,4 +113,8 @@ urlpatterns = patterns(
         r'',
         include('knotis.contrib.layout.urls')
     ),
+    url(
+        r'',
+        include('knotis.contrib.settings.urls')
+    ),
 )
