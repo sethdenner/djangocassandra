@@ -51,7 +51,6 @@ from knotis.contrib.location.models import (
     LocationItem
 )
 
-from knotis.contrib.maps.views import GoogleMap
 
 from knotis.contrib.twitter.views import get_twitter_feed_json
 from knotis.contrib.yelp.views import get_reviews_by_yelp_id
@@ -295,8 +294,6 @@ class EstablishmentProfileView(EmbeddedView):
         else:
             address = None
 
-        maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
-        maps_scripts = maps.render_api_js()
 
         endpoints = Endpoint.objects.filter(
             identity=self.establishment,
@@ -432,7 +429,6 @@ class EstablishmentProfileView(EmbeddedView):
             'address': address,
             'phone': phone,
             'website': website,
-            'maps_scripts': maps_scripts,
             'business': self.business,
             'default_profile_logo_uri': self.default_profile_logo_uri,
             'profile_badge': self.profile_badge_image,
@@ -933,13 +929,13 @@ class EstablishmentProfileAbout(FragmentView):
                 'markup': about_markup,
             })
 
-        #carousel = EstablishmentAboutCarousel()
-        #carousel_markup = carousel.render_template_fragment(local_context)
-        #carousel_markup = carousel_markup.strip()
-        #if carousel_markup:
-        #    sections.append({
-        #        'markup': carousel_markup,
-        #    })
+        carousel = EstablishmentAboutCarousel()
+        carousel_markup = carousel.render_template_fragment(local_context)
+        carousel_markup = carousel_markup.strip()
+        if carousel_markup:
+            sections.append({
+                'markup': carousel_markup,
+            })
 
         feeds = EstablishmentAboutFeeds()
         feeds_markup = feeds.render_template_fragment(local_context)
