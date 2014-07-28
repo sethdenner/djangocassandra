@@ -248,22 +248,23 @@ nav .search :-ms-input-placeholder {
 nav .dropdown {
     font-size: 12px;
     border-radius: 4px;
-    padding: 15px 0 15px 9px;
+    padding: 25px 0 15px 9px;
     width: 100%;
     position: absolute;
     right: 0;
     top: -2px;
-    border: 1px solid #2cc397;
     transition: all 0.2s ease;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    border: 1px solid #2cc397;
 }
 /* line 95, ../sass/_nav.scss */
 nav .dropdown a {
     color: white;
     text-decoration: none;
-    padding: 13px 0 13px 0;
     outline: 0;
+    width: 100%;
+    display: inline-block;
+    height: 100%;
+    padding: 14px;
 }
 /* line 102, ../sass/_nav.scss */
 nav .dropdown:hover {
@@ -308,7 +309,7 @@ nav .dropdown-menu li img {
 .userImg {
     border-radius: 50%;
     position: absolute;
-    margin-top: -10px;
+    margin-top: -9px;
     right: 10px;
     height: 30px;
 }
@@ -1689,4 +1690,10 @@ span.help-inline {
     display: inline-block;
     height: 100%;
     width: 100%;
+}
+
+.currentId {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
