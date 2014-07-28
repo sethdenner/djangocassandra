@@ -11,12 +11,9 @@
                 $this = $(this);
                 var current_step = parseInt($carousel.attr('data-current-step')),
                 step_order = parseInt($this.attr('data-step-order'));
-                
-                if (current_step != step_order) {
-                    $.wizard.step($carousel, {index: step_order });
-                    var step_title = $this.attr('data-header-title');
-                    $create_header_title.text(step_title);
-                }
+                $.wizard.step($carousel, {index: step_order });
+                var step_title = $this.attr('data-header-title');
+                $create_header_title.text(step_title);
             });
         }
 

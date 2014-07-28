@@ -65,19 +65,11 @@
 
                     $modal.modal(settings.modal_settings);
                     $modal.on('hidden.bs.modal', settings.on_close);
-
-                    $('a[data-dismiss]').click(function (event) {
-                        event.preventDefault();
-
-                        var $this = $(this);
-                        $('#' + $this.attr('data-dismiss')).modal('hide');
-
-                    });
-
                     settings.on_open(data, status, request);
                 } else {
                     $modal.modal('hide');
                     $modal.remove();
+
                 }
             }
         );
