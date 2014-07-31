@@ -64,3 +64,8 @@
     </div>
   </div>
 </div>
+{% if format == 'json' %}
+{% for script in post_scripts %}
+<script src="{{ STATIC_URL }}{{ script }}" ></script>
+{% endfor %}
+{% endif %}
