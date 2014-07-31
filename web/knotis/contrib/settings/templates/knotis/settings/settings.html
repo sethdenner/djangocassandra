@@ -8,12 +8,14 @@
             </div>
         </div>
         <div class="row">
-            {% render_fragment settings_grid %}
+            <div class="col-lg-4 col-xs-12">
+                {% render_fragment settings_grid %}
+            </div>
         </div>
     </div>
     {% if format == 'json' %}
-        {% for script in post_scripts %}
-            <script src="{{STATIC_URL}}/{{script}}"></script>
-        {% endfor %}
+    {% for script in post_scripts %}
+    <script src="{{STATIC_URL}}/{{script}}"></script>
+    {% endfor %}
     {% endif %}
 </div>
