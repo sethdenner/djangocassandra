@@ -232,13 +232,28 @@ class OffersView(EmbeddedView):
         return local_context
 
 
-class OfferPurchaseSuccessView(AJAXFragmentView):
+class OfferPurchaseSuccessView(ModalView):
     view_name = 'offer_purchase_success'
     template_name = 'knotis/offer/offer_purchase_success.html'
+    url_patterns = [
+        r''.join([
+            '/(?P<offer_id>',
+            REGEX_UUID,
+            ')/buy/success/$'
+        ])
+    ]
 
 
-class OfferPurchaseView(ContextView):
+class OfferPurchaseView(EmbeddedView):
     template_name = 'knotis/offer/offer_purchase_view.html'
+    url_patterns = [
+        r''.join([
+            '/(?P<offer_id>',
+            REGEX_UUID,
+            ')/buy/$'
+        ])
+    ]
+    default_parent_view_class = DefaultBaseView
 
     def process_context(self):
         request = self.context.get('request')

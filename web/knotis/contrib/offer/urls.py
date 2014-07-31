@@ -5,8 +5,6 @@ from django.conf.urls.defaults import (
     url
 )
 
-from knotis.utils.regex import REGEX_UUID
-
 from views import (
     OffersView,
     OfferDetailView,
@@ -24,22 +22,6 @@ urlpatterns = patterns(
         NewOfferEmailBody.as_view()
     ),
     url(
-        r''.join([
-            '/(?P<offer_id>',
-            REGEX_UUID,
-            ')/buy/$'
-        ]),
-        OfferPurchaseView.as_view()
-    ),
-    url(
-        r''.join([
-            '/(?P<offer_id>',
-            REGEX_UUID,
-            ')/buy/success/$'
-        ]),
-        OfferPurchaseSuccessView.as_view()
-    ),
-    url(
         r'/purchase/$',
         login_required(OfferPurchaseButton.as_view())
     )
@@ -47,3 +29,5 @@ urlpatterns = patterns(
 
 urlpatterns += OffersView.urls()
 urlpatterns += OfferDetailView.urls()
+urlpatterns += OfferPurchaseView.urls(require_login=True)
+urlpatterns += OfferPurchaseSuccessView.urls(require_login=True)

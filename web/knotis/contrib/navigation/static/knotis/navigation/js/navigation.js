@@ -180,4 +180,9 @@
     
     initialize_navigation();
 
+    $(window).on('beforeunload', function () {
+        $.loading('on');
+
+    });
+
 })(jQuery);
