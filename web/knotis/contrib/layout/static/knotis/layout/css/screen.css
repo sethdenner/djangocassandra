@@ -1420,7 +1420,7 @@ h1.sectionHeader {
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;
+    height: 485px;
     width: 100%;
     z-index: -1;
 }
@@ -1668,7 +1668,10 @@ span.help-inline {
 
 .profileContent {
     position: relative;
-    top: 310px;
+    top: 230px;
+    padding: 100px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .tileLink {

@@ -71,7 +71,7 @@ urlpatterns = patterns(
     )
 )
 
-urlpatterns += MyCustomersView.urls()
-urlpatterns += MyRedemptionsView.urls()
-urlpatterns += MyOffersView.urls()
-urlpatterns += OfferEditView.urls()
+urlpatterns += MyCustomersView.urls(require_login=True)
+urlpatterns += MyRedemptionsView.urls(require_login=True)
+urlpatterns += MyOffersView.urls(require_login=True)
+urlpatterns += OfferEditView.urls(require_login=True)
