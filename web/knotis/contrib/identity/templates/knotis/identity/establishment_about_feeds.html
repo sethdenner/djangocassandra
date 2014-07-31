@@ -1,30 +1,34 @@
 {% if twitter_has_feed or yelp_has_feed %}
-<h4 class="title-and-selector">
-Ratings &amp; Reviews
+    <h1 class="sectionHeader">Reviews/Ratings
+    </h1>
+        {% if twitter.value %}
+            <a class="twitter" href="{{ twitter.uri }}">
+                <img class="space away" src="/static/knotis/identity/img/twittericon-colored27x27.png" alt="Twitter"></img>
+            </a>
+        {% endif %}
 
-<ul id="AboutFeedTab" class="nav nav-tabs pull-right">
-  {% with count=0 %}
-  {% if twitter_has_feed %}
-  <li class="twitter tab active">
-    <div class="space twitter tab">&nbsp;</div>
-  </li>
-  {% endif %}
+        {% if facebook.value %}
+            <a class="facebook" href="{{ facebook.uri }}">
+                <img class="space away" src="/static/knotis/identity/img/facebookicon-colored27x27.png" alt="Facebook"></img>
+            </a>
+        {% endif %}
 
-  {% if yelp_has_feed %}
-  <li class="yelp tab {% if not twitter_has_feed %}active{% endif %}">
-    <div class="space yelp tab">&nbsp;</div>
-  </li>
-  {% endif %} 
-  {% endwith %}
-</ul>
-</h4>
-<div id="AboutFeedTabContent" class="tab-content">
-  {% if twitter_has_feed %}
-  <div id="twitter" class="tab-pane active">{{ twitter_markup }}</div>
-  {% endif %}
+        {% if yelp.value %}
+            <a class="updateable-endpoint yelp" href="{{ yelp.uri }}">
+                <img class="space away" src="/static/knotis/identity/img/yelpicon-colored27x27.png" alt="Yelp"></img>
+            </a>
+        {% endif %}
 
-  {% if yelp_has_feed %}
-  <div id="yelp" class="tab-pane">{{ yelp_markup }}</div>
-  {% endif %}
-</div>
+    <section>
+        <div id="AboutFeedTabContent" class="tab-content">
+            {% if twitter_has_feed %}
+                <div id="twitter" class="tab-pane active">{{ twitter_markup }}</div>
+            {% endif %}
+
+            {% if yelp_has_feed %}
+                <div id="yelp" class="tab-pane {% if not twitter_has_feed %}active{% endif %}">{{ yelp_markup }}</div>
+            {% endif %}
+        </div>
+    </section>
+
 {% endif %}

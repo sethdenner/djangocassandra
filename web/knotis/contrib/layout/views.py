@@ -5,6 +5,9 @@ from knotis.views import (
     ModalView,
     EmbeddedView
 )
+from django.conf import settings
+from knotis.contrib.maps.views import GoogleMap
+
 
 
 class HeaderView(FragmentView):
@@ -74,6 +77,10 @@ class DefaultBaseView(EmbeddedView):
         if not current_identity_pk:
             current_identity_pk = self.request.session.get('current_identity')
             self.context['current_identity_pk'] = current_identity_pk
+        maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
+        maps_scripts = maps.render_api_js()
+
+        self.context['maps_scripts'] = maps_scripts
 
         return self.context
 

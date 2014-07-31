@@ -1,5 +1,4 @@
 {% if is_manager or has_data %}
-<div class="col-lg-6 col-xs-12">
     <div class="aboutUs">
         <h1 class="sectionHeader">About Us</h1>
         <section>
@@ -121,47 +120,4 @@
         </div>
         </section>
     </div>
-</div>
-
-<div class="col-lg-6 col-xs-12">
-    <h1 class="sectionHeader">Location</h1>
-    <section>
-    <div class="profileInfo">
-        {% if address %}
-            <h2>{{ address }}</h2>
-        {% endif %}
-
-        {% if phone %}
-            <a href="{{phone.uri}}">{{phone.value}}</a>
-        {% endif %}
-        {% if website %}
-            <a href="{{website.uri}}">{{website.value}}</a>
-        {% endif %}
-    </div>
-    </section>
-</div>
-
-<div class="col-lg-6 col-xs-12">
-    <h1 class="sectionHeader">Reviews/Ratings</h1>
-    <section>
-        {% if twitter.value %}
-            <a class="twitter" href="{{ twitter.uri }}">
-                <img class="space away" src="/static/knotis/identity/img/twittericon-colored27x27.png" alt="Twitter"></img>
-            </a>
-        {% endif %}
-
-        {% if facebook.value %}
-            <a class="facebook" href="{{ facebook.uri }}">
-                <img class="space away" src="/static/knotis/identity/img/facebookicon-colored27x27.png" alt="Facebook"></img>
-            </a>
-        {% endif %}
-
-        {% if yelp.value %}
-            <a class="updateable-endpoint yelp" href="{{ yelp.uri }}">
-                <img class="space away" src="/static/knotis/identity/img/yelpicon-colored27x27.png" alt="Yelp"></img>
-            </a>
-        {% endif %}
-    </section>
-</div>
-
 {% endif %}

@@ -19,6 +19,7 @@
         {% for style in styles %}
         <link href="{{ STATIC_URL }}{{ style }}" rel="stylesheet" />
         {% endfor %}
+        {{ maps_scripts }}
         {% for script in pre_scripts %}
         <script src="{{ STATIC_URL }}{{ script }}"></script>
         {% endfor %}
@@ -50,6 +51,7 @@
         <script src="{{ STATIC_URL }}knotis/layout/js/modal.js"></script>
         <script src="{{ STATIC_URL }}knotis/layout/js/forms.js"></script>
         <script src="{{ STATIC_URL }}knotis/navigation/js/navigation.js"></script>
+        <script src="{{ STATIC_URL }}scripts/maps.js"></script>
         {% for script in post_scripts %}
         <script src="{{ STATIC_URL }}{{ script }}?8374873485"></script>
         {% endfor %}

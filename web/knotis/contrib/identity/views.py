@@ -648,6 +648,22 @@ class EstablishmentProfileLocation(FragmentView):
 
     def process_context(self):
         establishment_id = self.context.get('establishment_id')
+        endpoints = self.context.get('endpoints')
+
+        local_context = copy.copy(self.context)
+        phone = website = None
+        for endpoint in endpoints:
+            if (
+                endpoint['endpoint_type'] == EndpointTypes.PHONE and
+                endpoint['value']
+            ):
+                phone = endpoint
+
+            elif (
+                endpoint['endpoint_type'] == EndpointTypes.WEBSITE and
+                endpoint['value']
+            ):
+                website = endpoint
 
         locationItem = LocationItem.objects.filter(
             related_object_id=establishment_id
@@ -661,9 +677,10 @@ class EstablishmentProfileLocation(FragmentView):
             latitude = None
             longitude = None
 
-        local_context = copy.copy(self.context)
         local_context.update({
             'address': address,
+            'phone': phone,
+            'website': website,
             'latitude': latitude,
             'longitude': longitude
         })
@@ -671,8 +688,8 @@ class EstablishmentProfileLocation(FragmentView):
 
 
 class EstablishmentAboutAbout(AJAXFragmentView):
-    template_name = 'knotis/identity/establishment_about_about.html'
-    view_name = 'establishment_about_about'
+    template_name = 'knotis/identity/establishment_about_details.html'
+    view_name = 'establishment_about_details'
 
     def process_context(self):
         has_data = False
