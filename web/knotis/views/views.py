@@ -75,9 +75,6 @@ class ContextView(TemplateView):
             kwargs
         )
 
-        self.response_format = self.get_response_format(request)
-        self.target_element_id = self.get_target_element_id(request)
-
         return super(ContextView, self).dispatch(
             request,
             *args,
@@ -263,6 +260,22 @@ class EmbeddedView(
 
         super(EmbeddedView, self).__init__(
             context=context,
+            *args,
+            **kwargs
+        )
+
+    def dispatch(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+
+        self.response_format = self.get_response_format(request)
+        self.target_element_id = self.get_target_element_id(request)
+
+        return super(EmbeddedView, self).dispatch(
+            request,
             *args,
             **kwargs
         )
