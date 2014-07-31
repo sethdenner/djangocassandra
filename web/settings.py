@@ -229,6 +229,7 @@ INSTALLED_APPS = (
     'knotis.contrib.search',
     'knotis.contrib.navigation',
     'knotis.contrib.denormalize',
+    'knotis.contrib.ajax',
     'knotis.contrib.auth',
     'knotis.contrib.endpoint',
     'knotis.contrib.bootstrap',
