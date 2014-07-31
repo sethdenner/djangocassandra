@@ -39,13 +39,14 @@
         {% block footer %}{% endblock footer %}
         {% block modal %}{% endblock modal %}
         {% block last %}{% endblock last %}
+        {% render_fragment loading %}
         <script src="{{ STATIC_URL }}knotis/js/jquery.min.js"></script>
         <script src="{{ STATIC_URL }}jquery.cookie/jquery.cookie.js"></script>
         <script src="{{ STATIC_URL }}knotis/js/bootstrap.min.js"></script>
         <script src="{{ STATIC_URL }}bootstrap-modal/js/bootstrap-modalmanager.js"></script>
         <script src="{{ STATIC_URL }}bootstrap-modal/js/bootstrap-modal.js"></script>
         <script src="{{ STATIC_URL }}knotis/js/jquery.address.js"></script>
-        <script src="{{ STATIC_URL }}knotis/api/js/api.js"></script>
+        <script src="{{ STATIC_URL }}knotis/ajax/js/ajax.js"></script>
         <script src="{{ STATIC_URL }}knotis/layout/js/base.js"></script>
         <script src="{{ STATIC_URL }}knotis/layout/js/modal.js"></script>
         <script src="{{ STATIC_URL }}knotis/layout/js/forms.js"></script>
