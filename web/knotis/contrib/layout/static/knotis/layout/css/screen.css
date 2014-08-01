@@ -113,10 +113,8 @@ a:hover {
 
 /* line 18, ../sass/_custom.scss */
 .mainContent {
-    margin-top: 160px;
-    margin-left: 72px;
     max-width: 100%;
-    padding: 0 26px;
+    padding: 26px;
 }
 
 /* line 25, ../sass/_custom.scss */
@@ -369,14 +367,14 @@ nav button.signUp {
 .subNav {
     position: fixed;
     top: 55px;
+    left: 0;
     width: 100%;
     background: rgba(255, 255, 255, 0.9);
-    border-bottom: 1px solid #dedede;
-    padding: 14px;
-    font-family: 'LatoReg';
+    border-bottom: 1px solid rgba(222, 222, 222, 0.54);
+    padding: 17px 0;
     text-align: center;
     z-index: 4;
-    height: 40px;
+    height: 45px;
 }
 /* line 12, ../sass/_subNav.scss */
 .subNav ul li {
@@ -1431,8 +1429,8 @@ h1.sectionHeader {
     width: 345px;
     background: rgba(56, 56, 56, 0.36);
     position: absolute;
-    top: -110px;
-    left: -50px;
+    top: -38px;
+    left: -20px;
     padding: 30px 30px 83px;
     overflow: hidden;
     height: 395px;
@@ -1688,7 +1686,7 @@ span.help-inline {
 
 .profileContent {
     position: relative;
-    top: 260px;
+    top: 320px;
     left: 20px;
     padding: 85px;
     width: 100%;
@@ -1747,7 +1745,7 @@ span.help-inline {
 }
 
 .contentBlock {
-    padding: 5px 35px;
+    padding: 90px 80px;
 }
 
 .tile-badge {
