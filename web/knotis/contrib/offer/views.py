@@ -220,7 +220,7 @@ class OffersView(EmbeddedView):
             'knotis/layout/js/create.js',
             'navigation/js/navigation.js',
             'knotis/offer/js/offers.js',
-            'knotis/strips/js/stripe_form.js'
+            'knotis/stripe/js/stripe_form.js'
         ]
 
         local_context = copy.copy(self.context)

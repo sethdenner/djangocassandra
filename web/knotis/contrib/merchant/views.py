@@ -174,7 +174,7 @@ class RedemptionsGrid(GridSmallView):
 
 class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
     url_patterns = [
-        r'^redemptions(/(?P<redemption_filter>\w*))?/$',
+        r'^my/redemptions(/(?P<redemption_filter>\w*))?/$',
     ]
 
     default_parent_view_class = DefaultBaseView
@@ -341,21 +341,16 @@ class MyCustomersGrid(GridSmallView):
 
 class MyCustomersView(EmbeddedView):
     url_patterns = [
-        r'^customers/$',
+        r'^my/customers/$',
     ]
-    
+
     default_parent_view_class = DefaultBaseView
     template_name = 'knotis/merchant/my_customers.html'
 
     def process_context(self):
-        import pdb; pdb.set_trace()
-        styles = [
-        ]
-
+        styles = []
         pre_scripts = []
-
-        post_scripts = [
-        ]
+        post_scripts = []
 
         local_context = copy.copy(self.context)
         local_context.update({
