@@ -40,8 +40,6 @@ from knotis.contrib.identity.api import (
 )
 
 from knotis.contrib.relation.models import Relation
-from knotis.contrib.inventory.models import Inventory
-from knotis.contrib.product.models import Product, CurrencyCodes
 
 from models import (
     KnotisUser,
@@ -190,18 +188,6 @@ class CreateUserForm(TemplateModelForm):
                     user_id=user.pk,
                     name=IdentityIndividual.DEFAULT_NAME
                 )
-
-            try:
-                Inventory.objects.create_stack_from_product(
-                    identity,
-                    Product.currency.get(CurrencyCodes.KNOTIS_POINTS),
-                    stock=25, # TODO: Fix this will be dynamic. Probably need to
-                    # query the rewards table.
-                    # stock=settings.SIGNUP_POINTS,
-                )
-            except:
-                logging.exception('Failed to to create knotis points for user')
-                raise
 
             user_info.default_identity_id = identity.id
             user_info.save()

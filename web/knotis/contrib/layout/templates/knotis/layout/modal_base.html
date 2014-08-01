@@ -1,0 +1,23 @@
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                {% block header %}
+                <a class="btn close" href="{{ close_href }}" ><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></a>
+                <h4 class="modal-title" id="myModalLabel">{{ header_title }}</h4>
+                {% endblock header %}
+            </div>
+            <div class="modal-body">
+                {% block body %}
+                {% endblock body %}
+            </div>
+        </div>
+    </div>
+    {% block last %}
+    {% if format == 'json' %}
+    {% for script in post_scripts %}
+    <script src="{{ STATIC_URL }}{{ script }}"></script>
+    {% endfor %}
+    {% endif %}
+    {% endblock last %}
+</div>

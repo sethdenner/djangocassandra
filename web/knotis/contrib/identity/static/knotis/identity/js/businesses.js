@@ -5,10 +5,10 @@
         var auto_paging_cutoff = 3;
         var results_left = true;
         var fetching_results = false;
-        var load_more_markup =  '<div class="row-fluid load-more">' + 
+        var load_more_markup =  '<div class="row-fluid load-more">' +
             '<button class="btn btn-knotis-action btn-load-more">Load More Results</button>' +
             '</div>'
-        var no_more_markup = '<div class="row-fluid load-more">' + 
+        var no_more_markup = '<div class="row-fluid load-more">' +
             '<button disabled class="btn btn-knotis-action btn-load-more">No More Results</button>' +
             '</div>'
 
@@ -22,26 +22,30 @@
 
             if (!fetching_results && $this.scrollTop() + $this.innerHeight() >= $(document).innerHeight() - 1000) {
                 fetching_results = true;
-                $.get(
-                    [
+                fetch_url = [
                         '/businesses/grid',
                         ++page,
                         count,
                         ''
-                    ].join('/'),
+                    ].join('/');
+                $.get(
+                    fetch_url,
                     function(data, status, request) {
                         data = data.replace(/(\r\n|\n|\r)/gm,"");
                         if (!data) {
                             results_left = false;
+                            /*
                             $('.span10.grid > .row-fluid.grid-small > .span12 > .row-fluid').after(
                                 no_more_markup
                             );
+                            */
                             return;
                         }
                         var $markup = $(data);
                         $markup = $markup.children().children().children();
-                        $('.span10.grid > .row-fluid.grid-small > .span12 > .row-fluid').append($markup);
-                        if (0 == page % auto_paging_cutoff) {
+                        $('.span12 > .row-fluid').append($markup);
+                        /*
+                        if (0 === page % auto_paging_cutoff) {
                             $('.span10.grid > .row-fluid.grid-small > .span12 > .row-fluid').after(
                                 load_more_markup
                             );
@@ -52,8 +56,9 @@
                             });
 
                         } else {
-                            fetching_results = false;
                         }
+                        */
+                        fetching_results = false;
                         $.identity.initialize_business_tiles();
                     }
                 );

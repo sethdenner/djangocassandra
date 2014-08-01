@@ -16,9 +16,13 @@ from knotis.contrib.identity.models import Identity
 from knotis.views import (
     AJAXView,
     ContextView,
-    FragmentView
+    FragmentView,
+    EmbeddedView,
 )
-from knotis.contrib.layout.views import GridSmallView
+from knotis.contrib.layout.views import (
+    GridSmallView,
+    DefaultBaseView,
+)
 
 
 def send_validation_email(
@@ -119,7 +123,9 @@ class SocialIntegrationsGridView(GridSmallView):
         return self.context
 
 
-class SocialMediaSettingsView(ContextView):
+class SocialMediaSettingsView(EmbeddedView):
+    url_patterns = [ r'^settings/social/$' ]
+    default_parent_view_class = DefaultBaseView
     template_name = 'knotis/endpoint/social_media_settings.html'
 
     def process_context(self):
@@ -176,7 +182,7 @@ class DeleteEndpointView(AJAXView):
         endpoint = Endpoint.objects.get(pk=endpoint_pk)
 
         if endpoint.identity != current_identity:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {
                     'no-field': 'This endpoint does not belong to you.',
                     'status': 'ERROR'
@@ -195,11 +201,11 @@ class DeleteEndpointView(AJAXView):
                 break
 
         if errors:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': errors,
                 'status': 'ERROR'
             })
 
         else:
             endpoint.delete()
-            return self.generate_response({'status': 'OK', 'errors': None})
+            return self.generate_ajax_response({'status': 'OK', 'errors': None})

@@ -29,7 +29,7 @@ class EndpointApi(ApiView):
         *args,
         **kwargs
     ):
-        return self.generate_response({
+        return self.generate_ajax_response({
             'data': {'something': None}
         })
 
@@ -65,7 +65,7 @@ class EndpointApi(ApiView):
                 if value.strip() == '':
                     endpoint.delete()
                     endpoint.save()
-                    return self.generate_response({
+                    return self.generate_ajax_response({
                         'data': {
                             'deleted_endpoints': endpoint_id
                         }
@@ -83,13 +83,13 @@ class EndpointApi(ApiView):
             endpoint.clean()
             endpoint.save()
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': errors
             })
 
         except Exception, e:
             errors['no-field'] = '%s %s' % (e.__class__, e.message)
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': errors,
                 'data': {}
             })

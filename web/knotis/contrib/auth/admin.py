@@ -173,13 +173,11 @@ class UserUpdateAdminAJAXView(AdminAJAXView):
                 status = 'good'
             else:
                 status = 'fail'
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': status,
             })
         else:
             return self.genereate_response({
                 'status': 'fail',
             })
-
-
 

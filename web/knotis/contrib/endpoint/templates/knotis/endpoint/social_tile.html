@@ -1,21 +1,17 @@
-<div class="grid-tile small-tile social-tile">
-  <input type="hidden" class="tile-user" value="{{ current_identity.id }}" />
-  <input type="hidden" class="tile-identity" value="{{ identity.id }}"/>
-  <div class="tile-header">
-    <div class="tile-image" >&nbsp;</div>
-    <img class="tile-badge {{ service_name }}-logo"  alt="{{ service_name }}" src="{{ STATIC_URL }}images/{{ service_name }}/logo.png" />
-  </div>
-  <div class="tile-body">
-    {% if endpoint %}
-    <p class="tile-title">{{ endpoint.value }}</p>
-    <a data-endpoint-pk="{{ endpoint.pk }}" class="btn btn-knotis-action disconnect" href="{{ action.href }}">&nbsp<span>Disconnect</span>&nbsp;
-    {% else %}
-    <p class="tile-title">{{ service_name|title }}<br>Account</p>
-    <a class="btn btn-knotis-action connect-{{ service_name }}" href="{{ action.href }}">&nbsp<span>Connect</span>&nbsp;
-    {% endif %}
-  </a>
-  </div>
-  <div class="tile-footer">
-    &nbsp;
-  </div>
+<div class="col-lg-3 col-xs-12">
+    <div class="socialItem">
+        <input type="hidden" class="tile-user" value="{{ current_identity.id }}" />
+        <input type="hidden" class="tile-identity" value="{{ identity.id }}"/>
+        <img class="tile-badge {{ service_name }}-logo"  alt="{{ service_name }}" src="{{ STATIC_URL }}images/{{ service_name }}/logo.png" />
+        {% if endpoint %}
+        <a data-endpoint-pk="{{ endpoint.pk }}" class="btn btn-knotis-action disconnect" href="{{ action.href }}">
+            <p class="tile-title">{{ endpoint.value }}</p>
+            <span>Disconnect</span>
+        </a>
+        {% else %}
+        <p class="tile-title">{{ service_name|title }} Account</p>
+        <a class="btn btn-knotis-action connect-{{ service_name }}" href="{{ action.href }}"><span>Connect</span></a>
+        {% endif %}
+    </div>
 </div>
+

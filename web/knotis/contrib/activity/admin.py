@@ -19,7 +19,6 @@ from models import (
     Activity,
 )
 
-
 ###### LIST EDIT APP ######
 
 class ActivityQueryAdminAJAXView(AdminListQueryAJAXView):

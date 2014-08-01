@@ -7,14 +7,14 @@ from django.views.generic.simple import redirect_to
 
 from knotis.utils.regex import REGEX_UUID
 
-from views import (
-    IdentityView,
-    BusinessesView,
-    BusinessesGrid,
+from .views import (
+    EstablishmentsView,
+    EstablishmentsGrid,
     EstablishmentProfileView,
     IdentitySwitcherView,
     FirstIdentityView,
     EstablishmentAboutAbout,
+    CreateBusinessView
 )
 
 
@@ -25,40 +25,8 @@ urlpatterns = patterns(
         EstablishmentAboutAbout.as_view()
     ),
     url(
-        r''.join([
-            '^id/(?P<id>',
-            REGEX_UUID,
-            ')(/(?P<view_name>',
-            '\w{1,50}',
-            '))?/$'
-        ]),
-        IdentityView.as_view()
-    ),
-    url(
-        r''.join([
-            '^id/(?P<id>',
-            REGEX_UUID,
-            ')(/offer/(?P<offer_id>',
-            REGEX_UUID,
-            '))?/$'
-        ]),
-        IdentityView.as_view()
-    ),
-    url(
-        r''.join([
-            '^id/(?P<id>',
-            REGEX_UUID,
-            ')/offers/$'
-        ]),
-        IdentityView.as_view()
-    ),
-    url(
-        r'^businesses/$',
-        BusinessesView.as_view()
-    ),
-    url(
         r'^businesses/grid/(?P<page>\d+)/(?P<count>\d+)/$',
-        BusinessesGrid.as_view()
+        EstablishmentsGrid.as_view()
     ),
     url(
         r''.join([
@@ -71,18 +39,6 @@ urlpatterns = patterns(
     ),
     url(
         r''.join([
-            '^merchants/(?P<establishment_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        EstablishmentProfileView.as_view()
-    ),
-    url(
-        r'^merchants/(?P<backend_name>[^/]+)/$',
-        EstablishmentProfileView.as_view()
-    ),
-    url(
-        r''.join([
             '^identity/switcher(/(?P<identity_id>',
             REGEX_UUID,
             '))?/$'
@@ -92,5 +48,15 @@ urlpatterns = patterns(
     url(
         r'^identity/first/$',
         FirstIdentityView.as_view()
+    ),
+    url(
+        r'^merchants/(?P<backend_name>[^/]+)/$',
+        EstablishmentProfileView.as_view()
     )
 )
+
+urlpatterns += EstablishmentsView.urls()
+urlpatterns += EstablishmentProfileView.urls()
+urlpatterns += IdentitySwitcherView.urls()
+urlpatterns += FirstIdentityView.urls()
+urlpatterns += CreateBusinessView.urls()

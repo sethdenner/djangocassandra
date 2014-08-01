@@ -1,4 +1,5 @@
 (function($) {
+    /*
     $('.offer-tile').click(function(event) {
         event.preventDefault();
 
@@ -9,11 +10,12 @@
             modal_width: '750px'
         });
     });
+    */
 
     var upload_logo = function(event) {
         event.preventDefault();
 
-        var identity_id = $('div#id-identity-id').attr('data-business-id')
+        var identity_id = $('div#id-identity-id').attr('data-establishment-id')
 
         $.ajaxmodal({
             href: '/image/upload/',
@@ -56,7 +58,7 @@
 
     $('a.change-profile-cover-link').click(function(event){
       event.preventDefault();
-      var identity_id = $('#id-identity-id').attr('data-business-id');
+      var identity_id = $('#id-identity-id').attr('data-establishment-id');
 
       $.ajaxmodal({
           href: '/image/upload',
@@ -93,7 +95,7 @@
 
     $('a.upload-photo').click(function(event){
       event.preventDefault();
-      var identity_id = $(this).attr('data-business-id');
+      var identity_id = $('#id-identity-id').attr('data-establishment-id');
 
       $.ajaxmodal({
           href: '/image/upload',
@@ -140,28 +142,6 @@
         });
     });
 
-    $('.twitter.tab').click(function(){
-        $('.tab-pane#yelp').hide();
-        $('li.tab.yelp').removeClass('active');
-
-        $('.tab-pane#twitter').show();
-        $('li.tab.twitter').addClass('active');
-    });
-
-    $('.yelp.tab').click(function(){
-        $('.tab-pane#twitter').hide();
-        $('li.tab.twitter').removeClass('active');
-
-        $('.tab-pane#yelp').show();
-        $('li.tab.yelp').addClass('active');
-    });
-
-    // gather up all the address display elements on the page, and link them.
-    $('.linked-business-name').link_field('linkbizname');
-    $('.linked-phone-number').link_field('linkphonenum');
-    $('.linkedaddress').link_field('linkaddress');
-    $('.linkedwebsite').link_field('linkweb');
-
     $('a.delete-x').click(function(event) {
         event.stopPropagation();
         event.preventDefault();
@@ -189,5 +169,31 @@
         });
 
     });
+
+    $('a.twitter').click(function(){
+        event.stopPropagation();
+        event.preventDefault();
+        $('.tab-content.yelp').hide();
+        $('.tab-content.yelp').removeClass('active');
+
+        $('.tab-content.twitter').show();
+        $('.tab-content.twitter').addClass('active');
+    });
+
+    $('a.yelp').click(function(){
+        event.stopPropagation();
+        event.preventDefault();
+        $('.tab-content.twitter').hide();
+        $('.tab-content.twitter').removeClass('active');
+
+        $('.tab-content.yelp').show();
+        $('.tab-content.yelp').addClass('active');
+    });
+
+    // gather up all the address display elements on the page, and link them.
+    //$('.linked-business-name').link_field('linkbizname');
+    //$('.linked-phone-number').link_field('linkphonenum');
+    //$('.linkedaddress').link_field('linkaddress');
+    //$('.linkedwebsite').link_field('linkweb');
 
 })(jQuery);

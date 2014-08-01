@@ -1,29 +1,5 @@
-{% if sections %}
-<div class="row-fluid sections">
-  <div class="span5">
-    {% for section in sections %}
-    {% if forloop.counter0|divisibleby:2%}
-    <div class="row-fluid">
-      <div class="span12 {{ section.css_class }}">
-        {{ section.markup|safe }}
-      </div>
+{% for section in sections %}
+    <div class="col-lg-6 col-xs-12 {{ section.css_class }}">
+            {{ section.markup|safe }}
     </div>
-    {% endif %}
-    {% endfor %}
-  </div>
-  {% if sections|length > 1 %}
-  <div class="span5">
-    {% for section in sections %}
-    {% if forloop.counter|divisibleby:2 %}
-    <div class="row-fluid">
-      <div class="span12 {{ section.css_class }}">
-        {{ section.markup|safe }}
-      </div>
-    </div>
-    {% endif %}
-    {% endfor %}
-  </div>
-  {% endif %}
-</div>
-{% endif %}
-
+{% endfor %}

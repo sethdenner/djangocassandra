@@ -34,7 +34,7 @@ class LocationApiView(ApiView):
 
             except Exception, e:
                 errors['no-field'] = "Could not find location to update"
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': e.message,
                     'errors': errors
                 })
@@ -134,4 +134,4 @@ class LocationApiView(ApiView):
             data['errors'] = errors
             data['message'] = 'There was an error while saving location.'
 
-        return self.generate_response(data)
+        return self.generate_ajax_response(data)

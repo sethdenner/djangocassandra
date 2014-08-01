@@ -7,21 +7,33 @@ from knotis.views import (
 )
 
 from knotis.contrib.inventory.models import Inventory
-
-from .models import (
-    Offer,
-    OfferPublish,
-    OfferAvailability
-)
-from .forms import (
-    OfferForm,
+from knotis.contrib.merchant.forms import (
     OfferPublishForm,
     OfferWithInventoryForm
 )
+
+from .models import (
+    Offer,
+    OfferTypes,
+    OfferPublish,
+    OfferAvailability,
+)
+from .forms import OfferForm
 from .serializers import (
     OfferSerializer,
     OfferAvailabilitySerializer
 )
+
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityTypes
+)
+
+from knotis.contrib.product.models import (
+    Product,
+    ProductTypes
+)
+from knotis.contrib.endpoint.models import Endpoint, EndpointTypes
 
 
 class OfferPublishApiView(ApiView):
@@ -49,7 +61,7 @@ class OfferPublishApiView(ApiView):
             logger.exception(error_message)
             errors['no-field'] = error_message
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': errors
             })
@@ -68,7 +80,7 @@ class OfferPublishApiView(ApiView):
             logger.exception(error_message)
             errors['no-field'] = error_message
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': errors
             })
@@ -96,13 +108,13 @@ class OfferPublishApiView(ApiView):
                 'The following OfferPublish objects failed to publish:\n\t',
                 '\n\t'.join(failed_publish_ids)
             ]))
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'failed',
                 'errors': errors
             })
 
         else:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'offer_id': offer.id,
                 'message': 'This offer will be published shortly.'
             })
@@ -127,7 +139,7 @@ class OfferApiView(ApiView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'Offer form did not validate',
                 'errors': errors
             })
@@ -156,7 +168,7 @@ class OfferApiView(ApiView):
             )
 
             errors['no-field'] = 'Could not find inventory specified.'
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': errors
             })
@@ -171,12 +183,12 @@ class OfferApiView(ApiView):
             logger.exception('an error occured while saving offer.')
 
             errors['no-field'] = 'There was an error saving your offer.'
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': errors
             })
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'message': 'offer saved.',
             'data': {
                 'offer_id': offer.id
@@ -205,7 +217,7 @@ class OfferApiView(ApiView):
             logger.exception(error_message)
             errors['no-field'] = error_message
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': errors
             })
@@ -226,7 +238,7 @@ class OfferApiView(ApiView):
                 logger.exception(error_message)
                 errors['no-field'] = error_message
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': e.message,
                     'errors': errors
                 })
@@ -247,12 +259,12 @@ class OfferApiView(ApiView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'An exception occurred during offer update',
                 'errors': errors
             })
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'offer_id': offer.id,
             'message': 'Offer updated sucessfully.'
         })
@@ -277,3 +289,90 @@ class OfferAvailabilityModelViewSet(ApiModelViewSet):
     serializer_class = OfferAvailabilitySerializer
 
     http_method_names = ['get', 'options']
+
+
+class OfferCreateApi(object):
+
+    @staticmethod
+    def create_offer(
+        dark_offer=False,
+        create_business=False,
+        *args,
+        **kwargs
+    ):
+        business_name = kwargs.get('business_name')
+        try:
+            owner_identity = Identity.objects.get(
+                name=business_name,
+                identity_type=IdentityTypes.BUSINESS
+            )
+        except:
+            logger.exception('Cannot find owner %s' % business_name)
+            raise
+
+        currency_name = kwargs.get('currency')
+
+        try:
+            currency = Product.currency.get(currency_name)
+        except:
+            logger.exception('Cannot find currency %s' % currency_name)
+            raise
+
+        price = kwargs.get('price', 0.0)
+        value = kwargs.get('value', 0.0)
+        title = kwargs.get('title')
+        is_physical = kwargs.get('is_physical')
+        stock = float(kwargs.get('stock', 0.0))
+        title = kwargs.get('title')
+        description = kwargs.get('description')
+        restrictions = kwargs.get('restrictions')
+
+        if title is None:
+            title = '$%s credit toward any purchase' % value
+
+        try:
+            product = Product.objects.create(
+                product_type=(ProductTypes.CREDIT, ProductTypes.PHYSICAL)[is_physical],
+                title=title,
+                sku=currency.sku
+            )
+        except:
+            logger.exception('Cannot find currency %s' % currency_name)
+            raise
+
+        inventory = Inventory.objects.create_stack_from_product(
+            owner_identity,
+            product,
+            price=value,
+            stock=stock,
+            unlimited=(stock == 0.0),
+        )
+
+        offer = Offer.objects.create(
+            owner=owner_identity,
+            title=title,
+            restrictions=restrictions,
+            description=description,
+            start_time=kwargs.get('start_time'),
+            end_time=kwargs.get('end_time'),
+            stock=stock,
+            unlimited=(stock == 0.0),
+            inventory=[inventory],
+            discount_factor=price / value,
+            offer_type=(OfferTypes.NORMAL, OfferTypes.DARK)[dark_offer]
+        )
+
+        offer.save()
+
+        if not dark_offer:
+            endpoint_current_identity = Endpoint.objects.get(
+                endpoint_type=EndpointTypes.IDENTITY,
+                identity=owner_identity
+            )
+            OfferPublish.objects.create(
+                endpoint=endpoint_current_identity,
+                subject=offer,
+                publish_now=True
+            )
+
+        return offer

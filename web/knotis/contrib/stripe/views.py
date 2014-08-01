@@ -66,13 +66,13 @@ class StripeCharge(AJAXView):
             offer = None
 
         if not offer:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {'no-field': 'Could not find offer'},
                 'status': 'ERROR'
             })
 
         if not offer.available():
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {
                     'no-field': 'This offer is no longer available'
                 },
@@ -119,7 +119,7 @@ class StripeCharge(AJAXView):
             customer = None
 
         if not customer:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': {'no-field': 'Failed to create customer'},
                 'status': 'ERROR'
             })
@@ -166,9 +166,9 @@ class StripeCharge(AJAXView):
 
         except Exception, e:
             logger.exception(e.message)
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': {'no-field': e.message}
             })
 
-        return self.generate_response({'status': 'OK'})
+        return self.generate_ajax_response({'status': 'OK'})

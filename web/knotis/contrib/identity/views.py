@@ -4,33 +4,27 @@ from django.conf import settings
 from django.template import Context
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.shortcuts import (
-    get_object_or_404
-)
 from django.utils import log
+from knotis.utils.regex import REGEX_UUID
 logger = log.getLogger(__name__)
 
 from knotis.views import (
-    ContextView,
+    EmbeddedView,
+    ModalView,
     FragmentView
 )
 
+
 from knotis.contrib.auth.models import UserInformation
-from knotis.contrib.maps.forms import GeocompleteForm
 from knotis.contrib.media.models import (
     ImageInstance
-)
-from knotis.contrib.offer.models import OfferAvailability
-from knotis.contrib.offer.views import (
-    OfferTile,
-    OfferCreateTile
 )
 
 from knotis.contrib.layout.views import (
     GridSmallView,
     ActionButton,
     ButtonAction,
-    SplashTile
+    DefaultBaseView
 )
 
 from models import (
@@ -41,20 +35,20 @@ from models import (
     IdentityEstablishment
 )
 
+
 from knotis.contrib.relation.models import (
-    RelationTypes
+    RelationTypes,
+    Relation,
 )
 
 from forms import (
-    IdentityIndividualSimpleForm,
-    IdentityBusinessSimpleForm
+    IdentityForm
 )
 
 from knotis.contrib.location.models import (
     LocationItem
 )
 
-from knotis.contrib.maps.views import GoogleMap
 
 from knotis.contrib.twitter.views import get_twitter_feed_json
 from knotis.contrib.yelp.views import get_reviews_by_yelp_id
@@ -71,8 +65,12 @@ from knotis.contrib.endpoint.models import (
     EndpointFacebook,
     EndpointYelp,
     EndpointTwitter,
-    EndpointWebsite
+    EndpointWebsite,
+    EndpointIdentity
 )
+
+from .mixins import GetCurrentIdentityMixin
+from .api import IdentityApi
 
 
 def get_current_identity(request):
@@ -152,24 +150,55 @@ def get_identity_default_profile_banner_color(identity):
     return profile_banner_color
 
 
-class IdentityView(ContextView):
-    template_name = 'knotis/identity/identity_view.html'
+class EstablishmentsView(EmbeddedView):
+    view_name = 'establishments'
+    url_patterns = [r'^businesses/$']
+    template_name = 'knotis/identity/establishments.html'
+    default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/layout/js/action_button.js',
+        'knotis/identity/js/businesses.js',
+        'knotis/identity/js/business-tile.js',
+    ]
 
-    def process_context(self):
-        self.context = copy.copy(self.context)
 
-        identity_id = self.kwargs.get('id')
-        if not identity_id:
-            raise Exception('No Identity supplied')
+class EstablishmentProfileView(EmbeddedView):
+    view_name = 'establishment_profile'
+    url_patterns = [
+        r''.join([
+            '^id/(?P<identity_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        r''.join([
+            '^id/(?P<identity_id>',
+            REGEX_UUID,
+            ')(/(?P<view_name>',
+            '\w{1,50}',
+            '))?/$'
+        ])
+    ]
+    template_name = 'knotis/identity/establishment_profile.html'
+    default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'jcrop/js/jquery.Jcrop.js',
+        'scripts/fileuploader.js',
+        'scripts/jquery.colorbox.js',
+        'scripts/jquery.sickle.js',
+        'knotis/identity/js/profile.js',
+        'knotis/identity/js/update_profile.js',
+    ]
 
+    def set_establishment(self):
+
+        identity_id = self.context.get('identity_id')
         identity = Identity.objects.get(pk=identity_id)
         if not identity:
             raise Exception('Identity not found')
 
         if identity.identity_type == IdentityTypes.ESTABLISHMENT:
-            profile_view = EstablishmentProfileView()
-            self.context['establishment_id'] = identity_id
-            self.context['establishment'] = identity
+            self.establishment_id = identity_id
+            self.establishment = identity
 
         elif identity.identity_type == IdentityTypes.BUSINESS:
             try:
@@ -178,87 +207,246 @@ class IdentityView(ContextView):
                         identity
                     )
                 )
-
             except:
                 establishments = None
                 logger.exception('Failed to get establishments for business')
 
-            if 1 == len(establishments):
-                profile_view = EstablishmentProfileView()
-                self.context['establishment_id'] = establishments[0].pk
-                self.context['establishment'] = establishments[0]
+            if len(establishments) > 0:
+                self.establishment_id = establishments[0].pk
+                self.establishment = establishments[0]
 
             else:
-                profile_view = BusinessProfileView()
-                self.context['establishments'] = establishments
+                raise Exception('Business profile not implemented yet.')
 
         else:
-            raise Exception('IdentityType not currently supported')
+            raise Exception('Identity profile not implemented yet.')
 
-        self.context.update({
-            'profile_markup': profile_view.render_template_fragment(
-                self.context
+    def is_manager(self):
+        request = self.request
+        self.is_manager = False
+        if request.user.is_authenticated():
+            current_identity_id = request.session.get('current_identity')
+            current_identity = Identity.objects.get(
+                pk=current_identity_id
             )
-        })
 
-        return self.context
+            self.is_manager = (
+                current_identity.is_manager(self.establishment) or
+                current_identity.pk == self.establishment.pk
+            )
 
+    def set_business(self):
+        if not hasattr(self, 'establishment'):
+            self.set_establishment()
 
-class BusinessesView(FragmentView):
-    template_name = 'knotis/identity/businesses_view.html'
+        try:
+            self.business = IdentityBusiness.objects.get_establishment_parent(
+                self.establishment
+            )
+
+        except:
+            logger.exception(
+                ' '.join([
+                    'failed to get business for establishment with id ',
+                    self.establishment_id
+                ])
+            )
+            raise http.Http404
+
+    def set_images(self):
+        if not hasattr(self, 'business'):
+            self.set_establishment()
+
+        if self.is_manager:
+            self.default_profile_logo_uri = ''.join([
+                settings.STATIC_URL,
+                'knotis/identity/img/add_logo.png'
+            ])
+
+        else:
+            self.default_profile_logo_uri = ''.join([
+                settings.STATIC_URL,
+                'knotis/identity/img/profile_default.png'
+            ])
+
+        self.profile_badge_image = get_identity_profile_badge(
+            self.establishment
+        )
+        self.profile_banner_image = get_identity_profile_banner(
+            self.establishment
+        )
+        self.profile_banner_color = get_identity_default_profile_banner_color(
+            self.establishment
+        )
 
     def process_context(self):
-        styles = self.context.get('styles', [])
-        post_scripts = self.context.get('post_scripts', [])
+        self.set_establishment()
+        self.set_business()
 
-        my_styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
-            'styles/default/fileuploader.css'
-        ]
+        self.is_manager()
+        self.set_images()
 
-        for style in my_styles:
-            if not style in styles:
-                styles.append(style)
+        locationItem = LocationItem.objects.filter(
+            related_object_id=self.establishment.id
+        )
+        if len(locationItem):
+            address = locationItem[0].location.address
+        else:
+            address = None
 
-        my_post_scripts = [
-            'knotis/layout/js/layout.js',
-            'knotis/layout/js/forms.js',
-            'knotis/layout/js/header.js',
-            'knotis/layout/js/create.js',
-            'knotis/layout/js/splash_tile.js',
-            'knotis/layout/js/action_button.js',
-            'navigation/js/navigation.js',
-            'jcrop/js/jquery.Jcrop.js',
-            'scripts/fileuploader.js',
-            'scripts/jquery.colorbox.js',
-            'scripts/jquery.sickle.js',
-            'knotis/identity/js/profile.js',
-            'knotis/api/js/api.js',
-            'knotis/identity/js/business-tile.js',
-            'knotis/identity/js/businesses.js',
-            'knotis/layout/js/to_top.js'
-        ]
 
-        for script in my_post_scripts:
-            if not script in post_scripts:
-                post_scripts.append(script)
+        endpoints = Endpoint.objects.filter(
+            identity=self.establishment,
+            primary=True
+        )
+        endpoints = endpoints.select_subclasses()
+
+        endpoint_dicts = []
+        for endpoint_class in (
+                EndpointPhone,
+                EndpointEmail,
+                EndpointFacebook,
+                EndpointYelp,
+                EndpointTwitter,
+                EndpointWebsite
+        ):
+
+            endpoint = None
+            for ep in endpoints:
+                if ep.endpoint_type == endpoint_class.EndpointType:
+                    endpoint = ep
+
+            endpoint_type_name = EndpointTypeNames[endpoint_class.EndpointType]
+            endpoint_type_name = endpoint_type_name.lower()
+
+            if endpoint and endpoint.value:
+
+                display = None
+                if endpoint.endpoint_type == EndpointTypes.YELP:
+                    display = 'Yelp'
+                elif endpoint.endpoint_type == EndpointTypes.FACEBOOK:
+                    display = 'Facebook'
+
+                elif endpoint.endpoint_type == EndpointTypes.ADDRESS:
+                    address = endpoint.value
+
+                endpoint_dict = {
+                    'id': endpoint.id,
+                    'endpoint_type_name': endpoint_type_name,
+                    'value': endpoint.value,
+                    'uri': endpoint.get_uri(),
+                    'display': display,
+                    'endpoint_type': endpoint_class.EndpointType
+                }
+
+                endpoint_dicts.append(endpoint_dict)
+
+            else:
+                endpoint_dicts.append({
+                    'id': '',
+                    'endpoint_type_name': endpoint_type_name,
+                    'value': '',
+                    'uri': '',
+                    'display': '',
+                    'endpoint_type': endpoint_class.EndpointType
+                })
+
+        # endpoints displayed on the cover
+        phone = None
+        website = None
+        for endpoint in endpoints:
+            if EndpointTypes.PHONE == endpoint.endpoint_type:
+                phone = {
+                    'value': endpoint.value,
+                    'uri': endpoint.get_uri()
+                }
+
+            if EndpointTypes.WEBSITE == endpoint.endpoint_type:
+                website = {
+                    'value': endpoint.value,
+                    'uri': endpoint.get_uri(),
+                    'display': endpoint.get_display()
+                }
+
+            if phone and website:
+                break
+
+        # determine nav view
+        request = self.request
+        context_context = Context({
+            'request': request,
+            'establishment_id': self.establishment_id,
+            'endpoints': endpoint_dicts,
+            'is_manager': self.is_manager
+        })
+
+        """
+        try:
+            establishment_offers = OfferAvailability.objects.filter(
+                identity=self.establishment,
+                available=True
+            )
+
+        except:
+            logger.exception('failed to get establishment offers')
+
+        if establishment_offers:
+            default_view_name = 'offers'
+
+        else:
+        """
+        default_view_name = 'about'
+
+        view_name = self.context.get('view_name', default_view_name)
+
+        if view_name == 'contact':
+            profile_content = (
+                EstablishmentProfileLocation().render_template_fragment(
+                    context_context
+                )
+            )
+            content_plexer = 'offersaboutcontact'
+
+        elif view_name == 'offers':
+            content_plexer = 'offersaboutcontact'
+            profile_content = None
+
+        elif view_name == 'about':
+            content_plexer = 'offersaboutcontact'
+            profile_content = (
+                EstablishmentProfileAbout().render_template_fragment(
+                    context_context
+                )
+            )
+
+        else:
+            content_plexer = 'establishments'
+            profile_content = 'establishments'
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'styles': styles,
-            'post_scripts': post_scripts,
-            'fixed_side_nav': True
+            'establishment': self.establishment,
+            'is_manager': self.is_manager,
+            'address': address,
+            'phone': phone,
+            'website': website,
+            'business': self.business,
+            'default_profile_logo_uri': self.default_profile_logo_uri,
+            'profile_badge': self.profile_badge_image,
+            'profile_banner': self.profile_banner_image,
+            'profile_banner_color': self.profile_banner_color,
+            #  'establishment_offers': establishment_offers,
+            'top_menu_name': 'identity_profile',
+            'profile_content': profile_content,
+            'view_name': view_name,
+            'content_plexer': content_plexer,
         })
+
         return local_context
 
 
-class BusinessesGrid(GridSmallView):
-    view_name = 'businesses_grid'
+class EstablishmentsGrid(GridSmallView):
+    view_name = 'establishments_grid'
 
     def process_context(self):
         current_identity_id = self.request.session.get('current_identity')
@@ -272,46 +460,43 @@ class BusinessesGrid(GridSmallView):
         count = int(self.context.get('count', '20'))
         start_range = page * count
         end_range = start_range + count
-        businesses = IdentityBusiness.objects.all()
+        establishments = IdentityEstablishment.objects.all()
         if (
             not current_identity or
             not current_identity.identity_type == IdentityTypes.SUPERUSER
         ):
-            businesses = businesses.filter(
+            establishments = establishments.filter(
                 available=True
             )
 
-        businesses = businesses[start_range:end_range]
+        establishments = establishments[start_range:end_range]
 
         tiles = []
 
-        if 0 == start_range:
-            tiles.append(
-                SplashTile().render_template_fragment(Context())
-            )
-
-        if businesses:
-            for business in businesses:
+        if establishments:
+            for establishment in establishments:
 
                 location_items = LocationItem.objects.filter(
-                    related_object_id=business.pk
+                    related_object_id=establishment.pk
                 )
                 if len(location_items) > 0:
                     address = location_items[0].location.address
                 else:
                     address = ''
 
-                business_tile = IdentityTile()
-                business_context = Context({
-                    'identity': business,
+                establishment_tile = IdentityTile()
+                establishment_context = Context({
+                    'request': self.request,
+                    'identity': establishment,
                     'request': self.request,
                 })
+
                 if address:
-                    business_context.update({'address': address})
+                    establishment_context.update({'address': address})
 
                 tiles.append(
-                    business_tile.render_template_fragment(
-                        business_context
+                    establishment_tile.render_template_fragment(
+                        establishment_context
                     )
                 )
 
@@ -329,29 +514,32 @@ class IdentityTileActionButton(ActionButton):
     view_name = 'identity_tile_action'
 
     def actions(self):
-        identity = self.context.get('identity')
+        tile_identity = self.context.get('identity')
         current_identity = self.context.get('current_identity')
 
         if not current_identity:
             return [
                 ButtonAction(
                     'Sign Up',
-                    '/auth/signup/', {
-                        'modalid': 'auth-modal'
-                    },
-                    'modal'
+                    '/signup/',
+                    {},
+                    'get',
+                    deep=True,
                 )
             ]
-
+        following = Relation.objects.follows(current_identity, tile_identity)
+        is_following = len(following) == 0
+        action_text = 'Follow' if is_following  else 'Unfollow'
         return [
             ButtonAction(
-                'Follow',
-                '/api/v1/relation/', {
+                action_text,
+                '/api/v0/relation/follow/',
+                {
                     'relation-type': RelationTypes.FOLLOWING,
-                    'subject': current_identity.pk,
-                    'related': identity.pk
+                    'subject_id': current_identity.pk,
+                    'related_id': tile_identity.pk,
                 },
-                'get'
+                'post' if is_following else 'delete'
             )
         ]
 
@@ -378,19 +566,28 @@ class IdentityTile(FragmentView):
         profile_banner_color = get_identity_default_profile_banner_color(
             identity
         )
+        identity_tile_context = Context({
+            'current_identity': current_identity,
+            'identity': identity
+        })
+        action_button = IdentityTileActionButton()
+        action_button_content = action_button.render_template_fragment(
+            identity_tile_context
+        )
 
         local_context = copy.copy(self.context)
         local_context.update({
             'current_identity': current_identity,
             'banner_image': profile_banner_image,
             'badge_image': profile_badge_image,
+            'action_button': action_button_content,
             'STATIC_URL': settings.STATIC_URL,
             'profile_banner_color': profile_banner_color
         })
 
         return local_context
 
-
+"""
 class EstablishmentProfileGrid(GridSmallView):
     view_name = 'establishment_profile_grid'
 
@@ -442,6 +639,7 @@ class EstablishmentProfileOffers(FragmentView):
     def process_context(self):
         local_context = copy.copy(self.context)
         return local_context
+"""
 
 
 class EstablishmentProfileLocation(FragmentView):
@@ -450,6 +648,22 @@ class EstablishmentProfileLocation(FragmentView):
 
     def process_context(self):
         establishment_id = self.context.get('establishment_id')
+        endpoints = self.context.get('endpoints')
+
+        local_context = copy.copy(self.context)
+        phone = website = None
+        for endpoint in endpoints:
+            if (
+                endpoint['endpoint_type'] == EndpointTypes.PHONE and
+                endpoint['value']
+            ):
+                phone = endpoint
+
+            elif (
+                endpoint['endpoint_type'] == EndpointTypes.WEBSITE and
+                endpoint['value']
+            ):
+                website = endpoint
 
         locationItem = LocationItem.objects.filter(
             related_object_id=establishment_id
@@ -463,9 +677,10 @@ class EstablishmentProfileLocation(FragmentView):
             latitude = None
             longitude = None
 
-        local_context = copy.copy(self.context)
         local_context.update({
             'address': address,
+            'phone': phone,
+            'website': website,
             'latitude': latitude,
             'longitude': longitude
         })
@@ -473,18 +688,14 @@ class EstablishmentProfileLocation(FragmentView):
 
 
 class EstablishmentAboutAbout(AJAXFragmentView):
-    template_name = 'knotis/identity/establishment_about_about.html'
-    view_name = 'establishment_about_about'
+    template_name = 'knotis/identity/establishment_about_details.html'
+    view_name = 'establishment_about_details'
 
     def process_context(self):
         has_data = False
         establishment_id = self.context.get('establishment_id')
 
         establishment = IdentityEstablishment.objects.get(pk=establishment_id)
-
-        #business = IdentityBusiness.objects.get_establishment_parent(
-        #    establishment
-        #)
 
         local_context = copy.copy(self.context)
         local_context.update({
@@ -515,6 +726,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
 
         # add business name to local_context
         local_context.update({
+            'STATIC_URL': settings.STATIC_URL,
             'establishment': establishment
         })
 
@@ -552,24 +764,19 @@ class EstablishmentAboutAbout(AJAXFragmentView):
     ):
 
         data = json.loads(request.POST.get('data'))
-        business_id = data['business_id']
-        establishment = IdentityEstablishment.objects.get(pk=business_id)
-        business = IdentityBusiness.objects.get_establishment_parent(establishment)
-        #business = IdentityBusiness.objects.get(pk=business_id)
+        establishment_id = data['establishment_id']
+        establishment = IdentityEstablishment.objects.get(pk=establishment_id)
 
         # business name
         response = {}
-        response['business_id'] = business_id
+        response['establishment_id'] = establishment_id
         if 'changed_name' in data:
-            business.name = data['changed_name']
             establishment.name = data['changed_name']
 
         if 'changed_description' in data:
-            business.description = data['changed_description']
             establishment.description = data['changed_description']
 
         establishment.save()
-        business.save()
 
         # endpoints
         def endpoint_to_dict(endpoint):
@@ -592,7 +799,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                 endpoint_value = endpoint['endpoint_value'].strip()
 
                 updated_endpoint = Endpoint.objects.update_or_create(
-                    identity=business,
+                    identity=establishment,
                     pk=endpoint_id,
                     endpoint_type=int(endpoint['endpoint_type']),
                     value=endpoint_value,
@@ -604,7 +811,7 @@ class EstablishmentAboutAbout(AJAXFragmentView):
                 else:
                     updated_endpoints.append(updated_endpoint)
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'status': 'ok',
             'updated_endpoints': map(endpoint_to_dict, updated_endpoints),
             'deleted_endpoints': map(endpoint_to_dict, deleted_endpoints)
@@ -626,6 +833,7 @@ class EstablishmentAboutTwitterFeed(FragmentView):
                     twitter_endpoint = endpoint
                     local_context.update({
                         'twitter_handle': twitter_endpoint['value'],
+                        'twitter': twitter_endpoint,
                     })
 
         twitter_feed = None
@@ -664,7 +872,8 @@ class EstablishmentAboutYelpFeed(FragmentView):
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'yelp_feed': yelp_feed
+            'yelp_feed': yelp_feed,
+            'yelp': yelp_endpoint
         })
 
         return local_context
@@ -678,10 +887,7 @@ class EstablishmentAboutFeeds(FragmentView):
         local_context = copy.copy(self.context)
 
         yelp = EstablishmentAboutYelpFeed()
-        yelp.render_template_fragment(local_context)
-
         twitter = EstablishmentAboutTwitterFeed()
-        twitter.render_template_fragment(local_context)
 
         local_context.update({
             'yelp_markup': yelp.render_template_fragment(local_context),
@@ -700,27 +906,20 @@ class EstablishmentAboutCarousel(FragmentView):
 
     def process_context(self):
         establishment_id = self.context.get('establishment_id')
-
         establishment = IdentityEstablishment.objects.get(pk=establishment_id)
-        business = IdentityBusiness.objects.get_establishment_parent(
-            establishment
-        )
 
         images = ImageInstance.objects.filter(
-            related_object_id=business.pk,
+            related_object_id=establishment.pk,
             context='business_profile_carousel'
         )
 
         image_infos = []
-        count = 0
-        for image in images:
+        for count, image in enumerate(images):
             image_infos.append((count, image))
-            count += 1
 
         local_context = copy.copy(self.context)
         local_context.update({
             'images': image_infos,
-            'establishment_parent': business
         })
 
         return local_context
@@ -740,7 +939,6 @@ class EstablishmentProfileAbout(FragmentView):
         if about_markup:
             sections.append({
                 'markup': about_markup,
-                'css_class': 'about'
             })
 
         carousel = EstablishmentAboutCarousel()
@@ -749,7 +947,6 @@ class EstablishmentProfileAbout(FragmentView):
         if carousel_markup:
             sections.append({
                 'markup': carousel_markup,
-                'css_class': 'photo'
             })
 
         feeds = EstablishmentAboutFeeds()
@@ -758,7 +955,6 @@ class EstablishmentProfileAbout(FragmentView):
         if feeds_markup:
             sections.append({
                 'markup': feeds_markup,
-                'css_class': 'ratings'
             })
 
         location = EstablishmentProfileLocation()
@@ -767,7 +963,6 @@ class EstablishmentProfileAbout(FragmentView):
         if location_markup:
             sections.append({
                 'markup': location_markup,
-                'css_class': 'location'
             })
 
         local_context.update({
@@ -782,289 +977,86 @@ class BusinessProfileView(FragmentView):
     template_name = 'knotis/identity/profile_business.html'
     view_name = 'business_profile'
 
-    def get(
+    def process_context(self):
+        pass
+
+
+class CreateBusinessView(ModalView, GetCurrentIdentityMixin):
+    url_patterns = [
+        r'^identity/business/create/$'
+    ]
+    template_name = 'knotis/identity/business_create.html'
+    view_name = 'business_create'
+    default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/identity/js/business_create.js'
+    ]
+
+    def process_context(self):
+        self.context['modal_id'] = 'business-create'
+        return self.context
+
+    def post(
         self,
         request,
         *args,
         **kwargs
     ):
-        pass
+        data = {}
+        errors = {}
 
-    def process_context(self):
-        pass
-
-
-class EstablishmentProfileView(FragmentView):
-    template_name = 'knotis/identity/profile_establishment.html'
-    view_name = 'establishment_profile'
-
-    def process_context(self):
-        styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
-            'knotis/identity/css/profile.css',
-            'styles/default/fileuploader.css',
-            'knotis/identity/css/first.css'
-        ]
-
-        pre_scripts = []
-
-        post_scripts = [
-            'knotis/layout/js/layout.js',
-            'knotis/layout/js/forms.js',
-            'knotis/layout/js/header.js',
-            'knotis/layout/js/create.js',
-            'navigation/js/navigation.js',
-            'jcrop/js/jquery.Jcrop.js',
-            'scripts/fileuploader.js',
-            'scripts/jquery.colorbox.js',
-            'scripts/jquery.sickle.js',
-            'scripts/jquery.linkedfields.js',
-            'geocomplete/jquery.geocomplete.min.js',
-            'knotis/layout/js/forms.js',
-            'knotis/maps/js/maps.js',
-            'knotis/identity/js/establishment_about.js',
-            'knotis/identity/js/update_profile.js',
-            'knotis/identity/js/profile.js'
-        ]
-
-        request = self.request
-        establishment_id = self.context.get('establishment_id')
-        establishment = self.context.get('establishment')
-        backend_name = self.context.get('backend_name')
-
-        if not establishment:
-            try:
-                if establishment_id:
-                    establishment = get_object_or_404(
-                        IdentityEstablishment,
-                        pk=establishment_id
-                    )
-
-                elif backend_name:
-                    establishment = get_object_or_404(
-                        IdentityEstablishment,
-                        backend_name=backend_name
-                    )
-
-                else:
-                    raise IdentityEstablishment.DoesNotExist()
-
-            except:
-                logger.exception(
-                    'failed to get establishment with id ' + establishment_id
-                )
-                raise http.Http404
-
-        try:
-            business = IdentityBusiness.objects.get_establishment_parent(
-                establishment
-            )
-
-        except:
-            logger.exception(
-                ' '.join([
-                    'failed to get business for establishment with id ',
-                    establishment_id
-                ])
-            )
-            raise http.Http404
-
-        is_manager = False
-        if request.user.is_authenticated():
-            current_identity_id = request.session.get('current_identity')
-            current_identity = Identity.objects.get(
-                pk=current_identity_id
-            )
-
-            is_manager = current_identity.is_manager(establishment)
-
-        if is_manager:
-            default_profile_logo_uri = ''.join([
-                settings.STATIC_URL,
-                'knotis/identity/img/add_logo.png'
-            ])
-
-        else:
-            default_profile_logo_uri = ''.join([
-                settings.STATIC_URL,
-                'knotis/identity/img/profile_default.png'
-            ])
-
-        profile_badge_image = get_identity_profile_badge(business)
-        profile_banner_image = get_identity_profile_banner(business)
-        profile_banner_color = get_identity_default_profile_banner_color(
-            business
-        )
-
-        try:
-            establishment_offers = OfferAvailability.objects.filter(
-                identity=establishment,
-                available=True
-            )
-
-        except:
-            logger.exception('failed to get establishment offers')
-
-        locationItem = LocationItem.objects.filter(
-            related_object_id=establishment.id
-        )
-        if len(locationItem):
-            address = locationItem[0].location.address
-        else:
-            address = None
-
-        maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
-        maps_scripts = maps.render_api_js()
-
-        endpoints = Endpoint.objects.filter(
-            identity=establishment,
-            primary=True
-        )
-        endpoints = endpoints.select_subclasses()
-
-        endpoint_dicts = []
-        for endpoint_class in (
-                EndpointPhone,
-                EndpointEmail,
-                EndpointFacebook,
-                EndpointYelp,
-                EndpointTwitter,
-                EndpointWebsite
+        current_identity = self.get_current_identity(request)
+        if (
+            IdentityTypes.BUSINESS == current_identity.identity_type or
+            IdentityTypes.ESTABLISHMENT == current_identity.identity_type
         ):
-
-            endpoint = None
-            for ep in endpoints:
-                if ep.endpoint_type == endpoint_class.EndpointType:
-                    endpoint = ep
-
-            endpoint_type_name = EndpointTypeNames[endpoint_class.EndpointType]
-            endpoint_type_name = endpoint_type_name.lower()
-
-            if endpoint and endpoint.value:
-
-                display = None
-                if endpoint.endpoint_type == EndpointTypes.YELP:
-                    display = 'Yelp'
-                elif endpoint.endpoint_type == EndpointTypes.FACEBOOK:
-                    display = 'Facebook'
-
-                endpoint_dict = {
-                    'id': endpoint.id,
-                    'endpoint_type_name': endpoint_type_name,
-                    'value': endpoint.value,
-                    'uri': endpoint.get_uri(),
-                    'display': display,
-                    'endpoint_type': endpoint_class.EndpointType
-                }
-
-                endpoint_dicts.append(endpoint_dict)
-
-            else:
-                endpoint_dicts.append({
-                    'id': '',
-                    'endpoint_type_name': endpoint_type_name,
-                    'value': '',
-                    'uri': '',
-                    'display': '',
-                    'endpoint_type': endpoint_class.EndpointType
-                })
-
-        # endpoints displayed on the cover
-        phone = None
-        website = None
-        for endpoint in endpoints:
-            if EndpointTypes.PHONE == endpoint.endpoint_type:
-                phone = {
-                    'value': endpoint.value,
-                    'uri': endpoint.get_uri()
-                }
-
-            if EndpointTypes.WEBSITE == endpoint.endpoint_type:
-                website = {
-                    'value': endpoint.value,
-                    'uri': endpoint.get_uri(),
-                    'display': endpoint.get_display()
-                }
-
-            if phone and website:
-                break
-
-        # determine nav view
-        context_context = Context({
-            'request': request,
-            'establishment_id': establishment_id,
-            'endpoints': endpoint_dicts,
-            'is_manager': is_manager
-        })
-
-        if establishment_offers:
-            default_view_name = 'offers'
-
-        else:
-            default_view_name = 'about'
-
-        view_name = self.context.get('view_name', None)
-        if not view_name:
-            view_name = default_view_name
-
-        if view_name == 'contact':
-            profile_content = (
-                EstablishmentProfileLocation().render_template_fragment(
-                    context_context
-                )
-            )
-            content_plexer = 'offersaboutcontact'
-
-        elif view_name == 'offers':
-            content_plexer = 'offersaboutcontact'
-            profile_content = None
-
-        elif view_name == 'about':
-            content_plexer = 'offersaboutcontact'
-            profile_content = (
-                EstablishmentProfileAbout().render_template_fragment(
-                    context_context
-                )
+            errors['no-field'] = (
+                'This type of identity cannot create businesses.'
             )
 
-        else:
-            content_plexer = 'establishments'
-            profile_content = 'establishments'
+        name = request.POST.get('name')
+        if not name:
+            errors['fields'] = {
+                'name': 'Name is required to create a business.'
+            }
 
-        local_context = copy.copy(self.context)
-        local_context.update({
-            'establishment': establishment,
-            'business': business,
-            'is_manager': is_manager,
-            'styles': styles,
-            'pre_scripts': pre_scripts,
-            'post_scripts': post_scripts,
-            'default_profile_logo_uri': default_profile_logo_uri,
-            'address': address,
-            'phone': phone,
-            'website': website,
-            'maps_scripts': maps_scripts,
-            'profile_badge': profile_badge_image,
-            'profile_banner': profile_banner_image,
-            'establishment_offers': establishment_offers,
-            'top_menu_name': 'identity_profile',
-            'profile_content': profile_content,
-            'view_name': view_name,
-            'content_plexer': content_plexer,
-            'profile_banner_color': profile_banner_color
-        })
+        if not errors:
+            try:
+                business, establishment = IdentityApi.create_business(
+                    current_identity.pk,
+                    name=name
+                )
 
-        return local_context
+                data['business_pk'] = business.pk
+                data['establishment_pk'] = establishment.pk
+
+            except Exception, e:
+                logger.exception(e.message)
+                errors['exception'] = e.message
+
+            try:
+                user_information = UserInformation.objects.get(
+                    user=request.user
+                )
+                user_information.default_identity_id = establishment.pk
+                user_information.save()
+                request.session['current_identity'] = establishment.pk
+
+            except Exception, e:
+                logger.exception(e.message)
+
+        return self.render_to_response(
+            data=data,
+            errors=errors,
+            render_template=False
+        )
 
 
-class FirstIdentityView(FragmentView):
+class FirstIdentityView(ModalView):
+    url_patterns = [r'^identity/first/$']
     template_name = 'knotis/identity/first.html'
     view_name = 'identity_edit'
+    default_parent_view_class = DefaultBaseView
 
     def process_context(self):
         request = self.request
@@ -1079,30 +1071,108 @@ class FirstIdentityView(FragmentView):
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'individual_form': IdentityIndividualSimpleForm(
-                form_id='id-individual-form',
-                description_text=(
-                    'First thing\'s first. Tell us '
-                    'your name so we can personalize '
-                    'your Knotis account.'
-                ),
-                help_text=(
-                    'This is the name that will be displayed '
-                    'publicly in Knotis services.'
-                ),
-                instance=individual
-            ),
-            'business_form': IdentityBusinessSimpleForm(
-                form_id='id-business-form',
-                initial={'individual_id': individual.id}
-            ),
-            'location_form': GeocompleteForm()
+            'identity_id': individual.pk,
+            'modal_id': 'first-id'
         })
 
         return local_context
 
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        data = {}
+        errors = {}
 
-class IdentitySwitcherView(FragmentView):
+        noun = 'individual'
+
+        identity_id = request.POST.get('id')
+
+        try:
+            identity = Identity.objects.get(pk=identity_id)
+
+        except Exception, e:
+            message = ''.join([
+                'Failed to get ',
+                noun,
+                ' to update.'
+            ])
+            logger.exception(message)
+            errors['no-field'] = message
+
+        if not errors:
+            form = IdentityForm(
+                data=request.POST,
+                instance=identity
+            )
+
+            if not form.is_valid():
+                for field, messages in form.errors.iteritems():
+                    errors[field] = [m for m in messages]
+
+                data['message'] = ''.join([
+                    'An error occurred during ',
+                    noun,
+                    ' update.'
+                ])
+
+        if not errors:
+            try:
+                identity = form.save()
+
+            except Exception, e:
+                message = ''.join([
+                    'An error occurred while updating ',
+                    noun,
+                    '.'
+                ])
+                logger.exception(message)
+                errors['no-field']  = e.message
+
+        if not errors:
+            try:
+                EndpointIdentity.objects.update_identity_endpoints(identity)
+
+            except Exception, e:
+                message = ''.join([
+                    'An error occurred while updating ',
+                    noun,
+                    '.'
+                ])
+                logger.exception(message)
+                errors['no-field']  = e.message
+
+        if not errors:
+            data['data'] = {
+                noun + '_id': identity.id,
+                noun + '_name': identity.name
+            }
+
+            data['message'] = ''.join([
+                noun.capitalize(),
+                ' updated successfully.'
+            ])
+
+        if not errors and self.response_format == self.RESPONSE_FORMATS.HTML:
+            self.response_fromat = self.RESPONSE_FORMATS.REDIRECT
+
+        return self.render_to_response(
+            data=data,
+            errors=errors,
+            render_template=False
+        )
+
+
+class IdentitySwitcherView(EmbeddedView):
+    url_patterns = [
+        r''.join([
+            '^identity/switcher(/(?P<identity_id>',
+            REGEX_UUID,
+            '))?/$'
+        ])
+    ]
     template_name = 'knotis/identity/switcher.html'
     view_name = 'identity_switcher'
 
@@ -1147,7 +1217,16 @@ class IdentitySwitcherView(FragmentView):
                 logger.warning(msg)
                 return http.HttpResponseServerError(msg)
 
-            request.session['current_identity'] = identity.id
+            request.session['current_identity'] = identity.pk
+            try:
+                user_information = UserInformation.objects.get(
+                    user=request.user
+                )
+                user_information.default_identity_id = identity.pk
+                user_information.save()
+            except Exception, e:
+                logger.exception(e.message)
+
             return http.HttpResponseRedirect(
                 '/'
             )
@@ -1173,12 +1252,11 @@ class IdentitySwitcherView(FragmentView):
                 **kwargs
             )
 
-        else:
-            return super(IdentitySwitcherView, self).get(
-                request,
-                *args,
-                **kwargs
-            )
+        return super(IdentitySwitcherView, self).get(
+            request,
+            *args,
+            **kwargs
+        )
 
     def process_context(self):
         request = self.request
@@ -1202,6 +1280,9 @@ class IdentitySwitcherView(FragmentView):
             raise
 
         for i in available_identities:
+            if IdentityTypes.ESTABLISHMENT == i.identity_type:
+                local_context['has_business'] = True
+
             try:
                 badge_image = ImageInstance.objects.get(
                     related_object_id=i.pk,

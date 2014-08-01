@@ -18,10 +18,6 @@ from views import (
 urlpatterns = patterns(
     '',
     url(
-        '^purchases(/(?P<purchase_filter>\w*))?/$',
-        login_required(MyPurchasesView.as_view())
-    ),
-    url(
         '^following/$',
         redirect_to,
         {'url': '../relations/'}
@@ -53,3 +49,4 @@ urlpatterns = patterns(
         login_required(DownloadPrintedVoucher.as_view())
     )
 )
+urlpatterns += MyPurchasesView.urls(require_login=True)
