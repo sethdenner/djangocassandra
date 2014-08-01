@@ -833,6 +833,7 @@ class EstablishmentAboutTwitterFeed(FragmentView):
                     twitter_endpoint = endpoint
                     local_context.update({
                         'twitter_handle': twitter_endpoint['value'],
+                        'twitter': twitter_endpoint,
                     })
 
         twitter_feed = None
@@ -871,7 +872,8 @@ class EstablishmentAboutYelpFeed(FragmentView):
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'yelp_feed': yelp_feed
+            'yelp_feed': yelp_feed,
+            'yelp': yelp_endpoint
         })
 
         return local_context
@@ -912,10 +914,8 @@ class EstablishmentAboutCarousel(FragmentView):
         )
 
         image_infos = []
-        count = 0
-        for image in images:
+        for count, image in enumerate(images):
             image_infos.append((count, image))
-            count += 1
 
         local_context = copy.copy(self.context)
         local_context.update({
