@@ -131,6 +131,7 @@ a:hover {
 /* line 34, ../sass/_custom.scss */
 .modal-content {
     border-radius: 3px;
+    box-shadow: 0 0;
 }
 
 /* line 38, ../sass/_custom.scss */
@@ -1121,6 +1122,7 @@ nav button.signUp {
 /* line 12, ../sass/_modals.scss */
 .modal-header {
     border: 0;
+    padding: 0;
 }
 
 /* Auth Inputs for Log In, Sign Up. */
@@ -1195,16 +1197,16 @@ nav button.signUp {
     padding: 0;
 }
 /* line 82, ../sass/_modals.scss */
-#offer-modal .modal-content {
+#offer-modal .modal-content, #offer-modal .modal {
     background-size: cover;
     border-radius: 0;
     border: 0;
+    box-shadow: 0 0;
 }
 
 /* line 90, ../sass/_modals.scss */
 .offerDetails {
-    background: white;
-    padding: 30px 50px 26px;
+    padding: 10px;
 }
 /* line 93, ../sass/_modals.scss */
 .offerDetails h1 {
