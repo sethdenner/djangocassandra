@@ -113,10 +113,8 @@ a:hover {
 
 /* line 18, ../sass/_custom.scss */
 .mainContent {
-    margin-top: 160px;
-    margin-left: 72px;
     max-width: 100%;
-    padding: 0 26px;
+    padding: 26px;
 }
 
 /* line 25, ../sass/_custom.scss */
@@ -133,6 +131,7 @@ a:hover {
 /* line 34, ../sass/_custom.scss */
 .modal-content {
     border-radius: 3px;
+    box-shadow: 0 0;
 }
 
 /* line 38, ../sass/_custom.scss */
@@ -369,14 +368,14 @@ nav button.signUp {
 .subNav {
     position: fixed;
     top: 55px;
+    left: 0;
     width: 100%;
     background: rgba(255, 255, 255, 0.9);
-    border-bottom: 1px solid #dedede;
-    padding: 14px;
-    font-family: 'LatoReg';
+    border-bottom: 1px solid rgba(222, 222, 222, 0.54);
+    padding: 17px 0;
     text-align: center;
     z-index: 4;
-    height: 40px;
+    height: 45px;
 }
 /* line 12, ../sass/_subNav.scss */
 .subNav ul li {
@@ -1123,6 +1122,7 @@ nav button.signUp {
 /* line 12, ../sass/_modals.scss */
 .modal-header {
     border: 0;
+    padding: 0;
 }
 
 /* Auth Inputs for Log In, Sign Up. */
@@ -1197,16 +1197,16 @@ nav button.signUp {
     padding: 0;
 }
 /* line 82, ../sass/_modals.scss */
-#offer-modal .modal-content {
+#offer-modal .modal-content, #offer-modal .modal {
     background-size: cover;
     border-radius: 0;
     border: 0;
+    box-shadow: 0 0;
 }
 
 /* line 90, ../sass/_modals.scss */
 .offerDetails {
-    background: white;
-    padding: 30px 50px 26px;
+    padding: 10px;
 }
 /* line 93, ../sass/_modals.scss */
 .offerDetails h1 {
@@ -1431,8 +1431,8 @@ h1.sectionHeader {
     width: 345px;
     background: rgba(56, 56, 56, 0.36);
     position: absolute;
-    top: -105px;
-    left: -12px;
+    top: -63px;
+    left: -20px;
     padding: 30px 30px 83px;
     overflow: hidden;
     height: 395px;
@@ -1499,32 +1499,51 @@ section .profileInfo:nth-child(5) {
     background: #c0c0c0;
 }
 
-/* line 2, ../sass/_settings.scss */
-.settings h1 {
-    position: relative;
-    top: 115px;
-    left: 100px;
-}
 /* line 7, ../sass/_settings.scss */
 .settings a {
-    position: absolute;
     margin: 0 auto;
     display: inline-block;
     background: white;
-    padding: 20px 25px;
+    padding: 15px 8px;
     color: #8D8D8D;
-    border-radius: 3px;
-    width: 87%;
-    left: 19px;
-    bottom: 17px;
-    border: 2px solid #8D8D8D;
+    border-radius: 50px;
+    width: 80%;
     transition: all 0.2s ease;
+    text-align: center;
+    border: 1px solid rgb(228, 228, 228);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-family: 'LatoReg', sans-serif;
+}
+.settingItem {
+    margin: 0 20px 0 0;
+    text-align: center;
+    background: white;
+    padding: 30px 0 45px;
+    border-radius: 4px;
+}
+.settingItem p {
+    font-size: 25px;
+    padding: 0 0 20px;
+    font-family: 'LatoLight', sans-serif;
+    line-height: 30px;
+}
+.settingItem span {
+    display: inline-block;
+    width: 100px;
+    font-size: 51px;
+    background: rgba(255, 255, 255, 0);
+    border-radius: 50%;
+    height: 100px;
+    padding: 24px 0;
+    border: 2px solid rgb(248, 248, 248);
+    margin: 0 0 30px;
 }
 /* line 21, ../sass/_settings.scss */
 .settings a:hover {
     background: #2cc397;
     color: white;
-    border: 2px solid #2cc397;
 }
 /* line 26, ../sass/_settings.scss */
 .settings .gridItem {
@@ -1640,8 +1659,9 @@ span.help-inline {
     border-radius: 3px;
     font-size: 14px;
     cursor: pointer;
-    bottom: 200px;
+    top: 375px;
     border: 2px solid white;
+    z-index: 1;
 }
 
 .profileBusiness .subNav {
@@ -1668,8 +1688,9 @@ span.help-inline {
 
 .profileContent {
     position: relative;
-    top: 230px;
-    padding: 100px;
+    top: 320px;
+    left: 20px;
+    padding: 85px;
     width: 100%;
     margin: 0 auto;
 }
@@ -1723,4 +1744,36 @@ span.help-inline {
     border-radius: 2px;
     padding: 10px;
     width: 80%;
+}
+
+.contentBlock {
+    padding: 90px 80px;
+}
+
+.tile-badge {
+    width: 100px;
+    display: inline-block;
+    border-radius: 50%;
+    border: 3px solid white;
+}
+
+.settings .socialItem {
+    text-align: center;
+    background: rgba(255, 255, 255, 1);
+    padding: 20px 0 30px;
+    border-radius: 3px;
+    margin-bottom: 30px;
+}
+
+.settings img.tile-badge.twitter-logo {
+    background: rgb(84, 201, 238);
+}
+
+.settings .tile-title {
+    font-size: 25px;
+    padding: 0 0 20px;
+    font-family: 'LatoLight', sans-serif;
+    line-height: 30px;
+    margin: 25px 0;
+
 }
