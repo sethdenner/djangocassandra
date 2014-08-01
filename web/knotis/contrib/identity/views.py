@@ -520,7 +520,7 @@ class IdentityTileActionButton(ActionButton):
         if not current_identity:
             return [
                 ButtonAction(
-                    'Sign Up',
+                    'Follow',
                     '/signup/',
                     {},
                     'get',
