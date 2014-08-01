@@ -113,10 +113,8 @@ a:hover {
 
 /* line 18, ../sass/_custom.scss */
 .mainContent {
-    margin-top: 160px;
-    margin-left: 72px;
     max-width: 100%;
-    padding: 0 26px;
+    padding: 26px;
 }
 
 /* line 25, ../sass/_custom.scss */
@@ -133,6 +131,7 @@ a:hover {
 /* line 34, ../sass/_custom.scss */
 .modal-content {
     border-radius: 3px;
+    box-shadow: 0 0;
 }
 
 /* line 38, ../sass/_custom.scss */
@@ -369,14 +368,14 @@ nav button.signUp {
 .subNav {
     position: fixed;
     top: 55px;
+    left: 0;
     width: 100%;
     background: rgba(255, 255, 255, 0.9);
-    border-bottom: 1px solid #dedede;
-    padding: 14px;
-    font-family: 'LatoReg';
+    border-bottom: 1px solid rgba(222, 222, 222, 0.54);
+    padding: 17px 0;
     text-align: center;
     z-index: 4;
-    height: 40px;
+    height: 45px;
 }
 /* line 12, ../sass/_subNav.scss */
 .subNav ul li {
@@ -1123,6 +1122,7 @@ nav button.signUp {
 /* line 12, ../sass/_modals.scss */
 .modal-header {
     border: 0;
+    padding: 0;
 }
 
 /* Auth Inputs for Log In, Sign Up. */
@@ -1197,16 +1197,16 @@ nav button.signUp {
     padding: 0;
 }
 /* line 82, ../sass/_modals.scss */
-#offer-modal .modal-content {
+#offer-modal .modal-content, #offer-modal .modal {
     background-size: cover;
     border-radius: 0;
     border: 0;
+    box-shadow: 0 0;
 }
 
 /* line 90, ../sass/_modals.scss */
 .offerDetails {
-    background: white;
-    padding: 30px 50px 26px;
+    padding: 10px;
 }
 /* line 93, ../sass/_modals.scss */
 .offerDetails h1 {
@@ -1431,8 +1431,8 @@ h1.sectionHeader {
     width: 345px;
     background: rgba(56, 56, 56, 0.36);
     position: absolute;
-    top: -110px;
-    left: -50px;
+    top: -63px;
+    left: -20px;
     padding: 30px 30px 83px;
     overflow: hidden;
     height: 395px;
@@ -1517,7 +1517,11 @@ section .profileInfo:nth-child(5) {
     font-family: 'LatoReg', sans-serif;
 }
 .settingItem {
-    margin: 0 -70px 0 0;
+    margin: 0 20px 0 0;
+    text-align: center;
+    background: white;
+    padding: 30px 0 45px;
+    border-radius: 4px;
 }
 .settingItem p {
     font-size: 25px;
@@ -1684,7 +1688,7 @@ span.help-inline {
 
 .profileContent {
     position: relative;
-    top: 260px;
+    top: 320px;
     left: 20px;
     padding: 85px;
     width: 100%;
@@ -1743,7 +1747,7 @@ span.help-inline {
 }
 
 .contentBlock {
-    padding: 5px 35px;
+    padding: 90px 80px;
 }
 
 .tile-badge {
@@ -1758,6 +1762,7 @@ span.help-inline {
     background: rgba(255, 255, 255, 1);
     padding: 20px 0 30px;
     border-radius: 3px;
+    margin-bottom: 30px;
 }
 
 .settings img.tile-badge.twitter-logo {
@@ -1765,9 +1770,10 @@ span.help-inline {
 }
 
 .settings .tile-title {
-    font-size: 20px;
-    display: inline-block;
-    width: 100%;
-    overflow: hidden;
+    font-size: 25px;
+    padding: 0 0 20px;
+    font-family: 'LatoLight', sans-serif;
+    line-height: 30px;
     margin: 25px 0;
+
 }
