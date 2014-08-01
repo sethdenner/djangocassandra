@@ -746,11 +746,9 @@ nav button.signUp {
     text-align: center;
 }
 /* line 3, ../sass/_offerCreate.scss */
-#offer-create h1 {
-    font-size: 34px;
-    text-align: center;
-    color: black;
-    margin: 20px 0;
+h4.create-header-title {
+    font-size: 35px;
+    font-family: 'LatoLight', sans-serif;
 }
 /* line 10, ../sass/_offerCreate.scss */
 #offer-create input, #offer-create textarea {
@@ -1776,4 +1774,8 @@ span.help-inline {
     line-height: 30px;
     margin: 25px 0;
 
+}
+
+.settings .icon-settings {
+    padding: 20px 0;
 }
