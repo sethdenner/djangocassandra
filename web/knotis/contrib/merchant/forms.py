@@ -269,7 +269,7 @@ class OfferDetailsForm(OfferForm):
 
 
 class OfferPhotoLocationForm(TemplateForm):
-    template_name = 'knotis/offer/offer_photo_location_form.html'
+    template_name = 'knotis/merchant/offer_photo_location_form.html'
     form_action = '/offer/create/location/'
     form_id = 'offer_photo_location_form'
     form_method = 'POST'
@@ -397,7 +397,7 @@ class OfferPublishForm(ModelForm):
 
 
 class OfferPublicationForm(TemplateForm):
-    template_name = 'knotis/offer/offer_publish_form.html'
+    template_name = 'knotis/merchant/offer_publish_form.html'
     form_action = '/offer/create/publish/'
     form_id = 'offer_publish_form'
     form_method = 'POST'
