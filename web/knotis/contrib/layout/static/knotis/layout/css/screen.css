@@ -1431,8 +1431,8 @@ h1.sectionHeader {
     width: 345px;
     background: rgba(56, 56, 56, 0.36);
     position: absolute;
-    top: -105px;
-    left: -12px;
+    top: -110px;
+    left: -50px;
     padding: 30px 30px 83px;
     overflow: hidden;
     height: 395px;
@@ -1735,4 +1735,8 @@ span.help-inline {
     border-radius: 2px;
     padding: 10px;
     width: 80%;
+}
+
+.contentBlock {
+    padding: 5px 35px;
 }
