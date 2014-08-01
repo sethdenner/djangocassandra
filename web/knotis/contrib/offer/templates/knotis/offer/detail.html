@@ -2,28 +2,32 @@
 {% load thumbnail %}
 {% block header %}{% endblock header %}
 {% block body %}
-<div class="row">
-    <div class="col-lg-6 col-xs-12 offerDetails">
-        <h1>{{ offer.title }}</h1>
-        <p>{{ offer.description }}</p>
-        
-        <ul>
-            <li><span>Expires:</span> {{ offer.end_time }}</li>
-            <li><span>{{ offer.savings_percent }}</span> Savings</li>
-            <li><span>{{ offer.purchased }}</span> Purchased</li>
-            
-            <a class="btn modal-link" href="/offer/{{ offer.pk}}/buy/">Purchase Offer</a>
-        </ul>
+
+<div id="offer-modal">
+    <div class="row">
+        <div class="col-lg-6 col-xs-12 offerDetails">
+            <h1>{{ offer.title }}</h1>
+            <p>{{ offer.description }}</p>
+
+            <ul>
+                <li><span>Expires:</span> {{ offer.end_time }}</li>
+                <li><span>{{ offer.savings_percent }}</span> Savings</li>
+                <li><span>{{ offer.purchased }}</span> Purchased</li>
+
+                <a class="btn modal-link" href="/offer/{{ offer.pk}}/buy/">Purchase Offer</a>
+            </ul>
+        </div>
+
+        <div class="col-lg-6 col-xs-12 offerHero">
+            {% thumbnail business_badge_image.image.image '72x72' crop=business_badge_image.crop as image %}
+            <img src="{{ image.url }}" />
+            {% empty %}
+            <img class="profile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
+            {% endthumbnail %}
+            <h1>{{ offer.price_discount_formatted }}</h1>
+            <h2>{{ offer.owner.name }}</h2>
+        </div>
     </div>
-    
-    <div class="col-lg-6 col-xs-12 offerHero">
-        {% thumbnail business_badge_image.image.image '72x72' crop=business_badge_image.crop as image %}
-        <img src="{{ image.url }}" />
-        {% empty %}
-        <img class="profile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
-        {% endthumbnail %}
-        <h1>{{ offer.price_discount_formatted }}</h1>
-        <h2>{{ offer.owner.name }}</h2>
-    </div>
-</div>
+</div> 
+
 {% endblock body %}
