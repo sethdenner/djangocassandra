@@ -211,41 +211,4 @@
 
     $updateable_addresses.on('click', update_address);
 
-    // display the map on the about page.
-
-    // display the map on the about page.
-
-    var latLng = new google.maps.LatLng(parseFloat($('#establishment-contact-loc-details').attr('data-latitude')),
-                              parseFloat($('#establishment-contact-loc-details').attr('data-longitude')));
-
-    var setupMap = function(latLng){
-        var map;
-        var marker;
-        var initialize = function(){
-          var mapOptions = {
-              center: latLng,
-              zoomControl: false,
-              scaleControl: false,
-              draggable: false,
-              navigationContol: false,
-              mapTypeId: google.maps.MapTypeId.ROADMAP,
-              zoom: 16
-          };
-          map = new google.maps.Map(document.getElementById('about-map'), mapOptions);
-
-          var markerOptions = {
-              position: latLng,
-              map: map
-          };
-          marker = new google.maps.Marker(markerOptions);
-          map.setZoom(16);
-          google.maps.event.trigger(map, 'resize');
-        }
-
-        google.maps.event.addDomListener(window, 'load', initialize);
-
-        return {marker: marker, map: map};
-    };
-    var map_stuff = setupMap();
-
 })(jQuery);
