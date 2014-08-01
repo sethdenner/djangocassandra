@@ -220,6 +220,7 @@
 
     var setupMap = function(latLng){
         var map;
+        var marker;
         var initialize = function(){
           var mapOptions = {
               center: latLng,
@@ -236,12 +237,12 @@
               position: latLng,
               map: map
           };
-          var marker = new google.maps.Marker(markerOptions);
-            map.setZoom(16);
+          marker = new google.maps.Marker(markerOptions);
+          map.setZoom(16);
+          google.maps.event.trigger(map, 'resize');
         }
 
         google.maps.event.addDomListener(window, 'load', initialize);
-        google.maps.event.trigger(map, 'resize');
 
         return {marker: marker, map: map};
     };

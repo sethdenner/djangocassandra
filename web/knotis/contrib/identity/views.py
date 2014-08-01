@@ -648,6 +648,22 @@ class EstablishmentProfileLocation(FragmentView):
 
     def process_context(self):
         establishment_id = self.context.get('establishment_id')
+        endpoints = self.context.get('endpoints')
+
+        local_context = copy.copy(self.context)
+        phone = website = None
+        for endpoint in endpoints:
+            if (
+                endpoint['endpoint_type'] == EndpointTypes.PHONE and
+                endpoint['value']
+            ):
+                phone = endpoint
+
+            elif (
+                endpoint['endpoint_type'] == EndpointTypes.WEBSITE and
+                endpoint['value']
+            ):
+                website = endpoint
 
         locationItem = LocationItem.objects.filter(
             related_object_id=establishment_id
@@ -661,9 +677,10 @@ class EstablishmentProfileLocation(FragmentView):
             latitude = None
             longitude = None
 
-        local_context = copy.copy(self.context)
         local_context.update({
             'address': address,
+            'phone': phone,
+            'website': website,
             'latitude': latitude,
             'longitude': longitude
         })
@@ -671,8 +688,8 @@ class EstablishmentProfileLocation(FragmentView):
 
 
 class EstablishmentAboutAbout(AJAXFragmentView):
-    template_name = 'knotis/identity/establishment_about_about.html'
-    view_name = 'establishment_about_about'
+    template_name = 'knotis/identity/establishment_about_details.html'
+    view_name = 'establishment_about_details'
 
     def process_context(self):
         has_data = False
@@ -816,6 +833,7 @@ class EstablishmentAboutTwitterFeed(FragmentView):
                     twitter_endpoint = endpoint
                     local_context.update({
                         'twitter_handle': twitter_endpoint['value'],
+                        'twitter': twitter_endpoint,
                     })
 
         twitter_feed = None
@@ -854,7 +872,8 @@ class EstablishmentAboutYelpFeed(FragmentView):
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'yelp_feed': yelp_feed
+            'yelp_feed': yelp_feed,
+            'yelp': yelp_endpoint
         })
 
         return local_context
@@ -895,10 +914,8 @@ class EstablishmentAboutCarousel(FragmentView):
         )
 
         image_infos = []
-        count = 0
-        for image in images:
+        for count, image in enumerate(images):
             image_infos.append((count, image))
-            count += 1
 
         local_context = copy.copy(self.context)
         local_context.update({
