@@ -1,4 +1,19 @@
 {% load render_template_fragment %}
-
-      {% render_fragment redemptions_grid %}
-
+<!-- SubNav-->
+<div class="subNav">
+    <div class="row">
+        <div class="col-lg-12">
+            <ul>
+                <li><a href="/my/redemptions/unredeemed/">Unredeemed</a></li>
+                <li><a href="/my/redemptions/redeemed/">Redeemed</a></li>
+            </ul>
+        </div>
+    </div>    
+</div>
+<!-- // End SubNav -->
+{% render_fragment redemptions_grid %}
+{% if format == 'json' %}
+{% for script in post_scripts %}
+<script src="{{ STATIC_URL }}{{ script }}"></script>
+{% endfor %}
+{% endif %}

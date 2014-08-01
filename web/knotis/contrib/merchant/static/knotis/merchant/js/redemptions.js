@@ -1,6 +1,6 @@
 (function($) {
     $(function(){
-        $('button.redeem-offer').click(function(event) {
+        $('.redeem-offer').click(function(event) {
             event.stopPropagation();
             event.preventDefault();
 
@@ -15,7 +15,13 @@
                         alert(data.errors);
                     }
                     
-                    $this.parent().parent().hide('fast').remove();
+                    $this
+                        .parent()
+                        .parent()
+                        .parent()
+                        .parent()
+                        .hide('fast')
+                        .remove();
                     
                 }
             );
