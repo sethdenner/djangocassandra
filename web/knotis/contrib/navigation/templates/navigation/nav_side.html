@@ -6,6 +6,7 @@
             <li><a href="/offers/" data-target-id="main-content" ><span class="circle"><i class="icon-offers"></i></span><span class="sidebar-label">Offers</span></a></li>
             {% if current_identity.identity_type == IdentityTypes.INDIVIDUAL %}
             <li><a href="/my/following/" data-target-id="main-content"><span class="circle"><i class="icon-following"></i></span><span class="sidebar-label">Following</span></a></li>
+            <li><a href="/my/purchases/" data-target-id="main-content"><span class="circle"><i class="icon-promotions"></i></span><span class="sidebar-label">Purchases</span></a></li>
             {% endif %}
             {% if current_identity.identity_type == IdentityTypes.ESTABLISHMENT %}
             <li><a a href="/id/{{ current_identity.pk }}/" data-target-id="main-content" ><span class="circle"><i class="icon-profile-guy"></i></span><span class="sidebar-label">Profile</span></a></li>

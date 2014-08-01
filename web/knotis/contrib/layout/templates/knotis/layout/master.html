@@ -16,7 +16,6 @@
     {% for style in styles %}
     <link href="{{ STATIC_URL }}{{ style }}" rel="stylesheet" />
     {% endfor %}
-    {{ maps_scripts }}
     {% for script in pre_scripts %}
     <script src="{{ STATIC_URL }}{{ script }}"></script>
     {% endfor %}

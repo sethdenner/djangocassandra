@@ -16,9 +16,11 @@
         <link href="{{ STATIC_URL }}bootstrap-modal/css/bootstrap-modal-bs3patch.css" rel="stylesheet">
         <!-- Generated SASS -->
         <link href="{{ STATIC_URL }}knotis/layout/css/screen.css" rel="stylesheet">
+        <link href="{{ STATIC_URL }}jcrop/css/jquery.Jcrop.min.css" rel="stylesheet">
         {% for style in styles %}
         <link href="{{ STATIC_URL }}{{ style }}" rel="stylesheet" />
         {% endfor %}
+        {{ maps_scripts }}
         {% for script in pre_scripts %}
         <script src="{{ STATIC_URL }}{{ script }}"></script>
         {% endfor %}
@@ -51,6 +53,7 @@
         <script src="{{ STATIC_URL }}knotis/layout/js/modal.js"></script>
         <script src="{{ STATIC_URL }}knotis/layout/js/forms.js"></script>
         <script src="{{ STATIC_URL }}knotis/navigation/js/navigation.js"></script>
+        <script src="{{ STATIC_URL }}scripts/maps.js"></script>
         {% for script in post_scripts %}
         <script src="{{ STATIC_URL }}{{ script }}?8374873485"></script>
         {% endfor %}
