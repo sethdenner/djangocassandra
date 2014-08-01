@@ -1504,12 +1504,17 @@ section .profileInfo:nth-child(5) {
     margin: 0 auto;
     display: inline-block;
     background: white;
-    padding: 20px 25px;
+    padding: 15px 8px;
     color: #8D8D8D;
-    border-radius: 3px;
+    border-radius: 50px;
     width: 80%;
     transition: all 0.2s ease;
     text-align: center;
+    border: 1px solid rgb(228, 228, 228);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-family: 'LatoReg', sans-serif;
 }
 .settingItem {
     margin: 0 -70px 0 0;
@@ -1739,4 +1744,30 @@ span.help-inline {
 
 .contentBlock {
     padding: 5px 35px;
+}
+
+.tile-badge {
+    width: 100px;
+    display: inline-block;
+    border-radius: 50%;
+    border: 3px solid white;
+}
+
+.settings .socialItem {
+    text-align: center;
+    background: rgba(255, 255, 255, 1);
+    padding: 20px 0 30px;
+    border-radius: 3px;
+}
+
+.settings img.tile-badge.twitter-logo {
+    background: rgb(84, 201, 238);
+}
+
+.settings .tile-title {
+    font-size: 20px;
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+    margin: 25px 0;
 }
