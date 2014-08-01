@@ -1,5 +1,8 @@
 ###### IMPORTS ######
 import copy
+from knotis.contrib.layout.views import (
+    DefaultBaseView,
+)
 from knotis.contrib.identity.models import (
     IdentityTypes,
     Identity,
@@ -8,7 +11,7 @@ from knotis.contrib.identity.views import (
     get_current_identity,
 )
 from knotis.views import (
-    ContextView,
+    EmbeddedView,
     AJAXView,
 )   
 from forms import (
@@ -22,8 +25,10 @@ from forms import (
 
 
 ###### BASE VIEW DEFINITIONS ######
-class AdminDefaultView(ContextView):
+class AdminDefaultView(EmbeddedView):
     template_name = 'knotis/admintools/admin_master.html'
+    default_parent_view_class = DefaultBaseView
+    
 
 
 class AdminAJAXView(AJAXView):

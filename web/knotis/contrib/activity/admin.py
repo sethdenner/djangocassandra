@@ -25,6 +25,7 @@ class ActivityQueryAdminAJAXView(AdminListQueryAJAXView):
     query_target = Activity.objects
 
 class ActivityAdminView(AdminListEditView):
+    url_patterns = [ r'^admin/activity/$' ]
     query_form = AdminQueryForm(initial={
         'target_uri' : 'query/',
     })

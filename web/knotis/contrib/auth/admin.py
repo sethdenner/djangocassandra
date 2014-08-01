@@ -139,6 +139,7 @@ class UserQueryAdminAJAXView(AdminListQueryAJAXView):
 
 
 class UserAdminView(AdminListEditView):
+    url_patterns = [ r'^admin/user/$' ]
     create_form = AdminCreateUserForm()
 
 

@@ -30,6 +30,7 @@ class OfferUpdateAdminAJAXView(AdminListUpdateAJAXView):
     query_target = Offer.objects
 
 class OfferAdminView(AdminListEditView):
+    url_patterns = [ r'^admin/offer/$' ]
     query_form = AdminQueryForm(initial={
         'target_uri' : 'query/',
     })
