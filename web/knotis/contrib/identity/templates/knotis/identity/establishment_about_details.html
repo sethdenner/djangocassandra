@@ -9,7 +9,12 @@
 
           <div id="about-us">
             {% if is_manager %}
-            <form id="about-us-form" class="toggleable" style="display: none;">
+            <form
+                action="/identity/update_profile/"
+                method="POST"
+                id="about-us-form"
+                class="toggleable"
+                style="display: none;">
               <input id="establishment-id" type="hidden" value="{{ establishment.id }}" />
 
               <label for="business-name">Business Name:</label>
