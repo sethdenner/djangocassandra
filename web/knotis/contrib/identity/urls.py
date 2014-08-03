@@ -13,7 +13,7 @@ from .views import (
     EstablishmentProfileView,
     IdentitySwitcherView,
     FirstIdentityView,
-    EstablishmentAboutAbout,
+    EstablishmentAboutDetails,
     CreateBusinessView
 )
 
@@ -22,7 +22,7 @@ urlpatterns = patterns(
     'knotis.contrib.identity.views',
     url(
         r'^identity/update_profile/',
-        EstablishmentAboutAbout.as_view()
+        EstablishmentAboutDetails.as_view()
     ),
     url(
         r'^businesses/grid/(?P<page>\d+)/(?P<count>\d+)/$',

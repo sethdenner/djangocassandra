@@ -94,6 +94,7 @@
     });
 
     $('a.upload-photo').click(function(event){
+      event.stopPropagation();
       event.preventDefault();
       var identity_id = $('#id-identity-id').attr('data-establishment-id');
 
@@ -122,7 +123,7 @@
 
                         // populate carousel-inner
                         var uploaded_url = data.image_url;
-                        var $img = $('<div style="display:block; width:500px; height:400px; overflow:hidden; background:url(' + uploaded_url + ') no-repeat;"></div>');
+                        //var $img = $('<div style="display:block; width:500px; height:400px; overflow:hidden; background:url(' + uploaded_url + ') no-repeat;"></div>');
                         var $item = $('<div class="item"></div>');
                         $item.append($img);
                         $('#about_carousel>.carousel-inner').append($item);
@@ -163,7 +164,7 @@
                 alert(message);
             } else {
                 $('#about_carousel').carousel('next');
-                $this.parent().parent().remove();
+                //$this.parent().parent().remove();
 
             }
         });
@@ -191,9 +192,45 @@
     });
 
     // gather up all the address display elements on the page, and link them.
-    //$('.linked-business-name').link_field('linkbizname');
-    //$('.linked-phone-number').link_field('linkphonenum');
-    //$('.linkedaddress').link_field('linkaddress');
-    //$('.linkedwebsite').link_field('linkweb');
+    $('.linked-business-name').link_field('linkbizname');
+    $('.linked-phone-number').link_field('linkphonenum');
+    $('.linkedaddress').link_field('linkaddress');
+    $('.linkedwebsite').link_field('linkweb');
+
+    // display the map on the about page.
+    var latLng = new google.maps.LatLng(parseFloat($('#establishment-contact-loc-details').attr('data-latitude')),
+                              parseFloat($('#establishment-contact-loc-details').attr('data-longitude')));
+
+    var setupMap = function(){
+        var map;
+        var marker;
+        var initialize = function(){
+            var mapOptions = {
+                center: latLng,
+                zoomControl: false,
+                scaleControl: false,
+                draggable: false,
+                navigationContol: false,
+                disableDefaultUI: true,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                zoom: 16
+            };
+
+            map = new google.maps.Map(document.getElementById('about-map'), mapOptions);
+
+            var markerOptions = {
+                position: latLng,
+                map: map,
+            };
+            marker = new google.maps.Marker(markerOptions);
+            google.maps.event.trigger(map, 'resize');
+
+        }
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+        return {marker: marker, map: map};
+    };
+    var map_stuff = setupMap();
 
 })(jQuery);
