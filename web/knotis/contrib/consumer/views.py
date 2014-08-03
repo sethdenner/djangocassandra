@@ -98,6 +98,7 @@ class MyPurchasesGrid(GridSmallView):
                         'show_offer_info': True,
                         'transaction': purchase,
                         'identity': merchant,
+                        'offer': purchase.offer,
                         'TransactionTypes': TransactionTypes
                     }
                 )
