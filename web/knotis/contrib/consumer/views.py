@@ -64,6 +64,11 @@ class MyPurchasesGrid(GridSmallView):
             logger.exception('Failed to get current identity')
             raise
 
+        page = int(self.context.get('page', '0'))
+        count = int(self.context.get('count', '20'))
+        start_range = page * count
+        end_range = start_range + count
+
         purchase_filter = self.context.get(
             'purchase_filter',
             'unused'
@@ -77,7 +82,7 @@ class MyPurchasesGrid(GridSmallView):
         purchases = Transaction.objects.filter(
             owner=current_identity,
             transaction_type=TransactionTypes.PURCHASE
-        )
+        )[start_range:end_range]
 
         for purchase in purchases:
             if purchase.reverted:
@@ -115,6 +120,9 @@ class MyPurchasesView(EmbeddedView):
         '^purchases(/(?P<purchase_filter>\w*))?/$',
     ]
     default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/consumer/js/purchases.js',
+    ]
 
     def process_context(self):
         styles = [
