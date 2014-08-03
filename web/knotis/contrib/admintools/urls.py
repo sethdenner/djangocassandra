@@ -15,7 +15,7 @@ from knotis.contrib.auth.admin import (
 
 from views import (
     AdminValidateResendView,
-	AdminOwnerView,
+    AdminOwnerView,
 )
 
 urlpatterns = patterns(
@@ -42,10 +42,10 @@ urlpatterns = patterns(
 ### ADMIN RESEND URL
     url(
         r''.join([
-	        '^admin/utils/ident_pass_reset/(?<identity_id>',
-			REGEX_UUID,
-			')/$'
-		]), AdminValidateResentView.as_view()
+            '^admin/utils/ident_pass_reset/(?<identity_id>',
+            REGEX_UUID,
+            ')/$'
+        ]), AdminValidateResentView.as_view()
     ),
 )
 
