@@ -5,7 +5,6 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from knotis.contrib.auth.forms import CreateUserForm
-from knotis.contrib.auth.api import AuthenticationApi
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -30,17 +29,12 @@ class Command(BaseCommand):
 
         password = args[1]
 
-        #data = {'email':email, 'password':password}
-        #form = CreateUserForm(
-        #    True,
-        #    data
-        #)
-        #user, identity = form.save(is_superuser=options.get('is_superuser'))
-        user, identity, errors = AuthenticationApi.create_user(
-            send_validation=False,
-            email=email,
-            password=password,
+        data = {'email':email, 'password':password, 'authenticate':False}
+        form = CreateUserForm(
+            True,
+            data=data
         )
+        user, identity = form.save(is_superuser=options.get('is_superuser'))
 
 
         name = options.get('name', None)

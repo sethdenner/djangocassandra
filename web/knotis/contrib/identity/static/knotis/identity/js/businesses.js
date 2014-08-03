@@ -13,9 +13,11 @@
             '</div>'
 
         $(window).on('scroll.businesses', function(event) {
+
             var $this = $(this);
 
-            if (!results_left) {
+            $businesses = $('.contentBlock > .businesses')
+            if (!$businesses.length || !results_left) {
                 $this.off('scroll.businesses');
                 return;
             }
