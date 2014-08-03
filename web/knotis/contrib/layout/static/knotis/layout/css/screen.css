@@ -726,7 +726,7 @@ nav button.signUp {
     font-size: 14px;
     display: inline-block;
     width: 100%;
-    border-top: 1px solid #e4e4e4;
+
     font-family: 'LatoLight', sans-serif;
     position: relative;
     top: 10px;
@@ -741,15 +741,53 @@ nav button.signUp {
     margin-right: 5px;
 }
 
-/* line 1, ../sass/_offerCreate.scss */
-#offer-create {
-    text-align: center;
-}
 /* line 3, ../sass/_offerCreate.scss */
-h4.create-header-title {
+h4.creaki yp;/.te-header-title {
     font-size: 35px;
     font-family: 'LatoLight', sans-serif;
+    padding: 10px 0;
+    margin: 20px 0;
+    border-top: 3px solid rgb(241, 241, 241);
 }
+
+.offerForm {
+    padding: 0 50px 70px;
+    height: 100%;
+    display: inline-block;
+}
+
+.offer-form-nav {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    background: white;
+    padding: 15px 50px;
+}
+
+#id-offer-discount {
+    display: inline-block;
+    padding: 10px 30px;
+    color: #2cc397;
+}
+
+.offerForm .control-group {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.offer-form-nav button.delete {
+    padding: 5px 15px;
+    background: transparent;
+    border: 2px solid rgb(238, 238, 238);
+    color: rgb(177, 177, 177);
+}
+
+.offerForm textarea {
+    width: 100%;
+    height: 50px;
+}
+
 /* line 10, ../sass/_offerCreate.scss */
 #offer-create input, #offer-create textarea {
     border: 1px solid rgba(192, 192, 192, 0.5);
@@ -759,6 +797,8 @@ h4.create-header-title {
     color: #807F7F;
     font-size: 15px;
     outline: 0;
+    margin: 5px;
+    height: 50px;
 }
 /* line 20, ../sass/_offerCreate.scss */
 #offer-create .navBtns a {
@@ -781,8 +821,16 @@ h4.create-header-title {
 /* line 38, ../sass/_offerCreate.scss */
 #offer-create label {
     color: #777777;
+    font-size: 15px;
+    margin: 20px 0;
+    display: inline-block;
 }
 
+#offer-create h1 {
+    font-size: 30px;
+    color: #6D6D6D;
+    margin: 20px;
+}
 /* line 43, ../sass/_offerCreate.scss */
 .wrapper {
     width: 70%;
@@ -1778,4 +1826,10 @@ span.help-inline {
 
 .settings .icon-settings {
     padding: 20px 0;
+}
+
+.modal {
+    top: 40%;
+    width: 650px;
+    margin-left: -315px;
 }
