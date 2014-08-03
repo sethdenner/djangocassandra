@@ -58,9 +58,9 @@ MEDIA_URL_ABSOLUTE = ''.join([
 
 GOOGLE_MAPS_API_KEY = 'AIzaSyBrsdJdU3pwYc5Rsbg7f25yOGNYaOmaFnk'
 
-FACEBOOK_APP_ID = '227221503982317'
-FACEBOOK_API_SECRET = 'c38d6b546822e6142d958d4e6f7c940d'
-FACEBOOK_DEFAULT_SCOPE = 'email,user_about_me'
+FACEBOOK_APP_ID = '725365600856203'
+FACEBOOK_API_SECRET = 'e39f9e28b3e345a6a793d2cdeee30ff7'
+FACEBOOK_DEFAULT_SCOPE = 'publish_stream,manage_pages,publish_actions'
 FACEBOOK_API_URL = 'https://graph.facebook.com'
 
 PAYPAL_ACCOUNT = 'knotis.int+billing@knotis.com'

@@ -124,7 +124,7 @@ class SocialIntegrationsGridView(GridSmallView):
 
 
 class SocialMediaSettingsView(EmbeddedView):
-    url_patterns = [ r'^settings/social/$' ]
+    url_patterns = [r'^settings/social/$']
     default_parent_view_class = DefaultBaseView
     template_name = 'knotis/endpoint/social_media_settings.html'
 
