@@ -5,27 +5,26 @@ from django.template import (
 
 from knotis.views import (
     EmbeddedView,
-	FragmentView,
+    FragmentView,
 )
 
 from knotis.contrib.layout.views import (
     GridSmallView,
-	DefaultBaseView,
-)
-
-from knotis.contrib.identity.views import (
-    Identity,
+    DefaultBaseView,
 )
 
 
 class SettingTile(FragmentView):
     template_name = 'knotis/settings/tile.html'
 
+
 class SocialSettingTile(SettingTile):
     template_name = 'knotis/settings/social_tile.html'
-	
+
+
 class QRSettingTile(SettingTile):
     template_name = 'knotis/settings/qr_tile.html'
+
 
 class SettingsGrid(GridSmallView):
     view_name = 'settings_grid'
@@ -37,13 +36,14 @@ class SettingsGrid(GridSmallView):
             setting_context = Context()
             tile = setting()
             tiles.append(
-		        tile.render_template_fragment(setting_context)
-	        )
-			
-	local_context = copy.copy(self.context)
-	local_context.update({'tiles': tiles})
-		
-	return local_context
+                tile.render_template_fragment(setting_context)
+            )
+
+        local_context = copy.copy(self.context)
+        local_context.update({'tiles': tiles})
+
+        return local_context
+
 
 class SettingsView(EmbeddedView):
     url_patterns = [r'^settings/$']
