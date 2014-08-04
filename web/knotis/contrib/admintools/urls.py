@@ -44,7 +44,7 @@ urlpatterns = patterns(
 ### ADMIN RESEND URL
     url(
         r''.join([
-            '^admin/utils/ident_pass_reset/(?<identity_id>',
+            '^admin/utils/ident_pass_reset/(?P<identity_id>',
             REGEX_UUID,
             ')/$'
         ]), AdminValidateResendView.as_view()
