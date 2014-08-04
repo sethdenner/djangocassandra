@@ -1,8 +1,8 @@
 <script type="text/javascript">
     // TODO: Figure out better implementation of this
     $(document).ready(function() {
-        $('.offerSteps li').css('color','black');
-        $('.stepOne').css('color','#2cc397');
+        $('.offerSteps li').removeClass('active');
+        $('.stepOne').addClass('active');
     });
 </script>
 
@@ -40,12 +40,14 @@
                 <span>Regular Price (Retail Value)</span>
             </div>
         </div>
-        <div class="offer-quantity{% if form.offer_unlimited.value %} hide{% endif %}">
+        
+        <div class="control-group offer-quantity{% if form.offer_unlimited.value %} hide{% endif %}">
             <label class="control-label">Enter Quantity</label>
             <div class="controls">
                 <input class="span1" name="{{ form.offer_stock.html_name }}" type="text" value="{{ form.offer_stock.value|default_if_none:"100" }}"{% if form.offer_unlimited.value %} disabled{% endif %} />
             </div>
         </div>
+        
         <div class="control-group">
             <div class="controls">
                 <input id="id-unlimited-input"  name="{{ form.offer_unlimited.html_name }}" type="checkbox" value="unlimited"{% if form.offer_unlimited.value %} checked{% endif %} />
