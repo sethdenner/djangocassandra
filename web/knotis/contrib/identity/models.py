@@ -78,7 +78,16 @@ class IdentityManager(QuickManager):
                 subject_object_id=user_identity.id,
             )
             for relation in identity_relations:
-                identities.add(relation.related)
+                if IdentityTypes.BUSINESS == relation.related.identity_type:
+                    establishments = (
+                        IdentityEstablishment.objects.get_establishments(
+                            relation.related
+                        )
+                    )
+                    identities |= set(establishments)
+
+                else:
+                    identities.add(relation.related)
 
         return identities
 
@@ -348,8 +357,15 @@ class Identity(QuickModel):
             return True
 
         managed_relations = Relation.objects.get_managed(self)
+
+        if identity.identity_type == IdentityTypes.ESTABLISHMENT:
+            business = IdentityBusiness.objects.get_establishment_parent(identity)
+
         for rel in managed_relations:
-            if rel.related_object_id == identity.pk:
+            if (
+                rel.related_object_id == identity.pk or
+                rel.related_object_id == business.pk
+            ):
                 return True
 
         return False

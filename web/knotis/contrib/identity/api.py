@@ -181,8 +181,19 @@ class IdentityApi(object):
             raise
 
         try:
-            qrcode = Qrcode.objects.create(
-                owner=business,
+            establishment = IdentityApi.create_establishment(
+                business_id=business.pk,
+                **kwargs
+            )
+
+        except:
+            business.delete(hard=True)
+            relation_manager.delete(hard=True)
+            raise
+
+        try:
+            Qrcode.objects.create(
+                owner=establishment,
                 uri='/'.join([
                     settings.BASE_URL,
                     'id',
@@ -193,6 +204,7 @@ class IdentityApi(object):
             )
 
         except:
+            establishment.delete(hard=True)
             business.delete(hard=True)
             relation_manager.delete(hard=True)
             raise
@@ -201,24 +213,12 @@ class IdentityApi(object):
             user_information = UserInformation.objects.get(
                 user=KnotisUser.objects.get_identity_user(individual)
             )
-            user_information.default_identity_id = business.id
+            user_information.default_identity_id = establishment.id
             user_information.save()
 
         except Exception, e:
             # This is non-critical, no need to reraise
             logger.exception(e.message)
-
-        try:
-            establishment = IdentityApi.create_establishment(
-                business_id=business.pk,
-                **kwargs
-            )
-
-        except:
-            business.delete(hard=True)
-            relation_manager.delete(hard=True)
-            qrcode.delete(hard=True)
-            raise
 
         return business, establishment
 
@@ -254,7 +254,7 @@ class IdentityApiView(ApiView):
 
         warnings.warn("deprecated", DeprecationWarning)
 
-        return self.generate_response(instance, errors)
+        return self.generate_ajax_response(instance, errors)
 
     def put(
         self,
@@ -283,7 +283,7 @@ class IdentityApiView(ApiView):
             logger.exception(message)
             errors['no-field'] = message
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': errors
             })
@@ -303,7 +303,7 @@ class IdentityApiView(ApiView):
                 ' update.'
             ])
             data['errors'] = errors
-            return self.generate_response(data)
+            return self.generate_ajax_response(data)
 
         try:
             identity = form.save()
@@ -317,7 +317,7 @@ class IdentityApiView(ApiView):
             logger.exception(message)
             errors['no-field']  = e.message
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': message,
                 'errors': errors
             })
@@ -334,7 +334,7 @@ class IdentityApiView(ApiView):
             logger.exception(message)
             errors['no-field']  = e.message
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': message,
                 'errors': errors
             })
@@ -351,7 +351,7 @@ class IdentityApiView(ApiView):
 
         warnings.warn("deprecated", DeprecationWarning)
 
-        return self.generate_response(data)
+        return self.generate_ajax_response(data)
 
 
 class IdentityIndividualApiView(IdentityApiView):
@@ -382,7 +382,7 @@ class IdentityIndividualApiView(IdentityApiView):
             errors['no-field'] = e.message
 
         if errors:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': errors
             })
@@ -395,7 +395,7 @@ class IdentityIndividualApiView(IdentityApiView):
         data['message'] = 'Individual created successfully'
 
         warnings.warn("deprecated", DeprecationWarning)
-        return self.generate_response(data)
+        return self.generate_ajax_response(data)
 
     def put(
         self,
@@ -458,7 +458,7 @@ class IdentityBusinessApiView(IdentityApiView):
             errors['no-field'] = e.message
 
         if errors:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': errors
             })
@@ -473,7 +473,7 @@ class IdentityBusinessApiView(IdentityApiView):
         data['message'] = 'Business created successfully'
 
         warnings.warn("deprecated", DeprecationWarning)
-        return self.generate_response(data)
+        return self.generate_ajax_response(data)
 
     def put(
         self,
@@ -519,7 +519,7 @@ class IdentityEstablishmentApiView(IdentityApiView):
             errors['no-field'] = e.message
 
         if errors:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': errors
             })
@@ -533,7 +533,7 @@ class IdentityEstablishmentApiView(IdentityApiView):
         data['message'] = 'Establishment created successfully'
 
         warnings.warn("deprecated", DeprecationWarning)
-        return self.generate_response(data)
+        return self.generate_ajax_response(data)
 
     def put(
         self,
@@ -723,7 +723,7 @@ class BusinessApiModelViewSet(
             errors['no-field'] = e.message
 
         if errors:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': errors
             })

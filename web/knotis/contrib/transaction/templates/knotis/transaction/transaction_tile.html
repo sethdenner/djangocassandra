@@ -1,37 +1,47 @@
-{% load render_template_fragment %}
 {% load thumbnail %}
-<div class="grid-tile small-tile identity-tile">
-  <input id="id-transaction-pk" type="hidden" class="tile-identity" value="{{ transaction.pk }}"/>
-  <input id="id-transaction-context" type="hidden" class="tile-identity" value="{{ transaction.transaction_context }}"/>
-  <div class="tile-header">
-    {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
-    <div class="tile-image" style="background-image: url('{{ image.url }}');">&nbsp;</div>
-    {% empty %}
-    <div class="tile-image" style="background-image: url('{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png')" >&nbsp;</div>
-    {% endthumbnail %}
-    {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
-    <img class="tile-badge" src="{{ image.url }}" />
-    {% empty %}
-    <img class="tile-badge"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/profile_default.png" />
-    {% endthumbnail %}
-  </div>
-  <div class="tile-body">
-    {% if show_offer_info %}
-    <p class="tile-title">{{ transaction.offer.title }}</p>
-    {% else %}
-    <p class="tile-title">{{ identity.name }}</p>
-    {% endif %}
-    {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
-    {% if redeem %}
-    <button data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action redeem-offer">Redeem</button>
-    {% else %}
-    <button data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action print-voucher">View Printable Voucher</button>
-    {% endif %}
-    {% endif %}
-  </div>
-  <div class="tile-footer">
-    {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
-    {{ transaction.redemption_code|default:'&nbsp;' }}
-    {% else %}&nbsp;{% endif %}
-  </div>
-</div>
+
+        <div class="col-lg-4 col-xs-12 offerItem">
+            <a href="/offer/detail/{{ offer.pk }}/" class="modal-link">
+                <div class="busCover">
+                    {% thumbnail banner_image.image.image '240x161' crop=banner_image.crop as image %}
+                    <img src="{{ image.url }}" alt="{{ identity.name }}"/>
+                    {% empty %}
+                    <img class="tile-image"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png" />
+                    {% endthumbnail %}
+                    <div class="overlay"></div>
+                </div>
+            </a>
+            <div class="transactionContent">
+                <div class="row">
+                    <div class="col-lg-10 col-xs-10">
+                        {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
+                        <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
+                        {% empty %}
+                        <img class="tile-badge" src="{{ STATIC_URL }}knotis/identity/img/profile_default.png" />
+                        {% endthumbnail %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12">
+                        {% if show_offer_info %}
+                            <h1>{{ transaction.offer.title }}</h1>
+                        {% else %}
+                            <h1>{{ identity.name }}</h1>
+                        {% endif %}
+                        {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
+                            {% if redeem %}
+                                <button data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action redeem-offer">Redeem</button>
+                            {% else %}
+                                <button data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action print-voucher">View Printable Voucher</button>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
+                        {{ transaction.redemption_code|default:'' }}
+                        {% else %}{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>

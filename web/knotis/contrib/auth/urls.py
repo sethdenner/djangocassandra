@@ -17,22 +17,9 @@ from views import (
 
 urlpatterns = patterns(
     'knotis.contrib.auth.views',
-
-    url(
-        r'^auth/login/$',
-        LoginView.as_view()
-    ),
     url(
         r'^auth/logout/$',
         'logout',
-    ),
-    url(
-        r'^auth/signup/success/$',
-        SignUpSuccessView.as_view()
-    ),
-    url(
-        r'^auth/signup/(?P<account_type>[^/]+)*$',
-        SignUpView.as_view()
     ),
     url(
         r'^auth/validate/(?P<user_id>[^/]+)/(?P<validation_key>[^/]+)',
@@ -61,3 +48,7 @@ urlpatterns = patterns(
         ResetPasswordView.as_view()
     )
 )
+
+urlpatterns += LoginView.urls()
+urlpatterns += SignUpView.urls()
+urlpatterns += SignUpSuccessView.urls()

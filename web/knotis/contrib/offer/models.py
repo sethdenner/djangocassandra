@@ -32,6 +32,7 @@ from knotis.utils.view import (
 from knotis.contrib.media.models import ImageInstance
 from knotis.contrib.identity.models import (
     Identity,
+    IdentityBusiness,
     IdentityEstablishment,
     IdentityTypes
 )
@@ -51,10 +52,12 @@ class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
 class OfferTypes:
     NORMAL = 0
     PREMIUM = 1
+    DARK = 2
 
     CHOICES = (
         (NORMAL, 'Normal'),
-        (PREMIUM, 'Premium')
+        (PREMIUM, 'Premium'),
+        (DARK, 'Dark'),
     )
 
 
@@ -82,8 +85,8 @@ class OfferManager(QuickManager):
             *args,
             **kwargs
         )
-        offer.save()
 
+        offer.save()
         for i in inventory:
             price_discount = i.price * discount_factor
             OfferItem.objects.create(
@@ -274,6 +277,7 @@ class Offer(QuickModel):
     offer_type = QuickIntegerField(
         default=OfferTypes.NORMAL,
         choices=OfferTypes.CHOICES,
+        db_index=True,
     )
 
     title = QuickCharField(
@@ -313,15 +317,6 @@ class Offer(QuickModel):
             *args,
             **kwargs
         )
-
-        # Check whether offer should be completed on instansiation.
-        # Could have no end date I guess so check for not None.
-        if (
-            self.end_time and self.end_time < datetime.datetime.utcnow()
-        ) or (
-            not self.unlimited and self.purchased >= self.stock
-        ):
-            self.complete()
 
     def _calculate_prices(self):
         if hasattr(self, '_price_retail') and hasattr(self, '_price_discount'):
@@ -430,7 +425,7 @@ class Offer(QuickModel):
             (self.end_time is None or self.end_time > now) and
             (self.unlimited or self.purchased < self.stock) and
             not self.completed
-        )
+        ) or self.offer_type == OfferTypes.DARK
 
     def description_formatted_html(self):
         if not self.description:
@@ -514,10 +509,14 @@ class Offer(QuickModel):
         )
 
     def savings_percent(self):
-        return '%.0f' % round(
-            (self.price_retail() - self.price_discount()) /
-            self.price_retail() * 100, 0
-        )
+        try:
+            savings_str = '%.0f' % round(
+                (self.price_retail() - self.price_discount()) /
+                    self.price_retail() * 100, 0
+            )
+        except:
+            savings_str = 'ERROR'
+        return savings_str
 
     def days_remaining(self):
         delta = self.end_time - datetime.datetime.utcnow()
@@ -578,6 +577,20 @@ class Offer(QuickModel):
                 primary=True
             )
 
+        except ImageInstance.DoesNotExist:
+            try:
+                business = IdentityBusiness.objects.get_establishment_parent(
+                    self.owner
+                )
+                badge_image = ImageInstance.objects.get(
+                    related_object_id=business.owner.pk,
+                    context='profile_badge',
+                    primary=True
+                )
+
+            except:
+                badge_image = None
+
         except:
             badge_image = None
 
@@ -623,11 +636,23 @@ class OfferAvailabilityManager(QuickManager):
             kwargs['end_time'] = offer.end_time
             kwargs['price'] = offer.price_discount()
 
-            identity_profile_badge = ImageInstance.objects.get(
-                related_object_id=offer.owner.id,
-                context='profile_badge',
-                primary=True
-            )
+            try:
+                identity_profile_badge = ImageInstance.objects.get(
+                    related_object_id=offer.owner.id,
+                    context='profile_badge',
+                    primary=True
+                )
+
+            except ImageInstance.DoesNotExist:
+                business = IdentityBusiness.objects.get_establishment_parent(
+                    offer.owner
+                )
+                identity_profile_badge = ImageInstance.objects.get(
+                    related_object_id=business.pk,
+                    context='profile_badge',
+                    primary=True
+                )
+
             kwargs['profile_badge'] = identity_profile_badge
 
         return super(OfferAvailabilityManager, self).create(
@@ -907,3 +932,14 @@ class OfferPublish(Publish):
                 self.endpoint.endpoint_type,
                 '.'
             ]))
+
+
+class OfferCollection(QuickModel):
+    neighborhood = QuickCharField(max_length=255, db_index=True)
+
+
+class OfferCollectionItem(QuickModel):
+    offer_collection = QuickForeignKey(OfferCollection)
+    offer = QuickForeignKey(Offer)
+    page = QuickIntegerField()
+    objects = QuickManager()

@@ -1,4 +1,6 @@
 from .views import (
+    EmbeddedView,
+    ModalView,
     ContextView,
     FragmentView,
     EmailView,
@@ -11,6 +13,6 @@ from .views import (
 
 from .mixins import (
     RenderTemplateFragmentMixin,
-    GenerateAJAXResponseMixin,
+    GenerateAjaxResponseMixin,
     GenerateApiUrlsMixin
 )

@@ -11,16 +11,13 @@ from knotis.utils.regex import REGEX_UUID
 from views import (
     MyPurchasesView,
     MyRelationsView,
+    MyPurchasesGrid,
     PrintedVoucher,
     DownloadPrintedVoucher
 )
 
 urlpatterns = patterns(
     '',
-    url(
-        '^purchases(/(?P<purchase_filter>\w*))?/$',
-        login_required(MyPurchasesView.as_view())
-    ),
     url(
         '^following/$',
         redirect_to,
@@ -51,5 +48,10 @@ urlpatterns = patterns(
             ')/printable/download/$'
         ]),
         login_required(DownloadPrintedVoucher.as_view())
-    )
+    ),
+    url(
+        r'^purchases/grid/(?P<page>\d+)/(?P<count>\d+)/$',
+        MyPurchasesGrid.as_view()
+    ),
 )
+urlpatterns += MyPurchasesView.urls(require_login=True)

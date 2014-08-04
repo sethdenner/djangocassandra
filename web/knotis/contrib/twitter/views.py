@@ -67,7 +67,7 @@ class TwitterVerifyPINView(AJAXFragmentView):
             )
 
         if errors:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': errors
             })
@@ -89,7 +89,7 @@ class TwitterVerifyPINView(AJAXFragmentView):
             )
 
         except Exception, e:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': {
                     'no-field': e.message
@@ -97,7 +97,7 @@ class TwitterVerifyPINView(AJAXFragmentView):
             })
 
         if not oauth_token or not oauth_token_secret:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': {
                     'no-field': 'Something went wrong. Please contact support.'
@@ -133,7 +133,7 @@ class TwitterVerifyPINView(AJAXFragmentView):
             errors = {}
             for field, messages in endpoint_form.errors.iteritems():
                 errors[field] = [message for message in messages]
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': errors
             })
@@ -154,7 +154,7 @@ class TwitterVerifyPINView(AJAXFragmentView):
             errors = {}
             for field, messages in endpoint_form.errors.iteritems():
                 errors[field] = [message for message in messages]
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': errors
             })
@@ -166,7 +166,7 @@ class TwitterVerifyPINView(AJAXFragmentView):
             endpoint=endpoint
         )
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'status': 'OK',
             'errors': None,
             'html': twitter_tile.render_template_fragment(Context({
@@ -201,7 +201,7 @@ class TwitterGetAuthorizeUrl(AJAXView):
 
         url = settings.TWITTER_AUTHORIZE_URL + oauth_token
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'authorize_url': url,
             'oauth_token': oauth_token,
             'oauth_token_secret': oauth_token_secret

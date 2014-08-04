@@ -1,0 +1,65 @@
+{% load render_template_fragment %}<!DOCTYPE html>
+<html lang="en">
+    {% spaceless %}
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <!-- <link rel="shortcut icon" href=""> --!>
+        <title>{% block title %}Knotis - Be in the kno!{% endblock title %}</title>
+        <!-- Bootstrap Core CSS -->
+        <link href="{{ STATIC_URL }}knotis/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Bootstrap Modal CSS -->
+        <link href="{{ STATIC_URL }}bootstrap-modal/css/bootstrap-modal.css" rel="stylesheet">
+        <link href="{{ STATIC_URL }}bootstrap-modal/css/bootstrap-modal-bs3patch.css" rel="stylesheet">
+        <!-- Generated SASS -->
+        <link href="{{ STATIC_URL }}knotis/layout/css/screen.css" rel="stylesheet">
+        <link href="{{ STATIC_URL }}jcrop/css/jquery.Jcrop.min.css" rel="stylesheet">
+        {% for style in styles %}
+        <link href="{{ STATIC_URL }}{{ style }}" rel="stylesheet" />
+        {% endfor %}
+        {{ maps_scripts }}
+        {% for script in pre_scripts %}
+        <script src="{{ STATIC_URL }}{{ script }}"></script>
+        {% endfor %}
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+<script src="{{ STATIC_URL }}knotis/js/html5shiv.js"></script>
+<script src="{{ STATIC_URL }}knotis/js/respond.min.js"></script>
+<![endif]-->
+        {% block head %}{% endblock head %}
+    </head>
+    <body>
+        {% csrf_token %}
+        {% block first %}{% endblock first %}
+        {% block header %}{% endblock header %}
+        {% block navigation %}{% endblock navigation %}
+        {% block content %}{% render_fragment establishments %}{% endblock content %}
+        {% block footer %}{% endblock footer %}
+        {% block modal %}{% endblock modal %}
+        {% block last %}{% endblock last %}
+        {% render_fragment loading %}
+        <script src="{{ STATIC_URL }}knotis/js/jquery.min.js"></script>
+        <script src="{{ STATIC_URL }}jquery.cookie/jquery.cookie.js"></script>
+        <script src="{{ STATIC_URL }}knotis/js/bootstrap.min.js"></script>
+        <script src="{{ STATIC_URL }}bootstrap-modal/js/bootstrap-modalmanager.js"></script>
+        <script src="{{ STATIC_URL }}bootstrap-modal/js/bootstrap-modal.js"></script>
+        <script src="{{ STATIC_URL }}knotis/js/jquery.address.js"></script>
+        <script src="{{ STATIC_URL }}knotis/ajax/js/ajax.js"></script>
+        <script src="{{ STATIC_URL }}knotis/layout/js/base.js"></script>
+        <script src="{{ STATIC_URL }}knotis/layout/js/modal.js"></script>
+        <script src="{{ STATIC_URL }}knotis/layout/js/forms.js"></script>
+        <script src="{{ STATIC_URL }}knotis/navigation/js/navigation.js"></script>
+        <script src="{{ STATIC_URL }}scripts/maps.js"></script>
+        <script src="{{ STATIC_URL }}scripts/jquery/jquery_ui.js"></script>
+        <script src="{{ STATIC_URL }}geocomplete/jquery.geocomplete.min.js"></script>
+        <script src="{{ STATIC_URL }}knotis/maps/js/maps.js"></script>
+        {% for script in post_scripts %}
+        <script src="{{ STATIC_URL }}{{ script }}?8374873485"></script>
+        {% endfor %}
+    </body>
+    {% endspaceless %}
+</html>

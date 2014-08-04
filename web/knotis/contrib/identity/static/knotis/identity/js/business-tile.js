@@ -5,17 +5,13 @@
     }
 
     $.identity.initialize_business_tiles = function() {
-        $('.grid-tile.small-tile.identity-tile').click(function(event) {
+        $('.identityTile').click(function(event) {
             event.preventDefault();
             event.stopPropagation();
 
-            var identity_id = $(this).find('input.tile-identity').val();
-            window.location = '/id/' + identity_id;
-            return;
-
         }).each(function(i) {
             var $this = $(this);
-            var $action_button = $this.find('.btn.btn-knotis-action');
+            var $action_button = $this.find('.btnFollow');
             var href = $action_button.attr('href');
             var data = {};
             if ($action_button.length) {
@@ -29,39 +25,15 @@
 
             var setupFollow = function($element) {
                 $element.attr('data-method', 'post');
-                $element.attr('href', href);
-                for (var key in data) {
-                    $element.attr('data-param-' + key, data[key]);
-
-                }
 
             };
 
             var setupUnfollow = function($element, relation_id) {
                 $element.attr('data-method', 'delete');
-                $element.attr('href', [
-                    href,
-                    relation_id,
-                    '/'
-                ].join(''));
-                var element = $element.get(0);
-                var remove_attributes = []
-                $.each(element.attributes, function(i, attribute) {
-                    if (attribute.name.substring(0, 'data-param-'.length) != 'data-param-') {
-                        return true;
-
-                    }
-                    remove_attributes.push(attribute.name);
-
-                });
-                for (var i = 0; i < remove_attributes.length; ++i){
-                    $element.removeAttr(remove_attributes[i]);
-
-                }
 
             };
 
-            var logged_in = 0 != $('div#id-identity-switcher').length;
+            var logged_in = 0 != $('div#identity-switcher').length;
 
             $action_button.actionButton({
                 onHover: function($element){
@@ -89,7 +61,7 @@
                                     var button_text = 'Unfollow';
 
                                 }
-                                $element.children('span').text(button_text);
+                                $element.text(button_text);
                             },
                             'json'
                         );
@@ -110,7 +82,7 @@
                             var button_text = 'Unfollow';
 
                         }
-                        $element.children('span').text(button_text);
+                        $element.text(button_text);
                     }
                 }
             });

@@ -13,6 +13,15 @@
 
                 var $form = $(this);
                 var data = $form.serialize();
+                if (data) {
+                    data += '&';
+
+                } else {
+                    data = '';
+
+                }
+                data += 'format=json';
+
                 $form.find('input, button').prop('disabled', true);
 
                 $.ajax({

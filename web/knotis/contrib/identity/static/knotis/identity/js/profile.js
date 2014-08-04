@@ -1,4 +1,5 @@
 (function($) {
+    /*
     $('.offer-tile').click(function(event) {
         event.preventDefault();
 
@@ -9,11 +10,12 @@
             modal_width: '750px'
         });
     });
+    */
 
     var upload_logo = function(event) {
         event.preventDefault();
 
-        var identity_id = $('div#id-identity-id').attr('data-business-id')
+        var identity_id = $('div#id-identity-id').attr('data-establishment-id')
 
         $.ajaxmodal({
             href: '/image/upload/',
@@ -56,7 +58,7 @@
 
     $('a.change-profile-cover-link').click(function(event){
       event.preventDefault();
-      var identity_id = $('#id-identity-id').attr('data-business-id');
+      var identity_id = $('#id-identity-id').attr('data-establishment-id');
 
       $.ajaxmodal({
           href: '/image/upload',
@@ -92,8 +94,9 @@
     });
 
     $('a.upload-photo').click(function(event){
+      event.stopPropagation();
       event.preventDefault();
-      var identity_id = $(this).attr('data-business-id');
+      var identity_id = $('#id-identity-id').attr('data-establishment-id');
 
       $.ajaxmodal({
           href: '/image/upload',
@@ -120,7 +123,9 @@
 
                         // populate carousel-inner
                         var uploaded_url = data.image_url;
-                        var $img = $('<div style="display:block; width:500px; height:400px; overflow:hidden; background:url(' + uploaded_url + ') no-repeat;"></div>');
+                        //$('.about-carousel-image').attr('style')
+
+                        var $img = $('<div class="about-carousel-image" style="background:url(' + uploaded_url + ')"></div>');
                         var $item = $('<div class="item"></div>');
                         $item.append($img);
                         $('#about_carousel>.carousel-inner').append($item);
@@ -140,35 +145,13 @@
         });
     });
 
-    $('.twitter.tab').click(function(){
-        $('.tab-pane#yelp').hide();
-        $('li.tab.yelp').removeClass('active');
-
-        $('.tab-pane#twitter').show();
-        $('li.tab.twitter').addClass('active');
-    });
-
-    $('.yelp.tab').click(function(){
-        $('.tab-pane#twitter').hide();
-        $('li.tab.twitter').removeClass('active');
-
-        $('.tab-pane#yelp').show();
-        $('li.tab.yelp').addClass('active');
-    });
-
-    // gather up all the address display elements on the page, and link them.
-    $('.linked-business-name').link_field('linkbizname');
-    $('.linked-phone-number').link_field('linkphonenum');
-    $('.linkedaddress').link_field('linkaddress');
-    $('.linkedwebsite').link_field('linkweb');
-
     $('a.delete-x').click(function(event) {
         event.stopPropagation();
         event.preventDefault();
 
         var $this = $(this);
         $.ajax(
-            $this.attr('href'), {
+            $this.attr('data-href'), {
                 type: $this.attr('data-method'),
                 data: {
                     pk: $this.attr('data-pk')
@@ -189,5 +172,60 @@
         });
 
     });
+
+    $('a.twitter').click(function(){
+        event.stopPropagation();
+        event.preventDefault();
+        $('.tab-content.yelp').hide();
+        $('.tab-content.yelp').removeClass('active');
+
+        $('.tab-content.twitter').show();
+        $('.tab-content.twitter').addClass('active');
+    });
+
+    $('a.yelp').click(function(){
+        event.stopPropagation();
+        event.preventDefault();
+        $('.tab-content.twitter').hide();
+        $('.tab-content.twitter').removeClass('active');
+
+        $('.tab-content.yelp').show();
+        $('.tab-content.yelp').addClass('active');
+    });
+
+    // display the map on the about page.
+    var latLng = new google.maps.LatLng(parseFloat($('#establishment-contact-loc-details').attr('data-latitude')),
+                              parseFloat($('#establishment-contact-loc-details').attr('data-longitude')));
+
+    var setupMap = function(){
+        var map;
+        var marker;
+        var initialize = function(){
+            var mapOptions = {
+                center: latLng,
+                zoomControl: false,
+                scaleControl: false,
+                draggable: false,
+                navigationContol: false,
+                disableDefaultUI: true,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                zoom: 16
+            };
+            map = new google.maps.Map(document.getElementById('about-map'), mapOptions);
+
+            var markerOptions = {
+                position: latLng,
+                map: map,
+            };
+            marker = new google.maps.Marker(markerOptions);
+            google.maps.event.trigger(map, 'resize');
+
+        }
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+        return {marker: marker, map: map};
+    };
+    var map_stuff = setupMap();
 
 })(jQuery);

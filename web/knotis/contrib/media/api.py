@@ -46,10 +46,10 @@ class ImageInstanceApiView(ImageInstanceApi, ApiView):
         **kwargs
     ):
         current_identity = get_current_identity(request)
-        pk = request.DELETE.get('pk')
+        pk = request.DATA.get('pk')
 
         if not pk:
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': self.Status.Error,
                 'errors': {
                     'pk': self.Errors.FieldRequired
@@ -64,8 +64,8 @@ class ImageInstanceApiView(ImageInstanceApi, ApiView):
                 'Failed to get image instance with pk = ',
                 pk
             ]))
-            return self.generate_response({
-                'status': self.Status.Error,
+            return self.generate_ajax_response({
+                'status': 'error',
                 'errors': {
                     'no-field': self.Errors.ExceptionThrown,
                     'exception': e.message
@@ -73,8 +73,8 @@ class ImageInstanceApiView(ImageInstanceApi, ApiView):
             })
 
         if instance.owner.pk != current_identity.pk:
-            return self.generate_response({
-                'status': self.Status.Error,
+            return self.generate_ajax_response({
+                'status': 'error',
                 'errors': {
                     'no-field': self.Errors.PermissionDenied
                 }
@@ -88,15 +88,15 @@ class ImageInstanceApiView(ImageInstanceApi, ApiView):
                 'Failed to delete ImageInstance with pk=',
                 pk
             ]))
-            return self.generate_response({
-                'status': self.Status.Error,
+            return self.generate_ajax_response({
+                'status': 'error',
                 'errors': {
                     'no-field': self.Errors.ExceptionThrown,
                     'exception': e.message
                 }
             })
 
-        return self.generate_response({
-            'status': self.Status.Ok,
+        return self.generate_ajax_response({
+            'status': 'ok',
             'instance': pk
         })
