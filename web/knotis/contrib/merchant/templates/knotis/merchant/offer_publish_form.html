@@ -6,10 +6,10 @@
     });
 </script>
 
-<div class="offerForm">
+<div class="offerForm row-fluid offerPreview">
     <form class="form-horizontal" id="{{ form.form_id }}" action="{{ form.form_action }}" method="{{ form.form_method }}" >{% csrf_token %}
         {{ form.offer }}
-        <div class="control-group">
+        <div class="control-group col-lg-6 col-xs-12">
             <label class="control-label">When to send offer</label>
             <div class="controls">
                 <div id="id-start-time" class="input-append date">
@@ -31,21 +31,21 @@
                     {% endwith %}
                 </div>
             </div>
-            <div class="controls">
-                {{ form.no_time_limit }} <span class="help-text">No time limit - run until it sells</span>
+            <div class="controls noEnd">
+                <div style="position:relative;top:16px;right:8px;display:inline-block;">{{ form.no_time_limit }}</div> <span class="help-text">No End Time</span>
             </div>
         </div>
         
         
-        <div class="control-group">
+        <div class="control-group publishSocial col-lg-6 col-xs-12">
             <label class="control-label">Where to send offer</label>
             {{ form.publish }}
         </div>
 
 
         <div class="offer-form-nav">
-            <button type="button" class="pull-left btn wizard-back"><span class="icon-arrow-left"></span> Go Back</button>
-            <button id="id-submit-details" type="submit" class="pull-right btn btn-primary continue"><span class="icon-arrow-right"></span> Continue</button>
+            <button type="button" class="btn wizard-back"><span class="icon-arrow-left"></span> Go Back</button>
+            <button id="id-submit-details" type="submit" class="btn btn-primary continue"><span class="icon-arrow-right"></span> Continue</button>
         </div>
     </form>
 </div>

@@ -39,8 +39,8 @@
                     </div>
                     <div>
                         {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
-                        {{ transaction.redemption_code|default:'&nbsp;' }}
-                        {% else %}&nbsp;{% endif %}
+                        {{ transaction.redemption_code|default:'' }}
+                        {% else %}{% endif %}
                     </div>
                 </div>
             </div>

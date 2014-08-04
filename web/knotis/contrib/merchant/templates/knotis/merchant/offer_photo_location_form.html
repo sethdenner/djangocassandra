@@ -11,13 +11,13 @@
         {{ form.offer }}
         <div id="photos" class="control-group">
             <label class="control-label">Photos</label>
-            {{ form.photo }}
+            <div class="gallery">{{ form.photo }}</div>
             <div class="controls">
                 <div class="small-space"></div>
                 <a id="add_offer_photo" href="#addphoto" >&plus; Add a photo</a>
             </div>
         </div>
-        <div class="control-group">
+        <div class="control-group locations">
             <label class="control-label">Offer Location</label>
             {{ form.locations }}
             <div class="controls">
@@ -26,8 +26,8 @@
             </div>
         </div>
         <div class="offer-form-nav">
-            <button type="button" class="pull-left btn wizard-back"><span class="icon-arrow-left"></span> Go Back</button>
-            <button id="id-submit-details" type="submit" class="pull-right btn btn-primary continue">Continue <span class="icon-arrow-right"></span></button>
+            <button type="button" class="btn wizard-back"><span class="icon-arrow-left"></span> Go Back</button>
+            <button id="id-submit-details" type="submit" class="btn btn-primary continue">Continue <span class="icon-arrow-right"></span></button>
         </div>
     </form>
 </div>
