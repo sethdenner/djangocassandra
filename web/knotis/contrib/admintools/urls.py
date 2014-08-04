@@ -18,6 +18,8 @@ from views import (
     AdminOwnerView,
 )
 
+from knotis.utils.regex import REGEX_UUID
+
 urlpatterns = patterns(
     '',
 ### ACTIVITY VIEWER
@@ -42,10 +44,10 @@ urlpatterns = patterns(
 ### ADMIN RESEND URL
     url(
         r''.join([
-            '^admin/utils/ident_pass_reset/(?<identity_id>',
+            '^admin/utils/ident_pass_reset/(?P<identity_id>',
             REGEX_UUID,
             ')/$'
-        ]), AdminValidateResentView.as_view()
+        ]), AdminValidateResendView.as_view()
     ),
 )
 

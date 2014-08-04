@@ -71,7 +71,7 @@ class AdminOwnerView(ModalView):
     default_parent_view_class = DefaultBaseView
     url_patterns = [
         r''.join([
-            '^admin/utils/owner_lookup/(?<identity_id>',
+            '^admin/utils/owner_lookup/(?P<identity_id>',
             REGEX_UUID,
             ')/$'
         ]),
