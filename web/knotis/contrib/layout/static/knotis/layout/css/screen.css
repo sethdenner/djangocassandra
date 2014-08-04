@@ -2056,3 +2056,32 @@ span.help-inline {
     line-height: 20px;
     margin: 16px;
 }
+
+.promotionTile {
+    background: white;
+    text-align: center;
+    height: 300px;
+    position: relative;
+    left: 20px;
+    border-radius: 3px;
+}
+
+.promotionTile .icon-promotions {
+    font-size: 70px;
+    display: inline-block;
+    width: 100%;
+    margin: 75px 0 0;
+}
+
+.promotionTile a {
+    color: #C0C0C0;
+    padding: 170px 30px 0;
+    width: 100%;
+    left: 0;
+    display: inline-block;
+    font-size: 23px;
+    font-family: 'LatoLight', sans-serif;
+    line-height: 25px;
+    position: absolute;
+    height: 100%;
+}
