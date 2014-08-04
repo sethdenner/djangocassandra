@@ -57,7 +57,6 @@ urlpatterns = patterns(
     ),
 ### FALL THROUGH DEFAULT
     url(
-        r'^admin/', login_required(AdminDefaultView.as_view())
         r''.join([
             '^admin/utils/ident_pass_reset/(?P<identity_id>',
             REGEX_UUID,
