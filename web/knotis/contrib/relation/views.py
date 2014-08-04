@@ -25,6 +25,7 @@ from models import (
     RelationTypes
 )
 
+
 class NewPermissionEmailBody(EmailView):
     template_name = 'knotis/relation/email_new_permission.html'
 
@@ -69,7 +70,6 @@ class NewFollowerEmailBody(EmailView):
         return local_context
 
 
-
 class MyFollowingView(EmbeddedView):
     template_name = 'knotis/relation/follow_display_view.html'
     default_parent_view_class = DefaultBaseView
@@ -100,8 +100,8 @@ class MyFollowingView(EmbeddedView):
         ):
             term = 'Following'
             relations = Relation.objects.filter(
-                relation_type = RelationTypes.FOLLOWING,
-                subject_object_id = current_identity.id
+                relation_type=RelationTypes.FOLLOWING,
+                subject_object_id=current_identity.id
             )
             for relation in relations:
                 related_parties.append(relation.related)
@@ -110,8 +110,8 @@ class MyFollowingView(EmbeddedView):
         ):
             term = 'Followers'
             relations = Relation.objects.filter(
-                relation_type = RelationTypes.FOLLOWING,
-                related_object_id = current_identity.id
+                relation_type=RelationTypes.FOLLOWING,
+                related_object_id=current_identity.id
             )
             for relation in relations:
                 related_parties.append(relation.subject)
@@ -137,7 +137,6 @@ class MyFollowingView(EmbeddedView):
         local_context.update({
             'relation_term': term,
             'tiles': tiles,
-#            'tile_link_template': '/id/', # + identity.id<wut
             'request': self.request,
         })
 

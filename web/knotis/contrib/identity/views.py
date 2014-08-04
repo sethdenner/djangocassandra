@@ -296,13 +296,11 @@ class EstablishmentProfileView(EmbeddedView):
             ):
                 is_superuser = True
 
-
         self.set_establishment()
         self.set_business()
 
         self.is_manager()
         self.set_images()
-
 
         location_item = LocationItem.objects.filter(
             related_object_id=self.establishment.id
@@ -311,7 +309,6 @@ class EstablishmentProfileView(EmbeddedView):
             address = location_item[0].location.address
         else:
             address = None
-
 
         endpoints = Endpoint.objects.filter(
             identity=self.establishment,
@@ -542,9 +539,10 @@ class IdentityTileActionButton(ActionButton):
                     deep=True,
                 )
             ]
+
         following = Relation.objects.follows(current_identity, tile_identity)
         is_following = len(following) == 0
-        action_text = 'Follow' if is_following  else 'Unfollow'
+        action_text = 'Follow' if is_following else 'Unfollow'
         return [
             ButtonAction(
                 action_text,
@@ -585,10 +583,16 @@ class IdentityTile(FragmentView):
             'current_identity': current_identity,
             'identity': identity
         })
-        action_button = IdentityTileActionButton()
-        action_button_content = action_button.render_template_fragment(
-            identity_tile_context
-        )
+
+        if ((current_identity and
+                current_identity.identity_type == IdentityTypes.INDIVIDUAL) or
+                current_identity is None):
+            action_button = IdentityTileActionButton()
+            action_button_content = action_button.render_template_fragment(
+                identity_tile_context
+            )
+        else:
+            action_button_content = None
 
         local_context = copy.copy(self.context)
         local_context.update({
@@ -601,60 +605,6 @@ class IdentityTile(FragmentView):
         })
 
         return local_context
-
-"""
-class EstablishmentProfileGrid(GridSmallView):
-    view_name = 'establishment_profile_grid'
-
-    def process_context(self):
-        establishment_offers = self.context.get('establishment_offers')
-        request = self.context.get('request')
-
-        offer_action = None
-        if request.user.is_authenticated():
-            current_identity_id = request.session.get('current_identity')
-            current_identity = Identity.objects.get(pk=current_identity_id)
-            if current_identity.identity_type  == IdentityTypes.INDIVIDUAL:
-                offer_action = 'buy'
-
-        tiles = []
-
-        is_manager = self.context.get('is_manager')
-        if is_manager:
-            offer_create_tile = OfferCreateTile()
-            tiles.append(
-                offer_create_tile.render_template_fragment(Context({
-                    'create_type': 'Promotion',
-                    'create_action': '/offer/create/',
-                    'action_type': 'modal'
-                }))
-            )
-
-        if establishment_offers:
-            for offer in establishment_offers:
-                offer_tile = OfferTile()
-                offer_context = Context({
-                    'offer': offer.offer,
-                    'offer_action': offer_action
-                })
-                tiles.append(
-                    offer_tile.render_template_fragment(offer_context)
-                )
-
-        local_context = copy.copy(self.context)
-        local_context.update({'tiles': tiles})
-
-        return local_context
-
-
-class EstablishmentProfileOffers(FragmentView):
-    template_name = 'knotis/identity/establishment_offers.html'
-    view_name = 'establishment_offers'
-
-    def process_context(self):
-        local_context = copy.copy(self.context)
-        return local_context
-"""
 
 
 class EstablishmentProfileLocation(FragmentView):
@@ -1144,7 +1094,7 @@ class FirstIdentityView(ModalView):
                     '.'
                 ])
                 logger.exception(message)
-                errors['no-field']  = e.message
+                errors['no-field'] = e.message
 
         if not errors:
             try:
@@ -1157,7 +1107,7 @@ class FirstIdentityView(ModalView):
                     '.'
                 ])
                 logger.exception(message)
-                errors['no-field']  = e.message
+                errors['no-field'] = e.message
 
         if not errors:
             data['data'] = {
