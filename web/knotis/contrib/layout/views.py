@@ -1,8 +1,13 @@
 import copy
 
 from knotis.views import (
-    FragmentView
+    FragmentView,
+    ModalView,
+    EmbeddedView
 )
+from django.conf import settings
+from knotis.contrib.maps.views import GoogleMap
+
 
 
 class HeaderView(FragmentView):
@@ -31,12 +36,14 @@ class ButtonAction(object):
         title,
         href,
         data={},
-        method='get'
+        method='get',
+        deep=False,
     ):
         self.title = title
         self.href = href
         self.data = data
         self.method = method.lower()
+        self.deep = deep
 
 
 class ActionButton(FragmentView):
@@ -48,7 +55,7 @@ class ActionButton(FragmentView):
 
         self.context.update({
             'actions': self.actions(),
-            'css_class': 'btn-knotis-action'
+            'css_class': 'btnFollow'
         })
 
         return self.context
@@ -60,6 +67,31 @@ class ActionButton(FragmentView):
         return []
 
 
-class SplashTile(FragmentView):
-    template_name = 'knotis/layout/splash_tile.html'
-    view_name = 'splash_tile'
+
+class DefaultBaseView(EmbeddedView):
+    template_name = 'knotis/layout/default_base.html'
+    template_placeholders = ['content', 'modal_content']
+
+    def process_context(self):
+        current_identity_pk = self.context.get('current_identity_pk')
+        if not current_identity_pk:
+            current_identity_pk = self.request.session.get('current_identity')
+            self.context['current_identity_pk'] = current_identity_pk
+        maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
+        maps_scripts = maps.render_api_js()
+
+        self.context['maps_scripts'] = maps_scripts
+
+        return self.context
+
+
+class UnderConstructionView(ModalView):
+    url_patterns = [
+        r'^underconstruction/$',
+    ]
+
+    template_name = 'knotis/layout/under_construction.html'
+    view_name = 'under_construction'
+    default_parent_view_class = DefaultBaseView
+
+

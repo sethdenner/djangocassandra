@@ -26,8 +26,6 @@ from forms import (
     AdminCreateUserForm,
 )
 
-
-
 ###### LIST EDIT APP ######
 def format_user(self, user):
 
@@ -164,7 +162,7 @@ class UserUpdateAdminAJAXView(AdminAJAXView):
                 status = 'good'
             else:
                 status = 'fail'
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': status,
             })
         else:
@@ -172,5 +170,46 @@ class UserUpdateAdminAJAXView(AdminAJAXView):
                 'status': 'fail',
             })
 
+class UserQueryAdminAJAXView(AJAXView):
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        users = []
+        user_view_form = UserAdminQueryForm(data=request.POST)
 
+        current_identity = get_current_identity(self.request)
+        range_start = int(user_view_form.data.get('range_start'))
+        range_step = int(user_view_form.data.get('range_step'))
+        range_end = int(user_view_form.data.get('range_end'))
+        if user_view_form.data.get('user_filter'):
+            user_filter = user_view_form.data.get('user_filter')
+        else:
+            user_filter = None
 
+        if (
+            current_identity and
+            current_identity.identity_type == IdentityTypes.SUPERUSER
+        ):
+            user_query = KnotisUser.objects.all()
+            user_query = user_query[range_start - 1 : range_end]
+        else:
+            user_query = None
+
+        if(user_query):
+            if user_filter:
+                user_query = user_query.filter(user_filter)
+            for user in user_query:
+                users.append(format_user(user))
+        
+        return self.generate_ajax_response({
+            'start': range_start,
+            'end': range_end,
+            'step': range_step,
+            'users': users,
+        })
+
+class UserAdminView(ContextView):
+    template_name = 'knotis/auth/user_admin_view.html'

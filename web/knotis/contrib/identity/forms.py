@@ -182,7 +182,7 @@ class IdentityIndividualSimpleForm(IdentitySimpleForm):
             form_action = '/api/v0/identity/individual/' + instance.pk + '/'
 
         else:
-            form_action='/api/v0/identity/individual/'
+            form_action = '/api/v0/identity/individual/'
 
         super(IdentityIndividualSimpleForm, self).__init__(
             form_action=form_action,

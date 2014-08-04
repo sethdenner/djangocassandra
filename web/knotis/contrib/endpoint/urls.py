@@ -11,11 +11,9 @@ from views import(
 urlpatterns = patterns(
     '',
     url(
-        r'^settings/social/$',
-        SocialMediaSettingsView.as_view()
-    ),
-    url(
         r'^endpoint/delete/$',
         DeleteEndpointView.as_view()
     ),
 )
+
+urlpatterns += SocialMediaSettingsView.urls()

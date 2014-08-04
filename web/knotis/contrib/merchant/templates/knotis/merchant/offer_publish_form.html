@@ -1,0 +1,51 @@
+<script type="text/javascript">
+    // TODO: Figure out better implementation of this
+    $(document).ready(function() {
+        $('.offerSteps li').removeClass('active');
+        $('.stepFour').addClass('active');
+    });
+</script>
+
+<div class="offerForm row-fluid offerPreview">
+    <form class="form-horizontal" id="{{ form.form_id }}" action="{{ form.form_action }}" method="{{ form.form_method }}" >{% csrf_token %}
+        {{ form.offer }}
+        <div class="control-group col-lg-6 col-xs-12">
+            <label class="control-label">When to send offer</label>
+            <div class="controls">
+                <div id="id-start-time" class="input-append date">
+                    {% with form.start_time.value|default_if_none:'' as start_time %}
+                    <input data-format="MM/dd/yyyy HH:mm:ss PP" class="add-on" type="text" name="{{ form.start_time.html_name }}" value="{% if start_time %}{{ start_time|date }} {{ start_time|time }}{% endif %}" placeholder="Start Time" />
+                    <span class="add-on">
+                        <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                    </span>
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="controls" >
+                {% with form.end_time.value|default_if_none:'' as end_time %}
+                <div id="id-end-time" class="input-append date{% if form.start_time.value and not form.end_time.value %} hide{% endif %}">
+                    <input class="add-on" data-format="MM/dd/yyyy HH:mm:ss PP" type="text" name="{{ form.end_time.html_name }}" value="{% if end_time %}{{ end_time|date }} {{ end_time|time }}{% endif %}" placeholder="End Time"{% if form.start_time.value and not form.end_time.value %} disabled{% endif %} />
+                    <span class="add-on">
+                        <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                    </span>
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="controls noEnd">
+                <div style="position:relative;top:16px;right:8px;display:inline-block;">{{ form.no_time_limit }}</div> <span class="help-text">No End Time</span>
+            </div>
+        </div>
+        
+        
+        <div class="control-group publishSocial col-lg-6 col-xs-12">
+            <label class="control-label">Where to send offer</label>
+            {{ form.publish }}
+        </div>
+
+
+        <div class="offer-form-nav">
+            <button type="button" class="btn wizard-back"><span class="icon-arrow-left"></span> Go Back</button>
+            <button id="id-submit-details" type="submit" class="btn btn-primary continue"><span class="icon-arrow-right"></span> Continue</button>
+        </div>
+    </form>
+</div>

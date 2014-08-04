@@ -205,8 +205,8 @@ class RelationManager(QuickManager):
 
         return self.filter(
             relation_type=RelationTypes.FOLLOWING,
-            subject=subject,
-            related=_object
+            subject_object_id=subject.id,
+            related_object_id=_object.id
         )
 
     def get_following(
