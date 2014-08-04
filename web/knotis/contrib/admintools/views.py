@@ -20,6 +20,7 @@ from knotis.contrib.auth.forms import (
 from knotis.contrib.identity.models import (
     IdentityTypes,
     Identity,
+    IdentityEstablishment,
 )
 from knotis.contrib.identity.views import (
     get_current_identity,
