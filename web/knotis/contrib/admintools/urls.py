@@ -14,30 +14,40 @@ from knotis.contrib.auth.admin import (
 )
 
 from views import (
-    AdminDefaultView,
+    AdminValidateResendView,
+    AdminOwnerView,
 )
 
 urlpatterns = patterns(
     '',
 ### ACTIVITY VIEWER
-    url(
-        r'^admin/activity/interact/$', ActivityAdminAJAXView.as_view()
-    ),
-    url(
-        r'^admin/activity/$', ActivityAdminView.as_view()
-    ),
+### App temporarily unlinked because of bugs.
+#    url(
+#        r'^admin/activity/interact/$', ActivityAdminAJAXView.as_view()
+#    ),
+#    url(
+#        r'^admin/activity/$', ActivityAdminView.as_view()
+#    ),
 ### USER VIEWER
+#    url(
+#        r'^admin/user/interact/update-(?P<user_id>[a-zA-Z0-9\-]+)/$', UserUpdateAdminAJAXView.as_view()
+#    ),
+#    url(
+#        r'^admin/user/interact/$', UserQueryAdminAJAXView.as_view()
+#    ),
+#    url(
+#        r'^admin/user/$', UserAdminView.as_view()
+#    ),
+
+### ADMIN RESEND URL
     url(
-        r'^admin/user/interact/update-(?P<user_id>[a-zA-Z0-9\-]+)/$', UserUpdateAdminAJAXView.as_view()
-    ),
-    url(
-        r'^admin/user/interact/$', UserQueryAdminAJAXView.as_view()
-    ),
-    url(
-        r'^admin/user/$', UserAdminView.as_view()
-    ),
-### FALL THROUGH DEFAULT
-    url(
-        r'^admin/', AdminDefaultView.as_view()
+        r''.join([
+            '^admin/utils/ident_pass_reset/(?<identity_id>',
+            REGEX_UUID,
+            ')/$'
+        ]), AdminValidateResentView.as_view()
     ),
 )
+
+
+urlpatterns += AdminOwnerView.urls()

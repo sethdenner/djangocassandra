@@ -280,11 +280,24 @@ class EstablishmentProfileView(EmbeddedView):
         )
 
     def process_context(self):
+        # Refactor me!
+        # Super user check.
+        is_superuser = False
+        if request.user.is_authenticated():
+            current_identity_id = request.session.get('current_identity')
+            current_identity = Identity.objects.get(
+                pk=current_identity_id
+            )
+        if current_identity and current_identity.type == IdentityTypes.SUPERUSER:
+            is_superuser = True
+            
+            
         self.set_establishment()
         self.set_business()
 
         self.is_manager()
         self.set_images()
+        
 
         location_item = LocationItem.objects.filter(
             related_object_id=self.establishment.id
@@ -437,6 +450,7 @@ class EstablishmentProfileView(EmbeddedView):
             'profile_content': profile_content,
             'view_name': view_name,
             'content_plexer': content_plexer,
+            'is_superuser': is_superuser,
         })
 
         return local_context

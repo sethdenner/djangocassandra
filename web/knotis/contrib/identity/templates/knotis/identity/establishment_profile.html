@@ -54,6 +54,9 @@
             <div>
                 {{ profile_content }}
             </div>
+            <div>
+                {% render_fragment admin_owner_view_button %}
+            </div>
         </div>
     </div>
     {% if format == 'json' %}
