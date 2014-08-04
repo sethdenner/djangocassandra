@@ -123,7 +123,9 @@
 
                         // populate carousel-inner
                         var uploaded_url = data.image_url;
-                        //var $img = $('<div style="display:block; width:500px; height:400px; overflow:hidden; background:url(' + uploaded_url + ') no-repeat;"></div>');
+                        //$('.about-carousel-image').attr('style')
+
+                        var $img = $('<div class="about-carousel-image" style="background:url(' + uploaded_url + ')"></div>');
                         var $item = $('<div class="item"></div>');
                         $item.append($img);
                         $('#about_carousel>.carousel-inner').append($item);
@@ -149,7 +151,7 @@
 
         var $this = $(this);
         $.ajax(
-            $this.attr('href'), {
+            $this.attr('data-href'), {
                 type: $this.attr('data-method'),
                 data: {
                     pk: $this.attr('data-pk')
@@ -164,7 +166,7 @@
                 alert(message);
             } else {
                 $('#about_carousel').carousel('next');
-                //$this.parent().parent().remove();
+                $this.parent().parent().remove();
 
             }
         });
@@ -192,10 +194,10 @@
     });
 
     // gather up all the address display elements on the page, and link them.
-    $('.linked-business-name').link_field('linkbizname');
-    $('.linked-phone-number').link_field('linkphonenum');
-    $('.linkedaddress').link_field('linkaddress');
-    $('.linkedwebsite').link_field('linkweb');
+    //$('.linked-business-name').link_field('linkbizname');
+    //$('.linked-phone-number').link_field('linkphonenum');
+    //$('.linkedaddress').link_field('linkaddress');
+    //$('.linkedwebsite').link_field('linkweb');
 
     // display the map on the about page.
     var latLng = new google.maps.LatLng(parseFloat($('#establishment-contact-loc-details').attr('data-latitude')),
