@@ -7,38 +7,38 @@
 </script>
 
 
-<div class="offerForm">
+<div class="offerForm offerPreview">
     <div class="row">
         {{ offer_tile_preview }} 
 
-        <div class="col-lg-6 col-xs-12">
+        <p>
             Based on the Promotion you created,
             you can expcet to receive the following
             revenue per customer:
-        </div>
+        </p>
 
-        <p class="knotis-price-big text-right">
+        <p class="knotis-price-big">
             {{ summary_revenue_customer }}
         </p>
 
 
-        <div class="col-lg-6 col-xs-12">
-            By using our service, we have<br/>
-            saved you the following<br/>
+        <p>
+            By using our service, we have
+            saved you the following
             estimated amount:
-        </div>
+        </p>
 
-        <p class="knotis-price-big text-right">
+        <p class="knotis-price-big">
             {{ summary_savings }}
         </p>
 
-        <div class="col-lg-6 col-xs-12">
-            We anticipate this Promotion<br/>
-            generating you the<br/>
+        <p>
+            We anticipate this Promotion
+            generating you the
             following revenue:
-        </div>
+        </p>
 
-        <p class="knotis-price-big text-right">
+        <p class="knotis-price-big">
             {{ summary_revenue_total }} <span class="knotis-price-big-help">({{ summary_estimated_sales }} sales)</span>
         </p>
 
@@ -49,9 +49,9 @@
                 {{ offer_finish_form.published }}
 
                 <div class="offer-form-nav">
-                    <button type="button" class="pull-left btn wizard-back"><span class="icon-arrow-left"></span> Go Back</button>
-                    <button id="id-submit-details" type="submit" class="pull-right btn btn-primary continue">Publish Promotion</button>
-                    <button type="button" class="pull-right btn btn-primary">Save For Later</button>
+                    <button type="button" class="btn wizard-back"><span class="icon-arrow-left"></span> Go Back</button>
+                    <button id="id-submit-details" type="submit" class="btn btn-primary continue">Publish Promotion</button>
+                    <button type="button" class="btn btn-primary">Save For Later</button>
 
                     </form>
                 </div>

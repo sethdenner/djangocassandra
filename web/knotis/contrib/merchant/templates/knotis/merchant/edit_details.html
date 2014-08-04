@@ -27,13 +27,13 @@
         <div class="control-group">
             <label class="control-label">Restrictions</label>
             <div class="controls">
-                <textarea rows="5" name="{{ form.restrictions.html_name }}">{{ form.restrictions.value|default_if_none:'' }}</textarea>
+                <textarea class="restrictions" rows="5" name="{{ form.restrictions.html_name }}">{{ form.restrictions.value|default_if_none:'' }}</textarea>
             </div>
         </div>
 
         <div class="offer-form-nav">
-            <button type="button" class="pull-left btn wizard-back"><span class="icon-arrow-left"></span> Go Back</button>
-            <button id="id-submit-details" type="submit" class="pull-right btn btn-primary continue">Continue <span class="icon-arrow-right"></span></button>
+            <button type="button" class="btn wizard-back"><span class="icon-arrow-left"></span> Go Back</button>
+            <button id="id-submit-details" type="submit" class="btn btn-primary continue">Continue <span class="icon-arrow-right"></span></button>
         </div>
     </form>
 </div>

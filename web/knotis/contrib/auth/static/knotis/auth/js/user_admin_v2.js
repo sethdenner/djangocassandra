@@ -19,7 +19,7 @@
                                +             'id="' + user_tag + '_form" '
                                +             'method="post"'
                                +         '>'
-                               +             'USERNAME:&nbsp; <input name="username" type="text" id="' + user_tag + '_username" '
+                               +             'USERNAME: <input name="username" type="text" id="' + user_tag + '_username" '
                                +                 'value="' + uvalue.username + '"'
                                +             '>'
                                +             '<input type="submit" value="Save" id="' + user_tag + '_button">'
@@ -47,11 +47,11 @@
                                      +         'id="' + ep_tag + '_form" '
                                      +         'method="post"'
                                      +     '>'
-                                     +         'ENDPOINT:&nbsp; ' + evalue.id
+                                     +         'ENDPOINT: ' + evalue.id
                                      +         '<input name="endpoint_id" type="hidden" value="' + evalue.id + '"><br>'
-                                     +         'TYPE:&nbsp; ' + evalue.type
+                                     +         'TYPE: ' + evalue.type
                                      +         '<input name="endpoint_type" type="hidden" value="' + evalue.type + '"><br>'
-                                     +         'VALUE:&nbsp;'
+                                     +         'VALUE:'
                                      +         '<input name="value" type="text" id="' + ep_tag + '_value" '
                                      +             'value="' + evalue.value + '"'
                                      +         '>'

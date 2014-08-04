@@ -1,12 +1,12 @@
 <form action="/admin/activity/interact/" id="admin_list_controls" method="post">
   {% csrf_token %}
   <div id="admin-thing-1">
-    &nbsp;&nbsp;START: &nbsp; <input name="{{ form.range_start.html_name }}" type="text" placeholder="{{ form.range_start.initial }}" id="range-start" value="{{ form.range_start.value }}">
-    &nbsp;&nbsp;END: &nbsp; <input name="{{ form.range_end.html_name }}" type="text" placeholder="{{ form.range_end.initial }}" id="range-end" value="{{ form.range_end.value }}">
-    &nbsp;&nbsp;STEP:&nbsp; <input name="{{ form.range_step.html_name }}" type="text" placeholder="{{ form.range_step.initial }}" id="range-step" value="{{ form.range_step.value }}">
+    START:  <input name="{{ form.range_start.html_name }}" type="text" placeholder="{{ form.range_start.initial }}" id="range-start" value="{{ form.range_start.value }}">
+    END:  <input name="{{ form.range_end.html_name }}" type="text" placeholder="{{ form.range_end.initial }}" id="range-end" value="{{ form.range_end.value }}">
+    STEP: <input name="{{ form.range_step.html_name }}" type="text" placeholder="{{ form.range_step.initial }}" id="range-step" value="{{ form.range_step.value }}">
   </div>
   <div id="admin-thing-2">
-    &nbsp;&nbsp;FILTER:&nbsp; <input name="{{ form.activity_filter.html_name }}" type="text" placeholder="Place your filter here." id="activity_filter" value="{{ form.activity_filter.value }}">
+    FILTER: <input name="{{ form.activity_filter.html_name }}" type="text" placeholder="Place your filter here." id="activity_filter" value="{{ form.activity_filter.value }}">
   </div>
   <div id="admin-thing-3">
     <input type="submit" value="Query" id="query_button">
