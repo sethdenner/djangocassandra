@@ -726,7 +726,7 @@ nav button.signUp {
     font-size: 14px;
     display: inline-block;
     width: 100%;
-    border-top: 1px solid #e4e4e4;
+
     font-family: 'LatoLight', sans-serif;
     position: relative;
     top: 10px;
@@ -741,17 +741,79 @@ nav button.signUp {
     margin-right: 5px;
 }
 
-/* line 1, ../sass/_offerCreate.scss */
-#offer-create {
-    text-align: center;
-}
 /* line 3, ../sass/_offerCreate.scss */
-#offer-create h1 {
-    font-size: 34px;
-    text-align: center;
-    color: black;
-    margin: 20px 0;
+.offerSteps ul {
+    margin: 0;
+    width: 100%;
+    padding: 5px;
 }
+
+.offerForm {
+    padding: 0 50px 70px;
+    height: 100%;
+    display: inline-block;
+    text-align: left;
+}
+
+.offer-form-nav {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    background: white;
+    padding: 15px 50px;
+}
+
+#id-offer-discount {
+    display: inline-block;
+    padding: 10px 30px;
+    color: #2cc397;
+}
+
+.offerForm .control-group {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.modalCancel {
+    padding: 5px 15px;
+    background: transparent;
+    border: 2px solid rgb(238, 238, 238);
+    color: rgb(177, 177, 177);
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+.offerForm textarea {
+    width: 100%;
+    height: 50px;
+}
+
+.offer-form-nav button {
+    background: transparent;
+    color: rgb(134, 134, 134);
+    border: 1px solid rgb(243, 243, 243);
+    padding: 10px 25px;
+    margin: 0 6px 0 0;
+    outline: 0;
+}
+
+.offer-form-nav button span {
+    font-size: 12px;
+}
+
+.offer-form-nav button.continue {
+    color: #2cc397;
+}
+
+
+.offer-form-nav button.continue:hover {
+    color: white;
+    background: #2cc397;
+    border: 1px solid #2cc397;
+}
+
 /* line 10, ../sass/_offerCreate.scss */
 #offer-create input, #offer-create textarea {
     border: 1px solid rgba(192, 192, 192, 0.5);
@@ -761,6 +823,8 @@ nav button.signUp {
     color: #807F7F;
     font-size: 15px;
     outline: 0;
+    margin: 5px;
+    height: 50px;
 }
 /* line 20, ../sass/_offerCreate.scss */
 #offer-create .navBtns a {
@@ -783,8 +847,16 @@ nav button.signUp {
 /* line 38, ../sass/_offerCreate.scss */
 #offer-create label {
     color: #777777;
+    font-size: 15px;
+    margin: 20px 0;
+    display: inline-block;
 }
 
+#offer-create h1 {
+    font-size: 30px;
+    color: #6D6D6D;
+    margin: 20px;
+}
 /* line 43, ../sass/_offerCreate.scss */
 .wrapper {
     width: 70%;
@@ -1776,4 +1848,15 @@ span.help-inline {
     line-height: 30px;
     margin: 25px 0;
 
+}
+
+.settings .icon-settings {
+    padding: 20px 0;
+}
+
+.modal {
+    top: 40%;
+    width: 650px;
+    margin-left: -315px;
+    box-shadow: 0 0;
 }
