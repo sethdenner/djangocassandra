@@ -22,8 +22,11 @@ from knotis.contrib.auth.admin import (
 )
 
 from views import (
-    AdminDefaultView,
+    AdminValidateResendView,
+    AdminOwnerView,
 )
+
+from knotis.utils.regex import REGEX_UUID
 
 urlpatterns = patterns(
     '',
@@ -54,8 +57,15 @@ urlpatterns = patterns(
     url(
         r'^admin/user/?$', login_required(UserAdminView.as_view())
     ),
-### FALL THROUGH DEFAULT
+
+### ADMIN RESEND URL
     url(
-        r'^admin/', login_required(AdminDefaultView.as_view())
+        r''.join([
+            '^admin/utils/ident_pass_reset/(?P<identity_id>',
+            REGEX_UUID,
+            ')/$'
+        ]), AdminValidateResendView.as_view()
     ),
 )
+
+urlpatterns += AdminOwnerView.urls()

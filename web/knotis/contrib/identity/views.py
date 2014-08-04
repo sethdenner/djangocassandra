@@ -280,17 +280,35 @@ class EstablishmentProfileView(EmbeddedView):
         )
 
     def process_context(self):
+        # Refactor me!
+        # Super user check.
+        is_superuser = False
+        request = self.request
+        if request.user.is_authenticated():
+            current_identity_id = request.session.get('current_identity')
+            current_identity = Identity.objects.get(
+                pk=current_identity_id
+            )
+
+            if (
+                current_identity and
+                current_identity.identity_type == IdentityTypes.SUPERUSER
+            ):
+                is_superuser = True
+
+
         self.set_establishment()
         self.set_business()
 
         self.is_manager()
         self.set_images()
 
-        locationItem = LocationItem.objects.filter(
+
+        location_item = LocationItem.objects.filter(
             related_object_id=self.establishment.id
         )
-        if len(locationItem):
-            address = locationItem[0].location.address
+        if len(location_item):
+            address = location_item[0].location.address
         else:
             address = None
 
@@ -326,9 +344,6 @@ class EstablishmentProfileView(EmbeddedView):
                     display = 'Yelp'
                 elif endpoint.endpoint_type == EndpointTypes.FACEBOOK:
                     display = 'Facebook'
-
-                elif endpoint.endpoint_type == EndpointTypes.ADDRESS:
-                    address = endpoint.value
 
                 endpoint_dict = {
                     'id': endpoint.id,
@@ -440,6 +455,7 @@ class EstablishmentProfileView(EmbeddedView):
             'profile_content': profile_content,
             'view_name': view_name,
             'content_plexer': content_plexer,
+            'is_superuser': is_superuser,
         })
 
         return local_context
@@ -486,7 +502,6 @@ class EstablishmentsGrid(GridSmallView):
 
                 establishment_tile = IdentityTile()
                 establishment_context = Context({
-                    'request': self.request,
                     'identity': establishment,
                     'request': self.request,
                 })
@@ -520,7 +535,7 @@ class IdentityTileActionButton(ActionButton):
         if not current_identity:
             return [
                 ButtonAction(
-                    'Sign Up',
+                    'Follow',
                     '/signup/',
                     {},
                     'get',
@@ -665,13 +680,13 @@ class EstablishmentProfileLocation(FragmentView):
             ):
                 website = endpoint
 
-        locationItem = LocationItem.objects.filter(
+        location_item = LocationItem.objects.filter(
             related_object_id=establishment_id
         )
-        if len(locationItem):
-            address = locationItem[0].location.address
-            latitude = locationItem[0].location.latitude
-            longitude = locationItem[0].location.longitude
+        if len(location_item):
+            address = location_item[0].location.address
+            latitude = location_item[0].location.latitude
+            longitude = location_item[0].location.longitude
         else:
             address = None
             latitude = None
@@ -687,7 +702,7 @@ class EstablishmentProfileLocation(FragmentView):
         return local_context
 
 
-class EstablishmentAboutAbout(AJAXFragmentView):
+class EstablishmentAboutDetails(AJAXFragmentView):
     template_name = 'knotis/identity/establishment_about_details.html'
     view_name = 'establishment_about_details'
 
@@ -706,13 +721,13 @@ class EstablishmentAboutAbout(AJAXFragmentView):
             has_data = True
 
         # Fetch and add the address and coordinates to local_context
-        locationItem = LocationItem.objects.filter(
+        location_item = LocationItem.objects.filter(
             related_object_id=establishment.pk
         )
-        if len(locationItem):
-            address = locationItem[0].location.address
-            address_latitude = locationItem[0].location.latitude,
-            address_longitude = locationItem[0].location.longitude
+        if len(location_item):
+            address = location_item[0].location.address
+            address_latitude = location_item[0].location.latitude,
+            address_longitude = location_item[0].location.longitude
         else:
             address = None
             address_latitude = None
@@ -933,7 +948,7 @@ class EstablishmentProfileAbout(FragmentView):
         local_context = copy.copy(self.context)
         sections = []
 
-        about = EstablishmentAboutAbout()
+        about = EstablishmentAboutDetails()
         about_markup = about.render_template_fragment(local_context)
         about_markup = about_markup.strip()
         if about_markup:

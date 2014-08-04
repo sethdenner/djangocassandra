@@ -12,6 +12,10 @@ from knotis.contrib.admintools.forms import (
     AdminQueryForm,
 )
 
+from knotis.views import (
+    AJAXView,
+    ContextView
+)
 
 ###### IMPORTS FROM MODULE FILES ######
 
@@ -20,7 +24,6 @@ from models import (
 )
 
 ###### LIST EDIT APP ######
-
 class ActivityQueryAdminAJAXView(AdminListQueryAJAXView):
     query_target = Activity.objects
 

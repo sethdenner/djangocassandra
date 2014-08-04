@@ -40,7 +40,6 @@ from knotis.contrib.stripe.views import (
 )
 
 from knotis.views import (
-    ContextView,
     EmbeddedView,
     ModalView,
     AJAXFragmentView,
@@ -149,6 +148,11 @@ class OffersGridView(GridSmallView):
             except:
                 pass
 
+        page = int(self.context.get('page', '0'))
+        count = int(self.context.get('count', '20'))
+        start_range = page * count
+        end_range = start_range + count
+
         if (
             current_identity and
             current_identity.identity_type == IdentityTypes.INDIVIDUAL
@@ -167,12 +171,14 @@ class OffersGridView(GridSmallView):
         try:
             offers = Offer.objects.filter(
                 **offer_filter_dict
-            )
+            )[start_range:end_range]
 
         except Exception:
             logger.exception(''.join([
                 'failed to get offers.'
             ]))
+
+
 
         tiles = []
         for offer in offers:
@@ -200,36 +206,9 @@ class OffersView(EmbeddedView):
 
     default_parent_view_class = DefaultBaseView
     template_name = 'knotis/offer/offers_view.html'
-
-    def process_context(self):
-        styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
-        ]
-
-        pre_scripts = []
-
-        post_scripts = [
-            'knotis/layout/js/layout.js',
-            'knotis/layout/js/forms.js',
-            'knotis/layout/js/header.js',
-            'knotis/layout/js/create.js',
-            'navigation/js/navigation.js',
-            'knotis/offer/js/offers.js',
-            'knotis/stripe/js/stripe_form.js'
-        ]
-
-        local_context = copy.copy(self.context)
-        local_context.update({
-            'styles': styles,
-            'pre_scripts': pre_scripts,
-            'post_scripts': post_scripts,
-        })
-        return local_context
+    post_scripts = [
+        'knotis/offer/js/offers.js',
+    ]
 
 
 class OfferPurchaseSuccessView(ModalView):
@@ -253,32 +232,15 @@ class OfferPurchaseView(EmbeddedView):
             ')/buy/$'
         ])
     ]
+    post_scripts = [
+        'knotis/offer/js/offer_purchase.js',
+        'knotis/offer/js/offer_purchase_button.js',
+        'knotis/stripe/js/stripe_form.js'
+    ]
     default_parent_view_class = DefaultBaseView
 
     def process_context(self):
         request = self.context.get('request')
-
-        styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
-            'knotis/offer/css/offer_purchase.css'
-        ]
-        self.context['styles'] = styles
-
-        post_scripts = [
-            'knotis/layout/js/layout.js',
-            'knotis/layout/js/forms.js',
-            'knotis/layout/js/header.js',
-            'navigation/js/navigation.js',
-            'knotis/offer/js/offer_purchase.js',
-            'knotis/offer/js/offer_purchase_button.js',
-            'knotis/stripe/js/stripe_form.js'
-        ]
-        self.context['post_scripts'] = post_scripts
 
         offer_id = self.context.get('offer_id')
         offer = get_object_or_404(Offer, pk=offer_id)

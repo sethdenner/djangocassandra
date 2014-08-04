@@ -10,7 +10,6 @@ class SupportView(ModalView):
     ]
     template_name = 'knotis/support/support.html'
     default_parent_view_class = DefaultBaseView
-
     post_scripts = [
         'knotis/support/js/support.js'
     ]
@@ -52,7 +51,7 @@ class SupportView(ModalView):
             message_body,
             email,
             [settings.EMAIL_HOST_USER],
-            fail_silently=True,
+            fail_silently=False,
         )
 
         return self.generate_ajax_response({

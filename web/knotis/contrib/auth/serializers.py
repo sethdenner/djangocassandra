@@ -1,4 +1,8 @@
-from rest_framework.fields import CharField
+from rest_framework.fields import (
+    CharField,
+    IntegerField
+)
+
 from rest_framework.serializers import ModelSerializer
 
 from .models import (
@@ -24,3 +28,6 @@ class UserInformationSerializer(ModelSerializer):
         )
 
     username = CharField(source='_denormalized_auth_KnotisUser_username')
+    default_identity_type = IntegerField(
+        source='default_identity.identity_type'
+    )

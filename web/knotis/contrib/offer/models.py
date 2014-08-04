@@ -10,6 +10,9 @@ logger = logging.getLogger(__name__)
 from django.conf import settings
 from django.db.models.fields import Field as ModelField
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 from knotis.contrib.quick.models import (
     QuickModel,
     QuickManager
@@ -315,15 +318,6 @@ class Offer(QuickModel):
             **kwargs
         )
 
-        # Check whether offer should be completed on instansiation.
-        # Could have no end date I guess so check for not None.
-        if (
-            self.end_time and self.end_time < datetime.datetime.utcnow()
-        ) or (
-            not self.unlimited and self.purchased >= self.stock
-        ):
-            self.complete()
-
     def _calculate_prices(self):
         if hasattr(self, '_price_retail') and hasattr(self, '_price_discount'):
             return
@@ -369,7 +363,7 @@ class Offer(QuickModel):
         self.last_purchase = datetime.datetime.utcnow()
         self.save()
 
-        if self.purchased >= self.stock:
+        if not self.unlimited and self.purchased >= self.stock:
             self.complete()
 
     def update(
@@ -411,6 +405,13 @@ class Offer(QuickModel):
         return self
 
     def complete(self):
+        availability = OfferAvailability.objects.filter(
+            offer=self
+        )
+        for a in availability:
+            a.available = False
+            a.save()
+
         self.completed = True
         self.save()
 
@@ -663,13 +664,14 @@ class OfferAvailabilityManager(QuickManager):
         self,
         offer
     ):
-        offers = self.objects.filter(offer=offer)
+        offers = self.filter(offer=offer)
         for o in offers:
             o.title = offer.title
             o.stock = offer.stock
             o.purchased = offer.purchased
             o.default_image = offer.default_image
             o.end_time = offer.end_time
+            o.available = offer.available()
             o.save()
 
         return offers
@@ -678,15 +680,22 @@ class OfferAvailabilityManager(QuickManager):
         self,
         identity
     ):
-        offers = self.objects.filter(identity=identity)
-        identity_profile_badge = ImageInstance.objects.get(
-            related_object_id=identity.id,
-            context='profile_badge',
-            primary=True
-        )
-        for o in offers:
-            o.profile_badge = identity_profile_badge
-            o.save()
+        offers = self.filter(identity=identity)
+        try:
+            identity_profile_badge = ImageInstance.objects.get(
+                related_object_id=identity.id,
+                context='profile_badge',
+                primary=True
+            )
+            for o in offers:
+                o.profile_badge = identity_profile_badge
+                o.save()
+
+        except ImageInstance.DoesNotExist:
+            pass
+
+        except Exception, e:
+            logger.exception(e.message)
 
         return offers
 
@@ -743,6 +752,30 @@ class OfferAvailability(QuickModel):
     )
 
     objects = OfferAvailabilityManager()
+
+    @staticmethod
+    @receiver(post_save, sender=Offer)
+    def offer_post_save(
+        sender,
+        instance=None,
+        **kwargs
+    ):
+        if None is instance or not instance.pk:
+            return
+
+        OfferAvailability.objects.update_denormalized_offer_fields(instance)
+
+    @staticmethod
+    @receiver(post_save, sender=Identity)
+    def identity_post_save(
+        sender,
+        instance=None,
+        **kwargs
+    ):
+        if None is instance or not instance.pk:
+            return
+
+        OfferAvailability.objects.update_denormalized_identity_fields(instance)
 
 
 class OfferPublish(Publish):

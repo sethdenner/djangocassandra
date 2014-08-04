@@ -28,21 +28,20 @@
                             if (data.status == 'success') {
                                 var item_row_template = [
                                     '<div class="control-group">',
-                                    '<input checked type="radio" name="photo" value="{{image_id}}">&nbsp;',
-                                    '<img style="width: 32px; height: 21px;" src="{{image_src}}">&nbsp;',
-                                    '<a data-method="GET" class="item-action " href="#">Crop</a>',
-                                    '&nbsp;&nbsp;|&nbsp;&nbsp;',
-                                    '<a data-method="DELETE" class="item-action " href="#">Delete</a>',
+                                    '<img src="{{image_src}}"/>',
+                                    '<input checked type="radio" class="galleryInput" name="photo" value="{{image_id}}">',
+                                    '<a data-method="GET" class="item-action" href="#">Crop</a>',
+                                    '<a data-method="DELETE" class="item-action" href="#">Delete</a>',
                                     '</div>'
                                 ].join('');
                                 var item_row = item_row_template
-                                    .replace('{{image_id}}', data.image_id)
-                                    .replace('{{image_src}}', data.image_url);
+                                .replace('{{image_id}}', data.image_id)
+                                .replace('{{image_src}}', data.image_url);
                                 var $item_row = $(item_row);
                                 $('form#offer_photo_location_form #photos .controls:first').append($item_row)
-                                    .stop().animate({
-                                        scrollTop: $item_row.offset().top
-                                    }, 500);
+                                .stop().animate({
+                                    scrollTop: $item_row.offset().top
+                                }, 500);
 
 
                             } else if (data.status == 'failure') {

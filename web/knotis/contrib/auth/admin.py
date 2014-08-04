@@ -17,6 +17,8 @@ from knotis.contrib.identity.models import (
     IdentityTypes,
 )
 
+from knotis.views import ContextView
+
 ###### IMPORTS FROM MODULE FILES ######
 from models import (
     KnotisUser,
@@ -26,11 +28,8 @@ from forms import (
     AdminCreateUserForm,
 )
 
-
-
 ###### LIST EDIT APP ######
 def format_user(self, user):
-
 
     user_info = []
     identities = Identity.objects.get_available(user=user)
@@ -181,4 +180,8 @@ class UserUpdateAdminAJAXView(AdminAJAXView):
             return self.genereate_response({
                 'status': 'fail',
             })
+
+
+class UserAdminView(ContextView):
+    template_name = 'knotis/auth/user_admin_view.html'
 

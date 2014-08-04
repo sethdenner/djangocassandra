@@ -11,17 +11,16 @@
             <a class="no-deep" href="{{website.uri}}">{{website.value}}</a>
         {% endif %}
 
-        <div id="about-map">&nbsp;</div>
+        <div id="about-map"></div>
         <input type="hidden"
                id="establishment-contact-loc-details"
                data-latitude="{{ latitude }}"
                data-longitude="{{ longitude }}" />
         {% if address %}
-            <div class="establishment-contact-loc-address linkedaddress">
             <h2>{{ address }}</h2>
             {% endif %}
 
-        <a class="no-deep" href="http://maps.google.com/maps?daddr={{ address|iriencode }}">Get Directions</a></div>
+        <a class="no-deep" href="http://maps.google.com/maps?daddr={{ address|iriencode }}">Get Directions</a>
     </div>
     </section>
 {% endif %}

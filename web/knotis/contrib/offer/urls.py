@@ -9,6 +9,7 @@ from views import (
     OffersView,
     OfferDetailView,
     OfferPurchaseView,
+    OffersGridView,
     OfferPurchaseSuccessView,
     OfferPurchaseButton,
     NewOfferEmailBody
@@ -24,7 +25,11 @@ urlpatterns = patterns(
     url(
         r'/purchase/$',
         login_required(OfferPurchaseButton.as_view())
-    )
+    ),
+    url(
+        r'^/grid/(?P<page>\d+)/(?P<count>\d+)/$',
+        OffersGridView.as_view()
+    ),
 )
 
 urlpatterns += OffersView.urls()

@@ -57,8 +57,8 @@ from .serializers import (
     IdentitySwitcherSerializer
 )
 
-class IdentityApi(object):
 
+class IdentityApi(object):
     @staticmethod
     def create_identity(
         form_class=IdentityForm,
@@ -181,8 +181,19 @@ class IdentityApi(object):
             raise
 
         try:
-            qrcode = Qrcode.objects.create(
-                owner=business,
+            establishment = IdentityApi.create_establishment(
+                business_id=business.pk,
+                **kwargs
+            )
+
+        except:
+            business.delete(hard=True)
+            relation_manager.delete(hard=True)
+            raise
+
+        try:
+            Qrcode.objects.create(
+                owner=establishment,
                 uri='/'.join([
                     settings.BASE_URL,
                     'id',
@@ -193,6 +204,7 @@ class IdentityApi(object):
             )
 
         except:
+            establishment.delete(hard=True)
             business.delete(hard=True)
             relation_manager.delete(hard=True)
             raise
@@ -201,24 +213,12 @@ class IdentityApi(object):
             user_information = UserInformation.objects.get(
                 user=KnotisUser.objects.get_identity_user(individual)
             )
-            user_information.default_identity_id = business.id
+            user_information.default_identity_id = establishment.id
             user_information.save()
 
         except Exception, e:
             # This is non-critical, no need to reraise
             logger.exception(e.message)
-
-        try:
-            establishment = IdentityApi.create_establishment(
-                business_id=business.pk,
-                **kwargs
-            )
-
-        except:
-            business.delete(hard=True)
-            relation_manager.delete(hard=True)
-            qrcode.delete(hard=True)
-            raise
 
         return business, establishment
 
@@ -446,7 +446,7 @@ class IdentityBusinessApiView(IdentityApiView):
             business, establishment = IdentityApi.create_business(
                 **dict(request.DATA.iteritems())
             )
-            request.session['current_identity_id'] = business.id
+            request.session['current_identity'] = business.id
 
         except ValidationError, e:
             logger.exception(e.message)
@@ -494,7 +494,6 @@ class IdentityBusinessApiView(IdentityApiView):
 class IdentityEstablishmentApiView(IdentityApiView):
     api_version = 'v1'
     api_path = 'identity/establishment'
-
 
     def post(
         self,
@@ -559,12 +558,24 @@ class IdentityApiModelViewSet(ApiModelViewSet):
     model = Identity
     queryset = Identity.objects.all()
     serializer_class = IdentitySerializer
+    allow_listing = False
 
     def list(
         self,
-        request
+        request,
+        *args,
+        **kwargs
     ):
-        raise MethodNotAllowed(request.method)
+        if self.allow_listing:
+            return super(IdentityApiModelViewSet, self).list(
+                self,
+                request,
+                *args,
+                **kwargs
+            )
+
+        else:
+            raise MethodNotAllowed(request.method)
 
     def update(
         self,
@@ -668,7 +679,10 @@ class IdentityApiModelViewSet(ApiModelViewSet):
         default_detail = 'The identity endpoint did not update correctly.'
 
 
-class BusinessApiModelViewSet(IdentityApiModelViewSet, GetCurrentIdentityMixin):
+class BusinessApiModelViewSet(
+    IdentityApiModelViewSet,
+    GetCurrentIdentityMixin
+):
     api_path = 'identity/business'
     resource_name = 'business'
 
@@ -697,7 +711,7 @@ class BusinessApiModelViewSet(IdentityApiModelViewSet, GetCurrentIdentityMixin):
                 **dict(request.DATA.iteritems())
             )
 
-            request.session['current_identity_id'] = business.id
+            request.session['current_identity'] = business.id
 
         except ValidationError, e:
             logger.exception(e.message)
@@ -749,6 +763,11 @@ class EstablishmentApiModelViewSet(IdentityApiModelViewSet):
         available=True
     )
     serializer_class = EstablishmentSerializer
+    paginate_by = 20
+    paginate_by_param = 'count'
+    max_paginate_by = 200
+
+    allow_listing = True
 
 
 class IdentitySwitcherApiViewSet(ApiViewSet):

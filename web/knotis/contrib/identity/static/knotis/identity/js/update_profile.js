@@ -115,19 +115,16 @@
             var $element = $(element);
             var id = $element.attr('id');
 
-            var changed = comparator($element);
-            if (changed){
-                if(id.startsWith('endpoint')){
-                  changed_endpoints[id] = {
-                      'endpoint_id': $element.attr('data-endpoint-id'),
-                      'endpoint_type': $element.attr('data-endpoint-type'),
-                      'endpoint_value': $element.val()
-                  };
-                }else if(id == 'business-name'){
-                  changed_name = $element.val();
-                }else if(id == 'business-description'){
-                  changed_description = $element.val().trim();
-                }
+            if(id.startsWith('endpoint')){
+              changed_endpoints[id] = {
+                  'endpoint_id': $element.attr('data-endpoint-id'),
+                  'endpoint_type': $element.attr('data-endpoint-type'),
+                  'endpoint_value': $element.val()
+              };
+            }else if(id == 'business-name'){
+              changed_name = $element.val();
+            }else if(id == 'business-description'){
+              changed_description = $element.val().trim();
             }
           });
 
@@ -169,83 +166,45 @@
       $.ajaxmodal({
           href: '/location_form/',
           modal_settings: {
-            backdrop: 'static',
-            keyboard: true
+              backdrop: 'static',
+              keyboard: true
           },
           on_open: function(data, status, request){
+              var establishment_id = $('#establishment-id').val();
+              $('form#id-location-form input#related-id-input').val(
+                      establishment_id
+              );
 
-            $('#id-location-form').ajaxform({
-                done: function(data, status, jqxhr){
-                  if(!data.errors){
-                      $this.text($('#id_address').val());
-                      $('a#business-address').attr({
-                        'data-latitude': data.latitude,
-                        'data-longitude': data.longitude
-                      });
-                      $('#modal-box').modal('hide');
-                      $('.cover-endpoint.address>.cover-endpoint-text').text(data.location_address);
+              $('#id-location-form').ajaxform({
+                  done: function(data, status, jqxhr){
+                      if(!data.errors){
+                          $this.text($('#id_address').val());
+                          $('a#business-address').attr({
+                              'data-latitude': data.latitude,
+                              'data-longitude': data.longitude
+                          });
+                          $('#modal-box').modal('hide');
+                          $('.cover-endpoint.address>.cover-endpoint-text').text(data.location_address);
 
-                      $.fn.link_field.external_update('linkaddress', $('#id_address').val());
-
-                      var latLng = new google.maps.LatLng(parseFloat(data.latitude),
-                                                          parseFloat(data.longitude));
+                          var latLng = new google.maps.LatLng(parseFloat(data.latitude),
+                              parseFloat(data.longitude));
 
 
+                      }
                   }
-                }
-            });
+              });
 
-            $('#id-location-form #address-input #id_address').geocomplete({
-                map: '.map_canvas',
-                location: $this.text(),
-                details: '#id-location-form',
-                detailsAttribute: 'data-geo'
-            });
+              $('#id-location-form #address-input #id_address').geocomplete({
+                  map: '.map_canvas',
+                  location: $this.text(),
+                  details: '#id-location-form',
+                  detailsAttribute: 'data-geo'
+              });
 
-            $('form#id-location-form input#related-id-input').val(
-                $('#id-identity-id').attr('data-establishment-id')
-            );
           }
       });
     };
 
     $updateable_addresses.on('click', update_address);
-
-    // display the map on the about page.
-
-    // display the map on the about page.
-
-    var latLng = new google.maps.LatLng(parseFloat($('#establishment-contact-loc-details').attr('data-latitude')),
-                              parseFloat($('#establishment-contact-loc-details').attr('data-longitude')));
-
-    var setupMap = function(latLng){
-        var map;
-        var marker;
-        var initialize = function(){
-          var mapOptions = {
-              center: latLng,
-              zoomControl: false,
-              scaleControl: false,
-              draggable: false,
-              navigationContol: false,
-              mapTypeId: google.maps.MapTypeId.ROADMAP,
-              zoom: 16
-          };
-          map = new google.maps.Map(document.getElementById('about-map'), mapOptions);
-
-          var markerOptions = {
-              position: latLng,
-              map: map
-          };
-          marker = new google.maps.Marker(markerOptions);
-          map.setZoom(16);
-          google.maps.event.trigger(map, 'resize');
-        }
-
-        google.maps.event.addDomListener(window, 'load', initialize);
-
-        return {marker: marker, map: map};
-    };
-    var map_stuff = setupMap();
 
 })(jQuery);
