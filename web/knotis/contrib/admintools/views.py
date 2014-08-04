@@ -31,6 +31,7 @@ from knotis.contrib.layout.views import (
 
 from knotis.utils.regex import REGEX_UUID
 from knotis.views import (
+    ModalView,
     EmbeddedView,
     FragmentView,
     AJAXView,
