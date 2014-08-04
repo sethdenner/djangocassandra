@@ -1,3 +1,11 @@
+<script type="text/javascript">
+    // TODO: Figure out better implementation of this
+    $(document).ready(function() {
+        $('.offerSteps li').css('color','black');
+        $('.stepTwo').css('color','#2cc397');
+    });
+</script>
+
 <div class="offerForm">
     <form class="form-horizontal" id="{{ form.form_id }}" action="{{ form.form_action }}" method="{{ form.form_method }}" >{% csrf_token %}
         <input type="hidden" name="{{ form.id.html_name }}" value="{{ form.id.value }}" />
@@ -24,10 +32,8 @@
         </div>
 
         <div class="offer-form-nav">
-            <button type="button" class="pull-left btn wizard-back">Back</button>
-            <button type="button" class="delete pull-left btn" data-dismiss="modal">Delete Offer</button>
-            <button id="id-submit-details" type="submit" class="pull-right btn btn-primary">Next <span class="icon-arrow-right"></span></button>
-            <button type="button" class="pull-right btn btn-primary">Save &amp; Preview</button>
+            <button type="button" class="pull-left btn wizard-back"><span class="icon-arrow-left"></span> Go Back</button>
+            <button id="id-submit-details" type="submit" class="pull-right btn btn-primary continue">Continue <span class="icon-arrow-right"></span></button>
         </div>
     </form>
 </div>

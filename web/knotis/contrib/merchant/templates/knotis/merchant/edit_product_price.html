@@ -1,7 +1,8 @@
 <script type="text/javascript">
     // TODO: Figure out better implementation of this
     $(document).ready(function() {
-        console.log('I am running!')
+        $('.offerSteps li').css('color','black');
+        $('.stepOne').css('color','#2cc397');
     });
 </script>
 
@@ -11,7 +12,7 @@
         <input type="hidden" name="{{ form.owner.html_name }}" value="{{ form.owner.value|default_if_none:current_identity.id }}" />
         <input type="hidden" name="{{ form.offer_id.html_name }}" value="{{ form.offer_id.value|default_if_none:'' }}" />
         <div class="control-group">
-            <label class="control-label">Select Type</label>
+            <label class="control-label">Select Promotion Type</label>
             <div class="controls">
                 <input id="id-credit-product-input" name="{{ form.product_type.html_name }}" type="radio" value="{{ ProductTypes.CREDIT }}"{% if form.product_type.value|default_if_none:ProductTypes.CREDIT == ProductTypes.CREDIT %} checked{% endif %} />
                 <input class="span1" name="{{ form.credit_price.html_name }}" type="text" value="{{ form.credit_price.value|default_if_none:"20" }}"{% if form.product_type.value|default_if_none:ProductTypes.CREDIT != ProductTypes.CREDIT %} disabled{% endif %} />
@@ -27,7 +28,7 @@
             </div>
         </div>
         <div class="control-group physical{% if form.product_type.value != ProductTypes.PHYSICAL %} hide{% endif %}">
-            <label class="control-label">Enter Price</label>
+            <label class="control-label">Enter Cost</label>
             <div class="controls">
                 <input class="span1" name="{{ form.product_price.html_name }}" type="text" value="{{ form.product_price.value|default_if_none:"20" }}"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
                 <span>discounted value</span>
@@ -36,10 +37,10 @@
         <div class="control-group physical{% if form.product_type.value != ProductTypes.PHYSICAL %} hide{% endif %}">
             <div class="controls">
                 <input class="span1"  name="{{ form.product_value.html_name }}" type="text" value="{{ form.product_value.value|default_if_none:"40" }}"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
-                <span>regular price (retail value)</span>
+                <span>Regular Price (Retail Value)</span>
             </div>
         </div>
-        <div class="control-group offer-quantity{% if form.offer_unlimited.value %} hide{% endif %}">
+        <div class="offer-quantity{% if form.offer_unlimited.value %} hide{% endif %}">
             <label class="control-label">Enter Quantity</label>
             <div class="controls">
                 <input class="span1" name="{{ form.offer_stock.html_name }}" type="text" value="{{ form.offer_stock.value|default_if_none:"100" }}"{% if form.offer_unlimited.value %} disabled{% endif %} />
@@ -52,9 +53,8 @@
             </div>
         </div>
         <div class="offer-form-nav">
-            <button type="button" class="delete pull-left btn" data-dismiss="modal">Cancel</button>
-            <button id="id-submit-product" type="submit" class="pull-right btn btn-primary next">Next <span class="icon-arrow-right"></span></button>
-        </nav>
+            <button id="id-submit-product" type="submit" class="pull-right btn btn-primary continue">Continue <span class="icon-arrow-right"></span></button>
+            </nav>
     </form>
 </div>
 <script src="{{ STATIC_URL }}knotis/merchant/js/edit_product_price.js"></script>
