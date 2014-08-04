@@ -315,15 +315,6 @@ class Offer(QuickModel):
             **kwargs
         )
 
-        # Check whether offer should be completed on instansiation.
-        # Could have no end date I guess so check for not None.
-        if (
-            self.end_time and self.end_time < datetime.datetime.utcnow()
-        ) or (
-            not self.unlimited and self.purchased >= self.stock
-        ):
-            self.complete()
-
     def _calculate_prices(self):
         if hasattr(self, '_price_retail') and hasattr(self, '_price_discount'):
             return
