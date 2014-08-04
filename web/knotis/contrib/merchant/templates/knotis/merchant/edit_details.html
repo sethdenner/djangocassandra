@@ -1,28 +1,40 @@
-<form class="form-horizontal" id="{{ form.form_id }}" action="{{ form.form_action }}" method="{{ form.form_method }}" >{% csrf_token %}
-  <input type="hidden" name="{{ form.id.html_name }}" value="{{ form.id.value }}" />
-  <div class="control-group">
-    <label class="control-label">Enter Title</label>
-    <div class="controls">
-      <input type="text" name="{{ form.title.html_name }}" value="{{ form.title.value }}" />
-    </div>
-  </div>
-  <div class="control-group">
-    <label class="control-label">Synopsis</label>
-    <div class="controls">
-      <textarea rows="5" name="{{ form.description.html_name }}">{{ form.description.value|default_if_none:'' }}</textarea>
-    </div>
-  </div>
-  <div class="control-group">
-    <label class="control-label">Restrictions</label>
-    <div class="controls">
-      <textarea rows="5" name="{{ form.restrictions.html_name }}">{{ form.restrictions.value|default_if_none:'' }}</textarea>
-    </div>
-  </div>
-  <div>
-    <button type="button" class="pull-left btn wizard-back">Back</button>
-    <button type="button" class="pull-left btn" data-dismiss="modal">Delete Offer</button>
-    <button id="id-submit-details" type="submit" class="pull-right btn btn-primary">Next</button>
-    <button type="button" class="pull-right btn btn-primary">Save &amp; Preview</button>
-  </div>
-</form>
+<script type="text/javascript">
+    // TODO: Figure out better implementation of this
+    $(document).ready(function() {
+        $('.offerSteps li').removeClass('active');
+        $('.stepTwo').addClass('active');
+    });
+</script>
+
+<div class="offerForm">
+    <form class="form-horizontal" id="{{ form.form_id }}" action="{{ form.form_action }}" method="{{ form.form_method }}" >{% csrf_token %}
+        <input type="hidden" name="{{ form.id.html_name }}" value="{{ form.id.value }}" />
+
+        <div class="control-group">
+            <label class="control-label">Enter Title</label>
+            <div class="controls">
+                <input type="text" name="{{ form.title.html_name }}" value="{{ form.title.value }}" />
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Synopsis</label>
+            <div class="controls">
+                <textarea rows="5" name="{{ form.description.html_name }}">{{ form.description.value|default_if_none:'' }}</textarea>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Restrictions</label>
+            <div class="controls">
+                <textarea rows="5" name="{{ form.restrictions.html_name }}">{{ form.restrictions.value|default_if_none:'' }}</textarea>
+            </div>
+        </div>
+
+        <div class="offer-form-nav">
+            <button type="button" class="pull-left btn wizard-back"><span class="icon-arrow-left"></span> Go Back</button>
+            <button id="id-submit-details" type="submit" class="pull-right btn btn-primary continue">Continue <span class="icon-arrow-right"></span></button>
+        </div>
+    </form>
+</div>
 <script src="{{ STATIC_URL }}knotis/merchant/js/edit_details.js"></script>

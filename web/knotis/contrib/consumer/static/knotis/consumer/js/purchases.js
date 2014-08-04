@@ -65,30 +65,11 @@
                         data = data.replace(/(\r\n|\n|\r)/gm,"");
                         if (!data) {
                             results_left = false;
-                            /*
-                            $('.span10.grid > .row-fluid.grid-small > .span12 > .row-fluid').after(
-                                no_more_markup
-                            );
-                            */
                             return;
                         }
                         var $markup = $(data);
                         $markup = $markup.children().children().children();
                         $('.span12 > .row-fluid').append($markup);
-                        /*
-                        if (0 === page % auto_paging_cutoff) {
-                            $('.span10.grid > .row-fluid.grid-small > .span12 > .row-fluid').after(
-                                load_more_markup
-                            );
-                            $('button.btn-load-more').click(function(event) {
-                                $(this).parent().remove();
-                                fetching_results = false;
-                                $(window).scroll();
-                            });
-
-                        } else {
-                        }
-                        */
                         fetching_results = false;
                         initialized_purchase_tiles();
                     }
