@@ -1878,3 +1878,12 @@ span.help-inline {
     margin-left: -315px;
     box-shadow: 0 0;
 }
+.map_canvas {
+    height: 300px;
+    width: 300px;
+}
+#about-map {
+    height: 300px;
+    width: 300px;
+    overflow:visible;
+}
