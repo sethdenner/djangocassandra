@@ -918,7 +918,22 @@ offerSteps ul {
     height: 50px;
 }
 
-.offer-form-nav button, #offer-modal a {
+#offer-modal a {
+    color: #2cc397;
+    border: 2px solid #2cc397;
+    padding: 10px 25px;
+    margin: 0 6px 0 0;
+    outline: 0;
+    border-radius: 3px;
+}
+
+#offer-modal a:hover {
+    color: white;
+    background: #2cc397;
+    border: 2px solid #2cc397;
+}
+
+.offer-form-nav button {
     background: transparent;
     color: rgb(134, 134, 134);
     border: 1px solid rgb(243, 243, 243);
@@ -1422,7 +1437,6 @@ offerSteps ul {
 /* line 90, ../sass/_modals.scss */
 .offerDetails {
     padding: 10px;
-    background: magenta;
     height: 400px;
 }
 /* line 93, ../sass/_modals.scss */
@@ -1947,6 +1961,8 @@ span.help-inline {
     border-radius: 50%;
     max-width: 92px;
     max-height: 92px;
+    position: relative;
+    top: 60px;
 }
 
 .defaultImg {
@@ -2084,7 +2100,6 @@ span.help-inline {
 
 .promotionTile a {
     color: #C0C0C0;
-    padding: 170px 30px 0;
     width: 100%;
     left: 0;
     display: inline-block;
@@ -2093,6 +2108,9 @@ span.help-inline {
     line-height: 25px;
     position: absolute;
     height: 100%;
+    margin-top: 15px;
+    padding: 170px 20px 0;
+    top: -20px;
 }
 
 .offerDetails {
