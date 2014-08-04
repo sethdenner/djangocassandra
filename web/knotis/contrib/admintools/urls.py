@@ -47,7 +47,7 @@ urlpatterns = patterns(
             '^admin/utils/ident_pass_reset/(?<identity_id>',
             REGEX_UUID,
             ')/$'
-        ]), AdminValidateResentView.as_view()
+        ]), AdminValidateResendView.as_view()
     ),
 )
 
