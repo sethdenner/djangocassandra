@@ -18,6 +18,8 @@ from views import (
     AdminOwnerView,
 )
 
+from knotis.utils.regex import REGEX_UUID
+
 urlpatterns = patterns(
     '',
 ### ACTIVITY VIEWER
