@@ -193,12 +193,6 @@
         $('.tab-content.yelp').addClass('active');
     });
 
-    // gather up all the address display elements on the page, and link them.
-    //$('.linked-business-name').link_field('linkbizname');
-    //$('.linked-phone-number').link_field('linkphonenum');
-    //$('.linkedaddress').link_field('linkaddress');
-    //$('.linkedwebsite').link_field('linkweb');
-
     // display the map on the about page.
     var latLng = new google.maps.LatLng(parseFloat($('#establishment-contact-loc-details').attr('data-latitude')),
                               parseFloat($('#establishment-contact-loc-details').attr('data-longitude')));
@@ -217,7 +211,6 @@
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 zoom: 16
             };
-
             map = new google.maps.Map(document.getElementById('about-map'), mapOptions);
 
             var markerOptions = {

@@ -167,9 +167,13 @@
           href: '/location_form/',
           modal_settings: {
               backdrop: 'static',
-          keyboard: true
+              keyboard: true
           },
           on_open: function(data, status, request){
+              var establishment_id = $('#establishment-id').val();
+              $('form#id-location-form input#related-id-input').val(
+                      establishment_id
+              );
 
               $('#id-location-form').ajaxform({
                   done: function(data, status, jqxhr){
@@ -181,8 +185,6 @@
                           });
                           $('#modal-box').modal('hide');
                           $('.cover-endpoint.address>.cover-endpoint-text').text(data.location_address);
-
-                          $.fn.link_field.external_update('linkaddress', $('#id_address').val());
 
                           var latLng = new google.maps.LatLng(parseFloat(data.latitude),
                               parseFloat(data.longitude));
@@ -199,9 +201,6 @@
                   detailsAttribute: 'data-geo'
               });
 
-              $('form#id-location-form input#related-id-input').val(
-                      $('#id-identity-id').attr('data-establishment-id')
-                      );
           }
       });
     };
