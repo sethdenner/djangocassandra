@@ -8,7 +8,10 @@ from django.shortcuts import (
 
 from knotis.contrib.auth.models import (
     KnotisUser,
-    resent_validation_email,
+)
+
+from knotis.contrib.auth.views import (
+    resend_validation_email,
 )
 from knotis.contrib.auth.forms import (
     ForgotPasswordForm,
