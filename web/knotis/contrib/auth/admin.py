@@ -17,6 +17,8 @@ from knotis.contrib.identity.models import (
     IdentityTypes,
 )
 
+from knotis.views import ContextView
+
 ###### IMPORTS FROM MODULE FILES ######
 from models import (
     KnotisUser,
@@ -170,7 +172,7 @@ class UserUpdateAdminAJAXView(AdminAJAXView):
                 'status': 'fail',
             })
 
-class UserQueryAdminAJAXView(AJAXView):
+class UserQueryAdminAJAXView(AdminAJAXView):
     def post(
         self,
         request,
