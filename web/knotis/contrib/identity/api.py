@@ -181,8 +181,19 @@ class IdentityApi(object):
             raise
 
         try:
-            qrcode = Qrcode.objects.create(
-                owner=business,
+            establishment = IdentityApi.create_establishment(
+                business_id=business.pk,
+                **kwargs
+            )
+
+        except:
+            business.delete(hard=True)
+            relation_manager.delete(hard=True)
+            raise
+
+        try:
+            Qrcode.objects.create(
+                owner=establishment,
                 uri='/'.join([
                     settings.BASE_URL,
                     'id',
@@ -193,6 +204,7 @@ class IdentityApi(object):
             )
 
         except:
+            establishment.delete(hard=True)
             business.delete(hard=True)
             relation_manager.delete(hard=True)
             raise
@@ -201,24 +213,12 @@ class IdentityApi(object):
             user_information = UserInformation.objects.get(
                 user=KnotisUser.objects.get_identity_user(individual)
             )
-            user_information.default_identity_id = business.id
+            user_information.default_identity_id = establishment.id
             user_information.save()
 
         except Exception, e:
             # This is non-critical, no need to reraise
             logger.exception(e.message)
-
-        try:
-            establishment = IdentityApi.create_establishment(
-                business_id=business.pk,
-                **kwargs
-            )
-
-        except:
-            business.delete(hard=True)
-            relation_manager.delete(hard=True)
-            qrcode.delete(hard=True)
-            raise
 
         return business, establishment
 
