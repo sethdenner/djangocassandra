@@ -1962,8 +1962,14 @@ span.help-inline {
     max-width: 92px;
     max-height: 92px;
     position: relative;
+    border: 3px solid white;
+}
+
+
+.offerPreview .busLogo {
     top: 60px;
 }
+
 
 .defaultImg {
     width: 90px;
@@ -2125,4 +2131,15 @@ span.help-inline {
     top: -35px;
     margin-bottom: -40px;
     display: inline-block;
+}
+
+a.adminLink {
+    position: absolute;
+    top: 50px;
+    color: #2cc297;
+    border: 2px solid rgb(224, 224, 224);
+    padding: 8px 30px;
+    border-radius: 3px;
+    white-space: nowrap;
+    left: 0;
 }
