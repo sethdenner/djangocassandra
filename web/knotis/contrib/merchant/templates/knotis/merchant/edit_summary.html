@@ -1,42 +1,59 @@
-<div>
-  <div class="row-fluid">
-    <div class="pull-right">
-      {{ offer_tile_preview }} 
+<script type="text/javascript">
+    // TODO: Figure out better implementation of this
+    $(document).ready(function() {
+        $('.offerSteps li').css('color','black');
+        $('.stepFive').css('color','#2cc397');
+    });
+</script>
+
+
+<div class="offerForm">
+    <div class="row">
+        {{ offer_tile_preview }} 
+
+        <div class="col-lg-6 col-xs-12">
+            Based on the Promotion you created,
+            you can expcet to receive the following
+            revenue per customer:
+        </div>
+
+        <p class="knotis-price-big text-right">
+            {{ summary_revenue_customer }}
+        </p>
+
+
+        <div class="col-lg-6 col-xs-12">
+            By using our service, we have<br/>
+            saved you the following<br/>
+            estimated amount:
+        </div>
+
+        <p class="knotis-price-big text-right">
+            {{ summary_savings }}
+        </p>
+
+        <div class="col-lg-6 col-xs-12">
+            We anticipate this Promotion<br/>
+            generating you the<br/>
+            following revenue:
+        </div>
+
+        <p class="knotis-price-big text-right">
+            {{ summary_revenue_total }} <span class="knotis-price-big-help">({{ summary_estimated_sales }} sales)</span>
+        </p>
+
+        <div class="row-fluid" >
+            <div class="small-space"></div>
+            <form action="{{ offer_finish_form.form_action }}" method="{{ offer_finish_form.form_method }}" >{% csrf_token %}
+                {{ offer_finish_form.id }}
+                {{ offer_finish_form.published }}
+
+                <div class="offer-form-nav">
+                    <button type="button" class="pull-left btn wizard-back"><span class="icon-arrow-left"></span> Go Back</button>
+                    <button id="id-submit-details" type="submit" class="pull-right btn btn-primary continue">Publish Promotion</button>
+                    <button type="button" class="pull-right btn btn-primary">Save For Later</button>
+
+                    </form>
+                </div>
+        </div>
     </div>
-    <p class="knotis-bold">
-      Based on the offer you created,<br/>
-      you can expcet to receive the following<br/>
-      revenue per customer:
-    </p>
-    <p class="knotis-price-big text-right">
-      {{ summary_revenue_customer }}
-    </p>
-    <p class="knotis-bold">
-      By using our service, we have<br/>
-      saved you the following<br/>
-      estimated amount:
-    </p>
-    <p class="knotis-price-big text-right">
-      {{ summary_savings }}
-    </p>
-    <p class="knotis-bold" >
-      We anticipate this offer<br/>
-      generating you the<br/>
-      following revenue:
-    </p>
-    <p class="knotis-price-big text-right">
-      {{ summary_revenue_total }} <span class="knotis-price-big-help">({{ summary_estimated_sales }} sales)</span>
-    </p>
-  </div>
-  <div class="row-fluid" >
-    <div class="small-space"></div>
-    <form action="{{ offer_finish_form.form_action }}" method="{{ offer_finish_form.form_method }}" >{% csrf_token %}
-      {{ offer_finish_form.id }}
-      {{ offer_finish_form.published }}
-      <button type="button" class="pull-left btn wizard-back">Back</button>
-      <button type="button" class="pull-left btn" data-dismiss="modal">Delete Offer</button>
-      <button id="id-submit-details" type="submit" class="pull-right btn btn-primary">Publish</button>
-      <button type="button" class="pull-right btn btn-primary">Save For Later</button>
-    </form>
-  </div>
-</div>
