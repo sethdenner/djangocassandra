@@ -264,45 +264,7 @@ class OfferApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
             instance=offer
         )
 
-        if form.is_valid():
-            try:
-                offer = form.save()
-
-            except Exception, e:
-                error_message = 'An error occurred during offer update'
-                logger.exception(error_message)
-                errors['no-field'] = error_message
-
-                return self.generate_ajax_response({
-                    'message': e.message,
-                    'errors': errors
-                })
-
-            if active != offer.active:
-                try:
-                    availability = OfferAvailability.objects.filter(
-                        offer=offer
-                    )
-                    for a in availability:
-                        a.available = offer.active
-                        a.save()
-
-                except:
-                    logger.exception('failed to update offer availability')
-
-        else:
-            for field, messages in form.errors.iteritems():
-                errors[field] = [message for message in messages]
-
-            return self.generate_ajax_response({
-                'message': 'An exception occurred during offer update',
-                'errors': errors
-            })
-
-        return self.generate_ajax_response({
-            'offer_id': offer.id,
-            'message': 'Offer updated sucessfully.'
-        })
+        offer = form.save()
 
         if active != offer.active:
             try:
