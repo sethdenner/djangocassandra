@@ -5,6 +5,7 @@
             backdrop: 'static',
             keyboard: false,
         },
+        modal_id: 'first-id',
         on_open: function(data, status, request) {
             $('#id-individual-form').ajaxform({
                 done: function(data, status, jqxhr) {
