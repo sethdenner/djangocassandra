@@ -487,7 +487,11 @@ class OfferPublicationForm(TemplateForm):
                     endpoint_facebook.value + ' (Facebook)'
                 ),
                 checked=True if endpoint_facebook is not None else False,
-                disabled=True if endpoint_facebook is None else False
+                disabled=True if endpoint_facebook is None else False,
+                action=ItemSelectAction(
+                    name='Edit',
+                    url='/settings/social/'
+                )
             ),
             ItemSelectRow(
                 endpoint_twitter,
@@ -496,26 +500,26 @@ class OfferPublicationForm(TemplateForm):
                     endpoint_twitter.value + ' (Twitter)'
                 ),
                 checked=True if endpoint_twitter is not None else False,
-                disabled=True if endpoint_twitter is None else False
+                disabled=True if endpoint_twitter is None else False,
+                action=ItemSelectAction(
+                    name='Edit',
+                    url='/settings/social/'
+                )
             ),
             ItemSelectRow(
                 endpoint_followers,
                 title='Email Followers',
                 checked=True if endpoint_followers is not None else False,
-                disabled=True if endpoint_followers is None else False
-            )
-        ]
-
-        actions = [
-            ItemSelectAction(
-                'Edit',
-                '#edit-endpoint'
+                disabled=True if endpoint_followers is None else False,
+                action=ItemSelectAction(
+                    name='Edit',
+                    url='/my/following/'
+                )
             )
         ]
 
         publish_widget = self.fields['publish'].widget
         publish_widget.rows = rows
-        publish_widget.actions = actions
 
     def clean(self):
         cleaned_data = self.cleaned_data
