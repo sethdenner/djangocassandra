@@ -54,6 +54,7 @@ class MyFollowingView(EmbeddedView):
     ]
     post_scripts = [
         'knotis/layout/js/action_button.js',
+        'knotis/identity/js/action-tile.js',
         'knotis/identity/js/businesses.js',
         'knotis/identity/js/business-tile.js',
     ]
