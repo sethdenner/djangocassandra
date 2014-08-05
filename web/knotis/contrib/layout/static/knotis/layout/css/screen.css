@@ -632,7 +632,7 @@ nav button.signUp {
 /* line 47, ../sass/_offerItem.scss */
 .offerContent h1, .identityContent h1, .transactionContent h1 {
     font-size: 23px;
-    margin: 10px 0 15px;
+    margin: 100px 0 15px;
     color: #919191;
     font-family: "LatoLight", sans-serif;
     width: 100%;
@@ -1959,8 +1959,9 @@ span.help-inline {
     border-radius: 50%;
     max-width: 92px;
     max-height: 92px;
-    position: relative;
+    position: absolute;
     border: 3px solid white;
+    display: inline-block;
 }
 
 
@@ -2167,6 +2168,10 @@ a.adminLink {
     left: 0;
     margin: 23px 13px 0;
     cursor: pointer;
+}
+
+.identityContent h1 {
+   margin: 65px 0 -10px;
 }
 
 .carousel-indicators {
