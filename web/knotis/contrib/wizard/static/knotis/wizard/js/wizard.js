@@ -1,6 +1,7 @@
 (function($) {
     var _init = function(wizard, options) {
         var settings = $.extend({
+            modal_id: 'modal-box',
             step_callback: function(index){}
         }, options);
 
@@ -15,13 +16,15 @@
         if (current_step) {
             $carousel.wizard('step', {
                 index: parseInt(current_step),
-                callback: settings.step_callback
+                callback: settings.step_callback,
+                modal_id: settings.modal_id
             });
 
         } else {
             $carousel.wizard('step', {
                 index: 0,
-                callback: settings.step_callback
+                callback: settings.step_callback,
+                modal_id: settings.modal_id
             });
         }
     };
@@ -29,14 +32,16 @@
     var _step = function(wizard, options) {
         var settings = $.extend({
             index: 0,
-            callback: function(index){}
+            callback: function(index){},
+            modal_id: 'modal-box'
         }, options);
 
         var $carousel = $(wizard),
         step_el = $carousel.find('.item').get(settings.index);
 
+        console.log(step_el);
         if (!step_el) {
-            $('#modal-box').modal('hide');
+            $('#' + settings.modal_id).modal('hide');
             return;
         }
 
@@ -64,7 +69,8 @@
 
                                 $carousel.wizard('step', {
                                     index: settings.index + 1,
-                                    callback: settings.callback
+                                    callback: settings.callback,
+                                    modal_id: settings.modal_id
                                 });
                             }
                         }
@@ -73,7 +79,8 @@
                     _container.find('.wizard-back').click(function(event) {
                         $carousel.wizard('step', {
                             index: settings.index - 1,
-                            callback: settings.callback
+                            callback: settings.callback,
+                            modal_id: settings.modal_id
                         });
                     });
 

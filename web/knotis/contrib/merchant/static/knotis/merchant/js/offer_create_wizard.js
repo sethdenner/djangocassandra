@@ -15,7 +15,7 @@
                 $this = $(this);
                 var current_step = parseInt($carousel.attr('data-current-step')),
                 step_order = parseInt($this.attr('data-step-order'));
-                $.wizard.step($carousel, {index: step_order });
+                $.wizard.step($carousel, {index: step_order, modal_id: 'offer-create' });
                 var step_title = $this.attr('data-header-title');
                 $create_header_title.text(step_title);
             });
@@ -28,7 +28,8 @@
                     .addClass('on');
 
                 init_step_click_handler();
-            }
+            },
+            modal_id: 'offer-create'
         });
 
         var current_step_string = $carousel.attr('data-current-step'),
@@ -38,6 +39,7 @@
         $create_header_title.text(header_title);
         
         var current_step = parseInt(current_step_string);
+        console.log(current_step);
         $('.create-step').each(function(index, element) {
             var $element = $(element);
             var step_order = parseInt($element.attr('data-step-order'));
