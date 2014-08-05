@@ -157,6 +157,7 @@ class EstablishmentsView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
     post_scripts = [
         'knotis/layout/js/action_button.js',
+        'knotis/identity/js/identity-action.js',
         'knotis/identity/js/businesses.js',
         'knotis/identity/js/business-tile.js',
     ]
@@ -182,6 +183,8 @@ class EstablishmentProfileView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
     post_scripts = [
         'jcrop/js/jquery.Jcrop.js',
+        'knotis/layout/js/action_button.js',
+        'knotis/identity/js/identity-action.js',
         'scripts/fileuploader.js',
         'scripts/jquery.colorbox.js',
         'scripts/jquery.sickle.js',
@@ -280,29 +283,26 @@ class EstablishmentProfileView(EmbeddedView):
         )
 
     def process_context(self):
-        # Refactor me!
         # Super user check.
         is_superuser = False
         request = self.request
         if request.user.is_authenticated():
             current_identity_id = request.session.get('current_identity')
-            current_identity = Identity.objects.get(
-                pk=current_identity_id
-            )
+            current_identity = Identity.objects.get(pk=current_identity_id)
 
             if (
                 current_identity and
                 current_identity.identity_type == IdentityTypes.SUPERUSER
             ):
                 is_superuser = True
-
+        else:
+            current_identity = None
 
         self.set_establishment()
         self.set_business()
 
         self.is_manager()
         self.set_images()
-
 
         location_item = LocationItem.objects.filter(
             related_object_id=self.establishment.id
@@ -311,7 +311,6 @@ class EstablishmentProfileView(EmbeddedView):
             address = location_item[0].location.address
         else:
             address = None
-
 
         endpoints = Endpoint.objects.filter(
             identity=self.establishment,
@@ -395,21 +394,6 @@ class EstablishmentProfileView(EmbeddedView):
             'is_manager': self.is_manager
         })
 
-        """
-        try:
-            establishment_offers = OfferAvailability.objects.filter(
-                identity=self.establishment,
-                available=True
-            )
-
-        except:
-            logger.exception('failed to get establishment offers')
-
-        if establishment_offers:
-            default_view_name = 'offers'
-
-        else:
-        """
         default_view_name = 'about'
 
         view_name = self.context.get('view_name', default_view_name)
@@ -438,6 +422,21 @@ class EstablishmentProfileView(EmbeddedView):
             content_plexer = 'establishments'
             profile_content = 'establishments'
 
+        identity_tile_context = Context({
+            'current_identity': current_identity,
+            'identity': current_identity
+        })
+
+        if ((current_identity and
+                current_identity.identity_type == IdentityTypes.INDIVIDUAL) or
+                current_identity is None):
+            action_button = IdentityActionButton()
+            action_button_content = action_button.render_template_fragment(
+                identity_tile_context
+            )
+        else:
+            action_button_content = None
+
         local_context = copy.copy(self.context)
         local_context.update({
             'establishment': self.establishment,
@@ -450,11 +449,11 @@ class EstablishmentProfileView(EmbeddedView):
             'profile_badge': self.profile_badge_image,
             'profile_banner': self.profile_banner_image,
             'profile_banner_color': self.profile_banner_color,
-            #  'establishment_offers': establishment_offers,
             'top_menu_name': 'identity_profile',
             'profile_content': profile_content,
             'view_name': view_name,
             'content_plexer': content_plexer,
+            'action_button': action_button_content,
             'is_superuser': is_superuser,
         })
 
@@ -525,7 +524,7 @@ class EstablishmentsGrid(GridSmallView):
         return local_context
 
 
-class IdentityTileActionButton(ActionButton):
+class IdentityActionButton(ActionButton):
     view_name = 'identity_tile_action'
 
     def actions(self):
@@ -542,9 +541,10 @@ class IdentityTileActionButton(ActionButton):
                     deep=True,
                 )
             ]
+
         following = Relation.objects.follows(current_identity, tile_identity)
         is_following = len(following) == 0
-        action_text = 'Follow' if is_following  else 'Unfollow'
+        action_text = 'Follow' if is_following else 'Unfollow'
         return [
             ButtonAction(
                 action_text,
@@ -585,10 +585,16 @@ class IdentityTile(FragmentView):
             'current_identity': current_identity,
             'identity': identity
         })
-        action_button = IdentityTileActionButton()
-        action_button_content = action_button.render_template_fragment(
-            identity_tile_context
-        )
+
+        if ((current_identity and
+                current_identity.identity_type == IdentityTypes.INDIVIDUAL) or
+                current_identity is None):
+            action_button = IdentityActionButton()
+            action_button_content = action_button.render_template_fragment(
+                identity_tile_context
+            )
+        else:
+            action_button_content = None
 
         local_context = copy.copy(self.context)
         local_context.update({
@@ -601,60 +607,6 @@ class IdentityTile(FragmentView):
         })
 
         return local_context
-
-"""
-class EstablishmentProfileGrid(GridSmallView):
-    view_name = 'establishment_profile_grid'
-
-    def process_context(self):
-        establishment_offers = self.context.get('establishment_offers')
-        request = self.context.get('request')
-
-        offer_action = None
-        if request.user.is_authenticated():
-            current_identity_id = request.session.get('current_identity')
-            current_identity = Identity.objects.get(pk=current_identity_id)
-            if current_identity.identity_type  == IdentityTypes.INDIVIDUAL:
-                offer_action = 'buy'
-
-        tiles = []
-
-        is_manager = self.context.get('is_manager')
-        if is_manager:
-            offer_create_tile = OfferCreateTile()
-            tiles.append(
-                offer_create_tile.render_template_fragment(Context({
-                    'create_type': 'Promotion',
-                    'create_action': '/offer/create/',
-                    'action_type': 'modal'
-                }))
-            )
-
-        if establishment_offers:
-            for offer in establishment_offers:
-                offer_tile = OfferTile()
-                offer_context = Context({
-                    'offer': offer.offer,
-                    'offer_action': offer_action
-                })
-                tiles.append(
-                    offer_tile.render_template_fragment(offer_context)
-                )
-
-        local_context = copy.copy(self.context)
-        local_context.update({'tiles': tiles})
-
-        return local_context
-
-
-class EstablishmentProfileOffers(FragmentView):
-    template_name = 'knotis/identity/establishment_offers.html'
-    view_name = 'establishment_offers'
-
-    def process_context(self):
-        local_context = copy.copy(self.context)
-        return local_context
-"""
 
 
 class EstablishmentProfileLocation(FragmentView):
@@ -1144,7 +1096,7 @@ class FirstIdentityView(ModalView):
                     '.'
                 ])
                 logger.exception(message)
-                errors['no-field']  = e.message
+                errors['no-field'] = e.message
 
         if not errors:
             try:
@@ -1157,7 +1109,7 @@ class FirstIdentityView(ModalView):
                     '.'
                 ])
                 logger.exception(message)
-                errors['no-field']  = e.message
+                errors['no-field'] = e.message
 
         if not errors:
             data['data'] = {

@@ -44,13 +44,15 @@ class ItemSelectRow(object):
         title=None,
         image=None,
         checked=False,
-        disabled=False
+        disabled=False,
+        action=None
     ):
         self.item = item
         self.title = title
         self.image = image
         self.checked = checked
         self.disabled = disabled
+        self.action = action
 
 
 class ItemSelectAction(object):
@@ -73,7 +75,6 @@ class ItemSelectWidget(TemplateWidget):
     def __init__(
         self,
         rows=[],
-        actions=[],
         select_multiple=False,
         render_images=False,
         image_dimensions='32x32',
@@ -81,7 +82,6 @@ class ItemSelectWidget(TemplateWidget):
         **kwargs
     ):
         self.rows = rows
-        self.actions = actions
         self.select_multiple = select_multiple
         self.render_images = render_images
         self.image_dimensions = image_dimensions
@@ -100,7 +100,6 @@ class ItemSelectWidget(TemplateWidget):
         self.parameters.update({
             'field_name': name,
             'rows': self.rows,
-            'actions': self.actions,
             'select_multiple': self.select_multiple,
             'render_images': self.render_images,
             'image_dimensions': self.image_dimensions

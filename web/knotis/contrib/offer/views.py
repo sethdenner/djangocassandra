@@ -30,6 +30,7 @@ from knotis.contrib.identity.models import (
     IdentityTypes
 )
 from knotis.contrib.identity.views import get_identity_profile_badge
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 
 from knotis.contrib.paypal.views import IPNCallbackView
 
@@ -223,7 +224,7 @@ class OfferPurchaseSuccessView(ModalView):
     ]
 
 
-class OfferPurchaseView(EmbeddedView):
+class OfferPurchaseView(EmbeddedView, GetCurrentIdentityMixin):
     template_name = 'knotis/offer/offer_purchase_view.html'
     url_patterns = [
         r''.join([
@@ -240,6 +241,10 @@ class OfferPurchaseView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
 
     def process_context(self):
+        current_identity = self.get_current_identity(self.request)
+        if IdentityTypes.INDIVIDUAL != current_identity.identity_type:
+            raise Exception('Only individuals can purchase offers')
+
         request = self.context.get('request')
 
         offer_id = self.context.get('offer_id')
