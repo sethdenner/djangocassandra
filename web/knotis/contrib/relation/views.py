@@ -25,6 +25,7 @@ from models import (
     RelationTypes
 )
 
+
 class NewPermissionEmailBody(EmailView):
     template_name = 'knotis/relation/email_new_permission.html'
 
@@ -44,32 +45,6 @@ class NewPermissionEmailBody(EmailView):
         return local_context
 
 
-class NewFollowerEmailBody(EmailView):
-    template_name = 'knotis/relation/email_new_follower.html'
-
-    def process_context(self):
-        local_context = copy.copy(self.context)
-
-        browser_link = 'example.com'
-        business_name = 'Fine Bitstrings'
-        business_cover_url = '/media/cache/ef/25/ef2517885c028d7545f13f79e5b7993a.jpg'
-        business_logo_url = '/media/cache/87/08/87087ae77f4a298e550fc9d255513ad4.jpg'
-        username = '@username'
-        view_profile_link = 'example.com'
-
-        local_context.update({
-            'browser_link': browser_link,
-            'business_cover_url': business_cover_url,
-            'business_logo_url': business_logo_url,
-            'business_name': business_name,
-            'username': username,
-            'view_profile_link': view_profile_link
-        })
-
-        return local_context
-
-
-
 class MyFollowingView(EmbeddedView):
     template_name = 'knotis/relation/follow_display_view.html'
     default_parent_view_class = DefaultBaseView
@@ -79,6 +54,7 @@ class MyFollowingView(EmbeddedView):
     ]
     post_scripts = [
         'knotis/layout/js/action_button.js',
+        'knotis/identity/js/identity-action.js',
         'knotis/identity/js/businesses.js',
         'knotis/identity/js/business-tile.js',
     ]
@@ -93,28 +69,25 @@ class MyFollowingView(EmbeddedView):
         )
 
         term = ''
-        related_parties = []
         if (
             IdentityTypes.INDIVIDUAL == current_identity.identity_type or
             IdentityTypes.SUPERUSER == current_identity.identity_type
         ):
             term = 'Following'
             relations = Relation.objects.filter(
-                relation_type = RelationTypes.FOLLOWING,
-                subject_object_id = current_identity.id
+                relation_type=RelationTypes.FOLLOWING,
+                subject_object_id=current_identity.id
             )
-            for relation in relations:
-                related_parties.append(relation.related)
-        elif (
-            IdentityTypes.ESTABLISHMENT == current_identity.identity_type
-        ):
+            related_parties = [relation.related for relation in relations]
+
+        elif (IdentityTypes.ESTABLISHMENT == current_identity.identity_type):
             term = 'Followers'
             relations = Relation.objects.filter(
-                relation_type = RelationTypes.FOLLOWING,
-                related_object_id = current_identity.id
+                relation_type=RelationTypes.FOLLOWING,
+                related_object_id=current_identity.id
             )
-            for relation in relations:
-                related_parties.append(relation.subject)
+            related_parties = [relation.subject for relation in relations]
+
         else:
             related_parties = []
             term = 'Following'
@@ -137,7 +110,6 @@ class MyFollowingView(EmbeddedView):
         local_context.update({
             'relation_term': term,
             'tiles': tiles,
-#            'tile_link_template': '/id/', # + identity.id<wut
             'request': self.request,
         })
 

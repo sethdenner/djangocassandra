@@ -211,7 +211,7 @@ class Command(BaseCommand):
 
             try:
                 qrcode = Qrcode.objects.get(
-                    owner=business
+                    owner=establishment
                 )
 
             except Exception, e:

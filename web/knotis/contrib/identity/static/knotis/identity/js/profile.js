@@ -197,6 +197,12 @@
     var latLng = new google.maps.LatLng(parseFloat($('#establishment-contact-loc-details').attr('data-latitude')),
                               parseFloat($('#establishment-contact-loc-details').attr('data-longitude')));
 
+    $('.profileActionButton').click(function() {
+        event.preventDefault();
+        event.stopPropagation();
+        $(this).identity_action();
+    });
+
     var setupMap = function(){
         var map;
         var marker;
