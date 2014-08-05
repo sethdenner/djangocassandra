@@ -6,6 +6,10 @@ from django.shortcuts import (
     get_object_or_404,
 )
 
+from knotis.contrib.relation.models import (
+    Relation,
+)
+
 from knotis.contrib.auth.models import (
     KnotisUser,
 )
@@ -16,6 +20,7 @@ from knotis.contrib.auth.views import (
 from knotis.contrib.auth.forms import (
     ForgotPasswordForm,
 )
+
 
 from knotis.contrib.identity.models import (
     IdentityTypes,
@@ -45,13 +50,14 @@ from forms import (
 
 
 ###### BASE VIEW DEFINITIONS ######
-class AdminDefaultView(ContextView):
-    template_name = 'knotis/admintools/admin_master.html'
-
+class AdminDefaultView(EmbeddedView):
+    template_name = 'knotis/admintools/admin_default.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [ r'^admin/$' ]
+    
 
 class AdminAJAXView(AJAXView):
     pass
-
 
 ###### LIST EDIT APP ######
 class AdminListEditTags:
@@ -60,6 +66,147 @@ class AdminListEditTags:
     DICT = 'dict'
     FORM = 'form'
     FIELD = 'field'
+
+
+def default_format(
+    self,
+    item,
+):
+    if self.make_form:
+        field_set = item.get_fields_dict().keys()
+        banned_set = set(self.edit_excludes)
+        edit_set = field_set - banned_set
+        view_set = field_set & banned_set
+        data = {}
+        data['target_pk'] = {
+            'type': AdminListEditTags.FIELD,
+            'ftype': 'hidden',
+            'fname': 'target_pk',
+            'data': item.get(pk),
+        }
+        for key in edit_set:
+            data[key] = {
+                'type': AdminListEditTags.FIELD,
+                'ftype': 'text',
+                'fname': key,
+                'data': str(item.get(key)),
+            }
+        for key in view_set:
+            data[key] = {
+                'type': AdminListEditTags.VALUE,
+                'data': str(item.get(key)),
+            }
+        return ({
+            'type': AdminListEditTags.FORM,
+            'data': data,
+            'action': self.post_target,
+            'method': 'post',
+            'button': 'Update',
+            'id': item.pk,
+        })
+    else:
+        field_values = {}
+        field_dict = item.get_fields_dict()
+        for key in field_dict.keys():
+            field_values[key] = {
+                'type': AdminListEditTags.VALUE,
+                'data': field_dict[key],
+            }
+        return ({
+            'type': AdminListEditTags.DICT,
+            'data': field_values,
+        })
+            
+
+
+class AdminListQueryAJAXView(AdminAJAXView):
+    query_form_constructor = AdminQueryForm
+    query_target = None
+
+    format_item = default_format
+    post_target = 'admin/update/'
+    make_form = False
+    edit_excludes = ['id', 'pk']
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        current_identity = get_current_identity(self.request)
+        if not (
+            current_identity and
+            current_identity.identity_type == IdentityTypes.SUPERUSER
+        ):
+            return self.render_to_response({
+                'errors': ['Not a super user.',]
+            })
+
+        query_form = self.query_form_constructor(self.request.POST)
+        range_start = int(query_form.data.get('range_start'))
+        range_end = int(query_form.data.get('range_end'))
+        range_step = int(query_form.data.get('range_step'))
+
+        query = None
+        if(self.query_target):
+            query = self.query_target.all()
+            query = query[range_start - 1 : range_end] # Offset to account for starting form indexing at 1.
+
+        results = []
+        if(self.format_item):
+            for item in query:
+                results.append(self.format_item(item))
+
+        params = {
+            'start': range_start,
+            'end': range_end,
+            'step': range_step,
+        }
+
+        return self.generate_ajax_response({
+            'params': params,
+            'results': results,
+        })
+
+
+class AdminListUpdateAJAXView(AdminAJAXView):
+    query_target = None
+    edit_excludes = ['id', 'pk']
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        current_identity = get_current_identity(self.request)
+        if not (
+            current_identity and
+            current_identity.identity_type == IdentityTypes.SUPERUSER
+        ):
+            return self.generate_ajax_response({
+                'errors': ['Not a super user.',]
+            })
+        item_id = str(request.POST.get('target_pk'))
+        if item_id:
+            item = self.query_target.get(id=item_id)
+            field_set = set(item.get_fields_dict().keys())
+            banned_set = set(self.edit_excludes)
+            edit_set = field_set - banned_set
+            for key in edit_set:
+                datum = request.POST.get(key)
+                if hasattr(item, key) and datum is not None:
+                    setattr(item, key, datum)
+            return self.generate_ajax_response({
+                'status': status,
+            })
+        else:
+            return self.generate_ajax_response({
+                'status': 'fail',
+            })
+            
+
 
 class AdminListEditView(AdminDefaultView):
     template_name = 'knotis/admintools/admin_list_editor.html'
@@ -92,52 +239,6 @@ class AdminListEditView(AdminDefaultView):
         return local_context
 
 
-class AdminListQueryAJAXView(AdminAJAXView):
-    query_form_constructor = AdminQueryForm
-    query_target = None
-    format_item = None
-
-    def post(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        current_identity = get_current_identity(self.request)
-        if not (
-            current_identity and
-            current_identity.identity_type == IdentityTypes.SUPERUSER
-        ):
-            return self.generate_response({
-                'errors': ['Not a super user.',]
-            })
-
-        query_form = self.query_form_constructor(self.request.POST)
-        range_start = int(query_form.data.get('range_start'))
-        range_end = int(query_form.data.get('range_end'))
-        range_step = int(query_form.data.get('range_step'))
-
-        query = None
-        if(self.query_target):
-            query = self.query_target()
-            query = query[range_start - 1 : range_end] # Offset to account for starting form indexing at 1.
-
-        results = []
-        if(self.format_item):
-            for item in query:
-                results.append(self.format_item(item))
-
-        params = {
-            'start': range_start,
-            'end': range_end,
-            'step': range_step,
-        }
-
-        return self.generate_response({
-            'params': params,
-            'results': results,
-        })
-
 ###### ESTABLISHMENT MANAGEMENT TOOLS
 class AdminOwnerViewButton(FragmentView):
     view_name = 'admin_owner_view_button'
@@ -147,7 +248,7 @@ class AdminOwnerViewButton(FragmentView):
 class AdminValidateResendView(FragmentView):
     view_name = 'admin_send_reset_button'
     template_name = 'knotis/admintools/validate_resend.html'
-    
+
     def post(
         self,
         request,
@@ -186,8 +287,6 @@ class AdminOwnerView(ModalView):
         relations = Relation.objects.get_managers(establishment)
         for relation in relations:
             managers.append(relation.subject)
-            
-        main_user = KnotisUser.objects.get_identity_user(establishment)
         manager_users = []
         for manager in managers:
             user = KnotisUser.objects.get_identity_user(manager)
@@ -195,13 +294,6 @@ class AdminOwnerView(ModalView):
             
         detail_tile = AdminUserDetailsTile()
         tiles = []
-        tile_context = Context({
-            'identity_id': establishment_id,
-            'identity': establishment,
-            'user': main_user,
-            'request': self.request,
-        })
-        main_tile = detail_tile.render_template_fragment(tile_context)
         for id, user in manager_users:
             tile_context = Context({
                 'identity': id,
@@ -211,7 +303,6 @@ class AdminOwnerView(ModalView):
             tiles.append(detail_tile.render_template_fragment(tile_context))
         local_context = copy.copy(self.context)
         local_context.update({
-            'main_tile': main_tile,
             'tiles': tiles,
             'request': self.request,
         })

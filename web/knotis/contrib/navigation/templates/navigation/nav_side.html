@@ -16,6 +16,9 @@
             <li><a href="/my/redemptions/" data-target-id="main-content" ><span class="circle"><i class="icon-redeem"></i></span><span class="sidebar-label">Redemption</span></a></li>
             <li><a href="/settings/" data-target-id="main-content"><span class="circle"><i class="icon-settings"></i></span><span class="sidebar-label">Settings</span></a></li>
             {% endif %}
+            {% if current_identity.identity_type == IdentityTypes.SUPERUSER %}
+            <li><a href="/admin/" data-target-id="main-content"><span class="circle"><i class="icon-settings"></i></span><span class="sidebar-label">Admin Tools</span></a></li>
+            {% endif %}
             <li><a href="/support/" class="modal-link"><span class="circle"><i class="icon-help"></i></span><span class="sidebar-label">Support</span></a></li>
         </ul>
     </div>

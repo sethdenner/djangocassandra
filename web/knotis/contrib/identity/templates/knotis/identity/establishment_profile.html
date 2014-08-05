@@ -57,7 +57,9 @@
                 {{ profile_content }}
             </div>
             <div>
+                {% if is_superuser %}
                 {% render_fragment admin_owner_view_button %}
+                {% endif %}
             </div>
         </div>
     </div>

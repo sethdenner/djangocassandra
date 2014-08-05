@@ -7,28 +7,30 @@ from knotis.contrib.admintools.views import (
     AdminListEditTags,
     AdminListEditView,
     AdminListQueryAJAXView,
+    AdminListUpdateAJAXView,
 )
 from knotis.contrib.admintools.forms import (
     AdminQueryForm,
 )
 
-from knotis.views import (
-    AJAXView,
-    ContextView
-)
 
 ###### IMPORTS FROM MODULE FILES ######
 
 from models import (
-    Activity,
+    Offer,
 )
 
-###### LIST EDIT APP ######
-class ActivityQueryAdminAJAXView(AdminListQueryAJAXView):
-    query_target = Activity.objects
 
-class ActivityAdminView(AdminListEditView):
-    url_patterns = [ r'^admin/activity/$' ]
+###### LIST EDIT APP ######
+class OfferQueryAdminAJAXView(AdminListQueryAJAXView):
+    query_target = Offer.objects
+    make_form = True
+
+class OfferUpdateAdminAJAXView(AdminListUpdateAJAXView):
+    query_target = Offer.objects
+
+class OfferAdminView(AdminListEditView):
+    url_patterns = [ r'^admin/offer/$' ]
     query_form = AdminQueryForm(initial={
         'target_uri' : 'query/',
     })
