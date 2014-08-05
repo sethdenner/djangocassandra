@@ -73,7 +73,7 @@ def default_format(
     item,
 ):
     if self.make_form:
-        field_set = item.get_fields_dict().keys()
+        field_set = set(item.get_fields_dict().keys())
         banned_set = set(self.edit_excludes)
         edit_set = field_set - banned_set
         view_set = field_set & banned_set
