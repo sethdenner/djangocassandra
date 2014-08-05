@@ -1639,7 +1639,6 @@ h1.sectionHeader {
     position: absolute;
     top: 0;
     left: 0;
-    padding: 90px 115px 55px;
     background-size: cover;
 }
 
@@ -1651,7 +1650,7 @@ h1.sectionHeader {
     margin-top: -20px;
     color: #888;
     font-family: "LatoLight", sans-serif;
-    m5argin: -20px 0 40px;
+    margin: -20px 0 40px;
 }
 
 /* line 33, ../sass/_profile.scss */
@@ -1671,8 +1670,8 @@ h1.sectionHeader {
     width: 345px;
     background: rgba(56, 56, 56, 0.36);
     position: absolute;
-    top: -63px;
-    left: -20px;
+    top: 50px;
+    left: 70px;
     padding: 30px 30px 83px;
     overflow: hidden;
     height: 395px;
