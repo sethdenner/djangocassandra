@@ -1482,6 +1482,10 @@ offerSteps ul {
     margin-top: 15px;
 }
 
+.offerHero {
+    background: rgb(85, 85, 85);
+}
+
 /* line 128, ../sass/_modals.scss */
 .offerHero img {
     border-radius: 50%;
@@ -2034,6 +2038,7 @@ span.help-inline {
     margin-left: -310px;   
     box-shadow: 0 0;
     border: 0;
+    overflow: hidden;
 }
 
 .modal-header {
@@ -2171,7 +2176,7 @@ a.adminLink {
 }
 
 .identityContent h1 {
-   margin: 65px 0 -10px;
+    margin: 65px 0 -10px;
 }
 
 .carousel-indicators {
