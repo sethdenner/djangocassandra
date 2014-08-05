@@ -3,10 +3,10 @@ from django.views.decorators.csrf import csrf_protect
 ###### IMPORTS FROM KNOTIS FILES ######
 
 from knotis.contrib.admintools.views import (
+    AdminAJAXView,
     AdminListEditTags,
     AdminListEditView,
     AdminListQueryAJAXView,
-    AdminAJAXView,
 )
 from knotis.contrib.admintools.forms import (
     AdminQueryForm,
@@ -16,8 +16,6 @@ from knotis.contrib.identity.models import (
     Identity,
     IdentityTypes,
 )
-
-from knotis.views import ContextView
 
 ###### IMPORTS FROM MODULE FILES ######
 from models import (
@@ -177,11 +175,7 @@ class UserUpdateAdminAJAXView(AdminAJAXView):
                 'status': status,
             })
         else:
-            return self.genereate_response({
+            return self.generate_ajax_response({
                 'status': 'fail',
             })
-
-
-class UserAdminView(ContextView):
-    template_name = 'knotis/auth/user_admin_view.html'
 

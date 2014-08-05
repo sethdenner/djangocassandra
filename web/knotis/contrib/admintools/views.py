@@ -6,6 +6,10 @@ from django.shortcuts import (
     get_object_or_404,
 )
 
+from knotis.contrib.relation.models import (
+    Relation,
+)
+
 from knotis.contrib.auth.models import (
     KnotisUser,
 )
@@ -47,14 +51,13 @@ from forms import (
 
 ###### BASE VIEW DEFINITIONS ######
 class AdminDefaultView(EmbeddedView):
-    template_name = 'knotis/admintools/admin_master.html'
+    template_name = 'knotis/admintools/admin_default.html'
     default_parent_view_class = DefaultBaseView
+    url_patterns = [ r'^admin/$' ]
     
-
 
 class AdminAJAXView(AJAXView):
     pass
-
 
 ###### LIST EDIT APP ######
 class AdminListEditTags:
@@ -76,7 +79,7 @@ def default_format(
         view_set = field_set & banned_set
         data = {}
         data['target_pk'] = {
-            'type' AdminListEditTags.FIELD,
+            'type': AdminListEditTags.FIELD,
             'ftype': 'hidden',
             'fname': 'target_pk',
             'data': item.get(pk),
@@ -103,10 +106,11 @@ def default_format(
         })
     else:
         field_values = {}
-        for key, value in item.get_fields_dict():
+        field_dict = item.get_fields_dict()
+        for key in field_dict.keys():
             field_values[key] = {
                 'type': AdminListEditTags.VALUE,
-                'data': value,
+                'data': field_dict[key],
             }
         return ({
             'type': AdminListEditTags.DICT,
@@ -135,7 +139,7 @@ class AdminListQueryAJAXView(AdminAJAXView):
             current_identity and
             current_identity.identity_type == IdentityTypes.SUPERUSER
         ):
-            return self.generate_response({
+            return self.render_to_response({
                 'errors': ['Not a super user.',]
             })
 
@@ -160,7 +164,7 @@ class AdminListQueryAJAXView(AdminAJAXView):
             'step': range_step,
         }
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'params': params,
             'results': results,
         })
@@ -181,11 +185,11 @@ class AdminListUpdateAJAXView(AdminAJAXView):
             current_identity and
             current_identity.identity_type == IdentityTypes.SUPERUSER
         ):
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'errors': ['Not a super user.',]
             })
-        item_id = str(request.POST.get('target_pk')
-        if (item_id):
+        item_id = str(request.POST.get('target_pk'))
+        if item_id:
             item = self.query_target.get(id=item_id)
             field_set = set(item.get_fields_dict().keys())
             banned_set = set(self.edit_excludes)
@@ -194,11 +198,11 @@ class AdminListUpdateAJAXView(AdminAJAXView):
                 datum = request.POST.get(key)
                 if hasattr(item, key) and datum is not None:
                     setattr(item, key, datum)
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': status,
             })
         else:
-            return self.genereate_response({
+            return self.generate_ajax_response({
                 'status': 'fail',
             })
             
@@ -283,8 +287,6 @@ class AdminOwnerView(ModalView):
         relations = Relation.objects.get_managers(establishment)
         for relation in relations:
             managers.append(relation.subject)
-            
-        main_user = KnotisUser.objects.get_identity_user(establishment)
         manager_users = []
         for manager in managers:
             user = KnotisUser.objects.get_identity_user(manager)
@@ -292,13 +294,6 @@ class AdminOwnerView(ModalView):
             
         detail_tile = AdminUserDetailsTile()
         tiles = []
-        tile_context = Context({
-            'identity_id': establishment_id,
-            'identity': establishment,
-            'user': main_user,
-            'request': self.request,
-        })
-        main_tile = detail_tile.render_template_fragment(tile_context)
         for id, user in manager_users:
             tile_context = Context({
                 'identity': id,
@@ -308,7 +303,6 @@ class AdminOwnerView(ModalView):
             tiles.append(detail_tile.render_template_fragment(tile_context))
         local_context = copy.copy(self.context)
         local_context.update({
-            'main_tile': main_tile,
             'tiles': tiles,
             'request': self.request,
         })

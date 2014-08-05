@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import (
 from knotis.contrib.offer.admin import (
     OfferAdminView,
     OfferQueryAdminAJAXView,
+    OfferUpdateAdminAJAXView,
 )
 from knotis.contrib.activity.admin import (
     ActivityAdminView,
@@ -24,6 +25,7 @@ from knotis.contrib.auth.admin import (
 from views import (
     AdminValidateResendView,
     AdminOwnerView,
+    AdminDefaultView,
 )
 
 from knotis.utils.regex import REGEX_UUID
@@ -36,9 +38,6 @@ urlpatterns = patterns(
     ),
     url(
         r'^admin/offer/query/$', login_required(OfferQueryAdminAJAXView.as_view())
-    ),
-    url(
-        r'^admin/offer/?$', login_required(OfferAdminView.as_view())
     ),
 ### ACTIVITY VIEWER
     url(
@@ -67,5 +66,11 @@ urlpatterns = patterns(
         ]), AdminValidateResendView.as_view()
     ),
 )
+### OFFER VIEWER
+urlpatterns += OfferAdminView.urls()
 
+### ADMIN UTILITY FRAGMENTS AND MODALS
 urlpatterns += AdminOwnerView.urls()
+
+### ADMIN TOOL GRID VIEW
+urlpatterns += AdminDefaultView.urls()
