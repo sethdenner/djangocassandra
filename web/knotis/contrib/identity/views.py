@@ -157,6 +157,7 @@ class EstablishmentsView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
     post_scripts = [
         'knotis/layout/js/action_button.js',
+        'knotis/identity/js/identity-action.js',
         'knotis/identity/js/businesses.js',
         'knotis/identity/js/business-tile.js',
     ]
@@ -182,6 +183,8 @@ class EstablishmentProfileView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
     post_scripts = [
         'jcrop/js/jquery.Jcrop.js',
+        'knotis/layout/js/action_button.js',
+        'knotis/identity/js/identity-action.js',
         'scripts/fileuploader.js',
         'scripts/jquery.colorbox.js',
         'scripts/jquery.sickle.js',
@@ -280,21 +283,20 @@ class EstablishmentProfileView(EmbeddedView):
         )
 
     def process_context(self):
-        # Refactor me!
         # Super user check.
         is_superuser = False
         request = self.request
         if request.user.is_authenticated():
             current_identity_id = request.session.get('current_identity')
-            current_identity = Identity.objects.get(
-                pk=current_identity_id
-            )
+            current_identity = Identity.objects.get(pk=current_identity_id)
 
             if (
                 current_identity and
                 current_identity.identity_type == IdentityTypes.SUPERUSER
             ):
                 is_superuser = True
+        else:
+            current_identity = None
 
         self.set_establishment()
         self.set_business()
@@ -392,21 +394,6 @@ class EstablishmentProfileView(EmbeddedView):
             'is_manager': self.is_manager
         })
 
-        """
-        try:
-            establishment_offers = OfferAvailability.objects.filter(
-                identity=self.establishment,
-                available=True
-            )
-
-        except:
-            logger.exception('failed to get establishment offers')
-
-        if establishment_offers:
-            default_view_name = 'offers'
-
-        else:
-        """
         default_view_name = 'about'
 
         view_name = self.context.get('view_name', default_view_name)
@@ -435,6 +422,21 @@ class EstablishmentProfileView(EmbeddedView):
             content_plexer = 'establishments'
             profile_content = 'establishments'
 
+        identity_tile_context = Context({
+            'current_identity': current_identity,
+            'identity': current_identity
+        })
+
+        if ((current_identity and
+                current_identity.identity_type == IdentityTypes.INDIVIDUAL) or
+                current_identity is None):
+            action_button = IdentityActionButton()
+            action_button_content = action_button.render_template_fragment(
+                identity_tile_context
+            )
+        else:
+            action_button_content = None
+
         local_context = copy.copy(self.context)
         local_context.update({
             'establishment': self.establishment,
@@ -447,11 +449,11 @@ class EstablishmentProfileView(EmbeddedView):
             'profile_badge': self.profile_badge_image,
             'profile_banner': self.profile_banner_image,
             'profile_banner_color': self.profile_banner_color,
-            #  'establishment_offers': establishment_offers,
             'top_menu_name': 'identity_profile',
             'profile_content': profile_content,
             'view_name': view_name,
             'content_plexer': content_plexer,
+            'action_button': action_button_content,
             'is_superuser': is_superuser,
         })
 
@@ -522,7 +524,7 @@ class EstablishmentsGrid(GridSmallView):
         return local_context
 
 
-class IdentityTileActionButton(ActionButton):
+class IdentityActionButton(ActionButton):
     view_name = 'identity_tile_action'
 
     def actions(self):
@@ -587,7 +589,7 @@ class IdentityTile(FragmentView):
         if ((current_identity and
                 current_identity.identity_type == IdentityTypes.INDIVIDUAL) or
                 current_identity is None):
-            action_button = IdentityTileActionButton()
+            action_button = IdentityActionButton()
             action_button_content = action_button.render_template_fragment(
                 identity_tile_context
             )
