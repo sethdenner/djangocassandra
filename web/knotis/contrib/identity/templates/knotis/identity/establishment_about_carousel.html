@@ -17,7 +17,7 @@
               {% for index, image in images %}
                   {% thumbnail image.image.image '500x400' crop=image.crop as img %}
                   <div class="item {% if index == 0 %}active{% endif %}">
-                      <div class="about-carousel-image" style="background:url('{{ img.url }}')">
+                      <div class="about-carousel-image" style="background:url('{{ img.url }}');background-size:cover;">
                           {% if is_manager %}
                               <a data-href="/api/v0/media/imageinstance/" data-method="delete" data-pk="{{ image.pk }}" class="delete-x"> x</a>
                           {% endif %}
