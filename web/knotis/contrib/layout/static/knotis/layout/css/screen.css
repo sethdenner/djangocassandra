@@ -1962,8 +1962,14 @@ span.help-inline {
     max-width: 92px;
     max-height: 92px;
     position: relative;
+    border: 3px solid white;
+}
+
+
+.offerPreview .busLogo {
     top: 60px;
 }
+
 
 .defaultImg {
     width: 90px;
@@ -2067,6 +2073,7 @@ span.help-inline {
     background: white;
     position: relative;
     right: 35px;
+    top: 0;
 }
 
 .offerPreview .knotis-price-big {
@@ -2083,12 +2090,9 @@ span.help-inline {
 }
 
 .promotionTile {
-    background: white;
     text-align: center;
-    height: 300px;
     position: relative;
-    left: 20px;
-    border-radius: 3px;
+    top: 35px;
 }
 
 .promotionTile .icon-promotions {
@@ -2096,6 +2100,7 @@ span.help-inline {
     display: inline-block;
     width: 100%;
     margin: 75px 0 0;
+    color: #EBEBEB;
 }
 
 .promotionTile a {
@@ -2109,7 +2114,7 @@ span.help-inline {
     position: absolute;
     height: 100%;
     margin-top: 15px;
-    padding: 170px 20px 0;
+    padding: 180px 20px 0;
     top: -20px;
 }
 
@@ -2125,4 +2130,15 @@ span.help-inline {
     top: -35px;
     margin-bottom: -40px;
     display: inline-block;
+}
+
+a.adminLink {
+    position: absolute;
+    top: 50px;
+    color: #2cc297;
+    border: 2px solid rgb(224, 224, 224);
+    padding: 8px 30px;
+    border-radius: 3px;
+    white-space: nowrap;
+    left: 0;
 }
