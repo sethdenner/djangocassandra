@@ -13,8 +13,9 @@
                 <li><span>Expires:</span> {{ offer.end_time }}</li>
                 <li><span>{{ offer.savings_percent }}</span> Savings</li>
                 <li><span>{{ offer.purchased }}</span> Purchased</li>
-
+                {% if IdentityTypes.INDIVIDUAL == current_identity.identity_type %}
                 <a class="btn modal-link no-deep" href="/offer/{{ offer.pk}}/buy/">Purchase Offer</a>
+                {% endif %}
             </ul>
         </div>
 
