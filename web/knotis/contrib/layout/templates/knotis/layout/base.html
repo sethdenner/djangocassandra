@@ -37,7 +37,11 @@
         {% block first %}{% endblock first %}
         {% block header %}{% endblock header %}
         {% block navigation %}{% endblock navigation %}
-        {% block content %}{% render_fragment establishments %}{% endblock content %}
+        {% block content %}
+        <div id="main-content" class="contentBlock">
+            {% render_fragment establishments %}
+        </div>
+        {% endblock content %}
         {% block footer %}{% endblock footer %}
         {% block modal %}{% endblock modal %}
         {% block last %}{% endblock last %}
