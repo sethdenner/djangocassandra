@@ -83,19 +83,19 @@ def default_format(
             'type': AdminListEditTags.FIELD,
             'ftype': 'hidden',
             'fname': 'target_pk',
-            'data': item.get(pk),
+            'data': item.pk,
         }
         for key in edit_set:
             data[key] = {
                 'type': AdminListEditTags.FIELD,
                 'ftype': 'text',
                 'fname': key,
-                'data': str(item.get(key)),
+                'data': str(getattr(item, key)),
             }
         for key in view_set:
             data[key] = {
                 'type': AdminListEditTags.VALUE,
-                'data': str(item.get(key)),
+                'data': str(getattr(item, key)),
             }
         return ({
             'type': AdminListEditTags.FORM,
@@ -125,7 +125,7 @@ class AdminListQueryAJAXView(AdminAJAXView):
     query_target = None
 
     format_item = default_format
-    post_target = 'admin/update/'
+    post_target = 'update/'
     make_form = False
     edit_excludes = ['id', 'pk']
 
