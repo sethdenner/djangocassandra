@@ -5,7 +5,7 @@
             <li><a href="/businesses/" data-target-id="main-content" ><span class="circle"><i class="icon-business"></i></span><span class="sidebar-label">Businesses</span></a></li>
             <li><a href="/offers/" data-target-id="main-content" ><span class="circle"><i class="icon-offers"></i></span><span class="sidebar-label">Offers</span></a></li>
             {% if current_identity.identity_type == IdentityTypes.INDIVIDUAL %}
-            <li><a href="/my/followers/" data-target-id="main-content"><span class="circle"><i class="icon-following"></i></span><span class="sidebar-label">Following</span></a></li>
+            <li><a href="/my/followers/" data-target-id="main-content"><span class="circle"><i class="icon-followers"></i></span><span class="sidebar-label">Following</span></a></li>
             <li><a href="/my/purchases/" data-target-id="main-content"><span class="circle"><i class="icon-promotions"></i></span><span class="sidebar-label">Purchases</span></a></li>
             {% endif %}
             {% if current_identity.identity_type == IdentityTypes.ESTABLISHMENT %}

@@ -4,16 +4,7 @@
 (function ($) {
     "use strict";
 
-    var hideOverlay = function () {
-        $('.sidebar-overlay').fadeOut('fast');
-        $('.sidebar-label').fadeOut('fast');
-        $( "#sidebar-wrapper" ).animate({
-            width: "70px",
-        },  100, "linear");
-    };
-    $('html').click(hideOverlay);
-
-    $( ".sideBar" ).hover(function () {
+    $( "#sidebar-wrapper" ).hover(function () {
         $( "#sidebar-wrapper" ).animate({
             width: "250px",
         },  100, "linear");
@@ -21,7 +12,10 @@
         $('.sidebar-label').fadeIn('fast');
         $('.sidebar-overlay').fadeIn('fast');
     }, function () {
-        //
+        $( "#sidebar-wrapper" ).animate({
+            width: "75px",
+        },  100, "linear");
+        $('.sidebar-overlay').fadeOut('fast');
     });
 
     $('.sidebar-nav li').each(function (){
