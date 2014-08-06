@@ -23,7 +23,7 @@
             {% thumbnail business_badge_image.image.image '72x72' crop=business_badge_image.crop as image %}
             <img src="{{ image.url }}" />
             {% empty %}
-            <img class="profile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
+            <img class="profile-badge" src="{{ STATIC_URL }}/knotis/offer/img/default-offer-badge.png" />
             {% endthumbnail %}
             <h1>{{ offer.price_discount_formatted }}</h1>
             <h2>{{ offer.owner.name }}</h2>
