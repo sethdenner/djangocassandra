@@ -505,7 +505,7 @@ nav button.signUp {
     font-size: 28px;
 }
 /* line 98, ../sass/_sideBar.scss */
-.sidebar-nav .icon-profile-guy {
+.sidebar-nav .icon-profile-male {
     position: relative;
     top: 4px;
     left: 7px;
@@ -546,8 +546,13 @@ nav button.signUp {
     left: 4px;
     font-size: 28px;
 }
+
+.sidebar-nav .icon-support {
+    font-size: 34px;
+}
+
 /* line 136, ../sass/_sideBar.scss */
-.sidebar-nav .icon-following {
+.sidebar-nav .icon-followers {
     position: relative;
     top: 2px;
     right: 5px;
@@ -1192,141 +1197,93 @@ offerSteps ul {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* line 26, ../sass/_iconFont.scss */
-.icon-search:before {
-    content: "\e601";
+.icon-support:before {
+	content: "\e600";
 }
-
-/* line 29, ../sass/_iconFont.scss */
-.icon-arrow-small-left:before {
-    content: "\e604";
-}
-
-/* line 32, ../sass/_iconFont.scss */
-.icon-arrow-small-down:before {
-    content: "\e605";
-}
-
-/* line 35, ../sass/_iconFont.scss */
-.icon-arrow-small-up:before {
-    content: "\e606";
-}
-
-/* line 38, ../sass/_iconFont.scss */
-.icon-arrow-small-right:before {
-    content: "\e607";
-}
-
-/* line 41, ../sass/_iconFont.scss */
-.icon-knotis:before {
-    content: "\e609";
-}
-
-/* line 44, ../sass/_iconFont.scss */
-.icon-receipt:before {
-    content: "\e60a";
-}
-
-/* line 47, ../sass/_iconFont.scss */
-.icon-arrow-left:before {
-    content: "\e60d";
-}
-
-/* line 50, ../sass/_iconFont.scss */
-.icon-arrow-down:before {
-    content: "\e60f";
-}
-
-/* line 53, ../sass/_iconFont.scss */
-.icon-arrow-up:before {
-    content: "\e610";
-}
-
-/* line 56, ../sass/_iconFont.scss */
-.icon-arrow-right:before {
-    content: "\e611";
-}
-
-/* line 59, ../sass/_iconFont.scss */
 .icon-redeem:before {
-    content: "\e600";
+	content: "\e601";
 }
-
-/* line 62, ../sass/_iconFont.scss */
-.icon-profile-guy:before {
-    content: "\e602";
+.icon-profile-male:before {
+	content: "\e602";
 }
-
-/* line 65, ../sass/_iconFont.scss */
-.icon-profile-woman:before {
-    content: "\e603";
+.icon-profile-female:before {
+	content: "\e603";
 }
-
-/* line 68, ../sass/_iconFont.scss */
 .icon-settings:before {
-    content: "\e608";
+	content: "\e604";
 }
-
-/* line 71, ../sass/_iconFont.scss */
 .icon-reports:before {
-    content: "\e60b";
+	content: "\e605";
 }
-
-/* line 74, ../sass/_iconFont.scss */
 .icon-cart:before {
-    content: "\e60c";
+	content: "\e606";
 }
-
-/* line 77, ../sass/_iconFont.scss */
 .icon-promotions:before {
-    content: "\e60e";
+	content: "\e607";
 }
-
-/* line 80, ../sass/_iconFont.scss */
 .icon-offers:before {
-    content: "\e612";
+	content: "\e608";
 }
-
-/* line 83, ../sass/_iconFont.scss */
 .icon-message:before {
-    content: "\e613";
+	content: "\e609";
 }
-
-/* line 86, ../sass/_iconFont.scss */
-.icon-following:before {
-    content: "\e614";
+.icon-followers:before {
+	content: "\e60a";
 }
-
-/* line 89, ../sass/_iconFont.scss */
 .icon-dashboard:before {
-    content: "\e616";
+	content: "\e60c";
 }
-
-/* line 92, ../sass/_iconFont.scss */
 .icon-customers:before {
-    content: "\e617";
+	content: "\e60d";
 }
-
-/* line 95, ../sass/_iconFont.scss */
 .icon-business:before {
-    content: "\e618";
+	content: "\e60e";
 }
-
-/* line 98, ../sass/_iconFont.scss */
 .icon-feed:before {
-    content: "\e619";
+	content: "\e60f";
 }
-
-/* line 101, ../sass/_iconFont.scss */
 .icon-banking:before {
-    content: "\e61a";
+	content: "\e610";
 }
-
-/* line 104, ../sass/_iconFont.scss */
-.icon-help:before {
-    content: "\e615";
+.icon-location:before {
+	content: "\e60b";
 }
-
+.icon-arrow-left-med:before {
+	content: "\e611";
+}
+.icon-arrow-down-med:before {
+	content: "\e612";
+}
+.icon-arrow-up-med:before {
+	content: "\e613";
+}
+.icon-arrow-right-med:before {
+	content: "\e614";
+}
+.icon-arrow-left-thin-xs:before {
+	content: "\e615";
+}
+.icon-arrow-down-thin-xs:before {
+	content: "\e616";
+}
+.icon-arrow-up-thin-xs:before {
+	content: "\e617";
+}
+.icon-arrow-right-thin-xs:before {
+	content: "\e618";
+}
+.icon-arrow-left-thin-lg:before {
+	content: "\e619";
+}
+.icon-arrow-down-thin-lg:before {
+	content: "\e61a";
+}
+.icon-arrow-up-thin-lg:before {
+	content: "\e61b";
+}
+.icon-arrow-right-thin-lg:before {
+	content: "\e61c";
+}
 @media all and (max-width: 650px) {
     /* line 2, ../sass/_mediaQueries.scss */
     body {
