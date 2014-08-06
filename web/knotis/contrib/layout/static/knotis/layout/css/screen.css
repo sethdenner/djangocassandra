@@ -689,6 +689,7 @@ nav button.signUp {
     border: 2px solid #ebebeb;
     text-transform: uppercase;
     letter-spacing: 1px;
+    width: 100%;
 }
 
 /* line 100, ../sass/_offerItem.scss */
@@ -1198,91 +1199,91 @@ offerSteps ul {
 }
 
 .icon-support:before {
-	content: "\e600";
+    content: "\e600";
 }
 .icon-redeem:before {
-	content: "\e601";
+    content: "\e601";
 }
 .icon-profile-male:before {
-	content: "\e602";
+    content: "\e602";
 }
 .icon-profile-female:before {
-	content: "\e603";
+    content: "\e603";
 }
 .icon-settings:before {
-	content: "\e604";
+    content: "\e604";
 }
 .icon-reports:before {
-	content: "\e605";
+    content: "\e605";
 }
 .icon-cart:before {
-	content: "\e606";
+    content: "\e606";
 }
 .icon-promotions:before {
-	content: "\e607";
+    content: "\e607";
 }
 .icon-offers:before {
-	content: "\e608";
+    content: "\e608";
 }
 .icon-message:before {
-	content: "\e609";
+    content: "\e609";
 }
 .icon-followers:before {
-	content: "\e60a";
+    content: "\e60a";
 }
 .icon-dashboard:before {
-	content: "\e60c";
+    content: "\e60c";
 }
 .icon-customers:before {
-	content: "\e60d";
+    content: "\e60d";
 }
 .icon-business:before {
-	content: "\e60e";
+    content: "\e60e";
 }
 .icon-feed:before {
-	content: "\e60f";
+    content: "\e60f";
 }
 .icon-banking:before {
-	content: "\e610";
+    content: "\e610";
 }
 .icon-location:before {
-	content: "\e60b";
+    content: "\e60b";
 }
 .icon-arrow-left-med:before {
-	content: "\e611";
+    content: "\e611";
 }
 .icon-arrow-down-med:before {
-	content: "\e612";
+    content: "\e612";
 }
 .icon-arrow-up-med:before {
-	content: "\e613";
+    content: "\e613";
 }
 .icon-arrow-right-med:before {
-	content: "\e614";
+    content: "\e614";
 }
 .icon-arrow-left-thin-xs:before {
-	content: "\e615";
+    content: "\e615";
 }
 .icon-arrow-down-thin-xs:before {
-	content: "\e616";
+    content: "\e616";
 }
 .icon-arrow-up-thin-xs:before {
-	content: "\e617";
+    content: "\e617";
 }
 .icon-arrow-right-thin-xs:before {
-	content: "\e618";
+    content: "\e618";
 }
 .icon-arrow-left-thin-lg:before {
-	content: "\e619";
+    content: "\e619";
 }
 .icon-arrow-down-thin-lg:before {
-	content: "\e61a";
+    content: "\e61a";
 }
 .icon-arrow-up-thin-lg:before {
-	content: "\e61b";
+    content: "\e61b";
 }
 .icon-arrow-right-thin-lg:before {
-	content: "\e61c";
+    content: "\e61c";
 }
 
 @media all and (max-width: 650px) {
@@ -1627,9 +1628,9 @@ h1.sectionHeader {
 
 /* line 43, ../sass/_profile.scss */
 .heroInfo {
-    border-right: 1px solid #777777;
+    border-right: 1px solid #575757;
     width: 345px;
-    background: rgba(56, 56, 56, 0.36);
+    background: rgba(29, 29, 29, 0.67);
     position: absolute;
     top: 50px;
     left: 70px;
@@ -1859,9 +1860,10 @@ span.help-inline {
     border-radius: 3px;
     font-size: 14px;
     cursor: pointer;
-    top: 375px;
-    border: 2px solid white;
+    top: 371px;
+    border: 1px solid white;
     z-index: 1;
+    background: rgba(0, 0, 0, 0.23);
 }
 
 .profileBusiness .subNav {
@@ -1888,9 +1890,8 @@ span.help-inline {
 
 .profileContent {
     position: relative;
-    top: 320px;
-    left: 20px;
-    padding: 85px;
+    top: 380px;
+    left: 27px;
     width: 100%;
     margin: 0 auto;
 }
@@ -2026,6 +2027,8 @@ span.help-inline {
     font-size: 23px !important;
     text-align: left;
     padding: 0;
+    position: relative;
+    top: -15px;
 }
 
 .offerPreview .offerItem .busLogo {
@@ -2039,7 +2042,7 @@ span.help-inline {
 }
 
 .offerPreview .knotis-price-big {
-    font-size: 25px;
+    font-size: 20px;
     font-family: 'LatoReg', sans-serif;
 }
 
@@ -2114,7 +2117,7 @@ a.adminLink {
 }
 
 .about-us {
-    padding: 20px 20px 195px;
+    padding: 20px 20px 227px;
 }
 
 .about-carousel section {
@@ -2159,4 +2162,35 @@ a.adminLink {
     color: #2cc397;
     font-size: 14px;
     cursor: pointer;
+}
+
+.modal-footer {
+    border: 0;
+}
+
+.imageUpload .btnCancel {
+    width: 100%;
+    position: relative;
+    top: -50px;
+    color: #c0c0c0;
+}
+
+.imageUpload .btnCancel:active {
+    box-shadow: 0 0;
+}
+
+.imageUpload h3 {
+    font-size: 34px;
+    padding: 20px;
+    font-family: 'LatoLight', sans-serif;
+}
+
+.imageUpload .qq-upload-button {
+    padding: 15px;
+    border-radius: 3px;
+    border: 2px solid #2cc397;
+    background: transparent;
+    color: #2cc397;
+    width: 250px;
+    margin: 0 auto;
 }
