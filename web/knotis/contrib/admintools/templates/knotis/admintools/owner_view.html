@@ -2,8 +2,12 @@
 {% block body %}
 <div>
     <div>
-        <h1>Establishment Managers:</h1>
-        {% for tile in tiles %}
+        <h4>Business Managers:</h4>
+        {% for tile in biz_manager_tiles %}
+        {{ tile }}
+        {% endfor %}
+        <h4>Establishment Managers:</h4>
+        {% for tile in manager_tiles %}
         {{ tile }}
         {% endfor %}
     </div>

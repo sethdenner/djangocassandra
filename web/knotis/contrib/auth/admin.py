@@ -12,6 +12,7 @@ from knotis.contrib.admintools.forms import (
     AdminQueryForm,
 )
 
+from knotis.contrib.identity.views import get_current_identity
 from knotis.contrib.identity.models import (
     Identity,
     IdentityTypes,
