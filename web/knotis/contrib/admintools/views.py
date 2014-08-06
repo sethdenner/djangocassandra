@@ -25,6 +25,7 @@ from knotis.contrib.auth.forms import (
 from knotis.contrib.identity.models import (
     IdentityTypes,
     Identity,
+    IdentityBusiness,
     IdentityEstablishment,
 )
 from knotis.contrib.identity.views import (
@@ -73,7 +74,7 @@ def default_format(
     item,
 ):
     if self.make_form:
-        field_set = item.get_fields_dict().keys()
+        field_set = set(item.get_fields_dict().keys())
         banned_set = set(self.edit_excludes)
         edit_set = field_set - banned_set
         view_set = field_set & banned_set
@@ -280,30 +281,50 @@ class AdminOwnerView(ModalView):
     ]
 
     def process_context(self):
+        detail_tile = AdminUserDetailsTile()
         establishment_id = self.context.get('identity_id')
         establishment = IdentityEstablishment.objects.get(pk=establishment_id)
+        business = IdentityBusiness.objects.get_establishment_parent(establishment) 
         
         managers = []
-        relations = Relation.objects.get_managers(establishment)
-        for relation in relations:
+        biz_managers = []
+        manager_relations = set(Relation.objects.get_managers(establishment))
+        biz_manager_relations = set(Relation.objects.get_managers(business))
+
+        for relation in manager_relations:
             managers.append(relation.subject)
         manager_users = []
         for manager in managers:
             user = KnotisUser.objects.get_identity_user(manager)
             manager_users.append((manager, user))
-            
-        detail_tile = AdminUserDetailsTile()
-        tiles = []
+        manager_tiles = []
         for id, user in manager_users:
             tile_context = Context({
                 'identity': id,
                 'user': user,
                 'request': self.request,
             })
-            tiles.append(detail_tile.render_template_fragment(tile_context))
+            manager_tiles.append(detail_tile.render_template_fragment(tile_context))
+
+        for relation in biz_manager_relations:
+            biz_managers.append(relation.subject)
+        biz_manager_users = []
+        for manager in biz_managers:
+            user = KnotisUser.objects.get_identity_user(manager)
+            biz_manager_users.append((manager, user))
+        biz_manager_tiles = []
+        for id, user in biz_manager_users:
+            tile_context = Context({
+                'identity': id,
+                'user': user,
+                'request': self.request,
+            })
+            biz_manager_tiles.append(detail_tile.render_template_fragment(tile_context))
+
         local_context = copy.copy(self.context)
         local_context.update({
-            'tiles': tiles,
+            'manager_tiles': manager_tiles,
+            'biz_manager_tiles': biz_manager_tiles,
             'request': self.request,
         })
         
