@@ -3,10 +3,10 @@ from django.views.decorators.csrf import csrf_protect
 ###### IMPORTS FROM KNOTIS FILES ######
 
 from knotis.contrib.admintools.views import (
+    AdminAJAXView,
     AdminListEditTags,
     AdminListEditView,
     AdminListQueryAJAXView,
-    AdminAJAXView,
 )
 from knotis.contrib.admintools.forms import (
     AdminQueryForm,
@@ -16,8 +16,6 @@ from knotis.contrib.identity.models import (
     Identity,
     IdentityTypes,
 )
-
-from knotis.views import ContextView
 
 ###### IMPORTS FROM MODULE FILES ######
 from models import (
@@ -30,7 +28,6 @@ from forms import (
 
 ###### LIST EDIT APP ######
 def format_user(self, user):
-
 
     user_info = []
     identities = Identity.objects.get_available(user=user)
@@ -101,18 +98,24 @@ def format_user(self, user):
     return ({
         'type': AdminListEditTags.DICT,
         'data': {
-            'username': {
+            'userdata': {
                 'type': AdminListEditTags.FORM,
                 'action': ('/admin/user/interact/update-' + user.pk + '/'),
                 'method': 'post',
                 'button': 'Update',
                 'id': user.pk,
                 'data': {
-                    'value': {
+                    'username': {
                         'type': AdminListEditTags.FIELD,
                         'ftype': 'text',
                         'fname': 'username',
                         'data': user.username,
+                    },
+                    'password': {
+                        'type': AdminListEditTags.FIELD,
+                        'ftype': 'text',
+                        'fname': 'password',
+                        'data': '',
                     },
                 },
             },
@@ -128,14 +131,12 @@ def format_user(self, user):
     })
 
 class UserQueryAdminAJAXView(AdminListQueryAJAXView):
-    query_target = KnotisUser.objects.all
+    query_target = KnotisUser.objects
     format_item = format_user
 
 
 class UserAdminView(AdminListEditView):
-    query_form = AdminQueryForm(initial={
-        'target_uri' : 'interact/',
-    })
+    url_patterns = [ r'^admin/user/$' ]
     create_form = AdminCreateUserForm()
 
 
@@ -158,9 +159,15 @@ class UserUpdateAdminAJAXView(AdminAJAXView):
                 user = KnotisUser.objects.get(id=user_id)
                 data = request.POST
                 new_email = data.get('username')
-                user.email = new_email
-                user.username = new_email
-                user.save()
+                new_password = data.get('password')
+                if(user):
+                    if(new_email):
+                        user.email = new_email
+                        user.username = new_email
+                        user.save()
+                    if(new_password):
+                        user.set_password(new_password)
+                        user.save()
                 status = 'good'
             else:
                 status = 'fail'
@@ -168,50 +175,7 @@ class UserUpdateAdminAJAXView(AdminAJAXView):
                 'status': status,
             })
         else:
-            return self.genereate_response({
+            return self.generate_ajax_response({
                 'status': 'fail',
             })
 
-class UserQueryAdminAJAXView(AdminAJAXView):
-    def post(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        users = []
-        user_view_form = UserAdminQueryForm(data=request.POST)
-
-        current_identity = get_current_identity(self.request)
-        range_start = int(user_view_form.data.get('range_start'))
-        range_step = int(user_view_form.data.get('range_step'))
-        range_end = int(user_view_form.data.get('range_end'))
-        if user_view_form.data.get('user_filter'):
-            user_filter = user_view_form.data.get('user_filter')
-        else:
-            user_filter = None
-
-        if (
-            current_identity and
-            current_identity.identity_type == IdentityTypes.SUPERUSER
-        ):
-            user_query = KnotisUser.objects.all()
-            user_query = user_query[range_start - 1 : range_end]
-        else:
-            user_query = None
-
-        if(user_query):
-            if user_filter:
-                user_query = user_query.filter(user_filter)
-            for user in user_query:
-                users.append(format_user(user))
-        
-        return self.generate_ajax_response({
-            'start': range_start,
-            'end': range_end,
-            'step': range_step,
-            'users': users,
-        })
-
-class UserAdminView(ContextView):
-    template_name = 'knotis/auth/user_admin_view.html'

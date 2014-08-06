@@ -1,8 +1,6 @@
+{% extends 'knotis/layout/modal_base.html' %}
+{% block body %}
 <div>
-    <div>
-        <h1>Establishment Owner:</h1>
-        {{ main_tile }}
-    </div>
     <div>
         <h1>Establishment Managers:</h1>
         {% for tile in tiles %}
@@ -10,3 +8,4 @@
         {% endfor %}
     </div>
 </div>
+{% endblock body %}

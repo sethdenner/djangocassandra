@@ -1,8 +1,8 @@
 <script type="text/javascript">
     // TODO: Figure out better implementation of this
     $(document).ready(function() {
-        $('.offerSteps li').removeClass('active');
-        $('.stepFive').addClass('active');
+    $('.offerSteps li').removeClass('active');
+    $('.stepFive').addClass('active');
     });
 </script>
 
@@ -44,16 +44,18 @@
 
         <div class="row-fluid" >
             <div class="small-space"></div>
-            <form action="{{ offer_finish_form.form_action }}" method="{{ offer_finish_form.form_method }}" >{% csrf_token %}
+            <form id="offer-summary-form" action="{{ offer_finish_form.form_action }}" method="{{ offer_finish_form.form_method }}" >{% csrf_token %}
                 {{ offer_finish_form.id }}
                 {{ offer_finish_form.published }}
 
                 <div class="offer-form-nav">
                     <button type="button" class="btn wizard-back"><span class="icon-arrow-left"></span> Go Back</button>
                     <button id="id-submit-details" type="submit" class="btn btn-primary continue">Publish Promotion</button>
-                    <button type="button" class="btn btn-primary">Save For Later</button>
-
-                    </form>
+                    <button id="id-save-for-later" type="button" class="btn btn-primary">Save For Later</button>
                 </div>
+
+            </form>
         </div>
     </div>
+</div>
+<script src="{{ STATIC_URL }}knotis/merchant/js/offer_edit_summary.js"></script>

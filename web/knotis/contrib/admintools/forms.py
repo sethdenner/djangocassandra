@@ -43,5 +43,5 @@ class AdminQueryForm(TemplateForm):
         label='',
         max_length = 254,
         required = True,
-        initial = ' ',
+        initial = 'query/',
     )
