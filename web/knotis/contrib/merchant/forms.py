@@ -479,6 +479,13 @@ class OfferPublicationForm(TemplateForm):
                 ):
                     endpoint_widget = endpoint
 
+        publish_widget = self.fields['publish'].widget
+        publish_values = publish_widget.value_from_datadict(
+            self.data,
+            {},
+            'publish'
+        )
+
         rows = [
             ItemSelectRow(
                 endpoint_facebook,
@@ -486,7 +493,10 @@ class OfferPublicationForm(TemplateForm):
                     'Facebook' if endpoint_facebook is None else
                     endpoint_facebook.value + ' (Facebook)'
                 ),
-                checked=True if endpoint_facebook is not None else False,
+                checked=(
+                    True if endpoint_facebook and endpoint_facebook.pk in
+                    publish_values else False
+                ),
                 disabled=True if endpoint_facebook is None else False,
                 action=ItemSelectAction(
                     name='Edit',
@@ -499,7 +509,10 @@ class OfferPublicationForm(TemplateForm):
                     'Twitter' if endpoint_twitter is None else
                     endpoint_twitter.value + ' (Twitter)'
                 ),
-                checked=True if endpoint_twitter is not None else False,
+                checked=(
+                    True if endpoint_twitter and endpoint_twitter.pk in
+                    publish_values else False
+                ),
                 disabled=True if endpoint_twitter is None else False,
                 action=ItemSelectAction(
                     name='Edit',
@@ -509,7 +522,10 @@ class OfferPublicationForm(TemplateForm):
             ItemSelectRow(
                 endpoint_followers,
                 title='Email Followers',
-                checked=True if endpoint_followers is not None else False,
+                checked=(
+                    True if endpoint_followers and endpoint_followers.pk in
+                    publish_values else not publish_values
+                ),
                 disabled=True if endpoint_followers is None else False,
                 action=ItemSelectAction(
                     name='Edit',
