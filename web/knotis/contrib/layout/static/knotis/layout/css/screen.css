@@ -1284,6 +1284,7 @@ offerSteps ul {
 .icon-arrow-right-thin-lg:before {
 	content: "\e61c";
 }
+
 @media all and (max-width: 650px) {
     /* line 2, ../sass/_mediaQueries.scss */
     body {
