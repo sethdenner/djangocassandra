@@ -18,8 +18,8 @@
                 {% endif %}
             </ul>
         </div>
+        <div class="col-lg-6 col-xs-12 offerHero" style="background-image: url('{{ header.url }}');background-size: cover;">
 
-        <div class="col-lg-6 col-xs-12 offerHero">
             {% thumbnail business_badge_image.image.image '72x72' crop=business_badge_image.crop as image %}
             <img src="{{ image.url }}" />
             {% empty %}
