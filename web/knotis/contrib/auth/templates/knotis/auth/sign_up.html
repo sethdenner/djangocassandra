@@ -3,7 +3,4 @@
 {{ signup_form.as_template }}
 {% endblock body %}
 {% block last %}
-{% if format == 'json' %}
-<script src="{{ STATIC_URL }}knotis/auth/js/sign_up.js"></script>
-{% endif %}
 {% endblock last %}
