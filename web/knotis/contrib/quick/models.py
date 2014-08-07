@@ -49,7 +49,7 @@ class QuickManager(polymodels.managers.PolymorphicManager):
 
     def all(self, deleted=False):
         if deleted:
-            return self.all()
+            return super(QuickManager, self).all()
 
         else:
             return self.filter(deleted=deleted)
