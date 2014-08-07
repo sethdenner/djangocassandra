@@ -14,8 +14,7 @@ from knotis.contrib.quick.fields import (
     QuickCharField,
     QuickIntegerField,
     QuickBooleanField,
-    QuickForeignKey,
-    QuickUUIDField,
+    QuickForeignKey
 )
 from knotis.contrib.identity.models import Identity
 from knotis.contrib.inventory.models import Inventory
