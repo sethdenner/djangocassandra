@@ -38,7 +38,7 @@ def get_migration_target(business):
 def move_inventory_to_establishment():
     from knotis.contrib.inventory.models import Inventory
 
-    all_inventory = Inventory.objects.all()
+    all_inventory = Inventory.objects.all(deleted=True)
     failed_inventory_migrations = []
     x = 0
     chunk_size = 20
@@ -133,7 +133,7 @@ def move_offers_to_establishment():
     transactions_migrated_total = 0
     failed_offer_migrations = []
     failed_transction_migrations = []
-    all_offers = Offer.objects.all()
+    all_offers = Offer.objects.all(deleted=True)
     x = 0
     chunk_size = 20
     offer_chunk = all_offers[x:x + chunk_size]
