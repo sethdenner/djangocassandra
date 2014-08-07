@@ -260,11 +260,14 @@ class AdminValidateResendView(AJAXFragmentView):
         user_id = self.context.get('identity_id')
         user_id = Identity.objects.get(pk=user_id)
         user = KnotisUser.objects.get_identity_user(user_id)
-        reset_form = ForgotPasswordForm()
-        reset_form.email = user.username
+        reset_form = ForgotPasswordForm(data={
+            'email': user.username,
+        })
         reset_form.send_reset_instructions()
-
-        return self.generate_ajax_response()
+        return self.generate_ajax_response({
+            'identity': user_id.get_fields_dict(),
+             'user': user.username,
+        })
     
 
 class AdminUserDetailsTile(FragmentView):
