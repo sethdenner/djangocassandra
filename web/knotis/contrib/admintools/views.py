@@ -43,6 +43,7 @@ from knotis.views import (
     ModalView,
     EmbeddedView,
     FragmentView,
+    AJAXFragmentView,
     AJAXView,
 )   
 from forms import (
@@ -246,7 +247,7 @@ class AdminOwnerViewButton(FragmentView):
     template_name = 'knotis/admintools/owner_button_fragment.html'
 
 
-class AdminValidateResendView(FragmentView):
+class AdminValidateResendView(AJAXFragmentView):
     view_name = 'admin_send_reset_button'
     template_name = 'knotis/admintools/validate_resend.html'
 
@@ -259,8 +260,14 @@ class AdminValidateResendView(FragmentView):
         user_id = self.context.get('identity_id')
         user_id = Identity.objects.get(pk=user_id)
         user = KnotisUser.objects.get_identity_user(user_id)
-        reset_form = ForgotPasswordForm(email=user.username)
+        reset_form = ForgotPasswordForm(data={
+            'email': user.username,
+        })
         reset_form.send_reset_instructions()
+        return self.generate_ajax_response({
+            'identity': user_id.get_fields_dict(),
+             'user': user.username,
+        })
     
 
 class AdminUserDetailsTile(FragmentView):
@@ -299,12 +306,14 @@ class AdminOwnerView(ModalView):
             manager_users.append((manager, user))
         manager_tiles = []
         for id, user in manager_users:
-            tile_context = Context({
+            tile_context = copy.copy(self.context)
+            tile_context.update({
                 'identity': id,
                 'user': user,
                 'request': self.request,
             })
             manager_tiles.append(detail_tile.render_template_fragment(tile_context))
+            tile_context = None
 
         for relation in biz_manager_relations:
             biz_managers.append(relation.subject)
@@ -314,12 +323,14 @@ class AdminOwnerView(ModalView):
             biz_manager_users.append((manager, user))
         biz_manager_tiles = []
         for id, user in biz_manager_users:
-            tile_context = Context({
+            tile_context = copy.copy(self.context)
+            tile_context.update({
                 'identity': id,
                 'user': user,
                 'request': self.request,
             })
             biz_manager_tiles.append(detail_tile.render_template_fragment(tile_context))
+            tile_context = None
 
         local_context = copy.copy(self.context)
         local_context.update({
