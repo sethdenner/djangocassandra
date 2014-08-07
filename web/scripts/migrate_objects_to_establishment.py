@@ -35,6 +35,57 @@ def get_migration_target(business):
     return establishment
 
 
+def move_qrcode_to_establishment():
+    from knotis.contrib.qrcode.models import Qrcode
+
+    all_qrcodes = Qrcode.objects.all()
+    failed_qrcode_migrations = []
+    x = 0
+    chunk_size = 20
+    qrcode_chunk = all_qrcodes[x:x + chunk_size]
+
+    while len(qrcode_chunk):
+        for q in qrcode_chunk:
+            if IdentityTypes.BUSINESS != q.owner.identity_type:
+                continue
+
+            establishment = get_migration_target(q.owner)
+
+            if not establishment:
+                logger.error(''.join([
+                    'Could not migrate qrcode ',
+                    q.pk
+                ]))
+                failed_qrcode_migrations.append({
+                    'qrcode': q,
+                    'to': establishment
+                })
+                continue
+
+            original_owner = q.owner
+            q.owner = establishment
+            q.save()
+
+            logger.info(''.join([
+                'Migrated QRCode: ',
+                q.pk,
+                ' from ',
+                original_owner.name,
+                ' (',
+                str(original_owner.identity_type),
+                ') to ',
+                q.owner.name,
+                ' (',
+                str(q.owner.identity_type),
+                ')'
+            ]))
+
+        x += chunk_size
+        qrcode_chunk = all_qrcodes[x:x + chunk_size]
+
+    return failed_qrcode_migrations
+
+
 def move_inventory_to_establishment():
     from knotis.contrib.inventory.models import Inventory
 
@@ -272,3 +323,18 @@ def retry_transaction_migrations(failed_transaction_migrations):
             failed_again.append(m)
 
     return failed_again
+
+
+def run_all_migrations():
+    failed_offer_migrations, failed_transaction_migrations = (
+        move_offers_to_establishment()
+    )
+    failed_inventory_migrations = move_inventory_to_establishment()
+    failed_qrcode_migrations = move_qrcode_to_establishment()
+
+    return {
+        'failed_offer_migrations': failed_offer_migrations,
+        'failed_transaction_migrations': failed_transaction_migrations,
+        'failed_inventory_migrations': failed_inventory_migrations,
+        'failed_qrcode_migrations': failed_qrcode_migrations
+    }
