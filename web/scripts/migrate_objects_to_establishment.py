@@ -56,13 +56,13 @@ def move_inventory_to_establishment():
                 establishment_provider = get_migration_target(i.provider)
 
             except InvalidMigrationSourceException:
-                pass
+                establishment_provider = None
 
             try:
                 establishment_recipient = get_migration_target(i.recipient)
 
             except InvalidMigrationSourceException:
-                pass
+                establishment_recipient = None
 
             if not establishment_provider and not establishment_recipient:
                 logger.error(''.join([
