@@ -5,7 +5,7 @@ from knotis.contrib.identity.models import IdentityTypes
 
 
 class InvalidMigrationSourceException(Exception):
-    pass
+    message = 'This migration source is not an identity of type "BUSINESS"'
 
 
 def get_migration_target(business):
@@ -65,6 +65,12 @@ def move_inventory_to_establishment():
                 pass
 
             if not establishment_provider and not establishment_recipient:
+                logger.error(''.join([
+                    'Failed to migrate invetory: ',
+                    i.pk,
+                    '.'
+                ]))
+
                 failed_inventory_migrations.append({
                     'inventory': i,
                     'to_provider': establishment_provider,
