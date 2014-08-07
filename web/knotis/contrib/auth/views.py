@@ -173,15 +173,17 @@ class SignUpView(ModalView):
         r'^signup/(?P<account_type>[^/]+)*$'
     ]
     post_scripts = [
-        'knotis/auth/js/signup.js'
+        'knotis/auth/js/sign_up.js'
     ]
 
     def process_context(self):
-        return self.context.update({
+        self.context.update({
             'signup_form': CreateUserForm(request=self.request),
             'header_title': 'Sign Up',
             'modal_id': 'auth-modal'
         })
+
+        return super(SignUpView, self).process_context()
 
     def post(
         self,
