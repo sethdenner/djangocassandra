@@ -366,11 +366,18 @@ class OfferDetailView(ModalView):
                 offer_items = None
 
         try:
-            business_badge_image = ImageInstance.objects.get(
-                related_object_id=offer.owner_id,
-                context='profile_badge',
+            offer_banner_image = ImageInstance.objects.get(
+                related_object_id=offer.id,
+                context='offer_banner',
                 primary=True
             )
+
+        except:
+            logger.exception('failed to get offer banner image')
+            offer_banner_image = None
+
+        try:
+            business_badge_image = get_identity_profile_badge(offer.owner)
 
         except:
             logger.exception('failed to get business badge image')
@@ -390,7 +397,8 @@ class OfferDetailView(ModalView):
             'IdentityTypes': IdentityTypes,
             'offer': offer,
             'offer_items': offer_items,
-            'business_badge_image': business_badge_image
+            'business_badge_image': business_badge_image,
+            'offer_banner_image': offer_banner_image
         })
 
         return local_context
