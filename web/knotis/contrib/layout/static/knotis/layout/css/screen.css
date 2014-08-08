@@ -2168,10 +2168,15 @@ a.adminLink {
     border: 0;
 }
 
+.imageUpload {
+    text-align: center;
+    border: 1px solid #DADADA;
+}
+
 .imageUpload .btnCancel {
     width: 100%;
     position: relative;
-    top: -50px;
+    top: -15px;
     color: #c0c0c0;
 }
 
@@ -2193,12 +2198,6 @@ a.adminLink {
     color: #2cc397;
     width: 250px;
     margin: 0 auto;
-}
-
-.modalContainer {
-    text-align: center;
-    font-size: 32px;
-    color: #7C7C7C;
 }
 
 .createBusiness {
@@ -2281,4 +2280,55 @@ section.welcomeModal h1 {
     color: #3c3c3c;
     text-align: center;
     margin: 0;
+}
+
+.manageQr .content {
+    padding: 20px;
+}
+
+.manageQr h2 {
+    font-size: 25px;
+    margin: 65px 0 20px;
+    font-family: 'LatoLight', sans-serif;
+}
+
+.manageQr .qrcode-manage {
+    width: 200px;
+    border-radius: 3px;
+    border: 1px solid rgb(218, 218, 218);
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 40px;
+}
+
+.manageQr .message-confirm {
+    display: inline-block;
+}
+
+.manageQr .message-confirm p {
+    background: white;
+    padding: 20px 15px;
+    border-radius: 3px;
+    border-left: 4px solid #2cc397;
+}
+
+.manageQr section {
+    background: rgba(255, 255, 255, 0.77);
+    padding: 30px 50px 35px;
+    margin: 60px 0 -50px;
+}
+
+.codeLinks p {
+    font-size: 16px;
+    margin: 20px 0px 50px;
+    width: 50%;
+}
+
+.codeLinks label {
+    background: white;
+    cursor: pointer;
+    width: 50%;
+    border-radius: 3px;
+    margin: 20px 0;
+    padding: 20px 45px;
 }
