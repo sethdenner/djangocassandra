@@ -2194,3 +2194,52 @@ a.adminLink {
     width: 250px;
     margin: 0 auto;
 }
+
+.modalContainer {
+    text-align: center;
+    font-size: 32px;
+    color: #7C7C7C;
+}
+
+.createBusiness {
+    padding: 20px;
+}
+
+.createBusiness h1 {
+    font-size: 35px;
+    color: #3c3c3c;
+    text-align: center;
+    margin: 0;
+}
+
+.createBusiness p {
+    font-size: 20px;
+    padding: 20px 80px;
+    font-family: 'LatoLight', sans-serif;
+}
+
+.createBusiness input {
+    font-size: 19px;
+    padding: 15px;
+    border-radius: 2px;
+    border: 1px solid #DADADA;
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    margin: 20px;
+    outline: 0;
+}
+
+.createBusiness .btn {
+    background: #2cc397;
+    color: white;
+    padding: 15px;
+    width: 50%;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.close {
+    position: relative;
+    right: 10px;
+}
