@@ -424,7 +424,7 @@ class EstablishmentProfileView(EmbeddedView):
 
         identity_tile_context = Context({
             'current_identity': current_identity,
-            'identity': current_identity
+            'identity': self.establishment
         })
 
         if ((current_identity and
@@ -532,10 +532,11 @@ class IdentityActionButton(ActionButton):
         current_identity = self.context.get('current_identity')
 
         if not current_identity:
+            href = '/signup/?close_href=/id/%s/' % tile_identity
             return [
                 ButtonAction(
                     'Follow',
-                    '/signup/',
+                    href,
                     {},
                     'get',
                     deep=True,

@@ -1,7 +1,20 @@
-{% load crispy_forms_tags %}
 <div class="modal-header">
   <h3>Where is your establishment located?</h3>
 </div>
+
 <div class="modal-body">
-  {% crispy location_form %}
+    <form action="/api/v1/location/location/" id="id-location-form" method="post">
+        <!-- These are for the autocomplete --!>
+        <input id="location-input" autocomplete="off" type="text"/>
+        <input id="location-search" type="button" class="btn" value="Search"/>
+
+        <input data-geo="formatted_address" type="hidden" name="address"/>
+        <input data-geo="lat" type="hidden" id="latitude-input" name="latitude"/>
+        <input data-geo="lng" type="hidden" id="longitude-input" name="longitude"/>
+
+        <input type="hidden" id="related-id-input" name="related_id"/>
+        <input type="submit" name="save" value="This Location Is Correct" class="btn btn-primary" id="submit-id-save"/>
+
+        <div class="map_canvas"></div>
+    </form>
 </div>
