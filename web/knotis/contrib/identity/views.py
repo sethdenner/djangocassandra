@@ -424,7 +424,7 @@ class EstablishmentProfileView(EmbeddedView):
 
         identity_tile_context = Context({
             'current_identity': current_identity,
-            'identity': self.establishment_id
+            'identity': self.establishment
         })
 
         if ((current_identity and
