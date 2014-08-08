@@ -2136,10 +2136,6 @@ a.adminLink {
     cursor: pointer;
 }
 
-.identityContent h1 {
-    margin: 65px 0 -10px;
-}
-
 .carousel-indicators {
     position: absolute;
     bottom: 10px;
@@ -2359,4 +2355,8 @@ section.welcomeModal h1 {
 
 .codeLinks input.inputInner {
     width: 30px;
+}
+
+.btn-primary {
+    background: #2cc397;
 }
