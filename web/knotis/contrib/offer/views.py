@@ -15,8 +15,9 @@ from knotis.utils.regex import REGEX_UUID
 
 from knotis.contrib.offer.models import (
     Offer,
-    OfferItem,
+    OfferItem
 )
+
 from knotis.contrib.product.models import (
     Product,
     CurrencyCodes
@@ -178,8 +179,6 @@ class OffersGridView(GridSmallView):
             logger.exception(''.join([
                 'failed to get offers.'
             ]))
-
-
 
         tiles = []
         for offer in offers:
