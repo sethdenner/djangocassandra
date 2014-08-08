@@ -445,7 +445,7 @@ class MyEstablishmentsGrid(GridSmallView):
         return local_context
 
 
-class OfferAvailibilityGridView(GridSmallView):
+class OfferAvailabilityGridView(GridSmallView):
     view_name = 'offer_availability_grid'
 
     def process_context(self):
@@ -475,10 +475,14 @@ class OfferAvailibilityGridView(GridSmallView):
 
         try:
             identity = self.context.get('offer_availability_identity')
-            offer_availability = OfferAvailability.objects.filter(
-                identity=identity,
-                available=True
-            )[start_range:end_range]
+            if identity:
+                offer_availability = OfferAvailability.objects.filter(
+                    identity=identity,
+                    available=True
+                )[start_range:end_range]
+
+            else:
+                identity = None
 
         except Exception:
             logger.exception(''.join([
@@ -1590,8 +1594,12 @@ class EstablishmentProfileView(EmbeddedView):
 
         elif view_name == 'offers':
             content_plexer = 'offersaboutcontact'
-            context_context['offer_availability_idenitty'] = self.establishment
-            profile_content = None
+            context_context['offer_availability_identity'] = self.establishment
+            profile_content = (
+                OfferAvailabilityGridView().render_template_fragment(
+                    context_context
+                )
+            )
 
         elif view_name == 'about':
             content_plexer = 'offersaboutcontact'
