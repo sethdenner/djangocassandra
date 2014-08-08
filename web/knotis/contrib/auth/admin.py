@@ -28,6 +28,12 @@ from forms import (
 )
 
 ###### LIST EDIT APP ######
+def format_user_filter(self, filter_string):
+    if filter_string:
+        return {'username' : filter_string,}
+    else:
+        return None
+
 def format_user(self, user):
 
     user_info = []
@@ -134,6 +140,7 @@ def format_user(self, user):
 class UserQueryAdminAJAXView(AdminListQueryAJAXView):
     query_target = KnotisUser.objects
     format_item = format_user
+    format_filter = format_user_filter
 
 
 class UserAdminView(AdminListEditView):
