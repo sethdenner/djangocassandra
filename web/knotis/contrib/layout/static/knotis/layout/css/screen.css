@@ -2330,5 +2330,33 @@ section.welcomeModal h1 {
     width: 50%;
     border-radius: 3px;
     margin: 20px 0;
-    padding: 20px 45px;
+    padding: 10px 35px;
+}
+
+.codeLinks input {
+    padding: 20px;
+    border: 1px solid rgb(233, 233, 233);
+    width: 50%;
+    outline: 0;
+}
+
+.codeLinks .linkInput {
+    position: relative;
+    top: -20px;
+    border: 0 !important;
+    border-top: 1px solid #c0c0c0 !important;
+    padding-top: 30px;
+}
+
+.codeLinks .radioBtn {
+    position: relative;
+    top: -4px;
+}
+
+.codeLinks .inputInner {
+    padding: 0;
+}
+
+.codeLinks input.inputInner {
+    width: 30px;
 }

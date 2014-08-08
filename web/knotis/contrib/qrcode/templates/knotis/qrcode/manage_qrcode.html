@@ -30,33 +30,33 @@
                     <form method="post">{% csrf_token %}
                         <ul>
                             <fieldset>
-                                <h2>Business Profile link</h2>
+                                <h2>Business Profile Link</h2>
                                 <p>Automatically send visitors to your Knotis Business Profile</p>
                                 <label class="radio">
-                                    <input id="id-business-profile-link" type="radio" value="profile" name="qrcode" {% if qrcode.qrcode_type == 'profile' %}checked{% endif %} /> Business Profile link</label>
+                                    <input class="inputInner radioBtn" id="id-business-profile-link" type="radio" value="profile" name="qrcode" {% if qrcode.qrcode_type == 'profile' %}checked{% endif %} /> Business Profile link</label>
                             </fieldset>
                             <fieldset>
-                                <h2>Link</h2>
+                                <h2>External Link</h2>
                                 <p>Configure an external link outside of Knotis. This link may be a
                                     different business profile, a special promo page, a video on YouTube or other custom URL
                                     you specify.</p>
                                 <label class="radio">
-                                    <input type="radio" name="qrcode"
+                                    <input class="inputInner radioBtn" type="radio" name="qrcode"
                                            value="link" {% if qrcode.qrcode_type == 'link' %}
                                            checked{% endif %} /> Link
                                 </label>
-                                <input {% if qrcode.qrcode_type == 'link' %}value="{{ qrcode.uri }}"{% endif %}
+                                <input class="linkInput" {% if qrcode.qrcode_type == 'link' %}value="{{ qrcode.uri }}"{% endif %}
                                        placeholder="Enter the link – ie: http://www.google.com"
                                        type="text" name="link_content">
                             </fieldset>
                             <fieldset>
                                 <h2>Video</h2>
                                 <label class="radio">
-                                    <input type="radio" name="qrcode"
+                                    <input class="inputInner radioBtn" type="radio" name="qrcode"
                                            value="video" {% if qrcode.qrcode_type == 'video' %}
                                            checked{% endif %} /> Video
                                 </label>
-                                <input {% if business.qrcode_type == 'video' %}value="{{ qrcode.uri }}"{% endif %}
+                                <input class="linkInput" {% if business.qrcode_type == 'video' %}value="{{ qrcode.uri }}"{% endif %}
                                        placeholder="Enter the link to the video – ie: http://www.youtube.com"
                                        type="text" name="video_content">
                             </fieldset>
@@ -68,7 +68,7 @@
                                     redeem a offer.</h4>
                                 {% for offer in offers %}
                                 <label class="radio">
-                                    <input type="radio"
+                                    <input class="radioBtn" type="radio"
                                            name="qrcode" {% if qrcode.qrcode_type == 'offer' and qrcode.uri == offer.public_url %}
                                            checked{% endif %}
                                            value="{{ offer.id }}"/> {% if offer.active %}[active]{% else %}[expired]{% endif %} {{ offer.title_formatted }}
@@ -79,7 +79,7 @@
                             <input class="btn btn-primary" type="submit" name="saveQrcode" value="Set QR Link"/>
                             {% if scans %}
                             <fieldset>
-                                <h3><strong>History</strong></h3>
+                                <h2>History</h2>
                                 {% for scan in scans %}
                                 <div>
                                     <div>{{ scan.uri }} ({{ scan.pub_date }})</div>
