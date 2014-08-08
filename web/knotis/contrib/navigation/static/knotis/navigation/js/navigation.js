@@ -118,11 +118,11 @@
                 data: 'format=json',
                 complete: function (request, status) {
                     var data = $.parseJSON(request.responseText);
-                    if (data.errors || status === 'error') {
+                    if (status === 'error') {
                         alert([
                             'There was an error processing your request.',
                             '\n    status: ',
-                            status,,
+                            status,
                             '\n    response: ',
                             request.responseText
                         ].join(''));
