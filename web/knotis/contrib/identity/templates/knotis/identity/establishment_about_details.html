@@ -20,32 +20,32 @@
               <label for="business-name">Business Name:</label>
               <input
                   id="business-name"
-                  class="edit-endpoint linked-business-name"
+                  class="edit-endpoint"
                   type="text"
                   placeholder="Enter your business's name here..."
-                  data-initial-value="{{ establishment.name }}" />
+                  value="{{ establishment.name }}" />
               <br />
 
               <label for="business-address">Business Address:</label>
               <a
                   id="business-address"
-                  class="edit-endpoint linkedaddress"
+                  class="edit-endpoint"
                   type="text"
                   data-latitude="{{ address_latitude }}"
                   data-longitude="{{ address_longitude }}"
-                  data-initial-value="{{ address }}">
-                {% if address != None%}{{ address }}{% else %}Add Location{% endif %}
+                  value="{{ address }}">
+                {% if address %}{{ address }}{% else %}Add Location{% endif %}
               </a>
 
               <label for="endpoint-phone">Phone Number:</label>
               <input
                   id="endpoint-phone"
-                  class="edit-endpoint linked-phone-number"
+                  class="edit-endpoint"
                   type="text"
                   placeholder="000-000-0000"
                   data-endpoint-id="{{ phone.id }}"
                   data-endpoint-type="{{ phone.endpoint_type }}"
-                  data-initial-value="{{ phone.value }}" />
+                  value="{{ phone.value }}" />
               <br />
 
               <label for="endpoint-email">Email:</label>
@@ -56,7 +56,7 @@
                   placeholder="we@example.com"
                   data-endpoint-id="{{ email.id }}"
                   data-endpoint-type="{{ email.endpoint_type }}"
-                  data-initial-value="{{ email.value }}" />
+                  value="{{ email.value }}" />
               <br />
 
               <label for="endpoint-twitter">Twitter Handle:</label>
@@ -67,7 +67,7 @@
                   placeholder="handle"
                   data-endpoint-id="{{ twitter.id }}"
                   data-endpoint-type="{{ twitter.endpoint_type }}"
-                  data-initial-value="{{ twitter.value }}" />
+                  value="{{ twitter.value }}" />
               <br />
 
               <label for="endpoint-facebook">Facebook Name:</label>
@@ -78,7 +78,7 @@
                   placeholder="facebook.username"
                   data-endpoint-id="{{ facebook.id }}"
                   data-endpoint-type="{{ facebook.endpoint_type }}"
-                  data-initial-value="{{ facebook.value }}" />
+                  value="{{ facebook.value }}" />
               <br />
 
               <label for="endpoint-yelp">Yelp Handle:</label>
@@ -88,18 +88,18 @@
                   placeholder="yelp handle"
                   data-endpoint-id="{{ yelp.id }}"
                   data-endpoint-type="{{ yelp.endpoint_type }}"
-                  data-initial-value="{{ yelp.value }}" />
+                  value="{{ yelp.value }}" />
               <br />
 
               <label for="endpoint-website">Website:</label>
               <input
                   id="endpoint-website"
-                  class="edit-endpoint linkedwebsite"
+                  class="edit-endpoint"
                   type="text"
                   placeholder="website"
                   data-endpoint-id="{{ website.id }}"
                   data-endpoint-type="{{ website.endpoint_type }}"
-                  data-initial-value="{{ website.value }}" />
+                  value="{{ website.value }}" />
               <br />
 
               <label for="business_description">Description:</label>
