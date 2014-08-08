@@ -8,6 +8,9 @@ from django.contrib.auth.decorators import login_required
 from knotis.utils.regex import REGEX_UUID
 
 from views import (
+    EstablishmentProfileView,
+    EstablishmentAboutDetails,
+    CreateBusinessView,
     MyEstablishmentsView,
     MyOffersView,
     MyCustomersView,
@@ -68,10 +71,16 @@ urlpatterns = patterns(
         r'^offer/create/summary/$',
         OfferEditSummaryView.as_view(),
         name=OfferEditSummaryView.view_name
-    )
+    ),
+    url(
+        r'^identity/update_profile/',
+        EstablishmentAboutDetails.as_view()
+    ),
 )
 
 urlpatterns += MyCustomersView.urls(require_login=True)
 urlpatterns += MyRedemptionsView.urls(require_login=True)
 urlpatterns += MyOffersView.urls(require_login=True)
 urlpatterns += OfferEditView.urls(require_login=True)
+urlpatterns += EstablishmentProfileView.urls()
+urlpatterns += CreateBusinessView.urls()
