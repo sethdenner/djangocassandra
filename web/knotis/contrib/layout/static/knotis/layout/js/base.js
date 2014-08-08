@@ -4,18 +4,18 @@
 (function ($) {
     "use strict";
 
-    $( "#sidebar-wrapper" ).hover(function () {
+    $( "#sidebar-wrapper" ).delay(1500).hover(function () {
         $( "#sidebar-wrapper" ).animate({
             width: "250px",
-        },  100, "linear");
+        },  200, "linear");
 
         $('.sidebar-label').fadeIn('fast');
         $('.sidebar-overlay').fadeIn('fast');
     }, function () {
         $( "#sidebar-wrapper" ).animate({
-            width: "75px",
-        },  100, "linear");
-        $('.sidebar-overlay').fadeOut('fast');
+            width: "70px",
+        },  20, "linear");
+        $('.sidebar-overlay').fadeOut(10);
     });
 
     $('.sidebar-nav li').each(function (){
@@ -28,4 +28,3 @@
     });
 
 })(jQuery);
-

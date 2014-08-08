@@ -2136,10 +2136,6 @@ a.adminLink {
     cursor: pointer;
 }
 
-.identityContent h1 {
-    margin: 65px 0 -10px;
-}
-
 .carousel-indicators {
     position: absolute;
     bottom: 10px;
@@ -2168,10 +2164,15 @@ a.adminLink {
     border: 0;
 }
 
+.imageUpload {
+    text-align: center;
+    border: 1px solid #DADADA;
+}
+
 .imageUpload .btnCancel {
     width: 100%;
     position: relative;
-    top: -50px;
+    top: -15px;
     color: #c0c0c0;
 }
 
@@ -2193,4 +2194,169 @@ a.adminLink {
     color: #2cc397;
     width: 250px;
     margin: 0 auto;
+}
+
+.createBusiness {
+    padding: 20px;
+}
+
+.createBusiness h1 {
+    font-size: 35px;
+    color: #3c3c3c;
+    text-align: center;
+    margin: 0;
+}
+
+.createBusiness p {
+    font-size: 20px;
+    padding: 20px 80px;
+    font-family: 'LatoLight', sans-serif;
+}
+
+.createBusiness input {
+    font-size: 19px;
+    padding: 15px;
+    border-radius: 2px;
+    border: 1px solid #DADADA;
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    margin: 20px;
+    outline: 0;
+}
+
+.createBusiness .btn {
+    background: #2cc397;
+    color: white;
+    padding: 15px;
+    width: 50%;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.close {
+    position: relative;
+    right: 10px;
+}
+
+section.welcomeModal .btn {
+    background: #2cc397;
+    color: white;
+    padding: 15px;
+    width: 50%;
+    display: inline-block;
+    font-size: 16px;
+}
+
+section.welcomeModal input {
+    font-size: 19px;
+    padding: 15px;
+    border-radius: 2px;
+    border: 1px solid #DADADA;
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    margin: 20px;
+    outline: 0;
+}
+
+section.welcomeModal p {
+    font-size: 20px;
+    padding: 20px 80px;
+    font-family: 'LatoLight', sans-serif;
+}
+
+section.welcomeModal {
+    padding: 20px;
+    text-align: center;
+}
+
+section.welcomeModal h1 {
+    font-size: 35px;
+    color: #3c3c3c;
+    text-align: center;
+    margin: 0;
+}
+
+.manageQr .content {
+    padding: 20px;
+}
+
+.manageQr h2 {
+    font-size: 25px;
+    margin: 65px 0 20px;
+    font-family: 'LatoLight', sans-serif;
+}
+
+.manageQr .qrcode-manage {
+    width: 200px;
+    border-radius: 3px;
+    border: 1px solid rgb(218, 218, 218);
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 40px;
+}
+
+.manageQr .message-confirm {
+    display: inline-block;
+}
+
+.manageQr .message-confirm p {
+    background: white;
+    padding: 20px 15px;
+    border-radius: 3px;
+    border-left: 4px solid #2cc397;
+}
+
+.manageQr section {
+    background: rgba(255, 255, 255, 0.77);
+    padding: 30px 50px 35px;
+    margin: 60px 0 -50px;
+}
+
+.codeLinks p {
+    font-size: 16px;
+    margin: 20px 0px 50px;
+    width: 50%;
+}
+
+.codeLinks label {
+    background: white;
+    cursor: pointer;
+    width: 50%;
+    border-radius: 3px;
+    margin: 20px 0;
+    padding: 10px 35px;
+}
+
+.codeLinks input {
+    padding: 20px;
+    border: 1px solid rgb(233, 233, 233);
+    width: 50%;
+    outline: 0;
+}
+
+.codeLinks .linkInput {
+    position: relative;
+    top: -20px;
+    border: 0 !important;
+    border-top: 1px solid #c0c0c0 !important;
+    padding-top: 30px;
+}
+
+.codeLinks .radioBtn {
+    position: relative;
+    top: -4px;
+}
+
+.codeLinks .inputInner {
+    padding: 0;
+}
+
+.codeLinks input.inputInner {
+    width: 30px;
+}
+
+.btn-primary {
+    background: #2cc397;
 }
