@@ -43,6 +43,7 @@ from knotis.views import (
     ModalView,
     EmbeddedView,
     FragmentView,
+    AJAXFragmentView,
     AJAXView,
 )   
 from forms import (
@@ -68,6 +69,11 @@ class AdminListEditTags:
     FORM = 'form'
     FIELD = 'field'
 
+def default_filter(
+    self,
+    filter_string,
+):
+    return None
 
 def default_format(
     self,
@@ -129,6 +135,8 @@ class AdminListQueryAJAXView(AdminAJAXView):
     make_form = False
     edit_excludes = ['id', 'pk']
 
+    format_filter = default_filter
+
     def post(
         self,
         request,
@@ -148,10 +156,15 @@ class AdminListQueryAJAXView(AdminAJAXView):
         range_start = int(query_form.data.get('range_start'))
         range_end = int(query_form.data.get('range_end'))
         range_step = int(query_form.data.get('range_step'))
+        filter_string = str(query_form.data.get('user_filter'))
+
+        filter_dict = self.format_filter(filter_string)
 
         query = None
         if(self.query_target):
             query = self.query_target.all()
+            if filter_dict:
+                query = query.filter(**filter_dict)
             query = query[range_start - 1 : range_end] # Offset to account for starting form indexing at 1.
 
         results = []
@@ -246,7 +259,7 @@ class AdminOwnerViewButton(FragmentView):
     template_name = 'knotis/admintools/owner_button_fragment.html'
 
 
-class AdminValidateResendView(FragmentView):
+class AdminValidateResendView(AJAXFragmentView):
     view_name = 'admin_send_reset_button'
     template_name = 'knotis/admintools/validate_resend.html'
 
@@ -259,8 +272,14 @@ class AdminValidateResendView(FragmentView):
         user_id = self.context.get('identity_id')
         user_id = Identity.objects.get(pk=user_id)
         user = KnotisUser.objects.get_identity_user(user_id)
-        reset_form = ForgotPasswordForm(email=user.username)
+        reset_form = ForgotPasswordForm(data={
+            'email': user.username,
+        })
         reset_form.send_reset_instructions()
+        return self.generate_ajax_response({
+            'identity': user_id.get_fields_dict(),
+             'user': user.username,
+        })
     
 
 class AdminUserDetailsTile(FragmentView):
@@ -298,13 +317,15 @@ class AdminOwnerView(ModalView):
             user = KnotisUser.objects.get_identity_user(manager)
             manager_users.append((manager, user))
         manager_tiles = []
-        for id, user in manager_users:
-            tile_context = Context({
-                'identity': id,
-                'user': user,
+        for identity, manager_user in manager_users:
+            tile_context = copy.copy(self.context)
+            tile_context.update({
+                'identity': identity,
+                'manager_user': user,
                 'request': self.request,
             })
             manager_tiles.append(detail_tile.render_template_fragment(tile_context))
+            tile_context = None
 
         for relation in biz_manager_relations:
             biz_managers.append(relation.subject)
@@ -313,13 +334,15 @@ class AdminOwnerView(ModalView):
             user = KnotisUser.objects.get_identity_user(manager)
             biz_manager_users.append((manager, user))
         biz_manager_tiles = []
-        for id, user in biz_manager_users:
-            tile_context = Context({
-                'identity': id,
-                'user': user,
+        for identity, manager_user in biz_manager_users:
+            tile_context = copy.copy(self.context)
+            tile_context.update({
+                'identity': identity,
+                'manager_user': manager_user,
                 'request': self.request,
             })
             biz_manager_tiles.append(detail_tile.render_template_fragment(tile_context))
+            tile_context = None
 
         local_context = copy.copy(self.context)
         local_context.update({

@@ -73,6 +73,7 @@ from knotis.contrib.identity.models import (
 )
 from knotis.contrib.identity.views import (
     IdentityTile,
+    IdentityActionButton,
     TransactionTileView,
     get_identity_profile_badge,
     get_identity_profile_banner,
@@ -1549,7 +1550,7 @@ class EstablishmentProfileView(EmbeddedView):
 
         identity_tile_context = Context({
             'current_identity': current_identity,
-            'identity': current_identity
+            'identity': self.establishment
         })
 
         if ((current_identity and

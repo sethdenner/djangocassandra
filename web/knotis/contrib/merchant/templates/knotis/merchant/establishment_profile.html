@@ -5,10 +5,9 @@
         <div class="row">
             {% thumbnail profile_banner.image.image '1920x500' crop=profile_banner.crop as header %}
             <div class="hero" style="background-image: url('{{ header.url }}');background-size: cover;">
-                {% empty %}
-                <div class="heroOverLay" style="background-image: url('http://placekitten.com/200/200')">
-                </div>
-                {% endthumbnail %}
+            {% empty %}
+            <div class="hero">
+            {% endthumbnail %}
 
                 <div class="col-lg-12 columns">
                     <div class="heroInfo">

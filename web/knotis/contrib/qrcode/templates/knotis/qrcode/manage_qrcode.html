@@ -1,84 +1,96 @@
 {% load thumbnail %}
 {% load render_template_fragment %}
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="span10 content">
-
+<div class="manageQr">
+    <div class="container-fluid">
+        <div class="row">
             <div class="col-lg-12 col-xs-12">
-                <h2>Manage QR Code Scans</h2>
-            </div> 
-
-            <div class="relative closeinfo">
-                <div class="message-confirm margin-general-25 radius-general ">QR Code url
-                    -> {{ BASE_URL }}/qrcode/{{ qrcode.id }}/</div>
-                <div class="qrcode-manage"><a class="no-deep" target="_blank" href="/qrcode/{{ qrcode.id }}/"><img
-                                                                                                   src="https://chart.googleapis.com/chart?chs=197x197&cht=qr&chl={{ qrcode_uri }}/&choe=UTF-8"
-                                                                                                   alt="QR code {{ business.name }}" title="QR code {{ business.name }}"/></a></div>
+                <h1>Manage QR Code Scans</h1>
             </div>
-            <div class="clean"></div>
-            <form method="post">{% csrf_token %}
-                <ul>
-                    <fieldset>
-                        <h3>Business Profile link</h3>
-                        <h4>Automatically send visitors to your Knotis Business Profile</h4>
-                        <label class="radio">
-                            <input id="id-business-profile-link" type="radio" value="profile" name="qrcode" {% if qrcode.qrcode_type == 'profile' %}checked{% endif %} /> Business Profile link</label>
-                    </fieldset>
-                    <fieldset>
-                        <h3>Link</h3>
-                        <h4>Configure an external link outside of Knotis. This link may be a
-                            different business profile, a special promo page, a video on YouTube or other custom URL
-                            you specify.</h4>
-                        <label class="radio">
-                            <input type="radio" name="qrcode"
-                                   value="link" {% if qrcode.qrcode_type == 'link' %}
-                                   checked{% endif %} /> Link
-                        </label>
-                        <input {% if qrcode.qrcode_type == 'link' %}value="{{ qrcode.uri }}"{% endif %}
-                               placeholder="Enter the link – ie: http://www.google.com"
-                               type="text" name="link_content">
-                    </fieldset>
-                    <fieldset>
-                        <h3>Video</h3>
-                        <label class="radio">
-                            <input type="radio" name="qrcode"
-                                   value="video" {% if qrcode.qrcode_type == 'video' %}
-                                   checked{% endif %} /> Video
-                        </label>
-                        <input {% if business.qrcode_type == 'video' %}value="{{ qrcode.uri }}"{% endif %}
-                               placeholder="Enter the link to the video – ie: http://www.youtube.com"
-                               type="text" name="video_content">
-                    </fieldset>
-                    {% if offers %}
-                    <fieldset>
-                        <h3>Offers</h3>
-                        <h4>Send visitors to one of your current Knotis Offers. Visitors will
-                            be sent directly to the offer page where they will find details and discover how to
-                            redeem a offer.</h4>
-                        {% for offer in offers %}
-                        <label class="radio">
-                            <input type="radio"
-                                   name="qrcode" {% if qrcode.qrcode_type == 'offer' and qrcode.uri == offer.public_url %}
-                                   checked{% endif %}
-                                   value="{{ offer.id }}"/> {% if offer.active %}[active]{% else %}[expired]{% endif %} {{ offer.title_formatted }}
-                        </label>
-                        {% endfor %}
-                    </fieldset>
-                    {% endif %}
-                    <input class="btn btn-primary" type="submit" name="saveQrcode" value="Set QR Link"/>
-                    {% if scans %}
-                    <fieldset>
-                        <h3><strong>History</strong></h3>
-                        {% for scan in scans %}
-                        <div>
-                            <div>{{ scan.uri }} ({{ scan.pub_date }})</div>
+
+            <div class="span10 content">
+                <div class="relative closeinfo">
+
+                    <section>
+                        <div class="message-confirm margin-general-25 radius-general ">
+                            <h2>QR Code url</h2>
+                            <p>{{ BASE_URL }}/qrcode/{{ qrcode.id }}/</p>
                         </div>
-                        {% endfor%}
-                    </fieldset>
-                    {% endif %}
-                </ul>
-            </form>
+
+                        <div class="qrcode-manage">
+                            <a class="no-deep" target="_blank" href="/qrcode/{{ qrcode.id }}/">
+                                <img src="https://chart.googleapis.com/chart?chs=197x197&cht=qr&chl={{ qrcode_uri }}/&choe=UTF-8" alt="QR code {{ business.name }}" title="QR code {{ business.name }}"/>
+                            </a>
+                        </div>
+                        </div>
+                    </section>
+
+                <div class="clean"></div>
+
+                <section class="codeLinks">
+                    <form method="post">{% csrf_token %}
+                        <ul>
+                            <fieldset>
+                                <h2>Business Profile Link</h2>
+                                <p>Automatically send visitors to your Knotis Business Profile</p>
+                                <label class="radio">
+                                    <input class="inputInner radioBtn" id="id-business-profile-link" type="radio" value="profile" name="qrcode" {% if qrcode.qrcode_type == 'profile' %}checked{% endif %} /> Business Profile link</label>
+                            </fieldset>
+                            <fieldset>
+                                <h2>External Link</h2>
+                                <p>Configure an external link outside of Knotis. This link may be a
+                                    different business profile, a special promo page, a video on YouTube or other custom URL
+                                    you specify.</p>
+                                <label class="radio">
+                                    <input class="inputInner radioBtn" type="radio" name="qrcode"
+                                           value="link" {% if qrcode.qrcode_type == 'link' %}
+                                           checked{% endif %} /> Link
+                                </label>
+                                <input class="linkInput" {% if qrcode.qrcode_type == 'link' %}value="{{ qrcode.uri }}"{% endif %}
+                                       placeholder="Enter the link – ie: http://www.google.com"
+                                       type="text" name="link_content">
+                            </fieldset>
+                            <fieldset>
+                                <h2>Video</h2>
+                                <label class="radio">
+                                    <input class="inputInner radioBtn" type="radio" name="qrcode"
+                                           value="video" {% if qrcode.qrcode_type == 'video' %}
+                                           checked{% endif %} /> Video
+                                </label>
+                                <input class="linkInput" {% if business.qrcode_type == 'video' %}value="{{ qrcode.uri }}"{% endif %}
+                                       placeholder="Enter the link to the video – ie: http://www.youtube.com"
+                                       type="text" name="video_content">
+                            </fieldset>
+                            {% if offers %}
+                            <fieldset>
+                                <h3>Offers</h3>
+                                <h4>Send visitors to one of your current Knotis Offers. Visitors will
+                                    be sent directly to the offer page where they will find details and discover how to
+                                    redeem a offer.</h4>
+                                {% for offer in offers %}
+                                <label class="radio">
+                                    <input class="radioBtn" type="radio"
+                                           name="qrcode" {% if qrcode.qrcode_type == 'offer' and qrcode.uri == offer.public_url %}
+                                           checked{% endif %}
+                                           value="{{ offer.id }}"/> {% if offer.active %}[active]{% else %}[expired]{% endif %} {{ offer.title_formatted }}
+                                </label>
+                                {% endfor %}
+                            </fieldset>
+                            {% endif %}
+                            <input class="btn btn-primary" type="submit" name="saveQrcode" value="Set QR Link"/>
+                            {% if scans %}
+                            <fieldset>
+                                <h2>History</h2>
+                                {% for scan in scans %}
+                                <div>
+                                    <div>{{ scan.uri }} ({{ scan.pub_date }})</div>
+                                </div>
+                                {% endfor%}
+                            </fieldset>
+                            {% endif %}
+                        </ul>
+                    </form>
+                </section>
+            </div>
         </div>
     </div>
 </div>

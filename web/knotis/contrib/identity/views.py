@@ -214,10 +214,11 @@ class IdentityActionButton(ActionButton):
         current_identity = self.context.get('current_identity')
 
         if not current_identity:
+            href = '/signup/?close_href=/id/%s/' % tile_identity
             return [
                 ButtonAction(
                     'Follow',
-                    '/signup/',
+                    href,
                     {},
                     'get',
                     deep=True,
