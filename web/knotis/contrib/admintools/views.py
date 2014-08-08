@@ -305,11 +305,11 @@ class AdminOwnerView(ModalView):
             user = KnotisUser.objects.get_identity_user(manager)
             manager_users.append((manager, user))
         manager_tiles = []
-        for id, user in manager_users:
+        for identity, manager_user in manager_users:
             tile_context = copy.copy(self.context)
             tile_context.update({
-                'identity': id,
-                'user': user,
+                'identity': identity,
+                'manager_user': user,
                 'request': self.request,
             })
             manager_tiles.append(detail_tile.render_template_fragment(tile_context))
@@ -322,11 +322,11 @@ class AdminOwnerView(ModalView):
             user = KnotisUser.objects.get_identity_user(manager)
             biz_manager_users.append((manager, user))
         biz_manager_tiles = []
-        for id, user in biz_manager_users:
+        for identity, manager_user in biz_manager_users:
             tile_context = copy.copy(self.context)
             tile_context.update({
-                'identity': id,
-                'user': user,
+                'identity': identity,
+                'manager_user': manager_user,
                 'request': self.request,
             })
             biz_manager_tiles.append(detail_tile.render_template_fragment(tile_context))
