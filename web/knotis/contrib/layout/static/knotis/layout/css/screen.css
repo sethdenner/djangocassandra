@@ -2243,3 +2243,42 @@ a.adminLink {
     position: relative;
     right: 10px;
 }
+
+section.welcomeModal .btn {
+    background: #2cc397;
+    color: white;
+    padding: 15px;
+    width: 50%;
+    display: inline-block;
+    font-size: 16px;
+}
+
+section.welcomeModal input {
+    font-size: 19px;
+    padding: 15px;
+    border-radius: 2px;
+    border: 1px solid #DADADA;
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    margin: 20px;
+    outline: 0;
+}
+
+section.welcomeModal p {
+    font-size: 20px;
+    padding: 20px 80px;
+    font-family: 'LatoLight', sans-serif;
+}
+
+section.welcomeModal {
+    padding: 20px;
+    text-align: center;
+}
+
+section.welcomeModal h1 {
+    font-size: 35px;
+    color: #3c3c3c;
+    text-align: center;
+    margin: 0;
+}
