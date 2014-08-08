@@ -49,7 +49,6 @@ from knotis.contrib.location.models import (
     LocationItem
 )
 
-
 from knotis.contrib.twitter.views import get_twitter_feed_json
 from knotis.contrib.yelp.views import get_reviews_by_yelp_id
 import json
@@ -408,6 +407,7 @@ class EstablishmentProfileView(EmbeddedView):
 
         elif view_name == 'offers':
             content_plexer = 'offersaboutcontact'
+            context_context['offer_availability_idenitty'] = self.establishment
             profile_content = None
 
         elif view_name == 'about':

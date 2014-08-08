@@ -49,6 +49,7 @@ from knotis.contrib.identity.models import (
 from knotis.contrib.offer.models import (
     Offer,
     OfferItem,
+    OfferAvailability,
     OfferTypes,
     OfferPublish
 )
@@ -419,6 +420,61 @@ class MyEstablishmentsGrid(GridSmallView):
             'request': request
         })
 
+        return local_context
+
+
+class OfferAvailibilityGridView(GridSmallView):
+    view_name = 'offer_availability_grid'
+
+    def process_context(self):
+        request = self.context.get('request')
+        current_identity = None
+        if request and request.user.is_authenticated():
+            current_identity_id = request.session['current_identity']
+            try:
+                current_identity = Identity.objects.get(pk=current_identity_id)
+
+            except:
+                pass
+
+        page = int(self.context.get('page', '0'))
+        count = int(self.context.get('count', '20'))
+        start_range = page * count
+        end_range = start_range + count
+
+        if (
+            current_identity and
+            current_identity.identity_type == IdentityTypes.INDIVIDUAL
+        ):
+            offer_action = 'buy'
+
+        else:
+            offer_action = None
+
+        try:
+            identity = self.context.get('offer_availability_identity')
+            offer_availability = OfferAvailability.objects.filter(
+                identity=identity,
+                available=True
+            )[start_range:end_range]
+
+        except Exception:
+            logger.exception(''.join([
+                'failed to get offers.'
+            ]))
+
+        tiles = []
+        for a in offer_availability:
+            tile = OfferTile()
+            tiles.append(tile.render_template_fragment(Context({
+                'offer': a.offer,
+                'offer_action': offer_action
+            })))
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'tiles': tiles
+        })
         return local_context
 
 
