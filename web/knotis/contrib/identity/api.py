@@ -81,6 +81,16 @@ class IdentityApi(object):
                 identity=instance
             )
 
+            # create followers endpoint
+            Endpoint.objects.create(
+                endpoint_type=EndpointTypes.FOLLOWERS,
+                value=' '.join([
+                    instance.name,
+                    'Followers'
+                ]),
+                identity=instance
+            )
+
         else:
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
