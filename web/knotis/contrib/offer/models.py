@@ -8,10 +8,14 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from django.conf import settings
+from django.http import HttpRequest
+
 from django.db.models.fields import Field as ModelField
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+from django.template import Context
 
 from knotis.contrib.quick.models import (
     QuickModel,
@@ -36,13 +40,17 @@ from knotis.contrib.identity.models import (
     IdentityEstablishment,
     IdentityTypes
 )
+from knotis.contrib.relation.models import Relation
 from knotis.contrib.inventory.models import Inventory
 from knotis.contrib.endpoint.models import (
+    Endpoint,
     EndpointTypes,
     Credentials,
     Publish
 )
 from knotis.contrib.location.models import LocationItem
+
+from .emails import NewOfferEmailView
 
 
 class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
@@ -896,6 +904,44 @@ class OfferPublish(Publish):
             self.completed = True
             self.save()
 
+    def _publish_followers(self):
+        followers = Relation.objects.get_followers(self.endpoint.identity)
+        email_subject = ''.join([
+            'New Offer From ',
+            self.endpoint.identity.name,
+            ' On Knotis.com'
+        ])
+
+        for f in [follower.subject for follower in followers]:
+            try:
+                follower_email = Endpoint.objects.get(
+                    identity=f,
+                    primary=True,
+                    endpoint_type=EndpointTypes.EMAIL,
+                )
+
+                offer = self.subject
+
+                context = Context({
+                    'offer': offer,
+                    'settings': settings
+                })
+
+                message = NewOfferEmailView().generate_email(
+                    email_subject,
+                    settings.EMAIL_HOST_USER,
+                    [follower_email.value],
+                    context
+                )
+                message.send()
+
+            except Exception, e:
+                logger.exception(e.message)
+                continue
+
+        self.completed = True
+        self.save()
+
     def publish(self):
         if self.endpoint.endpoint_type == EndpointTypes.IDENTITY:
             if (
@@ -925,6 +971,9 @@ class OfferPublish(Publish):
 
         elif self.endpoint.endpoint_type == EndpointTypes.TWITTER:
             self._publish_twitter()
+
+        elif self.endpoint.endpoint_type == EndpointTypes.FOLLOWERS:
+            self._publish_followers()
 
         else:
             raise NotImplementedError(''.join([
