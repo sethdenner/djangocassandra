@@ -617,13 +617,13 @@ nav button.signUp {
 /* line 30, ../sass/_offerItem.scss */
 .offerItem .busCover {
     overflow: hidden;
+    height: 140px;
 }
 /* line 33, ../sass/_offerItem.scss */
 .offerItem .busCover img {
     border-radius: 3px;
-    width: 700px;
-    position: relative;
     left: -150px;
+    min-width: 100%;
 }
 
 /* line 40, ../sass/_offerItem.scss */
