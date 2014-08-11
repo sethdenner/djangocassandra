@@ -59,7 +59,7 @@
     };
 
     var initialize_address = function (force) {
-        $('a:not(.no-deep)').off('click.address').on(
+        $('a:not(.no-deep):not([target="_blank"]').off('click.address').on(
             'click.address',
             function (event) {
                 event.preventDefault();
