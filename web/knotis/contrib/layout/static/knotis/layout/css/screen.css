@@ -621,8 +621,9 @@ nav button.signUp {
 /* line 33, ../sass/_offerItem.scss */
 .offerItem .busCover img {
     border-radius: 3px;
-    min-width: 100%;
-    height: 140px;
+    width: 700px;
+    position: relative;
+    left: -150px;
 }
 
 /* line 40, ../sass/_offerItem.scss */
