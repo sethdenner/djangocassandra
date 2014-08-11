@@ -218,6 +218,15 @@ class RelationManager(QuickManager):
             relation_type=RelationTypes.FOLLOWING
         )
 
+    def get_followers(
+        self,
+        related
+    ):
+        return self.filter(
+            related_object_id=related.id,
+            relation_type=RelationTypes.FOLLOWING
+        )
+
 
 class Relation(QuickModel):
     relation_type = QuickCharField(

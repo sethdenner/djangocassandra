@@ -69,6 +69,11 @@ class AdminListEditTags:
     FORM = 'form'
     FIELD = 'field'
 
+def default_filter(
+    self,
+    filter_string,
+):
+    return None
 
 def default_format(
     self,
@@ -130,6 +135,8 @@ class AdminListQueryAJAXView(AdminAJAXView):
     make_form = False
     edit_excludes = ['id', 'pk']
 
+    format_filter = default_filter
+
     def post(
         self,
         request,
@@ -149,10 +156,15 @@ class AdminListQueryAJAXView(AdminAJAXView):
         range_start = int(query_form.data.get('range_start'))
         range_end = int(query_form.data.get('range_end'))
         range_step = int(query_form.data.get('range_step'))
+        filter_string = str(query_form.data.get('user_filter'))
+
+        filter_dict = self.format_filter(filter_string)
 
         query = None
         if(self.query_target):
             query = self.query_target.all()
+            if filter_dict:
+                query = query.filter(**filter_dict)
             query = query[range_start - 1 : range_end] # Offset to account for starting form indexing at 1.
 
         results = []

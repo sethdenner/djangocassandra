@@ -477,7 +477,7 @@ class OfferPublicationForm(TemplateForm):
                     not endpoint_followers and
                     EndpointTypes.FOLLOWERS == endpoint.endpoint_type
                 ):
-                    endpoint_widget = endpoint
+                    endpoint_followers = endpoint
 
         publish_widget = self.fields['publish'].widget
         publish_values = publish_widget.value_from_datadict(

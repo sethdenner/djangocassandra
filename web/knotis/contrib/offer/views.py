@@ -15,8 +15,9 @@ from knotis.utils.regex import REGEX_UUID
 
 from knotis.contrib.offer.models import (
     Offer,
-    OfferItem,
+    OfferItem
 )
+
 from knotis.contrib.product.models import (
     Product,
     CurrencyCodes
@@ -44,8 +45,7 @@ from knotis.views import (
     EmbeddedView,
     ModalView,
     AJAXFragmentView,
-    FragmentView,
-    EmailView
+    FragmentView
 )
 
 from knotis.contrib.layout.views import (
@@ -178,8 +178,6 @@ class OffersGridView(GridSmallView):
             logger.exception(''.join([
                 'failed to get offers.'
             ]))
-
-
 
         tiles = []
         for offer in offers:
@@ -399,32 +397,6 @@ class OfferDetailView(ModalView):
             'offer_items': offer_items,
             'business_badge_image': business_badge_image,
             'offer_banner_image': offer_banner_image
-        })
-
-        return local_context
-
-
-class NewOfferEmailBody(EmailView):
-    template_name = 'knotis/offer/email_new_offer.html'
-    text_template_name = 'knotis/offer/email_new_offer.txt'
-
-    def process_context(self):
-        local_context = copy.copy(self.context)
-
-        browser_link = 'example.com'
-        product_title = 'Grilled Cheese Sandwich'
-        product_img_url = '/media/cache/ef/25/ef2517885c028d7545f13f79e5b7993a.jpg'
-        business_logo_url = '/media/cache/87/08/87087ae77f4a298e550fc9d255513ad4.jpg'
-        purchase_link = 'example.com'
-        price = "$20.00"
-
-        local_context.update({
-            'browser_link': browser_link,
-            'product_title': product_title,
-            'product_img_url': product_img_url,
-            'business_logo_url': business_logo_url,
-            'purchase_link': purchase_link,
-            'price': price
         })
 
         return local_context
