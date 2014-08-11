@@ -707,7 +707,6 @@ nav button.signUp {
     border: 2px solid #e6e8ec;
     transition: all 0.2s ease;
     line-height: 0;
-    margin-top: 20px;
 }
 /* line 115, ../sass/_offerItem.scss */
 .btnFollow a:hover {
