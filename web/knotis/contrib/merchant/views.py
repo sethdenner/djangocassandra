@@ -674,7 +674,7 @@ class OfferEditHeaderView(FragmentView):
 
 class OfferEditView(ModalView):
     url_patterns = [
-        r'/create/$'
+        r'^offer/create/$'
     ]
     template_name = 'knotis/merchant/edit.html'
     view_name = 'offer_edit'
