@@ -441,13 +441,6 @@ nav button.signUp {
     color: white;
 }
 
-/* line 43, ../sass/_sideBar.scss */
-.sidebar-nav li:hover {
-    background: #595959;
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-
 /* line 50, ../sass/_sideBar.scss */
 .sidebar-label {
     display: none;
@@ -460,16 +453,12 @@ nav button.signUp {
     color: #3b3b3b;
 }
 
-.sidebar-label-default {
-    color: #3b3b3b !important;
-}
-
 .sidebar-label-selected {
-    color: white !important;
+    color: white;
 }
 
 .sidebar-li-selected {
-    background: #2cc397 !important;
+    background: #2cc397;
 }
 
 /* line 60, ../sass/_sideBar.scss */
@@ -2348,7 +2337,7 @@ section.welcomeModal h1 {
     position: relative;
     top: -20px;
     border: 0 !important;
-    border-top: 1px solid #c0c0c0 !important;
+    border-top: 1px solid #F3EEEE !important;
     padding-top: 30px;
 }
 
