@@ -441,19 +441,6 @@ nav button.signUp {
     color: white;
 }
 
-/* line 39, ../sass/_sideBar.scss */
-.sidebar-nav li a:hover {
-    color: white;
-}
-
-/* line 43, ../sass/_sideBar.scss */
-.sidebar-nav li:hover {
-    color: #fff;
-    background: #595959;
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-
 /* line 50, ../sass/_sideBar.scss */
 .sidebar-label {
     display: none;
@@ -463,6 +450,15 @@ nav button.signUp {
     text-transform: uppercase;
     letter-spacing: 2px;
     font-size: 12px;
+    color: #3b3b3b;
+}
+
+.sidebar-label-selected {
+    color: white;
+}
+
+.sidebar-li-selected {
+    background: #2cc397;
 }
 
 /* line 60, ../sass/_sideBar.scss */
@@ -729,15 +725,16 @@ nav button.signUp {
 
 /* line 128, ../sass/_offerItem.scss */
 .location {
-    font-size: 14px;
-    display: inline-block;
-    width: 100%;
-    font-family: 'LatoLight', sans-serif;
-    position: relative;
-    top: 10px;
-    padding: 10px 0px 10px;
-    line-height: 18px;
-    background: #FCFCFC;
+    display: none;
+    /* font-size: 14px; */
+    /* display: inline-block; */
+    /* width: 100%; */
+    /* font-family: 'LatoLight', sans-serif; */
+    /* position: relative; */
+    /* top: 10px; */
+    /* padding: 10px 0px 10px; */
+    /* line-height: 18px; */
+    /* background: #FCFCFC; */
 }
 /* line 138, ../sass/_offerItem.scss */
 .location img {
@@ -2340,7 +2337,7 @@ section.welcomeModal h1 {
     position: relative;
     top: -20px;
     border: 0 !important;
-    border-top: 1px solid #c0c0c0 !important;
+    border-top: 1px solid #F3EEEE !important;
     padding-top: 30px;
 }
 
