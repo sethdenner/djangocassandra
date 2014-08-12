@@ -1,32 +1,14 @@
-<form action="/api/v1/auth/user/" id="id-signup-form" method="post">
-  <div class="hide error-row row-fluid">
-    <div class="span12">
-      <p id="error-text">&nbsp;</p>
-    </div>
-  </div>
-  <div class="row-fluid">
-    <div class="span6">
-      <div class="control-group">
-        <div class="controls">
-          <label>Email</label>
-          <input name="{{ form.email.html_name }}" maxlength="254" type="text" placeholder="you@example.com" class="textinput textInput" id="email-input" value="{{ form.email.value|default_if_none:'' }}"> 
+<div class="singleAuth">
+    <form id="id-signup-form" action="/signup/" method="POST">{% csrf_token %}
+        <div class="authInputs">
+            <input id="auth_username" name="{{ form.email.html_name }}" maxlength="254" type="email" placeholder="Your E-mail" value="{{ form.email.value|default_if_none:'' }}"> 
+            <input id="auth_password" type="password" name="{{ form.password.html_name }}" class="password" placeholder="Your Password" > 
         </div>
-      </div>
-      <div id="div_id_password" class="control-group">
-        <div class="controls">
-          <label>Password</label>
-          <input type="password" id="password-input" name="{{ form.password.html_name }}" class="textinput textInput" > 
+        
+        <div class="authButtons">
+            <input type="submit" class="authBtn" value="Sign Up" />
+            <a href="/login/" class="authBtn login modal-link" data-modal-id="auth-modal" >Log In</a>
         </div>
-      </div>
-      <input type="hidden" name="{{ form.authenticate.html_name }}" value="{{ form.authenticate.value|default_if_none:'False' }}" > 
-    </div>
-    <div class="auth-info span6">
-      <p>Already have an account?</p>
-      <p><a id="id-login-link" href="/auth/login/">Sign-in here</a></p>
-    </div>
-  </div>
-  <div class="buttonHolder modal-footer">
-    <input type="submit" name="signup" value="Sign Up" class="btn btn-primary btn btn-primary" id="submit-id-signup"> 
-    <aside>By joining, you agree to our <a target="_blank" href="/terms-and-conditions/">Terms of Use</a> and <a target="_blank" href="/privacy/">Privacy Policy</a></aside>
-  </div>
-</form>
+    </form>
+    <p class="tos-text">I agree to the <a target="_blank" href="/terms-and-conditions/">Terms Of Service</a></p>
+</div>                  

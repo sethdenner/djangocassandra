@@ -1,0 +1,17 @@
+
+{% load render_template_fragment %}
+<div class="settings">
+    <div class="container-fluid mainContent">
+        <h1>Settings</h1>
+
+        <div class="row">
+            {% render_fragment settings_grid %}
+        </div>
+    </div>
+</div>
+{% if format == 'json' %}
+{% for script in post_scripts %}
+<script src="{{STATIC_URL}}/{{script}}"></script>
+{% endfor %}
+{% endif %}
+</div>

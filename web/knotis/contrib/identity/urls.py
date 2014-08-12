@@ -7,55 +7,16 @@ from django.views.generic.simple import redirect_to
 
 from knotis.utils.regex import REGEX_UUID
 
-from views import (
-    IdentityView,
-    BusinessesView,
+from .views import (
+    EstablishmentsView,
     EstablishmentsGrid,
-    EstablishmentProfileView,
     IdentitySwitcherView,
     FirstIdentityView,
-    EstablishmentAboutAbout,
 )
 
 
 urlpatterns = patterns(
     'knotis.contrib.identity.views',
-    url(
-        r'^identity/update_profile/',
-        EstablishmentAboutAbout.as_view()
-    ),
-    url(
-        r''.join([
-            '^id/(?P<id>',
-            REGEX_UUID,
-            ')(/(?P<view_name>',
-            '\w{1,50}',
-            '))?/$'
-        ]),
-        IdentityView.as_view()
-    ),
-    url(
-        r''.join([
-            '^id/(?P<id>',
-            REGEX_UUID,
-            ')(/offer/(?P<offer_id>',
-            REGEX_UUID,
-            '))?/$'
-        ]),
-        IdentityView.as_view()
-    ),
-    url(
-        r''.join([
-            '^id/(?P<id>',
-            REGEX_UUID,
-            ')/offers/$'
-        ]),
-        IdentityView.as_view()
-    ),
-    url(
-        r'^businesses/$',
-        BusinessesView.as_view()
-    ),
     url(
         r'^businesses/grid/(?P<page>\d+)/(?P<count>\d+)/$',
         EstablishmentsGrid.as_view()
@@ -71,18 +32,6 @@ urlpatterns = patterns(
     ),
     url(
         r''.join([
-            '^merchants/(?P<establishment_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        EstablishmentProfileView.as_view()
-    ),
-    url(
-        r'^merchants/(?P<backend_name>[^/]+)/$',
-        EstablishmentProfileView.as_view()
-    ),
-    url(
-        r''.join([
             '^identity/switcher(/(?P<identity_id>',
             REGEX_UUID,
             '))?/$'
@@ -92,5 +41,9 @@ urlpatterns = patterns(
     url(
         r'^identity/first/$',
         FirstIdentityView.as_view()
-    )
+    ),
 )
+
+urlpatterns += EstablishmentsView.urls()
+urlpatterns += IdentitySwitcherView.urls()
+urlpatterns += FirstIdentityView.urls()

@@ -1,13 +1,13 @@
 {% load thumbnail %}
 <div class="controls">
   {% for i in image %}
-  <input type="radio" name="image" value="{{ i.id }}" />
+  <input type="radio" class="galleryInput" name="image" value="{{ i.id }}" />
   <img
      {% thumbnail i.image dimensions crop=image.crop as img %}
      src="{{ img.url }}"
      {% endthumbnail %}
   />
-  <a href="#crop" >Crop</a> | <a href="#delete"></a>
+  <a href="#crop" >Crop</a> <a href="#delete"></a>
   {% endfor %}
 </div>
 <scrpit src="{{ STATIC_URL }}knotis/media/js/image_select.js"></script>

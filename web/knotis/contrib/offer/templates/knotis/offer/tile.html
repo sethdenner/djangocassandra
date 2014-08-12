@@ -1,37 +1,56 @@
 {% load thumbnail %}
-<div class="offer-tile grid-tile small-tile" data-offer-id="{{ offer.id }}" >
-  <div class="tile-header">
-    {% thumbnail offer_banner_image.image.image '240x161' crop=offer_banner_image.crop as image %}
-    <img class="tile-image" alt="{{ offer.title }}" src="{{ image.url }}" />
-    {% empty %}
-    <img class="tile-image"  alt="{{ offer.title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
-    {% endthumbnail %}
-    {% thumbnail business_badge_image.image.image '80x80' crop=business_badge_image.crop as image %}
-    <img class="tile-badge" src="{{ image.url }}" />
-    {% empty %}
-    <img class="tile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
-    {% endthumbnail %}
-  </div>
-  <div class="tile-body">
-    <p class="tile-title">{{ offer.title }}</p>
-    {% if not offer_action %}
-    <p class="tile-nobutton">&nbsp;</p>
-    {% endif %}
-    {% if offer_action == 'buy' %}
-    <button data-offer-id="{{ offer.pk }}" class="btn btn-primary action buy-offer">Buy</button>
-    {% endif %}
-    {% if offer_action == 'redeem' %}
-    <button data-offer-id="{{ offer.pk }}" class="btn btn-primary action redeem-offer">Redeem</button>
-    {% endif %}
-    {% if offer_action == 'publish' %}
-    <button data-offer-id="{{ offer.pk }}" class="btn btn-primary action publish-offer">Publish</button>
-    {% endif %}
-    {% if offer_action == 'edit' %}
-    <button data-offer-id="{{ offer.pk }}" class="btn btn-primary action edit-offer">Edit</button>
-    {% endif %}
-    {% if offer_action == 'pause' %}
-    <button data-offer-id="{{ offer.pk }}" class="btn btn-{% if offer.active %}danger{% else %}success{% endif %} action toggle-offer">{% if offer.active %}Pause{% else %}Resume{% endif %}</button>
-    {% endif %}
-  </div>
-  <div class="tile-footer">{% if stats %}{{ stats }}{% else %}&nbsp;{% endif %}</div>
+<div class="col-lg-4 col-xs-12 offerItem">
+    <a href="/offer/detail/{{ offer.pk }}/" class="modal-link">
+        <div class="busCover">
+            {% thumbnail offer_banner_image.image.image 'x140' crop=offer_banner_image.crop as image %}
+            <img src="{{ image.url }}" alt="{{ offer.title }}"/>
+            {% empty %}
+            <img alt="{{ offer.title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
+            {% endthumbnail %}
+            <div class="overlay"></div>
+        </div>
+    </a>
+    <div class="offerContent">
+        <div class="row">
+            <div class="col-lg-10 col-xs-10">
+                {% thumbnail business_badge_image.image.image '80x80' crop=business_badge_image.crop as image %}
+                <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
+                {% empty %}
+                <img class="busLogo" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
+                {% endthumbnail %}
+            </div>
+            <div class="col-lg-1 col-xs-1">
+                <!--
+                    <div class="dropdown">
+                        <a data-toggle="dropdown" href=""><img class="iconMore" src="/assets/img/icon_more_offerItem.png"/></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            <li><a href="">Extra Link</a></li>
+                        </ul>
+                    </div>
+                    -->
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <h1>{{ offer.title }}</h1>
+                {% if offer_action == 'buy' %}
+                <a class="busLink no-deep" data-target-id="main-content" href="/offer/{{ offer.pk }}/buy/">Buy</a>
+                {% endif %}
+                {% if offer_action == 'pause' %}
+                {% if offer.active %}
+                <a class="busLink no-deep toggle-offer" data-offer-id="{{ offer.pk }}" href="/">Pause</a>
+                {% else %}
+                <a class="busLink no-deep toggle-offer" data-offer-id="{{ offer.pk }}" href="/">Resume</a>
+                {% endif %}
+                {% endif %}
+                {% if offer_action == 'redeem' %}
+                <a class="busLink no-deep redeem-offer" data-offer-id="{{ offer.pk }}" href="/">Redeem</a>
+                {% endif %}
+                {% if offer_action == 'edit' %}
+                <a class="busLink" data-target-id="main-content" href="/offer/create/?id={{ offer.pk }}">Edit</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>

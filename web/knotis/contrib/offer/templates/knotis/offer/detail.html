@@ -1,78 +1,38 @@
+{% extends 'knotis/layout/modal_base.html' %}
 {% load thumbnail %}
-<div class="modal-header">
-  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-  <h1>{{ offer.title }}</h1>
-  <div>
-    <span class="business-name" data-business-id="{{ offer.owner.pk }}" >
-      {% thumbnail business_badge_image.image.image '72x72' crop=business_badge_image.crop as image %}
-      <img class="profile-badge" src="{{ image.url }}" />
-      {% empty %}
-      <img class="profile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
-      {% endthumbnail %}
-      {{ offer.owner.name }}
-    </span>
-  </div>
-</div>
-<div class="modal-body">
-  <div class="container-fluid">
-    <div class="row-fluid">
-      <div class="span4 offer-images">
-        {% thumbnail offer_image.image.image '420x420' crop=offer_image.crop as img %}
-        <img class="offer-image" alt="{{ offer.title }}" src="{{ img.url }}" />
+{% block header %}{% endblock header %}
+{% block body %}
+
+<div id="offer-modal">
+    <div class="row">
+        <div class="col-lg-6 col-xs-12 offerDetails">
+            <h1>{{ offer.title }}</h1>
+            <p>{{ offer.description }}</p>
+
+            <ul>
+                <li><span>Expires:</span> {{ offer.end_time }}</li>
+                <li><span>{{ offer.savings_percent}}%</span> Savings</li>
+                <li><span>{{ offer.purchased }}</span> Purchased</li>
+                {% if IdentityTypes.INDIVIDUAL == current_identity.identity_type %}
+                <a class="btn modal-link no-deep" href="/offer/{{ offer.pk}}/buy/">Purchase Offer</a>
+                {% endif %}
+            </ul>
+        </div>
+        {% thumbnail offer_banner_image.image.image '339x400' crop=offer_banner_image.crop as image %}
+        <div class="col-lg-6 col-xs-12 offerHero" style="background-image: url('{{ image.url }}');background-size: cover;">
         {% empty %}
-        <img class="offer-image" alt="{{ offer.title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
+        <div class="col-lg-6 col-xs-12 offerHero" style="background-image: url('{{ STATIC_URL }}knotis/img/default-offer-banner.png');background-size: cover;">
         {% endthumbnail %}
-      </div>
-      <div class="span5 offer-summary">
-        <h4>{{ offer.title }}</h4>
-        <p class="offer-description" >
-          {{ offer.description }}
-        </p>
-        <p>&nbsp;</p>
-        <h4>Fine Print / Restrictions</h4>
-        <p class="offer-restrictions" >
-          {{ offer.restrictions }}
-        </p>
-      </div>
-      <div class="span3 offer-info">
-        <div class="container-fluid offer-details">
-          <div class="row-fluid offer-price">
-            <div class="span6 price-retail">
-              ${{ offer.price_retail_formatted }}
-            </div>
-            <div class="span6 price-discounted" >
-              ${{ offer.price_discount_formatted }}
-            </div>
-          </div>
-          <div class="row-fluid offer-stats">
-            <div class="span6 savings">
-              <p>{{ offer.savings_percent }}%<small>savings</small></p>
-            </div>
-            <div class="span6 purchased">
-              <p>{{ offer.purchased }}<small>purchased</small></p>
-            </div>
-          </div>
-          <div class="row-fluid offer-action">
-            <div class="span12">
-              {% if current_identity.identity_type == IdentityTypes.INDIVIDUAL %}
-              <a href="/offer/{{ offer.pk }}/buy/" class="btn btn-primary">Buy</a>
-              {% else %}
-              <span>&nbsp;</span>
-              {% endif %}
-            </div>
-          </div>
+
+            {% thumbnail business_badge_image.image.image '72x72' crop=business_badge_image.crop as image %}
+            <img src="{{ image.url }}" />
+            {% empty %}
+            <img class="profile-badge" src="{{ STATIC_URL }}/knotis/offer/img/default-offer-badge.png" />
+            {% endthumbnail %}
+            <h1>{{ offer.price_discount_formatted }}</h1>
+            <h2>{{ offer.owner.name }}</h2>
         </div>
-        {% if map_markup %}
-        <div class="container-fluid offer-map">
-          <div class="row-fluid">
-            <div class="span12">
-              {{ map_markup }}
-            </div>
-          </div>
-        </div>
-        {% endif %}
-      </div>
     </div>
-  </div>
-</div>
-<script src="{{ STATIC_URL }}knotis/offer/js/offer_detail.js" ></script>
+</div> 
+
+{% endblock body %}

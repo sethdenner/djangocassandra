@@ -26,18 +26,6 @@ class Command(BaseCommand):
 
         for u in unpublished:
             offer = u.subject
-            self.stdout.write(''.join([
-                'Publishing offer <',
-                offer.id,
-                '> ',
-                offer.title,
-                ' from: ',
-                offer.owner.name,
-                ' to: ',
-                u.endpoint.value,
-                '.\n'
-            ]))
-
             try:
                 u.publish()
                 publish_count += 1
@@ -45,6 +33,18 @@ class Command(BaseCommand):
                 if not offer.id in offer_ids:
                     offer_ids.append(offer.id)
                     offer_count += 1
+
+                self.stdout.write(''.join([
+                    'Publishing offer <',
+                    offer.id,
+                    '> ',
+                    offer.title,
+                    ' from: ',
+                    offer.owner.name,
+                    ' to: ',
+                    u.endpoint.value,
+                    '.\n'
+                ]))
 
             except Exception, e:
                 self.stderr.write(''.join([

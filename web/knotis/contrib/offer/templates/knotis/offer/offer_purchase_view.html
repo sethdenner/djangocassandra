@@ -1,76 +1,71 @@
-{% extends 'knotis/layout/master.html' %}
 {% load render_template_fragment %}
 {% load thumbnail %}
-{% block title %}Knotis - Purchase Offer{% endblock title %}
-
-{% block header %}
-{% render_fragment header %}
-{% endblock header %}
-
-{% block content %}
 <div class="container-fluid">
-  <div class="row-fluid main-row">
-    <div class="span2">
-      {% render_fragment nav_side %}
+    <div class="row-fluid main-row">
+        <div class="span2">
+            {% render_fragment nav_side %}
+        </div>
+        <div class="span10 main-content checkout">
+            <div class="row-fluid business-header" >
+                <div class="span5">
+                    <div class="media" >
+                        <a class="pull-left" href="#">
+                            {% thumbnail offer.owner.badge_image.image.image '64x64' crop=offer.owner.badge_image.crop as img %}
+                            <img src="{{ img.url }}" class="img-circle" />
+                            {% empty %}
+                            <img data-add-image src="{{ default_profile_logo_uri }}" class="img-circle" />
+                            {% endthumbnail %}
+                        </a>
+                        <div class="media-body">
+                            <h4 class="media-heading">{{ offer.owner.name }}</h4>
+                            {{ owner_contact }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid checkout-item">
+                <div class="span5">
+                    <select class="span2" name="quantity_1" id="selectquantity" data-money="{{ offer.price_discount }}" >
+                        {% for stock in offer.stock_values %}
+                        <option value="{{ stock }}" >{{ stock }}</option>
+                        {% endfor %}
+                    </select>
+                    <strong>{{ offer.title }}</strong>
+                </div>
+                <div class="span2 pull-right">
+                    <div class="span6"></div>
+                    <div class="span6 pull-right">
+                        <p class="text-right">
+                            <strong>${{ offer.price_discount_formatted }}</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid checkout-total">
+                <div class="span2 pull-right">
+                    <div class="span6 text-right">Total</div>
+                    <div class="span6 pull-right">
+                        <p class="text-right">
+                            <strong>$<span id="total-price-display">{{ offer.price_discount_formatted }}</span></strong>
+                        </p>
+                    </div>
+                </div>
+                <input type="hidden" id="item-price" value="{{ offer.price_discount }}" />
+                <input type="hidden" id="total-price" value="{{ offer.price_discount }}" />
+            </div>
+            <div class="row-fluid checkout-pay">
+                <div class="span8"></div>
+                <div class="span4">
+                    {{ purchase_button }}
+                    <input type="hidden" value="{{ offer.id }}" name="offerId"/>
+                </div>
+            </div>
+            </form>
     </div>
-    <div class="span10 main-content checkout">
-	<div class="row-fluid business-header" >
-          <div class="span5">
-            <div class="media" >
-              <a class="pull-left" href="#">
-		{% thumbnail offer.owner.badge_image.image.image '64x64' crop=offer.owner.badge_image.crop as img %}
-		<img src="{{ img.url }}" class="img-circle" />
-		{% empty %}
-		<img data-add-image src="{{ default_profile_logo_uri }}" class="img-circle" />
-		{% endthumbnail %}
-              </a>
-              <div class="media-body">
-		<h4 class="media-heading">{{ offer.owner.name }}</h4>
-		{{ owner_contact }}
-              </div>
-            </div>
-          </div>
-	</div>
-	<div class="row-fluid checkout-item">
-          <div class="span5">
-            <select class="span2" name="quantity_1" id="selectquantity" data-money="{{ offer.price_discount }}" >
-              {% for stock in offer.stock_values %}
-              <option value="{{ stock }}" >{{ stock }}</option>
-              {% endfor %}
-            </select>
-            <strong>{{ offer.title }}</strong>
-          </div>
-          <div class="span2 pull-right">
-            <div class="span6">&nbsp;</div>
-            <div class="span6 pull-right">
-              <p class="text-right">
-		<strong>${{ offer.price_discount_formatted }}</strong>
-              </p>
-            </div>
-          </div>
-	</div>
-	<div class="row-fluid checkout-total">
-          <div class="span2 pull-right">
-            <div class="span6 text-right">Total</div>
-            <div class="span6 pull-right">
-              <p class="text-right">
-		<strong>$<span id="total-price-display">{{ offer.price_discount_formatted }}</span></strong>
-              </p>
-            </div>
-          </div>
-	  <input type="hidden" id="item-price" value="{{ offer.price_discount }}" />
-	  <input type="hidden" id="total-price" value="{{ offer.price_discount }}" />
-	</div>
-	<div class="row-fluid checkout-pay">
-          <div class="span8">&nbsp;</div>
-          <div class="span4">
-	        {{ purchase_button }}
-            <input type="hidden" value="{{ offer.id }}" name="offerId"/>
-          </div>
-	</div>
-      </form>
-    </div>
-  </div>
 </div>
-{% endblock content %}
-
+</div>
+{% if format == 'json' %}
+{% for script in post_scripts %}
+<script src="{{ STATIC_URL }}{{ script }}" ></script>
+{% endfor %}
+{% endif %}

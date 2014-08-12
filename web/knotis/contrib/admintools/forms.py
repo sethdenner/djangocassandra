@@ -37,11 +37,11 @@ class AdminQueryForm(TemplateForm):
         label='Filter',
         max_length = 254,
         required = True,
-        initial = ' ',
+        initial = '',
     )
     target_uri = CharField(
         label='',
         max_length = 254,
         required = True,
-        initial = ' ',
+        initial = 'query/',
     )

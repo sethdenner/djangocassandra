@@ -23,10 +23,14 @@ from django.views.generic import View
 
 from knotis.views import (
     FragmentView,
-    ContextView
+    ContextView,
+    EmbeddedView,
 )
 
-from knotis.contrib.layout.views import GridSmallView
+from knotis.contrib.layout.views import (
+    GridSmallView,
+    DefaultBaseView
+)
 
 
 from knotis.contrib.identity.models import Identity
@@ -60,6 +64,11 @@ class MyPurchasesGrid(GridSmallView):
             logger.exception('Failed to get current identity')
             raise
 
+        page = int(self.context.get('page', '0'))
+        count = int(self.context.get('count', '20'))
+        start_range = page * count
+        end_range = start_range + count
+
         purchase_filter = self.context.get(
             'purchase_filter',
             'unused'
@@ -73,7 +82,7 @@ class MyPurchasesGrid(GridSmallView):
         purchases = Transaction.objects.filter(
             owner=current_identity,
             transaction_type=TransactionTypes.PURCHASE
-        )
+        )[start_range:end_range]
 
         for purchase in purchases:
             if purchase.reverted:
@@ -89,6 +98,7 @@ class MyPurchasesGrid(GridSmallView):
                         'show_offer_info': True,
                         'transaction': purchase,
                         'identity': merchant,
+                        'offer': purchase.offer,
                         'TransactionTypes': TransactionTypes
                     }
                 )
@@ -105,24 +115,23 @@ class MyPurchasesGrid(GridSmallView):
         return self.context
 
 
-class MyPurchasesView(ContextView):
+class MyPurchasesView(EmbeddedView):
     template_name = 'knotis/consumer/my_purchases_view.html'
+    url_patterns = [
+        '^purchases(/(?P<purchase_filter>\w*))?/$',
+    ]
+    default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/consumer/js/purchases.js',
+    ]
 
     def process_context(self):
         styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
         ]
 
         pre_scripts = []
 
         post_scripts = [
-            'knotis/layout/js/layout.js',
-            'navigation/js/navigation.js',
             'knotis/consumer/js/purchases.js'
         ]
 

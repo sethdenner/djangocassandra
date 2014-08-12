@@ -1,5 +1,5 @@
-<div class="modal-body support-success" >
-  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-  <h1>Woo-hoo!</h1>
-  <p>Thanks for your input!<br>Your request has been sent.</p>
-</div>
+{% extends 'knotis/layout/modal_base.html' %}
+{% block body %}
+  <h1 class="auth-success-header">Woo-hoo!</h1>
+  <p class="auth-success-body">Thanks for your input!<br>Your request has been sent.</p>
+{% endblock body %}

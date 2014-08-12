@@ -72,60 +72,7 @@ class NavigationSideView(FragmentView):
         else:
             current_identity = None
 
-        establishments = self.context.get('establishments')
-
-        if current_identity:
-            if current_identity.identity_type == IdentityTypes.BUSINESS:
-                if not establishments:
-                    establishments = (
-                        IdentityEstablishment.objects.get_establishments(
-                            current_identity
-                        )
-                    )
-                    local_context['establishments'] = establishments
-
-        local_context['NAVIGATION_TYPES'] = NavigationTypes
-        default_navigation = NavigationItem.objects.filter_ordered(
-            menu_name='default'
-        )
-
-        
-        if (
-            current_identity and
-            IdentityTypes.SUPERUSER == current_identity.identity_type
-        ):
-           admin_navigation = NavigationItem.objects.filter_ordered(
-               menu_name='admin'
-           )
-        else:
-            admin_navigation = []
-
-
-        if (
-            current_identity and
-            IdentityTypes.BUSINESS == current_identity.identity_type
-        ):
-            merchant_navigation = NavigationItem.objects.filter_ordered(
-                menu_name='merchant'
-            )
-
-        elif (
-            current_identity and
-            IdentityTypes.INDIVIDUAL == current_identity.identity_type
-        ):
-            merchant_navigation = NavigationItem.objects.filter_ordered(
-                menu_name='consumer'
-            )
-
-        else:
-            merchant_navigation = []
-
-        local_context['navigation_items'] = list(
-            chain(
-                default_navigation,
-                merchant_navigation,
-                admin_navigation
-            )
-        )
+        local_context['current_identity'] = current_identity
+        local_context['IdentityTypes'] = IdentityTypes
 
         return local_context

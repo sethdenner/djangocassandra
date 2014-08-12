@@ -22,6 +22,7 @@ from django.contrib.contenttypes.models import ContentType
 from knotis.utils.email import generate_validation_key
 from knotis.contrib.cassandra.models import ForeignKey
 from knotis.contrib.identity.models import Identity
+from knotis.contrib.relation.models import Relation
 
 
 def normalize_arguments(*args, **kwargs):
@@ -574,6 +575,19 @@ class EndpointIdentity(Endpoint):
     def update_value(self):
         self.value = self.identity.name
         self.save()
+
+
+class EndpointFollowersManager(EndpointManager):
+    pass
+
+
+class EndpointFollowers(Endpoint):
+    EndpointType = EndpointTypes.FOLLOWERS
+
+    class Meta:
+        proxy = True
+
+    objects = EndpointFollowersManager()
 
 
 class Publish(QuickModel):

@@ -1,0 +1,5 @@
+{% for section in sections %}
+    <div class="col-lg-6 col-xs-12 {{ section.css_class }}">
+            {{ section.markup|safe }}
+    </div>
+{% endfor %}

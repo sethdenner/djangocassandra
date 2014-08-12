@@ -1,0 +1,57 @@
+{% extends 'knotis/layout/base.html' %}
+{% load render_template_fragment %}
+
+{% block header %}
+<!-- Primary Navigation -->
+<div class="nav">
+    <nav role="navigation">
+        <div class="container">
+            <div class="row">
+                <!-- Search Form -->
+                <div class="col-lg-3 col-xs-4">
+                    {% render_fragment search_bar %}
+                </div>
+                <!-- // End Search Form -->
+                <div class="col-lg-6 col-xs-4">
+                    <div class="logo">
+                        <a href="/" data-target-id="main-content" ><img src="{{ STATIC_URL }}knotis/img/knotis_logo_nav.png" alt="Knotis"/></a>
+                    </div>
+                </div>
+                {% if user.is_authenticated %}
+                {% render_fragment identity_switcher %}
+                {% else %}
+                <div id="auth-controls" class="col-lg-3 col-xs-4">
+                    <a href="/login/" class="btn btn-primary btn-lg logIn modal-link" data-modal-id="auth-modal">
+                        Log In
+                    </a>
+                    <a href="/signup/" class="btn btn-primary btn-lg signUp modal-link" data-modal-id="auth-modal">
+                        Sign Up
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <!-- // End Primary Navigation -->
+</div>
+{% endblock header %}
+
+{% block navigation %}
+{% render_fragment nav_side %}
+{% endblock navigation %}
+
+{% block content %}
+{% if content %}
+<div id="main-content" class="contentBlock">{{ content }}</div>
+{% else %}
+{{ block.super }}
+{% endif %}
+{% endblock content %}
+
+{% block modal %}
+{% if modal_content %}
+{{ modal_content }}
+{% else %}
+{{ block.super }}
+{% endif %}
+{% endblock modal %}
