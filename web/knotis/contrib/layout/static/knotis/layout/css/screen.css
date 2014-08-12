@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* Welcome to Compass.
 * In this file you should write your main styles. (or centralize your imports)
 * Import this file using the following HTML or equivalent:
@@ -2584,7 +2583,7 @@ nav {
     top: 0;
     width: 100%;
     height: 55px;
-    background: #2cc397;
+    background: #809ae5;
     padding: 8px 8px 8px 0;
     z-index: 1000;
     text-transform: uppercase;
@@ -2623,9 +2622,8 @@ nav a:visited {
 nav .search input {
     background-color: transparent;
     border: 0;
-    focus: 0;
     outline: 0;
-    border-bottom: 1px solid #a6e5cd;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.43);
     color: white;
     font-size: 12px;
     padding-bottom: 6px;
@@ -2679,7 +2677,7 @@ nav .dropdown {
     right: 0;
     top: -2px;
     transition: all 0.2s ease;
-    border: 1px solid #2cc397;
+    border: 1px solid #809ae5;
 }
 /* line 95, ../sass/_nav.scss */
 nav .dropdown a {
@@ -2746,7 +2744,7 @@ nav button, nav button:active, nav button:visted {
 
 /* line 148, ../sass/_nav.scss */
 nav button.logIn:hover, nav button.signUp:hover {
-    background: #2cc397;
+    background: #809ae5;
     border: 2px solid white;
 }
 
@@ -2820,8 +2818,8 @@ nav button.signUp {
 }
 /* line 26, ../sass/_subNav.scss */
 .subNav ul li a.active {
-    color: #2cc397;
-    border-bottom: 4px solid #2cc397;
+    color: #809ae5;
+    border-bottom: 4px solid #809ae5;
 }
 
 /* line 1, ../sass/_sideBar.scss */
@@ -2845,6 +2843,7 @@ nav button.signUp {
     top: 5px;
     width: 100%;
     padding: 0 0 50px 0;
+    margin: 2px 0;
 }
 
 /* line 22, ../sass/_sideBar.scss */
@@ -2884,7 +2883,7 @@ nav button.signUp {
 }
 
 .sidebar-li-selected {
-    background: #2cc397;
+    background: #809ae5;
 }
 
 /* line 60, ../sass/_sideBar.scss */
@@ -3032,7 +3031,7 @@ nav button.signUp {
 }
 /* line 24, ../sass/_offerItem.scss */
 .offerItem .dropdown-menu a:hover {
-    background: #2cc397;
+    background: #809ae5;
     color: white;
     transition: all 0.3s ease;
 }
@@ -3096,11 +3095,6 @@ nav button.signUp {
 
 /* line 72, ../sass/_offerItem.scss */
 .overlay {
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, transparent), color-stop(100%, #333));
-    background-image: -webkit-linear-gradient(transparent, #333);
-    background-image: -moz-linear-gradient(transparent, #333);
-    background-image: -o-linear-gradient(transparent, #333);
-    background-image: linear-gradient(transparent, #333);
     width: 100%;
     height: 142px;
     position: absolute;
@@ -3125,8 +3119,8 @@ width: 100%;
 /* line 100, ../sass/_offerItem.scss */
 .busLink:hover {
     color: whitesmoke;
-    background: #2cc397;
-    border: 1px solid #2cc397;
+    background: #809ae5;
+    border: 1px solid #809ae5;
 }
 
 /* line 104, ../sass/_offerItem.scss */
@@ -3150,9 +3144,9 @@ width: 100%;
 
 /* line 119, ../sass/_offerItem.scss */
 .btnFollow:hover {
-    background: #2cc397;
+    background: #809ae5;
     color: white;
-    border: 2px solid #2cc397;
+    border: 2px solid #809ae5;
 }
 
 /* line 124, ../sass/_offerItem.scss */
@@ -3201,9 +3195,9 @@ offerSteps ul {
 }
 
 .offerSteps ul li.active {
-    color: #2cc397;
+    color: #809ae5;
     font-family: 'LatoReg', sans-serif;
-    border-bottom: 2px solid #2cc397;
+    border-bottom: 2px solid #809ae5;
     padding-bottom: 5px;
 }
 
@@ -3239,7 +3233,7 @@ offerSteps ul {
 }
 
 .offerForm a {
-    color: #2cc397;
+    color: #809ae5;
     font-size: 15px;
     border-radius: 3px;
 }
@@ -3326,8 +3320,8 @@ offerSteps ul {
 #id-offer-discount {
     display: inline-block;
     padding: 10px 30px;
-    color: #2cc397;
-    border: 2px solid #2cc397;
+    color: #809ae5;
+    border: 2px solid #809ae5;
     border-radius: 50px;
     font-size: 15px;
 }
@@ -3366,8 +3360,8 @@ offerSteps ul {
 }
 
 #offer-modal a {
-    color: #2cc397;
-    border: 2px solid #2cc397;
+    color: #809ae5;
+    border: 2px solid #809ae5;
     padding: 10px 25px;
     margin: 0 6px 0 0;
     outline: 0;
@@ -3376,8 +3370,8 @@ offerSteps ul {
 
 #offer-modal a:hover {
     color: white;
-    background: #2cc397;
-    border: 2px solid #2cc397;
+    background: #809ae5;
+    border: 2px solid #809ae5;
 }
 
 .offer-form-nav button {
@@ -3395,15 +3389,15 @@ offerSteps ul {
 }
 
 .offer-form-nav button.continue {
-    color: #2cc397;
-    border: 2px solid #2cc397;
+    color: #809ae5;
+    border: 2px solid #809ae5;
 }
 
 
 .offer-form-nav button.continue:hover {
     color: white;
-    background: #2cc397;
-    border: 2px solid #2cc397;
+    background: #809ae5;
+    border: 2px solid #809ae5;
 }
 
 #offer-create {
@@ -3434,7 +3428,7 @@ offerSteps ul {
 
 /* line 20, ../sass/_offerCreate.scss */
 #offer-create .navBtns a {
-    background: #2cc397;
+    background: #809ae5;
     color: white;
     margin: 30px auto;
     width: 230px;
@@ -3796,20 +3790,20 @@ offerSteps ul {
 .authBtn {
     display: inline-block;
     padding: 16px 40px;
-    border: 2px solid #2cc397;
+    border: 2px solid #809ae5;
     outline: 0;
     border-radius: 2px;
     margin: 0px 0 15px;
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 2px;
-    background: #2cc397;
+    background: #809ae5;
     color: white;
 }
 
 /* line 63, ../sass/_modals.scss */
 .tos-text a {
-    color: #2cc397;
+    color: #809ae5;
 }
 
 /* line 67, ../sass/_modals.scss */
@@ -3874,7 +3868,7 @@ offerSteps ul {
 }
 /* line 117, ../sass/_modals.scss */
 .offerDetails button {
-    background: #2cc397;
+    background: #809ae5;
     border: 0;
     outline: 0;
     padding: 17px 28px;
@@ -3956,7 +3950,7 @@ offerSteps ul {
 }
 /* line 33, ../sass/_onBoarding.scss */
 #onboarding .modal-content {
-    background: #2cc397;
+    background: #809ae5;
     border-radius: 3px;
     padding: 0 20px 30px;
 }
@@ -3965,7 +3959,7 @@ offerSteps ul {
     border: 0;
     outline: 0;
     background: white;
-    color: #2cc397;
+    color: #809ae5;
     padding: 20px 10px;
     border-radius: 3px;
     margin: 0 0 35px;
@@ -4107,7 +4101,7 @@ h1.sectionHeader {
 }
 /* line 69, ../sass/_profile.scss */
 .heroInfo a {
-    background: #2cc397;
+    background: #809ae5;
     padding: 17px 70px;
     color: white;
     text-transform: uppercase;
@@ -4125,7 +4119,7 @@ section .profileInfo {
 
 /* line 85, ../sass/_profile.scss */
 section .profileInfo a {
-    background: #2cc397;
+    background: #809ae5;
     padding: 13px 20px;
     border-radius: 2px;
     display: inline-block;
@@ -4184,7 +4178,7 @@ section .profileInfo:nth-child(5) {
 }
 /* line 21, ../sass/_settings.scss */
 .settings a:hover {
-    background: #2cc397;
+    background: #809ae5;
     color: white;
 }
 /* line 26, ../sass/_settings.scss */
@@ -4201,25 +4195,29 @@ section .profileInfo:nth-child(5) {
 }
 
 .loadState {
-    position: absolute;
+    position: fixed;
     top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(248, 248, 248, 0.82);
     text-align: center;
+    background: rgba(250, 250, 250, 0.78);
+}
+
+.loadState .container {
+    position: absolute;
+    width: 100%;
 }
 
 .loadState h1 {
     color: gray;
     position: relative;
     top: 200px;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .loadState .progressBar {
-    border-bottom: 4px solid #2cc397;
-    border-bottom: 4px solid #2cc397;
+    border-bottom: 4px solid #809ae5;
+    border-bottom: 4px solid #809ae5;
     position: relative;
     top: 180px;
     width: 20%;
@@ -4233,7 +4231,7 @@ section .profileInfo:nth-child(5) {
 }
 
 .forgotLink  a {
-    color: #2cc397;
+    color: #809ae5;
 }
 
 .underConstruction h4 {
@@ -4584,9 +4582,9 @@ a.adminLink {
 .upload-photo {
     padding: 15px;
     border-radius: 3px;
-    border: 2px solid #2cc397;
+    border: 2px solid #809ae5;
     background: transparent;
-    color: #2cc397;
+    color: #809ae5;
     position: absolute;
     left: 0;
     margin: 23px 13px 0;
@@ -4611,8 +4609,8 @@ a.adminLink {
     padding: 8px 25px;
     border-radius: 3px;
     margin-top: -50px;
-    border: 1px solid #2CC397;
-    color: #2cc397;
+    border: 1px solid #809ae5;
+    color: #809ae5;
     font-size: 14px;
     cursor: pointer;
 }
@@ -4629,7 +4627,7 @@ a.adminLink {
 .imageUpload .btnCancel {
     width: 100%;
     position: relative;
-    top: -15px;
+    top: -50px;
     color: #c0c0c0;
 }
 
@@ -4646,9 +4644,9 @@ a.adminLink {
 .imageUpload .qq-upload-button {
     padding: 15px;
     border-radius: 3px;
-    border: 2px solid #2cc397;
+    border: 2px solid #809ae5;
     background: transparent;
-    color: #2cc397;
+    color: #809ae5;
     width: 250px;
     margin: 0 auto;
 }
@@ -4706,7 +4704,7 @@ a.adminLink {
 }
 
 .createBusiness .btn {
-    background: #2cc397;
+    background: #809ae5;
     color: white;
     padding: 15px;
     width: 50%;
@@ -4720,7 +4718,7 @@ a.adminLink {
 }
 
 section.welcomeModal .btn {
-    background: #2cc397;
+    background: #809ae5;
     color: white;
     padding: 15px;
     width: 50%;
@@ -4785,7 +4783,7 @@ section.welcomeModal h1 {
     background: white;
     padding: 20px 15px;
     border-radius: 3px;
-    border-left: 4px solid #2cc397;
+    border-left: 4px solid #809ae5;
 }
 
 .manageQr section {
@@ -4838,6 +4836,5 @@ section.welcomeModal h1 {
 }
 
 .btn-primary {
-    background: #2cc397;
+    background: #809ae5;
 }
->>>>>>> f6e5caf71b5b2a61c8a4c91c61d84ca327522a93
