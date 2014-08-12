@@ -33,26 +33,23 @@
             <label class="control-label">Enter Cost</label>
             <div class="controls">
                 <input class="span1" name="{{ form.product_price.html_name }}" type="text" value="{{ form.product_price.value|default_if_none:"20" }}"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
-                <span>discounted value</span>
+                <label class="control-label">Discounted Vwalue</label>
             </div>
-        </div>
-        <div class="control-group physical{% if form.product_type.value != ProductTypes.PHYSICAL %} hide{% endif %}">
             <div class="controls">
                 <input class="span1"  name="{{ form.product_value.html_name }}" type="text" value="{{ form.product_value.value|default_if_none:"40" }}"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
-                <span>Regular Price (Retail Value)</span>
+                <label class="control-label">Regular Price (Retail Value)</label>
             </div>
         </div>
-
         <div class="control-group offer-quantity{% if form.offer_unlimited.value %} hide{% endif %}">
             <div class="controls">
-                <input class="span1 product" name="{{ form.offer_stock.html_name }}" type="text" value="{{ form.offer_stock.value|default_if_none:"100" }}"{% if form.offer_unlimited.value %} disabled{% endif %} />
+                <input class="span1 product" name="{{ form.offer_stock.html_name }}" type="text" placeholder="Enter Quantity"{% if form.offer_unlimited.value %} disabled{% endif %} />
             </div>
         </div>
 
         <div class="control-group">
             <div class="controls unlimitedInput">
                 <input id="id-unlimited-input"  class="radio" name="{{ form.offer_unlimited.html_name }}" type="checkbox" value="unlimited"{% if form.offer_unlimited.value %} checked{% endif %} />
-                <span>Unlimited</span>
+                <label class="control-label label-unlimited">Unlimited</label>
             </div>
         </div>
         <div class="offer-form-nav">

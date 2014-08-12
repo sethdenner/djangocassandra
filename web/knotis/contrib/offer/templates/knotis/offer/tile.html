@@ -2,7 +2,7 @@
 <div class="col-lg-4 col-xs-12 offerItem">
     <a href="/offer/detail/{{ offer.pk }}/" class="modal-link">
         <div class="busCover">
-            {% thumbnail offer_banner_image.image.image '240x161' crop=offer_banner_image.crop as image %}
+            {% thumbnail offer_banner_image.image.image 'x140' crop=offer_banner_image.crop as image %}
             <img src="{{ image.url }}" alt="{{ offer.title }}"/>
             {% empty %}
             <img alt="{{ offer.title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />

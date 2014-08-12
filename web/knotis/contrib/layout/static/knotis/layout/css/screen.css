@@ -111,6 +111,10 @@ a:hover {
     text-decoration: none;
 }
 
+a:focus {
+    outline: 0;
+}
+
 /* line 18, ../sass/_custom.scss */
 .mainContent {
     max-width: 100%;
@@ -441,19 +445,6 @@ nav button.signUp {
     color: white;
 }
 
-/* line 39, ../sass/_sideBar.scss */
-.sidebar-nav li a:hover {
-    color: white;
-}
-
-/* line 43, ../sass/_sideBar.scss */
-.sidebar-nav li:hover {
-    color: #fff;
-    background: #595959;
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-
 /* line 50, ../sass/_sideBar.scss */
 .sidebar-label {
     display: none;
@@ -463,6 +454,15 @@ nav button.signUp {
     text-transform: uppercase;
     letter-spacing: 2px;
     font-size: 12px;
+    color: #3b3b3b;
+}
+
+.sidebar-label-selected {
+    color: white;
+}
+
+.sidebar-li-selected {
+    background: #2cc397;
 }
 
 /* line 60, ../sass/_sideBar.scss */
@@ -617,12 +617,19 @@ nav button.signUp {
 /* line 30, ../sass/_offerItem.scss */
 .offerItem .busCover {
     overflow: hidden;
+    height: 140px;
 }
 /* line 33, ../sass/_offerItem.scss */
 .offerItem .busCover img {
     border-radius: 3px;
-    min-width: 100%;
-    height: 140px;
+    width: 100%;
+}
+
+.identityTile .busCover img {
+    border-radius: 3px;
+    width: 700px;
+    position: relative;
+    left: -230px;
 }
 
 /* line 40, ../sass/_offerItem.scss */
@@ -631,13 +638,12 @@ nav button.signUp {
     color: #989fac;
     line-height: 28px;
     position: absolute;
-    top: 80px;
+    top: 180px;
     width: 100%;
 }
 /* line 47, ../sass/_offerItem.scss */
 .offerContent h1, .identityContent h1, .transactionContent h1 {
     font-size: 23px;
-    margin: 100px 0 15px;
     color: #919191;
     font-family: "LatoLight", sans-serif;
     width: 100%;
@@ -666,11 +672,11 @@ nav button.signUp {
 
 /* line 72, ../sass/_offerItem.scss */
 .overlay {
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, transparent), color-stop(100%, #4a4a4a));
-    background-image: -webkit-linear-gradient(transparent, #4a4a4a);
-    background-image: -moz-linear-gradient(transparent, #4a4a4a);
-    background-image: -o-linear-gradient(transparent, #4a4a4a);
-    background-image: linear-gradient(transparent, #4a4a4a);
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, transparent), color-stop(100%, #333));
+    background-image: -webkit-linear-gradient(transparent, #333);
+    background-image: -moz-linear-gradient(transparent, #333);
+    background-image: -o-linear-gradient(transparent, #333);
+    background-image: linear-gradient(transparent, #333);
     width: 100%;
     height: 142px;
     position: absolute;
@@ -708,7 +714,6 @@ nav button.signUp {
     border: 2px solid #e6e8ec;
     transition: all 0.2s ease;
     line-height: 0;
-    margin-top: 20px;
 }
 /* line 115, ../sass/_offerItem.scss */
 .btnFollow a:hover {
@@ -729,15 +734,16 @@ nav button.signUp {
 
 /* line 128, ../sass/_offerItem.scss */
 .location {
-    font-size: 14px;
-    display: inline-block;
-    width: 100%;
-    font-family: 'LatoLight', sans-serif;
-    position: relative;
-    top: 10px;
-    padding: 10px 0px 10px;
-    line-height: 18px;
-    background: #FCFCFC;
+    display: none;
+    /* font-size: 14px; */
+    /* display: inline-block; */
+    /* width: 100%; */
+    /* font-family: 'LatoLight', sans-serif; */
+    /* position: relative; */
+    /* top: 10px; */
+    /* padding: 10px 0px 10px; */
+    /* line-height: 18px; */
+    /* background: #FCFCFC; */
 }
 /* line 138, ../sass/_offerItem.scss */
 .location img {
@@ -779,6 +785,7 @@ offerSteps ul {
     width: 100%;
     display: inline-block;
     text-align: center;
+    overflow: auto;
 }
 
 .offerForm .productPhys {
@@ -884,6 +891,8 @@ offerSteps ul {
 
 .offerForm .unlimitedInput {
     margin: 0 62px;
+    position: relative;
+    left: -40px;
 }
 
 #id-offer-discount {
@@ -898,6 +907,10 @@ offerSteps ul {
 .offerForm .control-group {
     display: inline-block;
     vertical-align: top;
+}
+
+.offerPreview .offerContent {
+    top: 80px;
 }
 
 .offerForm .publishSocial {
@@ -1707,7 +1720,7 @@ section .profileInfo:nth-child(5) {
     background: white;
     padding: 15px 8px;
     color: #8D8D8D;
-    border-radius: 50px;
+    border-radius: 3px;
     width: 80%;
     transition: all 0.2s ease;
     text-align: center;
@@ -1721,7 +1734,7 @@ section .profileInfo:nth-child(5) {
     margin: 0 20px 0 0;
     text-align: center;
     background: white;
-    padding: 30px 0 45px;
+    padding: 60px 0 50px;
     border-radius: 4px;
 }
 .settingItem p {
@@ -1902,6 +1915,11 @@ span.help-inline {
     width: 100%;
 }
 
+.identityContent .tile-link {
+    position: relative;
+top: -50px;
+}
+
 .currentId {
     position: absolute;
     top: 0;
@@ -1925,6 +1943,7 @@ span.help-inline {
     position: absolute;
     border: 3px solid white;
     display: inline-block;
+    top: -100px;
 }
 
 
@@ -1937,6 +1956,10 @@ span.help-inline {
     width: 90px;
     height: 90px;
     background: rgba(255, 255, 255, 0.94);
+}
+
+label.label-unlimited {
+    width: 0 !important;
 }
 
 .support-forms label {
@@ -2340,7 +2363,7 @@ section.welcomeModal h1 {
     position: relative;
     top: -20px;
     border: 0 !important;
-    border-top: 1px solid #c0c0c0 !important;
+    border-top: 1px solid #F3EEEE !important;
     padding-top: 30px;
 }
 
