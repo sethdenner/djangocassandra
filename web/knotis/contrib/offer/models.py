@@ -8,10 +8,14 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from django.conf import settings
+from django.http import HttpRequest
+
 from django.db.models.fields import Field as ModelField
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+from django.template import Context
 
 from knotis.contrib.quick.models import (
     QuickModel,
@@ -32,16 +36,21 @@ from knotis.utils.view import (
 from knotis.contrib.media.models import ImageInstance
 from knotis.contrib.identity.models import (
     Identity,
+    IdentityBusiness,
     IdentityEstablishment,
     IdentityTypes
 )
+from knotis.contrib.relation.models import Relation
 from knotis.contrib.inventory.models import Inventory
 from knotis.contrib.endpoint.models import (
+    Endpoint,
     EndpointTypes,
     Credentials,
     Publish
 )
 from knotis.contrib.location.models import LocationItem
+
+from .emails import NewOfferEmailView
 
 
 class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
@@ -51,10 +60,12 @@ class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
 class OfferTypes:
     NORMAL = 0
     PREMIUM = 1
+    DARK = 2
 
     CHOICES = (
         (NORMAL, 'Normal'),
-        (PREMIUM, 'Premium')
+        (PREMIUM, 'Premium'),
+        (DARK, 'Dark'),
     )
 
 
@@ -82,8 +93,8 @@ class OfferManager(QuickManager):
             *args,
             **kwargs
         )
-        offer.save()
 
+        offer.save()
         for i in inventory:
             price_discount = i.price * discount_factor
             OfferItem.objects.create(
@@ -274,6 +285,7 @@ class Offer(QuickModel):
     offer_type = QuickIntegerField(
         default=OfferTypes.NORMAL,
         choices=OfferTypes.CHOICES,
+        db_index=True,
     )
 
     title = QuickCharField(
@@ -313,15 +325,6 @@ class Offer(QuickModel):
             *args,
             **kwargs
         )
-
-        # Check whether offer should be completed on instansiation.
-        # Could have no end date I guess so check for not None.
-        if (
-            self.end_time and self.end_time < datetime.datetime.utcnow()
-        ) or (
-            not self.unlimited and self.purchased >= self.stock
-        ):
-            self.complete()
 
     def _calculate_prices(self):
         if hasattr(self, '_price_retail') and hasattr(self, '_price_discount'):
@@ -430,7 +433,7 @@ class Offer(QuickModel):
             (self.end_time is None or self.end_time > now) and
             (self.unlimited or self.purchased < self.stock) and
             not self.completed
-        )
+        ) or self.offer_type == OfferTypes.DARK
 
     def description_formatted_html(self):
         if not self.description:
@@ -514,10 +517,14 @@ class Offer(QuickModel):
         )
 
     def savings_percent(self):
-        return '%.0f' % round(
-            (self.price_retail() - self.price_discount()) /
-            self.price_retail() * 100, 0
-        )
+        try:
+            savings_str = '%.0f' % round(
+                (self.price_retail() - self.price_discount()) /
+                    self.price_retail() * 100, 0
+            )
+        except:
+            savings_str = 'ERROR'
+        return savings_str
 
     def days_remaining(self):
         delta = self.end_time - datetime.datetime.utcnow()
@@ -578,6 +585,20 @@ class Offer(QuickModel):
                 primary=True
             )
 
+        except ImageInstance.DoesNotExist:
+            try:
+                business = IdentityBusiness.objects.get_establishment_parent(
+                    self.owner
+                )
+                badge_image = ImageInstance.objects.get(
+                    related_object_id=business.owner.pk,
+                    context='profile_badge',
+                    primary=True
+                )
+
+            except:
+                badge_image = None
+
         except:
             badge_image = None
 
@@ -623,11 +644,23 @@ class OfferAvailabilityManager(QuickManager):
             kwargs['end_time'] = offer.end_time
             kwargs['price'] = offer.price_discount()
 
-            identity_profile_badge = ImageInstance.objects.get(
-                related_object_id=offer.owner.id,
-                context='profile_badge',
-                primary=True
-            )
+            try:
+                identity_profile_badge = ImageInstance.objects.get(
+                    related_object_id=offer.owner.id,
+                    context='profile_badge',
+                    primary=True
+                )
+
+            except ImageInstance.DoesNotExist:
+                business = IdentityBusiness.objects.get_establishment_parent(
+                    offer.owner
+                )
+                identity_profile_badge = ImageInstance.objects.get(
+                    related_object_id=business.pk,
+                    context='profile_badge',
+                    primary=True
+                )
+
             kwargs['profile_badge'] = identity_profile_badge
 
         return super(OfferAvailabilityManager, self).create(
@@ -871,6 +904,44 @@ class OfferPublish(Publish):
             self.completed = True
             self.save()
 
+    def _publish_followers(self):
+        followers = Relation.objects.get_followers(self.endpoint.identity)
+        email_subject = ''.join([
+            'New Offer From ',
+            self.endpoint.identity.name,
+            ' On Knotis.com'
+        ])
+
+        for f in [follower.subject for follower in followers]:
+            try:
+                follower_email = Endpoint.objects.get(
+                    identity=f,
+                    primary=True,
+                    endpoint_type=EndpointTypes.EMAIL,
+                )
+
+                offer = self.subject
+
+                context = Context({
+                    'offer': offer,
+                    'settings': settings
+                })
+
+                message = NewOfferEmailView().generate_email(
+                    email_subject,
+                    settings.EMAIL_HOST_USER,
+                    [follower_email.value],
+                    context
+                )
+                message.send()
+
+            except Exception, e:
+                logger.exception(e.message)
+                continue
+
+        self.completed = True
+        self.save()
+
     def publish(self):
         if self.endpoint.endpoint_type == EndpointTypes.IDENTITY:
             if (
@@ -901,9 +972,23 @@ class OfferPublish(Publish):
         elif self.endpoint.endpoint_type == EndpointTypes.TWITTER:
             self._publish_twitter()
 
+        elif self.endpoint.endpoint_type == EndpointTypes.FOLLOWERS:
+            self._publish_followers()
+
         else:
             raise NotImplementedError(''.join([
                 'publish not implemented for endpoint type ',
                 self.endpoint.endpoint_type,
                 '.'
             ]))
+
+
+class OfferCollection(QuickModel):
+    neighborhood = QuickCharField(max_length=255, db_index=True)
+
+
+class OfferCollectionItem(QuickModel):
+    offer_collection = QuickForeignKey(OfferCollection)
+    offer = QuickForeignKey(Offer)
+    page = QuickIntegerField()
+    objects = QuickManager()

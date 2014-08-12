@@ -1,24 +1,28 @@
-{% extends 'knotis/layout/master.html' %}
 {% load render_template_fragment %}
-{% block title %}Knotis - Social Media Settings{% endblock title %}
-{% block first %}
-  {% render_fragment facebook_sdk_initialization %}
-{% endblock first %}
-{% block header %}
-  {% render_fragment header %}
-{% endblock header %}
-{% block content %}
-<div class="container-fluid">
-  <div class="row-fluid main-row">
-    <div class="span2">
-      {% render_fragment nav_side %}
+
+
+
+
+<div class="settings">
+    <div>
+        {% render_fragment facebook_sdk_initialization %}
     </div>
-    <div class="span10 grid social-integrations">
-      {% render_fragment social_integrations_grid %}
+    <div class="container-fluid mainContent">
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <h1>Social Media Settings</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                {% render_fragment social_integrations_grid %}
+            </div>
+        </div>
     </div>
-  </div>
+    {% if format == 'json' %}
+    {% for script in post_scripts %}
+    <script src="{{STATIC_URL}}/{{script}}"></script>
+    {% endfor %}
+    {% endif %}
 </div>
-{% endblock content %}
-{% block footer %}{% endblock footer %}
-{% block last %}{% endblock last %}
 

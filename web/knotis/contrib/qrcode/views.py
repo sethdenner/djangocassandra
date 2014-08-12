@@ -4,7 +4,8 @@ from django.shortcuts import redirect
 from django.conf import settings
 from django.views.generic import View
 
-from knotis.views import ContextView
+from knotis.views import EmbeddedView
+from knotis.contrib.layout.views import DefaultBaseView
 
 from knotis.contrib.offer.models import (
     Offer,
@@ -15,7 +16,7 @@ from knotis.contrib.qrcode.models import (
     QrcodeTypes,
     Scan
 )
-from knotis.contrib.identity.models import Identity
+from knotis.contrib.identity.models import IdentityEstablishment
 
 
 class ScanView(View):
@@ -55,27 +56,31 @@ class ScanView(View):
         )
 
 
-class ManageQRCodeView(ContextView):
+class ManageQRCodeView(EmbeddedView):
     template_name = 'knotis/qrcode/manage_qrcode.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [r'^settings/qrcode/$']
 
     def process_context(self):
         self.context = copy.copy(self.context)
         request = self.context.get('request')
 
         current_identity_id = request.session.get('current_identity')
-        business = Identity.objects.get(pk=current_identity_id)
+        establishment = IdentityEstablishment.objects.get(
+            pk=current_identity_id
+        )
 
         try:
-            qrcode = Qrcode.objects.get(owner=business)
+            qrcode = Qrcode.objects.get(owner=establishment)
 
         except:
             qrcode = None
 
-        self.context['business'] = business
+        self.context['establishment'] = establishment
 
         try:
             self.context['offers'] = Offer.objects.filter(
-                owner=business,
+                owner=establishment,
                 status=OfferStatus.CURRENT
             )
 
@@ -126,8 +131,10 @@ class ManageQRCodeView(ContextView):
         **kwargs
     ):
         current_identity_id = request.session.get('current_identity')
-        business = Identity.objects.get(pk=current_identity_id)
-        qrcode = Qrcode.objects.get(owner=business)
+        establishment = IdentityEstablishment.objects.get(
+            pk=current_identity_id
+        )
+        qrcode = Qrcode.objects.get(owner=establishment)
 
         qrcode_type = request.POST.get('qrcode')
 
@@ -136,7 +143,7 @@ class ManageQRCodeView(ContextView):
             qrcode.uri = '/'.join([
                 settings.BASE_URL,
                 'id',
-                business.id,
+                establishment.id,
                 ''
             ])
             qrcode.save()

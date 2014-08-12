@@ -1,30 +1,27 @@
-{% if fixed_side_nav %}<div data-spy="affix" class="span2" >{% endif %}
-     <ul class="nav nav-list side-nav" id="accordion-nav" >
-       {% for item in navigation_items %}
-       <li{% if item.item_type == NAVIGATION_TYPES.HEADER %} class="nav-header" {% else %}
-             {% if item.item_type == NAVIGATION_TYPES.DIVIDER %} class="divider" {% endif %}{% endif %}
-             {% if item.has_children %} data-target="#{{ item.id }}" {% endif %}>
-         {% if item.item_type == NAVIGATION_TYPES.LINK %}<a href="{{ item.uri }}">{{ item.title }}</a>
-         {% else %}
-         {{ item.title }}
-         {% endif %}
-         {% if item.has_children %}
-         <ul id="{{ item.id }}" class="collapse" >
-           {% for sub_item in item.children.all_ordered %}
-           {% if sub_item.item_type == NAVIGATION_TYPES.LINK %}
-           <li><a href="{{ sub_item.uri }}">{{ sub_item.title }}</a></li>
-           {% endif %}
-           {% endfor %}
-         </ul>
-         {% endif %}
-       </li>
-       {% endfor %}
-       {% if establishments %}
-       <li class="nav-header">My Establishments</li>
-       {% for establishment in establishments %}
-       <li><a href="/id/{{ establishment.id }}/">{{ establishment.name }}</a>
-         {% endfor %}
-         {% endif %}
-     </ul>
-{% if fixed_side_nav %}</div>{% endif %}
-{% if fixed_side_nav %}<div class="fixed-side-nav-space">&nbsp;</div>{% endif %}
+<!-- Sidebar -->
+<div class="sideBar">
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <li><a href="/businesses/" data-target-id="main-content" ><span class="circle"><i class="icon-business"></i></span><span class="sidebar-label">Businesses</span></a></li>
+            <li><a href="/offers/" data-target-id="main-content" ><span class="circle"><i class="icon-offers"></i></span><span class="sidebar-label">Offers</span></a></li>
+            {% if current_identity.identity_type == IdentityTypes.INDIVIDUAL %}
+            <li><a href="/my/followers/" data-target-id="main-content"><span class="circle"><i class="icon-followers"></i></span><span class="sidebar-label">Following</span></a></li>
+            <li><a href="/my/purchases/" data-target-id="main-content"><span class="circle"><i class="icon-promotions"></i></span><span class="sidebar-label">Purchases</span></a></li>
+            {% endif %}
+            {% if current_identity.identity_type == IdentityTypes.ESTABLISHMENT %}
+            <li><a a href="/id/{{ current_identity.pk }}/" data-target-id="main-content" ><span class="circle"><i class="icon-profile-male"></i></span><span class="sidebar-label">Profile</span></a></li>
+            <li><a href="/my/offers/"><span class="circle"><i class="icon-promotions"></i></span><span class="sidebar-label">Promotions</span></a></li>
+            <li><a href="/my/followers/" data-target-id="main-content"><span class="circle"><i class="icon-followers"></i></span><span class="sidebar-label">Followers</span></a></li>
+            <li><a href="/my/customers" data-target-id="main-content" ><span class="circle"><i class="icon-customers"></i></span><span class="sidebar-label">Customers</span></a></li>
+            <li><a href="/my/redemptions/" data-target-id="main-content" ><span class="circle"><i class="icon-redeem"></i></span><span class="sidebar-label">Redemption</span></a></li>
+            <li><a href="/settings/" data-target-id="main-content"><span class="circle"><i class="icon-settings"></i></span><span class="sidebar-label">Settings</span></a></li>
+            {% endif %}
+            {% if current_identity.identity_type == IdentityTypes.SUPERUSER %}
+            <li><a href="/admin/" data-target-id="main-content"><span class="circle"><i class="icon-settings"></i></span><span class="sidebar-label">Admin Tools</span></a></li>
+            {% endif %}
+            <li><a href="/support/" class="modal-link"><span class="circle"><i class="icon-support"></i></span><span class="sidebar-label">Support</span></a></li>
+        </ul>
+    </div>
+    <div class="sidebar-overlay"></div>
+</div>
+<!-- // End SideBar -->

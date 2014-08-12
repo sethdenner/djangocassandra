@@ -4,7 +4,6 @@ logger = logging.getLogger(__name__)
 from knotis.views import ApiView
 from knotis.contrib.identity.models import (
     Identity,
-    IdentityBusiness,
     IdentityTypes
 )
 
@@ -34,7 +33,7 @@ class LocationApiView(ApiView):
 
             except Exception, e:
                 errors['no-field'] = "Could not find location to update"
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': e.message,
                     'errors': errors
                 })
@@ -89,32 +88,6 @@ class LocationApiView(ApiView):
                 if related.identity_type == IdentityTypes.ESTABLISHMENT:
                     pass
 
-                    # Since we don't have a business profile page at the
-                    # moment, we do not have to worry about the business
-                    # having an address at the moment.
-
-                    # business = (
-                    #     IdentityBusiness.objects.get_establishment_parent(
-                    #         related
-                    #     )
-                    # )
-                    # try:
-                    #     for li in LocationItem.objects.filter(
-                    #         related_object_id=related.pk
-                    #     ):
-                    #         li.delete()
-
-                    #     li = LocationItem.objects.create(
-                    #         location=location,
-                    #         related=business
-                    #     )
-
-                    # except:
-                    #     logger.exception(
-                    #         'An exception occurred during '
-                    #         'location item creation'
-                    #     )
-
         else:
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
@@ -134,4 +107,4 @@ class LocationApiView(ApiView):
             data['errors'] = errors
             data['message'] = 'There was an error while saving location.'
 
-        return self.generate_response(data)
+        return self.generate_ajax_response(data)

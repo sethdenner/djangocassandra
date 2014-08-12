@@ -5,7 +5,7 @@ from models import Offer
 
 class OfferIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    author = indexes.CharField(model_attr='owner')
+    author = indexes.CharField(model_attr='owner', null=True) # <---- I'm a weird line.
     pub_date = indexes.DateTimeField(model_attr='pub_date')
     available = indexes.BooleanField(model_attr='active')
 

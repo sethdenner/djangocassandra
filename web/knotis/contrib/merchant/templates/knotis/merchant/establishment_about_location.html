@@ -1,0 +1,27 @@
+{% if address %}
+    <h1 class="sectionHeader">Location</h1>
+    <section>
+    <div class="profileInfo">
+
+        {% if phone %}
+            <a class="no-deep" href="{{phone.uri}}">{{phone.value}}</a>
+        {% endif %}
+
+        {% if website %}
+            <a class="no-deep" href="{{website.uri}}">{{website.value}}</a>
+        {% endif %}
+
+        <div id="about-map"></div>
+        <input type="hidden"
+               id="establishment-contact-loc-details"
+               data-latitude="{{ latitude }}"
+               data-longitude="{{ longitude }}" />
+        {% if address %}
+            <h2>{{ address }}</h2>
+            {% endif %}
+
+        <a class="no-deep" href="http://maps.google.com/maps?daddr={{ address|iriencode }}">Get Directions</a>
+    </div>
+    </section>
+{% endif %}
+

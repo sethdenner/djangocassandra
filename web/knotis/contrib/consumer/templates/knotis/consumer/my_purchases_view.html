@@ -1,23 +1,21 @@
-{% extends 'knotis/layout/master.html' %}
-{% load thumbnail %}
 {% load render_template_fragment %}
-{% block title %}Knotis - Purchases{% endblock title %}
-{% block first %}{% endblock first %}
-{% block header %}
-{% render_fragment header %}
-{% render_fragment nav_top %}
-{% endblock header %}
-{% block content %}
-<div class="container-fluid">
-  <div class="row-fluid">
-    <div class="span2">
-      {% render_fragment nav_side %}
-    </div>
-    <div class="span10 grid">
-      {% render_fragment my_purchases_grid %}
-    </div>
-  </div>
+<!-- SubNav-->
+<div class="subNav">
+    <div class="row">
+        <div class="col-lg-12">
+            <ul>
+                <li><a href="/my/purchases/unused/">Unused</a></li>
+                <li><a href="/my/purchases/used/">Used</a></li>
+            </ul>
+        </div>
+    </div>    
 </div>
-{% endblock content %}
-{% block footer %}{% endblock footer %}
-{% block last %}{% endblock last %}
+<!-- // End SubNav -->
+<div class="container-fluid myPurchases">
+    {% render_fragment my_purchases_grid %}
+</div>
+{% if format == 'json' %}
+    {% for script in post_scripts %}
+        <script src="{{STATIC_URL}}{{script}}"></script>
+    {% endfor %}
+{% endif %}

@@ -46,11 +46,11 @@ class Qrcode(QuickModel):
     def __init__(self, *args, **kwargs):
         super(Qrcode, self).__init__(*args, **kwargs)
 
-    def scan(self):
+    def scan(self, identity=None):
         try:
             Scan.objects.create(
                 qrcode=self,
-                identity=self.owner,
+                identity=identity,
                 uri=self.uri
             )
 

@@ -35,11 +35,16 @@ from .forms import (
 from .models import (
     UserInformation
 )
-from .views import send_validation_email
+from .emails import send_validation_email
 from .serializers import UserInformationSerializer
 
 
 class AuthenticationApi(object):
+    @staticmethod
+    def authenticate_user(
+    ):
+        pass
+
     @staticmethod
     def create_user(
         send_validation=True,
@@ -163,7 +168,7 @@ class AuthenticationApiView(ApiView, AuthenticationApi):
                 errors['no-field'] = non_field_errors
 
             # Message user about failed login attempt.
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'Login failed. Please try again.',
                 'errors': errors
             })
@@ -197,7 +202,7 @@ class AuthenticationApiView(ApiView, AuthenticationApi):
 
         next_url = request.POST.get('next')
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'success': 'yes',
             'redirect': next_url if next_url else default_url
         })
@@ -255,7 +260,7 @@ class AuthUserApiView(ApiView, AuthenticationApi):
             }
             response_data['message'] = 'Account created successfully'
 
-        return self.generate_response(response_data)
+        return self.generate_ajax_response(response_data)
 
 
 class AuthForgotPasswordApiView(ApiView, AuthenticationApi):
@@ -296,7 +301,7 @@ class AuthForgotPasswordApiView(ApiView, AuthenticationApi):
                 'status': 'OK'
             }
 
-        return self.generate_response(response_data)
+        return self.generate_ajax_response(response_data)
 
 
 class UserInformationApiModelViewSet(ApiModelViewSet):

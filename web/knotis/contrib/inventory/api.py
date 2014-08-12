@@ -40,7 +40,7 @@ class InventoryApi(ApiView):
                 logger.exception(error_message)
                 errors['no-field'] = error_message
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': e.message,
                     'errors': errors
                 })
@@ -49,12 +49,12 @@ class InventoryApi(ApiView):
             for field, messages in inventory_form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'An exception occurred during inventory creation',
                 'errors': errors
             })
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'inventory_id': inventory.id,
             'message': 'Inventory created sucessfully.'
         })
@@ -81,7 +81,7 @@ class InventoryApi(ApiView):
             logger.exception(error_message)
             errors['no-field'] = error_message
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': e.message,
                 'errors': errors
             })
@@ -100,7 +100,7 @@ class InventoryApi(ApiView):
                 logger.exception(error_message)
                 errors['no-field'] = error_message
 
-                return self.generate_response({
+                return self.generate_ajax_response({
                     'message': e.message,
                     'errors': errors
                 })
@@ -109,12 +109,12 @@ class InventoryApi(ApiView):
             for field, messages in form.errors.iteritems():
                 errors[field] = [message for message in messages]
 
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'message': 'An exception occurred during inventory update',
                 'errors': errors
             })
 
-        return self.generate_response({
+        return self.generate_ajax_response({
             'inventory_id': inventory.id,
             'message': 'Inventory updated sucessfully.'
         })

@@ -1,0 +1,32 @@
+{% load render_template_fragment %}
+<div class="admintools">
+        <div class="container-fluid mainContent">
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <h1>Admin Tools</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="adminTile">
+                <a class="tileLink" href="/admin/user/">
+                    <h1>User Tools</h1>
+                <a>
+            </div>
+            <div class="adminTile">
+                <a class="tileLink" href="/admin/offer/">
+                    <h1>Offer Tools</h1>
+                <a>
+            </div>
+            <div class="adminTile">
+                <a class="tileLink" href="/admin/activity/">
+                    <h1>Activity Tools</h1>
+                <a>
+            </div>
+        </div>
+    </div>
+    {% if format == 'json' %}
+        {% for script in post_scripts %}
+            <script src="{{STATIC_URL}}{{script}}"></script>
+        {% endfor %}
+    {% endif %}
+</div>

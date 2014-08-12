@@ -48,7 +48,11 @@ class QuickManager(polymodels.managers.PolymorphicManager):
         )
 
     def all(self, deleted=False):
-        return self.filter(deleted=deleted)
+        if deleted:
+            return super(QuickManager, self).all()
+
+        else:
+            return self.filter(deleted=deleted)
 
 
 @staticmethod
@@ -89,10 +93,8 @@ class QuickModelBase(object):
 
     def get_fields_dict(self):
         fields = {
-            field.name: (
-                field.value_to_string(self) for
-                field in type(self)._meta.fields
-            )
+            field.name: field.value_to_string(self)
+            for field in type(self)._meta.fields
         }
         #print self.yelp_extra
         #fields.update(self._meta.local_fields)

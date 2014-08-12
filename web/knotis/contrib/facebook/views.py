@@ -67,7 +67,7 @@ class FacebookAccountChoiceFragment(AJAXFragmentView):
             errors = {}
             for field, messages in endpoint_form.errors.iteritems():
                 errors[field] = [message for message in messages]
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': errors
             })
@@ -88,7 +88,7 @@ class FacebookAccountChoiceFragment(AJAXFragmentView):
             errors = {}
             for field, messages in endpoint_form.errors.iteritems():
                 errors[field] = [message for message in messages]
-            return self.generate_response({
+            return self.generate_ajax_response({
                 'status': 'ERROR',
                 'errors': errors
             })
@@ -99,7 +99,7 @@ class FacebookAccountChoiceFragment(AJAXFragmentView):
             service='facebook',
             endpoint=endpoint
         )
-        return self.generate_response({
+        return self.generate_ajax_response({
             'status': 'OK',
             'errors': None,
             'html': facebook_tile.render_template_fragment(Context({

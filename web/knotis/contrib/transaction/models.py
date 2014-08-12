@@ -12,6 +12,7 @@ from knotis.contrib.quick.models import (
 )
 from knotis.contrib.quick.fields import (
     QuickCharField,
+    QuickIntegerField,
     QuickBooleanField,
     QuickForeignKey
 )
@@ -31,6 +32,8 @@ class TransactionTypes:
     RETURN = 'return'
     REFUND = 'refund'
     TRANSFER = 'transfer'
+    TRANSACTION_TRANSFER = 'transaction_transfer'
+    DARK_PURCHASE = 'dark_purchase'
 
     CHOICES = (
         (PURCHASE, 'Purchase'),
@@ -38,7 +41,9 @@ class TransactionTypes:
         (CANCELATION, 'Cancelation'),
         (RETURN, 'Return'),
         (REFUND, 'Refund'),
-        (TRANSFER, 'Transfer')
+        (TRANSFER, 'Transfer'),
+        (TRANSACTION_TRANSFER, 'Transaction Transfer'),
+        (DARK_PURCHASE, 'Dark Purchase'),
     )
 
 
@@ -48,7 +53,8 @@ class TransactionManager(QuickManager):
         offer,
         buyer,
         currency,
-        transaction_context=None
+        transaction_context=None,
+        dark_purchase=False
     ):
         if not offer.available():
             raise Exception(
@@ -110,7 +116,7 @@ class TransactionManager(QuickManager):
             for participant in participants:
                 transaction = super(TransactionManager, self).create(
                     owner=participant,
-                    transaction_type=TransactionTypes.PURCHASE,
+                    transaction_type=(TransactionTypes.PURCHASE, TransactionTypes.DARK_PURCHASE)[dark_purchase],
                     offer=offer,
                     transaction_context=transaction_context
                 )
@@ -140,7 +146,8 @@ class TransactionManager(QuickManager):
                     currencies_thrid_party.append(split_currency)
 
                 provider_stack = Inventory.objects.get_provider_stack(
-                    item.inventory
+                    item.inventory,
+                    create_empty=True,
                 )
 
                 if (
@@ -502,6 +509,42 @@ class TransactionManager(QuickManager):
             TransactionTypes.REFUND
         )
 
+    def create_dark_purchase(
+        self,
+        offer,
+        buyer,
+        currency,
+        transaction_context=None,
+    ):
+        self.create_purchase(
+            offer,
+            buyer,
+            currency,
+            transaction_context,
+            dark_purchase=True
+        )
+
+    def create_transaction_transfer(
+        self,
+        transaction_collection,
+        new_owner
+    ):
+        transaction_collection_items = TransactionCollectionItem.objects.filter(
+            transaction_collection=transaction_collection
+        )
+        for t in transaction_collection_items:
+            for owner in [new_owner, t.transaction.owner]:
+                super(TransactionManager, self).create(
+                    owner=owner,
+                    transaction_type=TransactionTypes.TRANSACTION_TRANSFER,
+                    offer=t.transaction.offer,
+                    transaction_context=t.transaction.transaction_context
+                )
+            t.transaction.owner = new_owner
+            t.transaction.save()
+
+
+
     def create(
         self,
         **kwargs
@@ -782,3 +825,15 @@ class TransactionItem(QuickModel):
     inventory = QuickForeignKey(Inventory)
 
     objects = TransactionItemManager()
+
+
+class TransactionCollection(QuickModel):
+    objects = QuickManager()
+    neighborhood = QuickCharField(max_length=255, db_index=True)
+
+
+class TransactionCollectionItem(QuickModel):
+    transaction_collection = QuickForeignKey(TransactionCollection)
+    transaction = QuickForeignKey(Transaction)
+    page = QuickIntegerField()
+    objects = QuickManager()

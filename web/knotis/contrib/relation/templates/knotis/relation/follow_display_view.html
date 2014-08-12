@@ -1,0 +1,19 @@
+<div>
+    <div class="container-fluid mainContent">
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <h1>{{ relation_term }}</h1>
+            </div>
+        </div>
+        <div class="row">
+            {% for tile in tiles %}
+                {{ tile }}
+            {% endfor %}
+        </div>
+    </div>
+    {% if format == 'json' %}
+        {% for script in post_scripts %}
+            <script src="{{STATIC_URL}}{{script}}"></script>
+        {% endfor %}
+    {% endif %}
+</div>

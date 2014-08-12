@@ -1,25 +1,43 @@
-{% load render_template_fragment %}
 {% load thumbnail %}
-<div class="grid-tile small-tile identity-tile">
-  <input type="hidden" class="tile-user" value="{{ current_identity.id }}" />
-  <input type="hidden" class="tile-identity" value="{{ identity.id }}"/>
-  <div class="tile-header">
-    {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
-    <div class="tile-image" style="background-image: url('{{ image.url }}');">&nbsp;</div>
-    {% empty %}
-    <div class="tile-image" style="background-image: url('{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:'darkgrey' }}.png')" >&nbsp;</div>
-    {% endthumbnail %}
-    {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
-    <img class="tile-badge" src="{{ image.url }}" />
-    {% empty %}
-    <img class="tile-badge"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/profile_default.png" />
-    {% endthumbnail %}
-  </div>
-  <div class="tile-body">
-    <p class="tile-title">{{ identity.name }}</p>
-    {% render_fragment identity_tile_action %}
-  </div>
-  <div class="tile-footer">
-    {{ address }}
-  </div>
+{% load render_template_fragment %}
+
+<div class="col-lg-4 col-xs-12 offerItem identityTile">
+    <a class="tileLink" href="/id/{{ identity.id }}/">
+        <div class="busCover">
+            {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
+                <img class="tile-badge" src="{{ image.url }}" />
+            {% empty %}
+                <img class="tile-image defaultImg"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:'darkgrey' }}.png" />
+            {% endthumbnail %}
+            <div class="overlay"></div>
+        </div>
+    <div class="identityContent">
+        <div class="row">
+            <div class="col-lg-10 col-xs-10">
+                    {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
+                        <img class="busLogo" src="{{ image.url }}" alt="{{ identity.name }}"/>
+                    {% empty %}
+                    <span class="icon-knotis"></span><img class="tile-badge defaultImg busLogo" />
+                    {% endthumbnail %}
+            </div>
+            <div class="col-lg-1 col-xs-1">
+                <!--
+<div class="dropdown">
+<a data-toggle="dropdown" href=""><img class="iconMore" src="/assets/img/icon_more_offerItem.png"/></a>
+<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+<li><a href="">Extra Link</a></li>
+</ul>
+</div>
+-->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <h1>{{ identity.name }}</h1>
+                    {{ action_button }}
+                <p class="location"> {{ address }} </p>
+            </div>
+        </div>
+    </div>
+</a>
 </div>
