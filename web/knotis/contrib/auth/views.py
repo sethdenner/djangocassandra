@@ -17,6 +17,9 @@ from django.http import (
     HttpResponseNotFound,
     HttpResponseRedirect
 )
+
+from knotis.utils.regex import REGEX_UUID
+
 from knotis.utils.email import (
     generate_email,
     generate_validation_key
@@ -37,7 +40,7 @@ from knotis.contrib.identity.models import (
 from knotis.contrib.layout.views import DefaultBaseView
 
 from knotis.views import (
-    FragmentView,
+    EmbeddedView,
     ModalView
 )
 
@@ -228,25 +231,55 @@ class SignUpSuccessView(ModalView):
     view_name = 'sign_up_success'
     default_parent_view_class = DefaultBaseView
 
-
-class ForgotPasswordView(FragmentView):
-    template_name = 'knotis/auth/forgot.html'
-    view_name = 'forgot_password'
-
     def process_context(self):
         return self.context.update({
-            'forgot_form': ForgotPasswordForm()
+            'modal_id': 'auth-modal'
         })
 
 
-class ForgotPasswordSuccessView(FragmentView):
+class ForgotPasswordView(ModalView):
+    url_patterns = [r'^auth/forgot/$']
+    template_name = 'knotis/auth/forgot.html'
+    view_name = 'forgot_password'
+    default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/auth/js/forgot.js'
+    ]
+
+    def process_context(self):
+        return self.context.update({
+            'forgot_form': ForgotPasswordForm(),
+            'modal_id': 'auth-modal'
+        })
+
+
+class ForgotPasswordSuccessView(ModalView):
+    url_patterns = [r'auth/forgot/success/$']
     template_name = 'knotis/auth/forgot_success.html'
     view_name = 'forgot_password_success'
+    default_parent_view_class = DefaultBaseView
+
+    def process_context(self):
+        return self.context.update({
+            'modal_id': 'auth-modal'
+        })
 
 
-class ResetPasswordView(FragmentView):
+class ResetPasswordView(EmbeddedView):
+    url_patterns = [r''.join([
+        '^auth/reset/(?P<user_id>',
+        REGEX_UUID,
+        ')/(?P<password_reset_key>',
+        REGEX_UUID,
+        ')/$'
+    ])]
+    post_scripts = [
+        'knotis/auth/js/reset.js'
+    ]
+
     template_name = 'knotis/auth/reset.html'
     view_name = 'reset_password'
+    default_parent_view_class = DefaultBaseView
 
     def get(
         self,
@@ -340,6 +373,39 @@ class ResetPasswordView(FragmentView):
             if user.is_active:
                 django_login(request, user)
 
+                try:
+                    user_information = UserInformation.objects.get(user=user)
+                    if not user_information.default_identity_id:
+                        identity = IdentityIndividual.objects.get_individual(
+                            user
+                        )
+                        user_information.default_identity_id = identity.id
+                        user_information.save()
+
+                    else:
+                        identity = Identity.objects.get(
+                            pk=user_information.default_identity_id
+                        )
+
+                    if IdentityTypes.BUSINESS == identity.identity_type:
+                        establishments = (
+                            IdentityEstablishment.objects.get_establishments(
+                                identity
+                            )
+                        )
+                        identity = establishments[0]
+
+                        user_information.default_identity_id = identity.id
+                        user_information.save()
+
+                except Exception, e:
+                    logout(request)
+                    logger.exception(e.message)
+                    errors['no-field'] = e.message
+                    return self.render_to_response(errors=errors)
+
+                request.session['current_identity'] = identity.id
+
             else:
                 errors['no-field'] = (
                     'Could not authenticate user. ',
@@ -385,35 +451,10 @@ class ResetPasswordView(FragmentView):
             reset.delete()
             reset = None
 
-        styles = self.context.get('styles', [])
-        post_scripts = self.context.get('post_scripts', [])
-
-        my_styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css'
-        ]
-
-        for style in my_styles:
-            if not style in styles:
-                styles.append(style)
-
-        my_post_scripts = [
-            'knotis/layout/js/layout.js',
-            'knotis/layout/js/forms.js',
-            'knotis/layout/js/header.js',
-            'knotis/auth/js/reset.js'
-        ]
-
-        for script in my_post_scripts:
-            if not script in post_scripts:
-                post_scripts.append(script)
-
         request = self.context.get('request')
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'styles': styles,
-            'post_scripts': post_scripts,
             'reset_form': ResetPasswordForm(
                 user,
                 request=request,
