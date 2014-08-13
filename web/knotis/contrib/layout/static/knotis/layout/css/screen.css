@@ -429,13 +429,11 @@ nav button.signUp {
 }
 
 .modal-title {
+    font-size: 35px;
+    color: #7A7A7A;
     text-align: center;
-    font-size: 40px;
-    padding-top: 25px;
-    height: 70px;
+    margin: 0;
     font-family: 'LatoLight', sans-serif;
-    color: rgb(121, 121, 121);
-    margin: -15px 25px 15px;
 }
 
 /* line 1, ../sass/_subNav.scss */
