@@ -1008,17 +1008,23 @@ offerSteps ul {
 }
 
 #offer-modal a {
-    color: #2cc397;
+    position: absolute;
+    left: 0;
+    width: 50%;
+    bottom: 0;
+    color: white;
     border: 2px solid #2cc397;
-    padding: 10px 25px;
+    padding: 15px 0;
     margin: 0 6px 0 0;
     outline: 0;
-    border-radius: 3px;
+    border-radius: 0;
+    background: #2cc397;
+    transition: all 0.1s ease;
 }
 
 #offer-modal a:hover {
-    color: white;
-    background: #2cc397;
+    color: #2cc397;
+    background: transparent;
     border: 2px solid #2cc397;
 }
 
@@ -1405,6 +1411,7 @@ offerSteps ul {
 .offerDetails {
     padding: 10px;
     height: 400px;
+    overflow-y: auto;
 }
 /* line 93, ../sass/_modals.scss */
 .offerDetails h1 {
@@ -1451,6 +1458,13 @@ offerSteps ul {
 
 .offerHero {
     background: rgb(85, 85, 85);
+    overflow-y: auto;
+}
+
+.offerHero .overlay {
+    background: -webkit-gradient(linear, left top, right bottom, from(rgba(204, 204, 204, 0)), to(rgba(0, 0, 0, 0.3)));
+    left: 0;
+    height: 100%;
 }
 
 /* line 128, ../sass/_modals.scss */
@@ -2202,7 +2216,7 @@ a.adminLink {
 .imageUpload .btnCancel {
     width: 100%;
     position: relative;
-    top: -50px;
+    top: -10px;
     color: #c0c0c0;
 }
 
@@ -2267,7 +2281,7 @@ a.adminLink {
 }
 
 .createBusiness input {
-    font-size: 19px;
+    font-size: 17px;
     padding: 15px;
     border-radius: 2px;
     border: 1px solid #DADADA;
@@ -2412,4 +2426,12 @@ section.welcomeModal h1 {
 
 .btn-primary {
     background: #2cc397;
+}
+
+#first-id {
+    top: 25%;
+}
+
+.galleryInput {
+    height: 13px;
 }
