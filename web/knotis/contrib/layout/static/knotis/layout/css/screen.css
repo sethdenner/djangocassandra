@@ -62,6 +62,10 @@ a img {
     border: none;
 }
 
+.btn:hover, .btn:focus {
+    outline: 0;
+}
+
 /* line 116, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
     display: block;
