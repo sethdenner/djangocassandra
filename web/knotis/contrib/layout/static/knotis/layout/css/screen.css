@@ -432,7 +432,7 @@ nav button.signUp {
     font-size: 35px;
     color: #7A7A7A;
     text-align: center;
-    margin: 0;
+    margin: 0 30px;
     font-family: 'LatoLight', sans-serif;
 }
 
@@ -708,23 +708,53 @@ nav button.signUp {
     color: #989fac;
     line-height: 28px;
     position: absolute;
-    top: 180px;
+    top: 130px;
     width: 100%;
 }
+
+.identityContent {
+    top: 210px;
+}
+
 /* line 47, ../sass/_offerItem.scss */
 .offerContent h1, .identityContent h1, .transactionContent h1 {
     font-size: 22px;
     color: #919191;
     font-family: "LatoLight", sans-serif;
-    width: 100%;
+    width: 95%;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    position: absolute;
+    top: -60px;
 }
+
+.offerContent h1 {
+    top: 0;
+}
+
+.identityContent h1 {
+    top: -60px;
+}
+
 /* line 56, ../sass/_offerItem.scss */
 .offerContent a, .identityContent a, .transactionContent a {
-    color: #989fac;
+    color: #2cc397;
+    position: absolute;
+    top: 116px;
+    left: 12px;
+    width: 90%;
+    margin: 0 auto;
+    display: inline-block;
+}
+
+.offerContent a {
+    top: 115px;
+}
+
+.identityContent a {
+    top: 30px;
 }
 
 /* line 61, ../sass/_offerItem.scss */
@@ -1881,7 +1911,7 @@ span.help-inline {
 
 .change-profile-cover-link {
     position: absolute;
-    color: white;
+    color: #e3e3e3;
     padding: 12px 14px;
     right: 0;
     margin: 16px;
@@ -1893,6 +1923,12 @@ span.help-inline {
     z-index: 1;
     background: rgba(0, 0, 0, 0.23);
 }
+
+.change-profile-cover-link:hover {
+    color: white;
+}
+
+
 
 .profileBusiness .subNav {
     position: absolute;
@@ -1932,7 +1968,7 @@ span.help-inline {
 
 .identityContent .tileLink {
     position: relative;
-    top: -50px;
+    top: -25px;
 }
 
 .line-clamp {
@@ -2171,7 +2207,7 @@ a.adminLink {
 .upload-photo {
     padding: 15px;
     border-radius: 3px;
-    border: 2px solid #2cc397;
+    border: 1px solid #2cc397;
     background: transparent;
     color: #2cc397;
     position: absolute;
