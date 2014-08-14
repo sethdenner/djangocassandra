@@ -13,11 +13,13 @@
     <div class="offerContent">
         <div class="row">
             <div class="col-lg-10 col-xs-10">
-                {% thumbnail business_badge_image.image.image '80x80' crop=business_badge_image.crop as image %}
-                <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
-                {% empty %}
-                <img class="busLogo" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
-                {% endthumbnail %}
+                <a href="/id/{{ offer.owner.pk }}/">
+                    {% thumbnail business_badge_image.image.image '80x80' crop=business_badge_image.crop as image %}
+                    <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
+                    {% empty %}
+                    <img class="busLogo" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
+                    {% endthumbnail %}
+                </a>
             </div>
         </div>
 
