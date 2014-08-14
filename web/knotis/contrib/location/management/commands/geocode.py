@@ -1,9 +1,8 @@
 from django.core.management.base import (
     BaseCommand,
-    CommandError
 )
 
-from knotis.contrib.location.models import Location, LocationItem
+from knotis.contrib.location.models import Location
 
 import logging
 logger = logging.getLogger(__name__)
