@@ -15,8 +15,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for location in Location.objects.all():
             if location.address and None in (
-                    getattr(location, 'latitude'),
-                    getattr(location, 'longitude')
+                    location.latitude,
+                    location.longitude
             ):
                 try:
                     location.update_geocode()
