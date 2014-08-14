@@ -10,20 +10,13 @@ from knotis.utils.regex import REGEX_UUID
 from .views import (
     EstablishmentsView,
     EstablishmentsGrid,
-    EstablishmentProfileView,
     IdentitySwitcherView,
     FirstIdentityView,
-    EstablishmentAboutDetails,
-    CreateBusinessView
 )
 
 
 urlpatterns = patterns(
     'knotis.contrib.identity.views',
-    url(
-        r'^identity/update_profile/',
-        EstablishmentAboutDetails.as_view()
-    ),
     url(
         r'^businesses/grid/(?P<page>\d+)/(?P<count>\d+)/$',
         EstablishmentsGrid.as_view()
@@ -49,14 +42,8 @@ urlpatterns = patterns(
         r'^identity/first/$',
         FirstIdentityView.as_view()
     ),
-    url(
-        r'^merchants/(?P<backend_name>[^/]+)/$',
-        EstablishmentProfileView.as_view()
-    )
 )
 
 urlpatterns += EstablishmentsView.urls()
-urlpatterns += EstablishmentProfileView.urls()
 urlpatterns += IdentitySwitcherView.urls()
 urlpatterns += FirstIdentityView.urls()
-urlpatterns += CreateBusinessView.urls()

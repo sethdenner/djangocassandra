@@ -1,75 +1,81 @@
-
 {% extends 'knotis/layout/master_email.html' %}
 {% load render_template_fragment %}
+{% load thumbnail %}
+
 {% block browser_link %}{{ browser_link }}{% endblock browser_link %}
 
-{% if email_type == 'html' %}
 {% block subject %}{% endblock subject %}
 
 
-{% block additional_css %}
+{% block additional_css %}{% if email_type == 'html' %}
 div.center {
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
+width: 100%;
+padding: 0;
+margin: 0;
+overflow: hidden;
 }
 
 h1 {
- 
+
 }
 
 h3 {
-  position: relative;
-  color: teal;
-  top: -130px;
+position: relative;
+color: teal;
+top: -130px;
 }
 
 div.img-wrapper {
-  position: relative;
-  top: -130px;
+position: relative;
+top: -130px;
 }
 
 div.cover {
-  min-height: 270px;
+min-height: 270px;
 }
 
 img.logo {
-  width: 170px;
-  height: 170px;
-  vertical-align: middle;
-  border: 0;
-  -webkit-border-radius: 500px;
-  -mox-border-radius: 500px;
-  border-radius: 500px;
+width: 170px;
+height: 170px;
+vertical-align: middle;
+border: 0;
+-webkit-border-radius: 500px;
+-mox-border-radius: 500px;
+border-radius: 500px;
 }
 
 a.button {
-  position: relative;
-  top: -130px;
+position: relative;
+top: -130px;
 }
-{% endblock additional_css %}
+{% endif %}{% endblock additional_css %}
 
-{% block content %}
-<h1>{{ product_title }}</h1>
+{% block content %}{% if email_type == 'html' %}
+<h1>{{ offer.title }}</h1>
 
-<div class="cover center" style="background: url('{{ product_img_url }}');"></div>
+{% thumbnail offer.banner_image.image.image '500' crop=offer.banner_image.crop as image %}
+<div class="cover center" style="background: url('{{ settings.MEDIA_URL_ABSOLUTE }}{{ image.url }}');"></div>
+{% empty %}
+<div class="cover center" style="background: url('{{ settings.STATIC_URL_ABSOLUTE }}knotis/img/default-offer-image.png/');"></div>
+{% endthumbnail %}
 <div class="img-wrapper">
-  <img class="logo" src="{{ business_logo_url }}" />
+    {% thumbnail offer.badge_image.image.image '170x170' crop=offer.badge_image.crop as image %}
+    <img class="logo" src="{{ image.url }}" />
+    {% empty %}
+    <img class="logo" src="{{ settings.STATIC_URL_ABSOLUTE }}knotis/img/default-business-badge.png" />
+    {% endthumbnail %}
 </div>
 
-<h3>{{ price }}</h3>
+<h3>{{ offer.price_discount }}</h3>
 <br />
-<a class="button" href="{{ purchase_link }}">Purchase</a>
+<a class="button" href="{{ settings.BASE_URL }}/offer/{{ offer.pk }}/buy/">Purchase</a>
 <br />
 <br />
 <br />
-{% endblock content %}
-{% endif %}
-{% if email_type == 'text' %}
-{% block text_content %}
-{{ business_name }} just added {{ product_name }} to their offerings. 
+{% endif %}{% endblock content %}
+
+{% block text_content %}{% if email_type == 'text' %}
+{{ offer.owner.name }} just added {{ offer.title }} to their offerings. 
 Follow the url below to purchase it:
-{{ purchase_link }}
-{% endblock text_content %}
-{% endif %}
+{{ settings.BASE_URL }}/offer/{{ offer.pk }}/buy/
+{% endif %}{% endblock text_content %}

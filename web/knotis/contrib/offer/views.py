@@ -15,8 +15,9 @@ from knotis.utils.regex import REGEX_UUID
 
 from knotis.contrib.offer.models import (
     Offer,
-    OfferItem,
+    OfferItem
 )
+
 from knotis.contrib.product.models import (
     Product,
     CurrencyCodes
@@ -30,6 +31,7 @@ from knotis.contrib.identity.models import (
     IdentityTypes
 )
 from knotis.contrib.identity.views import get_identity_profile_badge
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 
 from knotis.contrib.paypal.views import IPNCallbackView
 
@@ -43,8 +45,7 @@ from knotis.views import (
     EmbeddedView,
     ModalView,
     AJAXFragmentView,
-    FragmentView,
-    EmailView
+    FragmentView
 )
 
 from knotis.contrib.layout.views import (
@@ -178,8 +179,6 @@ class OffersGridView(GridSmallView):
                 'failed to get offers.'
             ]))
 
-
-
         tiles = []
         for offer in offers:
             tile = OfferTile()
@@ -223,7 +222,7 @@ class OfferPurchaseSuccessView(ModalView):
     ]
 
 
-class OfferPurchaseView(EmbeddedView):
+class OfferPurchaseView(EmbeddedView, GetCurrentIdentityMixin):
     template_name = 'knotis/offer/offer_purchase_view.html'
     url_patterns = [
         r''.join([
@@ -240,6 +239,10 @@ class OfferPurchaseView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
 
     def process_context(self):
+        current_identity = self.get_current_identity(self.request)
+        if IdentityTypes.INDIVIDUAL != current_identity.identity_type:
+            raise Exception('Only individuals can purchase offers')
+
         request = self.context.get('request')
 
         offer_id = self.context.get('offer_id')
@@ -361,11 +364,18 @@ class OfferDetailView(ModalView):
                 offer_items = None
 
         try:
-            business_badge_image = ImageInstance.objects.get(
-                related_object_id=offer.owner_id,
-                context='profile_badge',
+            offer_banner_image = ImageInstance.objects.get(
+                related_object_id=offer.id,
+                context='offer_banner',
                 primary=True
             )
+
+        except:
+            logger.exception('failed to get offer banner image')
+            offer_banner_image = None
+
+        try:
+            business_badge_image = get_identity_profile_badge(offer.owner)
 
         except:
             logger.exception('failed to get business badge image')
@@ -385,33 +395,8 @@ class OfferDetailView(ModalView):
             'IdentityTypes': IdentityTypes,
             'offer': offer,
             'offer_items': offer_items,
-            'business_badge_image': business_badge_image
-        })
-
-        return local_context
-
-
-class NewOfferEmailBody(EmailView):
-    template_name = 'knotis/offer/email_new_offer.html'
-    text_template_name = 'knotis/offer/email_new_offer.txt'
-
-    def process_context(self):
-        local_context = copy.copy(self.context)
-
-        browser_link = 'example.com'
-        product_title = 'Grilled Cheese Sandwich'
-        product_img_url = '/media/cache/ef/25/ef2517885c028d7545f13f79e5b7993a.jpg'
-        business_logo_url = '/media/cache/87/08/87087ae77f4a298e550fc9d255513ad4.jpg'
-        purchase_link = 'example.com'
-        price = "$20.00"
-
-        local_context.update({
-            'browser_link': browser_link,
-            'product_title': product_title,
-            'product_img_url': product_img_url,
-            'business_logo_url': business_logo_url,
-            'purchase_link': purchase_link,
-            'price': price
+            'business_badge_image': business_badge_image,
+            'offer_banner_image': offer_banner_image
         })
 
         return local_context

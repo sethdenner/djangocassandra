@@ -11,18 +11,23 @@
 
             <ul>
                 <li><span>Expires:</span> {{ offer.end_time }}</li>
-                <li><span>{{ offer.savings_percent }}</span> Savings</li>
+                <li><span>{{ offer.savings_percent}}%</span> Savings</li>
                 <li><span>{{ offer.purchased }}</span> Purchased</li>
-
+                {% if IdentityTypes.INDIVIDUAL == current_identity.identity_type %}
                 <a class="btn modal-link no-deep" href="/offer/{{ offer.pk}}/buy/">Purchase Offer</a>
+                {% endif %}
             </ul>
         </div>
+        {% thumbnail offer_banner_image.image.image '339x400' crop=offer_banner_image.crop as image %}
+        <div class="col-lg-6 col-xs-12 offerHero" style="background-image: url('{{ image.url }}');background-size: cover;">
+        {% empty %}
+        <div class="col-lg-6 col-xs-12 offerHero" style="background-image: url('{{ STATIC_URL }}knotis/img/default-offer-banner.png');background-size: cover;">
+        {% endthumbnail %}
 
-        <div class="col-lg-6 col-xs-12 offerHero">
             {% thumbnail business_badge_image.image.image '72x72' crop=business_badge_image.crop as image %}
             <img src="{{ image.url }}" />
             {% empty %}
-            <img class="profile-badge" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
+            <img class="profile-badge" src="{{ STATIC_URL }}/knotis/offer/img/default-offer-badge.png" />
             {% endthumbnail %}
             <h1>{{ offer.price_discount_formatted }}</h1>
             <h2>{{ offer.owner.name }}</h2>

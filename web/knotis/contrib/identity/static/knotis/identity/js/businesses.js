@@ -30,9 +30,10 @@
                         count,
                         ''
                     ].join('/');
-                $.get(
-                    fetch_url,
-                    function(data, status, request) {
+                $.ajax({
+                    url: fetch_url,
+                    global: false,
+                    success: function(data, status, request) {
                         data = data.replace(/(\r\n|\n|\r)/gm,"");
                         if (!data) {
                             results_left = false;
@@ -63,7 +64,7 @@
                         fetching_results = false;
                         $.identity.initialize_business_tiles();
                     }
-                );
+                });
             }
         });
     });

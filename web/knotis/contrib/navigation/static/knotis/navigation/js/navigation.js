@@ -59,7 +59,7 @@
     };
 
     var initialize_address = function (force) {
-        $('a:not(.no-deep)').off('click.address').on(
+        $('a:not(.no-deep):not([target="_blank"]').off('click.address').on(
             'click.address',
             function (event) {
                 event.preventDefault();
@@ -118,11 +118,11 @@
                 data: 'format=json',
                 complete: function (request, status) {
                     var data = $.parseJSON(request.responseText);
-                    if (data.errors || status === 'error') {
+                    if (status === 'error') {
                         alert([
                             'There was an error processing your request.',
                             '\n    status: ',
-                            status,,
+                            status,
                             '\n    response: ',
                             request.responseText
                         ].join(''));

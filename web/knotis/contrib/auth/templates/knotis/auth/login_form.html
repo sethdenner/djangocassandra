@@ -5,12 +5,12 @@
             <input id="auth_password" name="{{ form.password.html_name }}" type="password" class="password" placeholder="Your Password"/>
         </div>
 
-        <p class="forgotLink"><a href="">Forgot Password?</a></p>
+        <p class="forgotLink"><a href="/auth/forgot/">Forgot Password?</a></p>
 
         <div class="authButtons">
-            <a href="/signup/" class="authBtn modal-link" data-modal-id="auth-modal" >Sign Up</a>
+            <a href="/signup/" class="authBtn modal-link" data-modal-id="adminModal">Sign Up</a>
             <input name="login" type="submit" class="authBtn login" value="Log In" />
         </div>
-        <p class="tos-text">I agree to the <a href="#">Terms Of Service</a></p>
+        <p class="tos-text">I agree to the <a target="_blank" href="/terms-and-conditions/">Terms Of Service</a></p>
     </div> 
 </form>

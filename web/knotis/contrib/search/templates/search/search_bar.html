@@ -1,9 +1,9 @@
 <div class="search">
-    <form action="/search/" method="get">
+    <form name="q" action="/search/" method="get">
         {% if search_query %}
-            <input type="/search" name="q" value="{{search_query}}">
+            <input type="/search" name="q" placeholder="SEARCH">
         {% else %}
-            <input type="/search" name="q" placeholder="Search">
+            <input type="/search" name="q" placeholder="SEARCH">
         {% endif %}
     </form>
 </div>

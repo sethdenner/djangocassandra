@@ -33,7 +33,7 @@
 
   {% block content %}
   <h1>You sold something to {{ customer_name }}</h1>
-  
+
   <div class="cover center" style="background: url('{{ business_cover_url }}'); max-width: 500px; text-align: center;">
     <center>
       <img class="logo" src="{{ business_logo_url }}" />
@@ -60,7 +60,7 @@
     {% thumbnail offer_image.image.image '240x240' crop=offer_image.crop as image %}
     <img src="{{ image.url }}"><br />
     {% endthumbnail %}
-    <a href="{{ BASE_URL }}/offers/{{ transaction.offer.pk }}/">{{ transaction.offer.title }}</a><br />
+    <a href="{{ offer_link }}/">{{ transaction.offer.title }}</a><br />
     <br />
     Shop: <a href="{{ business_url }}">@{{ business_name }}</a><br />
     Transaction ID: {{ transaction_id }}<br />
@@ -79,24 +79,24 @@
 
   {% endblock content %}
   {% endif %}
-  
+
   {% if email_type == 'text' %}
   {% block text_content %}
 Here's your receipt from {{ business_name }}
 To view this email in a browser click {{ browser_link }} .
-  
+
 Hi {{ transaction.owner.name }}!
 Congratulations on your sale to {{ customer_name }}.
 The redemption code for this transaction is {{ redemption_code }}.
-  
+
 -----------------------------------------------------------
- 
+
 Order Details:
-  
-Payment Method: 
+
+Payment Method:
 {{ payment_method }}
 
-Paid on: 
+Paid on:
 {{ payment_date }}
 
 Product Name: {{ product_name }}

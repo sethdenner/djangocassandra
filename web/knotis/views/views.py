@@ -458,9 +458,12 @@ class ModalView(EmbeddedView):
     def render_to_response(
         self,
         context=None,
-        data={},
+        data=None,
         **response_kwargs
     ):
+        if None is data:
+            data = {}
+
         data['modal'] = True
 
         return super(ModalView, self).render_to_response(

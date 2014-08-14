@@ -4,34 +4,41 @@
 (function ($) {
     "use strict";
 
-    var hideOverlay = function () {
-        $('.sidebar-overlay').fadeOut('fast');
-        $('.sidebar-label').fadeOut('fast');
-        $( "#sidebar-wrapper" ).animate({
-            width: "70px",
-        },  100, "linear");
-    };
-    $('html').click(hideOverlay);
-
-    $( ".sideBar" ).hover(function () {
-        $( "#sidebar-wrapper" ).animate({
+    $( "#sidebar-wrapper").hover(function () {
+        $( "#sidebar-wrapper").animate({
             width: "250px",
-        },  100, "linear");
+        },  20, "linear");
 
         $('.sidebar-label').fadeIn('fast');
         $('.sidebar-overlay').fadeIn('fast');
     }, function () {
-        //
+        $( "#sidebar-wrapper" ).animate({
+            width: "70px",
+        },  20, "linear");
+        $('.sidebar-overlay').fadeOut(10);
     });
 
-    $('.sidebar-nav li').each(function (){
+    $('.sidebar-nav li').each(function () {
         $(this).hover(function (){
-            $(this).find('.circle').css('background', '#303030');
-        }, function (){
-            $(this).find('.circle').css('background', '#595959');
+            $(this).css('background', '#3b3b3b');
+            $(this).find('.sidebar-label').css('color', '#ffffff');
+        }, function(){
+            $(this).css('background', '');
+            $(this).find('.sidebar-label').css('color', '');
         });
 
+        $(this).click(function() {
+
+            $(this).css('background', '');
+            $(this).find('.sidebar-label').css('color', '');
+
+            $('.sidebar-nav li').each(function () {
+                $(this).removeClass('sidebar-li-selected');
+                $(this).find('.sidebar-label').removeClass('sidebar-label-selected');
+            });
+            $(this).addClass('sidebar-li-selected');
+            $(this).find('.sidebar-label').addClass('sidebar-label-selected');
+        });
     });
 
 })(jQuery);
-

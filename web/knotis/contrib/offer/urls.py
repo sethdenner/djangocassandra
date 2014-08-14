@@ -5,22 +5,24 @@ from django.conf.urls.defaults import (
     url
 )
 
-from views import (
+from .views import (
     OffersView,
     OfferDetailView,
     OfferPurchaseView,
     OffersGridView,
     OfferPurchaseSuccessView,
-    OfferPurchaseButton,
-    NewOfferEmailBody
+    OfferPurchaseButton
 )
 
+from .emails import (
+    NewOfferEmailView
+)
 
 urlpatterns = patterns(
     'knotis.contrib.offer.views',
     url(
         r'^newoffer$',
-        NewOfferEmailBody.as_view()
+        NewOfferEmailView.as_view()
     ),
     url(
         r'/purchase/$',

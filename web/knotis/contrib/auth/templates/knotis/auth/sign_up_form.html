@@ -1,5 +1,5 @@
 <div class="singleAuth">
-    <form id="id-signup-form" action="/signup/" method="POST">
+    <form id="id-signup-form" action="/signup/" method="POST">{% csrf_token %}
         <div class="authInputs">
             <input id="auth_username" name="{{ form.email.html_name }}" maxlength="254" type="email" placeholder="Your E-mail" value="{{ form.email.value|default_if_none:'' }}"> 
             <input id="auth_password" type="password" name="{{ form.password.html_name }}" class="password" placeholder="Your Password" > 
@@ -10,5 +10,5 @@
             <a href="/login/" class="authBtn login modal-link" data-modal-id="auth-modal" >Log In</a>
         </div>
     </form>
-    <p class="tos-text">I agree to the <a href="">Terms Of Service</a></p>
+    <p class="tos-text">I agree to the <a target="_blank" href="/terms-and-conditions/">Terms Of Service</a></p>
 </div>                  

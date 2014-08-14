@@ -8,7 +8,14 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from django.conf import settings
+from django.http import HttpRequest
+
 from django.db.models.fields import Field as ModelField
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from django.template import Context
 
 from knotis.contrib.quick.models import (
     QuickModel,
@@ -33,13 +40,17 @@ from knotis.contrib.identity.models import (
     IdentityEstablishment,
     IdentityTypes
 )
+from knotis.contrib.relation.models import Relation
 from knotis.contrib.inventory.models import Inventory
 from knotis.contrib.endpoint.models import (
+    Endpoint,
     EndpointTypes,
     Credentials,
     Publish
 )
 from knotis.contrib.location.models import LocationItem
+
+from .emails import NewOfferEmailView
 
 
 class OfferStatus:  # REMOVE ME WHEN LEGACY CODE IS REMOVED FROM THE CODE BASE
@@ -360,7 +371,7 @@ class Offer(QuickModel):
         self.last_purchase = datetime.datetime.utcnow()
         self.save()
 
-        if self.purchased >= self.stock:
+        if not self.unlimited and self.purchased >= self.stock:
             self.complete()
 
     def update(
@@ -402,6 +413,13 @@ class Offer(QuickModel):
         return self
 
     def complete(self):
+        availability = OfferAvailability.objects.filter(
+            offer=self
+        )
+        for a in availability:
+            a.available = False
+            a.save()
+
         self.completed = True
         self.save()
 
@@ -654,13 +672,14 @@ class OfferAvailabilityManager(QuickManager):
         self,
         offer
     ):
-        offers = self.objects.filter(offer=offer)
+        offers = self.filter(offer=offer)
         for o in offers:
             o.title = offer.title
             o.stock = offer.stock
             o.purchased = offer.purchased
             o.default_image = offer.default_image
             o.end_time = offer.end_time
+            o.available = offer.available()
             o.save()
 
         return offers
@@ -669,15 +688,22 @@ class OfferAvailabilityManager(QuickManager):
         self,
         identity
     ):
-        offers = self.objects.filter(identity=identity)
-        identity_profile_badge = ImageInstance.objects.get(
-            related_object_id=identity.id,
-            context='profile_badge',
-            primary=True
-        )
-        for o in offers:
-            o.profile_badge = identity_profile_badge
-            o.save()
+        offers = self.filter(identity=identity)
+        try:
+            identity_profile_badge = ImageInstance.objects.get(
+                related_object_id=identity.id,
+                context='profile_badge',
+                primary=True
+            )
+            for o in offers:
+                o.profile_badge = identity_profile_badge
+                o.save()
+
+        except ImageInstance.DoesNotExist:
+            pass
+
+        except Exception, e:
+            logger.exception(e.message)
 
         return offers
 
@@ -734,6 +760,30 @@ class OfferAvailability(QuickModel):
     )
 
     objects = OfferAvailabilityManager()
+
+    @staticmethod
+    @receiver(post_save, sender=Offer)
+    def offer_post_save(
+        sender,
+        instance=None,
+        **kwargs
+    ):
+        if None is instance or not instance.pk:
+            return
+
+        OfferAvailability.objects.update_denormalized_offer_fields(instance)
+
+    @staticmethod
+    @receiver(post_save, sender=Identity)
+    def identity_post_save(
+        sender,
+        instance=None,
+        **kwargs
+    ):
+        if None is instance or not instance.pk:
+            return
+
+        OfferAvailability.objects.update_denormalized_identity_fields(instance)
 
 
 class OfferPublish(Publish):
@@ -854,6 +904,44 @@ class OfferPublish(Publish):
             self.completed = True
             self.save()
 
+    def _publish_followers(self):
+        followers = Relation.objects.get_followers(self.endpoint.identity)
+        email_subject = ''.join([
+            'New Offer From ',
+            self.endpoint.identity.name,
+            ' On Knotis.com'
+        ])
+
+        for f in [follower.subject for follower in followers]:
+            try:
+                follower_email = Endpoint.objects.get(
+                    identity=f,
+                    primary=True,
+                    endpoint_type=EndpointTypes.EMAIL,
+                )
+
+                offer = self.subject
+
+                context = Context({
+                    'offer': offer,
+                    'settings': settings
+                })
+
+                message = NewOfferEmailView().generate_email(
+                    email_subject,
+                    settings.EMAIL_HOST_USER,
+                    [follower_email.value],
+                    context
+                )
+                message.send()
+
+            except Exception, e:
+                logger.exception(e.message)
+                continue
+
+        self.completed = True
+        self.save()
+
     def publish(self):
         if self.endpoint.endpoint_type == EndpointTypes.IDENTITY:
             if (
@@ -883,6 +971,9 @@ class OfferPublish(Publish):
 
         elif self.endpoint.endpoint_type == EndpointTypes.TWITTER:
             self._publish_twitter()
+
+        elif self.endpoint.endpoint_type == EndpointTypes.FOLLOWERS:
+            self._publish_followers()
 
         else:
             raise NotImplementedError(''.join([

@@ -17,7 +17,8 @@
     });
 
     $('input#id-physical-product-input').click(function(event) {
-        $('div.control-group.physical').show('fast');
+ 
+        $('div.control-group.physical').removeClass('hide');
 
         $('input[name="credit_price"], input[name="credit_value"]').prop(
             'disabled',
@@ -43,7 +44,7 @@
     });
 
     $('input#id-credit-product-input').click(function(event) {
-        $('div.control-group.physical').hide('fast');
+        $('div.control-group.physical').addClass('hide');
 
         $('input[name="credit_price"], input[name="credit_value"]').prop(
             'disabled',

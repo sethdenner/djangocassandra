@@ -2,6 +2,7 @@ from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField
 )
+from rest_framework.pagination import PaginationSerializer
 
 from knotis.contrib.stripe.api import StripeApi
 from knotis.contrib.transaction.api import PurchaseMode
@@ -122,6 +123,11 @@ class EstablishmentSerializer(IdentitySerializer):
             'banner_image',
             'location'
         )
+
+
+class PaginatedEstablishmentSerializer(PaginationSerializer):
+    class Meta:
+        object_serializer_class = EstablishmentSerializer
 
 
 class BusinessSerializer(IdentitySerializer):

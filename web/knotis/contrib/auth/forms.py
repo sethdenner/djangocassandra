@@ -101,7 +101,6 @@ class LoginForm(TemplateFormMixin, AuthenticationForm):
 class ResetPasswordForm(TemplateFormMixin, SetPasswordForm):
     template_name = 'knotis/auth/reset_form.html'
 
-
 class CreateUserForm(TemplateModelForm):
     template_name = 'knotis/auth/sign_up_form.html'
 
@@ -231,6 +230,11 @@ class CreateSuperUserForm(CreateUserForm):
         )
 
 
+class AdminCreateUserForm(CreateUserForm):
+    template_name = 'knotis/auth/user_create_form.html'
+
+
+
 class ForgotPasswordForm(TemplateForm):
     template_name = 'knotis/auth/forgot_form.html'
 
@@ -324,28 +328,5 @@ class ForgotPasswordForm(TemplateForm):
             logger.exception('failed to initiate password reset')
             return False
 
-class UserAdminQueryForm(TemplateForm):
-    template_name = 'knotis/auth/user_admin_form.html'
 
-    range_start = IntegerField(
-        label='Start',
-        required = True,
-        initial = 1,
-    )
-    range_end = IntegerField(
-        label='Stop',
-        required = True,
-        initial = 20,
-    )
-    range_step = IntegerField(
-        label='Step',
-        required = True,
-        initial = 20,
-    )
-    user_filter = CharField(
-        label='Filter',
-        max_length = 254,
-        required = True,
-        initial = '',
-    )
 

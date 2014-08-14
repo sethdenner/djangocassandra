@@ -111,6 +111,10 @@ a:hover {
     text-decoration: none;
 }
 
+a:focus {
+    outline: 0;
+}
+
 /* line 18, ../sass/_custom.scss */
 .mainContent {
     max-width: 100%;
@@ -441,19 +445,6 @@ nav button.signUp {
     color: white;
 }
 
-/* line 39, ../sass/_sideBar.scss */
-.sidebar-nav li a:hover {
-    color: white;
-}
-
-/* line 43, ../sass/_sideBar.scss */
-.sidebar-nav li:hover {
-    color: #fff;
-    background: #595959;
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-
 /* line 50, ../sass/_sideBar.scss */
 .sidebar-label {
     display: none;
@@ -463,6 +454,15 @@ nav button.signUp {
     text-transform: uppercase;
     letter-spacing: 2px;
     font-size: 12px;
+    color: #3b3b3b;
+}
+
+.sidebar-label-selected {
+    color: white;
+}
+
+.sidebar-li-selected {
+    background: #2cc397;
 }
 
 /* line 60, ../sass/_sideBar.scss */
@@ -505,7 +505,7 @@ nav button.signUp {
     font-size: 28px;
 }
 /* line 98, ../sass/_sideBar.scss */
-.sidebar-nav .icon-profile-guy {
+.sidebar-nav .icon-profile-male {
     position: relative;
     top: 4px;
     left: 7px;
@@ -546,8 +546,13 @@ nav button.signUp {
     left: 4px;
     font-size: 28px;
 }
+
+.sidebar-nav .icon-support {
+    font-size: 36px;
+}
+
 /* line 136, ../sass/_sideBar.scss */
-.sidebar-nav .icon-following {
+.sidebar-nav .icon-followers {
     position: relative;
     top: 2px;
     right: 5px;
@@ -612,12 +617,20 @@ nav button.signUp {
 /* line 30, ../sass/_offerItem.scss */
 .offerItem .busCover {
     overflow: hidden;
+    height: 140px;
 }
 /* line 33, ../sass/_offerItem.scss */
 .offerItem .busCover img {
     border-radius: 3px;
-    min-width: 100%;
-    height: 140px;
+    width: 100%;
+}
+
+.identityTile .busCover img, .transactionContent .busCover img {
+    border-radius: 3px;
+    width: 700px;
+    position: relative;
+    left: -230px;
+    top: -5px;
 }
 
 /* line 40, ../sass/_offerItem.scss */
@@ -626,19 +639,19 @@ nav button.signUp {
     color: #989fac;
     line-height: 28px;
     position: absolute;
-    top: 80px;
+    top: 180px;
     width: 100%;
 }
 /* line 47, ../sass/_offerItem.scss */
 .offerContent h1, .identityContent h1, .transactionContent h1 {
-    font-size: 23px;
-    margin: 10px 0 15px;
+    font-size: 22px;
     color: #919191;
     font-family: "LatoLight", sans-serif;
     width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 /* line 56, ../sass/_offerItem.scss */
 .offerContent a, .identityContent a, .transactionContent a {
@@ -661,48 +674,52 @@ nav button.signUp {
 
 /* line 72, ../sass/_offerItem.scss */
 .overlay {
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, transparent), color-stop(100%, #4a4a4a));
-    background-image: -webkit-linear-gradient(transparent, #4a4a4a);
-    background-image: -moz-linear-gradient(transparent, #4a4a4a);
-    background-image: -o-linear-gradient(transparent, #4a4a4a);
-    background-image: linear-gradient(transparent, #4a4a4a);
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, transparent), color-stop(100%, #333));
+    background-image: -webkit-linear-gradient(transparent, #333);
+    background-image: -moz-linear-gradient(transparent, #333);
+    background-image: -o-linear-gradient(transparent, #333);
+    background-image: linear-gradient(transparent, #333);
     width: 100%;
     height: 142px;
     position: absolute;
     top: 0;
 }
 
-/* line 87, ../sass/_offerItem.scss */
+/* line 87, ../sass/_offerItem.scss
 .busLink {
-    font-size: 13px;
-    background: transparent;
-    display: inline-block;
-    text-align: center;
-    padding: 10px 50px;
-    border-radius: 3px;
-    color: #929292;
-    border: 2px solid #ebebeb;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+font-size: 13px;
+background: transparent;
+display: inline-block;
+text-align: center;
+padding: 10px 50px;
+border-radius: 3px;
+color: #929292;
+border: 2px solid #ebebeb;
+text-transform: uppercase;
+letter-spacing: 1px;
+width: 100%;
 }
-
+*/
 /* line 100, ../sass/_offerItem.scss */
 .busLink:hover {
-    color: #2cc397;
+    color: whitesmoke;
+    background: #2cc397;
+    border: 1px solid #2cc397;
 }
 
 /* line 104, ../sass/_offerItem.scss */
-.btnFollow {
+.btnFollow, .busLink {
     color: #989fac;
     text-align: center;
-    padding: 20px 0;
+    padding: 23px 0;
     width: 100%;
     display: inline-block;
-    border-radius: 4px;
-    border: 2px solid #e6e8ec;
+    border-radius: 3px;
+    border: 1px solid #E2E5EC;
     transition: all 0.2s ease;
     line-height: 0;
-    margin-top: 20px;
+    background: rgb(250, 250, 250);
+    font-size: 15px;
 }
 /* line 115, ../sass/_offerItem.scss */
 .btnFollow a:hover {
@@ -723,15 +740,16 @@ nav button.signUp {
 
 /* line 128, ../sass/_offerItem.scss */
 .location {
-    font-size: 14px;
-    display: inline-block;
-    width: 100%;
-    font-family: 'LatoLight', sans-serif;
-    position: relative;
-    top: 10px;
-    padding: 10px 0px 10px;
-    line-height: 18px;
-    background: #FCFCFC;
+    display: none;
+    /* font-size: 14px; */
+    /* display: inline-block; */
+    /* width: 100%; */
+    /* font-family: 'LatoLight', sans-serif; */
+    /* position: relative; */
+    /* top: 10px; */
+    /* padding: 10px 0px 10px; */
+    /* line-height: 18px; */
+    /* background: #FCFCFC; */
 }
 /* line 138, ../sass/_offerItem.scss */
 .location img {
@@ -773,6 +791,7 @@ offerSteps ul {
     width: 100%;
     display: inline-block;
     text-align: center;
+    overflow: auto;
 }
 
 .offerForm .productPhys {
@@ -878,6 +897,8 @@ offerSteps ul {
 
 .offerForm .unlimitedInput {
     margin: 0 62px;
+    position: relative;
+    left: -40px;
 }
 
 #id-offer-discount {
@@ -892,6 +913,10 @@ offerSteps ul {
 .offerForm .control-group {
     display: inline-block;
     vertical-align: top;
+}
+
+.offerPreview .offerContent {
+    top: 80px;
 }
 
 .offerForm .publishSocial {
@@ -1192,139 +1217,92 @@ offerSteps ul {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* line 26, ../sass/_iconFont.scss */
-.icon-search:before {
-    content: "\e601";
-}
-
-/* line 29, ../sass/_iconFont.scss */
-.icon-arrow-small-left:before {
-    content: "\e604";
-}
-
-/* line 32, ../sass/_iconFont.scss */
-.icon-arrow-small-down:before {
-    content: "\e605";
-}
-
-/* line 35, ../sass/_iconFont.scss */
-.icon-arrow-small-up:before {
-    content: "\e606";
-}
-
-/* line 38, ../sass/_iconFont.scss */
-.icon-arrow-small-right:before {
-    content: "\e607";
-}
-
-/* line 41, ../sass/_iconFont.scss */
-.icon-knotis:before {
-    content: "\e609";
-}
-
-/* line 44, ../sass/_iconFont.scss */
-.icon-receipt:before {
-    content: "\e60a";
-}
-
-/* line 47, ../sass/_iconFont.scss */
-.icon-arrow-left:before {
-    content: "\e60d";
-}
-
-/* line 50, ../sass/_iconFont.scss */
-.icon-arrow-down:before {
-    content: "\e60f";
-}
-
-/* line 53, ../sass/_iconFont.scss */
-.icon-arrow-up:before {
-    content: "\e610";
-}
-
-/* line 56, ../sass/_iconFont.scss */
-.icon-arrow-right:before {
-    content: "\e611";
-}
-
-/* line 59, ../sass/_iconFont.scss */
-.icon-redeem:before {
+.icon-support:before {
     content: "\e600";
 }
-
-/* line 62, ../sass/_iconFont.scss */
-.icon-profile-guy:before {
+.icon-redeem:before {
+    content: "\e601";
+}
+.icon-profile-male:before {
     content: "\e602";
 }
-
-/* line 65, ../sass/_iconFont.scss */
-.icon-profile-woman:before {
+.icon-profile-female:before {
     content: "\e603";
 }
-
-/* line 68, ../sass/_iconFont.scss */
 .icon-settings:before {
+    content: "\e604";
+}
+.icon-reports:before {
+    content: "\e605";
+}
+.icon-cart:before {
+    content: "\e606";
+}
+.icon-promotions:before {
+    content: "\e607";
+}
+.icon-offers:before {
     content: "\e608";
 }
-
-/* line 71, ../sass/_iconFont.scss */
-.icon-reports:before {
-    content: "\e60b";
+.icon-message:before {
+    content: "\e609";
 }
-
-/* line 74, ../sass/_iconFont.scss */
-.icon-cart:before {
+.icon-followers:before {
+    content: "\e60a";
+}
+.icon-dashboard:before {
     content: "\e60c";
 }
-
-/* line 77, ../sass/_iconFont.scss */
-.icon-promotions:before {
+.icon-customers:before {
+    content: "\e60d";
+}
+.icon-business:before {
     content: "\e60e";
 }
-
-/* line 80, ../sass/_iconFont.scss */
-.icon-offers:before {
+.icon-feed:before {
+    content: "\e60f";
+}
+.icon-banking:before {
+    content: "\e610";
+}
+.icon-location:before {
+    content: "\e60b";
+}
+.icon-arrow-left-med:before {
+    content: "\e611";
+}
+.icon-arrow-down-med:before {
     content: "\e612";
 }
-
-/* line 83, ../sass/_iconFont.scss */
-.icon-message:before {
+.icon-arrow-up-med:before {
     content: "\e613";
 }
-
-/* line 86, ../sass/_iconFont.scss */
-.icon-following:before {
+.icon-arrow-right-med:before {
     content: "\e614";
 }
-
-/* line 89, ../sass/_iconFont.scss */
-.icon-dashboard:before {
+.icon-arrow-left-thin-xs:before {
+    content: "\e615";
+}
+.icon-arrow-down-thin-xs:before {
     content: "\e616";
 }
-
-/* line 92, ../sass/_iconFont.scss */
-.icon-customers:before {
+.icon-arrow-up-thin-xs:before {
     content: "\e617";
 }
-
-/* line 95, ../sass/_iconFont.scss */
-.icon-business:before {
+.icon-arrow-right-thin-xs:before {
     content: "\e618";
 }
-
-/* line 98, ../sass/_iconFont.scss */
-.icon-feed:before {
+.icon-arrow-left-thin-lg:before {
     content: "\e619";
 }
-
-/* line 101, ../sass/_iconFont.scss */
-.icon-banking:before {
+.icon-arrow-down-thin-lg:before {
     content: "\e61a";
 }
-
-/* line 104, ../sass/_iconFont.scss */
-.icon-help:before {
-    content: "\e615";
+.icon-arrow-up-thin-lg:before {
+    content: "\e61b";
+}
+.icon-arrow-right-thin-lg:before {
+    content: "\e61c";
 }
 
 @media all and (max-width: 650px) {
@@ -1480,6 +1458,10 @@ offerSteps ul {
     padding: 17px 28px;
     border-radius: 3px;
     margin-top: 15px;
+}
+
+.offerHero {
+    background: rgb(85, 85, 85);
 }
 
 /* line 128, ../sass/_modals.scss */
@@ -1639,19 +1621,17 @@ h1.sectionHeader {
     position: absolute;
     top: 0;
     left: 0;
-    padding: 90px 115px 55px;
     background-size: cover;
 }
 
 /* line 23, ../sass/_profile.scss */
 .profileBusiness section {
     background: white;
-    padding: 30px;
+    padding: 5px;
     border-radius: 2px;
     margin-top: -20px;
     color: #888;
     font-family: "LatoLight", sans-serif;
-    m5argin: -20px 0 40px;
 }
 
 /* line 33, ../sass/_profile.scss */
@@ -1667,15 +1647,15 @@ h1.sectionHeader {
 
 /* line 43, ../sass/_profile.scss */
 .heroInfo {
-    border-right: 1px solid #777777;
+    border-right: 1px solid #575757;
     width: 345px;
-    background: rgba(56, 56, 56, 0.36);
+    background: rgba(29, 29, 29, 0.67);
     position: absolute;
-    top: -63px;
-    left: -20px;
+    top: 50px;
+    left: 70px;
     padding: 30px 30px 83px;
     overflow: hidden;
-    height: 395px;
+    height: 400px;
 }
 /* line 51, ../sass/_profile.scss */
 .heroInfo img {
@@ -1746,7 +1726,7 @@ section .profileInfo:nth-child(5) {
     background: white;
     padding: 15px 8px;
     color: #8D8D8D;
-    border-radius: 50px;
+    border-radius: 3px;
     width: 80%;
     transition: all 0.2s ease;
     text-align: center;
@@ -1760,7 +1740,7 @@ section .profileInfo:nth-child(5) {
     margin: 0 20px 0 0;
     text-align: center;
     background: white;
-    padding: 30px 0 45px;
+    padding: 60px 0 50px;
     border-radius: 4px;
 }
 .settingItem p {
@@ -1899,9 +1879,10 @@ span.help-inline {
     border-radius: 3px;
     font-size: 14px;
     cursor: pointer;
-    top: 375px;
-    border: 2px solid white;
+    top: 371px;
+    border: 1px solid white;
     z-index: 1;
+    background: rgba(0, 0, 0, 0.23);
 }
 
 .profileBusiness .subNav {
@@ -1928,9 +1909,8 @@ span.help-inline {
 
 .profileContent {
     position: relative;
-    top: 320px;
-    left: 20px;
-    padding: 85px;
+    top: 380px;
+    left: 27px;
     width: 100%;
     margin: 0 auto;
 }
@@ -1939,6 +1919,17 @@ span.help-inline {
     display: inline-block;
     height: 100%;
     width: 100%;
+}
+
+.identityContent .tileLink {
+    position: relative;
+    top: -50px;
+}
+
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 
 .currentId {
@@ -1961,14 +1952,26 @@ span.help-inline {
     border-radius: 50%;
     max-width: 92px;
     max-height: 92px;
-    position: relative;
+    position: absolute;
+    border: 3px solid white;
+    display: inline-block;
+    top: -100px;
+}
+
+
+.offerPreview .busLogo {
     top: 60px;
 }
+
 
 .defaultImg {
     width: 90px;
     height: 90px;
     background: rgba(255, 255, 255, 0.94);
+}
+
+label.label-unlimited {
+    width: 0 !important;
 }
 
 .support-forms label {
@@ -2029,6 +2032,7 @@ span.help-inline {
     margin-left: -310px;   
     box-shadow: 0 0;
     border: 0;
+    overflow: hidden;
 }
 
 .modal-header {
@@ -2058,6 +2062,8 @@ span.help-inline {
     font-size: 23px !important;
     text-align: left;
     padding: 0;
+    position: relative;
+    top: -15px;
 }
 
 .offerPreview .offerItem .busLogo {
@@ -2067,10 +2073,11 @@ span.help-inline {
     background: white;
     position: relative;
     right: 35px;
+    top: 0;
 }
 
 .offerPreview .knotis-price-big {
-    font-size: 25px;
+    font-size: 20px;
     font-family: 'LatoReg', sans-serif;
 }
 
@@ -2083,12 +2090,9 @@ span.help-inline {
 }
 
 .promotionTile {
-    background: white;
     text-align: center;
-    height: 300px;
     position: relative;
-    left: 20px;
-    border-radius: 3px;
+    top: 35px;
 }
 
 .promotionTile .icon-promotions {
@@ -2096,6 +2100,7 @@ span.help-inline {
     display: inline-block;
     width: 100%;
     margin: 75px 0 0;
+    color: #EBEBEB;
 }
 
 .promotionTile a {
@@ -2109,7 +2114,7 @@ span.help-inline {
     position: absolute;
     height: 100%;
     margin-top: 15px;
-    padding: 170px 20px 0;
+    padding: 180px 20px 0;
     top: -20px;
 }
 
@@ -2125,4 +2130,291 @@ span.help-inline {
     top: -35px;
     margin-bottom: -40px;
     display: inline-block;
+}
+
+a.adminLink {
+    position: absolute;
+    top: 50px;
+    color: #2cc297;
+    border: 2px solid rgb(224, 224, 224);
+    padding: 8px 30px;
+    border-radius: 3px;
+    white-space: nowrap;
+    left: 0;
+}
+
+.about-carousel-image {
+    width: 100%;
+    height: 300px;
+    display: inline-block;
+    margin: 3px;
+    padding: 10px;
+}
+
+.about-us {
+    padding: 20px 20px 227px;
+}
+
+.about-carousel section {
+    padding-bottom: 90px;
+}
+
+.upload-photo {
+    padding: 15px;
+    border-radius: 3px;
+    border: 2px solid #2cc397;
+    background: transparent;
+    color: #2cc397;
+    position: absolute;
+    left: 0;
+    margin: 23px 13px 0;
+    cursor: pointer;
+}
+
+.carousel-indicators {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    z-index: 1;
+    width: 80%;
+    cursor: pointer;
+    padding-left: 10px;
+    list-style: none;
+    margin-bottom: 12px;
+}
+
+.edit_about {
+    position: absolute;
+    right: 20px;
+    padding: 8px 25px;
+    border-radius: 3px;
+    margin-top: -50px;
+    border: 1px solid #2CC397;
+    color: #2cc397;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.modal-footer {
+    border: 0;
+}
+
+.imageUpload {
+    text-align: center;
+    border: 1px solid #DADADA;
+}
+
+.imageUpload .btnCancel {
+    width: 100%;
+    position: relative;
+    top: -15px;
+    color: #c0c0c0;
+}
+
+.imageUpload .btnCancel:active {
+    box-shadow: 0 0;
+}
+
+.imageUpload h3 {
+    font-size: 34px;
+    padding: 20px;
+    font-family: 'LatoLight', sans-serif;
+}
+
+.imageUpload .qq-upload-button {
+    padding: 15px;
+    border-radius: 3px;
+    border: 2px solid #2cc397;
+    background: transparent;
+    color: #2cc397;
+    width: 250px;
+    margin: 0 auto;
+}
+
+.defaultModal {
+    padding: 50px 0 70px;
+    text-align: center;
+    border: 1px solid #ececec;
+}
+
+.defaultModal h1 {
+    font-size: 43px;
+    color: #797979;
+    text-align: center;
+}
+
+.defaultModal p {
+    font-size: 23px;
+    padding: 20px 30px;
+    font-family: 'LatoLight', sans-serif;
+    text-align: center;
+    margin: -30px 0;
+}
+
+.createBusiness {
+    padding: 20px;
+    text-align: center;
+}
+
+.createBusiness h1 {
+    font-size: 35px;
+    color: #3c3c3c;
+    text-align: center;
+    margin: 0;
+}
+
+.createBusiness p {
+    font-size: 20px;
+    padding: 20px 80px;
+    font-family: 'LatoLight', sans-serif;
+    text-align: center;
+    line-height: 30px;
+}
+
+.createBusiness input {
+    font-size: 19px;
+    padding: 15px;
+    border-radius: 2px;
+    border: 1px solid #DADADA;
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    margin: 20px;
+    outline: 0;
+}
+
+.createBusiness .btn {
+    background: #2cc397;
+    color: white;
+    padding: 15px;
+    width: 50%;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.close {
+    position: relative;
+    right: 10px;
+}
+
+section.welcomeModal .btn {
+    background: #2cc397;
+    color: white;
+    padding: 15px;
+    width: 50%;
+    display: inline-block;
+    font-size: 16px;
+}
+
+section.welcomeModal input {
+    font-size: 19px;
+    padding: 15px;
+    border-radius: 2px;
+    border: 1px solid #DADADA;
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    margin: 20px;
+    outline: 0;
+}
+
+section.welcomeModal p {
+    font-size: 20px;
+    padding: 20px 80px;
+    font-family: 'LatoLight', sans-serif;
+}
+
+section.welcomeModal {
+    padding: 20px;
+    text-align: center;
+}
+
+section.welcomeModal h1 {
+    font-size: 35px;
+    color: #3c3c3c;
+    text-align: center;
+    margin: 0;
+}
+
+.manageQr .content {
+    padding: 20px;
+}
+
+.manageQr h2 {
+    font-size: 25px;
+    margin: 65px 0 20px;
+    font-family: 'LatoLight', sans-serif;
+}
+
+.manageQr .qrcode-manage {
+    width: 200px;
+    border-radius: 3px;
+    border: 1px solid rgb(218, 218, 218);
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 40px;
+}
+
+.manageQr .message-confirm {
+    display: inline-block;
+}
+
+.manageQr .message-confirm p {
+    background: white;
+    padding: 20px 15px;
+    border-radius: 3px;
+    border-left: 4px solid #2cc397;
+}
+
+.manageQr section {
+    background: rgba(255, 255, 255, 0.77);
+    padding: 30px 50px 35px;
+    margin: 60px 0 -50px;
+}
+
+.codeLinks p {
+    font-size: 16px;
+    margin: 20px 0px 50px;
+    width: 50%;
+}
+
+.codeLinks label {
+    background: white;
+    cursor: pointer;
+    width: 50%;
+    border-radius: 3px;
+    margin: 20px 0;
+    padding: 10px 35px;
+}
+
+.codeLinks input {
+    padding: 20px;
+    border: 1px solid rgb(233, 233, 233);
+    width: 50%;
+    outline: 0;
+}
+
+.codeLinks .linkInput {
+    position: relative;
+    top: -20px;
+    border: 0 !important;
+    border-top: 1px solid #F3EEEE !important;
+    padding-top: 30px;
+}
+
+.codeLinks .radioBtn {
+    position: relative;
+    top: -4px;
+}
+
+.codeLinks .inputInner {
+    padding: 0;
+}
+
+.codeLinks input.inputInner {
+    width: 30px;
+}
+
+.btn-primary {
+    background: #2cc397;
 }

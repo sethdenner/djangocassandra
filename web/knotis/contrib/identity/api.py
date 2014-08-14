@@ -57,8 +57,8 @@ from .serializers import (
     IdentitySwitcherSerializer
 )
 
-class IdentityApi(object):
 
+class IdentityApi(object):
     @staticmethod
     def create_identity(
         form_class=IdentityForm,
@@ -78,6 +78,16 @@ class IdentityApi(object):
             Endpoint.objects.create(
                 endpoint_type=EndpointTypes.IDENTITY,
                 value=instance.name,
+                identity=instance
+            )
+
+            # create followers endpoint
+            Endpoint.objects.create(
+                endpoint_type=EndpointTypes.FOLLOWERS,
+                value=' '.join([
+                    instance.name,
+                    'Followers'
+                ]),
                 identity=instance
             )
 
@@ -446,7 +456,7 @@ class IdentityBusinessApiView(IdentityApiView):
             business, establishment = IdentityApi.create_business(
                 **dict(request.DATA.iteritems())
             )
-            request.session['current_identity_id'] = business.id
+            request.session['current_identity'] = business.id
 
         except ValidationError, e:
             logger.exception(e.message)
@@ -494,7 +504,6 @@ class IdentityBusinessApiView(IdentityApiView):
 class IdentityEstablishmentApiView(IdentityApiView):
     api_version = 'v1'
     api_path = 'identity/establishment'
-
 
     def post(
         self,
@@ -559,12 +568,24 @@ class IdentityApiModelViewSet(ApiModelViewSet):
     model = Identity
     queryset = Identity.objects.all()
     serializer_class = IdentitySerializer
+    allow_listing = False
 
     def list(
         self,
-        request
+        request,
+        *args,
+        **kwargs
     ):
-        raise MethodNotAllowed(request.method)
+        if self.allow_listing:
+            return super(IdentityApiModelViewSet, self).list(
+                self,
+                request,
+                *args,
+                **kwargs
+            )
+
+        else:
+            raise MethodNotAllowed(request.method)
 
     def update(
         self,
@@ -668,7 +689,10 @@ class IdentityApiModelViewSet(ApiModelViewSet):
         default_detail = 'The identity endpoint did not update correctly.'
 
 
-class BusinessApiModelViewSet(IdentityApiModelViewSet, GetCurrentIdentityMixin):
+class BusinessApiModelViewSet(
+    IdentityApiModelViewSet,
+    GetCurrentIdentityMixin
+):
     api_path = 'identity/business'
     resource_name = 'business'
 
@@ -697,7 +721,7 @@ class BusinessApiModelViewSet(IdentityApiModelViewSet, GetCurrentIdentityMixin):
                 **dict(request.DATA.iteritems())
             )
 
-            request.session['current_identity_id'] = business.id
+            request.session['current_identity'] = business.id
 
         except ValidationError, e:
             logger.exception(e.message)
@@ -749,6 +773,11 @@ class EstablishmentApiModelViewSet(IdentityApiModelViewSet):
         available=True
     )
     serializer_class = EstablishmentSerializer
+    paginate_by = 20
+    paginate_by_param = 'count'
+    max_paginate_by = 200
+
+    allow_listing = True
 
 
 class IdentitySwitcherApiViewSet(ApiViewSet):

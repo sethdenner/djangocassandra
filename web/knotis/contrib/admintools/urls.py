@@ -3,9 +3,18 @@ from django.conf.urls.defaults import (
     url,
 )
 
+from django.contrib.auth.decorators import (
+    login_required,
+)
+
+from knotis.contrib.offer.admin import (
+    OfferAdminView,
+    OfferQueryAdminAJAXView,
+    OfferUpdateAdminAJAXView,
+)
 from knotis.contrib.activity.admin import (
     ActivityAdminView,
-    ActivityAdminAJAXView,
+    ActivityQueryAdminAJAXView,
 )
 from knotis.contrib.auth.admin import (
     UserAdminView,
@@ -16,30 +25,37 @@ from knotis.contrib.auth.admin import (
 from views import (
     AdminValidateResendView,
     AdminOwnerView,
+    AdminDefaultView,
 )
 
 from knotis.utils.regex import REGEX_UUID
 
 urlpatterns = patterns(
     '',
+### OFFER VIEWER
+    url(
+        r'^admin/offer/update/$', login_required(OfferUpdateAdminAJAXView.as_view())
+    ),
+    url(
+        r'^admin/offer/query/$', login_required(OfferQueryAdminAJAXView.as_view())
+    ),
 ### ACTIVITY VIEWER
-### App temporarily unlinked because of bugs.
-#    url(
-#        r'^admin/activity/interact/$', ActivityAdminAJAXView.as_view()
-#    ),
-#    url(
-#        r'^admin/activity/$', ActivityAdminView.as_view()
-#    ),
+    url(
+        r'^admin/activity/query/$', login_required(ActivityQueryAdminAJAXView.as_view())
+    ),
+    url(
+        r'^admin/activity/?$', login_required(ActivityAdminView.as_view())
+    ),
 ### USER VIEWER
-#    url(
-#        r'^admin/user/interact/update-(?P<user_id>[a-zA-Z0-9\-]+)/$', UserUpdateAdminAJAXView.as_view()
-#    ),
-#    url(
-#        r'^admin/user/interact/$', UserQueryAdminAJAXView.as_view()
-#    ),
-#    url(
-#        r'^admin/user/$', UserAdminView.as_view()
-#    ),
+    url(
+        r'^admin/user/interact/update-(?P<user_id>[a-zA-Z0-9\-]+)/$', login_required(UserUpdateAdminAJAXView.as_view())
+    ),
+    url(
+        r'^admin/user/query/$', login_required(UserQueryAdminAJAXView.as_view())
+    ),
+    url(
+        r'^admin/user/?$', login_required(UserAdminView.as_view())
+    ),
 
 ### ADMIN RESEND URL
     url(
@@ -50,6 +66,11 @@ urlpatterns = patterns(
         ]), AdminValidateResendView.as_view()
     ),
 )
+### OFFER VIEWER
+urlpatterns += OfferAdminView.urls()
 
-
+### ADMIN UTILITY FRAGMENTS AND MODALS
 urlpatterns += AdminOwnerView.urls()
+
+### ADMIN TOOL GRID VIEW
+urlpatterns += AdminDefaultView.urls()

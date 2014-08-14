@@ -5,18 +5,21 @@
             <li><a href="/businesses/" data-target-id="main-content" ><span class="circle"><i class="icon-business"></i></span><span class="sidebar-label">Businesses</span></a></li>
             <li><a href="/offers/" data-target-id="main-content" ><span class="circle"><i class="icon-offers"></i></span><span class="sidebar-label">Offers</span></a></li>
             {% if current_identity.identity_type == IdentityTypes.INDIVIDUAL %}
-            <li><a href="/my/following/" data-target-id="main-content"><span class="circle"><i class="icon-following"></i></span><span class="sidebar-label">Following</span></a></li>
+            <li><a href="/my/followers/" data-target-id="main-content"><span class="circle"><i class="icon-followers"></i></span><span class="sidebar-label">Following</span></a></li>
             <li><a href="/my/purchases/" data-target-id="main-content"><span class="circle"><i class="icon-promotions"></i></span><span class="sidebar-label">Purchases</span></a></li>
             {% endif %}
             {% if current_identity.identity_type == IdentityTypes.ESTABLISHMENT %}
-            <li><a a href="/id/{{ current_identity.pk }}/" data-target-id="main-content" ><span class="circle"><i class="icon-profile-guy"></i></span><span class="sidebar-label">Profile</span></a></li>
+            <li><a a href="/id/{{ current_identity.pk }}/" data-target-id="main-content" ><span class="circle"><i class="icon-profile-male"></i></span><span class="sidebar-label">Profile</span></a></li>
             <li><a href="/my/offers/"><span class="circle"><i class="icon-promotions"></i></span><span class="sidebar-label">Promotions</span></a></li>
-            <li><a href="/my/following/" data-target-id="main-content"><span class="circle"><i class="icon-following"></i></span><span class="sidebar-label">Followers</span></a></li>
+            <li><a href="/my/followers/" data-target-id="main-content"><span class="circle"><i class="icon-followers"></i></span><span class="sidebar-label">Followers</span></a></li>
             <li><a href="/my/customers" data-target-id="main-content" ><span class="circle"><i class="icon-customers"></i></span><span class="sidebar-label">Customers</span></a></li>
             <li><a href="/my/redemptions/" data-target-id="main-content" ><span class="circle"><i class="icon-redeem"></i></span><span class="sidebar-label">Redemption</span></a></li>
             <li><a href="/settings/" data-target-id="main-content"><span class="circle"><i class="icon-settings"></i></span><span class="sidebar-label">Settings</span></a></li>
             {% endif %}
-            <li><a href="/support/" class="modal-link"><span class="circle"><i class="icon-help"></i></span><span class="sidebar-label">Support</span></a></li>
+            {% if current_identity.identity_type == IdentityTypes.SUPERUSER %}
+            <li><a href="/admin/" data-target-id="main-content"><span class="circle"><i class="icon-settings"></i></span><span class="sidebar-label">Admin Tools</span></a></li>
+            {% endif %}
+            <li><a href="/support/" class="modal-link"><span class="circle"><i class="icon-support"></i></span><span class="sidebar-label">Support</span></a></li>
         </ul>
     </div>
     <div class="sidebar-overlay"></div>
