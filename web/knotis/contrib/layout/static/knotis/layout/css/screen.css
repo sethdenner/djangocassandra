@@ -166,7 +166,7 @@ nav {
     top: 0;
     width: 100%;
     height: 55px;
-    background: #809ae5;
+    background: #2cc397;
     padding: 8px 8px 8px 0;
     z-index: 1000;
     text-transform: uppercase;
@@ -256,7 +256,7 @@ nav .dropdown {
     right: 0;
     top: -2px;
     transition: all 0.2s ease;
-    border: 1px solid #809ae5;
+    border: 1px solid #2cc397;
 }
 /* line 95, ../sass/_nav.scss */
 nav .dropdown a {
@@ -323,7 +323,7 @@ nav button, nav button:active, nav button:visted {
 
 /* line 148, ../sass/_nav.scss */
 nav button.logIn:hover, nav button.signUp:hover {
-    background: #809ae5;
+    background: #2cc397;
     border: 2px solid white;
 }
 
@@ -398,21 +398,21 @@ nav button.signUp {
     display: inline-block;
     width: 50%;
     padding: 16px 0;
-    border: 2px solid #809ae5;
+    border: 2px solid #2cc397;
     outline: 0;
     border-radius: 2px;
     margin: 0px 0 15px;
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 2px;
-    background: #809ae5;
+    background: #2cc397;
     color: white;
     transition: all 0.1s ease;
 }
 
 .authBtn:hover {
     background: transparent;
-    color: #809ae5;
+    color: #2cc397;
 }
 
 .auth-secondary {
@@ -429,7 +429,7 @@ nav button.signUp {
 }
 
 .auth-secondary:hover {
-    color: #809ae5;
+    color: #2cc397;
 }
 
 .modal-title {
@@ -470,8 +470,8 @@ nav button.signUp {
 }
 /* line 26, ../sass/_subNav.scss */
 .subNav ul li a.active {
-    color: #809ae5;
-    border-bottom: 4px solid #809ae5;
+    color: #2cc397;
+    border-bottom: 4px solid #2cc397;
 }
 
 /* line 1, ../sass/_sideBar.scss */
@@ -535,7 +535,7 @@ nav button.signUp {
 }
 
 .sidebar-li-selected {
-    background: #809ae5;
+    background: #2cc397;
 }
 
 /* line 60, ../sass/_sideBar.scss */
@@ -683,7 +683,7 @@ nav button.signUp {
 }
 /* line 24, ../sass/_offerItem.scss */
 .offerItem .dropdown-menu a:hover {
-    background: #809ae5;
+    background: #2cc397;
     color: white;
     transition: all 0.3s ease;
 }
@@ -744,7 +744,7 @@ nav button.signUp {
 
 /* line 56, ../sass/_offerItem.scss */
 .offerContent a, .identityContent a, .transactionContent a {
-    color: #809ae5;
+    color: #2cc397;
     position: absolute;
     top: 116px;
     left: 12px;
@@ -801,8 +801,8 @@ width: 100%;
 /* line 100, ../sass/_offerItem.scss */
 .busLink:hover {
     color: whitesmoke;
-    background: #809ae5;
-    border: 1px solid #809ae5;
+    background: #2cc397;
+    border: 1px solid #2cc397;
 }
 
 /* line 104, ../sass/_offerItem.scss */
@@ -826,9 +826,9 @@ width: 100%;
 
 /* line 119, ../sass/_offerItem.scss */
 .btnFollow:hover {
-    background: #809ae5;
+    background: #2cc397;
     color: white;
-    border: 2px solid #809ae5;
+    border: 2px solid #2cc397;
 }
 
 /* line 124, ../sass/_offerItem.scss */
@@ -877,9 +877,9 @@ offerSteps ul {
 }
 
 .offerSteps ul li.active {
-    color: #809ae5;
+    color: #2cc397;
     font-family: 'LatoReg', sans-serif;
-    border-bottom: 2px solid #809ae5;
+    border-bottom: 2px solid #2cc397;
     padding-bottom: 5px;
 }
 
@@ -915,7 +915,7 @@ offerSteps ul {
 }
 
 .offerForm a {
-    color: #809ae5;
+    color: #2cc397;
     font-size: 15px;
     border-radius: 3px;
 }
@@ -1002,8 +1002,8 @@ offerSteps ul {
 #id-offer-discount {
     display: inline-block;
     padding: 10px 30px;
-    color: #809ae5;
-    border: 2px solid #809ae5;
+    color: #2cc397;
+    border: 2px solid #2cc397;
     border-radius: 50px;
     font-size: 15px;
 }
@@ -1047,19 +1047,19 @@ offerSteps ul {
     width: 50%;
     bottom: 0;
     color: white;
-    border: 2px solid #809ae5;
+    border: 2px solid #2cc397;
     padding: 15px 0;
     margin: 0 6px 0 0;
     outline: 0;
     border-radius: 0;
-    background: #809ae5;
+    background: #2cc397;
     transition: all 0.1s ease;
 }
 
 #offer-modal a:hover {
-    color: #809ae5;
+    color: #2cc397;
     background: transparent;
-    border: 2px solid #809ae5;
+    border: 2px solid #2cc397;
 }
 
 .offer-form-nav button {
@@ -1077,15 +1077,15 @@ offerSteps ul {
 }
 
 .offer-form-nav button.continue {
-    color: #809ae5;
-    border: 2px solid #809ae5;
+    color: #2cc397;
+    border: 2px solid #2cc397;
 }
 
 
 .offer-form-nav button.continue:hover {
     color: white;
-    background: #809ae5;
-    border: 2px solid #809ae5;
+    background: #2cc397;
+    border: 2px solid #2cc397;
 }
 
 #offer-create {
@@ -1116,7 +1116,7 @@ offerSteps ul {
 
 /* line 20, ../sass/_offerCreate.scss */
 #offer-create .navBtns a {
-    background: #809ae5;
+    background: #2cc397;
     color: white;
     margin: 30px auto;
     width: 230px;
@@ -1411,7 +1411,7 @@ offerSteps ul {
 
 /* line 63, ../sass/_modals.scss */
 .tos-text a {
-    color: #809ae5;
+    color: #2cc397;
     font-family: 'LatoReg', sans-serif;
 }
 
@@ -1482,7 +1482,7 @@ offerSteps ul {
 }
 /* line 117, ../sass/_modals.scss */
 .offerDetails button {
-    background: #809ae5;
+    background: #2cc397;
     border: 0;
     outline: 0;
     padding: 17px 28px;
@@ -1571,7 +1571,7 @@ offerSteps ul {
 }
 /* line 33, ../sass/_onBoarding.scss */
 #onboarding .modal-content {
-    background: #809ae5;
+    background: #2cc397;
     border-radius: 3px;
     padding: 0 20px 30px;
 }
@@ -1580,7 +1580,7 @@ offerSteps ul {
     border: 0;
     outline: 0;
     background: white;
-    color: #809ae5;
+    color: #2cc397;
     padding: 20px 10px;
     border-radius: 3px;
     margin: 0 0 35px;
@@ -1722,7 +1722,7 @@ h1.sectionHeader {
 }
 /* line 69, ../sass/_profile.scss */
 .heroInfo a {
-    background: #809ae5;
+    background: #2cc397;
     padding: 17px 70px;
     color: white;
     text-transform: uppercase;
@@ -1740,7 +1740,7 @@ section .profileInfo {
 
 /* line 85, ../sass/_profile.scss */
 section .profileInfo a {
-    background: #809ae5;
+    background: #2cc397;
     padding: 13px 20px;
     border-radius: 2px;
     display: inline-block;
@@ -1799,7 +1799,7 @@ section .profileInfo:nth-child(5) {
 }
 /* line 21, ../sass/_settings.scss */
 .settings a:hover {
-    background: #809ae5;
+    background: #2cc397;
     color: white;
 }
 /* line 26, ../sass/_settings.scss */
@@ -1837,8 +1837,8 @@ section .profileInfo:nth-child(5) {
 }
 
 .loadState .progressBar {
-    border-bottom: 4px solid #809ae5;
-    border-bottom: 4px solid #809ae5;
+    border-bottom: 4px solid #2cc397;
+    border-bottom: 4px solid #2cc397;
     position: relative;
     top: 180px;
     width: 20%;
@@ -1852,7 +1852,7 @@ section .profileInfo:nth-child(5) {
 }
 
 .forgotLink  a {
-    color: #809ae5;
+    color: #2cc397;
 }
 
 .underConstruction h4 {
@@ -2211,9 +2211,9 @@ a.adminLink {
 .upload-photo {
     padding: 15px;
     border-radius: 3px;
-    border: 1px solid #809ae5;
+    border: 1px solid #2cc397;
     background: transparent;
-    color: #809ae5;
+    color: #2cc397;
     position: absolute;
     left: 0;
     margin: 23px 13px 0;
@@ -2238,8 +2238,8 @@ a.adminLink {
     padding: 8px 25px;
     border-radius: 3px;
     margin-top: -50px;
-    border: 1px solid #809ae5;
-    color: #809ae5;
+    border: 1px solid #2cc397;
+    color: #2cc397;
     font-size: 14px;
     cursor: pointer;
 }
@@ -2273,9 +2273,9 @@ a.adminLink {
 .imageUpload .qq-upload-button {
     padding: 15px;
     border-radius: 3px;
-    border: 2px solid #809ae5;
+    border: 2px solid #2cc397;
     background: transparent;
-    color: #809ae5;
+    color: #2cc397;
     width: 250px;
     margin: 0 auto;
 }
@@ -2333,7 +2333,7 @@ a.adminLink {
 }
 
 .createBusiness .btn {
-    background: #809ae5;
+    background: #2cc397;
     color: white;
     padding: 15px;
     width: 50%;
@@ -2347,7 +2347,7 @@ a.adminLink {
 }
 
 section.welcomeModal .btn {
-    background: #809ae5;
+    background: #2cc397;
     color: white;
     padding: 15px;
     width: 50%;
@@ -2412,7 +2412,7 @@ section.welcomeModal h1 {
     background: white;
     padding: 20px 15px;
     border-radius: 3px;
-    border-left: 4px solid #809ae5;
+    border-left: 4px solid #2cc397;
 }
 
 .manageQr section {
@@ -2465,7 +2465,7 @@ section.welcomeModal h1 {
 }
 
 .btn-primary {
-    background: #809ae5;
+    background: #2cc397;
 }
 
 #first-id {
