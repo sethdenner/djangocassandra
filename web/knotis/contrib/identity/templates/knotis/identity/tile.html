@@ -2,7 +2,7 @@
 {% load render_template_fragment %}
 
 <div class="col-lg-4 col-xs-12 offerItem identityTile">
-    <a class="tileLink" href="/id/{{ identity.id }}/">
+    <a class="tileLink" href="/id/{{ identity.pk }}/">
         <div class="busCover">
             {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
             <img class="tile-badge" src="{{ image.url }}" />
@@ -14,7 +14,7 @@
         <div class="identityContent">
             <div class="row">
                 <div class="col-lg-10 col-xs-10">
-                    <a href="/id/{{ establishment.pk }}/">
+                    <a href="/id/{{ identity.pk }}/">
                         {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
                         <img class="busLogo" src="{{ image.url }}" alt="{{ identity.name }}"/>
                         {% empty %}
