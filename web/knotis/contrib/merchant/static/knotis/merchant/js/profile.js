@@ -1,21 +1,9 @@
 (function($) {
-    /*
-    $('.offer-tile').click(function(event) {
-        event.preventDefault();
+    $(function () {
+        var upload_logo = function(event) {
+            event.preventDefault();
 
-        offer_id = this.getAttribute('data-offer-id');
-        $.ajaxmodal({
-            href: '/offer/detail/' + offer_id + '/',
-            modal_id: 'id-offer-detail',
-            modal_width: '750px'
-        });
-    });
-    */
-
-    var upload_logo = function(event) {
-        event.preventDefault();
-
-        var identity_id = $('div#id-identity-id').attr('data-establishment-id')
+            var identity_id = $('div#id-identity-id').attr('data-establishment-id')
 
         $.ajaxmodal({
             href: '/image/upload/',
@@ -25,98 +13,98 @@
             on_open: function(data, status, request) {
                 $('#file-uploader').sickle({
                     do_upload: true,
-                    params: {
-                        type: 'image',
-                    },
-                    aspect: 1,
-                    primary: true,
-                    done: function(data) {
-                        if (data.status == 'success') {
-			    $img = $('#profile-badge');
-			    $img.attr('src', data.image_url);
+                params: {
+                    type: 'image',
+                },
+                aspect: 1,
+                primary: true,
+                done: function(data) {
+                    if (data.status == 'success') {
+                        $img = $('#profile-badge');
+                        $img.attr('src', data.image_url);
 
-                        } else if (data.status == 'failure') {
+                    } else if (data.status == 'failure') {
 
-                        } else {
-                            // Invalid Status
-                        }
-                    },
-                    related_object_id: identity_id,
-                    context: 'profile_badge',
-                    jcrop_box_width: 560,
-                    image_max_height: 400,
-                    image_max_width: 500,
+                    } else {
+                        // Invalid Status
+                    }
+                },
+                related_object_id: identity_id,
+                context: 'profile_badge',
+                jcrop_box_width: 560,
+                image_max_height: 400,
+                image_max_width: 500,
                 });
             }
         })
 
-    };
+        };
 
-    $('.change-profile-badge-link').click(upload_logo);
+        $('.change-profile-badge-link').click(upload_logo);
 
-    // BANNER EDITING
+        // BANNER EDITING
 
-    $('a.change-profile-cover-link').click(function(event){
-      event.preventDefault();
-      var identity_id = $('#id-identity-id').attr('data-establishment-id');
+        $('a.change-profile-cover-link').click(function(event){
+            event.preventDefault();
+            var identity_id = $('#id-identity-id').attr('data-establishment-id');
 
-      $.ajaxmodal({
-          href: '/image/upload',
-          modal_settings: {
-            backdrop: 'static'
-          },
-          on_open: function(data, status, request){
-
-            $('#file-uploader').sickle({
-                do_upload: true,
-                params: {
-                  type: 'image'
+            $.ajaxmodal({
+                href: '/image/upload',
+                modal_settings: {
+                    backdrop: 'static'
                 },
-                aspect: 5.12,
-                related_object_id: identity_id,
-                context: 'profile_banner',
-                image_max_height: 400,
-                image_max_width: 500,
-                primary: true,
-                done: function(data){
-                  $('modal-box').modal('hide');
-                  $('#id-profile-cover').css('background-image', 'url("' + data.image_url + '")');
-                },
-                jcrop_box_width: 560
+                on_open: function(data, status, request){
+
+                    $('#file-uploader').sickle({
+                        do_upload: true,
+                    params: {
+                        type: 'image'
+                    },
+                    aspect: 5.12,
+                    related_object_id: identity_id,
+                    context: 'profile_banner',
+                    image_max_height: 400,
+                    image_max_width: 500,
+                    primary: true,
+                    done: function(data){
+                        $('modal-box').modal('hide');
+                        $('#id-profile-cover').css('background-image', 'url("' + data.image_url + '")');
+                    },
+                    jcrop_box_width: 560
+                    });
+                }
             });
-          }
-      });
-    });
+        });
 
-    // carousel
-    $('#about_carousel').carousel({
-        interval: 5000
-    });
+        // carousel
+        $('#about_carousel').carousel({
+            interval: 5000
+        });
 
-    $('a.upload-photo').click(function(event){
-      event.stopPropagation();
-      event.preventDefault();
-      var identity_id = $('#id-identity-id').attr('data-establishment-id');
+        $('a.upload-photo').click(function(event){
+            event.stopPropagation();
+            event.preventDefault();
+            var identity_id = $('#id-identity-id').attr('data-establishment-id');
 
-      $.ajaxmodal({
-          href: '/image/upload',
-          modal_settings: {
-            backdrop: 'static'
-          },
-          on_open: function(data, status, request){
-
-            $('#file-uploader').sickle({
-                do_upload: true,
-                params: {
-                  type: 'image'
+            $.ajaxmodal({
+                href: '/image/upload',
+                modal_settings: {
+                    backdrop: 'static'
                 },
-                aspect: 1.25,
-                related_object_id: identity_id,
-                context: 'business_profile_carousel',
-                primary: false,
-                image_max_height: 400,
-                image_max_width: 500,
-                done: function(data){
+                on_open: function(data, status, request){
+
+                    $('#file-uploader').sickle({
+                        do_upload: true,
+                    params: {
+                        type: 'image'
+                    },
+                    aspect: 1.25,
+                    related_object_id: identity_id,
+                    context: 'business_profile_carousel',
+                    primary: false,
+                    image_max_height: 400,
+                    image_max_width: 500,
+                    done: function(data){
 
                         // stop the carousel
                         $('#about_carousel').carousel('pause').removeData();
@@ -139,99 +127,108 @@
 
                         // finally, hide the modal box
                         $('modal-box').modal('hide');
+                    }
+                    });
                 }
             });
-          }
         });
-    });
 
-    $('a.delete-x').click(function(event) {
-        event.stopPropagation();
-        event.preventDefault();
+        $('a.delete-x').click(function(event) {
+            event.stopPropagation();
+            event.preventDefault();
 
-        var $this = $(this);
-        $.ajax(
-            $this.attr('data-href'), {
-                type: $this.attr('data-method'),
+            var $this = $(this);
+            $.ajax(
+                $this.attr('data-href'), {
+                    type: $this.attr('data-method'),
                 data: {
                     pk: $this.attr('data-pk')
                 }
-            }
-        ).done(function(data, status, jqxhr){
-            if (data.errors) {
-                var message = 'An error has occured.';
-                if (data.errors.exception) {
-                    message = data.errors.exception;
                 }
-                alert(message);
-            } else {
-                $('#about_carousel').carousel('next');
-                $this.parent().parent().remove();
+                ).done(function(data, status, jqxhr){
+                    if (data.errors) {
+                        var message = 'An error has occured.';
+                        if (data.errors.exception) {
+                            message = data.errors.exception;
+                        }
+                        alert(message);
+                    } else {
+                        $('#about_carousel').carousel('next');
+                        $this.parent().parent().remove();
 
-            }
+                    }
+                });
+
         });
 
-    });
+        $('a.twitter').click(function(){
+            event.stopPropagation();
+            event.preventDefault();
+            $('.tab-content.yelp').hide();
+            $('.tab-content.yelp').removeClass('active');
 
-    $('a.twitter').click(function(){
-        event.stopPropagation();
-        event.preventDefault();
-        $('.tab-content.yelp').hide();
-        $('.tab-content.yelp').removeClass('active');
+            $('.tab-content.twitter').show();
+            $('.tab-content.twitter').addClass('active');
+        });
 
-        $('.tab-content.twitter').show();
-        $('.tab-content.twitter').addClass('active');
-    });
+        $('a.yelp').click(function(){
+            event.stopPropagation();
+            event.preventDefault();
+            $('.tab-content.twitter').hide();
+            $('.tab-content.twitter').removeClass('active');
 
-    $('a.yelp').click(function(){
-        event.stopPropagation();
-        event.preventDefault();
-        $('.tab-content.twitter').hide();
-        $('.tab-content.twitter').removeClass('active');
+            $('.tab-content.yelp').show();
+            $('.tab-content.yelp').addClass('active');
+        });
 
-        $('.tab-content.yelp').show();
-        $('.tab-content.yelp').addClass('active');
-    });
 
-    // display the map on the about page.
-    var latLng = new google.maps.LatLng(parseFloat($('#establishment-contact-loc-details').attr('data-latitude')),
-                              parseFloat($('#establishment-contact-loc-details').attr('data-longitude')));
+        $('.profileActionButton').click(function() {
+            event.preventDefault();
+            event.stopPropagation();
+            $(this).identity_action();
+        });
 
-    $('.profileActionButton').click(function() {
-        event.preventDefault();
-        event.stopPropagation();
-        $(this).identity_action();
-    });
-
-    var setupMap = function(){
-        var map;
-        var marker;
-        var initialize = function(){
-            var mapOptions = {
-                center: latLng,
-                zoomControl: false,
-                scaleControl: false,
-                draggable: false,
-                navigationContol: false,
-                disableDefaultUI: true,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                zoom: 16
-            };
-            map = new google.maps.Map(document.getElementById('about-map'), mapOptions);
-
-            var markerOptions = {
-                position: latLng,
-                map: map,
-            };
-            marker = new google.maps.Marker(markerOptions);
-            google.maps.event.trigger(map, 'resize');
-
+        // display the map on the about page.
+        var address = $('#establishment-contact-loc-details').attr('data-address');
+        var latitude = parseFloat($('#establishment-contact-loc-details').attr('data-latitude'));
+        var longitude = parseFloat($('#establishment-contact-loc-details').attr('data-longitude'));
+        // Coordinates for Seattle.
+        if((!latitude && longitude)) {
+            latitude = 47.6038321;
+            longitude = -122.3300624;
         }
+        var latLng = new google.maps.LatLng(latitude,longitude);
 
-        google.maps.event.addDomListener(window, 'load', initialize);
+        var setupMap = function(){
+            var map;
+            var marker;
+            var initialize = function(){
+                var mapOptions = {
+                    center: latLng,
+                    zoomControl: false,
+                    scaleControl: false,
+                    draggable: false,
+                    navigationContol: false,
+                    disableDefaultUI: true,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    zoom: 16
+                };
+                map = new google.maps.Map(document.getElementById('about-map'), mapOptions);
 
-        return {marker: marker, map: map};
-    };
-    var map_stuff = setupMap();
+                var markerOptions = {
+                    position: latLng,
+                    map: map,
+                };
+                marker = new google.maps.Marker(markerOptions);
+                google.maps.event.trigger(map, 'resize');
+
+            }
+
+            initialize();
+
+            return {marker: marker, map: map};
+        };
+        var map_stuff = setupMap();
+    });
 
 })(jQuery);
