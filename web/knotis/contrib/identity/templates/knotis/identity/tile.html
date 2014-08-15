@@ -3,7 +3,7 @@
 
 <div class="col-lg-3 col-xs-12 offerItem">
     <a class="tileLink" href="/id/{{ identity.pk }}/">
-        <div class="busCover">
+        <div class="busCover busCoverIdentity">
             {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
             <img src="{{ image.url }}" />
             {% empty %}
@@ -11,7 +11,7 @@
             {% endthumbnail %}
             <div class="overlay"></div>
         </div>
-        <div class="tileContent">
+        <div class="tileContent tileContentIdentity">
             <div class="row">
                 <div class="col-lg-10 col-xs-10">
                     <a href="/id/{{ identity.pk }}/">
