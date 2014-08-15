@@ -2247,12 +2247,30 @@ section.welcomeModal h1 {
 .offerItem .tileContent {
     position: absolute;
     width: 100%;
-    top: 100px;
+    top: 200px;
     padding: 0 15px;
 }
 
 .offerItem .busLink {
-    width: 100%;
-    padding: 13px 0;
+    width: 88%;
+    padding: 16px 0;
     border: 0;
+    border-radius: 3px;
+    text-align: center;
+    border: 2px solid rgb(248, 248, 248);
+    background: rgb(248, 248, 248);
+    position: absolute;
+    top: 95px;
+    color: rgb(122, 122, 122);
+    font-size: 14px;
+}
+
+a.busLink:hover {
+    background: transparent;
+    border: 2px solid #2cc397;
+    color: #2cc397;
+}
+
+.offerItem .location {
+    display: none;
 }

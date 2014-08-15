@@ -1,17 +1,17 @@
 {% load thumbnail %}
 {% load render_template_fragment %}
 
-<div class="col-lg-3 col-xs-12 offerItem identityTile">
+<div class="col-lg-3 col-xs-12 offerItem">
     <a class="tileLink" href="/id/{{ identity.pk }}/">
         <div class="busCover">
             {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
-            <img class="tile-badge" src="{{ image.url }}" />
+            <img src="{{ image.url }}" />
             {% empty %}
             <img class="tile-image defaultImg"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:'darkgrey' }}.png" />
             {% endthumbnail %}
             <div class="overlay"></div>
         </div>
-        <div class="identityContent">
+        <div class="tileContent">
             <div class="row">
                 <div class="col-lg-10 col-xs-10">
                     <a href="/id/{{ identity.pk }}/">
