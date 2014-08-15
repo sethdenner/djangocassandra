@@ -1,5 +1,5 @@
 {% load thumbnail %}
-<div class="col-lg-4 col-xs-12 offerItem">
+<div class="col-lg-3 col-xs-12 offerItem">
     <a href="/offer/detail/{{ offer.pk }}/" class="modal-link">
         <div class="busCover">
             {% thumbnail offer_banner_image.image.image 'x140' crop=offer_banner_image.crop as image %}
@@ -10,7 +10,7 @@
             <div class="overlay"></div>
         </div>
     </a>
-    <div class="offerContent">
+    <div class="tileContent">
         <div class="row">
             <div class="col-lg-10 col-xs-10">
                 <a href="/id/{{ offer.owner.pk }}/">
