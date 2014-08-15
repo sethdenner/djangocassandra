@@ -2201,7 +2201,7 @@ section.welcomeModal h1 {
     margin: 0 10px 10px 0;
     padding: 0;
     border-radius: 4px;
-    max-width: 260px;
+    max-width: 255px;
 }
 
 .offerItem .busCover {
@@ -2247,7 +2247,7 @@ section.welcomeModal h1 {
     border: 0;
     border-radius: 3px;
     text-align: center;
-    border: 2px solid rgb(248, 248, 248);
+    border: 1px solid rgb(248, 248, 248);
     background: rgb(248, 248, 248);
     position: absolute;
     top: 95px;
@@ -2257,7 +2257,7 @@ section.welcomeModal h1 {
 
 .offerItem .busLink:hover, .offerItem .btnFollow:hover {
     background: transparent;
-    border: 2px solid #2cc397;
+    border: 1px solid #2cc397;
     color: #2cc397;
 }
 
