@@ -185,4 +185,11 @@
 
     });
 
+    $.navigation = {
+        reinitialize: function() {
+            initialize_always();
+
+        }
+    };
+
 })(jQuery);
