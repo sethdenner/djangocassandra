@@ -1702,17 +1702,6 @@ span.help-inline {
     margin: 0 auto;
 }
 
-.tileLink {
-    display: inline-block;
-    height: 100%;
-    width: 100%;
-}
-
-.identityContent .tileLink {
-    position: relative;
-    top: -25px;
-}
-
 .line-clamp {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -1759,23 +1748,6 @@ span.help-inline {
 
 label.label-unlimited {
     width: 0 !important;
-}
-
-.support-forms label {
-    display: inline-block;
-    border: 0;
-    border-radius: 2px;
-    padding: 10px;
-    width: 80%;
-}
-
-.support-forms input {
-    display: inline-block;
-    border: 0;
-    border: 1px solid rgb(224, 224, 224);
-    border-radius: 2px;
-    padding: 10px;
-    width: 80%;
 }
 
 .contentBlock {
@@ -2251,7 +2223,7 @@ section.welcomeModal h1 {
     padding: 0 15px;
 }
 
-.offerItem .busLink {
+.offerItem .busLink, .offerItem .btnFollow {
     width: 88%;
     padding: 16px 0;
     border: 0;
@@ -2265,7 +2237,7 @@ section.welcomeModal h1 {
     font-size: 14px;
 }
 
-a.busLink:hover {
+.offerItem .busLink:hover, .offerItem .btnFollow:hover {
     background: transparent;
     border: 2px solid #2cc397;
     color: #2cc397;
@@ -2273,4 +2245,77 @@ a.busLink:hover {
 
 .offerItem .location {
     display: none;
+}
+
+
+.supportModal {
+    text-align: center;
+    width: 100%;
+    position: relative;
+    top: -30px;
+}
+
+.supportModal label {
+    font-size: 14px;
+    display: inline-block;
+    width: 27%;
+    vertical-align: top;
+    text-align: right;
+    padding: 12px 20px 0;
+}
+
+.supportModal .support-forms {
+    position: relative;
+    left: -55px;
+}
+
+.supportModal .support-buttons {
+    width: 50%;
+    margin: 10px auto;
+    position: relative;
+    left: 50px;
+    top: 13px;
+}
+
+.supportModal .support-buttons input {
+    background: #2cc397;
+    border: 0;
+    color: white;
+    font-size: 15px;
+    display: inline-block;
+    width: 100%;
+}
+
+.supportModal .support-buttons a {
+    color: #c0c0c0;
+    font-size: 15px;
+    margin: 10px 0;
+    display: inline-block;
+}
+
+.support-forms input, .supportModal .support-forms textarea {
+    display: inline-block;
+    border: 1px solid rgb(231, 231, 231);
+    border-radius: 3px;
+    padding: 10px;
+    width: 50%;
+    outline: 0;
+    background: #FFFFFF;
+    margin: 0 0 10px 0;
+}
+
+.supportModal h1 {
+    font-size: 32px;
+    color: #7C7C7C;
+    margin: 20px 8px;
+}
+
+.supportModal select {
+    border: 0;
+    outline: 0;
+    display: inline-block;
+    height: 40px;
+    text-indent: 12px;
+    font-size: 15px;
+    margin: 0 0 25px;
 }

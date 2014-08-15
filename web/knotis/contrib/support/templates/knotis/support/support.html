@@ -1,26 +1,35 @@
 {% extends 'knotis/layout/modal_base.html' %}
 {% block body %}
-<form class="replace" action="/support/" method="post" id="support_form">{% csrf_token %}
-    <select name=subject>
-        <option value="problem"> I want to report a problem with the site/app</option>
-        <option value="request_map"> I would like to request some maps</option>
-        <option value="get_on_map"> I want to be featured on one of your maps</option>
-        <option value="get_on_passport"> I want to be featured in one of your passport books</option>
-        <option value="comment_or_question"> I have a question/comment</option>
-        <option value="other"> Other</option>
-    </select>
+<div class="container supportModal">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            
+            <h1>Need Help?</h1>
+            
+            <form class="replace" action="/support/" method="post" id="support_form">{% csrf_token %}
+                <select name=subject>
+                    <option value="problem"> I want to report a problem with the site/app</option>
+                    <option value="request_map"> I would like to request some maps</option>
+                    <option value="get_on_map"> I want to be featured on one of your maps</option>
+                    <option value="get_on_passport"> I want to be featured in one of your passport books</option>
+                    <option value="comment_or_question"> I have a question/comment</option>
+                    <option value="other"> Other</option>
+                </select>
 
-    <div class="support-forms">
-        <label> Email: </label><input type="text" name="email"/>
-        <label> Name: </label><input type="text" name="name"/>
-        <label> Phone: </label><input type="text" name="phone"/>
-        <label> Message: </label>
-        <textarea rows="5" name="message"></textarea>
+                <div class="support-forms">
+                    <label> Email: </label><input type="text" name="email"/>
+                    <label> Name: </label><input type="text" name="name"/>
+                    <label> Phone: </label><input type="text" name="phone"/>
+                    <label> Message: </label>
+                    <textarea rows="5" name="message"></textarea>
 
-        <div class="support-buttons">
-            <input class="button radius-general" type="submit" value="Submit">
-            <a class="txt-size close_sig_in" data-dismiss-modal="modal-box" href="{{ close_href }}">Cancel</a>
+                    <div class="support-buttons">
+                        <input class="button radius-general" type="submit" value="Submit">
+                        <a class="txt-size close_sig_in" data-dismiss-modal="modal-box" href="{{ close_href }}">Cancel</a>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-</form>
+</div>
 {% endblock body %}
