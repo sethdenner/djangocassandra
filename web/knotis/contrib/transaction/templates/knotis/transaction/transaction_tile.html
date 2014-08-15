@@ -17,7 +17,7 @@
                     {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
                     <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
                     {% empty %}
-                    <img class="busLogo" src="{{ STATIC_URL }}knotis/identity/img/profile_default.png" />
+                        <img class="img-circle tile-badge defaultImg busLogo" src="{{ STATIC_URL }}/knotis/img/default_profile_badge.png" />
                     {% endthumbnail %}
                 </a>
             </div>
