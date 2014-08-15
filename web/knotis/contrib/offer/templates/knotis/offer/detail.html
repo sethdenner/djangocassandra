@@ -17,7 +17,7 @@
         </div>
 
         {% if IdentityTypes.INDIVIDUAL == current_identity.identity_type %}
-        <a class="btn modal-link no-deep" href="/offer/{{ offer.pk}}/buy/">Purchase Offer</a>
+        <a class="btn buyBtn modal-link no-deep" href="/offer/{{ offer.pk}}/buy/">Purchase Offer</a>
         {% endif %}
 
         {% thumbnail offer_banner_image.image.image '339x400' crop=offer_banner_image.crop as image %}
