@@ -330,7 +330,7 @@ class MyCustomersGrid(GridSmallView):
                 )
 
         for c in tile_contexts:
-            customer_tile = TransactionTileView()
+            customer_tile = IdentityTile()
             customer_tile_context = RequestContext(
                 request,
                 c
