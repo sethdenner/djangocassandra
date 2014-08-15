@@ -1296,6 +1296,8 @@ offerSteps ul {
     background: -webkit-gradient(linear, left top, right bottom, from(rgba(204, 204, 204, 0)), to(rgba(0, 0, 0, 0.3)));
     left: 0;
     height: 100%;
+    position: absolute;
+    width: 100%;
 }
 
 /* line 128, ../sass/_modals.scss */
@@ -1803,7 +1805,7 @@ label.label-unlimited {
     text-align: left;
     padding: 0;
     position: relative;
-    top: -15px;
+    top: -120px;
 }
 
 .offerPreview .offerItem .busLogo {
@@ -1813,7 +1815,7 @@ label.label-unlimited {
     background: white;
     position: relative;
     right: 35px;
-    top: 0;
+    top: -120px;
 }
 
 .offerPreview .knotis-price-big {
@@ -1861,6 +1863,23 @@ label.label-unlimited {
     padding: 39px;
     width: 50%;
     display: inline-block;
+}
+
+.buyBtn {
+    position: absolute;
+    background: #2cc397;
+    width: 50%;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    color: white;
+    padding: 15px;
+    font-size: 14px;
+    border-radius: 0;
+}
+
+.buyBtn:hover {
+    color: white;
 }
 
 .offerHero, .offerDetails {
@@ -2182,7 +2201,7 @@ section.welcomeModal h1 {
     margin: 0 10px 10px 0;
     padding: 0;
     border-radius: 4px;
-    max-width: 260px;
+    max-width: 255px;
 }
 
 .offerItem .busCover {
@@ -2228,7 +2247,7 @@ section.welcomeModal h1 {
     border: 0;
     border-radius: 3px;
     text-align: center;
-    border: 2px solid rgb(248, 248, 248);
+    border: 1px solid rgb(248, 248, 248);
     background: rgb(248, 248, 248);
     position: absolute;
     top: 95px;
@@ -2238,7 +2257,7 @@ section.welcomeModal h1 {
 
 .offerItem .busLink:hover, .offerItem .btnFollow:hover {
     background: transparent;
-    border: 2px solid #2cc397;
+    border: 1px solid #2cc397;
     color: #2cc397;
 }
 
