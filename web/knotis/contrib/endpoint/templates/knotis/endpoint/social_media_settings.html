@@ -1,8 +1,5 @@
 {% load render_template_fragment %}
 
-
-
-
 <div class="settings">
     <div>
         {% render_fragment facebook_sdk_initialization %}
@@ -21,7 +18,7 @@
     </div>
     {% if format == 'json' %}
     {% for script in post_scripts %}
-    <script src="{{STATIC_URL}}/{{script}}"></script>
+    <script src="{{STATIC_URL}}{{script}}"></script>
     {% endfor %}
     {% endif %}
 </div>
