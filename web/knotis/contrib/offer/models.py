@@ -8,7 +8,6 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from django.conf import settings
-from django.http import HttpRequest
 
 from django.db.models.fields import Field as ModelField
 
@@ -985,6 +984,7 @@ class OfferPublish(Publish):
 
 class OfferCollection(QuickModel):
     neighborhood = QuickCharField(max_length=255, db_index=True)
+    objects = QuickManager()
 
 
 class OfferCollectionItem(QuickModel):

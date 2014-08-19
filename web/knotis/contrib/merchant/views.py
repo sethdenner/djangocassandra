@@ -233,14 +233,6 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
             pk=transaction_id
         )
 
-        if current_identity.pk != transaction.owner.pk:
-            return self.generate_ajax_response({
-                'errors': {
-                    'no-field': 'This transaction does not belong to you'
-                },
-                'status': 'ERROR'
-            })
-
         try:
 
             redemptions = TransactionApi.create_redemption(
@@ -248,6 +240,14 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
                 transaction,
                 current_identity
             )
+
+        except TransactionApi.WrongOwnerException:
+            return self.generate_ajax_response({
+                'errors': {
+                    'no-field': 'This transaction does not belong to you'
+                },
+                'status': 'ERROR'
+            })
 
         except Exception, e:
             return self.generate_ajax_response({

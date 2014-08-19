@@ -1,6 +1,6 @@
 import copy
 
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.conf import settings
 from django.views.generic import View
 
@@ -11,12 +11,19 @@ from knotis.contrib.offer.models import (
     Offer,
     OfferStatus
 )
+from knotis.contrib.transaction.models import (
+    TransactionCollection,
+    TransactionCollectionItem
+)
+from knotis.contrib.transaction.api import TransactionApi
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 from knotis.contrib.qrcode.models import (
     Qrcode,
     QrcodeTypes,
     Scan
 )
 from knotis.contrib.identity.models import IdentityEstablishment
+from knotis.utils.regex import REGEX_UUID
 
 
 class ScanView(View):
@@ -172,4 +179,74 @@ class ManageQRCodeView(EmbeddedView):
             request,
             *args,
             **kwargs
+        )
+
+
+class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
+    template_name = 'knotis/qrcode/redeem_offer.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r''.join([
+            '^qrcode/coupon/(?P<transaction_collection_id>',
+            REGEX_UUID,
+            ')/(?P<page_numb>\d+)$'
+        ])
+    ]
+
+    def process_context(self):
+
+        current_identity = self.get_current_identity(self.request)
+
+        transaction_collection_id = self.context.get(
+            'transaction_collection_id')
+
+        transaction_collection = get_object_or_404(
+            TransactionCollection,
+            pk=transaction_collection_id
+        )
+
+        page_numb = self.context.get('page_numb')
+
+        transaction_collection_item = get_object_or_404(
+            TransactionCollectionItem,
+            transaction_collection=transaction_collection,
+            page=page_numb
+        )
+
+        request = self.request
+        transaction = transaction_collection_item.transaction
+        TransactionApi.create_redemption(
+            request,
+            transaction,
+            current_identity
+        )
+
+
+class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
+    template_name = 'knotis/qrcode/offer_collection_connect.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r''.join([
+            '^qrcode/connect/(?P<transaction_collection_id>',
+            REGEX_UUID,
+            ')$'
+        ])
+    ]
+
+    def process_context(self):
+
+        current_identity = self.get_current_identity(self.request)
+
+        transaction_collection_id = self.context.get(
+            'transaction_collection_id')
+
+        transaction_collection = get_object_or_404(
+            TransactionCollection,
+            pk=transaction_collection_id
+        )
+
+        TransactionApi.create_transaction_transfer(
+            self.request,
+            current_identity,
+            transaction_collection,
         )
