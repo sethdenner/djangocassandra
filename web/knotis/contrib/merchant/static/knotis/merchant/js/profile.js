@@ -182,11 +182,7 @@
         });
 
 
-        $('.profileActionButton').click(function() {
-            event.preventDefault();
-            event.stopPropagation();
-            $(this).identity_action();
-        });
+        $('.profileActionButton').identity_action();
 
         // display the map on the about page.
         var setupMap = function(){
@@ -224,7 +220,7 @@
 		    return null;
 
 		}
-		
+
                 map = new google.maps.Map(document.getElementById('about-map'), mapOptions);
 		if (!map) {
 		    return null;
