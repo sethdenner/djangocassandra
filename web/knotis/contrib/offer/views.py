@@ -343,7 +343,12 @@ class OfferDetailView(ModalView):
     view_name = 'offer_detail'
     url_patterns = [
         r''.join([
-            'detail/(?P<offer_id>',
+            '^(s)?/detail/(?P<offer_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        r''.join([
+            '^(s)?/(?P<offer_id>',
             REGEX_UUID,
             ')/$'
         ]),
