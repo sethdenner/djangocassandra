@@ -33,7 +33,7 @@
             <label class="control-label">Enter Cost</label>
             <div class="controls">
                 <input class="span1" name="{{ form.product_price.html_name }}" type="text" value="{{ form.product_price.value|default_if_none:"20" }}"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
-                <label class="control-label">Discounted Vwalue</label>
+                <label class="control-label">Discounted Value</label>
             </div>
             <div class="controls">
                 <input class="span1"  name="{{ form.product_value.html_name }}" type="text" value="{{ form.product_value.value|default_if_none:"40" }}"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
