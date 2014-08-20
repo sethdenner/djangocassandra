@@ -62,6 +62,10 @@ a img {
     border: none;
 }
 
+.btn:hover, .btn:focus {
+    outline: 0;
+}
+
 /* line 116, ../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
     display: block;
@@ -168,12 +172,8 @@ nav {
     text-transform: uppercase;
     letter-spacing: 2px;
     font-size: 14px;
-    /* End General Nav Styles */
-    /* Search Styles */
-    /* // End Search Styles */
-    /* Styles for Identity Switcher */
-    /* // End Styles for Identity Switcher */
 }
+
 /* line 13, ../sass/_nav.scss */
 nav .logo {
     text-align: center;
@@ -201,9 +201,8 @@ nav a:visited {
 nav .search input {
     background-color: transparent;
     border: 0;
-    focus: 0;
     outline: 0;
-    border-bottom: 1px solid #a6e5cd;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.43);
     color: white;
     font-size: 12px;
     padding-bottom: 6px;
@@ -368,6 +367,79 @@ nav button.signUp {
     padding: 10px 25px;
 }
 
+/* Auth Inputs for Log In, Sign Up. */
+
+/* line 22, ../sass/_modals.scss */
+.authInputs, .authButtons {
+    text-align: center;
+}
+
+/* line 26, ../sass/_modals.scss */
+.authButtons {
+    margin-top: 20px;
+}
+
+/* line 30, ../sass/_modals.scss */
+.authInputs input {
+    display: inline-block;
+    width: 50%;
+    padding: 16px;
+    border-radius: 4px;
+    border: 0;
+    outline: 0;
+    background: #F7F7F7;
+    font-size: 15px;
+    margin: 10px 0;
+    color: #A5A5A5;
+}
+
+/* line 49, ../sass/_modals.scss */
+.authBtn {
+    display: inline-block;
+    width: 50%;
+    padding: 16px 0;
+    border: 2px solid #2cc397;
+    outline: 0;
+    border-radius: 2px;
+    margin: 0px 0 15px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background: #2cc397;
+    color: white;
+    transition: all 0.1s ease;
+}
+
+.authBtn:hover {
+    background: transparent;
+    color: #2cc397;
+}
+
+.auth-secondary {
+    background: white;
+    color: #858585;
+    border: 0;
+    border-top: 1px solid #DBDBDB;
+    display: inline-block;
+    width: 50%;
+    padding-top: 17px;
+    height: 70px;
+    font-family: 'LatoLight', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.auth-secondary:hover {
+    color: #2cc397;
+}
+
+.modal-title {
+    font-size: 35px;
+    color: #7A7A7A;
+    text-align: center;
+    margin: 0 30px;
+    font-family: 'LatoLight', sans-serif;
+}
+
 /* line 1, ../sass/_subNav.scss */
 .subNav {
     position: fixed;
@@ -420,9 +492,10 @@ nav button.signUp {
 /* line 15, ../sass/_sideBar.scss */
 .sidebar-nav {
     position: absolute;
-    top: 5px;
+    top: 3px;
     width: 100%;
     padding: 0 0 50px 0;
+    margin: 2px 0;
 }
 
 /* line 22, ../sass/_sideBar.scss */
@@ -578,184 +651,6 @@ nav button.signUp {
     top: 5px;
     left: 5px;
     font-size: 25px;
-}
-
-/* Styles for Offer Grid Item */
-/* line 2, ../sass/_offerItem.scss */
-.offerItem {
-    background: white;
-    padding: 0;
-    border-radius: 4px;
-    max-width: 250px;
-    height: 370px;
-    margin-right: 14px;
-    margin-bottom: 14px;
-}
-/* line 10, ../sass/_offerItem.scss */
-.offerItem .dropdown-menu {
-    position: absolute;
-    left: -134px;
-    top: 34px;
-    border: 0;
-    border-top-right-radius: 0;
-    padding: 0px 0;
-    font-family: 'LatoReg';
-}
-/* line 18, ../sass/_offerItem.scss */
-.offerItem .dropdown-menu a {
-    color: black;
-    padding: 8px 16px;
-    border-radius: 3px;
-    border-top-right-radius: 0;
-}
-/* line 24, ../sass/_offerItem.scss */
-.offerItem .dropdown-menu a:hover {
-    background: #2cc397;
-    color: white;
-    transition: all 0.3s ease;
-}
-/* line 30, ../sass/_offerItem.scss */
-.offerItem .busCover {
-    overflow: hidden;
-    height: 140px;
-}
-/* line 33, ../sass/_offerItem.scss */
-.offerItem .busCover img {
-    border-radius: 3px;
-    width: 100%;
-}
-
-.identityTile .busCover img, .transactionContent .busCover img {
-    border-radius: 3px;
-    width: 700px;
-    position: relative;
-    left: -230px;
-    top: -5px;
-}
-
-/* line 40, ../sass/_offerItem.scss */
-.offerContent, .identityContent, .transactionContent {
-    padding: 14px;
-    color: #989fac;
-    line-height: 28px;
-    position: absolute;
-    top: 180px;
-    width: 100%;
-}
-/* line 47, ../sass/_offerItem.scss */
-.offerContent h1, .identityContent h1, .transactionContent h1 {
-    font-size: 22px;
-    color: #919191;
-    font-family: "LatoLight", sans-serif;
-    width: 100%;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-/* line 56, ../sass/_offerItem.scss */
-.offerContent a, .identityContent a, .transactionContent a {
-    color: #989fac;
-}
-
-/* line 61, ../sass/_offerItem.scss */
-.iconMore {
-    max-width: 18px;
-    position: relative;
-    right: 6px;
-    top: 12px;
-    opacity: 0.6;
-}
-
-/* line 68, ../sass/_offerItem.scss */
-.iconMore:hover {
-    opacity: 1.0;
-}
-
-/* line 72, ../sass/_offerItem.scss */
-.overlay {
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, transparent), color-stop(100%, #333));
-    background-image: -webkit-linear-gradient(transparent, #333);
-    background-image: -moz-linear-gradient(transparent, #333);
-    background-image: -o-linear-gradient(transparent, #333);
-    background-image: linear-gradient(transparent, #333);
-    width: 100%;
-    height: 142px;
-    position: absolute;
-    top: 0;
-}
-
-/* line 87, ../sass/_offerItem.scss
-.busLink {
-font-size: 13px;
-background: transparent;
-display: inline-block;
-text-align: center;
-padding: 10px 50px;
-border-radius: 3px;
-color: #929292;
-border: 2px solid #ebebeb;
-text-transform: uppercase;
-letter-spacing: 1px;
-width: 100%;
-}
-*/
-/* line 100, ../sass/_offerItem.scss */
-.busLink:hover {
-    color: whitesmoke;
-    background: #2cc397;
-    border: 1px solid #2cc397;
-}
-
-/* line 104, ../sass/_offerItem.scss */
-.btnFollow, .busLink {
-    color: #989fac;
-    text-align: center;
-    padding: 23px 0;
-    width: 100%;
-    display: inline-block;
-    border-radius: 3px;
-    border: 1px solid #E2E5EC;
-    transition: all 0.2s ease;
-    line-height: 0;
-    background: rgb(250, 250, 250);
-    font-size: 15px;
-}
-/* line 115, ../sass/_offerItem.scss */
-.btnFollow a:hover {
-    color: white;
-}
-
-/* line 119, ../sass/_offerItem.scss */
-.btnFollow:hover {
-    background: #2cc397;
-    color: white;
-    border: 2px solid #2cc397;
-}
-
-/* line 124, ../sass/_offerItem.scss */
-.btnFollow:active {
-    box-shadow: inset 2px 3px 3px #2b8d68;
-}
-
-/* line 128, ../sass/_offerItem.scss */
-.location {
-    display: none;
-    /* font-size: 14px; */
-    /* display: inline-block; */
-    /* width: 100%; */
-    /* font-family: 'LatoLight', sans-serif; */
-    /* position: relative; */
-    /* top: 10px; */
-    /* padding: 10px 0px 10px; */
-    /* line-height: 18px; */
-    /* background: #FCFCFC; */
-}
-/* line 138, ../sass/_offerItem.scss */
-.location img {
-    max-width: 10px;
-    display: inline-block;
-    margin-right: 5px;
 }
 
 /* line 3, ../sass/_offerCreate.scss */
@@ -943,18 +838,24 @@ offerSteps ul {
     height: 50px;
 }
 
-#offer-modal a {
-    color: #2cc397;
+.offerDetails a {
+    position: absolute;
+    left: 0;
+    width: 50%;
+    bottom: 0;
+    color: white;
     border: 2px solid #2cc397;
-    padding: 10px 25px;
+    padding: 15px 0;
     margin: 0 6px 0 0;
     outline: 0;
-    border-radius: 3px;
+    border-radius: 0;
+    background: #2cc397;
+    transition: all 0.1s ease;
 }
 
-#offer-modal a:hover {
-    color: white;
-    background: #2cc397;
+.offerDetails a:hover {
+    color: #2cc397;
+    background: transparent;
     border: 2px solid #2cc397;
 }
 
@@ -1305,89 +1206,10 @@ offerSteps ul {
     content: "\e61c";
 }
 
-@media all and (max-width: 650px) {
-    /* line 2, ../sass/_mediaQueries.scss */
-    body {
-        background: black;
-    }
-
-    /* line 5, ../sass/_mediaQueries.scss */
-    nav .dropdown {
-        border: 0;
-    }
-
-    /* line 8, ../sass/_mediaQueries.scss */
-    nav .dropdown a span {
-        display: none;
-    }
-}
-/* line 1, ../sass/_modals.scss */
-.modal-title {
-    color: #272727;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    font-weight: 600;
-    font-size: 20px;
-    position: relative;
-    top: 10px;
-}
-
-/* Auth Inputs for Log In, Sign Up. */
-/* line 18, ../sass/_modals.scss */
-.singleAuth {
-    padding-bottom: 20px;
-}
-
-/* line 22, ../sass/_modals.scss */
-.authInputs, .authButtons {
-    text-align: center;
-}
-
-/* line 26, ../sass/_modals.scss */
-.authButtons {
-    margin-top: 20px;
-}
-
-/* line 30, ../sass/_modals.scss */
-.authInputs input {
-    display: inline-block;
-    width: 50%;
-    padding: 16px;
-    border-radius: 4px;
-    border: 0;
-    outline: 0;
-    background: #f4f4f4;
-    font-size: 15px;
-    margin: 10px 0;
-    color: #A5A5A5;
-}
-
-/* line 43, ../sass/_modals.scss */
-.authBtn.login {
-    background: white;
-    color: #c0c0c0;
-    border: 2px solid #c0c0c0;
-}
-
-/* line 49, ../sass/_modals.scss */
-.authBtn {
-    display: inline-block;
-    padding: 16px 40px;
-    border: 2px solid #2cc397;
-    outline: 0;
-    border-radius: 2px;
-    margin: 0px 0 15px;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    background: #2cc397;
-    color: white;
-}
-
 /* line 63, ../sass/_modals.scss */
 .tos-text a {
     color: #2cc397;
+    font-family: 'LatoReg', sans-serif;
 }
 
 /* line 67, ../sass/_modals.scss */
@@ -1397,6 +1219,10 @@ offerSteps ul {
     text-align: center;
     letter-spacing: 2px;
     font-size: 12px;
+    margin: 27px auto;
+    font-family: 'LatoLight', sans-serif;
+    width: 50%;
+    line-height: 20px;
 }
 
 /* Offer Modal Styles */
@@ -1416,6 +1242,7 @@ offerSteps ul {
 .offerDetails {
     padding: 10px;
     height: 400px;
+    overflow-y: auto;
 }
 /* line 93, ../sass/_modals.scss */
 .offerDetails h1 {
@@ -1462,6 +1289,15 @@ offerSteps ul {
 
 .offerHero {
     background: rgb(85, 85, 85);
+    overflow-y: auto;
+}
+
+.offerHero .overlay {
+    background: -webkit-gradient(linear, left top, right bottom, from(rgba(204, 204, 204, 0)), to(rgba(0, 0, 0, 0.3)));
+    left: 0;
+    height: 100%;
+    position: absolute;
+    width: 100%;
 }
 
 /* line 128, ../sass/_modals.scss */
@@ -1473,25 +1309,6 @@ offerSteps ul {
     width: 92px;
     height: 92px;
     background: rgb(207, 207, 207);
-}
-/* line 134, ../sass/_modals.scss */
-.offerHero h1 {
-    color: white;
-    display: inline-block;
-    position: absolute;
-    top: 20px;
-}
-/* line 140, ../sass/_modals.scss */
-.offerHero h2 {
-    display: inline-block;
-    color: white;
-    font-size: 14px;
-    position: absolute;
-    top: 84px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 50%;
 }
 
 /* line 1, ../sass/_onBoarding.scss */
@@ -1719,80 +1536,25 @@ section .profileInfo:nth-child(5) {
     background: #c0c0c0;
 }
 
-/* line 7, ../sass/_settings.scss */
-.settings a {
-    margin: 0 auto;
-    display: inline-block;
-    background: white;
-    padding: 15px 8px;
-    color: #8D8D8D;
-    border-radius: 3px;
-    width: 80%;
-    transition: all 0.2s ease;
-    text-align: center;
-    border: 1px solid rgb(228, 228, 228);
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-family: 'LatoReg', sans-serif;
-}
-.settingItem {
-    margin: 0 20px 0 0;
-    text-align: center;
-    background: white;
-    padding: 60px 0 50px;
-    border-radius: 4px;
-}
-.settingItem p {
-    font-size: 25px;
-    padding: 0 0 20px;
-    font-family: 'LatoLight', sans-serif;
-    line-height: 30px;
-}
-.settingItem span {
-    display: inline-block;
-    width: 100px;
-    font-size: 51px;
-    background: rgba(255, 255, 255, 0);
-    border-radius: 50%;
-    height: 100px;
-    padding: 24px 0;
-    border: 2px solid rgb(248, 248, 248);
-    margin: 0 0 30px;
-}
-/* line 21, ../sass/_settings.scss */
-.settings a:hover {
-    background: #2cc397;
-    color: white;
-}
-/* line 26, ../sass/_settings.scss */
-.settings .gridItem {
-    background: white;
-    height: 330px;
-    position: relative;
-    top: 104px;
-    text-align: center;
-    display: inline-block;
-    left: 95px;
-    box-shadow: inset 1px 1px 1px 3px #f5f5f5;
-    width: 270px;
-}
-
 .loadState {
-    position: absolute;
+    position: fixed;
     top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(248, 248, 248, 0.82);
     text-align: center;
+    background: rgba(250, 250, 250, 0.78);
+}
+
+.loadState .container {
+    position: absolute;
+    width: 100%;
 }
 
 .loadState h1 {
     color: gray;
     position: relative;
     top: 200px;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .loadState .progressBar {
@@ -1833,9 +1595,11 @@ section .profileInfo:nth-child(5) {
 
 span.help-inline {
     display: inline-block;
-    width: 100%;
-    color: rgb(252, 169, 169);
-    font-size: 13px;
+    width: 80%;
+    color: rgb(163, 86, 86);
+    font-size: 14px;
+    text-align: center;
+    margin: 0 auto 20px;
 }
 
 #about-us-form input {
@@ -1872,7 +1636,7 @@ span.help-inline {
 
 .change-profile-cover-link {
     position: absolute;
-    color: white;
+    color: #e3e3e3;
     padding: 12px 14px;
     right: 0;
     margin: 16px;
@@ -1884,6 +1648,12 @@ span.help-inline {
     z-index: 1;
     background: rgba(0, 0, 0, 0.23);
 }
+
+.change-profile-cover-link:hover {
+    color: white;
+}
+
+
 
 .profileBusiness .subNav {
     position: absolute;
@@ -1913,17 +1683,6 @@ span.help-inline {
     left: 27px;
     width: 100%;
     margin: 0 auto;
-}
-
-.tileLink {
-    display: inline-block;
-    height: 100%;
-    width: 100%;
-}
-
-.identityContent .tileLink {
-    position: relative;
-    top: -50px;
 }
 
 .line-clamp {
@@ -1972,23 +1731,6 @@ span.help-inline {
 
 label.label-unlimited {
     width: 0 !important;
-}
-
-.support-forms label {
-    display: inline-block;
-    border: 0;
-    border-radius: 2px;
-    padding: 10px;
-    width: 80%;
-}
-
-.support-forms input {
-    display: inline-block;
-    border: 0;
-    border: 1px solid rgb(224, 224, 224);
-    border-radius: 2px;
-    padding: 10px;
-    width: 80%;
 }
 
 .contentBlock {
@@ -2063,7 +1805,7 @@ label.label-unlimited {
     text-align: left;
     padding: 0;
     position: relative;
-    top: -15px;
+    top: -120px;
 }
 
 .offerPreview .offerItem .busLogo {
@@ -2073,7 +1815,7 @@ label.label-unlimited {
     background: white;
     position: relative;
     right: 35px;
-    top: 0;
+    top: -120px;
 }
 
 .offerPreview .knotis-price-big {
@@ -2089,13 +1831,12 @@ label.label-unlimited {
     margin: 16px;
 }
 
-.promotionTile {
+.actionTile {
     text-align: center;
     position: relative;
-    top: 35px;
 }
 
-.promotionTile .icon-promotions {
+.actionTile span {
     font-size: 70px;
     display: inline-block;
     width: 100%;
@@ -2103,7 +1844,7 @@ label.label-unlimited {
     color: #EBEBEB;
 }
 
-.promotionTile a {
+.actionTile a {
     color: #C0C0C0;
     width: 100%;
     left: 0;
@@ -2114,7 +1855,7 @@ label.label-unlimited {
     position: absolute;
     height: 100%;
     margin-top: 15px;
-    padding: 180px 20px 0;
+    padding: 180px 50px;
     top: -20px;
 }
 
@@ -2122,6 +1863,23 @@ label.label-unlimited {
     padding: 39px;
     width: 50%;
     display: inline-block;
+}
+
+.buyBtn {
+    position: absolute;
+    background: #2cc397;
+    width: 50%;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    color: white;
+    padding: 15px;
+    font-size: 14px;
+    border-radius: 0;
+}
+
+.buyBtn:hover {
+    color: white;
 }
 
 .offerHero, .offerDetails {
@@ -2162,7 +1920,7 @@ a.adminLink {
 .upload-photo {
     padding: 15px;
     border-radius: 3px;
-    border: 2px solid #2cc397;
+    border: 1px solid #2cc397;
     background: transparent;
     color: #2cc397;
     position: absolute;
@@ -2189,7 +1947,7 @@ a.adminLink {
     padding: 8px 25px;
     border-radius: 3px;
     margin-top: -50px;
-    border: 1px solid #2CC397;
+    border: 1px solid #2cc397;
     color: #2cc397;
     font-size: 14px;
     cursor: pointer;
@@ -2207,7 +1965,7 @@ a.adminLink {
 .imageUpload .btnCancel {
     width: 100%;
     position: relative;
-    top: -15px;
+    top: -10px;
     color: #c0c0c0;
 }
 
@@ -2272,7 +2030,7 @@ a.adminLink {
 }
 
 .createBusiness input {
-    font-size: 19px;
+    font-size: 17px;
     padding: 15px;
     border-radius: 2px;
     border: 1px solid #DADADA;
@@ -2417,4 +2175,200 @@ section.welcomeModal h1 {
 
 .btn-primary {
     background: #2cc397;
+}
+
+#first-id {
+    top: 25%;
+}
+
+.galleryInput {
+    height: 13px;
+}
+
+.offerHero a {
+    position: relative;
+    background: transparent;
+    border: 0;
+}
+
+
+/* Grid Item Styles 2.0 */
+
+.offerItem {
+    overflow: hidden;
+    background: white;
+    height: 360px;
+    margin: 0 10px 10px 0;
+    padding: 0;
+    border-radius: 4px;
+    max-width: 255px;
+}
+
+.offerItem .busCover {
+    height: 140px;
+    overflow: hidden;
+}
+
+.offerItem .busCover img {
+    width: 100%;
+}
+
+.offerItem .busCoverIdentity img {
+    width: 280%;
+    position: relative;
+    left: -250px;
+}
+
+.offerItem .busCoverIdentity .defaultImg {
+    height: 100%;
+}
+
+.offerItem h1 {
+    font-size: 22px;
+    color: #919191;
+    font-family: "LatoLight", sans-serif;
+    width: 95%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.offerItem .tileContent {
+    position: absolute;
+    width: 100%;
+    top: 200px;
+    padding: 0 15px;
+}
+
+.offerItem .busLink, .offerItem .btnFollow {
+    width: 88%;
+    padding: 16px 0;
+    border: 0;
+    border-radius: 3px;
+    text-align: center;
+    border: 1px solid rgb(248, 248, 248);
+    background: rgb(248, 248, 248);
+    position: absolute;
+    top: 95px;
+    color: rgb(122, 122, 122);
+    font-size: 14px;
+}
+
+.offerItem .busLink:hover, .offerItem .btnFollow:hover {
+    background: transparent;
+    border: 1px solid #2cc397;
+    color: #2cc397;
+}
+
+.offerItem .location {
+    display: none;
+}
+
+
+.supportModal {
+    text-align: center;
+    width: 100%;
+    position: relative;
+    top: -30px;
+}
+
+.supportModal label {
+    font-size: 14px;
+    display: inline-block;
+    width: 27%;
+    vertical-align: top;
+    text-align: right;
+    padding: 12px 20px 0;
+}
+
+.supportModal .support-forms {
+    position: relative;
+    left: -55px;
+}
+
+.supportModal .support-buttons {
+    width: 50%;
+    margin: 10px auto;
+    position: relative;
+    left: 50px;
+    top: 13px;
+}
+
+.supportModal .support-buttons input {
+    background: #2cc397;
+    border: 0;
+    color: white;
+    font-size: 15px;
+    display: inline-block;
+    width: 100%;
+}
+
+.supportModal .support-buttons a {
+    color: #c0c0c0;
+    font-size: 15px;
+    margin: 10px 0;
+    display: inline-block;
+}
+
+.support-forms input, .supportModal .support-forms textarea {
+    display: inline-block;
+    border: 1px solid rgb(231, 231, 231);
+    border-radius: 3px;
+    padding: 10px;
+    width: 50%;
+    outline: 0;
+    background: #FFFFFF;
+    margin: 0 0 10px 0;
+}
+
+.supportModal h1 {
+    font-size: 32px;
+    color: #7C7C7C;
+    margin: 20px 8px;
+}
+
+.supportModal select {
+    border: 0;
+    outline: 0;
+    display: inline-block;
+    height: 40px;
+    text-indent: 12px;
+    font-size: 15px;
+    margin: 0 0 25px;
+}
+
+.offerHero h1, .offerHero h2 {
+    color: white;
+    display: inline-block;
+    position: absolute;
+    top: 25px;
+    left: 110px;
+}
+
+/* line 140, ../sass/_modals.scss */
+.offerHero h2 {
+    display: inline-block;
+    color: white;
+    font-size: 14px;
+    position: absolute;
+    top: 84px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 50%;
+}
+
+.offerHero a {
+    position: absolute;
+    background: transparent;
+    border: 0;
+    top: 5px;
+    left: 5px;
+    width: 100%;
+}
+
+.redemptionCode {
+    font-size: 15px;
+    padding: 17px;
 }

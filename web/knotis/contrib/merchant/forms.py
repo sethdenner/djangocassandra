@@ -248,6 +248,14 @@ class OfferProductPriceForm(Form):
                 'discount price must be less than retail price.'
             )
 
+        unlimited = cleaned_data.get('offer_unlimited')
+        stock = cleaned_data.get('offer_stock')
+
+        if not unlimited and not stock:
+            raise ValidationError(
+                'Offers must have a quantity or be unlimited'
+            )
+
         return cleaned_data
 
 
