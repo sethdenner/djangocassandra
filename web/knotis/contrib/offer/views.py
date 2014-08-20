@@ -301,6 +301,28 @@ class OfferActionButton(ActionButton):
     view_name = 'offer_action_button'
 
 
+class DummyOfferTile(FragmentView):
+    template_name = 'knotis/offer/dummytile.html'
+    view_name = 'dummy_offer_tile'
+
+    def process_context(self):
+        if ((current_identity and
+                current_identity.identity_type == IdentityTypes.INDIVIDUAL) or
+                current_identity is None):
+            action_button = IdentityActionButton()
+            action_button_content = action_button.render_template_fragment(
+                identity_tile_context
+            )
+        else:
+            action_button_content = None
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'action_button': action_button_content,
+        })
+
+        return local_context
+
 class OfferTile(FragmentView):
     template_name = 'knotis/offer/tile.html'
     view_name = 'offer_tile'
