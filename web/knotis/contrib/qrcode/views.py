@@ -193,19 +193,21 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
         ])
     ]
 
-    def process_context(self):
+    def get(
+        self,
+        request,
+        transaction_collection_id=None,
+        page_numb=None,
+        *args,
+        **kwargs
+    ):
 
         current_identity = self.get_current_identity(self.request)
-
-        transaction_collection_id = self.context.get(
-            'transaction_collection_id')
 
         transaction_collection = get_object_or_404(
             TransactionCollection,
             pk=transaction_collection_id
         )
-
-        page_numb = self.context.get('page_numb')
 
         transaction_collection_item = get_object_or_404(
             TransactionCollectionItem,
@@ -220,6 +222,11 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
             transaction,
             current_identity
         )
+        return super(CouponRedemptionView, self).get(
+            request,
+            *args,
+            **kwargs
+        )
 
 
 class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
@@ -233,12 +240,15 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
         ])
     ]
 
-    def process_context(self):
+    def get(
+        self,
+        request,
+        transaction_collection_id=None,
+        *args,
+        **kwargs
+    ):
 
         current_identity = self.get_current_identity(self.request)
-
-        transaction_collection_id = self.context.get(
-            'transaction_collection_id')
 
         transaction_collection = get_object_or_404(
             TransactionCollection,
@@ -249,4 +259,9 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
             self.request,
             current_identity,
             transaction_collection,
+        )
+        return super(OfferCollectionConnectView, self).get(
+            request,
+            *args,
+            **kwargs
         )
