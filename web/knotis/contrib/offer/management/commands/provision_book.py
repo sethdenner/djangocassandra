@@ -83,10 +83,13 @@ class Command(BaseCommand):
                         transaction_context=transaction_context
                     )
 
-                    buyer_transaction = filter(lambda x: x.owner == knotis_passport, transactions)[0]
+                    seller_transaction = filter(
+                        lambda x: x.owner != knotis_passport,
+                        transactions)[0]
+
                     TransactionCollectionItem.objects.create(
                         transaction_collection=transaction_collection,
-                        transaction=buyer_transaction,
+                        transaction=seller_transaction,
                         page=i.page,
                     )
 
@@ -95,7 +98,9 @@ class Command(BaseCommand):
                         i.page,
                         book_numb,
                         '%s/%s' % (transaction_collection.pk, i.page),
-                        settings.BASE_URL + '/qrcode/coupon/%s/%s' % (transaction_collection.pk, i.page)
+                        settings.BASE_URL + '/qrcode/coupon/%s/%s' % (
+                            transaction_collection.pk,
+                            i.page)
                     ])
 
                 csv_file.writerow([
@@ -103,5 +108,6 @@ class Command(BaseCommand):
                     'last_page',
                     book_numb,
                     transaction_collection.pk,
-                    settings.BASE_URL + '/qrcode/connect/%s' % transaction_collection.pk
+                    settings.BASE_URL + (
+                        '/qrcode/connect/%s' % transaction_collection.pk)
                 ])

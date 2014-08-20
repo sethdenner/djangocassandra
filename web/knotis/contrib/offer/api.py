@@ -10,7 +10,6 @@ from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
-from knotis.contrib.identity.models import IdentityTypes
 
 from knotis.contrib.inventory.models import Inventory
 from knotis.contrib.merchant.forms import (
@@ -311,7 +310,7 @@ class OfferCreateApi(object):
         try:
             owner_identity = Identity.objects.get(
                 name=business_name,
-                identity_type=IdentityTypes.BUSINESS
+                identity_type=IdentityTypes.ESTABLISHMENT
             )
         except:
             logger.exception('Cannot find owner %s' % business_name)

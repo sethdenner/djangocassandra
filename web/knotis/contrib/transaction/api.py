@@ -18,6 +18,7 @@ from knotis.views import ApiModelViewSet
 
 from knotis.contrib.auth.models import KnotisUser
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
+from knotis.contrib.identity.models import IdentityTypes
 from knotis.contrib.relation.models import Relation
 from knotis.contrib.activity.models import Activity
 from knotis.contrib.offer.models import Offer
@@ -98,7 +99,7 @@ class TransactionApi(object):
                     customer_receipt.send()
 
                 except Exception, e:
-                    #shouldn't fail if emails fail to send.
+                    # shouldn't fail if emails fail to send.
                     logger.exception(e.message)
 
             else:
@@ -131,7 +132,7 @@ class TransactionApi(object):
                     merchant_receipt.send()
 
                 except Exception, e:
-                    #shouldn't fail if emails fail to send.
+                    # shouldn't fail if emails fail to send.
                     logger.exception(e.message)
 
         Activity.purchase(request)
@@ -185,6 +186,27 @@ class TransactionApi(object):
         pass
 
     class AlreadyRedeemedException(Exception):
+        pass
+
+    @staticmethod
+    def create_transaction_transfer(
+        request=None,
+        new_owner=None,
+        transaction_collection=None,
+    ):
+        if new_owner.identity_type != IdentityTypes.INDIVIDUAL:
+            raise TransactionApi.WrongIdentityTypeException(
+                'Idenity %s is not an individual.' % new_owner
+            )
+
+        Transaction.objects.create_transaction_transfer(
+            new_owner,
+            transaction_collection
+        )
+
+        Activity.redeem(request)
+
+    class WrongIdentityTypeException(Exception):
         pass
 
 
