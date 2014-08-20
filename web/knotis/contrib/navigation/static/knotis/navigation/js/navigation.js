@@ -89,6 +89,7 @@
         });
 
         initialize_address();
+
     };
 
     var initialize_navigation = function () {
@@ -96,6 +97,8 @@
         initialize_always();
 
         $.address.state('/').change(function (event) {
+            $.knotis.installMobileApp();
+
             var address = event.value;
 
             if (first_change) {
