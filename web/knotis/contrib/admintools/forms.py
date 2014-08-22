@@ -45,3 +45,21 @@ class AdminQueryForm(TemplateForm):
         required = True,
         initial = 'query/',
     )
+
+
+
+class AdminManagerToggleForm(TemplateForm):
+    template_name = 'knotis/admintools/admin_manager_button_form.html'
+
+    establishment_id = CharField(
+        label='',
+        max_length = 254,
+        required = False,
+        initial = '',
+    )
+
+    currently_manager = BooleanField(
+        label='',
+        required = False,
+        initial = False,
+    )

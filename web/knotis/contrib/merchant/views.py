@@ -1630,6 +1630,7 @@ class EstablishmentProfileView(EmbeddedView):
 
         local_context = copy.copy(self.context)
         local_context.update({
+            'request': request,
             'establishment': self.establishment,
             'is_manager': self.is_manager,
             'address': address,
