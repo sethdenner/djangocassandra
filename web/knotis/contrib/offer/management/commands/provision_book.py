@@ -42,9 +42,12 @@ class Command(BaseCommand):
             neighborhood=neighborhood
         ).order_by('-pub_date')[0]
 
-        offer_collection_items = OfferCollectionItem.objects.filter(
-            offer_collection=offer_collection
-        ).order_by('page')
+        offer_collection_items = sorted(
+            OfferCollectionItem.objects.filter(
+                offer_collection=offer_collection
+            ),
+            key=lambda x: x.page
+        )
 
         knotis_passport = Identity.objects.get(name=provision_user)
 
@@ -83,13 +86,13 @@ class Command(BaseCommand):
                         transaction_context=transaction_context
                     )
 
-                    seller_transaction = filter(
+                    seller = filter(
                         lambda x: x.owner != knotis_passport,
                         transactions)[0]
 
                     TransactionCollectionItem.objects.create(
                         transaction_collection=transaction_collection,
-                        transaction=seller_transaction,
+                        transaction=seller,
                         page=i.page,
                     )
 
@@ -100,7 +103,8 @@ class Command(BaseCommand):
                         '%s/%s' % (transaction_collection.pk, i.page),
                         settings.BASE_URL + '/qrcode/coupon/%s/%s' % (
                             transaction_collection.pk,
-                            i.page)
+                            i.page),
+                        seller.redemption_code()
                     ])
 
                 csv_file.writerow([
