@@ -47,7 +47,7 @@ class Command(BaseCommand):
                         is_physical=False,
                         business_name=row.get('business name'),
                         email=row.get('email'),
-                        stock=row.get('stock', 500),
+                        stock=row.get('stock', 0.0),
                         currency='usd',
                     )
                     OfferCollectionItem.objects.create(

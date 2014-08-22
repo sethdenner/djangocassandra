@@ -90,10 +90,6 @@ class Command(BaseCommand):
                         lambda x: x.owner != knotis_passport,
                         transactions)[0]
 
-                    buyer = filter(
-                        lambda x: x.owner == knotis_passport,
-                        transactions)[0]
-
                     TransactionCollectionItem.objects.create(
                         transaction_collection=transaction_collection,
                         transaction=seller,
@@ -108,7 +104,7 @@ class Command(BaseCommand):
                         settings.BASE_URL + '/qrcode/coupon/%s/%s' % (
                             transaction_collection.pk,
                             i.page),
-                        buyer.redemption_code()
+                        seller.redemption_code()
                     ])
 
                 csv_file.writerow([
