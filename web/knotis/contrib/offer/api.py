@@ -308,10 +308,16 @@ class OfferCreateApi(object):
     ):
         business_name = kwargs.get('business_name')
         try:
-            owner_identity = Identity.objects.get(
+            owner_identities = Identity.objects.filter(
                 name=business_name,
                 identity_type=IdentityTypes.ESTABLISHMENT
-            )
+            ).order_by('pub_date')
+            if len(owner_identities) == 0:
+                raise Exception(
+                    'Failed to find establishment %s' % business_name
+                )
+            else:
+                owner_identity = owner_identities[0]
         except:
             logger.exception('Cannot find owner %s' % business_name)
             raise
