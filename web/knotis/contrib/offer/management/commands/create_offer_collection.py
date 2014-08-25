@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 from csv import DictReader
 
+
 class Command(BaseCommand):
     def handle(
         self,
@@ -28,22 +29,25 @@ class Command(BaseCommand):
             offer_collection = OfferCollection.objects.create(
                 neighborhood=neighborhood
             )
-            page_num = 1
             for row in csv_dict:
                 value = row.get('offer amount')
                 title = '$%s credit toward any purchase' % value
+                restrictions = '$%s Minimum' % row.get('minimum')
+                page_num = row.get('page number', None)
+                if page_num is None:
+                    continue
                 try:
                     new_offer = OfferCreateApi.create_offer(
                         dark_offer=True,
                         create_business=True,
                         value=float(value),
                         description=row.get('catagory'),
-                        restrictions=row.get('restrictions'),
+                        restrictions=restrictions,
                         title=title,
                         is_physical=False,
                         business_name=row.get('business name'),
                         email=row.get('email'),
-                        stock=row.get('stock'),
+                        stock=row.get('stock', 0.0),
                         currency='usd',
                     )
                     OfferCollectionItem.objects.create(
@@ -51,7 +55,6 @@ class Command(BaseCommand):
                         page=page_num,
                         offer_collection=offer_collection,
                     )
-                    page_num += 1
 
                 except:
                     logger.exception('Failed at creating offer')
