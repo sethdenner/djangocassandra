@@ -841,7 +841,7 @@ class OfferPublish(Publish):
             raise
 
         else:
-            self.complete = True
+            self.completed = True
             self.save()
 
     def _publish_facebook(self):

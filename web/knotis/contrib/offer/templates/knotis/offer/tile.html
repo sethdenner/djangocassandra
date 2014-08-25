@@ -1,5 +1,5 @@
 {% load thumbnail %}
-<div class="col-lg-4 col-xs-12 offerItem">
+<div class="col-lg-3 col-xs-12 offerItem">
     <a href="/offer/detail/{{ offer.pk }}/" class="modal-link">
         <div class="busCover">
             {% thumbnail offer_banner_image.image.image 'x140' crop=offer_banner_image.crop as image %}
@@ -10,24 +10,16 @@
             <div class="overlay"></div>
         </div>
     </a>
-    <div class="offerContent">
+    <div class="tileContent">
         <div class="row">
             <div class="col-lg-10 col-xs-10">
-                {% thumbnail business_badge_image.image.image '80x80' crop=business_badge_image.crop as image %}
-                <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
-                {% empty %}
-                <img class="busLogo" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
-                {% endthumbnail %}
-            </div>
-            <div class="col-lg-1 col-xs-1">
-                <!--
-                    <div class="dropdown">
-                        <a data-toggle="dropdown" href=""><img class="iconMore" src="/assets/img/icon_more_offerItem.png"/></a>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                            <li><a href="">Extra Link</a></li>
-                        </ul>
-                    </div>
-                    -->
+                <a href="/id/{{ offer.owner.pk }}/">
+                    {% thumbnail business_badge_image.image.image '80x80' crop=business_badge_image.crop as image %}
+                    <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
+                    {% empty %}
+                    <img class="busLogo" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
+                    {% endthumbnail %}
+                </a>
             </div>
         </div>
 

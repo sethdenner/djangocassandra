@@ -11,6 +11,8 @@
     <form class="form-horizontal" id="{{ form.form_id }}" action="{{ form.form_action }}" method="{{ form.form_method }}" >{% csrf_token %}
         <input type="hidden" name="{{ form.owner.html_name }}" value="{{ form.owner.value|default_if_none:current_identity.id }}" />
         <input type="hidden" name="{{ form.offer_id.html_name }}" value="{{ form.offer_id.value|default_if_none:'' }}" />
+        <div class="control-group errors" data-id="form-errors">
+        </div>
         <div class="control-group">
             <label class="control-label">Select Promotion Type</label>
 
@@ -33,7 +35,7 @@
             <label class="control-label">Enter Cost</label>
             <div class="controls">
                 <input class="span1" name="{{ form.product_price.html_name }}" type="text" value="{{ form.product_price.value|default_if_none:"20" }}"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />
-                <label class="control-label">Discounted Vwalue</label>
+                <label class="control-label">Discounted Value</label>
             </div>
             <div class="controls">
                 <input class="span1"  name="{{ form.product_value.html_name }}" type="text" value="{{ form.product_value.value|default_if_none:"40" }}"{% if form.product_type.value != ProductTypes.PHYSICAL %} disabled{% endif %} />

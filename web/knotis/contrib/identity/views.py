@@ -560,10 +560,20 @@ class TransactionTileView(FragmentView):
         identity = self.context['identity']
 
         profile_badge_image = get_identity_profile_badge(identity)
-        profile_banner_image = get_identity_profile_banner(identity)
+        transaction = self.context.get('transaction')
+        try:
+            profile_banner_image = ImageInstance.objects.get(
+                related_object_id=transaction.offer.id,
+                context='offer_banner',
+                primary=True
+            )
+        except:
+            profile_banner_image = None
+
         profile_banner_color = get_identity_default_profile_banner_color(
-            identity
+            transaction.owner
         )
+        self.context['offer'] = transaction.offer
 
         self.context.update({
             'badge_image': profile_badge_image,

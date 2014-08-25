@@ -48,6 +48,8 @@
 
                         $('.span12 > .row-fluid').append($markup);
                         fetching_results = false;
+
+                        $.navigation.reinitialize();
                     }
                 });
             }
