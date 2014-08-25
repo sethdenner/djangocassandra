@@ -516,7 +516,7 @@ class TransactionManager(QuickManager):
         currency,
         transaction_context=None,
     ):
-        self.create_purchase(
+        return self.create_purchase(
             offer,
             buyer,
             currency,
@@ -526,13 +526,23 @@ class TransactionManager(QuickManager):
 
     def create_transaction_transfer(
         self,
+        new_owner,
         transaction_collection,
-        new_owner
     ):
-        transaction_collection_items = TransactionCollectionItem.objects.filter(
-            transaction_collection=transaction_collection
-        )
+        transaction_collection_items = \
+            TransactionCollectionItem.objects.filter(
+                transaction_collection=transaction_collection
+            )
+
         for t in transaction_collection_items:
+            other_transfers = Transaction.objects.filter(
+                transaction_type=TransactionTypes.TRANSACTION_TRANSFER,
+                transaction_context=t.transaction.transaction_context,
+                offer=t.transaction.offer,
+            )
+            if len(other_transfers) != 0:
+                raise Exception("Already transfered this offer")
+
             for owner in [new_owner, t.transaction.owner]:
                 super(TransactionManager, self).create(
                     owner=owner,
@@ -542,8 +552,6 @@ class TransactionManager(QuickManager):
                 )
             t.transaction.owner = new_owner
             t.transaction.save()
-
-
 
     def create(
         self,

@@ -1,0 +1,10 @@
+<form method="post" id="admin_become_manager_button" action="/admin/utils/become_manager/">
+    {% csrf_token %}
+    <input type="hidden" name="{{ form.establishment_id.html_name }}" value="{{ form.initial.establishment_id }}">
+    <input type="hidden" name="{{ form.currently_manager.html_name }}" value="{{ form.initial.currently_manager }}">
+    {% if form.initial.currently_manager %}
+    <input type="submit" value="Remove Manager Status">
+    {% else %}
+    <input type="submit" value="Add Manager Status">
+    {% endif %}
+</form>
