@@ -103,12 +103,14 @@ class SearchResultsGrid(GridSmallView):
                 else:
                     # tiles.append( "no template for this object type" )
                     logger.exception(
-                        ' no template available for this search result type. ')
+                        'No template available for this search result type. '
+                    )
 
             except:
-                logger.exception((
-                    'SEARCH RESULT FROM HAYSTACK BLEW THE STACK',
-                    '- FIX - SERIOUSLY'))
+                logger.exception(
+                    'SEARCH RESULT FROM HAYSTACK BLEW THE STACK'
+                    '- FIX - SERIOUSLY'
+                )
 
         if not len(tiles):
             tiles.append("Sorry your search returned no results.")
