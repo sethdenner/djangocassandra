@@ -61,6 +61,7 @@ class SearchResultsGrid(GridSmallView):
 
         try:
             current_identity = get_current_identity(self.request)
+
         except:
             current_identity = None
 
@@ -92,14 +93,15 @@ class SearchResultsGrid(GridSmallView):
                     offer_tile = OfferTile()
                     result_context = Context({
                         'offer': result,
-                        'request': self.request
+                        'request': self.request,
+                        'current_identity': current_identity
                     })
                     tiles.append(
                         offer_tile.render_template_fragment(
                             result_context
                         )
                     )
-                    pass
+
                 else:
                     # tiles.append( "no template for this object type" )
                     logger.exception(
