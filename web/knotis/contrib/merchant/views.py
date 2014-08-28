@@ -495,14 +495,14 @@ class OfferAvailabilityGridView(GridSmallView):
         tiles = []
         for a in offer_availability:
             tile = OfferTile()
-            tiles.append(tile.render_template_fragment(Context({
+            tiles.append(tile.render_template_fragment(RequestContext(request, {
                 'offer': a.offer,
                 'offer_action': offer_action
             })))
         if not tiles:
             tile = DummyOfferTile()
             tiles = []
-            tiles.append(tile.render_template_fragment(Context({
+            tiles.append(tile.render_template_fragment(RequestContext(request, {
                 'identity': identity,
                 'current_identity': current_identity,
             })))
