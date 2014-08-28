@@ -281,7 +281,7 @@ nav .dropdown-menu {
     width: 100%;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-    height: 288px;
+    max-height: 288px;
     overflow-y: auto;
 }
 /* line 114, ../sass/_nav.scss */
