@@ -257,7 +257,6 @@ nav .dropdown {
     top: -2px;
     transition: all 0.2s ease;
     border: 1px solid #2cc397;
-    overflow-y: auto;
 }
 /* line 95, ../sass/_nav.scss */
 nav .dropdown a {
@@ -280,9 +279,10 @@ nav .dropdown-menu {
     font-family: 'LatoReg';
     top: 46px;
     width: 100%;
-    overflow: hidden;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+    max-height: 288px;
+    overflow-y: auto;
 }
 /* line 114, ../sass/_nav.scss */
 nav .dropdown-menu a {
@@ -1893,13 +1893,18 @@ label.label-unlimited {
 
 a.adminLink {
     position: absolute;
-    top: 50px;
-    color: #2cc297;
-    border: 2px solid rgb(224, 224, 224);
+    top: -88px;
+    color: #FFFFFF;
+    border: 1px solid rgb(224, 224, 224);
     padding: 8px 30px;
     border-radius: 3px;
     white-space: nowrap;
-    left: 0;
+    left: -44px;
+    z-index: 10;
+}
+
+a.adminLink:hover {
+    color: #2cc397;
 }
 
 .about-carousel-image {
@@ -2372,4 +2377,20 @@ section.welcomeModal h1 {
 .redemptionCode {
     font-size: 15px;
     padding: 17px;
+}
+
+.offerItem.dummyTile {
+    text-align: center;
+    position: relative;
+    top: 35px;
+}
+
+.dummyTile .busCover {
+    width: 250%;
+    position: absolute;
+    left: -200px;
+}
+
+.offerItem.dummyTile h1 {
+    font-size: 17px;
 }
