@@ -33,7 +33,10 @@ from knotis.contrib.layout.views import (
 )
 
 
-from knotis.contrib.identity.models import Identity
+from knotis.contrib.identity.models import (
+    Identity,
+    IdentityTypes
+)
 from knotis.contrib.transaction.models import (
     Transaction,
     TransactionTypes
@@ -98,6 +101,7 @@ class MyPurchasesGrid(GridSmallView):
                         'show_offer_info': True,
                         'transaction': purchase,
                         'identity': merchant,
+                        'IdentityTypes': IdentityTypes,
                         'offer': purchase.offer,
                         'TransactionTypes': TransactionTypes
                     }

@@ -158,15 +158,6 @@ class OffersGridView(GridSmallView):
         start_range = page * count
         end_range = start_range + count
 
-        if (
-            current_identity and
-            current_identity.identity_type == IdentityTypes.INDIVIDUAL
-        ):
-            offer_action = 'buy'
-
-        else:
-            offer_action = None
-
         offer_filter_dict = {
             'published': True,
             'active': True,
@@ -188,7 +179,8 @@ class OffersGridView(GridSmallView):
             tile = OfferTile()
             tiles.append(tile.render_template_fragment(Context({
                 'offer': offer,
-                'offer_action': offer_action
+                'request': request,
+                'current_identity': current_identity
             })))
 
         local_context = copy.copy(self.context)
@@ -321,6 +313,17 @@ class OfferTile(FragmentView):
         if not offer:
             return self.context
 
+        current_identity = self.context.get('current_identity')
+
+        if (
+            current_identity and
+            current_identity.identity_type == IdentityTypes.INDIVIDUAL
+        ):
+            offer_action = 'buy'
+
+        else:
+            offer_action = None
+
         try:
             offer_banner_image = ImageInstance.objects.get(
                 related_object_id=offer.id,
@@ -343,6 +346,7 @@ class OfferTile(FragmentView):
         self.context.update({
             'offer_banner_image': offer_banner_image,
             'business_badge_image': business_badge_image,
+            'offer_action': offer_action
         })
         return self.context
 

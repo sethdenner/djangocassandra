@@ -175,6 +175,7 @@ class RedemptionsGrid(GridSmallView):
                         'redeem': not redeemed,
                         'transaction': purchase,
                         'identity': consumer,
+                        'IdentityTypes': IdentityTypes,
                         'TransactionTypes': TransactionTypes
                     }
                 )

@@ -121,8 +121,8 @@ a:focus {
 
 /* line 18, ../sass/_custom.scss */
 .mainContent {
-    max-width: 100%;
-    padding: 26px;
+    padding: 17px;
+    width: 106%;
 }
 
 /* line 25, ../sass/_custom.scss */
@@ -257,6 +257,7 @@ nav .dropdown {
     top: -2px;
     transition: all 0.2s ease;
     border: 1px solid #2cc397;
+    overflow-y: auto;
 }
 /* line 95, ../sass/_nav.scss */
 nav .dropdown a {
