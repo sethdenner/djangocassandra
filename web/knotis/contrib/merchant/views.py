@@ -58,7 +58,10 @@ from knotis.contrib.offer.models import (
     OfferPublish
 )
 
-from knotis.contrib.offer.views import OfferTile
+from knotis.contrib.offer.views import (
+    OfferTile,
+    DummyOfferTile,
+)
 
 from knotis.contrib.wizard.views import (
     WizardView,
@@ -172,6 +175,7 @@ class RedemptionsGrid(GridSmallView):
                         'redeem': not redeemed,
                         'transaction': purchase,
                         'identity': consumer,
+                        'IdentityTypes': IdentityTypes,
                         'TransactionTypes': TransactionTypes
                     }
                 )
@@ -233,14 +237,6 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
             pk=transaction_id
         )
 
-        if current_identity.pk != transaction.owner.pk:
-            return self.generate_ajax_response({
-                'errors': {
-                    'no-field': 'This transaction does not belong to you'
-                },
-                'status': 'ERROR'
-            })
-
         try:
 
             redemptions = TransactionApi.create_redemption(
@@ -248,6 +244,14 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
                 transaction,
                 current_identity
             )
+
+        except TransactionApi.WrongOwnerException:
+            return self.generate_ajax_response({
+                'errors': {
+                    'no-field': 'This transaction does not belong to you'
+                },
+                'status': 'ERROR'
+            })
 
         except Exception, e:
             return self.generate_ajax_response({
@@ -330,7 +334,7 @@ class MyCustomersGrid(GridSmallView):
                 )
 
         for c in tile_contexts:
-            customer_tile = TransactionTileView()
+            customer_tile = IdentityTile()
             customer_tile_context = RequestContext(
                 request,
                 c
@@ -482,7 +486,7 @@ class OfferAvailabilityGridView(GridSmallView):
                 )[start_range:end_range]
 
             else:
-                identity = None
+                offer_availability = None
 
         except Exception:
             logger.exception(''.join([
@@ -496,7 +500,13 @@ class OfferAvailabilityGridView(GridSmallView):
                 'offer': a.offer,
                 'offer_action': offer_action
             })))
-
+        if not tiles:
+            tile = DummyOfferTile()
+            tiles = []
+            tiles.append(tile.render_template_fragment(Context({
+                'identity': identity,
+                'current_identity': current_identity,
+            })))
         local_context = copy.copy(self.context)
         local_context.update({
             'tiles': tiles
@@ -1630,6 +1640,7 @@ class EstablishmentProfileView(EmbeddedView):
 
         local_context = copy.copy(self.context)
         local_context.update({
+            'request': request,
             'establishment': self.establishment,
             'is_manager': self.is_manager,
             'address': address,

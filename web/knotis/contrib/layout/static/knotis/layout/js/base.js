@@ -20,7 +20,7 @@
 
     $('.sidebar-nav li').each(function () {
         $(this).hover(function (){
-            $(this).css('background', '#3b3b3b');
+            $(this).css('background', 'rgb(88, 88, 88)');
             $(this).find('.sidebar-label').css('color', '#ffffff');
         }, function(){
             $(this).css('background', '');
@@ -28,6 +28,11 @@
         });
 
         $(this).click(function() {
+
+            $( "#sidebar-wrapper" ).animate({
+                width: "70px",
+            },  20, "linear");
+            $('.sidebar-overlay').fadeOut(10);
 
             $(this).css('background', '');
             $(this).find('.sidebar-label').css('color', '');

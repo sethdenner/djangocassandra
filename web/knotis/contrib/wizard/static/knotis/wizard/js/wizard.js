@@ -57,7 +57,8 @@
                 if ('success' == status) {
                     var _container = $('div#' + step_container);
                     _container.html(data);
-                    _container.find('form').ajaxform({
+                    var $form = _container.find('form');
+                    $form.ajaxform({
                         done: function(data, status, jqxhr) {
                             if (!data.errors) {
                                 if (data.wizard_query) {
@@ -72,6 +73,20 @@
                                     callback: settings.callback,
                                     modal_id: settings.modal_id
                                 });
+                            } else {
+                                var $formErrors = $form.find('[data-id=form-errors]');
+                                if (!$formErrors.length) {
+                                    return;
+                                }
+
+                                for (var i in data.errors.__all__) {
+                                    $formErrors.append([
+                                        '<p>',
+                                        data.errors.__all__[i],
+                                        '</p>'
+                                    ].join(''));
+                                }
+                                    
                             }
                         }
                     });

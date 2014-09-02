@@ -14,11 +14,12 @@
         <div id="about-map"></div>
         <input type="hidden"
                id="establishment-contact-loc-details"
+               data-address="{{ address }}"
                data-latitude="{{ latitude }}"
                data-longitude="{{ longitude }}" />
         {% if address %}
             <h2>{{ address }}</h2>
-            {% endif %}
+        {% endif %}
 
         <a class="no-deep" href="http://maps.google.com/maps?daddr={{ address|iriencode }}">Get Directions</a>
     </div>

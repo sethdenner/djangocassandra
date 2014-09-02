@@ -63,6 +63,7 @@
                         */
                         fetching_results = false;
                         $.identity.initialize_business_tiles();
+                        $.navigation.reinitialize();
                     }
                 });
             }

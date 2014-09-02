@@ -30,7 +30,11 @@ from knotis.contrib.identity.models import (
     Identity,
     IdentityTypes
 )
-from knotis.contrib.identity.views import get_identity_profile_badge
+from knotis.contrib.identity.views import (
+    get_identity_profile_badge,
+    IdentityActionButton,
+)
+
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 
 from knotis.contrib.paypal.views import IPNCallbackView
@@ -301,6 +305,11 @@ class OfferActionButton(ActionButton):
     view_name = 'offer_action_button'
 
 
+class DummyOfferTile(FragmentView):
+    template_name = 'knotis/offer/dummytile.html'
+    view_name = 'dummy_offer_tile'
+
+
 class OfferTile(FragmentView):
     template_name = 'knotis/offer/tile.html'
     view_name = 'offer_tile'
@@ -343,7 +352,12 @@ class OfferDetailView(ModalView):
     view_name = 'offer_detail'
     url_patterns = [
         r''.join([
-            'detail/(?P<offer_id>',
+            '^(s)?/detail/(?P<offer_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+        r''.join([
+            '^(s)?/(?P<offer_id>',
             REGEX_UUID,
             ')/$'
         ]),

@@ -1,9 +1,8 @@
 from django.core.management.base import (
     BaseCommand,
-    CommandError
 )
 
-from knotis.contrib.location.models import Location, LocationItem
+from knotis.contrib.location.models import Location
 
 import logging
 logger = logging.getLogger(__name__)
@@ -16,8 +15,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for location in Location.objects.all():
             if location.address and None in (
-                    getattr(location, 'latitude'),
-                    getattr(location, 'longitude')
+                    location.latitude,
+                    location.longitude
             ):
                 try:
                     location.update_geocode()
