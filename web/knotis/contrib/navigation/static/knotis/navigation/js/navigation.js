@@ -97,8 +97,6 @@
         initialize_always();
 
         $.address.state('/').change(function (event) {
-            $.knotis.installMobileApp();
-
             var address = event.value;
 
             if (first_change) {
