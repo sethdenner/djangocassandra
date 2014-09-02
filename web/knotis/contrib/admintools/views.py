@@ -8,6 +8,7 @@ from django.shortcuts import (
 
 from knotis.contrib.relation.models import (
     Relation,
+    RelationTypes,
 )
 
 from knotis.contrib.auth.models import (
@@ -25,9 +26,12 @@ from knotis.contrib.auth.forms import (
 from knotis.contrib.identity.models import (
     IdentityTypes,
     Identity,
+    IdentityIndividual,
     IdentityBusiness,
     IdentityEstablishment,
 )
+
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 from knotis.contrib.identity.views import (
     get_current_identity,
 )
@@ -48,6 +52,7 @@ from knotis.views import (
 )   
 from forms import (
     AdminQueryForm,
+    AdminManagerToggleForm,
 )
 
 
@@ -254,6 +259,122 @@ class AdminListEditView(AdminDefaultView):
 
 
 ###### ESTABLISHMENT MANAGEMENT TOOLS
+
+######### BECOME MANAGER
+class AdminBecomeManagerButton(AJAXFragmentView, GetCurrentIdentityMixin):
+    view_name = 'admin_toggle_manager_button'
+    template_name = 'knotis/admintools/toggle_manager_button.html'
+    button_form = AdminManagerToggleForm
+
+    my_post_scripts = [ 'knotis/admintools/js/admin_toggle_manager.js', ]
+
+    def process_context(self):
+        local_context = copy.copy(self.context)
+        request = local_context.get('request')
+
+        post_scripts = local_context.get('post_scripts', [])
+
+        establishment = local_context.get('establishment')
+        current_identity = self.get_current_identity(request)
+        current_user = local_context.get('user')
+        current_individual = IdentityIndividual.objects.get_individual(current_user)
+
+
+        if (
+            current_identity                                              and
+            current_individual                                            and
+            establishment                                                 and
+            current_identity.identity_type == IdentityTypes.SUPERUSER     and
+            current_individual.identity_type == IdentityTypes.INDIVIDUAL  and
+            establishment.identity_type == IdentityTypes.ESTABLISHMENT       
+        ):
+            relations = Relation.objects.filter(
+                subject_object_id = current_individual.id,
+                related_object_id = establishment.id,
+                relation_type = RelationTypes.MANAGER
+            )
+
+            if relations:
+                local_context.update({
+                    'button_form': self.button_form(
+                        initial={
+                            'establishment_id': establishment.id,
+                            'currently_manager': True,
+                        },
+                       request=request,
+                    )
+                })
+            else:
+                local_context.update({
+                    'button_form': self.button_form(
+                        initial={
+                            'establishment_id': establishment.id,
+                            'currently_manager': False,
+                        },
+                       request=request,
+                    )
+                })
+
+        for script in self.my_post_scripts:
+            if not script in post_scripts:
+                post_scripts.append(script)
+        local_context.update({
+            'post_scripts': post_scripts,
+        })
+
+        return local_context
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        current_user = request.user
+        current_identity = self.get_current_identity(request)
+        current_individual = IdentityIndividual.objects.get_individual(current_user)
+        
+        manager_form = self.button_form(data=request.POST)
+        if (manager_form.errors):
+            return self.generage_ajax_response({
+                'status': 'failure',
+            })
+        currently_manager = bool(manager_form.cleaned_data.get('currently_manager'))
+        establishment_id = str(manager_form.cleaned_data.get('establishment_id'))
+        establishment = IdentityEstablishment.objects.filter(pk=establishment_id)
+        if (establishment):
+            establishment = establishment[0] # Corrects for it being returned in a list.
+        
+        if (
+            current_identity                                           and 
+            establishment                                              and
+            current_identity.identity_type == IdentityTypes.SUPERUSER  and
+            establishment.identity_type == IdentityTypes.ESTABLISHMENT       
+        ):
+            if (currently_manager):
+                relations = Relation.objects.filter(
+                    subject_object_id = current_individual.id,
+                    related_object_id = establishment.id,
+                    relation_type = RelationTypes.MANAGER
+                )
+                for rel in relations:
+                    rel.delete()
+                    rel.save()
+                return self.generate_ajax_response({
+                    'status': 'success',
+                })
+            else:
+                Relation.objects.create_manager(current_individual, establishment).save()
+                return self.generate_ajax_response({
+                    'status': 'success',
+                })
+        else:
+            return self.generage_ajax_response({
+                'status': 'failure',
+            })
+
+
+######### MANAGER LOOKUP
 class AdminOwnerViewButton(FragmentView):
     view_name = 'admin_owner_view_button'
     template_name = 'knotis/admintools/owner_button_fragment.html'

@@ -46,11 +46,11 @@ class IdentityTypes:
     SUPERUSER = 3
 
     CHOICES = (
-        (UNDEFINED, 'Undefined'),
         (INDIVIDUAL, 'Individual'),
         (BUSINESS, 'Business'),
         (ESTABLISHMENT, 'Establishment'),
-        (SUPERUSER, 'Super User')
+        (SUPERUSER, 'Super User'),
+        (UNDEFINED, 'Undefined'),
     )
 
 
