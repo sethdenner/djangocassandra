@@ -2,13 +2,14 @@ from django.conf.urls.defaults import (
     patterns,
     url
 )
-from django.contrib.auth.decorators import login_required
 
 from knotis.utils.regex import REGEX_UUID
 
 from views import (
     ScanView,
-    ManageQRCodeView
+    ManageQRCodeView,
+    CouponRedemptionView,
+    OfferCollectionConnectView,
 )
 
 urlpatterns = patterns(
@@ -24,3 +25,5 @@ urlpatterns = patterns(
 )
 
 urlpatterns += ManageQRCodeView.urls()
+urlpatterns += CouponRedemptionView.urls()
+urlpatterns += OfferCollectionConnectView.urls()

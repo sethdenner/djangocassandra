@@ -23,6 +23,7 @@ from knotis.contrib.auth.admin import (
 )
 
 from views import (
+    AdminBecomeManagerButton,
     AdminValidateResendView,
     AdminOwnerView,
     AdminDefaultView,
@@ -32,6 +33,11 @@ from knotis.utils.regex import REGEX_UUID
 
 urlpatterns = patterns(
     '',
+### ESTABLISHMENT MANAGER TOOLS
+    url(
+        r'^admin/utils/become_manager/',
+        login_required(AdminBecomeManagerButton.as_view())
+    ),
 ### OFFER VIEWER
     url(
         r'^admin/offer/update/$', login_required(OfferUpdateAdminAJAXView.as_view())
