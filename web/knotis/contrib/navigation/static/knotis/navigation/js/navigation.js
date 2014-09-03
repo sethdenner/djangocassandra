@@ -89,6 +89,7 @@
         });
 
         initialize_address();
+
     };
 
     var initialize_navigation = function () {

@@ -10,7 +10,6 @@ from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
-from knotis.contrib.identity.models import IdentityTypes
 
 from knotis.contrib.inventory.models import Inventory
 from knotis.contrib.merchant.forms import (
@@ -309,10 +308,16 @@ class OfferCreateApi(object):
     ):
         business_name = kwargs.get('business_name')
         try:
-            owner_identity = Identity.objects.get(
+            owner_identities = Identity.objects.filter(
                 name=business_name,
-                identity_type=IdentityTypes.BUSINESS
-            )
+                identity_type=IdentityTypes.ESTABLISHMENT
+            ).order_by('pub_date')
+            if len(owner_identities) == 0:
+                raise Exception(
+                    'Failed to find establishment %s' % business_name
+                )
+            else:
+                owner_identity = owner_identities[0]
         except:
             logger.exception('Cannot find owner %s' % business_name)
             raise
