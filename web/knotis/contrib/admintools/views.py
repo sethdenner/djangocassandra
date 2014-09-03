@@ -5,6 +5,8 @@ from django.template import Context
 from django.shortcuts import (
     get_object_or_404,
 )
+from django.utils import log
+logger = log.getLogger(__name__)
 
 from knotis.contrib.relation.models import (
     Relation,
@@ -428,15 +430,23 @@ class AdminOwnerView(ModalView):
         
         managers = []
         biz_managers = []
-        manager_relations = set(Relation.objects.get_managers(establishment))
-        biz_manager_relations = set(Relation.objects.get_managers(business))
+        try:
+            manager_relations = set(Relation.objects.get_managers(establishment))
+            biz_manager_relations = set(Relation.objects.get_managers(business))
+        except Exception, e:
+            logger.exception(e.message)
+            manager_relations = []
+            biz_manager_relations = []
 
         for relation in manager_relations:
             managers.append(relation.subject)
         manager_users = []
         for manager in managers:
-            user = KnotisUser.objects.get_identity_user(manager)
-            manager_users.append((manager, user))
+            try:
+                user = KnotisUser.objects.get_identity_user(manager)
+                manager_users.append((manager, user))
+            except Exception, e:
+                logger.exception(e.message)
         manager_tiles = []
         for identity, manager_user in manager_users:
             tile_context = copy.copy(self.context)
@@ -452,8 +462,11 @@ class AdminOwnerView(ModalView):
             biz_managers.append(relation.subject)
         biz_manager_users = []
         for manager in biz_managers:
-            user = KnotisUser.objects.get_identity_user(manager)
-            biz_manager_users.append((manager, user))
+            try:
+                user = KnotisUser.objects.get_identity_user(manager)
+                biz_manager_users.append((manager, user))
+            except Exception, e:
+                logger.exception(e.message)
         biz_manager_tiles = []
         for identity, manager_user in biz_manager_users:
             tile_context = copy.copy(self.context)
