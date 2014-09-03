@@ -435,8 +435,8 @@ class AdminOwnerView(ModalView):
             biz_manager_relations = set(Relation.objects.get_managers(business))
         except Exception, e:
             logger.exception(e.message)
-            manager_relations = None
-            biz_manager_relations = None
+            manager_relations = []
+            biz_manager_relations = []
 
         for relation in manager_relations:
             managers.append(relation.subject)
