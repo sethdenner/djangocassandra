@@ -1846,20 +1846,20 @@ class EstablishmentAboutTwitterFeed(FragmentView):
         local_context = copy.copy(self.context)
 
         endpoints = self.context.get('endpoints')
-        twitter_endpoint = None
+        self.endpoint = None
         for endpoint in endpoints:
             if endpoint['endpoint_type_name'] == 'twitter':
                 if endpoint['value']:
-                    twitter_endpoint = endpoint
+                    self.endpoint = endpoint
                     local_context.update({
-                        'twitter_handle': twitter_endpoint['value'],
-                        'twitter': twitter_endpoint,
+                        'twitter_handle': self.endpoint['value'],
+                        'twitter': self.endpoint,
                     })
 
         twitter_feed = None
         self.has_feed = False
-        if(twitter_endpoint):
-            feed_json = get_twitter_feed_json(twitter_endpoint['value'])
+        if(self.endpoint):
+            feed_json = get_twitter_feed_json(self.endpoint['value'])
             if feed_json:
                 twitter_feed = json.loads(feed_json)
                 self.has_feed = len(twitter_feed) > 0
@@ -1876,24 +1876,24 @@ class EstablishmentAboutYelpFeed(FragmentView):
 
     def process_context(self):
         endpoints = self.context.get('endpoints')
-        yelp_endpoint = None
+        self.endpoint = None
 
         for endpoint in endpoints:
             if endpoint['endpoint_type_name'] == 'yelp':
                 if endpoint['value']:
-                    yelp_endpoint = endpoint
+                    self.endpoint = endpoint
 
         yelp_feed = None
         self.has_feed = False
-        if yelp_endpoint:
-            yelp_feed = get_reviews_by_yelp_id(yelp_endpoint['value'])
+        if self.endpoint:
+            yelp_feed = get_reviews_by_yelp_id(self.endpoint['value'])
 
             self.has_feed = len(yelp_feed)
 
         local_context = copy.copy(self.context)
         local_context.update({
             'yelp_feed': yelp_feed,
-            'yelp': yelp_endpoint
+            'yelp': self.endpoint
         })
 
         return local_context
@@ -1912,9 +1912,11 @@ class EstablishmentAboutFeeds(FragmentView):
         local_context.update({
             'yelp_markup': yelp.render_template_fragment(local_context),
             'yelp_has_feed': yelp.has_feed,
+            'yelp': yelp.endpoint,
 
             'twitter_markup': twitter.render_template_fragment(local_context),
-            'twitter_has_feed': twitter.has_feed
+            'twitter_has_feed': twitter.has_feed,
+            'twitter': twitter.endpoint,
         })
 
         return local_context

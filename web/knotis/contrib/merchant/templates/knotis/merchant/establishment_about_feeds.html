@@ -1,19 +1,19 @@
 {% if twitter_has_feed or yelp_has_feed %}
     <h1 class="sectionHeader">Reviews/Ratings
         {% if twitter_has_feed %}
-            <a class="twitter" href="{{ twitter.uri }}">
+            <a class="twitter no-deep" target="_blank" href="{{ twitter.uri }}">
                 <img class="space away" src="/static/knotis/identity/img/twittericon-colored27x27.png" alt="Twitter"></img>
             </a>
         {% endif %}
 
         {% if facebook.value %}
-            <a class="facebook" href="{{ facebook.uri }}">
+            <a class="facebook no-deep" target="_blank" href="{{ facebook.uri }}">
                 <img class="space away" src="/static/knotis/identity/img/facebookicon-colored27x27.png" alt="Facebook"></img>
             </a>
         {% endif %}
 
         {% if yelp_has_feed %}
-            <a class="updateable-endpoint yelp" href="{{ yelp.uri }}">
+            <a class="updateable-endpoint yelp no-deep" target="_blank" href="{{ yelp.uri }}">
                 <img class="space away" src="/static/knotis/identity/img/yelpicon-colored27x27.png" alt="Yelp"></img>
             </a>
         {% endif %}
