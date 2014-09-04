@@ -8,7 +8,7 @@
         {% endif %}
 
         {% if website %}
-            <a class="no-deep" href="{{website.uri}}">{{website.value}}</a>
+            <a class="no-deep" target="_blank" href="{{website.uri}}">{{website.value}}</a>
         {% endif %}
 
         <div id="about-map"></div>
@@ -21,7 +21,7 @@
             <h2>{{ address }}</h2>
         {% endif %}
 
-        <a class="no-deep" href="http://maps.google.com/maps?daddr={{ address|iriencode }}">Get Directions</a>
+        <a class="no-deep" target="_blank" href="http://maps.google.com/maps?daddr={{ address|iriencode }}">Get Directions</a>
     </div>
     </section>
 {% endif %}
