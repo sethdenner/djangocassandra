@@ -443,16 +443,16 @@ class AdminOwnerView(ModalView):
         manager_users = []
         for manager in managers:
             try:
-                user = KnotisUser.objects.get_identity_user(manager)
-                manager_users.append((manager, user))
+                manager_user = KnotisUser.objects.get_identity_user(manager)
+                manager_users.append((manager, manager_user))
             except Exception, e:
                 logger.exception(e.message)
         manager_tiles = []
-        for identity, manager_user in manager_users:
+        for manager_identity, manager_user in manager_users:
             tile_context = copy.copy(self.context)
             tile_context.update({
-                'identity': identity,
-                'manager_user': user,
+                'manager_identity': manager_identity,
+                'manager_user': manager_user,
                 'request': self.request,
             })
             manager_tiles.append(detail_tile.render_template_fragment(tile_context))
@@ -463,15 +463,16 @@ class AdminOwnerView(ModalView):
         biz_manager_users = []
         for manager in biz_managers:
             try:
-                user = KnotisUser.objects.get_identity_user(manager)
-                biz_manager_users.append((manager, user))
+                manager_user = KnotisUser.objects.get_identity_user(manager)
+                biz_manager_users.append((manager, manager_user))
             except Exception, e:
                 logger.exception(e.message)
+                raise e
         biz_manager_tiles = []
-        for identity, manager_user in biz_manager_users:
+        for manager_identity, manager_user in biz_manager_users:
             tile_context = copy.copy(self.context)
             tile_context.update({
-                'identity': identity,
+                'manager_identity': manager_identity,
                 'manager_user': manager_user,
                 'request': self.request,
             })
