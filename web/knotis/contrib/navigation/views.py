@@ -76,28 +76,3 @@ class NavigationSideView(FragmentView):
         local_context['IdentityTypes'] = IdentityTypes
 
         return local_context
-
-
-class NavigationCanvasView(FragmentView):
-    template_name = 'navigation/nav_canvas.html'
-    view_name = 'nav_canvas'
-
-    def process_context(self):
-        request = self.request
-        local_context = copy.copy(self.context)
-
-        if request:
-            current_identity_id = request.session.get('current_identity')
-            try:
-                current_identity = Identity.objects.get(id=current_identity_id)
-
-            except:
-                current_identity = None
-
-        else:
-            current_identity = None
-
-        local_context['current_identity'] = current_identity
-        local_context['IdentityTypes'] = IdentityTypes
-
-        return local_context
