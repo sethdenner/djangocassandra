@@ -2394,3 +2394,21 @@ section.welcomeModal h1 {
 .offerItem.dummyTile h1 {
     font-size: 17px;
 }
+
+.panel {
+    position: fixed;
+    left: -15.625em; /*left or right and the width of your navigation panel*/
+    width: 15.625em; /*should match the above value*/
+}
+
+/* Begin Responsive Magic */
+
+@media all and (max-width: 1024px) {
+    .authBtn {
+        width: 80%;
+    }
+    
+    .authInputs input {
+        width: 80%;
+    }
+}

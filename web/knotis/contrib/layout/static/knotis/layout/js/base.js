@@ -4,6 +4,10 @@
 (function ($) {
     "use strict";
 
+    $(document).ready(function() {
+        $('.menu-link').bigSlide();
+    });
+
     $( "#sidebar-wrapper").hover(function () {
         $( "#sidebar-wrapper").animate({
             width: "250px",
