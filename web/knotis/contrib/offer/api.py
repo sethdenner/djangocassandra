@@ -298,11 +298,10 @@ class OfferAvailabilityModelViewSet(ApiModelViewSet):
     http_method_names = ['get', 'options']
 
 
-class OfferCreateApi(object):
+class OfferApi(object):
     @staticmethod
     def create_offer(
-        dark_offer=False,
-        create_business=False,
+        offer_type=OfferTypes.DARK,
         *args,
         **kwargs
     ):
@@ -322,18 +321,12 @@ class OfferCreateApi(object):
             logger.exception('Cannot find owner %s' % business_name)
             raise
 
-        currency_name = kwargs.get('currency')
-
-        try:
-            currency = Product.currency.get(currency_name)
-        except:
-            logger.exception('Cannot find currency %s' % currency_name)
-            raise
+        sku = kwargs.get('sku', 'usd')
 
         price = kwargs.get('price', 0.0)
         value = kwargs.get('value', 0.0)
         title = kwargs.get('title')
-        is_physical = kwargs.get('is_physical')
+        is_physical = kwargs.get('is_physical', False)
         stock = float(kwargs.get('stock', 0.0))
         title = kwargs.get('title')
         description = kwargs.get('description')
@@ -344,20 +337,27 @@ class OfferCreateApi(object):
 
         try:
             product = Product.objects.create(
-                product_type=(ProductTypes.CREDIT, ProductTypes.PHYSICAL)[is_physical],
+                product_type=(
+                    ProductTypes.CREDIT,
+                    ProductTypes.PHYSICAL)[is_physical],
                 title=title,
-                sku=currency.sku
+                sku=sku
             )
         except:
-            logger.exception('Cannot find currency %s' % currency_name)
+            logger.exception('Cannot create or find sku for %s' % sku)
             raise
 
         inventory = Inventory.objects.create_stack_from_product(
             owner_identity,
             product,
             price=value,
-            stock=stock,
-            unlimited=(stock == 0.0),
+            unlimited=True,  # This will probably change.
+        )
+
+        split_inventory = Inventory.objects.split(
+            inventory,
+            owner_identity,
+            stock
         )
 
         offer = Offer.objects.create(
@@ -369,14 +369,14 @@ class OfferCreateApi(object):
             end_time=kwargs.get('end_time'),
             stock=stock,
             unlimited=(stock == 0.0),
-            inventory=[inventory],
+            inventory=[split_inventory],
             discount_factor=price / value,
-            offer_type=(OfferTypes.NORMAL, OfferTypes.DARK)[dark_offer]
+            offer_type=offer_type
         )
 
         offer.save()
 
-        if not dark_offer:
+        if offer_type == OfferTypes.NORMAL:
             endpoint_current_identity = Endpoint.objects.get(
                 endpoint_type=EndpointTypes.IDENTITY,
                 identity=owner_identity
