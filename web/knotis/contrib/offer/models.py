@@ -606,20 +606,6 @@ class Offer(QuickModel):
         return badge_image
 
 
-class DigitalOfferCollectionManager(OfferManager):
-    def create(
-        self,
-        *args,
-        **kwargs
-    ):
-        digital_offer_collection = DigitalOfferCollection(
-            *args,
-            **kwargs
-        )
-        digital_offer_collection.save()
-        return digital_offer_collection
-
-
 class DigitalOfferCollection(Offer):
     class Quick(Offer.Quick):
         exclude = ('offer_type',)
@@ -634,7 +620,7 @@ class DigitalOfferCollection(Offer):
         self.last_purchase = datetime.datetime.utcnow()
         self.save()
 
-    objects = DigitalOfferCollectionManager()
+    objects = OfferManager()
 
 
 class OfferItemManager(QuickManager):

@@ -224,9 +224,9 @@ class OffersGridView(GridSmallView):
 class OffersView(EmbeddedView):
     url_patterns = [
         r''.join([
-            '^s/(?P<offer_id>',
+            '^s/((?P<offer_id>',
             REGEX_UUID,
-            ')?/?$'
+            ')/)?$'
         ])
     ]
 
@@ -287,7 +287,7 @@ class OfferPurchaseView(EmbeddedView, GetCurrentIdentityMixin):
         except:
             business_badge = None
 
-        offer_price = offer.price_retail()
+        offer_price = offer.price_discount()
         if offer_price > 0.:
             stripe_button = StripeButton()
             stripe_button_context = RequestContext(
@@ -329,42 +329,6 @@ class OfferActionButton(ActionButton):
     view_name = 'offer_action_button'
 
 
-class CollectionTile(FragmentView):
-    template_name = 'knotis/offer/collection_tile.html'
-    view_name = 'offer_collection_tile'
-
-    def process_context(self):
-        offer = self.context.get('offer', None)
-
-        if not offer:
-            return self.context
-
-        try:
-            offer_banner_image = ImageInstance.objects.get(
-                related_object_id=offer.id,
-                context='offer_banner',
-                primary=True
-            )
-
-        except:
-            logger.exception('failed to get offer banner image')
-            offer_banner_image = None
-
-        try:
-            business_badge_image = get_identity_profile_badge(offer.owner)
-
-        except:
-            logger.exception('failed to get business badge image')
-            business_badge_image = None
-
-        # TODO: CALCULATE STATS.
-        self.context.update({
-            'offer_banner_image': offer_banner_image,
-            'business_badge_image': business_badge_image,
-        })
-        return self.context
-
-
 class OfferTile(FragmentView):
     template_name = 'knotis/offer/tile.html'
     view_name = 'offer_tile'
@@ -400,6 +364,11 @@ class OfferTile(FragmentView):
             'business_badge_image': business_badge_image,
         })
         return self.context
+
+
+class CollectionTile(OfferTile):
+    template_name = 'knotis/offer/collection_tile.html'
+    view_name = 'offer_collection_tile'
 
 
 class OfferDetailView(ModalView):

@@ -47,7 +47,6 @@ class Command(BaseCommand):
                         business_name=row.get('business name'),
                         email=row.get('email'),
                         stock=row.get('stock', 0.0),
-                        sku='usd',
                     )
                     OfferCollectionItem.objects.create(
                         offer=new_offer,

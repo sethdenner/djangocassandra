@@ -36,7 +36,6 @@ from knotis.contrib.identity.models import (
 
 from knotis.contrib.product.models import (
     Product,
-    ProductTypes
 )
 from knotis.contrib.endpoint.models import Endpoint, EndpointTypes
 
@@ -321,8 +320,6 @@ class OfferApi(object):
             logger.exception('Cannot find owner %s' % business_name)
             raise
 
-        sku = kwargs.get('sku', 'usd')
-
         price = kwargs.get('price', 0.0)
         value = kwargs.get('value', 0.0)
         title = kwargs.get('title')
@@ -336,28 +333,29 @@ class OfferApi(object):
             title = '$%s credit toward any purchase' % value
 
         try:
-            product = Product.objects.create(
-                product_type=(
-                    ProductTypes.CREDIT,
-                    ProductTypes.PHYSICAL)[is_physical],
-                title=title,
-                sku=sku
-            )
+            if is_physical:
+                product = Product.objects.get_or_create_physical(title)
+            else:
+                product = Product.objects.get_or_create_credit(
+                    price,
+                    value,
+                )
         except:
-            logger.exception('Cannot create or find sku for %s' % sku)
+            logger.exception('Couldnot create product.')
             raise
 
         inventory = Inventory.objects.create_stack_from_product(
             owner_identity,
             product,
             price=value,
+            stock=stock,
             unlimited=True,  # This will probably change.
         )
 
         split_inventory = Inventory.objects.split(
             inventory,
             owner_identity,
-            stock
+            1
         )
 
         offer = Offer.objects.create(
@@ -370,7 +368,6 @@ class OfferApi(object):
             stock=stock,
             unlimited=(stock == 0.0),
             inventory=[split_inventory],
-            discount_factor=price / value,
             offer_type=offer_type
         )
 
