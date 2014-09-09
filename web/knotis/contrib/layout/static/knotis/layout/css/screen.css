@@ -356,6 +356,29 @@ nav button.signUp {
     background: transparent;
 }
 
+.navbar-default .navbar-toggle .icon-bar {
+    background: white;
+    width: 17px;
+}
+
+.navbar-toggle {
+    margin-right: 0;
+    padding: 10px 8px;
+    margin-top: 2px;
+    margin-bottom: 9px;
+    position: relative;
+    left: 10px;
+    border-radius: 2px;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: #24AA83;
+}
+
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+    background-color: #24AA83;
+}
+
 /* line 181, ../sass/_nav.scss */
 #auth-controls a {
     background: transparent;
@@ -2404,4 +2427,31 @@ section.welcomeModal h1 {
     position: fixed;
     left: -15.625em; /*left or right and the width of your navigation panel*/
     width: 15.625em; /*should match the above value*/
+}
+
+.sidebar-mob {
+    text-align: left;
+}
+
+/* Responsive Magic */
+
+/* Small devices (Phones, Tablets, 400px, 768px and up) */
+@media (max-width: 400px) {
+    .sideBar {
+        display: none;
+    }
+    h1 {
+        font-size: 25px;
+    }
+} 
+
+@media (min-width: 768px) {
+} 
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
 }

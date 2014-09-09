@@ -1,12 +1,12 @@
 {% if navigation_items %}
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container-fluid text-center">
-            <ul class="nav">
-                {% for item in parsed_navigation_items %}
-                <li><a href="{{ item.uri }}">{{ item.title }}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
+    <div class="container-fluid text-center">
+        <ul class="nav">
+            {% for item in parsed_navigation_items %}
+            <li><a href="{{ item.uri }}">{{ item.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
     </div>
 </nav>
 {% endif %}
