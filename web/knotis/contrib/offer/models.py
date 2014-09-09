@@ -60,11 +60,13 @@ class OfferTypes:
     NORMAL = 0
     PREMIUM = 1
     DARK = 2
+    DIGITAL_OFFER_COLLECTION = 3
 
     CHOICES = (
         (NORMAL, 'Normal'),
         (PREMIUM, 'Premium'),
         (DARK, 'Dark'),
+        (DIGITAL_OFFER_COLLECTION, 'Digital Offer Collection'),
     )
 
 
@@ -519,7 +521,7 @@ class Offer(QuickModel):
         try:
             savings_str = '%.0f' % round(
                 (self.price_retail() - self.price_discount()) /
-                    self.price_retail() * 100, 0
+                self.price_retail() * 100, 0
             )
         except:
             savings_str = 'ERROR'
@@ -602,6 +604,37 @@ class Offer(QuickModel):
             badge_image = None
 
         return badge_image
+
+
+class DigitalOfferCollectionManager(OfferManager):
+    def create(
+        self,
+        *args,
+        **kwargs
+    ):
+        digital_offer_collection = DigitalOfferCollection(
+            *args,
+            **kwargs
+        )
+        digital_offer_collection.save()
+        return digital_offer_collection
+
+
+class DigitalOfferCollection(Offer):
+    class Quick(Offer.Quick):
+        exclude = ('offer_type',)
+        filters = {'offer_type': OfferTypes.DIGITAL_OFFER_COLLECTION}
+        name = 'digital offer'
+
+    class Meta:
+        proxy = True
+
+    def purchase(self, quantity=1):
+        self.purchased += quantity
+        self.last_purchase = datetime.datetime.utcnow()
+        self.save()
+
+    objects = DigitalOfferCollectionManager()
 
 
 class OfferItemManager(QuickManager):
