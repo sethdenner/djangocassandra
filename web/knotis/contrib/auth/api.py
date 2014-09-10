@@ -311,6 +311,7 @@ class UserInformationApiModelViewSet(ApiModelViewSet):
     model = UserInformation
     queryset = UserInformation.objects.none()
     serializer_class = UserInformationSerializer
+    permission_classes = (AllowAny,)
 
     allowed_methods = ['GET']
 
