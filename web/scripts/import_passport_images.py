@@ -1,12 +1,10 @@
 import os
-import shutil
 
-from knotis.contrib.media.models import (
-    Image,
-    ImageInstance
+from knotis.contrib.media.api import (
+    ImageApi,
+    ImageInstanceApi,
 )
 
-from django.core.files.base import ContentFile
 from knotis.contrib.offer.models import (
     OfferCollection,
     OfferCollectionItem,
@@ -27,24 +25,10 @@ def import_images(directory, output_directory, neighborhood):
         sorted_files.values()
     ):
         src = os.path.join(directory, image)
-        dst = os.path.join(output_directory, neighborhood + image)
-        shutil.copy(src, dst)
-        image = Image(
-            owner=offer_collection_item.offer.owner,
-        )
-        image_source = open(dst).read()
-        image.image.save(
-            dst,
-            ContentFile(image_source)
-        )
-        image.save()
-
-        ImageInstance.objects.create(
-            owner=offer_collection_item.offer.owner,
-            image=image,
-            related_object_id=offer_collection_item.offer.id,
-            context='offer_banner',
-            primary=True
+        image = ImageApi.import_offer_image(src, offer_collection_item.offer)
+        ImageInstanceApi.create_offer_image_instance(
+            image,
+            offer_collection_item.offer
         )
 
 
