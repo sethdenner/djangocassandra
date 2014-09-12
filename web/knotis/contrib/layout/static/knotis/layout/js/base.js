@@ -6,6 +6,10 @@
 
     $(document).ready(function() {
         $('.menu-link').bigSlide();
+        
+        $('.navbar-toggle').click(function() {
+            $('.sideBar').show();
+        });
     });
 
     $( "#sidebar-wrapper").hover(function () {

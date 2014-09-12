@@ -203,6 +203,12 @@ nav a:visited {
     text-decoration: none;
 }
 /* line 35, ../sass/_nav.scss */
+nav .search {
+    position: absolute;
+    top: -30px;
+    width: 100%;
+}
+
 nav .search input {
     background-color: transparent;
     border: 0;
@@ -327,6 +333,10 @@ nav button, nav button:active, nav button:visted {
     outline: 0;
 }
 
+#nav-submenu {
+    text-align: left;
+}
+
 /* line 148, ../sass/_nav.scss */
 nav button.logIn:hover, nav button.signUp:hover {
     background: #2cc397;
@@ -365,10 +375,11 @@ nav button.signUp {
     margin-right: 0;
     padding: 10px 8px;
     margin-top: 2px;
-    margin-bottom: 9px;
     position: relative;
-    left: 10px;
+    left: -6px;
+    top: -1px;
     border-radius: 2px;
+    float: left;
 }
 
 .navbar-default .navbar-toggle {
@@ -574,6 +585,7 @@ nav button.signUp {
     background: #3f3f3f;
     position: fixed;
     top: 0;
+    left: 0;
     opacity: 0.9;
     z-index: 5;
     display: none;
@@ -1472,10 +1484,8 @@ h1.sectionHeader {
 
 /* line 23, ../sass/_profile.scss */
 .profileBusiness section {
-    background: white;
-    padding: 5px;
+    padding: 15px;
     border-radius: 2px;
-    margin-top: -20px;
     color: #888;
     font-family: "LatoLight", sans-serif;
 }
@@ -1494,7 +1504,7 @@ h1.sectionHeader {
 /* line 43, ../sass/_profile.scss */
 .heroInfo {
     border-right: 1px solid #575757;
-    width: 345px;
+    width: 40%;
     background: rgba(29, 29, 29, 0.67);
     position: absolute;
     top: 50px;
@@ -1664,25 +1674,14 @@ span.help-inline {
 }
 
 .change-profile-cover-link {
-    position: absolute;
     color: #e3e3e3;
-    padding: 12px 14px;
-    right: 0;
-    margin: 16px;
-    border-radius: 3px;
     font-size: 14px;
     cursor: pointer;
-    top: 371px;
-    border: 1px solid white;
-    z-index: 1;
-    background: rgba(0, 0, 0, 0.23);
 }
 
 .change-profile-cover-link:hover {
     color: white;
 }
-
-
 
 .profileBusiness .subNav {
     position: absolute;
@@ -1708,10 +1707,9 @@ span.help-inline {
 
 .profileContent {
     position: relative;
-    top: 380px;
-    left: 27px;
-    width: 100%;
-    margin: 0 auto;
+    top: 310px;
+    padding: 70px;
+    left: 30px;
 }
 
 .line-clamp {
@@ -1763,7 +1761,7 @@ label.label-unlimited {
 }
 
 .contentBlock {
-    padding: 90px 80px;
+    padding: 90px 5px;
 }
 
 .tile-badge {
@@ -1920,15 +1918,9 @@ label.label-unlimited {
 }
 
 a.adminLink {
-    position: absolute;
-    top: -88px;
     color: #FFFFFF;
-    border: 1px solid rgb(224, 224, 224);
-    padding: 8px 30px;
-    border-radius: 3px;
     white-space: nowrap;
-    left: -44px;
-    z-index: 10;
+    margin-top: 10px;
 }
 
 a.adminLink:hover {
@@ -1941,10 +1933,6 @@ a.adminLink:hover {
     display: inline-block;
     margin: 3px;
     padding: 10px;
-}
-
-.about-us {
-    padding: 20px 20px 227px;
 }
 
 .about-carousel section {
@@ -1977,10 +1965,10 @@ a.adminLink:hover {
 
 .edit_about {
     position: absolute;
-    right: 20px;
-    padding: 8px 25px;
+    right: 40px;
+    top: 38px;
+    padding: 8px 20px;
     border-radius: 3px;
-    margin-top: -50px;
     border: 1px solid #2cc397;
     color: #2cc397;
     font-size: 14px;
@@ -2433,6 +2421,24 @@ section.welcomeModal h1 {
     text-align: left;
 }
 
+#admin_become_manager_button input {
+    color: #FFFFFF;
+    white-space: nowrap;
+    margin-top: 10px;
+    background: transparent;
+    border: 0;
+    font-size: 15px;
+}
+
+.adminBtns {
+    text-align: center;
+    width: 100%;
+    background: rgba(32, 32, 32, 0.17);
+    position: absolute;
+    left: 0;
+    top: 405px;
+}
+
 /* Responsive Magic */
 
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
@@ -2445,6 +2451,18 @@ section.welcomeModal h1 {
     }
     .search {
         display: none;
+    }
+    .profileBusiness .hero {
+        text-align: center;
+    }
+    .heroInfo {
+        width: 100%;
+    }
+    .profileContent {
+        position: relative;
+        top: 360px;
+        padding: 0;
+        left: 0;
     }
 } 
 
