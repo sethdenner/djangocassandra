@@ -161,6 +161,11 @@ a:focus {
 
 /* General Navigation Styles */
 /* line 2, ../sass/_nav.scss */
+.navbar {
+    background: #2cc397;
+    border: 0;
+}
+
 nav {
     position: fixed;
     top: 0;
@@ -351,13 +356,36 @@ nav button.signUp {
     background: transparent;
 }
 
+.navbar-default .navbar-toggle .icon-bar {
+    background: white;
+    width: 17px;
+}
+
+.navbar-toggle {
+    margin-right: 0;
+    padding: 10px 8px;
+    margin-top: 2px;
+    margin-bottom: 9px;
+    position: relative;
+    left: 10px;
+    border-radius: 2px;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: #24AA83;
+}
+
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+    background-color: #24AA83;
+}
+
 /* line 181, ../sass/_nav.scss */
 #auth-controls a {
     background: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.29);
+    border: 1px solid rgba(255, 255, 255, 0.29);
     padding: 8px 25px;
     margin: 0 5px;
-    font-size: 13px;
+    font-size: 12px;
     border-radius: 3px;
 }
 
@@ -2401,14 +2429,32 @@ section.welcomeModal h1 {
     width: 15.625em; /*should match the above value*/
 }
 
-/* Begin Responsive Magic */
+.sidebar-mob {
+    text-align: left;
+}
 
-@media all and (max-width: 1140px) {
-    .authBtn {
-        width: 80%;
+/* Responsive Magic */
+
+/* Small devices (Phones, Tablets, 400px, 768px and up) */
+@media (max-width: 400px) {
+    .sideBar {
+        display: none;
     }
-    
-    .authInputs input {
-        width: 80%;
+    h1 {
+        font-size: 25px;
     }
+    .search {
+        display: none;
+    }
+} 
+
+@media (min-width: 768px) {
+} 
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
 }

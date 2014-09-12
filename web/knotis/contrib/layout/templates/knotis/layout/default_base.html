@@ -3,23 +3,27 @@
 
 {% block header %}
 <!-- Primary Navigation -->
-<div class="nav">
-    <nav role="navigation">
-        <div class="container">
-            <div class="row">
-                <!-- Search Form -->
-                <div class="col-lg-3 col-xs-4">
-                    {% render_fragment search_bar %}
+
+<nav class="nav navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container-fluid text-center">
+
+        <div class="row">
+            <!-- Search Form -->
+            <div class="col-lg-3 col-xs-4">
+                {% render_fragment search_bar %}
+            </div>
+            <!-- // End Search Form -->
+
+            <div class="col-lg-6 col-xs-4">
+                <div class="logo">
+                    <a href="/" data-target-id="main-content" ><img src="{{ STATIC_URL }}knotis/img/knotis_logo_nav.png" alt="Knotis"/></a>
                 </div>
-                <!-- // End Search Form -->
-                <div class="col-lg-6 col-xs-4">
-                    <div class="logo">
-                        <a href="/" data-target-id="main-content" ><img src="{{ STATIC_URL }}knotis/img/knotis_logo_nav.png" alt="Knotis"/></a>
-                    </div>
-                </div>
-                {% if user.is_authenticated %}
-                {% render_fragment identity_switcher %}
-                {% else %}
+            </div>
+
+            {% if user.is_authenticated %}
+            {% render_fragment identity_switcher %}
+            {% else %}
+            <div class="collapse navbar-collapse">
                 <div id="auth-controls" class="col-lg-3 col-xs-4">
                     <a href="/login/" class="btn btn-primary btn-lg logIn modal-link" data-modal-id="auth-modal">
                         Log In
@@ -28,11 +32,27 @@
                         Sign Up
                     </a>
                 </div>
-                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="col-lg-3 col-xs-4">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-submenu">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="col-lg-12 col-xs-12">
+                <div class="collapse navbar-collapse" id="nav-submenu">
+                    <nav id="menu" class="panel collapse" role="navigation">
+                    </nav>
+                </div>
             </div>
         </div>
-    </nav>
-    <!-- // End Primary Navigation -->
+    </div>
+</nav>
+<!-- // End Primary Navigation -->
 </div>
 {% endblock header %}
 
