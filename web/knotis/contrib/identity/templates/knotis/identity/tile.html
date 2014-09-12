@@ -1,7 +1,7 @@
 {% load thumbnail %}
 {% load render_template_fragment %}
 
-<div class="col-lg-3 col-xs-12 offerItem" data-id="identityTile">
+<div class="col-lg-3 col-xs-6 offerItem" data-id="identityTile">
     <a class="tileLink" href="/id/{{ identity.pk }}/">
         <div class="busCover busCoverIdentity">
             {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
