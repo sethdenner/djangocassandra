@@ -2,7 +2,7 @@
 (function($){
     $.fn.identity_action = function () {
         var $this = $(this);
-        var $action_button = $this.find('.btnFollow');
+        var $action_button = $this.find('[data-id=action-button]');
         var data = {};
         if ($action_button.length) {
             $.each($action_button.get(0).attributes, function(i, attribute) {
