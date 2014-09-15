@@ -4,22 +4,14 @@
         var $this = $(this);
         var $action_button = $this.find('[data-id=action-button]');
         var data = {};
-        if ($action_button.length) {
-            $.each($action_button.get(0).attributes, function(i, attribute) {
-                if (attribute.name.substring(0, 'data-param-'.length) != 'data-param-') {
-                    return true;
-                }
-                data[attribute.name.replace('data-param-', '')] = attribute.value;
-            });
-        }
 
         var setupFollow = function($element) {
-            $element.attr('data-method', 'post');
+            $element.attr('method', 'post');
 
         };
 
         var setupUnfollow = function($element, relation_id) {
-            $element.attr('data-method', 'delete');
+            $element.attr('method', 'delete');
 
         };
 
