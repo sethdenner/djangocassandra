@@ -1,11 +1,13 @@
 import copy
 
+from django.http import HttpResponseRedirect
 from django.template import Context
 from django.shortcuts import get_object_or_404
 
 from knotis.views import (
     EmailView,
     EmbeddedView,
+    AJAXView,
 )
 
 from knotis.contrib.identity.views import (
@@ -20,6 +22,7 @@ from knotis.contrib.layout.views import (
     DefaultBaseView,
 )
 
+from api import FollowApi
 from models import (
     Relation,
     RelationTypes
@@ -114,3 +117,66 @@ class MyFollowingView(EmbeddedView):
         })
 
         return local_context
+
+class ChangeFollowingView(AJAXView):
+    def get_needed_identities(self, request):
+        if request.user.is_authenticated():
+            self.subject_id = request.session.get('current_identity')
+            self.subject = Identity.objects.get(pk=self.subject_id)
+
+            self.related_id = request.DATA.get('related_id')
+            self.related = Identity.objects.get(pk=self.related_id)
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        self.get_needed_identities(request)
+        errors = {}
+
+        try:
+            FollowApi.create_following(self.subject, self.related)
+
+        except Exception, e:
+            logger.exception('failed to follow')
+            errors['no-field'] = e.message
+
+        if request.is_ajax():
+            return self.generate_ajax_response({
+                'errors': errors,
+                'relation': {
+                    'pk': relation.pk,
+                    'subject_id': relation.subject_object_id,
+                    'related_id': relation.related_object_id,
+                    'description': relation.description
+                }
+            })
+        else:
+            return HttpResponseRedirect(request.path)
+
+    def delete(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        self.get_needed_identities(request)
+        errors = {}
+        try:
+            FollowApi.delete_following(self.subject, self.related)
+        except Exception, e:
+            logger.exception('failed to unfollow')
+            errors['no-field'] = e.message
+        if request.is_ajax():
+            if errors:
+                return self.generate_ajax_response({
+                    'errors': errors,
+                })
+            else:
+                return self.generate_ajax_response({
+                    'status': 'OK',
+                })
+        else:
+            return HttpResponseRedirect(request.path)

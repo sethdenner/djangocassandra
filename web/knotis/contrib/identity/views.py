@@ -231,7 +231,7 @@ class IdentityActionButton(ActionButton):
         return [
             ButtonAction(
                 action_text,
-                '/api/v0/relation/follow/',
+                '/relation/following/',
                 {
                     'relation-type': RelationTypes.FOLLOWING,
                     'subject_id': current_identity.pk,

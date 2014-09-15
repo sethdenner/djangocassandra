@@ -1,7 +1,22 @@
+from django.conf.urls.defaults import (
+    patterns,
+    url,
+)
 
 from views import (
-    MyFollowingView
+    MyFollowingView,
+    ChangeFollowingView,
+)
+
+urlpatterns = patterns(
+    '',
+    url(
+        r'^relation/following/',
+        ChangeFollowingView.as_view()    
+    ),
 )
 
 
-urlpatterns = MyFollowingView.urls()
+
+
+urlpatterns += MyFollowingView.urls()
