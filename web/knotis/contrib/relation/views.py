@@ -119,6 +119,14 @@ class MyFollowingView(EmbeddedView):
         return local_context
 
 class ChangeFollowingView(AJAXView):
+    def dispatch(self, request, *args, **kwargs):
+        method = request.POST.get('method')
+        if None is method:
+            method = request.GET.get('method')
+        if None is not method:
+            request.method = method         
+        return super(ChangeFollowingView, self).dispatch(request, *args, **kwargs)
+
     def get_needed_identities(self, request):
         if request.user.is_authenticated():
             self.subject_id = request.session.get('current_identity')
@@ -133,7 +141,13 @@ class ChangeFollowingView(AJAXView):
         *args,
         **kwargs
     ):
-        self.get_needed_identities(request)
+        if request.user.is_authenticated():
+            self.subject_id = request.session.get('current_identity')
+            self.subject = Identity.objects.get(pk=self.subject_id)
+
+            self.related_id = request.POST.get('related_id')
+            self.related = Identity.objects.get(pk=self.related_id)
+
         errors = {}
 
         try:
@@ -162,7 +176,14 @@ class ChangeFollowingView(AJAXView):
         *args,
         **kwargs
     ):
-        self.get_needed_identities(request)
+        import pdb; pdb.set_trace()
+        if request.user.is_authenticated():
+            self.subject_id = request.session.get('current_identity')
+            self.subject = Identity.objects.get(pk=self.subject_id)
+
+            self.related_id = request.GET.get('related_id')
+            self.related = Identity.objects.get(pk=self.related_id)
+
         errors = {}
         try:
             FollowApi.delete_following(self.subject, self.related)
