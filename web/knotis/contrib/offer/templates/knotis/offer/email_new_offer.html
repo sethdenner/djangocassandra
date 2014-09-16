@@ -60,7 +60,7 @@ top: -130px;
 {% endthumbnail %}
 <div class="img-wrapper">
     {% thumbnail offer.badge_image.image.image '170x170' crop=offer.badge_image.crop as image %}
-    <img class="logo" src="{{ image.url }}" />
+    <img class="logo" src="{{ settings.BASE_URL }}{{ image.url }}" />
     {% empty %}
     <img class="logo" src="{{ settings.STATIC_URL_ABSOLUTE }}knotis/img/default-business-badge.png" />
     {% endthumbnail %}
