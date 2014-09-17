@@ -54,7 +54,7 @@ top: -130px;
 <h1>{{ offer.title }}</h1>
 
 {% thumbnail offer.banner_image.image.image '500' crop=offer.banner_image.crop as image %}
-<div class="cover center" style="background: url('{{ settings.MEDIA_URL_ABSOLUTE }}{{ image.url }}');"></div>
+<div class="cover center" style="background: url('{{ settings.BASE_URL }}{{ image.url }}');"></div>
 {% empty %}
 <div class="cover center" style="background: url('{{ settings.STATIC_URL_ABSOLUTE }}knotis/img/default-offer-image.png/');"></div>
 {% endthumbnail %}
