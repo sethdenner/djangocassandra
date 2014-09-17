@@ -331,6 +331,7 @@ nav button, nav button:active, nav button:visted {
 
 #nav-submenu {
     text-align: left;
+    border: 0;
 }
 
 /* line 148, ../sass/_nav.scss */
@@ -518,7 +519,7 @@ nav button.signUp {
     background: white;
     position: fixed;
     height: 100%;
-    top: 54px;
+    top: 55px;
     z-index: 100;
     transition: all 0.4s ease 0s;
     padding-top: 20px;
@@ -579,8 +580,8 @@ nav button.signUp {
     height: 100%;
     width: 100%;
     background: #3f3f3f;
-    position: fixed;
-    top: 0;
+    position: absolute;
+    top: 1px;
     left: 0;
     opacity: 0.9;
     z-index: 5;
@@ -2506,6 +2507,9 @@ section.welcomeModal h1 {
 } 
 
 @media (min-width: 768px) {
+    .navbar-collapse {
+        display: none;
+    }
 } 
 
 /* Medium devices (desktops, 992px and up) */
