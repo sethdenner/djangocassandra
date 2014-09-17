@@ -203,11 +203,6 @@ nav a:visited {
     text-decoration: none;
 }
 /* line 35, ../sass/_nav.scss */
-nav .search {
-    position: absolute;
-    top: -30px;
-    width: 100%;
-}
 
 nav .search input {
     background-color: transparent;
@@ -294,6 +289,7 @@ nav .dropdown-menu {
     border-top-right-radius: 0;
     max-height: 288px;
     overflow-y: auto;
+    text-align: left;
 }
 /* line 114, ../sass/_nav.scss */
 nav .dropdown-menu a {
@@ -2264,7 +2260,7 @@ section.welcomeModal h1 {
 }
 
 .offerItem .busLink, .offerItem .btnFollow {
-    width: 88%;
+    width: 95%;
     padding: 16px 0;
     border: 0;
     border-radius: 3px;
@@ -2272,7 +2268,8 @@ section.welcomeModal h1 {
     border: 1px solid rgb(248, 248, 248);
     background: rgb(248, 248, 248);
     position: absolute;
-    top: 95px;
+    top: 105px;
+    left: 6px;
     color: rgb(122, 122, 122);
     font-size: 14px;
 }
@@ -2439,18 +2436,29 @@ section.welcomeModal h1 {
     top: 405px;
 }
 
+.navBtn {
+    display: none;
+}
+
+#identity-switcher {
+    width: 80%;
+    display: inline-block;
+    position: relative;
+    float: right;
+}
+
 /* Responsive Magic */
 
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
 @media (max-width: 400px) {
-    .sideBar {
+    #id-current-identity-name, .searchForm, .sideBar, .search {
         display: none;
+    }
+    .navBtn {
+        display: inline-block;
     }
     h1 {
         font-size: 25px;
-    }
-    .search {
-        display: none;
     }
     .profileBusiness .hero {
         text-align: center;
@@ -2484,6 +2492,13 @@ section.welcomeModal h1 {
         position: relative;
         top: 0;
         width: 100%;
+    }
+    nav .dropdown-menu {
+        left: -83px;
+        width: initial;
+    }
+    .offerItem .busLink, .offerItem .btnFollow {
+        left: 4px;
     }
 } 
 
