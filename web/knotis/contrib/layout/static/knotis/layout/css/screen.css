@@ -121,8 +121,8 @@ a:focus {
 
 /* line 18, ../sass/_custom.scss */
 .mainContent {
-    padding: 17px;
-    width: 106%;
+    padding: 0 90px 0;
+    width: 100%;
 }
 
 /* line 25, ../sass/_custom.scss */
@@ -2494,11 +2494,14 @@ section.welcomeModal h1 {
         width: 100%;
     }
     nav .dropdown-menu {
-        left: -83px;
+        left: -118px;
         width: initial;
     }
     .offerItem .busLink, .offerItem .btnFollow {
         left: 4px;
+    }
+    nav .dropdown:hover {
+        border: 1px solid #2cc397;
     }
 } 
 
