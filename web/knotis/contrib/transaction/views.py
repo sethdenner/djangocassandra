@@ -76,6 +76,7 @@ class CustomerReceiptBody(EmailView):
         price = transaction.offer.price_discount()
 
         local_context.update({
+            'BASE_URL': settings.BASE_URL,
             'transaction': transaction,
             'business_name': business_name,
             'browser_link': browser_link,

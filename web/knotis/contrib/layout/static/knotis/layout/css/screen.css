@@ -121,8 +121,8 @@ a:focus {
 
 /* line 18, ../sass/_custom.scss */
 .mainContent {
-    padding: 17px;
-    width: 106%;
+    padding: 30px 0 0 88px;
+    width: 100%;
 }
 
 /* line 25, ../sass/_custom.scss */
@@ -203,11 +203,6 @@ nav a:visited {
     text-decoration: none;
 }
 /* line 35, ../sass/_nav.scss */
-nav .search {
-    position: absolute;
-    top: -30px;
-    width: 100%;
-}
 
 nav .search input {
     background-color: transparent;
@@ -294,6 +289,7 @@ nav .dropdown-menu {
     border-top-right-radius: 0;
     max-height: 288px;
     overflow-y: auto;
+    text-align: left;
 }
 /* line 114, ../sass/_nav.scss */
 nav .dropdown-menu a {
@@ -335,6 +331,7 @@ nav button, nav button:active, nav button:visted {
 
 #nav-submenu {
     text-align: left;
+    border: 0;
 }
 
 /* line 148, ../sass/_nav.scss */
@@ -522,7 +519,7 @@ nav button.signUp {
     background: white;
     position: fixed;
     height: 100%;
-    top: 50px;
+    top: 55px;
     z-index: 100;
     transition: all 0.4s ease 0s;
     padding-top: 20px;
@@ -532,7 +529,7 @@ nav button.signUp {
 /* line 15, ../sass/_sideBar.scss */
 .sidebar-nav {
     position: absolute;
-    top: 3px;
+    top: -2px;
     width: 100%;
     padding: 0 0 50px 0;
     margin: 2px 0;
@@ -583,8 +580,8 @@ nav button.signUp {
     height: 100%;
     width: 100%;
     background: #3f3f3f;
-    position: fixed;
-    top: 0;
+    position: absolute;
+    top: 16px;
     left: 0;
     opacity: 0.9;
     z-index: 5;
@@ -1469,7 +1466,7 @@ offerSteps ul {
 h1.sectionHeader {
     font-size: 26px;
     color: #797979;
-    margin: 40px 0;
+    margin: 40px 0 20px;
 }
 
 /* line 7, ../sass/_profile.scss */
@@ -1478,15 +1475,17 @@ h1.sectionHeader {
     height: 448px;
     position: absolute;
     top: 0;
-    left: 0;
+    left: 70px;
     background-size: cover;
 }
 
 /* line 23, ../sass/_profile.scss */
 .profileBusiness section {
+    height: 400px;
     padding: 15px;
     border-radius: 2px;
     color: #888;
+    background: white;
     font-family: "LatoLight", sans-serif;
 }
 
@@ -1503,13 +1502,13 @@ h1.sectionHeader {
 
 /* line 43, ../sass/_profile.scss */
 .heroInfo {
-    border-right: 1px solid #575757;
+    border-right: 1px solid #353434;
     width: 40%;
     background: rgba(29, 29, 29, 0.67);
     position: absolute;
     top: 50px;
-    left: 70px;
-    padding: 30px 30px 83px;
+    left: 0;
+    padding: 30px 30px 80px;
     overflow: hidden;
     height: 400px;
 }
@@ -1552,19 +1551,14 @@ h1.sectionHeader {
     margin-top: 15px;
 }
 
-/* line 81, ../sass/_profile.scss */
-section .profileInfo {
-    width: 50%;
-}
-
 /* line 85, ../sass/_profile.scss */
-section .profileInfo a {
+section .profileInfo a.mapLink {
     background: #2cc397;
     padding: 13px 20px;
     border-radius: 2px;
     display: inline-block;
     color: white;
-    width: 70%;
+    width: 100%;
     text-align: center;
     margin: 5px 0;
     font-size: 14px;
@@ -1675,7 +1669,7 @@ span.help-inline {
 
 .change-profile-cover-link {
     color: #e3e3e3;
-    font-size: 14px;
+    font-size: 12px;
     cursor: pointer;
 }
 
@@ -1710,6 +1704,8 @@ span.help-inline {
     top: 310px;
     padding: 70px;
     left: 30px;
+    margin: 0;
+    padding-bottom: 300px;
 }
 
 .line-clamp {
@@ -1741,7 +1737,7 @@ span.help-inline {
     position: absolute;
     border: 3px solid white;
     display: inline-block;
-    top: -100px;
+    top: -115px;
 }
 
 
@@ -1816,8 +1812,7 @@ label.label-unlimited {
 
 #about-map {
     height: 300px;
-    width: 300px;
-    overflow:visible;
+    width: 100%;
 }
 
 .offerPreview .offerItem {
@@ -1920,7 +1915,7 @@ label.label-unlimited {
 a.adminLink {
     color: #FFFFFF;
     white-space: nowrap;
-    margin-top: 10px;
+    font-size: 12px;
 }
 
 a.adminLink:hover {
@@ -1940,15 +1935,16 @@ a.adminLink:hover {
 }
 
 .upload-photo {
-    padding: 15px;
+    padding: 11px;
     border-radius: 3px;
     border: 1px solid #2cc397;
     background: transparent;
     color: #2cc397;
     position: absolute;
     left: 0;
-    margin: 23px 13px 0;
+    margin: 20px 3px;
     cursor: pointer;
+    font-size: 15px;
 }
 
 .carousel-indicators {
@@ -1965,14 +1961,15 @@ a.adminLink:hover {
 
 .edit_about {
     position: absolute;
-    right: 40px;
-    top: 38px;
-    padding: 8px 20px;
-    border-radius: 3px;
+    right: 0;
+    top: 40px;
+    padding: 8px 30px;
+    border-radius: 2px;
     border: 1px solid #2cc397;
     color: #2cc397;
     font-size: 14px;
     cursor: pointer;
+    margin-right: 17px;
 }
 
 .modal-footer {
@@ -2223,7 +2220,7 @@ section.welcomeModal h1 {
     margin: 0 10px 10px 0;
     padding: 0;
     border-radius: 4px;
-    max-width: 255px;
+    max-width: 230px;
 }
 
 .offerItem .busCover {
@@ -2254,6 +2251,7 @@ section.welcomeModal h1 {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    margin-top: -15px;
 }
 
 .offerItem .tileContent {
@@ -2264,7 +2262,7 @@ section.welcomeModal h1 {
 }
 
 .offerItem .busLink, .offerItem .btnFollow {
-    width: 88%;
+    width: 95%;
     padding: 16px 0;
     border: 0;
     border-radius: 3px;
@@ -2272,7 +2270,8 @@ section.welcomeModal h1 {
     border: 1px solid rgb(248, 248, 248);
     background: rgb(248, 248, 248);
     position: absolute;
-    top: 95px;
+    top: 105px;
+    left: 6px;
     color: rgb(122, 122, 122);
     font-size: 14px;
 }
@@ -2358,6 +2357,7 @@ section.welcomeModal h1 {
     text-indent: 12px;
     font-size: 15px;
     margin: 0 0 25px;
+    width: 50%;
 }
 
 .offerHero h1, .offerHero h2 {
@@ -2424,10 +2424,9 @@ section.welcomeModal h1 {
 #admin_become_manager_button input {
     color: #FFFFFF;
     white-space: nowrap;
-    margin-top: 10px;
     background: transparent;
     border: 0;
-    font-size: 15px;
+    font-size: 12px;
 }
 
 .adminBtns {
@@ -2439,18 +2438,37 @@ section.welcomeModal h1 {
     top: 405px;
 }
 
+.navBtn {
+    display: none;
+}
+
+#identity-switcher {
+    width: 80%;
+    display: inline-block;
+    position: relative;
+    float: right;
+}
+.about-us {
+    line-height: 23px;
+    font-size: 14px;
+    padding: 0 10px;
+}
+.busCoverIdentity img {
+    height: 100%
+}
+
 /* Responsive Magic */
 
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
 @media (max-width: 400px) {
-    .sideBar {
+    #id-current-identity-name, .searchForm, .sideBar, .search {
         display: none;
+    }
+    .navBtn {
+        display: inline-block;
     }
     h1 {
         font-size: 25px;
-    }
-    .search {
-        display: none;
     }
     .profileBusiness .hero {
         text-align: center;
@@ -2460,13 +2478,62 @@ section.welcomeModal h1 {
     }
     .profileContent {
         position: relative;
-        top: 360px;
+        top: 380px;
         padding: 0;
         left: 0;
+    }
+    .offerItem {
+        width: 46%;
+    }
+    .mainContent {
+        width: 100%;
+        overflow: hidden;
+        padding: 15px 0 0 15px;
+    }
+    .offerItem .busCover img {
+        width: 200%;
+        position: relative;
+        left: -90px;
+    }
+    .offerItem h1 {
+        font-size: 20px;
+    }
+    nav .search {
+        position: relative;
+        top: 0;
+        width: 100%;
+    }
+    nav .dropdown-menu {
+        left: -69px;
+        width: initial;
+    }
+    .offerItem .busLink, .offerItem .btnFollow {
+        left: 4px;
+    }
+    nav .dropdown:hover {
+        border: 1px solid #2cc397;
+    }
+    .sidebar-overlay {
+        top: 1px;
+    }
+    .supportModal select {
+        width: 100%;
+    }
+    .profileBusiness .hero {
+        left: 0;
+    }
+    .profileContent {
+        width: 100%;
     }
 } 
 
 @media (min-width: 768px) {
+    .navbar-collapse {
+        display: none;
+    }
+    .supportModal select {
+        width: 100%;
+    }
 } 
 
 /* Medium devices (desktops, 992px and up) */
