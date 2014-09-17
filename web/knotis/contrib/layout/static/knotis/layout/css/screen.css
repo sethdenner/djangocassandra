@@ -121,7 +121,7 @@ a:focus {
 
 /* line 18, ../sass/_custom.scss */
 .mainContent {
-    padding: 0 90px 0;
+    padding: 0 0 0 88px;
     width: 100%;
 }
 
@@ -581,7 +581,7 @@ nav button.signUp {
     width: 100%;
     background: #3f3f3f;
     position: absolute;
-    top: 1px;
+    top: 16px;
     left: 0;
     opacity: 0.9;
     z-index: 5;
@@ -2220,7 +2220,7 @@ section.welcomeModal h1 {
     margin: 0 10px 10px 0;
     padding: 0;
     border-radius: 4px;
-    max-width: 255px;
+    max-width: 230px;
 }
 
 .offerItem .busCover {
@@ -2503,6 +2503,9 @@ section.welcomeModal h1 {
     }
     nav .dropdown:hover {
         border: 1px solid #2cc397;
+    }
+    .sidebar-overlay {
+        top: 1px;
     }
 } 
 
