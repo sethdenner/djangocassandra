@@ -5,10 +5,23 @@
     "use strict";
 
     $(document).ready(function() {
-        $('.menu-link').bigSlide();
-        
         $('.navbar-toggle').click(function() {
-            $('.sideBar').show();
+            $('.sideBar').toggle(function () {
+                $( "#sidebar-wrapper").animate({
+                    width: "250px",
+                },  20, "linear");
+
+                $('.sidebar-label').fadeIn('fast');
+                $('.sidebar-overlay').fadeIn('fast');
+
+                $('.sidebar-nav li').click(function() {
+                    $( "#sidebar-wrapper" ).animate({
+                        width: "70px",
+                    },  20, "linear");
+                    $('.sidebar-overlay').fadeOut(10);
+                    $('.sideBar').fadeOut(100);
+                });
+            });
         });
     });
 

@@ -522,7 +522,7 @@ nav button.signUp {
     background: white;
     position: fixed;
     height: 100%;
-    top: 50px;
+    top: 54px;
     z-index: 100;
     transition: all 0.4s ease 0s;
     padding-top: 20px;
@@ -532,7 +532,7 @@ nav button.signUp {
 /* line 15, ../sass/_sideBar.scss */
 .sidebar-nav {
     position: absolute;
-    top: 3px;
+    top: -2px;
     width: 100%;
     padding: 0 0 50px 0;
     margin: 2px 0;
@@ -2463,6 +2463,27 @@ section.welcomeModal h1 {
         top: 360px;
         padding: 0;
         left: 0;
+    }
+    .offerItem {
+        width: 46%;
+    }
+    .mainContent {
+        width: 100%;
+        overflow: hidden;
+        padding: 15px 0 0 15px;
+    }
+    .offerItem .busCover img {
+        width: 200%;
+        position: relative;
+        left: -90px;
+    }
+    .offerItem h1 {
+        font-size: 20px;
+    }
+    nav .search {
+        position: relative;
+        top: 0;
+        width: 100%;
     }
 } 
 
