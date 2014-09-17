@@ -5,10 +5,19 @@
     "use strict";
 
     $(document).ready(function() {
-        $('.menu-link').bigSlide();
-        
         $('.navbar-toggle').click(function() {
-            $('.sideBar').show();
+            $('.sideBar').toggle(function () {
+                $('.sidebar-label').fadeIn('fast');
+                $('.sidebar-overlay').fadeIn('fast');
+
+                $('.sidebar-nav li').click(function() {
+                    $('.sidebar-overlay').fadeOut(10);
+                    $('.sideBar').fadeOut(100);
+                });
+            });
+            $( "#sidebar-wrapper").animate({
+                width: "250px",
+            },  20, "linear");
         });
     });
 

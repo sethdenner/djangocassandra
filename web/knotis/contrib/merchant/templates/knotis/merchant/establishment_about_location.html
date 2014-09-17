@@ -1,14 +1,13 @@
 {% if address %}
-    <h1 class="sectionHeader">Location</h1>
-    <section>
+<h1 class="sectionHeader">Location</h1>
+<section>
     <div class="profileInfo">
-
         {% if phone %}
-            <a class="no-deep" href="{{phone.uri}}">{{phone.value}}</a>
+        <a class="no-deep" href="{{phone.uri}}">{{phone.value}}</a>
         {% endif %}
 
         {% if website %}
-            <a class="no-deep" target="_blank" href="{{website.uri}}">{{website.value}}</a>
+        <a class="no-deep" target="_blank" href="{{website.uri}}">{{website.value}}</a>
         {% endif %}
 
         <div id="about-map"></div>
@@ -18,11 +17,11 @@
                data-latitude="{{ latitude }}"
                data-longitude="{{ longitude }}" />
         {% if address %}
-            <h2>{{ address }}</h2>
+        <h2>{{ address }}</h2>
         {% endif %}
 
-        <a class="no-deep" target="_blank" href="http://maps.google.com/maps?daddr={{ address|iriencode }}">Get Directions</a>
+        <a class="mapLink no-deep" target="_blank" href="http://maps.google.com/maps?daddr={{ address|iriencode }}">Get Directions</a>
     </div>
-    </section>
+</section>
 {% endif %}
 
