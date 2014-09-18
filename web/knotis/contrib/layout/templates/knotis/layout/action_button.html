@@ -6,7 +6,7 @@
             <input type="hidden" value="{{ value }}" name="{{ key }}">
             {% endfor %}
             <input type="hidden" value="{{ action.method }}" name="method">
-            <input class="{{ css_class }}" type="submit" value="{{ action.title }}">
+            <input class="{{ css_class }}" type="submit" value="{{ action.title }}" data-id="form-button">
     </form> 
     {% endfor %}
 {% endif %}

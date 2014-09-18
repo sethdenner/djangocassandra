@@ -21,8 +21,8 @@ class FollowApi(object):
     @staticmethod
     def create_following(subject, related):
         relation = Relation.objects.create_following(
-            self.subject,
-            self.related
+            subject,
+            related
         )
 #       relation.save()
         return relation

@@ -4,7 +4,7 @@
             done: function(data, status, jqxhr) {},
             fail: function(jqxhr, status, error) {},
             always: function() {},
-            method: 'post'
+            default_method: 'post'
         }, options);
         
         return this.each(function(){
@@ -23,7 +23,11 @@
                 data += 'format=json';
 
                 $form.find('input, button').prop('disabled', true);
-
+                
+                var method = $form.attr('method')
+                if (!method) {
+                    method = settings.default_method
+                }
                 $.ajax({
                     type: settings.method,
                     url: this.action,
