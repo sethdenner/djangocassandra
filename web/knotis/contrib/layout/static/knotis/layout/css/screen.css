@@ -2264,7 +2264,7 @@ section.welcomeModal h1 {
 }
 
 .offerItem .busLink, .offerItem .btnFollow {
-    width: 100%;
+    width: 96%;
     padding: 15px 0;
     border-radius: 3px;
     text-align: center;
@@ -2275,6 +2275,10 @@ section.welcomeModal h1 {
     display: inline-block;
     text-transform: uppercase;
     letter-spacing: 2px;
+    position: absolute;
+    left: 0;
+    top: 105px;
+    margin: 5px;
 }
 
 .offerItem .busLink:hover, .offerItem .btnFollow:hover {
@@ -2392,8 +2396,10 @@ section.welcomeModal h1 {
 }
 
 .redemptionCode {
-    font-size: 15px;
-    padding: 17px;
+    font-size: 14px;
+    position: relative;
+    top: -20px;
+    padding: 15px;
 }
 
 .offerItem.dummyTile {
@@ -2504,7 +2510,7 @@ section.welcomeModal h1 {
         padding: 15px 0 0 15px;
     }
     .offerItem .busCover {
-        height: 130px;
+        max-height: 130px;
     }
     .offerItem .busCover img {
         width: 200%;
@@ -2513,6 +2519,7 @@ section.welcomeModal h1 {
     }
     .offerItem h1 {
         font-size: 20px;
+        white-space: nowrap;
     }
     nav .search {
         position: relative;
@@ -2536,6 +2543,55 @@ section.welcomeModal h1 {
     }
     .profileContent {
         width: 100%;
+    }
+    .tileContent {
+        text-align: center;
+    }
+    .busLogo {
+        left: 42px;
+    }
+    .offerItem .busLink, .offerItem .btnFollow {
+        width: 94%;
+        padding: 15px 0;
+        border-radius: 3px;
+        text-align: center;
+        border: 1px solid rgb(248, 248, 248);
+        background: rgb(248, 248, 248);
+        color: rgb(122, 122, 122);
+        font-size: 11px;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        top: 35px;
+        left: 0;
+    }
+    .supportModal .support-forms {
+        left: 0;
+    }
+    .support-forms input, .supportModal .support-forms textarea {
+        padding: 6px;
+        width: 80%;
+        margin: 10px 0 0 0;
+    }
+    .supportModal .support-buttons {
+        width: 90%;
+        left: 0;
+    }
+    .supportModal .support-buttons input {
+        background: #2cc397;
+        border: 0;
+        color: white;
+        font-size: 13px;
+        text-transform: uppercase;
+        display: inline-block;
+        width: 100%;
+        letter-spacing: 2px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    .supportModal label {
+        width: 50%;
+        text-align: center;
     }
 } 
 
