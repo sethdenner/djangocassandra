@@ -580,11 +580,11 @@ nav button.signUp {
     height: 100%;
     width: 100%;
     background: #3f3f3f;
-    position: absolute;
-    top: 16px;
+    position: fixed;
+    top: 55px;
     left: 0;
     opacity: 0.9;
-    z-index: 5;
+    z-index: 1;
     display: none;
 }
 
@@ -1757,7 +1757,7 @@ label.label-unlimited {
 }
 
 .contentBlock {
-    padding: 90px 5px;
+    padding: 90px 0;
 }
 
 .tile-badge {
@@ -2262,18 +2262,17 @@ section.welcomeModal h1 {
 }
 
 .offerItem .busLink, .offerItem .btnFollow {
-    width: 95%;
-    padding: 16px 0;
-    border: 0;
+    width: 100%;
+    padding: 15px 0;
     border-radius: 3px;
     text-align: center;
     border: 1px solid rgb(248, 248, 248);
     background: rgb(248, 248, 248);
-    position: absolute;
-    top: 105px;
-    left: 6px;
     color: rgb(122, 122, 122);
-    font-size: 14px;
+    font-size: 11px;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .offerItem .busLink:hover, .offerItem .btnFollow:hover {
@@ -2432,10 +2431,11 @@ section.welcomeModal h1 {
 .adminBtns {
     text-align: center;
     width: 100%;
-    background: rgba(32, 32, 32, 0.17);
+    background: rgba(0, 0, 0, 0.19);
     position: absolute;
     left: 0;
-    top: 405px;
+    top: 400px;
+    padding: 9px 0;
 }
 
 .navBtn {
@@ -2484,11 +2484,15 @@ section.welcomeModal h1 {
     }
     .offerItem {
         width: 46%;
+        height: 290px;
     }
     .mainContent {
         width: 100%;
         overflow: hidden;
         padding: 15px 0 0 15px;
+    }
+    .offerItem .busCover {
+        height: 130px;
     }
     .offerItem .busCover img {
         width: 200%;
@@ -2504,17 +2508,13 @@ section.welcomeModal h1 {
         width: 100%;
     }
     nav .dropdown-menu {
-        left: -69px;
-        width: initial;
+        left: -80px;
     }
     .offerItem .busLink, .offerItem .btnFollow {
         left: 4px;
     }
     nav .dropdown:hover {
         border: 1px solid #2cc397;
-    }
-    .sidebar-overlay {
-        top: 1px;
     }
     .supportModal select {
         width: 100%;
