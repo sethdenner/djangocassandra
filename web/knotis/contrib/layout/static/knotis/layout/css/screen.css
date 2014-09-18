@@ -1481,12 +1481,14 @@ h1.sectionHeader {
 
 /* line 23, ../sass/_profile.scss */
 .profileBusiness section {
-    height: 400px;
+    min-height: 415px;
     padding: 15px;
     border-radius: 2px;
     color: #888;
     background: white;
     font-family: "LatoLight", sans-serif;
+    overflow-y: auto;
+    margin-bottom: 30px;
 }
 
 /* line 33, ../sass/_profile.scss */
@@ -2455,6 +2457,16 @@ section.welcomeModal h1 {
 }
 .busCoverIdentity img {
     height: 100%
+}
+
+.tweet img {
+    border-radius: 50%;
+    display: inline-block;
+    width: 40px;
+}
+
+.tweet-text {
+    font-size: 14px;
 }
 
 /* Responsive Magic */
