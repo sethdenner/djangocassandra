@@ -17,7 +17,12 @@
             <h1>Purchases</h1>
         </div>
     </div>
-    {% render_fragment my_purchases_grid %}
+
+    <div class="row">
+        <div clss="col-lg-12">
+            {% render_fragment my_purchases_grid %}
+        </div>
+    </div>
 </div>
 {% if format == 'json' %}
 {% for script in post_scripts %}
