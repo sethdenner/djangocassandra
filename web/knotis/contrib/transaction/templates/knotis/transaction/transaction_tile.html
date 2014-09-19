@@ -12,41 +12,48 @@
     </a>
     <div class="tileContent">
         <div class="row">
-            <div class="col-lg-10 col-xs-10">
-                {% if identity.identity_type == IdentityTypes.INDIVIDUAL %}
-                    <a href="/offer/detail/{{ offer.pk }}/" class="modal-link">
-                {% else %}
-                    <a href= "/id/{{ identity.pk }}/">
-                {% endif %}
-                    {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
-                    <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
-                    {% empty %}
-                        <img class="img-circle tile-badge defaultImg busLogo" src="{{ STATIC_URL }}/knotis/img/default_profile_badge.png" />
-                    {% endthumbnail %}
-                </a>
-            </div>
-        </div>
-
-        <div class="row">
             <div class="col-lg-12 col-xs-12">
-                {% if show_offer_info %}
-                <h1>{{ transaction.offer.title }}</h1>
-                {% else %}
-                <h1>{{ identity.name }}</h1>
-                {% endif %}
-                {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
-                {% if redeem %}
-                <a data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action redeem-offer busLink">Redeem</a>
-                {% else %}
-                <a data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action print-voucher busLink">View Voucher</a>
-                {% endif %}
-                {% endif %}
+                {% if identity.identity_type == IdentityTypes.INDIVIDUAL %}
+                <a href="/offer/detail/{{ offer.pk }}/" class="modal-link">
+                    {% else %}
+                    <a href= "/id/{{ identity.pk }}/">
+                        {% endif %}
+                        {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
+                        <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
+                        {% empty %}
+                        <img class="img-circle tile-badge defaultImg busLogo" src="{{ STATIC_URL }}/knotis/img/default_profile_badge.png" />
+                        {% endthumbnail %}
+                    </a>
+                    </div>
             </div>
-            <div class="redemptionCode">
-                {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
-                {{ transaction.redemption_code|default:'' }}
-                {% else %}{% endif %}
+
+            <div class="row">
+                <div class="col-lg-12 col-xs-12">
+                    {% if show_offer_info %}
+                    <h1>{{ transaction.offer.title }}</h1>
+                    {% else %}
+                    <h1>{{ identity.name }}</h1>
+                    {% endif %}
+                </div>
+                <div class="col-lg-12 col-xs-12">
+                    <div class="redemptionCode">
+                        {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
+                        {{ transaction.redemption_code|default:'' }}
+                        {% else %}{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12 col-xs-12">
+                    {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
+                    {% if redeem %}
+                    <a data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action redeem-offer busLink">Redeem</a>
+                    {% else %}
+                    <a data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action print-voucher busLink">View Voucher</a>
+                    {% endif %}
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-</div>

@@ -12,7 +12,7 @@
     </a>
     <div class="tileContent">
         <div class="row">
-            <div class="col-lg-10 col-xs-10">
+            <div class="col-lg-12 col-xs-12">
                 <a href="/id/{{ offer.owner.pk }}/">
                     {% thumbnail business_badge_image.image.image '80x80' crop=business_badge_image.crop as image %}
                     <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
@@ -22,10 +22,14 @@
                 </a>
             </div>
         </div>
-
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <h1>{{ offer.title }}</h1>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
                 {% if offer_action == 'buy' %}
                 <a class="busLink no-deep" data-target-id="main-content" href="/offer/{{ offer.pk }}/buy/">Buy</a>
                 {% endif %}
