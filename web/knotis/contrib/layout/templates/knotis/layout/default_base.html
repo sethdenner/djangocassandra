@@ -35,8 +35,8 @@
             </div>
             {% else %}
 
-            <div class="collapse navbar-collapse">
-                <div id="auth-controls" class="col-lg-3 col-xs-4">
+            <div id="auth-controls" class="col-lg-4 col-xs-4">
+                <div class="authBtns">
                     <a href="/login/" class="btn btn-primary btn-lg logIn modal-link" data-modal-id="auth-modal">
                         Log In
                     </a>
@@ -68,7 +68,13 @@
 
 {% block content %}
 {% if content %}
-<div id="main-content" class="contentBlock">{{ content }}</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <div id="main-content" class="contentBlock">{{ content }}</div>
+        </div>
+    </div>
+</div>
 {% else %}
 {{ block.super }}
 {% endif %}
