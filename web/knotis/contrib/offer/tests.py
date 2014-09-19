@@ -1,21 +1,9 @@
-import datetime
 
-from django.test import TestCase
-
-from knotis.contrib.identity.tests import IdentityModelTests
-from knotis.contrib.media.tests import MediaTests
-
-from knotis.contrib.product.models import (
-    Product
-)
-
-from knotis.contrib.offer.models import (
-    Offer,
-    OfferTypes
-)
+from unittest import TestCase
 
 
 class OfferTests(TestCase):
+    """
     @staticmethod
     def create_test_offer(
         **kwargs
@@ -70,3 +58,10 @@ class OfferTests(TestCase):
     def test_create(self):
         offer = OfferTests.create_test_offer()
         self.assertIsNotNone(offer)
+    """
+
+    def test_pass_this_test(self):
+        self.assertEqual(1, 1)
+
+    def test_fail_this_test(self):
+        self.assertEqual(0, 1)
