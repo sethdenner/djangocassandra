@@ -28,7 +28,7 @@ from knotis.contrib.layout.views import (
     DefaultBaseView,
 )
 
-from api import FollowApi
+from api import RelationApi
 from models import (
     Relation,
     RelationTypes
@@ -125,22 +125,10 @@ class MyFollowingView(EmbeddedView):
         return local_context
 
 class ChangeFollowingView(AJAXView):
-    def dispatch(self, request, *args, **kwargs):
-        request.DATA = QueryDict('', mutable=True)
-
-        query_string = request.environ.get('QUERY_STRING')
-        if query_string:
-            query_dict = QueryDict(query_string)
-            request.DATA.update(query_dict)
-
-        if request._raw_post_data:
-            post_dict = QueryDict(request._raw_post_data)
-            request.DATA.update(post_dict)
-
-        method = request.DATA.get('method')
-        if None is not method:
-            request.method = method         
-        return super(ChangeFollowingView, self).dispatch(request, *args, **kwargs)
+    subject_id = None
+    subject = None
+    related_id = None
+    related = None
 
     def get_needed_identities(self, request):
         if request.user.is_authenticated():
@@ -156,17 +144,12 @@ class ChangeFollowingView(AJAXView):
         *args,
         **kwargs
     ):
-        if request.user.is_authenticated():
-            self.subject_id = request.session.get('current_identity')
-            self.subject = Identity.objects.get(pk=self.subject_id)
-
-            self.related_id = request.POST.get('related_id')
-            self.related = Identity.objects.get(pk=self.related_id)
-
+        self.get_needed_identities(request)
+        
         errors = {}
 
         try:
-            relation = FollowApi.create_following(self.subject, self.related)
+            relation = RelationApi.create_following(self.subject, self.related)
 
         except Exception, e:
             logger.exception('failed to follow')
@@ -183,7 +166,7 @@ class ChangeFollowingView(AJAXView):
                 }
             })
         else:
-            return HttpResponseRedirect(request.path)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     def delete(
         self,
@@ -191,16 +174,11 @@ class ChangeFollowingView(AJAXView):
         *args,
         **kwargs
     ):
-        if request.user.is_authenticated():
-            self.subject_id = request.session.get('current_identity')
-            self.subject = Identity.objects.get(pk=self.subject_id)
-
-            self.related_id = request.DATA.get('related_id')
-            self.related = Identity.objects.get(pk=self.related_id)
+        self.get_needed_identities(request)
 
         errors = {}
         try:
-            FollowApi.delete_following(self.subject, self.related)
+            RelationApi.delete_following(self.subject, self.related)
         except Exception, e:
             logger.exception('failed to unfollow')
             errors['no-field'] = e.message
@@ -214,4 +192,4 @@ class ChangeFollowingView(AJAXView):
                     'status': 'OK',
                 })
         else:
-            return HttpResponseRedirect(request.path)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

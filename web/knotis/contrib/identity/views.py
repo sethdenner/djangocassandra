@@ -1,7 +1,10 @@
 import copy
 from django import http
 from django.conf import settings
-from django.template import Context
+from django.template import (
+    RequestContext,
+    Context
+)
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.utils import log
@@ -264,7 +267,7 @@ class IdentityTile(FragmentView):
         profile_banner_color = get_identity_default_profile_banner_color(
             identity
         )
-        identity_tile_context = Context({
+        identity_tile_context = RequestContext(request, {
             'current_identity': current_identity,
             'identity': identity
         })

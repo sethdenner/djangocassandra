@@ -17,7 +17,7 @@ from models import (
     RelationTypes
 )
 
-class FollowApi(object):
+class RelationApi(object):
     @staticmethod
     def create_following(subject, related):
         relation = Relation.objects.create_following(
@@ -56,7 +56,7 @@ class FollowApiView(ApiView):
         errors = {}
 
         try:
-            FollowApi.create_following(self.subject, self.related)
+            RelationApi.create_following(self.subject, self.related)
 
         except Exception, e:
             logger.exception('failed to follow')
@@ -81,7 +81,7 @@ class FollowApiView(ApiView):
         self.get_needed_identities(request)
         errors = {}
         try:
-            FollowApi.delete_following(self.subject, self.related)
+            RelationApi.delete_following(self.subject, self.related)
         except Exception, e:
             logger.exception('failed to unfollow')
             errors['no-field'] = e.message
