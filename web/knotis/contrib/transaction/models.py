@@ -843,5 +843,5 @@ class TransactionCollection(QuickModel):
 class TransactionCollectionItem(QuickModel):
     transaction_collection = QuickForeignKey(TransactionCollection)
     transaction = QuickForeignKey(Transaction)
-    page = QuickIntegerField()
+    page = QuickIntegerField(db_index=True)
     objects = QuickManager()
