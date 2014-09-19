@@ -42,4 +42,5 @@ export INSTALLERS=(
     install_djangorestframework.sh
     install_django_test_utils.sh
     install_geopy.sh
+    install_django_nose.sh
 )
