@@ -29,7 +29,7 @@
                     method = settings.default_method
                 }
                 $.ajax({
-                    type: settings.method,
+                    type: method,
                     url: this.action,
                     data: data,
                     success: function(data, status, jqxhr) {
