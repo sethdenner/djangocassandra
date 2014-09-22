@@ -1,14 +1,12 @@
 {% load thumbnail %}
-<div class="col-lg-3 col-xs-12 offerItem">
+<div class="col-lg-3 col-xs-6 offerItem">
     <a href="/offer/detail/{{ offer.pk }}/" class="modal-link">
-        <div class="busCover busCoverIdentity">
             {% thumbnail banner_image.image.image '240x161' crop=banner_image.crop as image %}
-            <img src="{{ image.url }}" alt="{{ identity.name }}"/>
+            <div class="purchaseCover" style="background: url('{{ image.url }}') no-repeat;background-color: #2cc397;background-size: cover;background-position: 0;" alt="{{ identity.name }}"></div>
             {% empty %}
             <img class="tile-image"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png" />
             {% endthumbnail %}
             <div class="overlay"></div>
-        </div>
     </a>
     <div class="tileContent">
         <div class="row">

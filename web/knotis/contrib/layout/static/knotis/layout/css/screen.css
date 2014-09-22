@@ -2194,7 +2194,6 @@ section.welcomeModal h1 {
     border: 0;
 }
 
-
 /* Grid Item Styles 2.0 */
 
 .offerItem {
@@ -2414,9 +2413,6 @@ section.welcomeModal h1 {
     font-size: 14px;
     padding: 0 10px;
 }
-.busCoverIdentity img {
-    height: 100%
-}
 
 .tweet img {
     border-radius: 50%;
@@ -2447,6 +2443,10 @@ section.welcomeModal h1 {
 }
 .authBtns {
     float: right;
+}
+
+.purchaseCover, .busCover, .defaultImg {
+    height: 135px;
 }
 
 /* Responsive Magic */
@@ -2591,6 +2591,9 @@ section.welcomeModal h1 {
     #auth-controls a.signUp {
         padding: 7px 10px;
         font-size: 11px;
+    }
+    .purchaseCover, .busCover, .defaultImg {
+        height: 95px;
     }
 } 
 

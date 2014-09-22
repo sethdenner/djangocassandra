@@ -3,11 +3,11 @@
 
 <div class="col-lg-3 col-xs-6 offerItem" data-id="identityTile">
     <a class="tileLink" href="/id/{{ identity.pk }}/">
-        <div class="busCover busCoverIdentity">
+        <div class="busCover">
             {% thumbnail banner_image.image.image 'x135' crop=banner_image.crop as image %}
-            <img src="{{ image.url }}" />
+            <div style="background: url('{{ image.url }}') no-repeat;background-color: #2cc397;background-size: cover;background-position:50%;" class="busCover"></div>
             {% empty %}
-            <img class="tile-image defaultImg"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:'darkgrey' }}.png" />
+            <img class="tile-image defaultImg"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:'darkgrey' }}.png"/>
             {% endthumbnail %}
             <div class="overlay"></div>
         </div>
