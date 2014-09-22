@@ -1,11 +1,11 @@
 {% load thumbnail %}
 <div class="col-lg-3 col-xs-6 offerItem">
     <a href="/offer/detail/{{ offer.pk }}/" class="modal-link">
-        <div class="busCover">
+        <div>
             {% thumbnail offer_banner_image.image.image 'x140' crop=offer_banner_image.crop as image %}
-            <img src="{{ image.url }}" alt="{{ offer.title }}"/>
+            <div class="busCover" style="background: url('{{ image.url }}') no-repeat;background-color: #2cc397;background-size: cover;background-position:50%;" alt="{{ offer.title }}"></div>
             {% empty %}
-            <img alt="{{ offer.title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
+            <img class="defaultImg" alt="{{ offer.title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
             {% endthumbnail %}
             <div class="overlay"></div>
         </div>
