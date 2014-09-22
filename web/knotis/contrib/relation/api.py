@@ -17,6 +17,23 @@ from models import (
     RelationTypes
 )
 
+class RelationApi(object):
+    @staticmethod
+    def create_following(subject, related):
+        relation = Relation.objects.create_following(
+            subject,
+            related
+        )
+#       relation.save()
+        return relation
+
+    @staticmethod
+    def delete_following(subject, related):
+        relations = Relation.objects.follows(subject, related)
+        for relation in relations:
+            relation.delete()
+ 
+
 
 class FollowApiView(ApiView):
     api_path = 'relation/follow'
@@ -29,7 +46,6 @@ class FollowApiView(ApiView):
             self.related_id = request.DATA.get('related_id')
             self.related = Identity.objects.get(pk=self.related_id)
 
-
     def post(
         self,
         request,
@@ -40,11 +56,7 @@ class FollowApiView(ApiView):
         errors = {}
 
         try:
-            relation = Relation.objects.create_following(
-                self.subject,
-                self.related
-            )
-            relation.save()
+            RelationApi.create_following(self.subject, self.related)
 
         except Exception, e:
             logger.exception('failed to follow')
@@ -69,24 +81,19 @@ class FollowApiView(ApiView):
         self.get_needed_identities(request)
         errors = {}
         try:
-            relations = Relation.objects.follows(self.subject, self.related)
-            for relation in relations:
-                relation.delete()
-
+            RelationApi.delete_following(self.subject, self.related)
         except Exception, e:
             logger.exception('failed to unfollow')
             errors['no-field'] = e.message
 
-        return self.generate_ajax_response({
-            'errors': errors,
-            'relation': {
-                'pk': relation.pk,
-                'subject_id': relation.subject_object_id,
-                'related_id': relation.related_object_id,
-                'deleted': True if not errors else False,
-                'description': relation.description
-            }
-        })
+        if errors:
+            return self.generate_ajax_response({
+                'errors': errors,
+            })
+        else:
+            return self.generate_ajax_response({
+                'status': 'OK',
+            })
 
 
 class RelationApiView(ApiView):
