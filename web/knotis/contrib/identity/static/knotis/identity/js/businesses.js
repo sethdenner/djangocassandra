@@ -45,7 +45,6 @@
                             return;
                         }
                         var $markup = $(data);
-                        $markup = $markup.children().children().children();
                         $('div[data-id=id-establishments]').append($markup);
                         /*
                         if (0 === page % auto_paging_cutoff) {
