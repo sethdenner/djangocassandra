@@ -34,12 +34,12 @@ border-radius: 500px;
 <h1>Here's your receipt from {{ business_name }}</h1>
 
 {% thumbnail business_banner.image.image '500' crop=business_banner.crop as image %}
-<div class="cover center" style="background: url('{{ image.url }}'); max-width: 500px;">
+<div class="cover center" style="background: url('{{ BASE_URL }}{{ image.url }}'); max-width: 500px;">
   {% empty %}
   <div class="cover center" style="background: url('{{ STATIC_URL_ABSOLUTE }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:'darkgrey' }}.png'); max-width: 500px;">
     {% endthumbnail %}
     {% thumbnail business_badge.image.image '170x170' crop=business_badge.crop as image %}
-    <img class="logo" src="{{ image.url }}" />
+    <img class="logo" src="{{ BASE_URL }}{{ image.url }}" />
     {% endthumbnail %}
   </div>
   <p>Hi {{ transaction.owner.name }}!<br />
@@ -59,7 +59,7 @@ border-radius: 500px;
   <hr />
   <br />
   {% thumbnail offer_image.image.image '240x240' crop=offer_image.crop as image %}
-  <img src="{{ image.url }}"><br />
+  <img src="{{ BASE_URL }}{{ image.url }}"><br />
   {% endthumbnail %}
   <a href="{{ offer_link }}/">{{ transaction.offer.title }}</a><br />
   <br />

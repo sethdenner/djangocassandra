@@ -4,7 +4,6 @@
 {% for review in yelp_feed %}
 <div class="yelp-review">
   <img class="user" src="{{ review.user.image_url }}" width="50px" height="50px"></img>
-  <span class="arrow-left"></span>
   <p class="excerpt">{{ review.excerpt }} <span class="score">{{ review.rating }}/5 -{{ review.user.name }}</span></p>
 </div>
 {% endfor %}

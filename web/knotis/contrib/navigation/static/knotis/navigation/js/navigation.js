@@ -28,13 +28,13 @@
 
     var initialize_once = function () {
         $('#accordion-nav > li[data-target]').hover(
-            function () { 
+            function () {
                 target = $(this).data('target');
-                $(target).collapse('show') 
+                $(target).collapse('show')
 
             },
-            function () { 
-                target = $(this).data('target'); 
+            function () {
+                target = $(this).data('target');
                 $(target).collapse('hide');
 
             }
@@ -59,7 +59,8 @@
     };
 
     var initialize_address = function (force) {
-        $('a:not(.no-deep):not([target="_blank"]').off('click.address').on(
+        //$('a:not(.no-deep):not([target="_blank"]').off('click.address').on(
+        $('a:not(.no-deep,[target="_blank"])').off('click.address').on(
             'click.address',
             function (event) {
                 event.preventDefault();
@@ -70,7 +71,7 @@
             }
         );
     };
-    
+
     var initialize_always = function (address) {
         if (!address) {
             address = window.location.pathname;
@@ -97,8 +98,6 @@
         initialize_always();
 
         $.address.state('/').change(function (event) {
-            $.knotis.installMobileApp();
-
             var address = event.value;
 
             if (first_change) {
@@ -165,7 +164,7 @@
 
                         if (data.title) {
                             $.address.title(data.title);
-                            
+
                         }
                         $target_element.html(data.html);
                         $('div.modal').modal('hide');
@@ -180,7 +179,7 @@
         });
 
     };
-    
+
     initialize_navigation();
 
     $(window).on('beforeunload', function () {

@@ -13,11 +13,16 @@
 <!-- // End SubNav -->
 <div class="container-fluid myPurchases mainContent">
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-12 col-xs-12">
             <h1>Purchases</h1>
         </div>
     </div>
-    {% render_fragment my_purchases_grid %}
+
+    <div class="row">
+        <div clss="col-lg-12 col-xs-12">
+            {% render_fragment my_purchases_grid %}
+        </div>
+    </div>
 </div>
 {% if format == 'json' %}
 {% for script in post_scripts %}
