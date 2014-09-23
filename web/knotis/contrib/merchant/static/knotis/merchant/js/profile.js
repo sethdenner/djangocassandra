@@ -162,31 +162,33 @@
         });
 
         $('a.twitter').click(function(){
-            event.stopPropagation();
-            event.preventDefault();
-            $('.tab-content.yelp').hide();
-            $('.tab-content.yelp').removeClass('active');
+            if(!$('.tab-content .twitter').hasClass('active'))
+            {
+                event.stopPropagation();
+                event.preventDefault();
+                $('.tab-content .yelp').hide();
+                $('.tab-content .yelp').removeClass('active');
 
-            $('.tab-content.twitter').show();
-            $('.tab-content.twitter').addClass('active');
+                $('.tab-content .twitter').show();
+                $('.tab-content .twitter').addClass('active');
+            }
         });
 
         $('a.yelp').click(function(){
-            event.stopPropagation();
-            event.preventDefault();
-            $('.tab-content.twitter').hide();
-            $('.tab-content.twitter').removeClass('active');
+            if(!$('.tab-content .yelp').hasClass('active'))
+            {
+                event.stopPropagation();
+                event.preventDefault();
+                $('.tab-content .twitter').hide();
+                $('.tab-content .twitter').removeClass('active');
 
-            $('.tab-content.yelp').show();
-            $('.tab-content.yelp').addClass('active');
+                $('.tab-content .yelp').show();
+                $('.tab-content .yelp').addClass('active');
+            }
         });
 
 
-        $('.profileActionButton').click(function() {
-            event.preventDefault();
-            event.stopPropagation();
-            $(this).identity_action();
-        });
+        $('.profileActionButton').identity_action();
 
         // display the map on the about page.
         var setupMap = function(){
@@ -224,7 +226,7 @@
 		    return null;
 
 		}
-		
+
                 map = new google.maps.Map(document.getElementById('about-map'), mapOptions);
 		if (!map) {
 		    return null;

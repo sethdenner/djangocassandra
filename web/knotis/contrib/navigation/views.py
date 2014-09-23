@@ -76,3 +76,4 @@ class NavigationSideView(FragmentView):
         local_context['IdentityTypes'] = IdentityTypes
 
         return local_context
+        

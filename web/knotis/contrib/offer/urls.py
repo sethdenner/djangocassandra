@@ -34,7 +34,7 @@ urlpatterns = patterns(
     ),
 )
 
-urlpatterns += OffersView.urls()
 urlpatterns += OfferDetailView.urls()
+urlpatterns += OffersView.urls()
 urlpatterns += OfferPurchaseView.urls(require_login=True)
 urlpatterns += OfferPurchaseSuccessView.urls(require_login=True)
