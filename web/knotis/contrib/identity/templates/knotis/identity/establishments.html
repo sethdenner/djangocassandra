@@ -1,18 +1,17 @@
 {% load render_template_fragment %}
 <div class="businesses">
-    <div class="container-fluid mainContent">
-        <div class="row">
-            <div class="col-lg-12 col-xs-12">
-                <h1>Businesses</h1>
-            </div>
+    <div class="mainContent">
+        <div class="col-lg-12 col-xs-12">
+            <h1>Businesses</h1>
         </div>
-        <div class="row" data-id="id-establishments">
+        <div data-id="id-establishments">
             {% render_fragment establishments_grid %}
         </div>
     </div>
-    {% if format == 'json' %}
-        {% for script in post_scripts %}
-            <script src="{{STATIC_URL}}{{script}}"></script>
-        {% endfor %}
-    {% endif %}
+</div>
+{% if format == 'json' %}
+{% for script in post_scripts %}
+<script src="{{STATIC_URL}}{{script}}"></script>
+{% endfor %}
+{% endif %}
 </div>
