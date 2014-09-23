@@ -44,9 +44,10 @@
                         }
 
                         var $markup = $(data);
-                        $markup = $markup.children().children().children();
+                        //$markup = $markup.children().children().children();
+                        $('div[data-id=id-offers]').append($markup);
 
-                        $('.span12 > .row-fluid').append($markup);
+                        //$('.span12 > .row-fluid').append($markup);
                         fetching_results = false;
 
                         $.navigation.reinitialize();
