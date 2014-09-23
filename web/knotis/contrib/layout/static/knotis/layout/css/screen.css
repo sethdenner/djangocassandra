@@ -2218,12 +2218,13 @@ section.welcomeModal h1 {
     font-size: 20px;
     color: #919191;
     font-family: "LatoLight", sans-serif;
-    width: 80%;
+    width: 95%;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     margin-top: 15px;
+    height: 60px;
 }
 
 .offerItem .busLink, .offerItem .btnFollow {
@@ -2238,7 +2239,7 @@ section.welcomeModal h1 {
     display: inline-block;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-top: 60px;
+    margin-top: 25px;
 }
 
 .offerItem .busLink:hover, .offerItem .btnFollow:hover {
@@ -2490,6 +2491,7 @@ section.welcomeModal h1 {
     .offerItem h1 {
         white-space: nowrap;
         border: 0;
+        height: 33px;
     }
     nav .search {
         position: relative;
@@ -2530,7 +2532,7 @@ section.welcomeModal h1 {
         display: inline-block;
         text-transform: uppercase;
         letter-spacing: 2px;
-        margin-top: 7px;
+        margin-top: 0;
     }
     .supportModal .support-forms {
         left: 0;
