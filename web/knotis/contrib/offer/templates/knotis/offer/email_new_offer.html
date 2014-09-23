@@ -54,13 +54,13 @@ top: -130px;
 <h1>{{ offer.title }}</h1>
 
 {% thumbnail offer.banner_image.image.image '500' crop=offer.banner_image.crop as image %}
-<div class="cover center" style="background: url('{{ settings.MEDIA_URL_ABSOLUTE }}{{ image.url }}');"></div>
+<div class="cover center" style="background: url('{{ settings.BASE_URL }}{{ image.url }}');"></div>
 {% empty %}
 <div class="cover center" style="background: url('{{ settings.STATIC_URL_ABSOLUTE }}knotis/img/default-offer-image.png/');"></div>
 {% endthumbnail %}
 <div class="img-wrapper">
     {% thumbnail offer.badge_image.image.image '170x170' crop=offer.badge_image.crop as image %}
-    <img class="logo" src="{{ image.url }}" />
+    <img class="logo" src="{{ settings.BASE_URL }}{{ image.url }}" />
     {% empty %}
     <img class="logo" src="{{ settings.STATIC_URL_ABSOLUTE }}knotis/img/default-business-badge.png" />
     {% endthumbnail %}

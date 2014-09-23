@@ -7,7 +7,6 @@ from django.template import Context
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-#from haystack.views import SearchView
 
 from knotis.contrib.identity.views import IdentityTile, get_current_identity
 from knotis.contrib.offer.views import OfferTile
@@ -26,6 +25,12 @@ class SearchResultsView(EmbeddedView):
     ]
     template_name = 'search/search.html'
     view_name = 'search_results'
+    post_scripts = [
+        'knotis/layout/js/action_button.js',
+        'knotis/identity/js/identity-action.js',
+        'knotis/identity/js/businesses.js',
+        'knotis/identity/js/business-tile.js',
+    ]
 
     def post(
         self,
@@ -52,10 +57,11 @@ class SearchResultsGrid(GridSmallView):
         start_range = page * count
         end_range = start_range + count
 
-        query = self.request.GET.get('q',None)
+        query = self.request.GET.get('q', None)
 
         try:
             current_identity = get_current_identity(self.request)
+
         except:
             current_identity = None
 
@@ -87,20 +93,26 @@ class SearchResultsGrid(GridSmallView):
                     offer_tile = OfferTile()
                     result_context = Context({
                         'offer': result,
-                        'request': self.request
+                        'request': self.request,
+                        'current_identity': current_identity
                     })
                     tiles.append(
                         offer_tile.render_template_fragment(
                             result_context
                         )
                     )
-                    pass
+
                 else:
-                    #tiles.append( "no template for this object type" )
-                    logger.exception(' no template available for this search result type. ')
+                    # tiles.append( "no template for this object type" )
+                    logger.exception(
+                        'No template available for this search result type. '
+                    )
 
             except:
-                logger.exception('SEARCH RESULT FROM HAYSTACK BLEW THE STACK - FIX - SERIOUSLY')
+                logger.exception(
+                    'SEARCH RESULT FROM HAYSTACK BLEW THE STACK'
+                    '- FIX - SERIOUSLY'
+                )
 
         if not len(tiles):
             tiles.append("Sorry your search returned no results.")
@@ -117,7 +129,6 @@ class SearchResultsGrid(GridSmallView):
         return local_context
 
 
-
 class SearchBarView(FragmentView):
     template_name = 'search/search_bar.html'
     view_name = 'search_bar'
@@ -131,7 +142,7 @@ class SearchBarView(FragmentView):
         return HttpResponse('OK')
 
     def process_context(self):
-        search_query = self.request.GET.get('q',None)
+        search_query = self.request.GET.get('q', None)
 
         local_context = copy.copy(self.context)
         local_context.update({

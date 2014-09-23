@@ -1,3 +1,5 @@
+import os
+
 from django.utils import log
 logger = log.getLogger(__name__)
 
@@ -5,11 +7,28 @@ from knotis.views import ApiView
 
 from knotis.contrib.identity.views import get_current_identity
 
-from .models import ImageInstance
+from .models import (
+    Image,
+    ImageInstance,
+)
+
+from django.core.files.base import ContentFile
 
 
 class ImageApi(object):
-    pass
+    @staticmethod
+    def import_offer_image(src, offer):
+
+        image_source = open(src).read()
+        image = Image(
+            owner=offer.owner,
+        )
+        image.image.save(
+            os.path.join('images', os.path.basename(src)),
+            ContentFile(image_source)
+        )
+        image.save()
+        return image
 
 
 class ImageInstanceApi(object):
@@ -30,6 +49,16 @@ class ImageInstanceApi(object):
     @staticmethod
     def get(pk):
         return ImageInstance.objects.get(pk=pk)
+
+    @staticmethod
+    def create_offer_image_instance(image, offer):
+        ImageInstance.objects.create(
+            owner=offer.owner,
+            image=image,
+            related_object_id=offer.id,
+            context='offer_banner',
+            primary=True
+        )
 
 
 class ImageApiView(ImageApi, ApiView):

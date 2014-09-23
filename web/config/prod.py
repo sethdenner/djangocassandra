@@ -21,7 +21,7 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 EMAIL_BILLING_USER = 'billing@knotis.com'
 EMAIL_HOST_USER = 'support@knotis.com'
-EMAIL_HOST_PASSWORD = 'p0tent1al!'
+EMAIL_HOST_PASSWORD = '4thavemaps'
 
 # Base url for external access
 BASE_URL = 'https://knotis.com'  # NO TRAILING SLASH!!!

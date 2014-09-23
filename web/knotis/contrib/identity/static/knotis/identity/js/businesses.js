@@ -45,8 +45,7 @@
                             return;
                         }
                         var $markup = $(data);
-                        $markup = $markup.children().children().children();
-                        $('.span12 > .row-fluid').append($markup);
+                        $('div[data-id=id-establishments]').append($markup);
                         /*
                         if (0 === page % auto_paging_cutoff) {
                             $('.span10.grid > .row-fluid.grid-small > .span12 > .row-fluid').after(

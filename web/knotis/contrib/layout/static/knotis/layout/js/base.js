@@ -4,6 +4,23 @@
 (function ($) {
     "use strict";
 
+    $(document).ready(function() {
+        $('.navbar-toggle').click(function() {
+            $('.sideBar').toggle(function () {
+                $('.sidebar-label').fadeIn('fast');
+                $('.sidebar-overlay').fadeIn('fast');
+
+                $('.sidebar-nav li').click(function() {
+                    $('.sidebar-overlay').fadeOut(10);
+                    $('.sideBar').fadeOut(100);
+                });
+            });
+            $( "#sidebar-wrapper").animate({
+                width: "250px",
+            },  20, "linear");
+        });
+    });
+
     $( "#sidebar-wrapper").hover(function () {
         $( "#sidebar-wrapper").animate({
             width: "250px",
