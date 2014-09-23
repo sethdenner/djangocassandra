@@ -1,8 +1,70 @@
-from knotis.contrib.transaction.api import TransactionApi
-from rest_framework.decorators import detail_route
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
+
+from rest_framework.decorators import action
+from rest_framework.routers import DefaultRouter
+from rest_framework.exceptions import APIException
+
+from knotis.views import ApiViewSet
 
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
-from knotis.views import ApiViewSet
+from knotis.contrib.transaction.api import TransactionApi
+from knotis.contrib.transaction.models import (
+    TransactionCollection,
+    TransactionCollectionItem
+)
+
+
+class PassportApi(object):
+    @staticmethod
+    def retrieve_coupon(
+        collection_pk,
+        page_number
+    ):
+        collection = TransactionCollection.objects.get(
+            pk=collection_pk
+        )
+
+        collection_item = TransactionCollectionItem.objects.get(
+            transaction_collection=collection,
+            page=page_number
+        )
+
+        return collection_item.transaction
+
+    @staticmethod
+    def connect(
+        consumer,
+        transaction_collection_pk,
+        request=None
+    ):
+        transaction_collection = TransactionCollection.objects.get(
+            pk=transaction_collection_pk
+        )
+
+        return TransactionApi.create_transaction_transfer(
+            consumer,
+            transaction_collection,
+            request=request
+        )
+
+    @staticmethod
+    def redeem(
+        redeemer,
+        transaction_collection_pk,
+        page_number,
+        request=None
+    ):
+        transaction = PassportApi.retrieve_coupon(
+            transaction_collection_pk,
+            page_number
+        )
+
+        return TransactionApi.create_redemption(
+            request,
+            transaction,
+            redeemer
+        )
 
 
 class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
@@ -23,7 +85,7 @@ class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
 
         self.get_current_identity(request)
 
-    @detail_route()
+    @action(methods=['put'])
     def connect(
         self,
         request,
@@ -36,20 +98,71 @@ class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
             raise self.FailedToRetrieveCurrentIdentityException()
 
         try:
-            data = TransactionApi.create_transaction_transfer(
-                request,
+            data = PassportApi.connect(
                 self.current_identity,
-                pk
+                pk,
+                request=request
             )
 
-        except:
+        except Exception, e:
+            logger.exception(e.message)
             raise self.FailedToConnectPassportBook()
 
-    @detail_route()
+
+class PassportCouponApiRouter(DefaultRouter):
+    def get_lookup_regex(
+        self,
+        viewset,
+        lookup_prefix=''
+    ):
+        base_regex = super(PassportCouponApiRouter, self).get_lookup_regex(
+            viewset,
+            lookup_prefix=lookup_prefix
+        )
+
+        return '/'.join([
+            base_regex,
+            '(?P<page_number>\d+)'
+        ])
+
+
+class PassportCouponApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
+    api_path = 'passport'
+    resource_name = 'passport'
+    router_class = PassportCouponApiRouter
+
+    def get_object(
+        self,
+        queryset=None
+    ):
+        collection_pk = self.kwargs.get(self.lookup_field, None)
+        page_number = self.kwargs.get('page_number', None)
+
+        return PassportApi.retrieve_coupon(
+            collection_pk,
+            page_number
+        )
+
+    def initial(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        super(PassportApiViewSet, self).initial(
+            request,
+            *args,
+            **kwargs
+        )
+
+        self.get_current_identity(request)
+
+    @action(methods=['put'])
     def redeem(
         self,
         request,
-        pk=None
+        pk=None,
+        page_number=None
     ):
         if not pk:
             raise self.NoPassportPkProvided()
@@ -57,17 +170,17 @@ class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
         if not self.current_identity:
             raise self.FailedToRetrieveCurrentIdentityException()
 
-        collection_pk = pk[:36]
-        page_number = pk[36:]
-
         try:
-            collection_item = TransactionCollectionItem.objects.get(
-                transaction_colleciton=collection_pk,
-                page=int(page_number)
+            PassportApi.redeem(
+                self.current_identity,
+                pk,
+                page_number,
+                request=request
             )
-            purchase = collection_item.transaction
 
-        except:
+        except Exception, e:
+            logger.exception(e.message)
+
             raise self.FailedToRedeemPassportOffer()
 
     class NoPassportPkProvided(APIException):
@@ -85,56 +198,3 @@ class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
     class FailedToConnectPassportBook(APIException):
         status_code = 500
         default_detail = 'Failed to connect passport book.'
-
-
-class PassportRedemptionApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
-    api_path = 'passport/redemption'
-    resource_name = 'passport-connect'
-
-
-class PassportApi(object):
-    @staticmethod
-    def _normal_redeem(
-        reqeust=None,
-        purchase_pk=None
-    ):
-        return TransactionApi.create_redemption(
-            request=reqeust,
-            transaction=purchase,
-            current_identity=current_identity
-        )
-
-    @staticmethod
-    def _complex_redeem(
-        collection_pk,
-        page_number
-    ):
-        pass
-
-    @staticmethod
-    def redeem(
-        request=None,
-        current_identity=None,
-        purchase=None,
-        collection=None,
-        page_number=None
-    ):
-        if None is purchase:
-            c
-            PassportApi._normal_redeem(purchase_pk)
-
-
-        return TransactionApi.create_redemption(
-            request=request,
-            transaction=purchase,
-            current_identity=current_identity
-        )
-
-        else:
-            raise Exception('Invalid Parameters.')
-
-    @staticmethod
-    def connect(
-        transaction_colleciton_pk
-    ):
-        pass

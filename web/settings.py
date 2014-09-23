@@ -256,7 +256,8 @@ INSTALLED_APPS = (
     'knotis.contrib.support',
     'knotis.contrib.admintools',
     'knotis.contrib.settings',
-    'knotis.contrib.mobile'
+    'knotis.contrib.mobile',
+    'knotis.contrib.passport'
 )
 
 CORS_ORIGIN_ALLOW_ALL = True

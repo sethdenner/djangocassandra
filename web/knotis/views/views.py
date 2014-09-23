@@ -25,7 +25,7 @@ from django.http import (
 
 from rest_framework.views import APIView as RestApiView
 from rest_framework.viewsets import (
-    ViewSet,
+    GenericViewSet,
     ModelViewSet
 )
 from rest_framework.routers import DefaultRouter
@@ -514,7 +514,7 @@ class AJAXFragmentView(
     pass
 
 
-class ApiViewSet(ViewSet, GenerateApiUrlsMixin):
+class ApiViewSet(GenericViewSet, GenerateApiUrlsMixin):
     router_class = DefaultRouter
 
 

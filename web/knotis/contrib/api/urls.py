@@ -56,6 +56,11 @@ from knotis.contrib.stripe.api import (
 
 from knotis.contrib.qrcode.api import RedemptionScanApiViewSet
 
+from knotis.contrib.passport.api import (
+    PassportApiViewSet,
+    PassportCouponApiViewSet
+)
+
 urlpatterns = patterns('')
 urlpatterns += AuthUserApiView.urls()
 urlpatterns += AuthenticationApiView.urls()
@@ -85,3 +90,5 @@ urlpatterns += PurchaseApiModelViewSet.urls()
 urlpatterns += RedemptionApiModelViewSet.urls()
 urlpatterns += StripeCustomerModelViewSet.urls()
 urlpatterns += RedemptionScanApiViewSet.urls()
+urlpatterns += PassportCouponApiViewSet.urls()
+urlpatterns += PassportApiViewSet.urls()
