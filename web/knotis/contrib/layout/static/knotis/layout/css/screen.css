@@ -2444,6 +2444,9 @@ section.welcomeModal h1 {
 .authBtns {
     float: right;
 }
+.signUpMobile {
+    display: none;
+}
 
 .purchaseCover, .busCover, .defaultImg {
     height: 135px;
@@ -2580,15 +2583,18 @@ section.welcomeModal h1 {
         font-size: 20px;
         line-height: 20px;
     }
-    .logIn {
+    .logIn, .signUp {
         display: none;
+    }
+    .signUpMobile {
+        display: inline-block;
     }
     .authBtns {
         position: relative;
-        left: 20px;
-        top: 6px;
+        left: 15px;
+        top: 4px;
     }
-    #auth-controls a.signUp {
+    #auth-controls a.signUpMobile {
         padding: 7px 10px;
         font-size: 11px;
     }
