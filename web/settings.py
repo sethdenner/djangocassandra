@@ -224,6 +224,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'django_nose',
     # knotis apps
     'knotis.contrib.layout',
     'knotis.contrib.search',
@@ -317,6 +318,7 @@ LOGGING = {
     'loggers': {
     },
 }
+
 
 # Import additional settings.
 ENVIRONMENT_NAME = 'prod'

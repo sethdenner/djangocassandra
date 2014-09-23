@@ -10,9 +10,6 @@ from knotis.contrib.quick.fields import (
 from knotis.contrib.media.models import (
     Image
 )
-#from knotis.contrib.offer.models import (
-#    Offer
-#)
 
 
 class ProductTypes:
@@ -61,12 +58,19 @@ class ProductManager(QuickManager):
         value,
         currency_code,
     ):
-        return '_'.join([
-            Product.CREDIT_SKU_PREFIX,
-            currency_code,
-            ('%.2f' % price).rstrip('00').rstrip('.'),
-            ('%.2f' % value).rstrip('00').rstrip('.')
-        ])
+        if price != 0.0:
+            return '_'.join([
+                Product.CREDIT_SKU_PREFIX,
+                currency_code,
+                ('%.2f' % price).rstrip('00').rstrip('.'),
+                ('%.2f' % value).rstrip('00').rstrip('.')
+            ])
+        else:
+            return '_'.join([
+                Product.CREDIT_SKU_PREFIX,
+                currency_code,
+                ('%.2f' % value).rstrip('00').rstrip('.')
+            ])
 
     @staticmethod
     def _generate_physical_sku(title):
