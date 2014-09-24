@@ -200,11 +200,17 @@ class TransactionApi(object):
                 'Idenity %s is not an individual.' % new_owner
             )
 
-        transaction_collection_items = \
+        transaction_collection_items = (
             TransactionCollectionItem.objects.filter(
                 transaction_collection=transaction_collection
             )
+        )
 
+        if len(transaction_collection_items) < 1:
+            raise TransactionApi.NoTransactionCollectionItemsException(
+                'There where no TransactionCollectionItems '
+                'attached to this collection.'
+            )
         '''
         Test if this transaction collection has already been transfered.
         !IMPORTANT NOTE!:This assumes that if one transaction in the collection
@@ -243,6 +249,9 @@ class TransactionApi(object):
         return transactions
 
     class WrongIdentityTypeException(Exception):
+        pass
+
+    class NoTransactionCollectionItemsException(Exception):
         pass
 
     class TransactionCollectionAlreadyTransfered(Exception):

@@ -102,7 +102,7 @@ class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
             raise self.FailedToRetrieveCurrentIdentityException()
 
         try:
-            data = PassportApi.connect(
+            transfers = PassportApi.connect(
                 self.current_identity,
                 pk,
                 request=request
@@ -112,7 +112,16 @@ class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
             logger.exception(e.message)
             raise self.FailedToConnectPassportBook()
 
-        serializer = self.serializer_class(data)
+        '''
+        Only return the transfer that belongs to the current identity
+        '''
+        transfer = None
+        for t in transfers:
+            if t.owner_id == self.current_identity.pk:
+                transfer = t
+                break
+
+        serializer = self.serializer_class(transfer)
         return Response(serializer.data)
 
 
@@ -173,14 +182,17 @@ class PassportCouponApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
         pk=None,
         page_number=None
     ):
-        if not pk:
+        if None is pk:
             raise self.NoPassportPkProvided()
+
+        if None is page_number:
+            raise self.NoPageNumberProvided()
 
         if not self.current_identity:
             raise self.FailedToRetrieveCurrentIdentityException()
 
         try:
-            data = PassportApi.redeem(
+            redemptions = PassportApi.redeem(
                 self.current_identity,
                 pk,
                 page_number,
@@ -192,12 +204,25 @@ class PassportCouponApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
 
             raise self.FailedToRedeemPassportOffer()
 
-        serializer = self.serializer_class(data)
+        '''
+        Only return the redemption that belongs to the current identity
+        '''
+        redemption = None
+        for r in redemptions:
+            if r.owner_id == self.current_identity.pk:
+                redemption = r
+                break
+
+        serializer = self.serializer_class(redemption)
         return Response(serializer.data)
 
     class NoPassportPkProvided(APIException):
         status_code = 500
         default_detail = 'No Passport PK was provided.'
+
+    class NoPageNumberProvided(APIException):
+        status_code = 500
+        default_detail = 'No Passport page number was provided.'
 
     class FailedToRetrieveCurrentIdentityException(APIException):
         status_code = 500
