@@ -2218,16 +2218,17 @@ section.welcomeModal h1 {
     font-size: 20px;
     color: #919191;
     font-family: "LatoLight", sans-serif;
-    width: 80%;
+    width: 95%;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     margin-top: 15px;
+    height: 60px;
 }
 
 .offerItem .busLink, .offerItem .btnFollow {
-    width: 96%;
+    width: 100%;
     padding: 15px 0;
     border-radius: 3px;
     text-align: center;
@@ -2238,6 +2239,7 @@ section.welcomeModal h1 {
     display: inline-block;
     text-transform: uppercase;
     letter-spacing: 2px;
+    margin-top: 25px;
 }
 
 .offerItem .busLink:hover, .offerItem .btnFollow:hover {
@@ -2444,6 +2446,9 @@ section.welcomeModal h1 {
 .authBtns {
     float: right;
 }
+.signUpMobile {
+    display: none;
+}
 
 .purchaseCover, .busCover, .defaultImg {
     height: 135px;
@@ -2489,6 +2494,7 @@ section.welcomeModal h1 {
     .offerItem h1 {
         white-space: nowrap;
         border: 0;
+        height: 33px;
     }
     nav .search {
         position: relative;
@@ -2518,7 +2524,7 @@ section.welcomeModal h1 {
         padding: 0;
     }
     .offerItem .busLink, .offerItem .btnFollow {
-        width: 94%;
+        width: 95%;
         padding: 15px 0;
         border-radius: 3px;
         text-align: center;
@@ -2529,8 +2535,7 @@ section.welcomeModal h1 {
         display: inline-block;
         text-transform: uppercase;
         letter-spacing: 2px;
-        top: 35px;
-        left: 0;
+        margin-top: 0;
     }
     .supportModal .support-forms {
         left: 0;
@@ -2580,15 +2585,18 @@ section.welcomeModal h1 {
         font-size: 20px;
         line-height: 20px;
     }
-    .logIn {
+    .logIn, .signUp {
         display: none;
+    }
+    .signUpMobile {
+        display: inline-block;
     }
     .authBtns {
         position: relative;
-        left: 20px;
-        top: 6px;
+        left: 15px;
+        top: 4px;
     }
-    #auth-controls a.signUp {
+    #auth-controls a.signUpMobile {
         padding: 7px 10px;
         font-size: 11px;
     }

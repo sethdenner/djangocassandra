@@ -1,10 +1,6 @@
 {% load render_template_fragment %}
 {% block content %}
-    <div class="container-fluid">
-      <div class="row-fluid main-row">
-        <div class="span10 grid">
-          {% render_fragment search_results_grid  %}
-        </div>
-      </div>
-    </div>
+<div class="mainContent">
+    {% render_fragment search_results_grid  %}
+</div>
 {% endblock content %}
