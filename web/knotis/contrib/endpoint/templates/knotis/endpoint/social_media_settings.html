@@ -4,16 +4,14 @@
     <div>
         {% render_fragment facebook_sdk_initialization %}
     </div>
-    <div class="container-fluid mainContent">
+    <div class="mainContent">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <h1>Social Media Settings</h1>
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-12 col-xs-12">
-                {% render_fragment social_integrations_grid %}
-            </div>
+            {% render_fragment social_integrations_grid %}
         </div>
     </div>
     {% if format == 'json' %}
