@@ -121,8 +121,7 @@ a:focus {
 
 /* line 18, ../sass/_custom.scss */
 .mainContent {
-    max-width: 100%;
-    padding: 26px;
+    padding: 45px 0 0 80px;
 }
 
 /* line 25, ../sass/_custom.scss */
@@ -161,6 +160,11 @@ a:focus {
 
 /* General Navigation Styles */
 /* line 2, ../sass/_nav.scss */
+.navbar {
+    background: #2cc397;
+    border: 0;
+}
+
 nav {
     position: fixed;
     top: 0;
@@ -183,6 +187,8 @@ nav .logo {
 /* line 17, ../sass/_nav.scss */
 nav .logo img {
     max-width: 100%;
+    position: relative;
+    top: 2px;
 }
 /* line 21, ../sass/_nav.scss */
 nav a {
@@ -198,6 +204,7 @@ nav a:visited {
     text-decoration: none;
 }
 /* line 35, ../sass/_nav.scss */
+
 nav .search input {
     background-color: transparent;
     border: 0;
@@ -279,9 +286,11 @@ nav .dropdown-menu {
     font-family: 'LatoReg';
     top: 46px;
     width: 100%;
-    overflow: hidden;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+    max-height: 288px;
+    overflow-y: auto;
+    text-align: left;
 }
 /* line 114, ../sass/_nav.scss */
 nav .dropdown-menu a {
@@ -321,6 +330,11 @@ nav button, nav button:active, nav button:visted {
     outline: 0;
 }
 
+#nav-submenu {
+    text-align: left;
+    border: 0;
+}
+
 /* line 148, ../sass/_nav.scss */
 nav button.logIn:hover, nav button.signUp:hover {
     background: #2cc397;
@@ -350,13 +364,37 @@ nav button.signUp {
     background: transparent;
 }
 
+.navbar-default .navbar-toggle .icon-bar {
+    background: white;
+    width: 17px;
+}
+
+.navbar-toggle {
+    margin-right: 0;
+    padding: 10px 8px;
+    margin-top: 2px;
+    position: relative;
+    left: -6px;
+    top: -1px;
+    border-radius: 2px;
+    float: left;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: #24AA83;
+}
+
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+    background-color: #24AA83;
+}
+
 /* line 181, ../sass/_nav.scss */
 #auth-controls a {
     background: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.29);
+    border: 1px solid rgba(255, 255, 255, 0.29);
     padding: 8px 25px;
     margin: 0 5px;
-    font-size: 13px;
+    font-size: 12px;
     border-radius: 3px;
 }
 
@@ -482,7 +520,7 @@ nav button.signUp {
     background: white;
     position: fixed;
     height: 100%;
-    top: 50px;
+    top: 55px;
     z-index: 100;
     transition: all 0.4s ease 0s;
     padding-top: 20px;
@@ -492,7 +530,7 @@ nav button.signUp {
 /* line 15, ../sass/_sideBar.scss */
 .sidebar-nav {
     position: absolute;
-    top: 3px;
+    top: -2px;
     width: 100%;
     padding: 0 0 50px 0;
     margin: 2px 0;
@@ -544,9 +582,10 @@ nav button.signUp {
     width: 100%;
     background: #3f3f3f;
     position: fixed;
-    top: 0;
+    top: 55px;
+    left: 0;
     opacity: 0.9;
-    z-index: 5;
+    z-index: 1;
     display: none;
 }
 
@@ -1428,7 +1467,8 @@ offerSteps ul {
 h1.sectionHeader {
     font-size: 26px;
     color: #797979;
-    margin: 40px 0;
+    text-align: left;
+    margin: 40px 0 20px;
 }
 
 /* line 7, ../sass/_profile.scss */
@@ -1437,18 +1477,20 @@ h1.sectionHeader {
     height: 448px;
     position: absolute;
     top: 0;
-    left: 0;
+    left: 70px;
     background-size: cover;
 }
 
 /* line 23, ../sass/_profile.scss */
 .profileBusiness section {
-    background: white;
-    padding: 5px;
+    min-height: 415px;
+    padding: 15px;
     border-radius: 2px;
-    margin-top: -20px;
     color: #888;
+    background: white;
     font-family: "LatoLight", sans-serif;
+    overflow-y: auto;
+    margin-bottom: 30px;
 }
 
 /* line 33, ../sass/_profile.scss */
@@ -1464,13 +1506,13 @@ h1.sectionHeader {
 
 /* line 43, ../sass/_profile.scss */
 .heroInfo {
-    border-right: 1px solid #575757;
-    width: 345px;
+    border-right: 1px solid #353434;
+    width: 40%;
     background: rgba(29, 29, 29, 0.67);
     position: absolute;
     top: 50px;
-    left: 70px;
-    padding: 30px 30px 83px;
+    left: 0;
+    padding: 30px 30px 80px;
     overflow: hidden;
     height: 400px;
 }
@@ -1513,19 +1555,14 @@ h1.sectionHeader {
     margin-top: 15px;
 }
 
-/* line 81, ../sass/_profile.scss */
-section .profileInfo {
-    width: 50%;
-}
-
 /* line 85, ../sass/_profile.scss */
-section .profileInfo a {
+section .profileInfo a.mapLink {
     background: #2cc397;
     padding: 13px 20px;
     border-radius: 2px;
     display: inline-block;
     color: white;
-    width: 70%;
+    width: 100%;
     text-align: center;
     margin: 5px 0;
     font-size: 14px;
@@ -1635,25 +1672,14 @@ span.help-inline {
 }
 
 .change-profile-cover-link {
-    position: absolute;
     color: #e3e3e3;
-    padding: 12px 14px;
-    right: 0;
-    margin: 16px;
-    border-radius: 3px;
-    font-size: 14px;
+    font-size: 12px;
     cursor: pointer;
-    top: 371px;
-    border: 1px solid white;
-    z-index: 1;
-    background: rgba(0, 0, 0, 0.23);
 }
 
 .change-profile-cover-link:hover {
     color: white;
 }
-
-
 
 .profileBusiness .subNav {
     position: absolute;
@@ -1665,7 +1691,6 @@ span.help-inline {
     padding: 14px;
     font-family: 'LatoReg';
     text-align: center;
-    z-index: 4;
     height: 40px;
 }
 
@@ -1679,10 +1704,11 @@ span.help-inline {
 
 .profileContent {
     position: relative;
-    top: 380px;
-    left: 27px;
-    width: 100%;
-    margin: 0 auto;
+    top: 310px;
+    padding: 70px;
+    left: 30px;
+    margin: 0;
+    padding-bottom: 300px;
 }
 
 .line-clamp {
@@ -1711,10 +1737,7 @@ span.help-inline {
     border-radius: 50%;
     max-width: 92px;
     max-height: 92px;
-    position: absolute;
     border: 3px solid white;
-    display: inline-block;
-    top: -100px;
 }
 
 
@@ -1734,7 +1757,7 @@ label.label-unlimited {
 }
 
 .contentBlock {
-    padding: 90px 80px;
+    padding: 90px 0;
 }
 
 .tile-badge {
@@ -1789,8 +1812,7 @@ label.label-unlimited {
 
 #about-map {
     height: 300px;
-    width: 300px;
-    overflow:visible;
+    width: 100%;
 }
 
 .offerPreview .offerItem {
@@ -1802,20 +1824,6 @@ label.label-unlimited {
 
 .offerPreview .offerItem h1 {
     font-size: 23px !important;
-    text-align: left;
-    padding: 0;
-    position: relative;
-    top: -120px;
-}
-
-.offerPreview .offerItem .busLogo {
-    border-radius: 50%;
-    width: 92px;
-    max-height: 92px;
-    background: white;
-    position: relative;
-    right: 35px;
-    top: -120px;
 }
 
 .offerPreview .knotis-price-big {
@@ -1833,15 +1841,14 @@ label.label-unlimited {
 
 .actionTile {
     text-align: center;
-    position: relative;
 }
 
 .actionTile span {
     font-size: 70px;
-    display: inline-block;
     width: 100%;
-    margin: 75px 0 0;
     color: #EBEBEB;
+    position: relative;
+    top: 80px;
 }
 
 .actionTile a {
@@ -1853,10 +1860,9 @@ label.label-unlimited {
     font-family: 'LatoLight', sans-serif;
     line-height: 25px;
     position: absolute;
-    height: 100%;
     margin-top: 15px;
-    padding: 180px 50px;
-    top: -20px;
+    top: 150px;
+    padding: 10px;
 }
 
 .offerDetails {
@@ -1891,14 +1897,13 @@ label.label-unlimited {
 }
 
 a.adminLink {
-    position: absolute;
-    top: 50px;
-    color: #2cc297;
-    border: 2px solid rgb(224, 224, 224);
-    padding: 8px 30px;
-    border-radius: 3px;
+    color: #FFFFFF;
     white-space: nowrap;
-    left: 0;
+    font-size: 12px;
+}
+
+a.adminLink:hover {
+    color: #2cc397;
 }
 
 .about-carousel-image {
@@ -1909,24 +1914,21 @@ a.adminLink {
     padding: 10px;
 }
 
-.about-us {
-    padding: 20px 20px 227px;
-}
-
 .about-carousel section {
     padding-bottom: 90px;
 }
 
 .upload-photo {
-    padding: 15px;
+    padding: 11px;
     border-radius: 3px;
     border: 1px solid #2cc397;
     background: transparent;
     color: #2cc397;
     position: absolute;
     left: 0;
-    margin: 23px 13px 0;
+    margin: 20px 3px;
     cursor: pointer;
+    font-size: 15px;
 }
 
 .carousel-indicators {
@@ -1943,14 +1945,15 @@ a.adminLink {
 
 .edit_about {
     position: absolute;
-    right: 20px;
-    padding: 8px 25px;
-    border-radius: 3px;
-    margin-top: -50px;
+    right: 0;
+    top: 40px;
+    padding: 8px 30px;
+    border-radius: 2px;
     border: 1px solid #2cc397;
     color: #2cc397;
     font-size: 14px;
     cursor: pointer;
+    margin-right: 17px;
 }
 
 .modal-footer {
@@ -2191,7 +2194,6 @@ section.welcomeModal h1 {
     border: 0;
 }
 
-
 /* Grid Item Styles 2.0 */
 
 .offerItem {
@@ -2200,23 +2202,12 @@ section.welcomeModal h1 {
     height: 360px;
     margin: 0 10px 10px 0;
     padding: 0;
-    border-radius: 4px;
-    max-width: 255px;
-}
-
-.offerItem .busCover {
-    height: 140px;
-    overflow: hidden;
+    border-radius: 2px;
+    max-width: 230px;
 }
 
 .offerItem .busCover img {
     width: 100%;
-}
-
-.offerItem .busCoverIdentity img {
-    width: 280%;
-    position: relative;
-    left: -250px;
 }
 
 .offerItem .busCoverIdentity .defaultImg {
@@ -2224,35 +2215,29 @@ section.welcomeModal h1 {
 }
 
 .offerItem h1 {
-    font-size: 22px;
+    font-size: 20px;
     color: #919191;
     font-family: "LatoLight", sans-serif;
-    width: 95%;
+    width: 80%;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
-
-.offerItem .tileContent {
-    position: absolute;
-    width: 100%;
-    top: 200px;
-    padding: 0 15px;
+    margin-top: 15px;
 }
 
 .offerItem .busLink, .offerItem .btnFollow {
-    width: 88%;
-    padding: 16px 0;
-    border: 0;
+    width: 96%;
+    padding: 15px 0;
     border-radius: 3px;
     text-align: center;
     border: 1px solid rgb(248, 248, 248);
     background: rgb(248, 248, 248);
-    position: absolute;
-    top: 95px;
     color: rgb(122, 122, 122);
-    font-size: 14px;
+    font-size: 11px;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .offerItem .busLink:hover, .offerItem .btnFollow:hover {
@@ -2336,6 +2321,7 @@ section.welcomeModal h1 {
     text-indent: 12px;
     font-size: 15px;
     margin: 0 0 25px;
+    width: 50%;
 }
 
 .offerHero h1, .offerHero h2 {
@@ -2368,7 +2354,262 @@ section.welcomeModal h1 {
     width: 100%;
 }
 
+.offerItem.dummyTile {
+    text-align: center;
+    position: relative;
+    top: 35px;
+}
+
+.dummyTile .busCover {
+    width: 250%;
+    position: absolute;
+    left: -200px;
+}
+
+.offerItem.dummyTile h1 {
+    font-size: 17px;
+}
+
+.panel {
+    position: fixed;
+    left: -15.625em; /*left or right and the width of your navigation panel*/
+    width: 15.625em; /*should match the above value*/
+}
+
+.sidebar-mob {
+    text-align: left;
+}
+
+#admin_become_manager_button input {
+    color: #FFFFFF;
+    white-space: nowrap;
+    background: transparent;
+    border: 0;
+    font-size: 12px;
+}
+
+.adminBtns {
+    text-align: center;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.19);
+    position: absolute;
+    left: 0;
+    top: 400px;
+    padding: 9px 0;
+}
+
+.navBtn {
+    display: none;
+}
+
+#identity-switcher {
+    width: 80%;
+    display: inline-block;
+    position: relative;
+    float: right;
+}
+.about-us {
+    line-height: 23px;
+    font-size: 14px;
+    padding: 0 10px;
+}
+
+.tweet img {
+    border-radius: 50%;
+    display: inline-block;
+    width: 40px;
+}
+
+.tweet-text {
+    font-size: 14px;
+}
+
+.tileContent {
+    position: absolute;
+    width: 100%;
+    top: 90px;
+    padding: 0 15px;
+}
+
 .redemptionCode {
-    font-size: 15px;
-    padding: 17px;
+    font-size: 14px;
+    margin: 10px 0;
+    position: absolute;
+    top: -124px;
+    right: 0px;
+    background: white;
+    border-right: 3px solid #2cc397;
+    padding: 12px;
+}
+.authBtns {
+    float: right;
+}
+
+.purchaseCover, .busCover, .defaultImg {
+    height: 135px;
+}
+
+/* Responsive Magic */
+
+/* Small devices (Phones, Tablets, 400px, 768px and up) */
+@media (max-width: 400px) {
+    #id-current-identity-name, .searchForm, .sideBar, .search {
+        display: none;
+    }
+    .navBtn {
+        display: inline-block;
+    }
+    h1 {
+        font-size: 25px;
+        border-bottom: 1px solid #E7E7E7;
+        width: 40%;
+        margin: 0 auto 20px;
+        padding-bottom: 7px;
+    }
+    .profileBusiness .hero {
+        text-align: center;
+    }
+    .heroInfo {
+        width: 100%;
+    }
+    .profileContent {
+        position: relative;
+        top: 380px;
+        padding: 0;
+        left: 0;
+    }
+    .offerItem {
+        width: 45%;
+        height: 255px;
+        margin: 7px;
+    }
+    .mainContent {
+        padding: 30px 0;
+    }
+    .offerItem h1 {
+        white-space: nowrap;
+        border: 0;
+    }
+    nav .search {
+        position: relative;
+        top: 0;
+        width: 100%;
+    }
+    nav .dropdown-menu {
+        left: -80px;
+    }
+    nav .dropdown:hover {
+        border: 1px solid #2cc397;
+    }
+    .supportModal select {
+        width: 100%;
+    }
+    .profileBusiness .hero {
+        left: 0;
+    }
+    .profileContent {
+        width: 100%;
+    }
+    .tileContent {
+        text-align: center;
+        position: absolute;
+        width: 100%;
+        top: 50px;
+        padding: 0;
+    }
+    .offerItem .busLink, .offerItem .btnFollow {
+        width: 94%;
+        padding: 15px 0;
+        border-radius: 3px;
+        text-align: center;
+        border: 1px solid rgb(248, 248, 248);
+        background: rgb(248, 248, 248);
+        color: rgb(122, 122, 122);
+        font-size: 11px;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        top: 35px;
+        left: 0;
+    }
+    .supportModal .support-forms {
+        left: 0;
+    }
+    .support-forms input, .supportModal .support-forms textarea {
+        padding: 6px;
+        width: 80%;
+        margin: 10px 0 0 0;
+    }
+    .supportModal .support-buttons {
+        width: 90%;
+        left: 0;
+    }
+    .supportModal .support-buttons input {
+        background: #2cc397;
+        border: 0;
+        color: white;
+        font-size: 13px;
+        text-transform: uppercase;
+        display: inline-block;
+        width: 100%;
+        letter-spacing: 2px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    .supportModal label {
+        width: 50%;
+        text-align: center;
+    }
+    .contentBlock {
+        text-align: center;
+    }
+    .redemptionCode {
+        font-size: 13px;
+        left: 0;
+        position: absolute;
+        top: -210px;
+        background: rgba(255, 255, 255, 0.82);
+        width: 100%;
+        padding: 10px;
+    }
+    .actionTile {
+        position: relative;
+        top: -27px;
+    }
+    .actionTile a {
+        font-size: 20px;
+        line-height: 20px;
+    }
+    .logIn {
+        display: none;
+    }
+    .authBtns {
+        position: relative;
+        left: 20px;
+        top: 6px;
+    }
+    #auth-controls a.signUp {
+        padding: 7px 10px;
+        font-size: 11px;
+    }
+    .purchaseCover, .busCover, .defaultImg {
+        height: 95px;
+    }
+} 
+
+@media (min-width: 768px) {
+    .navbar-collapse {
+        display: none;
+    }
+    .supportModal select {
+        width: 100%;
+    }
+} 
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
 }
