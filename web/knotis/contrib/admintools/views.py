@@ -1,5 +1,6 @@
 ###### IMPORTS ######
 import copy
+from django import http
 from django.conf import settings
 from django.template import Context
 from django.shortcuts import (
@@ -382,6 +383,8 @@ class AdminOwnerViewButton(FragmentView):
     template_name = 'knotis/admintools/owner_button_fragment.html'
 
 
+# Requires that 'reset_id_pk' be initialized in the context
+#   and set to the id of the identity you want to reset the password of.
 class AdminValidateResendView(AJAXFragmentView):
     view_name = 'admin_send_reset_button'
     template_name = 'knotis/admintools/validate_resend.html'
@@ -392,17 +395,17 @@ class AdminValidateResendView(AJAXFragmentView):
         *args,
         **kwargs
     ):
-        user_id = self.context.get('identity_id')
+        import pdb; pdb.set_trace()
+        user_id = self.context.get('reset_id_pk')
         user_id = Identity.objects.get(pk=user_id)
         user = KnotisUser.objects.get_identity_user(user_id)
         reset_form = ForgotPasswordForm(data={
             'email': user.username,
         })
         reset_form.send_reset_instructions()
-        return self.generate_ajax_response({
-            'identity': user_id.get_fields_dict(),
-             'user': user.username,
-        })
+        return http.HttpResponseRedirect(
+                '/'
+            )
     
 
 class AdminUserDetailsTile(FragmentView):
@@ -452,6 +455,7 @@ class AdminOwnerView(ModalView):
             tile_context = copy.copy(self.context)
             tile_context.update({
                 'manager_identity': manager_identity,
+                'reset_id_pk': manager_identity.id,
                 'manager_user': manager_user,
                 'request': self.request,
             })
@@ -473,6 +477,7 @@ class AdminOwnerView(ModalView):
             tile_context = copy.copy(self.context)
             tile_context.update({
                 'manager_identity': manager_identity,
+                'reset_id_pk': manager_identity.id,
                 'manager_user': manager_user,
                 'request': self.request,
             })
