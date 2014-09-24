@@ -160,30 +160,32 @@
             });
 
         });
+        var $twitter_content = $('[data-id=id-twitter-content')
+        var $yelp_content = $('[data-id=id-yelp-content')
 
-        $('a.twitter').click(function(){
-            if(!$('.tab-content .twitter').hasClass('active'))
+        $('a[data-id=id-twitter-icon]').click(function(){
+            if(!$twitter_content.hasClass('active'))
             {
                 event.stopPropagation();
                 event.preventDefault();
-                $('.tab-content .yelp').hide();
-                $('.tab-content .yelp').removeClass('active');
+                $yelp_content.hide();
+                $yelp_content.removeClass('active');
 
-                $('.tab-content .twitter').show();
-                $('.tab-content .twitter').addClass('active');
+                $twitter_content.show();
+                $twitter_content.addClass('active');
             }
         });
 
-        $('a.yelp').click(function(){
-            if(!$('.tab-content .yelp').hasClass('active'))
+        $('a[data-id=id-yelp-icon]').click(function(){
+            if(!$yelp_content.hasClass('active'))
             {
                 event.stopPropagation();
                 event.preventDefault();
-                $('.tab-content .twitter').hide();
-                $('.tab-content .twitter').removeClass('active');
+                $twitter_content.hide();
+                $twitter_content.removeClass('active');
 
-                $('.tab-content .yelp').show();
-                $('.tab-content .yelp').addClass('active');
+                $yelp_content.show();
+                $yelp_content.addClass('active');
             }
         });
 
