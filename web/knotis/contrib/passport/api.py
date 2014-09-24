@@ -3,6 +3,7 @@ logger = logging.getLogger(__name__)
 
 from rest_framework.decorators import action
 from rest_framework.routers import DefaultRouter
+from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 
 from knotis.views import ApiViewSet
@@ -13,6 +14,7 @@ from knotis.contrib.transaction.models import (
     TransactionCollection,
     TransactionCollectionItem
 )
+from knotis.contrib.transaction.serializers import TransactionSerializer
 
 
 class PassportApi(object):
@@ -42,7 +44,7 @@ class PassportApi(object):
             pk=transaction_collection_pk
         )
 
-        return TransactionApi.create_transaction_transfer(
+        return TransactionApi.transfer_transaction_collection(
             consumer,
             transaction_collection,
             request=request
@@ -70,6 +72,8 @@ class PassportApi(object):
 class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
     api_path = 'passport'
     resource_name = 'passport'
+
+    serializer_class = TransactionSerializer
 
     def initial(
         self,
@@ -108,6 +112,9 @@ class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
             logger.exception(e.message)
             raise self.FailedToConnectPassportBook()
 
+        serializer = self.serializer_class(data)
+        return Response(serializer.data)
+
 
 class PassportCouponApiRouter(DefaultRouter):
     def get_lookup_regex(
@@ -130,6 +137,8 @@ class PassportCouponApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
     api_path = 'passport'
     resource_name = 'passport'
     router_class = PassportCouponApiRouter
+
+    serializer_class = TransactionSerializer
 
     def get_object(
         self,
@@ -171,7 +180,7 @@ class PassportCouponApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
             raise self.FailedToRetrieveCurrentIdentityException()
 
         try:
-            PassportApi.redeem(
+            data = PassportApi.redeem(
                 self.current_identity,
                 pk,
                 page_number,
@@ -182,6 +191,9 @@ class PassportCouponApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
             logger.exception(e.message)
 
             raise self.FailedToRedeemPassportOffer()
+
+        serializer = self.serializer_class(data)
+        return Response(serializer.data)
 
     class NoPassportPkProvided(APIException):
         status_code = 500

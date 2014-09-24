@@ -524,45 +524,6 @@ class TransactionManager(QuickManager):
             dark_purchase=True
         )
 
-    def create_transaction_transfer(
-        self,
-        new_owner,
-        transaction_collection,
-    ):
-        transaction_collection_items = \
-            TransactionCollectionItem.objects.filter(
-                transaction_collection=transaction_collection
-            )
-
-        for t in transaction_collection_items:
-            other_transfers = Transaction.objects.filter(
-                transaction_type=TransactionTypes.TRANSACTION_TRANSFER,
-                transaction_context=t.transaction.transaction_context,
-                offer=t.transaction.offer,
-            )
-            if len(other_transfers) != 0:
-                raise Exception("Already transfered this offer")
-
-            for owner in [new_owner, t.transaction.owner]:
-                super(TransactionManager, self).create(
-                    owner=owner,
-                    transaction_type=TransactionTypes.TRANSACTION_TRANSFER,
-                    offer=t.transaction.offer,
-                    transaction_context=t.transaction.transaction_context
-                )
-            t.transaction.owner = new_owner
-            t.transaction.save()
-
-    def create(
-        self,
-        **kwargs
-    ):
-        create_methods = {}
-        for transaction_type in TransactionTypes.CHOICES:
-            create_methods[transaction_type] = 'create_' + transaction_type[0]
-
-        return getattr(self, create_methods[transaction_type])(**kwargs)
-
     def get_daily_revenue(
         self,
         business

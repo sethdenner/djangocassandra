@@ -34,7 +34,8 @@ from knotis.contrib.stripe.api import StripeApi
 
 from .models import (
     Transaction,
-    TransactionTypes
+    TransactionTypes,
+    TransactionCollectionItem
 )
 from .views import (
     CustomerReceiptBody,
@@ -189,7 +190,7 @@ class TransactionApi(object):
         pass
 
     @staticmethod
-    def create_transaction_transfer(
+    def transfer_transaction_collection(
         request=None,
         new_owner=None,
         transaction_collection=None,
@@ -199,14 +200,52 @@ class TransactionApi(object):
                 'Idenity %s is not an individual.' % new_owner
             )
 
-        Transaction.objects.create_transaction_transfer(
-            new_owner,
-            transaction_collection
+        transaction_collection_items = \
+            TransactionCollectionItem.objects.filter(
+                transaction_collection=transaction_collection
+            )
+
+        '''
+        Test if this transaction collection has already been transfered.
+        !IMPORTANT NOTE!:This assumes that if one transaction in the collection
+        has been transfered then all of them have been.
+        '''
+        test_transaction = transaction_collection_items[0].transaction
+        other_transfers = Transaction.objects.filter(
+            transaction_type=TransactionTypes.TRANSACTION_TRANSFER,
+            transaction_context=(
+                test_transaction.transaction.transaction_context
+            ),
+            offer=test_transaction.transaction.offer,
         )
+        if len(other_transfers) != 0:
+            raise TransactionApi.TransactionCollectionAlreadyTransfered(
+                "Already transfered this transaction collection!"
+            )
+
+        transactions = []
+        for t in transaction_collection_items:
+            for owner in [new_owner, t.transaction.owner]:
+                transactions.append(
+                    Transaction.objects.create(
+                        owner=owner,
+                        transaction_type=TransactionTypes.TRANSACTION_TRANSFER,
+                        offer=t.transaction.offer,
+                        transaction_context=t.transaction.transaction_context
+                    )
+                )
+
+            t.transaction.owner = new_owner
+            t.transaction.save()
 
         Activity.redeem(request)
 
+        return transactions
+
     class WrongIdentityTypeException(Exception):
+        pass
+
+    class TransactionCollectionAlreadyTransfered(Exception):
         pass
 
 

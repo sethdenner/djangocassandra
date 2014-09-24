@@ -255,7 +255,7 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
             pk=transaction_collection_id
         )
 
-        TransactionApi.create_transaction_transfer(
+        TransactionApi.transfer_transaction_collection(
             self.request,
             current_identity,
             transaction_collection,
