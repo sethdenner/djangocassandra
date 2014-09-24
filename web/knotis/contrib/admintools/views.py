@@ -395,7 +395,6 @@ class AdminValidateResendView(AJAXFragmentView):
         *args,
         **kwargs
     ):
-        import pdb; pdb.set_trace()
         user_id = self.context.get('reset_id_pk')
         user_id = Identity.objects.get(pk=user_id)
         user = KnotisUser.objects.get_identity_user(user_id)
