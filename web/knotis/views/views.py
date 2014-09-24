@@ -488,7 +488,6 @@ class EmailView(FragmentView):
     text_template_name = None
 
     def generate_email(self, subject, from_email, to_list, context):
-        import pdb; pdb.set_trace()
         local_context = copy.copy(context)
         local_context = load_urls_into_context(local_context)
 
