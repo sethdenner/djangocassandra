@@ -102,7 +102,7 @@ class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
             raise self.FailedToRetrieveCurrentIdentityException()
 
         try:
-            transfers = PassportApi.connect(
+            all_transfers = PassportApi.connect(
                 self.current_identity,
                 pk,
                 request=request
@@ -113,15 +113,14 @@ class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
             raise self.FailedToConnectPassportBook()
 
         '''
-        Only return the transfer that belongs to the current identity
+        Only return the transfers that belongs to the current identity
         '''
-        transfer = None
-        for t in transfers:
+        my_transfers = []
+        for t in all_transfers:
             if t.owner_id == self.current_identity.pk:
-                transfer = t
-                break
+                my_transfers.append(t)
 
-        serializer = self.serializer_class(transfer)
+        serializer = self.serializer_class(my_transfers, many=True)
         return Response(serializer.data)
 
 
