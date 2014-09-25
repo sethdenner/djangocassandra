@@ -1,6 +1,6 @@
 {% load thumbnail %}
 <div class="col-lg-3 col-xs-12 offerItem passportTile">
-    <a href="/offers/{{ offer.pk }}/" class="modal-link">
+    <a href="/offers/passport/{{ offer.pk }}/">
         <div class="busCover">
             {% thumbnail offer_banner_image.image.image 'x140' crop=offer_banner_image.crop as image %}
             <img src="{{ image.url }}" alt="{{ offer.title }}"/>

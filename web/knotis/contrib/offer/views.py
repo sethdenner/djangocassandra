@@ -35,7 +35,6 @@ from knotis.contrib.identity.models import (
 )
 from knotis.contrib.identity.views import (
     get_identity_profile_badge,
-    IdentityActionButton,
 )
 
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
@@ -160,7 +159,6 @@ class OffersGridView(GridSmallView):
         count = int(self.context.get('count', '20'))
         start_range = page * count
         end_range = start_range + count
-        offer_id = self.context.get('offer_id')
 
         offer_filter_dict = {
             'published': True,
@@ -168,29 +166,15 @@ class OffersGridView(GridSmallView):
             'completed': False
         }
 
-        if offer_id:
-            offer = get_object_or_404(Offer, pk=offer_id)
-            if offer.offer_type == OfferTypes.DIGITAL_OFFER_COLLECTION:
-                offer_collection_id = offer.description
-                offer_collection = OfferCollection.objects.get(
-                    id=offer_collection_id
-                )
-                offer_collection_items = OfferCollectionItem.objects.filter(
-                    offer_collection=offer_collection
-                )
-            offers = [x.offer for x in offer_collection_items]
-            offer_action = None
+        try:
+            offers = Offer.objects.filter(
+                **offer_filter_dict
+            )[start_range:end_range]
 
-        else:
-            try:
-                offers = Offer.objects.filter(
-                    **offer_filter_dict
-                )[start_range:end_range]
-
-            except Exception:
-                logger.exception(''.join([
-                    'failed to get offers.'
-                ]))
+        except Exception:
+            logger.exception(''.join([
+                'failed to get offers.'
+            ]))
 
         tiles = []
         for offer in offers:
@@ -198,14 +182,61 @@ class OffersGridView(GridSmallView):
                 tile = CollectionTile()
                 tiles.append(tile.render_template_fragment(Context({
                     'offer': offer,
-                    'offer_action': offer_action
+                    'current_identity': current_identity,
                 })))
 
             else:
                 tile = OfferTile()
                 tiles.append(tile.render_template_fragment(Context({
                     'offer': offer,
-                    'offer_action': offer_action
+                    'current_identity': current_identity,
+                })))
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'tiles': tiles
+        })
+        return local_context
+
+
+class PassportBookView(EmbeddedView):
+    url_patterns = [
+        r''.join([
+            '/passport'
+            '/((?P<offer_id>',
+            REGEX_UUID,
+            ')/)?$'
+        ])
+    ]
+    default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/offer/js/offers.js',
+    ]
+    template_name = 'knotis/offer/passport_offers_view.html'
+
+
+class PassportBookOffersGrid(GridSmallView):
+    view_name = 'passport_offers_grid'
+
+    def process_context(self):
+        offer_id = self.context.get('offer_id')
+
+        offer = get_object_or_404(Offer, pk=offer_id)
+        offer_collection_id = offer.description
+        offer_collection = OfferCollection.objects.get(
+            id=offer_collection_id
+        )
+        offer_collection_items = OfferCollectionItem.objects.filter(
+            offer_collection=offer_collection
+        )
+
+        offers = [x.offer for x in offer_collection_items]
+        tiles = []
+        for offer in offers:
+                tile = OfferTile()
+                tiles.append(tile.render_template_fragment(Context({
+                    'offer': offer,
+                    'current_identity': None,
                 })))
 
         local_context = copy.copy(self.context)
