@@ -383,21 +383,23 @@ class AdminOwnerViewButton(FragmentView):
     template_name = 'knotis/admintools/owner_button_fragment.html'
 
 
-# Requires that 'reset_id_pk' be initialized in the context
-#   and set to the id of the identity you want to reset the password of.
 class AdminValidateResendView(AJAXFragmentView):
+
+
     view_name = 'admin_send_reset_button'
     template_name = 'knotis/admintools/validate_resend.html'
 
+    # Requires that 'reset_id_pk' by initialized in the context
+    #    and set to the id of the identity you want to reset the password of.
     def post(
         self,
         request,
         *args,
         **kwargs
     ):
-        user_id = self.context.get('reset_id_pk')
-        user_id = Identity.objects.get(pk=user_id)
-        user = KnotisUser.objects.get_identity_user(user_id)
+        reset_pk = self.context.get('reset_id_pk')
+        user_identity = Identity.objects.get(pk=reset_pk)
+        user = KnotisUser.objects.get_identity_user(user_identity)
         reset_form = ForgotPasswordForm(data={
             'email': user.username,
         })
