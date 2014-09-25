@@ -10,6 +10,7 @@ from .views import (
     OfferDetailView,
     OfferPurchaseView,
     OffersGridView,
+    PassportBookView,
     OfferPurchaseSuccessView,
     OfferPurchaseButton
 )
@@ -36,5 +37,6 @@ urlpatterns = patterns(
 
 urlpatterns += OfferDetailView.urls()
 urlpatterns += OffersView.urls()
+urlpatterns += PassportBookView.urls()
 urlpatterns += OfferPurchaseView.urls(require_login=True)
 urlpatterns += OfferPurchaseSuccessView.urls(require_login=True)
