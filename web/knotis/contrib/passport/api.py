@@ -45,9 +45,9 @@ class PassportApi(object):
         )
 
         return TransactionApi.transfer_transaction_collection(
+            request,
             consumer,
-            transaction_collection,
-            request=request
+            transaction_collection
         )
 
     @staticmethod
