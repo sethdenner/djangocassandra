@@ -4,22 +4,22 @@ from knotis.contrib.offer.models import (
     OfferCollectionItem,
 )
 from knotis.contrib.identity.models import Identity
+from knotis.contrib.transaction.api import (
+    PurchaseMode,
+    TransactionApi
+)
 from knotis.contrib.transaction.models import (
     TransactionCollection,
     TransactionCollectionItem,
-    Transaction
 )
 from knotis.contrib.product.models import (
     Product,
     CurrencyCodes,
 )
 from knotis.contrib.inventory.models import Inventory
-from knotis.contrib.paypal.views import IPNCallbackView
 import settings
 
 from django.utils.log import logging
-import random
-import string
 import csv
 logger = logging.getLogger(__name__)
 
@@ -66,24 +66,13 @@ class Command(BaseCommand):
                 )
 
                 for i in offer_collection_items:
-                    redemption_code = ''.join(
-                        random.choice(
-                            string.ascii_uppercase + string.digits
-                        ) for _ in range(10)
-                    )
-
-                    transaction_context = '|'.join([
-                        knotis_passport.pk,
-                        IPNCallbackView.generate_ipn_hash(knotis_passport.pk),
-                        redemption_code,
-                        'none'
-                    ])
-
-                    transactions = Transaction.objects.create_purchase(
+                    transactions = TransactionApi.create_purchase(
+                        request=None,
                         offer=i.offer,
                         buyer=knotis_passport,
                         currency=buyer_usd,
-                        transaction_context=transaction_context
+                        mode=PurchaseMode.FREE,
+                        send_email=False,
                     )
 
                     seller = filter(
@@ -101,7 +90,7 @@ class Command(BaseCommand):
                         i.page,
                         book_numb,
                         '%s/%s' % (transaction_collection.pk, i.page),
-                        settings.BASE_URL + '/qrcode/coupon/%s/%s' % (
+                        settings.BASE_URL + '/qrcode/redeem/%s/%s/' % (
                             transaction_collection.pk,
                             i.page),
                         seller.redemption_code()

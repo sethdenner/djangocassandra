@@ -54,6 +54,7 @@ class TransactionManager(QuickManager):
         buyer,
         currency,
         transaction_context=None,
+        force_free=False,
         dark_purchase=False
     ):
         if not offer.available():
@@ -116,7 +117,10 @@ class TransactionManager(QuickManager):
             for participant in participants:
                 transaction = super(TransactionManager, self).create(
                     owner=participant,
-                    transaction_type=(TransactionTypes.PURCHASE, TransactionTypes.DARK_PURCHASE)[dark_purchase],
+                    transaction_type=(
+                        TransactionTypes.PURCHASE,
+                        TransactionTypes.DARK_PURCHASE
+                    )[dark_purchase],
                     offer=offer,
                     transaction_context=transaction_context
                 )
@@ -128,7 +132,7 @@ class TransactionManager(QuickManager):
 
         try:
             price = offer.price_discount()
-            if price:
+            if price and not force_free:
                 currency_owner = Inventory.objects.split(
                     currency,
                     offer.owner,
@@ -137,7 +141,7 @@ class TransactionManager(QuickManager):
 
             currencies_thrid_party = []
             for item in offer_items:
-                if price and item.inventory.provider_id != offer.owner_id:
+                if price and item.inventory.provider_id != offer.owner_id and not force_free:
                     split_currency = Inventory.objects.split(
                         currency_owner,
                         item.inventory.provider,
@@ -171,7 +175,7 @@ class TransactionManager(QuickManager):
                         inventory_transaction
                     )
 
-            if price:
+            if price and not force_free:
                 for transaction in transactions:
                     TransactionItem.objects.create(
                         transaction,

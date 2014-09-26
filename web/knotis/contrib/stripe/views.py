@@ -142,25 +142,12 @@ class StripeCharge(AJAXView):
 
             mode = PurchaseMode.STRIPE
             for i in range(int(quantity)):
-                redemption_code = ''.join(
-                    random.choice(
-                        string.ascii_uppercase + string.digits
-                    ) for _ in range(10)
-                )
-
-                transaction_context = '|'.join([
-                    current_identity.pk,
-                    IPNCallbackView.generate_ipn_hash(current_identity.pk),
-                    redemption_code,
-                    mode
-                ])
 
                 TransactionApi.create_purchase(
                     request=request,
                     offer=offer,
                     buyer=current_identity,
                     currency=buyer_usd,
-                    transaction_context=transaction_context,
                     mode=mode
                 )
 
