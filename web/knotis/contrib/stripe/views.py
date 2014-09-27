@@ -1,5 +1,3 @@
-import random
-import string
 import stripe
 
 from django.conf import settings
@@ -23,8 +21,12 @@ from knotis.contrib.transaction.api import (
     TransactionApi,
     PurchaseMode
 )
+from knotis.contrib.offer.models import (
+    OfferTypes,
+    OfferCollection,
+    OfferCollectionItem,
+)
 
-from knotis.contrib.paypal.views import IPNCallbackView
 
 from models import StripeCustomer
 from forms import StripeForm
@@ -142,14 +144,30 @@ class StripeCharge(AJAXView):
 
             mode = PurchaseMode.STRIPE
             for i in range(int(quantity)):
+                if offer.offer_type == OfferTypes.NORMAL:
+                    TransactionApi.create_purchase(
+                        request=request,
+                        offer=offer,
+                        buyer=current_identity,
+                        currency=buyer_usd,
+                        mode=mode
+                    )
 
-                TransactionApi.create_purchase(
-                    request=request,
-                    offer=offer,
-                    buyer=current_identity,
-                    currency=buyer_usd,
-                    mode=mode
-                )
+                elif offer.offer_type == OfferTypes.DIGITAL_OFFER_COLLECTION:
+                    offer_collection = OfferCollection.objects.get(
+                        pk=offer.description
+                    )
+                    for page in OfferCollectionItem.objects.filter(
+                        offer_collection=offer_collection
+                    ):
+
+                        TransactionApi.create_purchase(
+                            request=request,
+                            offer=page.offer,
+                            buyer=current_identity,
+                            currency=buyer_usd,
+                            mode=PurchaseMode.FREE
+                        )
 
         except Exception, e:
             logger.exception(e.message)
