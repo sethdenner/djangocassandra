@@ -166,7 +166,7 @@ class PassportCouponApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
         *args,
         **kwargs
     ):
-        super(PassportApiViewSet, self).initial(
+        super(PassportCouponApiViewSet, self).initial(
             request,
             *args,
             **kwargs
