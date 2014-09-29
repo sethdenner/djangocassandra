@@ -90,9 +90,7 @@ class Command(BaseCommand):
                         i.page,
                         book_numb,
                         '%s/%s' % (transaction_collection.pk, i.page),
-                        settings.BASE_URL + '/qrcode/redeem/%s/%s/' % (
-                            transaction_collection.pk,
-                            i.page),
+                        settings.BASE_URL + '/qrcode/redeem/%s/' % (seller.pk),
                         seller.redemption_code()
                     ])
 
@@ -102,5 +100,5 @@ class Command(BaseCommand):
                     book_numb,
                     transaction_collection.pk,
                     settings.BASE_URL + (
-                        '/qrcode/connect/%s' % transaction_collection.pk)
+                        '/qrcode/connect/%s/' % transaction_collection.pk)
                 ])
