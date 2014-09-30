@@ -242,9 +242,9 @@ class TransactionApi(object):
         other_transfers = Transaction.objects.filter(
             transaction_type=TransactionTypes.TRANSACTION_TRANSFER,
             transaction_context=(
-                test_transaction.transaction.transaction_context
+                test_transaction.transaction_context
             ),
-            offer=test_transaction.transaction.offer,
+            offer=test_transaction.offer,
         )
         if len(other_transfers) != 0:
             raise TransactionApi.TransactionCollectionAlreadyTransfered(

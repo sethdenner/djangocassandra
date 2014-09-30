@@ -45,9 +45,9 @@ class PassportApi(object):
         )
 
         return TransactionApi.transfer_transaction_collection(
+            request,
             consumer,
-            transaction_collection,
-            request=request
+            transaction_collection
         )
 
     @staticmethod
@@ -123,6 +123,10 @@ class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
         serializer = self.serializer_class(my_transfers, many=True)
         return Response(serializer.data)
 
+    class FailedToConnectPassportBook(APIException):
+        status_code = 500
+        default_detail = 'Failed to connect passport book.'
+
 
 class PassportCouponApiRouter(DefaultRouter):
     def get_lookup_regex(
@@ -166,7 +170,7 @@ class PassportCouponApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
         *args,
         **kwargs
     ):
-        super(PassportApiViewSet, self).initial(
+        super(PassportCouponApiViewSet, self).initial(
             request,
             *args,
             **kwargs
@@ -230,7 +234,3 @@ class PassportCouponApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
     class FailedToRedeemPassportOffer(APIException):
         status_code = 500
         default_detail = 'Failed to redeem passport offer.'
-
-    class FailedToConnectPassportBook(APIException):
-        status_code = 500
-        default_detail = 'Failed to connect passport book.'
