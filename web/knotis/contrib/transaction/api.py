@@ -34,6 +34,7 @@ from knotis.contrib.stripe.api import StripeApi
 
 from .models import (
     Transaction,
+    TransactionItem,
     TransactionTypes,
     TransactionCollectionItem
 )
@@ -263,8 +264,28 @@ class TransactionApi(object):
                     )
                 )
 
-            t.transaction.owner = new_owner
-            t.transaction.save()
+            previous_owner_txn = filter(
+                lambda x: x.owner != t.transaction.owner,
+                Transaction.objects.filter(
+                    transaction_context=t.transaction.transaction_context,
+                    offer=t.transaction.offer,
+                    transaction_type=TransactionTypes.PURCHASE
+                )
+            )[0]
+            transaction_items = filter(
+                lambda x: x.inventory.recipient == previous_owner_txn.owner,
+                TransactionItem.objects.filter(
+                    transaction=t.transaction
+                )
+            )
+
+            for txn in transaction_items:
+                txn.inventory.recipient = new_owner
+                txn.inventory.save()
+                txn.save()
+
+            previous_owner_txn.owner = new_owner
+            previous_owner_txn.save()
 
         Activity.redeem(request)
 

@@ -12,8 +12,8 @@ from knotis.contrib.offer.models import (
     OfferStatus
 )
 from knotis.contrib.transaction.models import (
+    Transaction,
     TransactionCollection,
-    TransactionCollectionItem
 )
 from knotis.contrib.transaction.api import TransactionApi
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
@@ -187,36 +187,22 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
     default_parent_view_class = DefaultBaseView
     url_patterns = [
         r''.join([
-            '^qrcode/coupon/(?P<transaction_collection_id>',
-            REGEX_UUID,
-            ')/(?P<page_numb>\d+)$'
+            '^qrcode/coupon/(?P<transaction_id>',
         ])
     ]
 
     def get(
         self,
         request,
-        transaction_collection_id=None,
-        page_numb=None,
+        transaction_id=None,
         *args,
         **kwargs
     ):
 
         current_identity = self.get_current_identity(self.request)
 
-        transaction_collection = get_object_or_404(
-            TransactionCollection,
-            pk=transaction_collection_id
-        )
-
-        transaction_collection_item = get_object_or_404(
-            TransactionCollectionItem,
-            transaction_collection=transaction_collection,
-            page=page_numb
-        )
-
         request = self.request
-        transaction = transaction_collection_item.transaction
+        transaction = get_object_or_404(Transaction, transaction_id)
         TransactionApi.create_redemption(
             request,
             transaction,
@@ -236,7 +222,7 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
         r''.join([
             '^qrcode/connect/(?P<transaction_collection_id>',
             REGEX_UUID,
-            ')$'
+            ')/$'
         ])
     ]
 
