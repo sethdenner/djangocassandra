@@ -2,6 +2,7 @@ import re
 import copy
 import warnings
 
+from django.conf import settings
 from django.conf.urls.defaults import (
     patterns,
     url
@@ -26,7 +27,7 @@ from django.http import (
 
 from rest_framework.views import APIView as RestApiView
 from rest_framework.viewsets import (
-    ViewSet,
+    GenericViewSet,
     ModelViewSet
 )
 from rest_framework.routers import DefaultRouter
@@ -39,6 +40,16 @@ from .mixins import (
     GenerateApiUrlsMixin
 )
 
+# Creates a new copy of the context when run!
+def load_urls_into_context(context):
+    local_context = copy.copy(context)
+    local_context.update({
+        'BASE_URL': settings.BASE_URL,
+        'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
+    })
+    return local_context
+
+    
 
 class ContextView(TemplateView):
     '''
@@ -478,17 +489,18 @@ class EmailView(FragmentView):
     text_template_name = None
 
     def generate_email(self, subject, from_email, to_list, context):
-        context = copy.copy(context)
+        local_context = copy.copy(context)
+        local_context = load_urls_into_context(local_context)
 
-        context.update({
+        local_context.update({
             'email_type': 'html'
         })
-        html_content = self.render_template_fragment(context)
+        html_content = self.render_template_fragment(local_context)
 
-        context.update({
+        local_context.update({
             'email_type': 'text'
         })
-        text_content = self.render_template_fragment(context)
+        text_content = self.render_template_fragment(local_context)
 
         msg = EmailMultiAlternatives(
             subject,
@@ -529,7 +541,7 @@ class AJAXFragmentView(
     pass
 
 
-class ApiViewSet(ViewSet, GenerateApiUrlsMixin):
+class ApiViewSet(GenericViewSet, GenerateApiUrlsMixin):
     router_class = DefaultRouter
 
 

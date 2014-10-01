@@ -324,7 +324,6 @@ class OfferApi(object):
         value = kwargs.get('value', 0.0)
         title = kwargs.get('title')
         is_physical = kwargs.get('is_physical', False)
-        stock = float(kwargs.get('stock', 0.0))
         title = kwargs.get('title')
         description = kwargs.get('description')
         restrictions = kwargs.get('restrictions')
@@ -348,8 +347,8 @@ class OfferApi(object):
             owner_identity,
             product,
             price=value,
-            stock=stock,
             unlimited=True,  # This will probably change.
+            get_existing=False
         )
 
         split_inventory = Inventory.objects.split(
@@ -365,8 +364,7 @@ class OfferApi(object):
             description=description,
             start_time=kwargs.get('start_time'),
             end_time=kwargs.get('end_time'),
-            stock=stock,
-            unlimited=(stock == 0.0),
+            unlimited=True,
             inventory=[split_inventory],
             offer_type=offer_type
         )

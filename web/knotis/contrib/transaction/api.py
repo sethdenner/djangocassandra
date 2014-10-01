@@ -34,7 +34,9 @@ from knotis.contrib.stripe.api import StripeApi
 
 from .models import (
     Transaction,
-    TransactionTypes
+    TransactionItem,
+    TransactionTypes,
+    TransactionCollectionItem
 )
 from .views import (
     CustomerReceiptBody,
@@ -47,10 +49,12 @@ from .serializers import (
 
 class PurchaseMode:
     STRIPE = 'stripe'
+    FREE = 'free'
     NONE = 'none'
 
     CHOICES = (
         (STRIPE, 'Stripe'),
+        (FREE, 'Free'),
         (NONE, 'None')
     )
 
@@ -64,9 +68,25 @@ class TransactionApi(object):
         currency=None,
         transaction_context=None,
         mode=None,
+        send_email=True,
         *args,
         **kwargs
     ):
+
+        if transaction_context is None:
+            redemption_code = ''.join(
+                random.choice(
+                    string.ascii_uppercase + string.digits
+                ) for _ in range(10)
+            )
+
+            transaction_context = '|'.join([
+                buyer.pk,
+                IPNCallbackView.generate_ipn_hash(buyer.pk),
+                redemption_code,
+                mode
+            ])
+
         if None is mode:
             mode = PurchaseMode.NONE
 
@@ -74,68 +94,72 @@ class TransactionApi(object):
             offer,
             buyer,
             currency,
-            transaction_context=transaction_context
+            transaction_context=transaction_context,
+            force_free=(mode == PurchaseMode.FREE)
         )
 
-        for t in transactions:
-            if offer.owner != t.owner:
-                try:
-                    user_customer = (
-                        KnotisUser.objects.get_identity_user(
+        if send_email:
+            for t in transactions:
+                if offer.owner != t.owner:
+                    try:
+                        user_customer = (
+                            KnotisUser.objects.get_identity_user(
+                                t.owner
+                            )
+                        )
+                        customer_receipt = (
+                            CustomerReceiptBody().generate_email(
+                                'Knotis - Offer Receipt',
+                                settings.EMAIL_HOST_USER,
+                                [user_customer.username], RequestContext(
+                                    request, {
+                                        'transaction_id': t.pk
+                                    }
+                                )
+                            )
+                        )
+                        customer_receipt.send()
+
+                    except Exception, e:
+                        # shouldn't fail if emails fail to send.
+                        logger.exception(e.message)
+
+                else:
+                    try:
+                        manager_email_list = []
+                        manager_rels = Relation.objects.get_managers(
                             t.owner
                         )
-                    )
-                    customer_receipt = (
-                        CustomerReceiptBody().generate_email(
-                            'Knotis - Offer Receipt',
-                            settings.EMAIL_HOST_USER,
-                            [user_customer.username], RequestContext(
-                                request, {
-                                    'transaction_id': t.pk
-                                }
+                        for rel in manager_rels:
+                            manager_user = (
+                                KnotisUser.objects.get_identity_user(
+                                    rel.subject
+                                )
+                            )
+                            manager_email_list.append(
+                                manager_user.username
+                            )
+
+                        merchant_receipt = (
+                            MerchantReceiptBody().generate_email(
+                                'Knotis - Offer Receipt',
+                                settings.EMAIL_HOST_USER,
+                                manager_email_list, RequestContext(
+                                    request, {
+                                        'transaction_id': t.pk
+                                    }
+                                )
                             )
                         )
-                    )
-                    customer_receipt.send()
+                        merchant_receipt.send()
 
-                except Exception, e:
-                    # shouldn't fail if emails fail to send.
-                    logger.exception(e.message)
+                    except Exception, e:
+                        # shouldn't fail if emails fail to send.
+                        logger.exception(e.message)
 
-            else:
-                try:
-                    manager_email_list = []
-                    manager_rels = Relation.objects.get_managers(
-                        t.owner
-                    )
-                    for rel in manager_rels:
-                        manager_user = (
-                            KnotisUser.objects.get_identity_user(
-                                rel.subject
-                            )
-                        )
-                        manager_email_list.append(
-                            manager_user.username
-                        )
+        if request is not None:
+            Activity.purchase(request)
 
-                    merchant_receipt = (
-                        MerchantReceiptBody().generate_email(
-                            'Knotis - Offer Receipt',
-                            settings.EMAIL_HOST_USER,
-                            manager_email_list, RequestContext(
-                                request, {
-                                    'transaction_id': t.pk
-                                }
-                            )
-                        )
-                    )
-                    merchant_receipt.send()
-
-                except Exception, e:
-                    # shouldn't fail if emails fail to send.
-                    logger.exception(e.message)
-
-        Activity.purchase(request)
         return transactions
 
     @staticmethod
@@ -189,7 +213,7 @@ class TransactionApi(object):
         pass
 
     @staticmethod
-    def create_transaction_transfer(
+    def transfer_transaction_collection(
         request=None,
         new_owner=None,
         transaction_collection=None,
@@ -199,14 +223,81 @@ class TransactionApi(object):
                 'Idenity %s is not an individual.' % new_owner
             )
 
-        Transaction.objects.create_transaction_transfer(
-            new_owner,
-            transaction_collection
+        transaction_collection_items = (
+            TransactionCollectionItem.objects.filter(
+                transaction_collection=transaction_collection
+            )
         )
+
+        if len(transaction_collection_items) < 1:
+            raise TransactionApi.NoTransactionCollectionItemsException(
+                'There where no TransactionCollectionItems '
+                'attached to this collection.'
+            )
+        '''
+        Test if this transaction collection has already been transfered.
+        !IMPORTANT NOTE!:This assumes that if one transaction in the collection
+        has been transfered then all of them have been.
+        '''
+        test_transaction = transaction_collection_items[0].transaction
+        other_transfers = Transaction.objects.filter(
+            transaction_type=TransactionTypes.TRANSACTION_TRANSFER,
+            transaction_context=(
+                test_transaction.transaction_context
+            ),
+            offer=test_transaction.offer,
+        )
+        if len(other_transfers) != 0:
+            raise TransactionApi.TransactionCollectionAlreadyTransfered(
+                "Already transfered this transaction collection!"
+            )
+
+        transactions = []
+        for t in transaction_collection_items:
+            for owner in [new_owner, t.transaction.owner]:
+                transactions.append(
+                    Transaction.objects.create(
+                        owner=owner,
+                        transaction_type=TransactionTypes.TRANSACTION_TRANSFER,
+                        offer=t.transaction.offer,
+                        transaction_context=t.transaction.transaction_context
+                    )
+                )
+
+            previous_owner_txn = filter(
+                lambda x: x.owner != t.transaction.owner,
+                Transaction.objects.filter(
+                    transaction_context=t.transaction.transaction_context,
+                    offer=t.transaction.offer,
+                    transaction_type=TransactionTypes.PURCHASE
+                )
+            )[0]
+            transaction_items = filter(
+                lambda x: x.inventory.recipient == previous_owner_txn.owner,
+                TransactionItem.objects.filter(
+                    transaction=t.transaction
+                )
+            )
+
+            for txn in transaction_items:
+                txn.inventory.recipient = new_owner
+                txn.inventory.save()
+                txn.save()
+
+            previous_owner_txn.owner = new_owner
+            previous_owner_txn.save()
 
         Activity.redeem(request)
 
+        return transactions
+
     class WrongIdentityTypeException(Exception):
+        pass
+
+    class NoTransactionCollectionItemsException(Exception):
+        pass
+
+    class TransactionCollectionAlreadyTransfered(Exception):
         pass
 
 

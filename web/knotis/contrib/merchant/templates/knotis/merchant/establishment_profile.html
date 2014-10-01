@@ -27,6 +27,7 @@
                     </div>
                 </div>
 
+                {% if is_superuser or is_manager %}
                 <div class="adminBtns">
                     {% if is_superuser %}
                     <div class="col-lg-3 col-xs-4">
@@ -44,6 +45,8 @@
                     </div>
                     {% endif %}
                 </div>
+                {% endif %}
+
             </div>
         </div>
 
