@@ -54,6 +54,7 @@ class TransactionManager(QuickManager):
         buyer,
         currency,
         transaction_context=None,
+        force_free=False,
         dark_purchase=False
     ):
         if not offer.available():
@@ -116,7 +117,10 @@ class TransactionManager(QuickManager):
             for participant in participants:
                 transaction = super(TransactionManager, self).create(
                     owner=participant,
-                    transaction_type=(TransactionTypes.PURCHASE, TransactionTypes.DARK_PURCHASE)[dark_purchase],
+                    transaction_type=(
+                        TransactionTypes.PURCHASE,
+                        TransactionTypes.DARK_PURCHASE
+                    )[dark_purchase],
                     offer=offer,
                     transaction_context=transaction_context
                 )
@@ -128,7 +132,7 @@ class TransactionManager(QuickManager):
 
         try:
             price = offer.price_discount()
-            if price:
+            if price and not force_free:
                 currency_owner = Inventory.objects.split(
                     currency,
                     offer.owner,
@@ -137,7 +141,7 @@ class TransactionManager(QuickManager):
 
             currencies_thrid_party = []
             for item in offer_items:
-                if price and item.inventory.provider_id != offer.owner_id:
+                if price and item.inventory.provider_id != offer.owner_id and not force_free:
                     split_currency = Inventory.objects.split(
                         currency_owner,
                         item.inventory.provider,
@@ -171,7 +175,7 @@ class TransactionManager(QuickManager):
                         inventory_transaction
                     )
 
-            if price:
+            if price and not force_free:
                 for transaction in transactions:
                     TransactionItem.objects.create(
                         transaction,
@@ -524,45 +528,6 @@ class TransactionManager(QuickManager):
             dark_purchase=True
         )
 
-    def create_transaction_transfer(
-        self,
-        new_owner,
-        transaction_collection,
-    ):
-        transaction_collection_items = \
-            TransactionCollectionItem.objects.filter(
-                transaction_collection=transaction_collection
-            )
-
-        for t in transaction_collection_items:
-            other_transfers = Transaction.objects.filter(
-                transaction_type=TransactionTypes.TRANSACTION_TRANSFER,
-                transaction_context=t.transaction.transaction_context,
-                offer=t.transaction.offer,
-            )
-            if len(other_transfers) != 0:
-                raise Exception("Already transfered this offer")
-
-            for owner in [new_owner, t.transaction.owner]:
-                super(TransactionManager, self).create(
-                    owner=owner,
-                    transaction_type=TransactionTypes.TRANSACTION_TRANSFER,
-                    offer=t.transaction.offer,
-                    transaction_context=t.transaction.transaction_context
-                )
-            t.transaction.owner = new_owner
-            t.transaction.save()
-
-    def create(
-        self,
-        **kwargs
-    ):
-        create_methods = {}
-        for transaction_type in TransactionTypes.CHOICES:
-            create_methods[transaction_type] = 'create_' + transaction_type[0]
-
-        return getattr(self, create_methods[transaction_type])(**kwargs)
-
     def get_daily_revenue(
         self,
         business
@@ -843,5 +808,5 @@ class TransactionCollection(QuickModel):
 class TransactionCollectionItem(QuickModel):
     transaction_collection = QuickForeignKey(TransactionCollection)
     transaction = QuickForeignKey(Transaction)
-    page = QuickIntegerField()
+    page = QuickIntegerField(db_index=True)
     objects = QuickManager()

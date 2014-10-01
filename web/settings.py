@@ -257,7 +257,8 @@ INSTALLED_APPS = (
     'knotis.contrib.support',
     'knotis.contrib.admintools',
     'knotis.contrib.settings',
-    'knotis.contrib.mobile'
+    'knotis.contrib.mobile',
+    'knotis.contrib.passport'
 )
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -321,7 +322,7 @@ LOGGING = {
 
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'stage'
+ENVIRONMENT_NAME = 'int'
 
 
 # You can key the configurations off of anything - I use project path.

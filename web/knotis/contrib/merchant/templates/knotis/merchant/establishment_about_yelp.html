@@ -1,11 +1,11 @@
 {% if yelp_feed %}
 <h5>Yelp</h5>
 <div class="about-yelp">
-{% for review in yelp_feed %}
-<div class="yelp-review">
-  <img class="user" src="{{ review.user.image_url }}" width="50px" height="50px"></img>
-  <p class="excerpt">{{ review.excerpt }} <span class="score">{{ review.rating }}/5 -{{ review.user.name }}</span></p>
-</div>
-{% endfor %}
+    {% for review in yelp_feed %}
+        <div class="yelp-review">
+            <img class="user" src="{{ review.user.image_url }}" width="50px" height="50px"></img>
+            <p class="excerpt">{{ review.excerpt }} <span class="score">{{ review.rating }}/5 -{{ review.user.name }}</span></p>
+        </div>
+    {% endfor %}
 </div>
 {% endif %}
