@@ -12,6 +12,7 @@ from knotis.contrib.offer.models import (
     OfferStatus
 )
 from knotis.contrib.transaction.models import (
+    Transaction,
     TransactionCollection,
     TransactionCollectionItem
 )
@@ -32,7 +33,7 @@ class ScanView(View):
         request,
         qrcode_id,
         *args,
-        **kwrags
+        **kwargs
     ):
         qrcode = None
         try:
@@ -189,20 +190,22 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
         r''.join([
             '^qrcode/coupon/(?P<transaction_collection_id>',
             REGEX_UUID,
-            ')/(?P<page_numb>\d+)$'
-        ])
+            ')/(?P<page_numb>\d+)/$'
+        ]),
+        r''.join([
+            '^qrcode/coupon/(?P<transaction_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+
     ]
 
-    def get(
+    def connect_hack(
         self,
         request,
         transaction_collection_id=None,
         page_numb=None,
-        *args,
-        **kwargs
     ):
-
-        current_identity = self.get_current_identity(self.request)
 
         transaction_collection = get_object_or_404(
             TransactionCollection,
@@ -215,13 +218,40 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
             page=page_numb
         )
 
-        request = self.request
         transaction = transaction_collection_item.transaction
+        self.connect(request, transaction_id=transaction.id)
+
+    def connect(
+        self,
+        request,
+        transaction_id
+    ):
+        current_identity = self.get_current_identity(self.request)
+        transaction = get_object_or_404(Transaction, transaction_id)
         TransactionApi.create_redemption(
             request,
             transaction,
             current_identity
         )
+
+    def get(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        if 'transaction_collection_id' in kwargs and 'page_numb' in kwargs:
+            self.connect_hack(
+                request,
+                transaction_collection_id=kwargs['transaction_collection_id'],
+                page_numb=kwargs['page_numb']
+            )
+        elif 'transaction_id' in kwargs:
+            self.connect(
+                request,
+                transaction_id=kwargs['transaction_id']
+            )
+
         return super(CouponRedemptionView, self).get(
             request,
             *args,
@@ -236,7 +266,7 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
         r''.join([
             '^qrcode/connect/(?P<transaction_collection_id>',
             REGEX_UUID,
-            ')$'
+            ')/$'
         ])
     ]
 
