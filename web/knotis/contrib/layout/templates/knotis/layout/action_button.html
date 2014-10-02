@@ -1,3 +1,4 @@
+{% if request.user.is_authenticated %}
 {% if actions %}
     {% for action in actions %}
     <form action="{{action.href}}" method="{{ action.method }}" data-id="action-button">
@@ -8,5 +9,10 @@
             <input type="hidden" value="{{ action.method }}" name="method">
             <input class="{{ css_class }}" type="submit" value="{{ action.title }}" data-id="form-button">
     </form> 
+    {% endfor %}
+{% endif %}
+{% else %}
+    {% for action in actions %}
+    <a href="{{ action.href }}" class="{{ css_class }}">{{ action.title }}</a>
     {% endfor %}
 {% endif %}
