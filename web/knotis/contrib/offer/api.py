@@ -36,7 +36,6 @@ from knotis.contrib.identity.models import (
 
 from knotis.contrib.product.models import (
     Product,
-    ProductTypes
 )
 from knotis.contrib.endpoint.models import Endpoint, EndpointTypes
 
@@ -298,11 +297,10 @@ class OfferAvailabilityModelViewSet(ApiModelViewSet):
     http_method_names = ['get', 'options']
 
 
-class OfferCreateApi(object):
+class OfferApi(object):
     @staticmethod
     def create_offer(
-        dark_offer=False,
-        create_business=False,
+        offer_type=OfferTypes.DARK,
         *args,
         **kwargs
     ):
@@ -322,19 +320,10 @@ class OfferCreateApi(object):
             logger.exception('Cannot find owner %s' % business_name)
             raise
 
-        currency_name = kwargs.get('currency')
-
-        try:
-            currency = Product.currency.get(currency_name)
-        except:
-            logger.exception('Cannot find currency %s' % currency_name)
-            raise
-
         price = kwargs.get('price', 0.0)
         value = kwargs.get('value', 0.0)
         title = kwargs.get('title')
-        is_physical = kwargs.get('is_physical')
-        stock = float(kwargs.get('stock', 0.0))
+        is_physical = kwargs.get('is_physical', False)
         title = kwargs.get('title')
         description = kwargs.get('description')
         restrictions = kwargs.get('restrictions')
@@ -343,21 +332,29 @@ class OfferCreateApi(object):
             title = '$%s credit toward any purchase' % value
 
         try:
-            product = Product.objects.create(
-                product_type=(ProductTypes.CREDIT, ProductTypes.PHYSICAL)[is_physical],
-                title=title,
-                sku=currency.sku
-            )
+            if is_physical:
+                product = Product.objects.get_or_create_physical(title)
+            else:
+                product = Product.objects.get_or_create_credit(
+                    price,
+                    value,
+                )
         except:
-            logger.exception('Cannot find currency %s' % currency_name)
+            logger.exception('Couldnot create product.')
             raise
 
         inventory = Inventory.objects.create_stack_from_product(
             owner_identity,
             product,
             price=value,
-            stock=stock,
-            unlimited=(stock == 0.0),
+            unlimited=True,  # This will probably change.
+            get_existing=False
+        )
+
+        split_inventory = Inventory.objects.split(
+            inventory,
+            owner_identity,
+            1
         )
 
         offer = Offer.objects.create(
@@ -367,16 +364,14 @@ class OfferCreateApi(object):
             description=description,
             start_time=kwargs.get('start_time'),
             end_time=kwargs.get('end_time'),
-            stock=stock,
-            unlimited=(stock == 0.0),
-            inventory=[inventory],
-            discount_factor=price / value,
-            offer_type=(OfferTypes.NORMAL, OfferTypes.DARK)[dark_offer]
+            unlimited=True,
+            inventory=[split_inventory],
+            offer_type=offer_type
         )
 
         offer.save()
 
-        if not dark_offer:
+        if offer_type == OfferTypes.NORMAL:
             endpoint_current_identity = Endpoint.objects.get(
                 endpoint_type=EndpointTypes.IDENTITY,
                 identity=owner_identity

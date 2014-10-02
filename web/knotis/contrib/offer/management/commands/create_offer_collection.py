@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
-from knotis.contrib.offer.api import OfferCreateApi
+from knotis.contrib.offer.api import OfferApi
 from knotis.contrib.offer.models import (
     OfferCollection,
-    OfferCollectionItem
+    OfferCollectionItem,
 )
 
 from django.utils.log import logging
@@ -35,11 +35,10 @@ class Command(BaseCommand):
                 restrictions = '$%s Minimum' % row.get('minimum')
                 page_num = row.get('page number', None)
                 if page_num is None:
+                    logger.exception('Missing page number for offer.')
                     continue
                 try:
-                    new_offer = OfferCreateApi.create_offer(
-                        dark_offer=True,
-                        create_business=True,
+                    new_offer = OfferApi.create_offer(
                         value=float(value),
                         description=row.get('catagory'),
                         restrictions=restrictions,
@@ -48,7 +47,6 @@ class Command(BaseCommand):
                         business_name=row.get('business name'),
                         email=row.get('email'),
                         stock=row.get('stock', 0.0),
-                        currency='usd',
                     )
                     OfferCollectionItem.objects.create(
                         offer=new_offer,

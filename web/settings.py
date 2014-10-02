@@ -224,6 +224,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'django_nose',
     # knotis apps
     'knotis.contrib.layout',
     'knotis.contrib.search',
@@ -256,7 +257,8 @@ INSTALLED_APPS = (
     'knotis.contrib.support',
     'knotis.contrib.admintools',
     'knotis.contrib.settings',
-    'knotis.contrib.mobile'
+    'knotis.contrib.mobile',
+    'knotis.contrib.passport'
 )
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -317,6 +319,7 @@ LOGGING = {
     'loggers': {
     },
 }
+
 
 # Import additional settings.
 ENVIRONMENT_NAME = 'prod'

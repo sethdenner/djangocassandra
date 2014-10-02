@@ -21,6 +21,8 @@ from django.http import (
     HttpResponseServerError
 )
 
+from django.views.decorators.csrf import csrf_exempt
+
 
 class RenderTemplateFragmentMixin(object):
     registered_fragments = {}
@@ -193,6 +195,6 @@ class GenerateApiUrlsMixin(object):
                         cls.api_path,
                         '$'
                     ]),
-                    view
+                    csrf_exempt(view)
                 )
             )

@@ -15,7 +15,10 @@ from knotis.utils.regex import REGEX_UUID
 
 from knotis.contrib.offer.models import (
     Offer,
-    OfferItem
+    OfferItem,
+    OfferTypes,
+    OfferCollection,
+    OfferCollectionItem,
 )
 
 from knotis.contrib.product.models import (
@@ -32,7 +35,6 @@ from knotis.contrib.identity.models import (
 )
 from knotis.contrib.identity.views import (
     get_identity_profile_badge,
-    IdentityActionButton,
 )
 
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
@@ -176,12 +178,66 @@ class OffersGridView(GridSmallView):
 
         tiles = []
         for offer in offers:
-            tile = OfferTile()
-            tiles.append(tile.render_template_fragment(Context({
-                'offer': offer,
-                'request': request,
-                'current_identity': current_identity
-            })))
+            if offer.offer_type == OfferTypes.DIGITAL_OFFER_COLLECTION:
+                tile = CollectionTile()
+                tiles.append(tile.render_template_fragment(Context({
+                    'offer': offer,
+                    'current_identity': current_identity,
+                })))
+
+            else:
+                tile = OfferTile()
+                tiles.append(tile.render_template_fragment(Context({
+                    'offer': offer,
+                    'current_identity': current_identity,
+                })))
+
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'tiles': tiles
+        })
+        return local_context
+
+
+class PassportBookView(EmbeddedView):
+    url_patterns = [
+        r''.join([
+            '/passport'
+            '/((?P<offer_id>',
+            REGEX_UUID,
+            ')/)?$'
+        ])
+    ]
+    default_parent_view_class = DefaultBaseView
+    post_scripts = [
+        'knotis/offer/js/offers.js',
+    ]
+    template_name = 'knotis/offer/passport_offers_view.html'
+
+
+class PassportBookOffersGrid(GridSmallView):
+    view_name = 'passport_offers_grid'
+
+    def process_context(self):
+        offer_id = self.context.get('offer_id')
+
+        offer = get_object_or_404(Offer, pk=offer_id)
+        offer_collection_id = offer.description
+        offer_collection = OfferCollection.objects.get(
+            id=offer_collection_id
+        )
+        offer_collection_items = OfferCollectionItem.objects.filter(
+            offer_collection=offer_collection
+        )
+
+        offers = [x.offer for x in offer_collection_items]
+        tiles = []
+        for offer in offers:
+                tile = OfferTile()
+                tiles.append(tile.render_template_fragment(Context({
+                    'offer': offer,
+                    'current_identity': None,
+                })))
 
         local_context = copy.copy(self.context)
         local_context.update({
@@ -193,9 +249,9 @@ class OffersGridView(GridSmallView):
 class OffersView(EmbeddedView):
     url_patterns = [
         r''.join([
-            '^s/(?P<offer_id>',
+            '^s/((?P<offer_id>',
             REGEX_UUID,
-            '/)?$'
+            ')/)?$'
         ])
     ]
 
@@ -256,7 +312,8 @@ class OfferPurchaseView(EmbeddedView, GetCurrentIdentityMixin):
         except:
             business_badge = None
 
-        if offer.price_discount() > 0.:
+        offer_price = offer.price_discount()
+        if offer_price > 0.:
             stripe_button = StripeButton()
             stripe_button_context = RequestContext(
                 request, {
@@ -265,7 +322,7 @@ class OfferPurchaseView(EmbeddedView, GetCurrentIdentityMixin):
                     'BASE_URL': settings.BASE_URL,
                     'business_name': offer.owner.name,
                     'offer_title': offer.title,
-                    'offer_price': offer.price_discount(),
+                    'offer_price': offer_price,
                     'business_badge': business_badge,
                     'offer_id': offer.pk
                 }
@@ -349,6 +406,11 @@ class OfferTile(FragmentView):
             'offer_action': offer_action
         })
         return self.context
+
+
+class CollectionTile(OfferTile):
+    template_name = 'knotis/offer/collection_tile.html'
+    view_name = 'offer_collection_tile'
 
 
 class OfferDetailView(ModalView):

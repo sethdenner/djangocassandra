@@ -2,10 +2,7 @@
 {% load thumbnail %}
 <div class="container-fluid">
     <div class="row-fluid main-row">
-        <div class="span2">
-            {% render_fragment nav_side %}
-        </div>
-        <div class="span10 main-content checkout">
+        <div class="mainContent checkout">
             <div class="row-fluid business-header" >
                 <div class="span5">
                     <div class="media" >
@@ -60,9 +57,7 @@
                     <input type="hidden" value="{{ offer.id }}" name="offerId"/>
                 </div>
             </div>
-            </form>
     </div>
-</div>
 </div>
 {% if format == 'json' %}
 {% for script in post_scripts %}

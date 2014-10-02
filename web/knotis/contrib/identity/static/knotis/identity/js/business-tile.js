@@ -6,8 +6,8 @@
 
     $.identity.initialize_business_tiles = function() {
         $('[data-id=identityTile]').click(function(event) {
-            event.preventDefault();
-            event.stopPropagation();
+//            event.preventDefault();
+//            event.stopPropagation();
 
         }).each(function(i) {
             $(this).identity_action();

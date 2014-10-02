@@ -1,8 +1,18 @@
+{% if request.user.is_authenticated %}
 {% if actions %}
     {% for action in actions %}
-    <a class="{{ css_class }} {% if not action.deep %} no-deep {% endif %}" href="{{action.href}}"
+    <form action="{{action.href}}" method="{{ action.method }}" data-id="action-button">
+            {% csrf_token %}
             {% for key, value in action.data.iteritems %}
-            data-param-{{ key }}="{{ value }}"{% endfor %}
-            data-method="{{action.method}}">{{ action.title }}</a>
+            <input type="hidden" value="{{ value }}" name="{{ key }}">
+            {% endfor %}
+            <input type="hidden" value="{{ action.method }}" name="method">
+            <input class="{{ css_class }}" type="submit" value="{{ action.title }}" data-id="form-button">
+    </form> 
+    {% endfor %}
+{% endif %}
+{% else %}
+    {% for action in actions %}
+    <a href="{{ action.href }}" class="{{ css_class }}">{{ action.title }}</a>
     {% endfor %}
 {% endif %}

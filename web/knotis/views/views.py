@@ -20,13 +20,14 @@ from django.template.loader import render_to_string
 
 from django.core.mail import EmailMultiAlternatives
 from django.http import (
-    HttpResponseServerError
+    HttpResponseServerError,
+    QueryDict
 )
 
 
 from rest_framework.views import APIView as RestApiView
 from rest_framework.viewsets import (
-    ViewSet,
+    GenericViewSet,
     ModelViewSet
 )
 from rest_framework.routers import DefaultRouter
@@ -516,7 +517,21 @@ class AJAXView(
     DjangoView,
     GenerateAjaxResponseMixin
 ):
-    pass
+    def dispatch(self, request, *args, **kwargs):
+        request.DATA = QueryDict('', mutable=True)
+        query_string = request.environ.get('QUERY_STRING')
+        if query_string:
+            query_dict = QueryDict(query_string)
+            request.DATA.update(query_dict)
+
+        if request._raw_post_data:
+            post_dict = QueryDict(request._raw_post_data)
+            request.DATA.update(post_dict)
+
+        method = request.DATA.get('method')
+        if None is not method:
+            request.method = method         
+        return super(AJAXView, self).dispatch(request, *args, **kwargs)
 
 
 class AJAXFragmentView(
@@ -526,7 +541,7 @@ class AJAXFragmentView(
     pass
 
 
-class ApiViewSet(ViewSet, GenerateApiUrlsMixin):
+class ApiViewSet(GenericViewSet, GenerateApiUrlsMixin):
     router_class = DefaultRouter
 
 
