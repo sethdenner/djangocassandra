@@ -67,7 +67,6 @@ class ActionButton(FragmentView):
         return []
 
 
-
 class DefaultBaseView(EmbeddedView):
     template_name = 'knotis/layout/default_base.html'
     template_placeholders = ['content', 'modal_content']
@@ -93,5 +92,3 @@ class UnderConstructionView(ModalView):
     template_name = 'knotis/layout/under_construction.html'
     view_name = 'under_construction'
     default_parent_view_class = DefaultBaseView
-
-
