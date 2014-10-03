@@ -16,6 +16,7 @@ from views import (
     MyCustomersView,
     MyAnalyticsView,
     MyRedemptionsView,
+    RedemptionsGrid,
     OfferRedemptionView,
     OfferEditView,
     OfferEditProductFormView,
@@ -75,6 +76,10 @@ urlpatterns = patterns(
     url(
         r'^identity/update_profile/',
         EstablishmentAboutDetails.as_view()
+    ),
+    url(
+        r'^my/redemptions/((?P<redemption_filter>\w*)/)?grid/((?P<page>\d+)/)?((?P<count>\d+)/)?$',
+        RedemptionsGrid.as_view()
     ),
 )
 
