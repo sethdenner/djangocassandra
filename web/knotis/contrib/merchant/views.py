@@ -309,12 +309,13 @@ class MyCustomersGrid(GridSmallView):
             logger.exception('Failed to get current identity')
             raise
 
-        purchases = Transaction.objects.filter(
+        redemptions = Transaction.objects.filter(
             owner=current_identity,
-            transaction_type=TransactionTypes.PURCHASE
+            transaction_type=TransactionTypes.REDEMPTION
         )
 
         tile_contexts = []
+        identity_list = []
 
         def add_context(
             identity,
@@ -332,22 +333,28 @@ class MyCustomersGrid(GridSmallView):
                 'transaction': transaction
             })
 
-        for p in purchases:
-            if p.reverted:
+        for redemp in redemptions:
+            if redemp.reverted:
                 continue
 
-            transaction_items = TransactionItem.objects.filter(
-                transaction=p
+            customers = filter(
+                lambda x: x.owner != current_identity,
+                Transaction.objects.filter(
+                    transaction_context=redemp.transaction_context,
+                    transaction_type=TransactionTypes.REDEMPTION
+                )
             )
 
-            for i in transaction_items:
-                recipient = i.inventory.recipient
-                if recipient.pk == current_identity.pk:
+            for recipient in [x.owner for x in customers]:
+
+                if recipient in identity_list:
                     continue
+
+                identity_list.append(recipient)
 
                 add_context(
                     recipient,
-                    p,
+                    redemp,
                     tile_contexts
                 )
 
