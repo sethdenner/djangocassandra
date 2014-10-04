@@ -231,6 +231,10 @@ class TransactionManager(QuickManager):
                     item.inventory.provider,
                     participants
                 )
+                add_participant(
+                    item.inventory.recipient,
+                    participants
+                )
 
         except Exception, e:
             logger.exception(e.message)
