@@ -49,6 +49,3 @@ class SettingsView(EmbeddedView):
     url_patterns = [r'^settings/$']
     template_name = 'knotis/settings/settings.html'
     default_parent_view_class = DefaultBaseView
-
-    def process_context(self):
-        return self.context
