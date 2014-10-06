@@ -33,7 +33,8 @@ from knotis.views import (
     EmbeddedView,
     ModalView,
     AJAXFragmentView,
-    GenerateAjaxResponseMixin
+    GenerateAjaxResponseMixin,
+    PaginationMixin
 )
 
 from knotis.contrib.auth.models import UserInformation
@@ -117,23 +118,25 @@ from .forms import (
 )
 
 
-class RedemptionsGrid(GridSmallView):
+class RedemptionsGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
     view_name = 'redemptions_grid'
+
+    def get_queryset(self):
+        current_identity = self.get_current_identity(self.request)
+
+        return Transaction.objects.filter(
+            owner=current_identity,
+            transaction_type=TransactionTypes.PURCHASE
+        )
 
     def process_context(self):
         tiles = []
 
         request = self.request
-        session = request.session
+        current_identity = self.get_current_identity(request)
 
-        current_identity_id = session['current_identity']
-
-        try:
-            current_identity = Identity.objects.get(pk=current_identity_id)
-
-        except:
-            logger.exception('Failed to get current identity')
-            raise
+        if not current_identity:
+            return self.context
 
         redemption_filter = self.context.get(
             'redemption_filter',
@@ -145,10 +148,7 @@ class RedemptionsGrid(GridSmallView):
         redemption_filter = redemption_filter.lower()
         redeemed = redemption_filter == 'redeemed'
 
-        purchases = Transaction.objects.filter(
-            owner=current_identity,
-            transaction_type=TransactionTypes.PURCHASE
-        )
+        purchases = self.get_page(self.context)
 
         for purchase in purchases:
             if purchase.reverted:

@@ -42,6 +42,9 @@ class GetCurrentIdentityMixin(object):
         self,
         request
     ):
+        if hasattr(self, 'current_identity'):
+            return self.current_identity
+
         self.current_identity = None
 
         current_identity_pk = self._get_current_identity_pk(request)

@@ -9,7 +9,6 @@ from django.conf import settings
 from knotis.contrib.maps.views import GoogleMap
 
 
-
 class HeaderView(FragmentView):
     template_name = 'knotis/layout/header.html'
     view_name = 'header'
