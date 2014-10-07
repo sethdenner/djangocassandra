@@ -14,7 +14,7 @@
                     if (data.errors) {
                         alert(data.errors);
                     }
-                    
+
                     $this
                         .parent()
                         .parent()
@@ -22,9 +22,15 @@
                         .parent()
                         .hide('fast')
                         .remove();
-                    
+
                 }
             );
+        });
+
+        $.paginator({
+            namespace:'scroll.redemptions',
+            url:window.location.pathname + 'grid',
+            dataId:'id-redemptions',
         });
 
     });
