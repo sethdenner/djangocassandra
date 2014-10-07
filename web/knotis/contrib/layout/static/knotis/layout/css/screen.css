@@ -1794,7 +1794,7 @@ label.label-unlimited {
 .modal {
     top: 40%;
     width: 650px;
-    margin-left: -310px;   
+    margin-left: -310px;
     box-shadow: 0 0;
     border: 0;
     overflow: hidden;
@@ -2227,7 +2227,8 @@ section.welcomeModal h1 {
     height: 60px;
 }
 
-.offerItem .busLink, .offerItem .btnFollow {
+.offerItem .busLink,
+.offerItem .btnFollow {
     width: 100%;
     padding: 15px 0;
     border-radius: 3px;
@@ -2242,10 +2243,15 @@ section.welcomeModal h1 {
     margin-top: 25px;
 }
 
-.offerItem .busLink:hover, .offerItem .btnFollow:hover {
+.offerItem .busLink:hover,
+.offerItem .btnFollow:hover {
     background: transparent;
     border: 1px solid #2cc397;
     color: #2cc397;
+}
+
+.offerItem .busLink {
+    margin-top: -5px;
 }
 
 .offerItem .location {
@@ -2437,7 +2443,7 @@ section.welcomeModal h1 {
     font-size: 14px;
     margin: 10px 0;
     position: absolute;
-    top: -124px;
+    top: -164px;
     right: 0px;
     background: white;
     border-right: 3px solid #2cc397;
@@ -2603,7 +2609,7 @@ section.welcomeModal h1 {
     .purchaseCover, .busCover, .defaultImg {
         height: 95px;
     }
-} 
+}
 
 @media (min-width: 768px) {
     .navbar-collapse {
@@ -2612,7 +2618,7 @@ section.welcomeModal h1 {
     .supportModal select {
         width: 100%;
     }
-} 
+}
 
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) {
