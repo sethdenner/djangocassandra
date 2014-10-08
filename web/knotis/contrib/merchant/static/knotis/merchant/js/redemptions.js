@@ -15,13 +15,12 @@
                         alert(data.errors);
                     }
 
-                    $this
-                        .parent()
-                        .parent()
-                        .parent()
-                        .parent()
-                        .hide('slow')
-                        .remove();
+                    $('[data-redemption-tile-id=' + transaction_id + ']').hide(
+                        'slow',
+                        function () {
+                            $(this).remove();
+                        }
+                    );
                 }
             );
         });
