@@ -5,6 +5,7 @@
             namespace:'scroll',
             url:'',
             dataId:'',
+            onDone: function() {}
         }
         $.extend(options, user_options)
 
@@ -31,22 +32,12 @@
 
             if (!fetching_results && $this.scrollTop() + $this.innerHeight() >= $(document).innerHeight() - 1000) {
                 fetching_results = true;
-                if(options.url) {
-                    fetch_url = [
-                        options.url,
-                        ++page,
-                        count,
-                        ''
-                    ].join('/');
-                }
-                else {
-                    fetch_url = [
-                        ++page,
-                        count,
-                        ''
-                    ].join('/');
-
-                }
+                fetch_url = [
+                    options.url,
+                    ++page,
+                    count,
+                    ''
+                ].join('/');
                 $.ajax({
                     url: fetch_url,
                     global: false,
@@ -61,7 +52,7 @@
                         $('div[data-id=' + options.dataId + ']').append($markup);
 
                         fetching_results = false;
-
+                        options.onDone();
                         $.navigation.reinitialize();
                     }
                 });
