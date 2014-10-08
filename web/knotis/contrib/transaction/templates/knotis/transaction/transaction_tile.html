@@ -1,5 +1,5 @@
 {% load thumbnail %}
-<div class="col-lg-3 col-xs-6 offerItem">
+<div class="col-lg-3 col-xs-6 offerItem" data-redemption-tile-id="{{transaction.pk}}">
     <a href="/offer/detail/{{ offer.pk }}/" class="modal-link">
             {% thumbnail banner_image.image.image '240x161' crop=banner_image.crop as image %}
             <div class="purchaseCover" style="background: url('{{ image.url }}') no-repeat;background-color: #2cc397;background-size: cover;background-position: 0;" alt="{{ identity.name }}"></div>
@@ -46,7 +46,7 @@
                 <div class="col-lg-12 col-xs-12">
                     {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
                     {% if redeem %}
-                    <a data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action redeem-offer busLink">Redeem</a>
+                    <a data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action redeem-offer busLink" data-id="id-redeem">Redeem</a>
                     {% else %}
                     <a data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action print-voucher busLink">View Voucher</a>
                     {% endif %}

@@ -207,7 +207,8 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
     default_parent_view_class = DefaultBaseView
     template_name = 'knotis/merchant/my_redemptions_view.html'
     post_scripts = [
-        'knotis/merchant/js/redemptions.js'
+        'knotis/layout/js/pagination.js',
+        'knotis/merchant/js/redemptions.js',
     ]
 
     def post(
@@ -231,7 +232,7 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
 
         data = request.POST
 
-        transaction_id = data.get('transactionid')
+        transaction_id = data.get('transaction_id')
         transaction = get_object_or_404(
             Transaction,
             pk=transaction_id

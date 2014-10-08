@@ -258,6 +258,7 @@ class OffersView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
     template_name = 'knotis/offer/offers_view.html'
     post_scripts = [
+        'knotis/layout/js/pagination.js',
         'knotis/offer/js/offers.js',
     ]
 
