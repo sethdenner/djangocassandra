@@ -1,6 +1,6 @@
 (function($) {
-    $(function(){
-        $('.redeem-offer').click(function(event) {
+    $.initializeRedemptionGrid = function() {
+        $('[data-id=id-redeem]').off('click.redeem').on('click.redeem', function(event) {
             event.stopPropagation();
             event.preventDefault();
 
@@ -9,7 +9,7 @@
 
             $.post(
                 '/my/redemptions/',
-                {'transactionid': transaction_id},
+                {'transaction_id': transaction_id},
                 function(data, status, jqxhr) {
                     if (data.errors) {
                         alert(data.errors);
@@ -20,17 +20,21 @@
                         .parent()
                         .parent()
                         .parent()
-                        .hide('fast')
+                        .hide('slow')
                         .remove();
-
                 }
             );
         });
+    }
+    $(function(){
+
+        $.initializeRedemptionGrid();
 
         $.paginator({
             namespace:'scroll.redemptions',
             url:window.location.pathname + 'grid',
             dataId:'id-redemptions',
+            onDone: $.initializeRedemptionGrid
         });
 
     });

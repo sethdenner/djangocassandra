@@ -232,7 +232,7 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
 
         data = request.POST
 
-        transaction_id = data.get('transactionid')
+        transaction_id = data.get('transaction_id')
         transaction = get_object_or_404(
             Transaction,
             pk=transaction_id
