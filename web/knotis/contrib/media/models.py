@@ -106,6 +106,9 @@ class ImageInstance(QuickModel):
                 str(int(self.crop_height))
             ]))
 
+        else:
+            args.append('x512')
+
         thumb = get_thumbnail(
             *args,
             crop=crop
