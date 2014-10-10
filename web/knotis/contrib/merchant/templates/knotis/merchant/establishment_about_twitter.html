@@ -5,11 +5,9 @@
         <div class="tweet">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-6">
-                        <img class="user" src="{{ tweet.user.profile_image_url }}"/>
-                    </div>
-                    <div class="col-lg-6">
-                        <p class="tweet-text">{{ tweet.text }}</p>
+		    <div class='col-sm-12'>
+			<img class="user pull-left" src="{{ tweet.user.profile_image_url }}"/>
+                        <p class="tweet-text text-left">{{ tweet.text }}</p>
                     </div>
                 </div>
             </div>

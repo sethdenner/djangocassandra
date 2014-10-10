@@ -2416,14 +2416,19 @@ section.welcomeModal h1 {
     padding: 0 10px;
 }
 
-.tweet img {
+.tweet img,
+.yelp-review img {
     border-radius: 50%;
     display: inline-block;
     width: 40px;
+    height: auto;
+    max-height: 40px;
 }
 
-.tweet-text {
+.tweet-text,
+.yelp-review {
     font-size: 14px;
+    padding-top: 5px;
 }
 
 .tileContent {
@@ -2505,7 +2510,18 @@ section.welcomeModal h1 {
     font-family: latoLight;
 }
 /* End of Offers Styles */
-
+/* Merchant social */
+.tweet,
+.yelp-review {
+    margin-bottom: 15px;
+    margin-bottom: 15px;
+}
+.tweet .user,
+.yelp-review .user {
+    max-width: 20%;
+    margin-right: 10px;
+}
+/* End Merchant social */
 
 
 
