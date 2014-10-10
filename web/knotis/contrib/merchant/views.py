@@ -140,9 +140,7 @@ class RedemptionsGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
         if not current_identity:
             return self.context
 
-        redemption_filter = self.context.get(
-            'redemption_filter',
-        )
+        redemption_filter = self.context.get('redemption_filter')
         if None is redemption_filter:
             redemption_filter = 'unredeemed'
 
