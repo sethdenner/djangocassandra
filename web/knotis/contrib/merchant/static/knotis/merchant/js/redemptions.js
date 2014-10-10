@@ -28,13 +28,13 @@
     $(function(){
 
         $.initializeRedemptionGrid();
-
-        $.paginator({
-            namespace:'scroll.redemptions',
-            url:window.location.pathname + 'grid',
-            dataId:'id-redemptions',
-            onDone: $.initializeRedemptionGrid
-        });
-
+        if(window.location.href.split('?').length <= 1) {
+            $.paginator({
+                namespace:'scroll.redemptions',
+                url:window.location.pathname + 'grid',
+                dataId:'id-redemptions',
+                onDone: $.initializeRedemptionGrid
+            });
+        }
     });
 })(jQuery);
