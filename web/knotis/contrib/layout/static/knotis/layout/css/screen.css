@@ -2522,7 +2522,40 @@ section.welcomeModal h1 {
     margin-right: 10px;
 }
 /* End Merchant social */
-
+/* Passport Tile */
+.passportTile {
+    background-image: url(/static/knotis/offer/img/passport_tile_background.png);
+}
+.passportTile .offer-link {
+    display: block;
+    height: 100%;
+    color: #fff;
+}
+.passportTile .passport-title {
+    padding-top: 80px;
+    font-family: latoReg;
+    font-size: 20px;
+}
+.passportTile .passport-label {
+    font-family: latoLight;
+    font-size: 40px;
+    margin-top: 10px
+}
+.passportTile .offer-link h4 {
+    margin-top: 40px;
+    font-family: latoLight;
+    font-size: 20px;
+} 
+.passportTile .passport-buy {
+     margin-top: -53px;
+}
+.passportTile .passport-buy .busLink {
+     margin: 0;
+}
+.passportTile .passport-buy .busLink:hover {
+    background-color: #fff;
+}
+/* End Passport Tile */
 
 
 
@@ -2538,6 +2571,17 @@ section.welcomeModal h1 {
     .offers-hero h1 {
 	width: auto;
     }
+    .passportTile .passport-buy {
+	margin-top: -48px;
+	padding: 0;
+    }
+    .passportTile .passport-title {
+	padding-top: 30px;
+    }
+    .passportTile .offer-link h4 {
+	margin-top: 10px
+    }
+
 
     #id-current-identity-name, .searchForm, .sideBar, .search {
         display: none;
