@@ -28,13 +28,22 @@
     $(function(){
 
         $.initializeRedemptionGrid();
+        /**/
+        window.location.getParameterByName = function(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+        /**/
 
-        $.paginator({
-            namespace:'scroll.redemptions',
-            url:window.location.pathname + 'grid',
-            dataId:'id-redemptions',
-            onDone: $.initializeRedemptionGrid
-        });
-
+        if(!window.location.getParameterByName('redeem_query')) {
+            $.paginator({
+                namespace:'scroll.redemptions',
+                url:window.location.pathname + 'grid',
+                dataId:'id-redemptions',
+                onDone: $.initializeRedemptionGrid
+            });
+        }
     });
 })(jQuery);

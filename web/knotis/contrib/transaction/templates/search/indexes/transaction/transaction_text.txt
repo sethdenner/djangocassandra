@@ -1,0 +1,1 @@
+{{ object.owner.name }} {{ object.transaction_type }} {{ object.transaction_context }} {{ object.redemption_code }}

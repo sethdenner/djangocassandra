@@ -19,6 +19,8 @@ from django.template import (
 
 from django.core.exceptions import PermissionDenied
 
+from haystack.query import SearchQuerySet
+
 from knotis.utils.view import format_currency
 from knotis.utils.regex import REGEX_UUID
 
@@ -138,17 +140,26 @@ class RedemptionsGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
         if not current_identity:
             return self.context
 
-        redemption_filter = self.context.get(
-            'redemption_filter',
-            'unredeemed'
-        )
+        redemption_filter = self.context.get('redemption_filter')
         if None is redemption_filter:
             redemption_filter = 'unredeemed'
 
         redemption_filter = redemption_filter.lower()
         redeemed = redemption_filter == 'redeemed'
 
-        purchases = self.get_page(self.context)
+        redeem_query = self.context.get('redeem_query', '')
+
+        if not redeem_query:
+            purchases = self.get_page(self.context)
+
+        else:
+            purchases = [x.object for x in SearchQuerySet().models(
+                Transaction).filter(
+                    redemption_code__startswith=redeem_query,
+                    owner=current_identity,
+                    transaction_type=TransactionTypes.PURCHASE,
+                )
+            ]
 
         for purchase in purchases:
             if purchase.reverted:
@@ -210,6 +221,12 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
         'knotis/layout/js/pagination.js',
         'knotis/merchant/js/redemptions.js',
     ]
+
+    def process_context(self):
+        self.context.update({
+            'redeem_query': self.request.GET.get('redeem_query')
+        })
+        return self.context
 
     def post(
         self,
