@@ -27,9 +27,7 @@ class SearchResultsView(EmbeddedView):
     view_name = 'search_results'
     post_scripts = [
         'knotis/layout/js/action_button.js',
-        'knotis/layout/js/pagination.js',
         'knotis/identity/js/identity-action.js',
-        'knotis/identity/js/businesses.js',
         'knotis/identity/js/business-tile.js',
     ]
 
