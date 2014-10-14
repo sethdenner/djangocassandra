@@ -107,7 +107,7 @@ class ImageInstance(QuickModel):
             ]))
 
         else:
-            args.append('x512')
+            args.append('x128')
 
         thumb = get_thumbnail(
             *args,
