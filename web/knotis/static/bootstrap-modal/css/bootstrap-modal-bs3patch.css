@@ -30,6 +30,23 @@ body.modal-open,
   background-clip: padding-box;
 }
 
+@media (max-width: 979px) {
+  .modal {
+    left: 10%;
+    right: 10%;
+    width: 80%;
+  }
+}
+
+@media (max-width: 400px) {
+  .modal {
+    left: 1%;
+    right: 1%;
+    width: 98%;
+  }
+}
+
+
 .modal.container {
   max-width: none;
 }
