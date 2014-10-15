@@ -130,20 +130,9 @@ class MyPurchasesView(EmbeddedView):
     ]
 
     def process_context(self):
-        styles = [
-        ]
-
-        pre_scripts = []
-
-        post_scripts = [
-            'knotis/consumer/js/purchases.js'
-        ]
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'styles': styles,
-            'pre_scripts': pre_scripts,
-            'post_scripts': post_scripts,
             'top_menu_name': 'my_purchases',
             'fixed_side_nav': True
         })
