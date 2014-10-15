@@ -45,11 +45,11 @@
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
                     {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
-                    {% if redeem %}
-                    <a data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action redeem-offer busLink" data-id="id-redeem">Redeem</a>
-                    {% else %}
-                    <a data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action print-voucher busLink">View Voucher</a>
-                    {% endif %}
+                        {% if redeem %}
+                            <a data-transaction-id="{{ transaction.pk }}" class="btn btn-primary action redeem-offer busLink" data-id="id-redeem">Redeem</a>
+                        {% else %}
+                            <a href="/my/purchases/{{ transaction.pk }}/printable/" target="_blank" class="btn btn-primary action print-voucher busLink">View Voucher</a>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>

@@ -50,7 +50,7 @@ urlpatterns = patterns(
         login_required(DownloadPrintedVoucher.as_view())
     ),
     url(
-        r'^purchases/grid/(?P<page>\d+)/(?P<count>\d+)/$',
+        r'^purchases(/(?P<purchase_filter>\w*))?/grid/(?P<page>\d+)/(?P<count>\d+)/$',
         MyPurchasesGrid.as_view()
     ),
 )

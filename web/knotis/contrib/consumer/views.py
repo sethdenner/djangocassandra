@@ -74,7 +74,6 @@ class MyPurchasesGrid(GridSmallView):
 
         purchase_filter = self.context.get(
             'purchase_filter',
-            'unused'
         )
         if None is purchase_filter:
             purchase_filter = 'unused'
@@ -126,24 +125,14 @@ class MyPurchasesView(EmbeddedView):
     ]
     default_parent_view_class = DefaultBaseView
     post_scripts = [
+        'knotis/layout/js/pagination.js',
         'knotis/consumer/js/purchases.js',
     ]
 
     def process_context(self):
-        styles = [
-        ]
-
-        pre_scripts = []
-
-        post_scripts = [
-            'knotis/consumer/js/purchases.js'
-        ]
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'styles': styles,
-            'pre_scripts': pre_scripts,
-            'post_scripts': post_scripts,
             'top_menu_name': 'my_purchases',
             'fixed_side_nav': True
         })
