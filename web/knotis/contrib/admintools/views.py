@@ -70,7 +70,7 @@ class AdminAJAXView(AJAXView):
     pass
 
 ###### LIST EDIT APP ######
-class AdminListEditTags:
+class AdminListEditTags(object):
     VALUE = 'value'
     LIST = 'list'
     DICT = 'dict'

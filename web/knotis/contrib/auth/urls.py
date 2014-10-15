@@ -14,6 +14,9 @@ from views import (
     ResetPasswordView
 )
 
+from admin import (
+    EditUserModal,
+)
 
 urlpatterns = patterns(
     'knotis.contrib.auth.views',
@@ -52,3 +55,4 @@ urlpatterns = patterns(
 urlpatterns += LoginView.urls()
 urlpatterns += SignUpView.urls()
 urlpatterns += SignUpSuccessView.urls()
+urlpatterns += EditUserModal.urls()
