@@ -8,7 +8,7 @@
                 <li><a href="/my/purchases/used/">Used</a></li>
             </ul>
         </div>
-    </div>    
+    </div>
 </div>
 <!-- // End SubNav -->
 <div class="container-fluid myPurchases mainContent">
@@ -18,12 +18,12 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" data-id="id-purchases">
         {% render_fragment my_purchases_grid %}
     </div>
 </div>
 {% if format == 'json' %}
-{% for script in post_scripts %}
-<script src="{{STATIC_URL}}{{script}}"></script>
-{% endfor %}
+    {% for script in post_scripts %}
+        <script src="{{STATIC_URL}}{{script}}"></script>
+    {% endfor %}
 {% endif %}
