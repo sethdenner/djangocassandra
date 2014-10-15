@@ -27,7 +27,7 @@ urlpatterns = patterns(
         'delete_image'
     ),
     url(
-        r'^media/(?P<path>.+)/$',
+        r'^media/(?P<path>.+)$',
         'xsendfileserve', {
             'document_root': settings.MEDIA_ROOT
         },
