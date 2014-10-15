@@ -557,7 +557,7 @@ class IdentitySwitcherView(EmbeddedView):
 
 
 class TransactionTileView(FragmentView):
-    template_name = 'knotis/transaction/transaction_tile.html'
+    template_name = 'knotis/transaction/tile.html'
     view_name = 'transaction_tile'
 
     def process_context(self):
