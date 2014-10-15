@@ -231,6 +231,10 @@ class TransactionManager(QuickManager):
                     item.inventory.provider,
                     participants
                 )
+                add_participant(
+                    item.inventory.recipient,
+                    participants
+                )
 
         except Exception, e:
             logger.exception(e.message)
@@ -337,6 +341,10 @@ class TransactionManager(QuickManager):
                     item.inventory.provider,
                     participants
                 )
+                add_participant(
+                    item.inventory.recipient,
+                    participants
+                )
 
             transactions = []
             for participant in participants:
@@ -427,6 +435,10 @@ class TransactionManager(QuickManager):
                     inventory_cancelation.append(i)
                     add_participant(
                         i.provider,
+                        participants
+                    )
+                    add_participant(
+                        item.inventory.recipient,
                         participants
                     )
 
