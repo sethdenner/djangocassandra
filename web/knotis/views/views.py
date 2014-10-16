@@ -40,6 +40,7 @@ from .mixins import (
     GenerateApiUrlsMixin
 )
 
+
 # Creates a new copy of the context when run!
 def load_urls_into_context(context):
     local_context = copy.copy(context)
@@ -49,7 +50,6 @@ def load_urls_into_context(context):
     })
     return local_context
 
-    
 
 class ContextView(TemplateView):
     '''

@@ -160,8 +160,8 @@
             });
 
         });
-        var $twitter_content = $('[data-id=id-twitter-content')
-        var $yelp_content = $('[data-id=id-yelp-content')
+        var $twitter_content = $('[data-id=id-twitter-content]')
+        var $yelp_content = $('[data-id=id-yelp-content]')
 
         $('a[data-id=id-twitter-icon]').click(function(){
             if(!$twitter_content.hasClass('active'))

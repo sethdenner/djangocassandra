@@ -18,7 +18,10 @@ from knotis.views import ApiModelViewSet
 
 from knotis.contrib.auth.models import KnotisUser
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
-from knotis.contrib.identity.models import IdentityTypes
+from knotis.contrib.identity.models import (
+    IdentityBusiness,
+    IdentityTypes,
+)
 from knotis.contrib.relation.models import Relation
 from knotis.contrib.activity.models import Activity
 from knotis.contrib.offer.models import Offer
@@ -73,6 +76,9 @@ class TransactionApi(object):
         **kwargs
     ):
 
+        if None is mode:
+            mode = PurchaseMode.NONE
+
         if transaction_context is None:
             redemption_code = ''.join(
                 random.choice(
@@ -86,9 +92,6 @@ class TransactionApi(object):
                 redemption_code,
                 mode
             ])
-
-        if None is mode:
-            mode = PurchaseMode.NONE
 
         transactions = Transaction.objects.create_purchase(
             offer,
@@ -127,9 +130,27 @@ class TransactionApi(object):
                 else:
                     try:
                         manager_email_list = []
-                        manager_rels = Relation.objects.get_managers(
-                            t.owner
-                        )
+                        if t.owner.identity_type == IdentityTypes.BUSINESS:
+                            manager_rels = Relation.objects.get_managers(
+                                t.owner
+                            )
+                        elif t.owner.identity_type == IdentityTypes.ESTABLISHMENT:
+                            establishment_partent = IdentityBusiness.objects.get_establishment_parent(
+                                t.owner
+                            )
+                            establishment_managers = Relation.objects.get_managers(
+                                t.owner
+                            )
+                            business_managers = Relation.objects.get_managers(
+                                establishment_partent
+                            )
+
+                            manager_rels = [
+                                x for x in establishment_managers
+                            ] + [
+                                x for x in business_managers
+                            ]
+
                         for rel in manager_rels:
                             manager_user = (
                                 KnotisUser.objects.get_identity_user(
