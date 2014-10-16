@@ -2578,11 +2578,24 @@ section.welcomeModal h1 {
 
 @media (max-width: 767px) {
     
+    .offerHero {
+	margin-bottom: 0;
+    }
+    
+    .offerDetails {
+	top: 0;
+	margin-top: -35px;
+	margin-bottom: 0;
+	height: auto;
+	padding: 35px 35px 25px;
+    }
+    
     .offerDetails h1 {
-	margin-top: 25px;
+	margin-top: 0;
     }
 
     #offer-modal .buyBtn {
+	position: relative;
 	width: 100%;
     }
 
