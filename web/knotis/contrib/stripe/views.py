@@ -154,6 +154,15 @@ class StripeCharge(AJAXView):
                     )
 
                 elif offer.offer_type == OfferTypes.DIGITAL_OFFER_COLLECTION:
+                    TransactionApi.create_purchase(
+                        request=request,
+                        offer=offer,
+                        buyer=current_identity,
+                        currency=buyer_usd,
+                        mode=PurchaseMode.STRIPE,
+                        send_email=True,
+                    )
+
                     offer_collection = OfferCollection.objects.get(
                         pk=offer.description
                     )
@@ -166,7 +175,8 @@ class StripeCharge(AJAXView):
                             offer=page.offer,
                             buyer=current_identity,
                             currency=buyer_usd,
-                            mode=PurchaseMode.FREE
+                            mode=PurchaseMode.FREE,
+                            send_email=False,
                         )
 
         except Exception, e:

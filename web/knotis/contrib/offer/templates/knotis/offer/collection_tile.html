@@ -1,28 +1,30 @@
 {% load thumbnail %}
+{% load replace %}
+
 <div class="col-lg-3 col-xs-6 offerItem passportTile">
     <a class='offer-link' href="/offers/passport/{{ offer.pk }}/">
 	<div class='col-sm-12 tile-link text-center'>
-	    <h3 class='passport-title'>BALLARD</h3>
+	    <h3 class='passport-title'>{{ offer.title|replace:"/Passport/" }}</h3>
 	    <h3 class='passport-label'>Passport</h3>
-	    <h4 class='offer-amount'>$15</h4>
+	    <h4 class='offer-amount'>${{offer_price}}</h4>
 	</div>
     </a>
-            <div class="col-lg-12 col-xs-12 passport-buy">
-                {% if offer_action == 'buy' %}
-                <a class="busLink no-deep" data-target-id="main-content" href="/offer/{{ offer.pk }}/buy/">Buy</a>
-                {% endif %}
-                {% if offer_action == 'pause' %}
-                {% if offer.active %}
+    <div class="col-lg-12 col-xs-12 passport-buy">
+        {% if offer_action == 'buy' %}
+            <a class="busLink no-deep" data-target-id="main-content" href="/offer/{{ offer.pk }}/buy/">Buy</a>
+        {% endif %}
+        {% if offer_action == 'pause' %}
+            {% if offer.active %}
                 <a class="busLink no-deep toggle-offer" data-offer-id="{{ offer.pk }}" href="/">Pause</a>
-                {% else %}
+            {% else %}
                 <a class="busLink no-deep toggle-offer" data-offer-id="{{ offer.pk }}" href="/">Resume</a>
-                {% endif %}
-                {% endif %}
-                {% if offer_action == 'redeem' %}
-                <a class="busLink no-deep redeem-offer" data-offer-id="{{ offer.pk }}" href="/">Redeem</a>
-                {% endif %}
-                {% if offer_action == 'edit' %}
-                <a class="busLink" data-target-id="main-content" href="/offer/create/?id={{ offer.pk }}">Edit</a>
-                {% endif %}
-            </div>
+            {% endif %}
+        {% endif %}
+        {% if offer_action == 'redeem' %}
+            <a class="busLink no-deep redeem-offer" data-offer-id="{{ offer.pk }}" href="/">Redeem</a>
+        {% endif %}
+        {% if offer_action == 'edit' %}
+            <a class="busLink" data-target-id="main-content" href="/offer/create/?id={{ offer.pk }}">Edit</a>
+        {% endif %}
+    </div>
 </div>
