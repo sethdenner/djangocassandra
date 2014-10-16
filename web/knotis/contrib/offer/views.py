@@ -182,6 +182,7 @@ class OffersGridView(GridSmallView):
                 tile = CollectionTile()
                 tiles.append(tile.render_template_fragment(Context({
                     'offer': offer,
+                    'offer_price': offer.price_discount_formatted(),
                     'current_identity': current_identity,
                 })))
 
@@ -210,9 +211,28 @@ class PassportBookView(EmbeddedView):
     ]
     default_parent_view_class = DefaultBaseView
     post_scripts = [
-        'knotis/offer/js/offers.js',
+        'knotis/stripe/js/stripe_form.js',
     ]
     template_name = 'knotis/offer/passport_offers_view.html'
+
+    def process_context(self):
+        offer_id = self.context.get('offer_id')
+        offer = get_object_or_404(Offer, pk=offer_id)
+
+        offer_price_discount = offer.price_discount_formatted()
+        offer_price_retail = offer.price_retail_formatted()
+        self.context.update({
+            'offer': offer,
+            'STRIPE_API_KEY': settings.STRIPE_API_KEY,
+            'STATIC_URL': settings.STATIC_URL,
+            'BASE_URL': settings.BASE_URL,
+            'business_name': offer.owner.name,
+            'offer_title': offer.title,
+            'offer_price_discount': offer_price_discount,
+            'offer_price_retail': offer_price_retail,
+            'offer_id': offer.pk
+        })
+        return self.context
 
 
 class PassportBookOffersGrid(GridSmallView):
@@ -258,6 +278,7 @@ class OffersView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
     template_name = 'knotis/offer/offers_view.html'
     post_scripts = [
+        'knotis/layout/js/pagination.js',
         'knotis/offer/js/offers.js',
     ]
 
@@ -364,12 +385,7 @@ class OfferTile(FragmentView):
     view_name = 'offer_tile'
     offer_stats = 'osdfisdjf'
 
-    def process_context(self):
-        offer = self.context.get('offer', None)
-
-        if not offer:
-            return self.context
-
+    def get_offer_action(self):
         current_identity = self.context.get('current_identity')
 
         if (
@@ -380,6 +396,14 @@ class OfferTile(FragmentView):
 
         else:
             offer_action = None
+
+        return offer_action
+
+    def process_context(self):
+        offer = self.context.get('offer', None)
+
+        if not offer:
+            return self.context
 
         try:
             offer_banner_image = ImageInstance.objects.get(
@@ -403,7 +427,8 @@ class OfferTile(FragmentView):
         self.context.update({
             'offer_banner_image': offer_banner_image,
             'business_badge_image': business_badge_image,
-            'offer_action': offer_action
+            'STATIC_URL': settings.STATIC_URL,
+            'offer_action': self.get_offer_action()
         })
         return self.context
 
@@ -411,6 +436,13 @@ class OfferTile(FragmentView):
 class CollectionTile(OfferTile):
     template_name = 'knotis/offer/collection_tile.html'
     view_name = 'offer_collection_tile'
+
+    def process_context(self):
+        self.context.update({
+            'STATIC_URL': settings.STATIC_URL,
+            'offer_action': self.get_offer_action()
+        })
+        return self.context
 
 
 class OfferDetailView(ModalView):

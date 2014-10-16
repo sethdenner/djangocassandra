@@ -8,6 +8,7 @@ from knotis.views import (
 
 from rest_framework.exceptions import APIException
 from rest_framework.response import Response
+import datetime
 
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 
@@ -348,7 +349,7 @@ class OfferApi(object):
             product,
             price=value,
             unlimited=True,  # This will probably change.
-            get_existing=False
+            get_existing=True,
         )
 
         split_inventory = Inventory.objects.split(
@@ -357,12 +358,18 @@ class OfferApi(object):
             1
         )
 
+        if 0.0 != price:
+            discount_factor = price/value
+        else:
+            discount_factor = 1
+
         offer = Offer.objects.create(
             owner=owner_identity,
             title=title,
             restrictions=restrictions,
             description=description,
-            start_time=kwargs.get('start_time'),
+            discount_factor=discount_factor,
+            start_time=kwargs.get('start_time', datetime.datetime.utcnow()),
             end_time=kwargs.get('end_time'),
             unlimited=True,
             inventory=[split_inventory],

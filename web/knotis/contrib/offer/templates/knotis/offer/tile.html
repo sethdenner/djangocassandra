@@ -17,7 +17,7 @@
                     {% thumbnail business_badge_image.image.image '80x80' crop=business_badge_image.crop as image %}
                     <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
                     {% empty %}
-                    <img class="busLogo" src="{{ STATIC_URL }}knotis/offer/img/default-offer-badge.png" />
+                    <img class="busLogo" src="{{ STATIC_URL }}knotis/img/default_profile_badge.png" />
                     {% endthumbnail %}
                 </a>
             </div>
@@ -27,7 +27,7 @@
                 <h1>{{ offer.title }}</h1>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 {% if offer_action == 'buy' %}

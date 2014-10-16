@@ -592,7 +592,7 @@ class Offer(QuickModel):
                     self.owner
                 )
                 badge_image = ImageInstance.objects.get(
-                    related_object_id=business.owner.pk,
+                    related_object_id=business.pk,
                     context='profile_badge',
                     primary=True
                 )

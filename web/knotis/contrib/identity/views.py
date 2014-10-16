@@ -139,6 +139,7 @@ class EstablishmentsView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
     post_scripts = [
         'knotis/layout/js/action_button.js',
+        'knotis/layout/js/pagination.js',
         'knotis/identity/js/identity-action.js',
         'knotis/identity/js/businesses.js',
         'knotis/identity/js/business-tile.js',
@@ -556,7 +557,7 @@ class IdentitySwitcherView(EmbeddedView):
 
 
 class TransactionTileView(FragmentView):
-    template_name = 'knotis/transaction/transaction_tile.html'
+    template_name = 'knotis/transaction/tile.html'
     view_name = 'transaction_tile'
 
     def process_context(self):

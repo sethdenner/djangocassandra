@@ -19,6 +19,8 @@ from django.template import (
 
 from django.core.exceptions import PermissionDenied
 
+from haystack.query import SearchQuerySet
+
 from knotis.utils.view import format_currency
 from knotis.utils.regex import REGEX_UUID
 
@@ -33,7 +35,8 @@ from knotis.views import (
     EmbeddedView,
     ModalView,
     AJAXFragmentView,
-    GenerateAjaxResponseMixin
+    GenerateAjaxResponseMixin,
+    PaginationMixin
 )
 
 from knotis.contrib.auth.models import UserInformation
@@ -117,38 +120,46 @@ from .forms import (
 )
 
 
-class RedemptionsGrid(GridSmallView):
+class RedemptionsGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
     view_name = 'redemptions_grid'
+
+    def get_queryset(self):
+        current_identity = self.get_current_identity(self.request)
+
+        return Transaction.objects.filter(
+            owner=current_identity,
+            transaction_type=TransactionTypes.PURCHASE
+        )
 
     def process_context(self):
         tiles = []
 
         request = self.request
-        session = request.session
+        current_identity = self.get_current_identity(request)
 
-        current_identity_id = session['current_identity']
+        if not current_identity:
+            return self.context
 
-        try:
-            current_identity = Identity.objects.get(pk=current_identity_id)
-
-        except:
-            logger.exception('Failed to get current identity')
-            raise
-
-        redemption_filter = self.context.get(
-            'redemption_filter',
-            'unredeemed'
-        )
+        redemption_filter = self.context.get('redemption_filter')
         if None is redemption_filter:
             redemption_filter = 'unredeemed'
 
         redemption_filter = redemption_filter.lower()
         redeemed = redemption_filter == 'redeemed'
 
-        purchases = Transaction.objects.filter(
-            owner=current_identity,
-            transaction_type=TransactionTypes.PURCHASE
-        )
+        redeem_query = self.context.get('redeem_query', '')
+
+        if not redeem_query:
+            purchases = self.get_page(self.context)
+
+        else:
+            purchases = [x.object for x in SearchQuerySet().models(
+                Transaction).filter(
+                    redemption_code__startswith=redeem_query,
+                    owner=current_identity,
+                    transaction_type=TransactionTypes.PURCHASE,
+                )
+            ]
 
         for purchase in purchases:
             if purchase.reverted:
@@ -207,8 +218,15 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
     default_parent_view_class = DefaultBaseView
     template_name = 'knotis/merchant/my_redemptions_view.html'
     post_scripts = [
-        'knotis/merchant/js/redemptions.js'
+        'knotis/layout/js/pagination.js',
+        'knotis/merchant/js/redemptions.js',
     ]
+
+    def process_context(self):
+        self.context.update({
+            'redeem_query': self.request.GET.get('redeem_query')
+        })
+        return self.context
 
     def post(
         self,
@@ -231,7 +249,7 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
 
         data = request.POST
 
-        transaction_id = data.get('transactionid')
+        transaction_id = data.get('transaction_id')
         transaction = get_object_or_404(
             Transaction,
             pk=transaction_id

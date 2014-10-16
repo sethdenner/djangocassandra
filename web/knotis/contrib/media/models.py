@@ -97,13 +97,21 @@ class ImageInstance(QuickModel):
         )
 
     def cropped_url(self):
-        thumb = get_thumbnail(
-            self.image.image,
-            'x'.join([
+        args = [self.image.image]
+
+        crop = self.crop()
+        if 'noop' != crop:
+            args.append('x'.join([
                 str(int(self.crop_width)),
                 str(int(self.crop_height))
-            ]),
-            crop=self.crop()
+            ]))
+
+        else:
+            args.append('x128')
+
+        thumb = get_thumbnail(
+            *args,
+            crop=crop
         )
         return settings.BASE_URL + thumb.url
 
