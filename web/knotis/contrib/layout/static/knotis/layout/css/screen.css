@@ -2572,11 +2572,21 @@ section.welcomeModal h1 {
 }
 /* End Passport Tile */
 
+/* Redemption Page */
+.redemption-search {
+    float: right;
+}
+/* End Redemption Page */
 
 
 /* Responsive Magic */
 
 @media (max-width: 767px) {
+
+    .redemption-search {
+	float: none;
+	margin-bottom: 25px;
+    }
 
     .offerHero {
 	margin-bottom: 0;
