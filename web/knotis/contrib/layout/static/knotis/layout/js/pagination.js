@@ -9,7 +9,7 @@
         }
         $.extend(options, user_options)
 
-        var page = 0;
+        var page = 1;
         var count = 24;
         var results_left = true;
         var fetching_results = false;
