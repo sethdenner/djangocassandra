@@ -141,8 +141,8 @@ class EstablishmentsView(EmbeddedView):
         'knotis/layout/js/action_button.js',
         'knotis/layout/js/pagination.js',
         'knotis/identity/js/identity-action.js',
-        'knotis/identity/js/businesses.js',
         'knotis/identity/js/business-tile.js',
+        'knotis/identity/js/businesses.js',
     ]
 
 
