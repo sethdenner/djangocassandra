@@ -6,36 +6,35 @@
             var identity_id = $('div#id-identity-id').attr('data-establishment-id');
 
             $.ajaxmodal({
-		href: '/image/upload/',
-		modal_settings: {
-                    backdrop: 'static'
-		},
-		on_open: function(data, status, request) {
+                href: '/image/upload/',
+                modal_settings: {
+                            backdrop: 'static'
+                },
+                on_open: function(data, status, request) {
                     $('#file-uploader').sickle({
-			do_upload: true,
-			params: {
-			    type: 'image',
-			},
-			aspect: 1,
-			primary: true,
-			done: function(data) {
-			    if (data.status == 'success') {
-				$img = $('#profile-badge');
-				$img.attr('src', data.image_url);
+                        do_upload: true,
+                        params: {
+                            type: 'image',
+                        },
+                        aspect: 1,
+                        primary: true,
+                        done: function(data) {
+                            if (data.status == 'success') {
+                                $img = $('.change-profile-badge-link');
+                                $img.attr('src', data.image_url);
+                            } else if (data.status == 'failure') {
 
-			    } else if (data.status == 'failure') {
-
-			    } else {
-				// Invalid Status
-			    }
-			},
-			related_object_id: identity_id,
-			context: 'profile_badge',
-			jcrop_box_width: 560,
-			image_max_height: 400,
-			image_max_width: 500,
+                            } else {
+                            // Invalid Status
+                            }
+                        },
+                        related_object_id: identity_id,
+                        context: 'profile_badge',
+                        jcrop_box_width: 560,
+                        image_max_height: 400,
+                        image_max_width: 500,
                     });
-		}
+                }
             });
 
         };
@@ -57,20 +56,22 @@
 
                     $('#file-uploader').sickle({
                         do_upload: true,
-			params: {
+                        params: {
                             type: 'image'
-			},
-			aspect: 5.12,
-			related_object_id: identity_id,
-			context: 'profile_banner',
-			image_max_height: 400,
-			image_max_width: 500,
-			primary: true,
-			done: function(data){
+                        },
+                        aspect: 5.12,
+                        related_object_id: identity_id,
+                        context: 'profile_banner',
+                        image_max_height: 400,
+                        image_max_width: 500,
+                        primary: true,
+                        done: function(data){
                             $('modal-box').modal('hide');
-                            $('#id-profile-cover').css('background-image', 'url("' + data.image_url + '")');
-			},
-			jcrop_box_width: 560
+                            $('[data-id=id-data-profile-cover]').css(
+                                'background-image',
+                                'url("' + data.image_url + '")');
+                        },
+                        jcrop_box_width: 560
                     });
                 }
             });
