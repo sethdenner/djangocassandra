@@ -2340,9 +2340,6 @@ section.welcomeModal h1 {
     font-size: 14px;
     position: absolute;
     top: 84px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     width: 50%;
 }
 
@@ -2620,7 +2617,10 @@ section.welcomeModal h1 {
 
     .offerHero h1,
     .offerHero h2 {
-	left: 130px;
+	left: 0;
+	margin-right: 10px;
+	margin-left: 135px;
+	white-space: normal;
     }
 
     .offerHero img.profile-badge {
