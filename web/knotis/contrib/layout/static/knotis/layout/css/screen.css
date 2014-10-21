@@ -2601,7 +2601,7 @@ section.welcomeModal h1 {
 	top: 0;
 	margin-bottom: 0;
 	height: auto;
-	padding: 35px 35px 25px;
+	padding: 0 35px 25px;
     }
     
     .offerDetails h1 {
@@ -2617,6 +2617,14 @@ section.welcomeModal h1 {
 	height: 250px;
     }
 
+    .offerHero h1,
+    .offerHero h2 {
+	left: 130px;
+    }
+
+    .offerHero img.profile-badge {
+	margin: 15px 25px;
+    }
 }
 
 @media (max-width: 550px) {
