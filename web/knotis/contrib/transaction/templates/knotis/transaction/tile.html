@@ -27,18 +27,18 @@
 
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
-                    {% if show_offer_info %}
-                    <h1>{{ transaction.offer.title }}</h1>
-                    {% else %}
-                    <h1>{{ identity.name }}</h1>
-                    {% endif %}
-                </div>
-                <div class="col-lg-12 col-xs-12">
                     <div class="redemptionCode">
                         {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
                         {{ transaction.redemption_code|default:'' }}
                         {% else %}{% endif %}
                     </div>
+                </div>
+                <div class="col-lg-12 col-xs-12">
+                    {% if show_offer_info %}
+                    <h1>{{ transaction.offer.title }}</h1>
+                    {% else %}
+                    <h1>{{ identity.name }}</h1>
+                    {% endif %}
                 </div>
             </div>
 
