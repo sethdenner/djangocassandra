@@ -2218,11 +2218,12 @@ section.welcomeModal h1 {
     font-family: "LatoLight", sans-serif;
     width: 95%;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
     margin-top: 15px;
-    height: 60px;
+    margin-bottom: 8px;
+    height: 81px;
 }
 
 .offerItem .busLink, .offerItem .btnFollow {
@@ -2627,16 +2628,24 @@ section.welcomeModal h1 {
 	width: calc(100% + 30px);
 	padding: 0 20px;
     }
+
     .offers-hero h1 {
 	width: auto;
     }
+
     .passportTile .passport-buy {
 	margin-top: -48px;
 	padding: 0;
     }
+
     .passportTile .passport-title {
 	padding-top: 30px;
     }
+
+    .passportTile .passport-label {
+	font-size: 35px;
+    }
+    
     .passportTile .offer-link h4 {
 	margin-top: 10px
     }
@@ -2675,9 +2684,13 @@ section.welcomeModal h1 {
         padding: 30px 0;
     }
     .offerItem h1 {
-        white-space: nowrap;
+	font-size: 16px;
         border: 0;
-        height: 33px;
+        height: 48px;
+	margin-top: 5px;
+	margin-bottom: 16px;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
     }
     nav .search {
         position: relative;
