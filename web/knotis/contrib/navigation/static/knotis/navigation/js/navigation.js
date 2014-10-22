@@ -129,6 +129,7 @@
                             request.responseText
                         ].join(''));
                         return;
+
                     }
                     var $html = $(data.html);
 
@@ -166,7 +167,7 @@
                             $.address.title(data.title);
 
                         }
-                        $target_element.html(data.html);
+                        $target_element.html($html);
                         $('div.modal').modal('hide');
 
                     }

@@ -56,9 +56,11 @@
 
     }
 
+    /*
     $.ajaxSetup({
-        crossDomain: false // obviates need for sameOrigin test
+        crossDomain: false // obviates need for sameOrigin test !!! THIS IS NOT TRUE!!!
     });
+    */
 
     var $document = $(document);
     $document.ajaxStart(function () {
