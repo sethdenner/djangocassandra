@@ -322,7 +322,7 @@ LOGGING = {
 
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'next'
+ENVIRONMENT_NAME = 'int'
 
 
 # You can key the configurations off of anything - I use project path.
