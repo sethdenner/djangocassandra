@@ -1,7 +1,14 @@
 ;
 (function($) {
-    $(function(){
-	    var handler = StripeCheckout.configure({
+    var stripeHandler = null,
+    configureStripe = function () {
+        if ('undefined' === typeof StripeCheckout) {
+            window.setTimeout(function() { configureStripe(); }, 50);
+            return;
+
+        }
+
+	    stripeHandler = StripeCheckout.configure({
 	        key: $('input[name="stripe_api_key"]').val(),
 	        image: $('input[name="business_badge"]').val(),
 	        token: function(token, args) {
@@ -47,19 +54,32 @@
 	        },
 
 	    });
+    };
+
+    var onReady = function () {
+        configureStripe();
 
 	    $('input#stripe-button').click(function(event) {
 	        event.preventDefault();
 	        event.stopPropagation();
 
-	        handler.open({
+	        stripeHandler.open({
 		        name: $('input[name="business_name"]').val(),
 		        description: $('input[name="description"]').val(),
 		        ammount: $('input[name="offer_price"]').val()
 	        });
 
 	    });
+    };
+    
+    if ($.isReady) {
+        onReady();
 
-    });
+    } else {
+        $(function(){
+            onReady();
+        });
+
+    }
 
 })(jQuery);

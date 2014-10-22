@@ -204,7 +204,7 @@ class PaginationMixin(object):
     queryset = None
     page_key = 'page'
     count_key = 'count'
-    default_count = 20
+    default_count = 24
 
     @staticmethod
     def get_request_parameter(
