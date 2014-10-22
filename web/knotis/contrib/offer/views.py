@@ -51,7 +51,8 @@ from knotis.views import (
     EmbeddedView,
     ModalView,
     AJAXFragmentView,
-    FragmentView
+    FragmentView,
+    PaginationMixin,
 )
 
 from knotis.contrib.layout.views import (
@@ -141,25 +142,14 @@ class OfferPurchaseButton(AJAXFragmentView):
         })
 
 
-class OffersGridView(GridSmallView):
+class OffersGridView(
+    GridSmallView,
+    PaginationMixin,
+    GetCurrentIdentityMixin
+):
     view_name = 'offers_grid'
 
-    def process_context(self):
-        request = self.request
-        current_identity = None
-        if request.user.is_authenticated():
-            current_identity_id = request.session['current_identity']
-            try:
-                current_identity = Identity.objects.get(pk=current_identity_id)
-
-            except:
-                pass
-
-        page = int(self.context.get('page', '0'))
-        count = int(self.context.get('count', '20'))
-        start_range = page * count
-        end_range = start_range + count
-
+    def get_queryset(self):
         offer_filter_dict = {
             'published': True,
             'active': True,
@@ -169,13 +159,17 @@ class OffersGridView(GridSmallView):
         try:
             offers = Offer.objects.filter(
                 **offer_filter_dict
-            )[start_range:end_range]
-
+            )
         except Exception:
             logger.exception(''.join([
                 'failed to get offers.'
             ]))
+        return offers
 
+    def process_context(self):
+        current_identity = self.get_current_identity(self.request)
+
+        offers = self.get_page(self.context)
         tiles = []
         for offer in offers:
             if offer.offer_type == OfferTypes.DIGITAL_OFFER_COLLECTION:
