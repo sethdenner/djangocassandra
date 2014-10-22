@@ -198,3 +198,67 @@ class GenerateApiUrlsMixin(object):
                     csrf_exempt(view)
                 )
             )
+
+
+class PaginationMixin(object):
+    queryset = None
+    page_key = 'page'
+    count_key = 'count'
+    default_count = 24
+
+    @staticmethod
+    def get_request_parameter(
+        context,
+        key,
+        default=None
+    ):
+        '''
+        This method is responsible for pulling out the paginaiton parameters
+        from a RequestContext object.
+        '''
+        value = context.get(key, default)
+
+        request = context.get('request')
+        if None is not request:
+            value = request.GET.get(key, value)
+            value = request.POST.get(key, value)
+
+        return value
+
+    def get_page(
+        self,
+        context,
+        page=None,
+        count=None
+    ):
+        if None is page:
+            page = self.get_request_parameter(
+                context,
+                self.page_key
+            )
+            if None is page:
+                page = 1
+
+            else:
+                page = int(page)
+
+        if None is count:
+            count = self.get_request_parameter(
+                context,
+                self.count_key
+            )
+            if None is count:
+                count = self.default_count
+
+            else:
+                count = int(count)
+
+        start = (page - 1) * count
+        stop = start + count
+        return self.get_queryset()[start:stop]
+
+    def get_queryset(self):
+        '''
+        Override if you need a dynamic queryset
+        '''
+        return self.queryset

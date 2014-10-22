@@ -14,7 +14,8 @@ logger = log.getLogger(__name__)
 from knotis.views import (
     EmbeddedView,
     ModalView,
-    FragmentView
+    FragmentView,
+    PaginationMixin,
 )
 
 
@@ -53,6 +54,7 @@ from knotis.contrib.location.models import (
 )
 
 from knotis.contrib.endpoint.models import EndpointIdentity
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 
 
 def get_current_identity(request):
@@ -139,27 +141,23 @@ class EstablishmentsView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
     post_scripts = [
         'knotis/layout/js/action_button.js',
+        'knotis/layout/js/pagination.js',
         'knotis/identity/js/identity-action.js',
-        'knotis/identity/js/businesses.js',
         'knotis/identity/js/business-tile.js',
+        'knotis/identity/js/businesses.js',
     ]
 
 
-class EstablishmentsGrid(GridSmallView):
+class EstablishmentsGrid(
+    GridSmallView,
+    PaginationMixin,
+    GetCurrentIdentityMixin
+):
     view_name = 'establishments_grid'
 
-    def process_context(self):
-        current_identity_id = self.request.session.get('current_identity')
-        if current_identity_id:
-            current_identity = Identity.objects.get(pk=current_identity_id)
+    def get_queryset(self):
+        current_identity = self.get_current_identity(self.request)
 
-        else:
-            current_identity = None
-
-        page = int(self.context.get('page', '0'))
-        count = int(self.context.get('count', '20'))
-        start_range = page * count
-        end_range = start_range + count
         establishments = IdentityEstablishment.objects.all()
         if (
             not current_identity or
@@ -169,7 +167,11 @@ class EstablishmentsGrid(GridSmallView):
                 available=True
             )
 
-        establishments = establishments[start_range:end_range]
+        return establishments
+
+    def process_context(self):
+
+        establishments = self.get_page(self.context)
 
         tiles = []
 
@@ -556,7 +558,7 @@ class IdentitySwitcherView(EmbeddedView):
 
 
 class TransactionTileView(FragmentView):
-    template_name = 'knotis/transaction/transaction_tile.html'
+    template_name = 'knotis/transaction/tile.html'
     view_name = 'transaction_tile'
 
     def process_context(self):

@@ -25,6 +25,7 @@ from knotis.views import (
     FragmentView,
     ContextView,
     EmbeddedView,
+    PaginationMixin,
 )
 
 from knotis.contrib.layout.views import (
@@ -32,9 +33,7 @@ from knotis.contrib.layout.views import (
     DefaultBaseView
 )
 
-
 from knotis.contrib.identity.models import (
-    Identity,
     IdentityTypes
 )
 from knotis.contrib.transaction.models import (
@@ -47,34 +46,32 @@ from knotis.contrib.identity.views import (
     get_identity_profile_badge,
     TransactionTileView
 )
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 
 
-class MyPurchasesGrid(GridSmallView):
+class MyPurchasesGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
     view_name = 'my_purchases_grid'
 
+    def get_queryset(self):
+        current_identity = self.get_current_identity(self.request)
+
+        return Transaction.objects.filter(
+            owner=current_identity,
+            transaction_type=TransactionTypes.PURCHASE
+        )
+
     def process_context(self):
-        tiles = []
 
         request = self.request
-        session = request.session
+        current_identity = self.get_current_identity(request)
 
-        current_identity_id = session['current_identity']
+        if not current_identity:
+            return self.context
 
-        try:
-            current_identity = Identity.objects.get(pk=current_identity_id)
-
-        except:
-            logger.exception('Failed to get current identity')
-            raise
-
-        page = int(self.context.get('page', '0'))
-        count = int(self.context.get('count', '20'))
-        start_range = page * count
-        end_range = start_range + count
+        purchases = self.get_page(self.context)
 
         purchase_filter = self.context.get(
             'purchase_filter',
-            'unused'
         )
         if None is purchase_filter:
             purchase_filter = 'unused'
@@ -82,10 +79,7 @@ class MyPurchasesGrid(GridSmallView):
         purchase_filter = purchase_filter.lower()
         unused = purchase_filter == 'unused'
 
-        purchases = Transaction.objects.filter(
-            owner=current_identity,
-            transaction_type=TransactionTypes.PURCHASE
-        )[start_range:end_range]
+        tiles = []
 
         for purchase in purchases:
             if purchase.reverted:
@@ -126,24 +120,14 @@ class MyPurchasesView(EmbeddedView):
     ]
     default_parent_view_class = DefaultBaseView
     post_scripts = [
+        'knotis/layout/js/pagination.js',
         'knotis/consumer/js/purchases.js',
     ]
 
     def process_context(self):
-        styles = [
-        ]
-
-        pre_scripts = []
-
-        post_scripts = [
-            'knotis/consumer/js/purchases.js'
-        ]
 
         local_context = copy.copy(self.context)
         local_context.update({
-            'styles': styles,
-            'pre_scripts': pre_scripts,
-            'post_scripts': post_scripts,
             'top_menu_name': 'my_purchases',
             'fixed_side_nav': True
         })

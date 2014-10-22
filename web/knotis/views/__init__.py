@@ -14,5 +14,6 @@ from .views import (
 from .mixins import (
     RenderTemplateFragmentMixin,
     GenerateAjaxResponseMixin,
-    GenerateApiUrlsMixin
+    GenerateApiUrlsMixin,
+    PaginationMixin
 )
