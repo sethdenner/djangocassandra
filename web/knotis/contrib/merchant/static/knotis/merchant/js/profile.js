@@ -20,7 +20,7 @@
                         primary: true,
                         done: function(data) {
                             if (data.status == 'success') {
-                                $img = $('.change-profile-badge-link');
+                                $img = $('[data-id=id-data-profile-badge]')
                                 $img.attr('src', data.image_url);
                             } else if (data.status == 'failure') {
 

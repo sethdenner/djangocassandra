@@ -12,9 +12,9 @@
                     <div class="col-lg-12 col-xs-12 columns">
                         <div class="heroInfo">
                             {% thumbnail profile_badge.image.image '120x120' crop=profile_badge.crop as img %}
-                            <img src="{{ img.url }}" class="{% if is_manager %}change-profile-badge-link{% endif %}"/>
+                            <img src="{{ img.url }}" data-id='id-data-profile-badge' class="{% if is_manager %}change-profile-badge-link{% endif %}"/>
                             {% empty %}
-                            <img width="120" height="120" src="{{ default_profile_logo_uri }}" class="{% if is_manager %}change-profile-badge-link{% endif %}" />
+                            <img width="120" height="120" data-id='id-data-profile-badge' src="{{ default_profile_logo_uri }}" class="{% if is_manager %}change-profile-badge-link{% endif %}" />
                             {% endthumbnail %}
                             <h1>{{ establishment.name }}</h1>
                             {% if address %}
