@@ -2218,11 +2218,12 @@ section.welcomeModal h1 {
     font-family: "LatoLight", sans-serif;
     width: 95%;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
     margin-top: 15px;
-    height: 60px;
+    margin-bottom: 8px;
+    height: 81px;
 }
 
 .offerItem .busLink, .offerItem .btnFollow {
@@ -2339,9 +2340,6 @@ section.welcomeModal h1 {
     font-size: 14px;
     position: absolute;
     top: 84px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     width: 50%;
 }
 
@@ -2457,7 +2455,7 @@ section.welcomeModal h1 {
     font-size: 14px;
     margin: 10px 0;
     position: absolute;
-    top: -124px;
+    top: -50px;
     right: 0px;
     background: white;
     border-right: 3px solid #2cc397;
@@ -2572,21 +2570,36 @@ section.welcomeModal h1 {
 }
 /* End Passport Tile */
 
+/* Redemption Page */
+.redemption-search {
+    float: right;
+}
+
+.redemptions .offerItem h1 {
+    margin-bottom: 0;
+}
+/* End Redemption Page */
 
 
 /* Responsive Magic */
 
 @media (max-width: 767px) {
 
+    .redemption-search {
+	float: none;
+	margin-bottom: 25px;
+    }
+
     .offerHero {
 	margin-bottom: 0;
+	overflow: hidden;
     }
     
     .offerDetails {
 	top: 0;
 	margin-bottom: 0;
 	height: auto;
-	padding: 35px 35px 25px;
+	padding: 0 35px 25px;
     }
     
     .offerDetails h1 {
@@ -2602,6 +2615,31 @@ section.welcomeModal h1 {
 	height: 250px;
     }
 
+    .offerHero h1,
+    .offerHero h2 {
+	left: 0;
+	margin-right: 10px;
+	margin-left: 135px;
+	white-space: normal;
+    }
+
+    .offerHero img.profile-badge {
+	margin: 15px 25px;
+    }
+}
+
+@media (max-width: 550px) {
+    .redemptionCode {
+        font-size: 13px;
+        left: 0;
+        position: absolute;
+        top: -194px;
+        background: rgba(255, 255, 255, 0.82);
+        width: 100%;
+        padding: 10px;
+	border-right: none;
+	text-align: center;
+    }
 }
 
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
@@ -2617,20 +2655,35 @@ section.welcomeModal h1 {
 	width: calc(100% + 30px);
 	padding: 0 20px;
     }
+
     .offers-hero h1 {
 	width: auto;
     }
+
+    .offerHero h2 {
+	top: 60px;
+    }
+
     .passportTile .passport-buy {
 	margin-top: -48px;
 	padding: 0;
     }
+
     .passportTile .passport-title {
 	padding-top: 30px;
     }
+
+    .passportTile .passport-label {
+	font-size: 35px;
+    }
+    
     .passportTile .offer-link h4 {
 	margin-top: 10px
     }
-
+    
+    .redemptionCode {
+	top: -154px;
+    }
 
     #id-current-identity-name, .searchForm, .sideBar, .search {
         display: none;
@@ -2665,9 +2718,13 @@ section.welcomeModal h1 {
         padding: 30px 0;
     }
     .offerItem h1 {
-        white-space: nowrap;
+	font-size: 16px;
         border: 0;
-        height: 33px;
+        height: 48px;
+	margin-top: 5px;
+	margin-bottom: 16px;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
     }
     nav .search {
         position: relative;
@@ -2740,15 +2797,6 @@ section.welcomeModal h1 {
     }
     .contentBlock {
         text-align: center;
-    }
-    .redemptionCode {
-        font-size: 13px;
-        left: 0;
-        position: absolute;
-        top: -210px;
-        background: rgba(255, 255, 255, 0.82);
-        width: 100%;
-        padding: 10px;
     }
     .actionTile {
         position: relative;
