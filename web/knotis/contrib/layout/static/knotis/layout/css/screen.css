@@ -2010,19 +2010,22 @@ a.adminLink:hover {
     margin: -30px 0;
 }
 
-.createBusiness {
+.createBusiness,
+.forgotPassword {
     padding: 20px;
     text-align: center;
 }
 
-.createBusiness h1 {
+.createBusiness h1,
+.forgotPassword h1 {
     font-size: 35px;
     color: #3c3c3c;
     text-align: center;
     margin: 0;
 }
 
-.createBusiness p {
+.createBusiness p,
+.forgotPassword p {
     font-size: 20px;
     padding: 20px 80px;
     font-family: 'LatoLight', sans-serif;
@@ -2030,7 +2033,8 @@ a.adminLink:hover {
     line-height: 30px;
 }
 
-.createBusiness input {
+.createBusiness input,
+.forgotPassword input {
     font-size: 17px;
     padding: 15px;
     border-radius: 2px;
@@ -2042,7 +2046,8 @@ a.adminLink:hover {
     outline: 0;
 }
 
-.createBusiness .btn {
+.createBusiness .btn,
+.forgotPassword .btn {
     background: #2cc397;
     color: white;
     padding: 15px;
@@ -2586,10 +2591,24 @@ section.welcomeModal h1 {
 }
 /* End Redemption Page */
 
+/* Start Modal Fixes */
+#id-forgot-form label {
+    padding: 10px 0;
+}
+/* End Modal Fixes */
+
 
 /* Responsive Magic */
 
 @media (max-width: 767px) {
+    
+    .forgotPassword p {
+	padding: 20px 0;
+    }
+
+    .forgotPassword input {
+	width: 80%;
+    }
 
     .redemption-search {
 	float: none;
@@ -2629,7 +2648,7 @@ section.welcomeModal h1 {
 	white-space: normal;
     }
 
-    .offerHero img.profile-badge {
+    .offerHero img {
 	margin: 15px 25px;
     }
 }
