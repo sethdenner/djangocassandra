@@ -512,6 +512,13 @@ class EmailView(FragmentView):
 
         return msg
 
+    def process_context(self):
+        self.context.update({
+            'BASE_URL': settings.BASE_URL,
+            'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
+        })
+        return self.context
+
 
 class AJAXView(
     DjangoView,
@@ -530,7 +537,7 @@ class AJAXView(
 
         method = request.DATA.get('method')
         if None is not method:
-            request.method = method         
+            request.method = method
         return super(AJAXView, self).dispatch(request, *args, **kwargs)
 
 

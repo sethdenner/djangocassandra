@@ -21,7 +21,7 @@
       .small {
         font-size: 75%;
       }
-      
+
       div {
         margin: 0 auto;
         text-align: center;
@@ -35,45 +35,45 @@
       a:link {
         color: black;
       }
-      
+
       a:visited {
         color: black;
       }
-      
+
       a:hover {
         color: blue;
-      }      
-      
+      }
+
       .subject-bar {
         height: 30px;
         width: 500px;
       }
-      
+
       .subject {
         padding: 0;
         left: 10px;
         float: left;
         width: 45%;
       }
-      
+
       .browser-link {
         padding: 0;
         right: 10px;
         float: right;
         width: 45%;
       }
-      
+
       .knotis-logo {
         margin-left: auto;
         margin-right: auto;
         align: center;
       }
-      
+
       .content-wrapper {
         margin-left: auto;
         margin-right: auto;
       }
-      
+
       .content {
         border-radius: 10px;
         margin-left: auto;
@@ -83,7 +83,7 @@
         background: #FFFFFF;
         text-align: center;
       }
-      
+
       .footer {
         left: auto;
         right: auto;
@@ -102,34 +102,34 @@
       }
 
       {% block additional_css %}{% endblock additional_css %}
-      
+
     </style>
 
-    
+
     <div class="subject-bar small">
       <div class="subject">{% block subject %}{% endblock subject %}</div>
       <div class="browser-link"><a href="{{ browser_link }}">View this email in your browser</a></div>
     </div>
-    
+
     <div class="knotis-logo" style="text-align: center;"><a href="{{ BASE_URL }}">
-      <img width="117" height="150" src="{{ settings.STATIC_URL_ABSOLUTE }}knotis/img/knotis_bullseye.png" alt="Knotis Logo" /></a>
+      <img width="117" height="150" src="{{ STATIC_URL_ABSOLUTE }}knotis/img/knotis_bullseye.png" alt="Knotis Logo" /></a>
     </div>
-    
+
     <div class="content-wrapper">
       <div class="content" style="text-align: center;">
         {% block content %}{% endblock content %}
       </div>
     </div>
-    
+
     <div class="footer small" style="text-align: center;">
       © 2013 Knotis®, All Rights Reserved.<br />
       2226 3rd Ave. • Seattle, WA 98107 USA<br />
       <br />
-      <img width="150" height="55" src="{{ settings.STATIC_URL_ABSOLUTE }}knotis/img/knotis_gray.png" alt="Knotis Name" />
+      <img width="150" height="55" src="{{ STATIC_URL_ABSOLUTE }}knotis/img/knotis_gray.png" alt="Knotis Name" />
     </div>
    </div>
   </body>
-  
+
 </html>
 {% endif %}
 
