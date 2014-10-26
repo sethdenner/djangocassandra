@@ -4,12 +4,14 @@
             <input id="auth_username" name="{{ form.username.html_name }}" value="{{ form.username.value|default_if_none:'' }}" type="email" class="username" placeholder="Your E-mail"/>
             <input id="auth_password" name="{{ form.password.html_name }}" type="password" class="password" placeholder="Your Password"/>
         </div>
-
+        <div class="error-row">
+            <p id="error-text">&nbsp</p>
+        </div>
         <p class="forgotLink"><a href="/auth/forgot/">Forgot Password?</a></p>
 
         <div class="authButtons">
             <input name="login" type="submit" class="authBtn" value="Log In" />
             <a href="/signup/" class="auth-secondary" data-modal-id="adminModal">Sign Up</a>
         </div>
-    </div> 
+    </div>
 </form>
