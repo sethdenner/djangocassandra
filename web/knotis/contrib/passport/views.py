@@ -91,8 +91,8 @@ class PassportGridView(GridSmallView):
                 })))
 
             else:
-				# I shouldn't be hit because of how query is ran.
-				# Left here just in case I don't understand digital collections.
+                # I shouldn't be hit because of how query is ran.
+                # Left here just in case I don't understand digital collections.
                 tile = OfferTile()
                 tiles.append(tile.render_template_fragment(Context({
                     'offer': collection,
