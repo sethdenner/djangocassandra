@@ -170,6 +170,8 @@
                         $target_element.html($html);
                         $('div.modal').modal('hide');
 
+                        $('body').scrollTop(0);
+
                     }
                     initialize_always();
 
