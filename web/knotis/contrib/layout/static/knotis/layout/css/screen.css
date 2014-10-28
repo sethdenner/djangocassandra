@@ -2539,6 +2539,12 @@ section.welcomeModal h1 {
     max-width: 20%;
     margin-right: 10px;
 }
+
+.offerItem.social-connect {
+    padding: 30px 15px 0 15px;
+    max-width: none;
+    width: auto;
+}
 /* End Merchant social */
 /* Passport Tile */
 .passportTile {
