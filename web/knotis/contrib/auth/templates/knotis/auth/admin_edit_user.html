@@ -1,0 +1,18 @@
+{% extends 'knotis/layout/modal_base.html' %}
+{% block body %}
+    <form 
+        action="/admin/user/interact/update-{{ target_user.id }}/"
+        method="post"
+        id="user-edit-form"
+    >{% csrf_token %}
+        <input type="text" name="username" value="{{ target_user.username }}">
+        <input type="text" name="password" placeholder="******">
+        <input type="submit" name="Update">
+    </form>
+{% endblock body %}
+{% block last %}
+{% if format == 'json' %}
+<script type="application/javascript" src="{{ STATIC_URL }}knotis/auth/js/admin_edit_user.js"></script>
+{% endif %}
+{% endblock last %}
+

@@ -58,6 +58,10 @@ from forms import (
     AdminManagerToggleForm,
 )
 
+from .utils import (
+    validate_is_admin,
+)
+
 
 ###### BASE VIEW DEFINITIONS ######
 class AdminDefaultView(EmbeddedView):
@@ -65,12 +69,16 @@ class AdminDefaultView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
     url_patterns = [ r'^admin/$' ]
     
+    def process_context(self):
+        request = self.context.get('request')
+        validate_is_admin(request)
+    
 
 class AdminAJAXView(AJAXView):
     pass
 
 ###### LIST EDIT APP ######
-class AdminListEditTags:
+class AdminListEditTags(object):
     VALUE = 'value'
     LIST = 'list'
     DICT = 'dict'
@@ -274,6 +282,7 @@ class AdminBecomeManagerButton(AJAXFragmentView, GetCurrentIdentityMixin):
     def process_context(self):
         local_context = copy.copy(self.context)
         request = local_context.get('request')
+        validate_is_admin(request)
 
         post_scripts = local_context.get('post_scripts', [])
 
@@ -333,6 +342,7 @@ class AdminBecomeManagerButton(AJAXFragmentView, GetCurrentIdentityMixin):
         *args,
         **kwargs
     ):
+        validate_is_admin(request)
         current_user = request.user
         current_identity = self.get_current_identity(request)
         current_individual = IdentityIndividual.objects.get_individual(current_user)
@@ -397,6 +407,7 @@ class AdminValidateResendView(AJAXFragmentView):
         *args,
         **kwargs
     ):
+        validate_is_admin(request)
         reset_pk = self.context.get('reset_id_pk')
         user_identity = Identity.objects.get(pk=reset_pk)
         user = KnotisUser.objects.get_identity_user(user_identity)
@@ -427,6 +438,8 @@ class AdminOwnerView(ModalView):
     ]
 
     def process_context(self):
+        request = self.context.get('request')
+        validate_is_admin(request)
         detail_tile = AdminUserDetailsTile()
         establishment_id = self.context.get('identity_id')
         establishment = IdentityEstablishment.objects.get(pk=establishment_id)
