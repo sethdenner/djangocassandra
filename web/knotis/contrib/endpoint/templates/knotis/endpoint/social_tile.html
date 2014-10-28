@@ -1,15 +1,18 @@
 <div class="col-lg-3 col-sm-4 col-xs-6">
     <div class="offerItem social-connect text-center">
-        <input type="hidden" class="tile-user" value="{{ current_identity.id }}" />
-        <input type="hidden" class="tile-identity" value="{{ identity.id }}"/>
-        <img class="tile-badge {{ service_name }}-logo"  alt="{{ service_name }}" src="{{ STATIC_URL }}images/{{ service_name }}/logo.png" />
-        {% if endpoint %}
-	    <p class="tile-title">{{ endpoint.value }}</p>
+	<div class='btn-spacer'>
+	    <input type="hidden" class="tile-user" value="{{ current_identity.id }}" />
+	    <input type="hidden" class="tile-identity" value="{{ identity.id }}"/>
+	    <img class="tile-badge {{ service_name }}-logo"  alt="{{ service_name }}" src="{{ STATIC_URL }}images/{{ service_name }}/logo.png" />
+	{% if endpoint %}
+		<p class="tile-title">{{ endpoint.value }}</p>
+	    </div>
 	    <a data-endpoint-pk="{{ endpoint.pk }}" class="btn busLink btn-knotis-action disconnect no-deep" href="{{ action.href }}">
 		<span>Disconnect</span>
 	    </a>
         {% else %}
-	    <p class="tile-title">{{ service_name|title }} Account</p>
+		<p class="tile-title">{{ service_name|title }} Account</p>
+	    </div>
 	    <a class="btn busLink btn-knotis-action connect-{{ service_name }} no-deep" href="{{ action.href }}"><span>Connect</span></a>
         {% endif %}
     </div>

@@ -2011,21 +2011,32 @@ a.adminLink:hover {
 }
 
 .createBusiness,
-.forgotPassword {
+.forgotPassword,
+.modalSpacing {
     padding: 20px;
     text-align: center;
 }
 
+.modalSpacing {
+    padding: 10px;
+}
+
 .createBusiness h1,
-.forgotPassword h1 {
+.forgotPassword h1,
+.modalSpacing h1 {
     font-size: 35px;
     color: #3c3c3c;
     text-align: center;
     margin: 0;
 }
 
+.modalSpacing h1 {
+    margin-top: 10px;
+}
+
 .createBusiness p,
-.forgotPassword p {
+.forgotPassword p,
+.modalSpacing p {
     font-size: 20px;
     padding: 20px 80px;
     font-family: 'LatoLight', sans-serif;
@@ -2033,8 +2044,13 @@ a.adminLink:hover {
     line-height: 30px;
 }
 
+.modalSpacing {
+    padding: 10px 80px;
+}
+
 .createBusiness input,
-.forgotPassword input {
+.forgotPassword input,
+.modalSpacing input {
     font-size: 17px;
     padding: 15px;
     border-radius: 2px;
@@ -2047,7 +2063,8 @@ a.adminLink:hover {
 }
 
 .createBusiness .btn,
-.forgotPassword .btn {
+.forgotPassword .btn,
+.modalSpacing .btn {
     background: #2cc397;
     color: white;
     padding: 15px;
@@ -2551,6 +2568,9 @@ section.welcomeModal h1 {
     max-width: none;
     width: auto;
 }
+.btn-spacer {
+    min-height: 250px;
+}
 /* End Merchant social */
 /* Passport Tile */
 .passportTile {
@@ -2595,6 +2615,10 @@ section.welcomeModal h1 {
 .redemptions .offerItem h1 {
     margin-bottom: 0;
 }
+
+.btn-push {
+    min-height: 130px;
+}
 /* End Redemption Page */
 
 /* Start Modal Fixes */
@@ -2607,6 +2631,18 @@ section.welcomeModal h1 {
 /* Responsive Magic */
 
 @media (max-width: 767px) {
+
+    .offerItem.social-connect {
+	height: 300px;
+    }
+
+    .offerItem.social-connect .tile-title {
+	margin-bottom: 0;
+    }
+ 
+    .btn-spacer {
+	min-height: 215px;
+    }
     
     .forgotPassword p {
 	padding: 20px 0;
@@ -2660,6 +2696,8 @@ section.welcomeModal h1 {
 }
 
 @media (max-width: 550px) {
+
+
     .redemptionCode {
         font-size: 13px;
         left: 0;
@@ -2675,7 +2713,13 @@ section.welcomeModal h1 {
 
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
 @media (max-width: 400px) {
-    
+     .btn-push {
+	min-height: 65px;
+    }
+
+    .offerItem .btn-push h1 {
+	margin-bottom: 0;
+    }   
     .offerHero {
 	/* model style */
 	height: 200px;
