@@ -83,7 +83,8 @@ class AuthenticationApi(object):
 
                 send_validation_email(
                     user,
-                    endpoint
+                    endpoint,
+                    next_url=kwargs.get('next', None)
                 )
 
             except Exception, e:

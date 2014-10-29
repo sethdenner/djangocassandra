@@ -1,1 +1,13 @@
-<h1> Transfering Offer Collection! </h1>
+
+<div class="mainContent">
+    {%if logged_in%}
+        <form action="{{next_url}}" method="POST">
+             {% csrf_token %}
+            <input type="submit" />
+        </form>
+    {% else %}
+        <a href="/signup/?next={{next_url}}"> Sign up! </a>
+        <a href="/login/?next={{next_url}}"> Login! </a>
+    {% endif %}
+    <p> app link. </p>
+</div>

@@ -451,7 +451,7 @@ class ModalView(EmbeddedView):
     parent_template_placeholder = 'modal_content'
 
     def process_context(self):
-        close_href_dict  = self.url_path_to_dict(
+        close_href_dict = self.url_path_to_dict(
             self.request.GET.get(
                 'close',
                 self.default_close_href
