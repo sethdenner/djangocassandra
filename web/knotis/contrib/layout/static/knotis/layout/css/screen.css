@@ -2248,6 +2248,14 @@ section.welcomeModal h1 {
     height: 81px;
 }
 
+.offers .offerItem h1 {
+    height: auto;
+}
+
+.offerItem .tileSpacing {
+    height: 135px;
+}
+
 .offerItem .busLink,
 .offerItem .btnFollow {
     width: 100%;
@@ -2632,6 +2640,11 @@ section.welcomeModal h1 {
 
 @media (max-width: 767px) {
 
+    .offerItem {
+	margin: 0 5% 10px 0;
+	max-width: 45%;
+    }
+
     .offerItem.social-connect {
 	height: 300px;
     }
@@ -2695,10 +2708,18 @@ section.welcomeModal h1 {
     }
 }
 
+.minimumSpend {
+    display: none;
+}
+
 @media (max-width: 550px) {
+    
+    .hidden-small {
+	display: none
+    }
 
-
-    .redemptionCode {
+    .redemptionCode,
+    .minimumSpend {
         font-size: 13px;
         left: 0;
         position: absolute;
@@ -2708,6 +2729,11 @@ section.welcomeModal h1 {
         padding: 10px;
 	border-right: none;
 	text-align: center;
+    }
+
+    .minimumSpend {
+	display: block;
+	top: -185px;
     }
 }
 
@@ -2758,6 +2784,10 @@ section.welcomeModal h1 {
     
     .redemptionCode {
 	top: -154px;
+    }
+    
+    .minimumSpend {
+	top: -144px;
     }
 
     #id-current-identity-name, .searchForm, .sideBar, .search {
