@@ -284,7 +284,7 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
         )
         logged_in = request.user.is_authenticated()
         self.context.update({
-            'next_url': '/qrcode/connect/%s/' % transaction_collection_id,
+            'connect_url': '/qrcode/connect/%s/' % transaction_collection_id,
             'logged_in': logged_in,
         })
 
@@ -300,6 +300,7 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
 
         errors = {}
         data = {}
+        self.response_format = self.RESPONSE_FORMATS.REDIRECT
 
         if not request.user.is_authenticated():
             message = ''.join([
@@ -349,11 +350,11 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
                     current_identity,
                     transaction_collection,
                 )
-                data['next'] = '/my/purchases/'
+                data['next_url'] = '/my/purchases/'
 
             except Exception, e:
                 logger.exception(e.message)
-                data['next'] = '/'
+                data['next_url'] = '/'
 
         return self.render_to_response(
             data=data,

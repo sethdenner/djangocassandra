@@ -382,9 +382,9 @@ class EmbeddedView(
                 )
 
         elif self.response_format == self.RESPONSE_FORMATS.REDIRECT:
-            if 'next' not in data.keys:
+            if 'next' not in data.keys():
                 next_url = self.request.GET.get('next', '/')
-                next_url = self.reqeust.POST.get('next', next_url)
+                next_url = self.request.POST.get('next', next_url)
 
             else:
                 next_url = data.get('next', '/')

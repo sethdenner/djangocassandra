@@ -1,15 +1,15 @@
 
 <div class="mainContent">
     {%if logged_in %}
-        <h1> Congradulations! Connect your passport book!<h1>
-        <form action="{{next_url}}" method="POST">
+        <h1>Congratulations! Connect your passport book!<h1>
+        <form action="{{connect_url}}" method="POST">
              {% csrf_token %}
             <input type="submit" />
         </form>
         <a href='/'> Cancel </a>
     {% else %}
-        <h1> Congradulations! Please login or sign up to claim your passport book! <h1>
-        <a href="/signup/?next={{next_url}}"> Sign up! </a>
-        <a href="/login/?next={{next_url}}"> Login! </a>
+        <h1> Congratulations! Please login or sign up to claim your passport book! <h1>
+        <a href="/signup/?next={{connect_url}}"> Sign up! </a>
+        <a href="/login/?next={{connect_url}}"> Login! </a>
     {% endif %}
 </div>
