@@ -2635,6 +2635,22 @@ section.welcomeModal h1 {
 }
 /* End Modal Fixes */
 
+/* Start QRcode Process */
+.qrcodePath h1 a {
+    font-family: latoReg;
+    color: #2cc397;
+}
+.qrcodePath h1 a:hover {
+    text-decoration: underline;
+}
+.qrcodePath .connect-passport h1 {
+    font-size: 35px;
+}
+.qrcodePath .connect-passport a.cancel {
+    font-size: 20px;
+}
+/* End QRcode Process */
+
 
 /* Responsive Magic */
 
@@ -2716,6 +2732,16 @@ section.welcomeModal h1 {
     
     .hidden-small {
 	display: none
+    }
+
+    .qrcodePath h1 {
+	font-size: 25px;
+	width: auto;
+	line-height: 35px;
+    }
+
+    .qrcodePath .connect-passport h1 {
+	font-size: 20px;
     }
 
     .redemptionCode,
