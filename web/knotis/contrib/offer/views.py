@@ -200,7 +200,7 @@ class PassportBookView(EmbeddedView):
             '/passport'
             '/((?P<offer_id>',
             REGEX_UUID,
-            ')/)?$'
+            ')/)$'
         ])
     ]
     default_parent_view_class = DefaultBaseView
