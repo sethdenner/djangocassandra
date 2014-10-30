@@ -1,1 +1,15 @@
-<h1> Transfering Offer Collection! </h1>
+
+<div class="mainContent">
+    {%if logged_in %}
+        <h1>Congratulations! Connect your passport book!<h1>
+        <form action="{{connect_url}}" method="POST">
+             {% csrf_token %}
+            <input type="submit" />
+        </form>
+        <a href='/'> Cancel </a>
+    {% else %}
+        <h1> Congratulations! Please login or sign up to claim your passport book! <h1>
+        <a href="/signup/?next={{connect_url}}"> Sign up! </a>
+        <a href="/login/?next={{connect_url}}"> Login! </a>
+    {% endif %}
+</div>
