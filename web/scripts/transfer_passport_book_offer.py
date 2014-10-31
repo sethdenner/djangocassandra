@@ -18,10 +18,24 @@ from knotis.contrib.transaction.models import (
 
 def transfer_passport_offer(offer_pk, new_owner_pk):
     """
+    Disclamer:
+    If you didn't write this script you probably shouldn't be using it.
+
     Sometimes passport books get provisioned to the wrong account.
 
     This script solves that problem. It should be noted that it makes the
     assumption that no one has bought or redeemed anything from the old owner.
+
+    The assumptions this script makes are that you only have one OfferItem in
+    this offer - if there's more, it'll just segfault.
+
+    WARNING:
+
+    If you've got two different offers of the same product, all the inventories
+    from the owner of that offer will be reassigned to the new owner...
+
+    10.31.2014 - It's currently an adhoc script that's to be used for
+    transfering a passport book offer and transactions to the proper owner.
     """
     offer = Offer.objects.get(pk=offer_pk)
 
