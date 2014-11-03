@@ -382,9 +382,9 @@ class EmbeddedView(
                 )
 
         elif self.response_format == self.RESPONSE_FORMATS.REDIRECT:
-            if 'next' not in data.keys:
+            if 'next' not in data.keys():
                 next_url = self.request.GET.get('next', '/')
-                next_url = self.reqeust.POST.get('next', next_url)
+                next_url = self.request.POST.get('next', next_url)
 
             else:
                 next_url = data.get('next', '/')
@@ -451,7 +451,7 @@ class ModalView(EmbeddedView):
     parent_template_placeholder = 'modal_content'
 
     def process_context(self):
-        close_href_dict  = self.url_path_to_dict(
+        close_href_dict = self.url_path_to_dict(
             self.request.GET.get(
                 'close',
                 self.default_close_href
@@ -512,6 +512,13 @@ class EmailView(FragmentView):
 
         return msg
 
+    def process_context(self):
+        self.context.update({
+            'BASE_URL': settings.BASE_URL,
+            'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
+        })
+        return self.context
+
 
 class AJAXView(
     DjangoView,
@@ -530,7 +537,7 @@ class AJAXView(
 
         method = request.DATA.get('method')
         if None is not method:
-            request.method = method         
+            request.method = method
         return super(AJAXView, self).dispatch(request, *args, **kwargs)
 
 

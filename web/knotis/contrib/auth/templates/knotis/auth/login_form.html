@@ -3,6 +3,12 @@
         <div class="authInputs">
             <input id="auth_username" name="{{ form.username.html_name }}" value="{{ form.username.value|default_if_none:'' }}" type="email" class="username" placeholder="Your E-mail"/>
             <input id="auth_password" name="{{ form.password.html_name }}" type="password" class="password" placeholder="Your Password"/>
+            {% if next %}
+                <input name="next" type="hidden" value="{{ next }}"/>
+            {% endif %}
+        </div>
+        <div class="error-row">
+            <p id="error-text">&nbsp</p>
         </div>
         <div class="error-row">
             <p id="error-text">&nbsp</p>
@@ -11,7 +17,7 @@
 
         <div class="authButtons">
             <input name="login" type="submit" class="authBtn" value="Log In" />
-            <a href="/signup/" class="auth-secondary" data-modal-id="adminModal">Sign Up</a>
+            <a href="/signup/{%if next %}?next={{ next }}{% endif %}" class="auth-secondary" data-modal-id="adminModal">Sign Up</a>
         </div>
     </div>
 </form>

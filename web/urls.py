@@ -125,4 +125,8 @@ urlpatterns = patterns(
         r'',
         include('knotis.contrib.settings.urls')
     ),
+    url(
+        r'',
+        include('knotis.contrib.passport.urls')
+    ),
 )

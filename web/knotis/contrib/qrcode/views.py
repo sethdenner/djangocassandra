@@ -1,5 +1,8 @@
 import copy
 
+from django.utils import log
+logger = log.getLogger(__name__)
+
 from django.shortcuts import redirect, get_object_or_404
 from django.conf import settings
 from django.views.generic import View
@@ -23,7 +26,10 @@ from knotis.contrib.qrcode.models import (
     QrcodeTypes,
     Scan
 )
-from knotis.contrib.identity.models import IdentityEstablishment
+from knotis.contrib.identity.models import (
+    IdentityTypes,
+    IdentityEstablishment,
+)
 from knotis.utils.regex import REGEX_UUID
 
 
@@ -200,7 +206,7 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
 
     ]
 
-    def connect_hack(
+    def redeem_hack(
         self,
         request,
         transaction_collection_id=None,
@@ -219,9 +225,9 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
         )
 
         transaction = transaction_collection_item.transaction
-        self.connect(request, transaction_id=transaction.id)
+        self.redeem(request, transaction_id=transaction.id)
 
-    def connect(
+    def redeem(
         self,
         request,
         transaction_id
@@ -240,14 +246,15 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
         *args,
         **kwargs
     ):
+
         if 'transaction_collection_id' in kwargs and 'page_numb' in kwargs:
-            self.connect_hack(
+            self.redeem_hack(
                 request,
                 transaction_collection_id=kwargs['transaction_collection_id'],
                 page_numb=kwargs['page_numb']
             )
         elif 'transaction_id' in kwargs:
-            self.connect(
+            self.redeem(
                 request,
                 transaction_id=kwargs['transaction_id']
             )
@@ -261,7 +268,6 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
 
 class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
     template_name = 'knotis/qrcode/offer_collection_connect.html'
-    default_parent_view_class = DefaultBaseView
     url_patterns = [
         r''.join([
             '^qrcode/connect/(?P<transaction_collection_id>',
@@ -269,8 +275,22 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
             ')/$'
         ])
     ]
+    default_parent_view_class = DefaultBaseView
 
-    def get(
+    def process_context(self):
+        request = self.request
+        transaction_collection_id = self.context.get(
+            'transaction_collection_id'
+        )
+        logged_in = request.user.is_authenticated()
+        self.context.update({
+            'connect_url': '/qrcode/connect/%s/' % transaction_collection_id,
+            'logged_in': logged_in,
+        })
+
+        return self.context
+
+    def post(
         self,
         request,
         transaction_collection_id=None,
@@ -278,20 +298,66 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
         **kwargs
     ):
 
-        current_identity = self.get_current_identity(self.request)
+        errors = {}
+        data = {}
+        self.response_format = self.RESPONSE_FORMATS.REDIRECT
 
-        transaction_collection = get_object_or_404(
-            TransactionCollection,
-            pk=transaction_collection_id
-        )
+        if not request.user.is_authenticated():
+            message = ''.join([
+                'An error occurred while attempting to transfer offers. ',
+                'User is not logged in.'
+            ])
+            logger.exception(message)
+            errors['no-field'] = message
+            data['next'] = '/signup/?next=/qrcode/connect/%s/' % (
+                transaction_collection_id,
+            )
+            return self.render_to_response(
+                data=data,
+                errors=errors,
+                render_template=False
+            )
 
-        TransactionApi.transfer_transaction_collection(
-            self.request,
-            current_identity,
-            transaction_collection,
-        )
-        return super(OfferCollectionConnectView, self).get(
-            request,
-            *args,
-            **kwargs
+        current_identity = self.get_current_identity(request)
+
+        if current_identity.identity_type != IdentityTypes.INDIVIDUAL:
+            message = ''.join([
+                'An error occurred while attempting to transfer offers. ',
+                'Wrong identity type'
+            ])
+
+            logger.exception(message)
+            errors['no-field'] = message
+
+            data['next'] = '/signup/?next=/qrcode/connect/%s/' % (
+                transaction_collection_id,
+            )
+            return self.render_to_response(
+                data=data,
+                errors=errors,
+                render_template=False
+            )
+
+        if len(errors) == 0:
+            transaction_collection = get_object_or_404(
+                TransactionCollection,
+                pk=transaction_collection_id
+            )
+
+            try:
+                TransactionApi.transfer_transaction_collection(
+                    request,
+                    current_identity,
+                    transaction_collection,
+                )
+                data['next_url'] = '/my/purchases/'
+
+            except Exception, e:
+                logger.exception(e.message)
+                data['next_url'] = '/'
+
+        return self.render_to_response(
+            data=data,
+            errors=errors,
+            render_template=False
         )

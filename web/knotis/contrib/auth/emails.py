@@ -8,14 +8,15 @@ from knotis.views import EmailView
 
 def send_validation_email(
     user,
-    endpoint
+    endpoint,
+    next_url=None,
 ):
     activation_link = '/'.join([
         settings.BASE_URL,
         'auth/validate',
         user.id,
         endpoint.validation_key,
-        ''
+        '?next=%s' % next_url if next_url is not None else ''
     ])
 
     message = ActivationEmailBody()
@@ -24,8 +25,6 @@ def send_validation_email(
         settings.EMAIL_HOST_USER,
         [endpoint.value], Context({
             'activation_link': activation_link,
-            'BASE_URL': settings.BASE_URL,
-            'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE,
             'SERVICE_NAME': settings.SERVICE_NAME
         })).send()
 
