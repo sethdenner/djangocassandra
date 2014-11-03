@@ -1,23 +1,23 @@
-<div class="modal-header green-header">
+<div class="modal-header modalSpacing">
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-  <h3>Enter Your PIN To Allow Knotis To Access Your Twitter Feed</h3>
+  <h1>Enter Your Twitter PIN</h1>
 </div>
 <div class="modal-body" >
   <form action="/twitter/verify-pin/" id="form-twitter-verify-pin" method="post">{% csrf_token %}
-    <div class="row-fluid">
-      <div id="id-facebook-accounts" class="span6">
+    <div class="modalSpacing">
+      <div id="id-facebook-accounts">
         <div class="control-group">
           <div class="controls">
-            <label>Verification PIN:</label><input name="vpin" type="text" placeholder="Enter PIN"></input>
+	    <input name="vpin" type="text" placeholder="Enter PIN"></input>
           </div>
         </div>
       </div>
-      <div class="auth-info span6">
+      <div class="auth-info">
         <p>This will allow Knotis to promote your business on your Twitter feed.</p>
         <p>If the authorization window did not open automatically please <a target="_blank" id="a-authorize" href="">click here</a></p>
       </div>
     </div>
-    <div class="buttonHolder modal-footer">
+    <div class="buttonHolder modal-footer modalSpacing">
       <input type="submit" name="connect" value="Connect" class="btn btn-primary btn btn-primary" id="submit-id-connect" /> 
     </div>
     <input id="oauth_token" type="hidden" name="oauth_token"/>

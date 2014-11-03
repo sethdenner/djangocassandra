@@ -472,9 +472,14 @@ class IdentitySwitcherView(EmbeddedView):
             except Exception, e:
                 logger.exception(e.message)
 
-            return http.HttpResponseRedirect(
-                '/'
-            )
+            url = request.META.get('HTTP_REFERER', '/')
+
+            if not url.startswith(settings.BASE_URL):
+                url = '/'
+            else:
+                url = url.replace(settings.BASE_URL, '')
+
+            return http.HttpResponseRedirect(url)
 
         except Exception, e:
             logger.exception(
