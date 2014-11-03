@@ -22,7 +22,7 @@
                 </a>
             </div>
         </div>
-	{% if offer_action == None %}
+	{% if offer.offer_type == OfferTypes.DARK and offer.restrictions %}
 	    <div class='row'>
 		<div class='col-xs-12 visible-xs'>
 		    <p class='minimumSpend'>{{ offer.restrictions }}</p>
