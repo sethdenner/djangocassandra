@@ -1,0 +1,16 @@
+User-agent: Baiduspider
+Disallow: /
+
+User-agent: EasouSpider
+Disallow: /
+
+User-agent: SeznamBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: *
+Disallow: /scan/
+Disallow: /qrcode/
+Disallow: /settings/

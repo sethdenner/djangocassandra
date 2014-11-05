@@ -72,13 +72,17 @@ class LoginView(ModalView):
     ]
 
     def process_context(self):
+        next_url = self.request.GET.get('next')
         params = {
             'login_form': LoginForm(
                 request=self.request,
-                data=self.request.POST if self.request.POST else None
+                parameters={
+                    'next': next_url,
+                },
+                data=self.request.POST if self.request.POST else None,
             ),
             'header_title': 'Log In',
-            'modal_id': 'auth-modal'
+            'modal_id': 'auth-modal',
         }
 
         self.context.update(params)
@@ -162,7 +166,7 @@ class LoginView(ModalView):
                 data['errors'] = errors
 
             else:
-                data['next_url'] = '/'
+                data['next_url'] = request.POST.get('next', '/')
 
         return self.render_to_response(data=data, render_template=False)
 
@@ -180,8 +184,14 @@ class SignUpView(ModalView):
     ]
 
     def process_context(self):
+        next_url = self.request.GET.get('next')
         self.context.update({
-            'signup_form': CreateUserForm(request=self.request),
+            'signup_form': CreateUserForm(
+                request=self.request,
+                parameters={
+                    'next': next_url,
+                },
+            ),
             'header_title': 'Sign Up',
             'modal_id': 'auth-modal'
         })
@@ -558,7 +568,7 @@ def validate(
     user_id,
     validation_key
 ):
-    redirect_url = '/'
+    redirect_url = request.GET.get('next', '/')
 
     try:
         authenticated_user = authenticate(

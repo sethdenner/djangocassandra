@@ -13,16 +13,19 @@
 <!-- // End SubNav -->
 <div class="redemptions">
     <div class="mainContent">
-        <div class="col-lg-12 col-xs-12">
+	<div class="col-sm-9 col-xs-12">
             <h1>Redemptions</h1>
         </div>
-        <form name="redeem_query" method="get">
-            {% if redeem_query %}
-                <input type="/search" name="redeem_query" value="{{ redeem_query }}">
-            {% else %}
-                <input type="/search" name="redeem_query" placeholder="SEARCH">
-            {% endif %}
-        </form>
+	<div class='col-sm-3 redemption-search'>
+	    <form name="redeem_query" method="get">
+		{% if redeem_query %}
+		    <input type="/search" name="redeem_query" class="form-control" value="{{ redeem_query }}">
+		{% else %}
+		    <input type="/search" name="redeem_query" class="form-control" placeholder="SEARCH VOUCHER #">
+		{% endif %}
+	    </form>
+	</div>
+	<div class='clearfix'></div>
         <div class="row" data-id='id-redemptions'>
             {% render_fragment redemptions_grid %}
         </div>

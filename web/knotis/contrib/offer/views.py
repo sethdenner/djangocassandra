@@ -200,7 +200,7 @@ class PassportBookView(EmbeddedView):
             '/passport'
             '/((?P<offer_id>',
             REGEX_UUID,
-            ')/)?$'
+            ')/)$'
         ])
     ]
     default_parent_view_class = DefaultBaseView
@@ -422,7 +422,8 @@ class OfferTile(FragmentView):
             'offer_banner_image': offer_banner_image,
             'business_badge_image': business_badge_image,
             'STATIC_URL': settings.STATIC_URL,
-            'offer_action': self.get_offer_action()
+            'offer_action': self.get_offer_action(),
+            'OfferTypes': OfferTypes
         })
         return self.context
 

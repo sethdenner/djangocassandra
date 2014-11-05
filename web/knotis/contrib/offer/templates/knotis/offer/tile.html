@@ -22,14 +22,25 @@
                 </a>
             </div>
         </div>
-        <div class="row">
+	{% if offer.offer_type == OfferTypes.DARK and offer.restrictions %}
+	    <div class='row'>
+		<div class='col-xs-12 visible-xs'>
+		    <p class='minimumSpend'>{{ offer.restrictions }}</p>
+		</div>
+	    </div>
+	{% endif %}
+        <div class="row tileSpacing">
             <div class="col-lg-12 col-xs-12">
                 <h1>{{ offer.title }}</h1>
+		<p>@<a href='/id/{{ offer.owner.pk }}/'>{{ offer.owner.name }}</a></p>
             </div>
         </div>
 
-        <div class="row">
+        <div class="row hidden-small">
             <div class="col-lg-12 col-xs-12">
+		{% if offer_action == None %}
+		    <p>{{ offer.restrictions }}</p>
+		{% endif %}
                 {% if offer_action == 'buy' %}
                 <a class="busLink no-deep" data-target-id="main-content" href="/offer/{{ offer.pk }}/buy/">Buy</a>
                 {% endif %}

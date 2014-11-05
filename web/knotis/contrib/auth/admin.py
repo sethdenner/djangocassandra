@@ -1,6 +1,16 @@
 import copy
 from django.views.decorators.csrf import csrf_protect
+
 ###### IMPORTS FROM KNOTIS FILES ######
+from knotis.views import (
+    ModalView
+)
+
+from knotis.utils.regex import REGEX_UUID
+
+from knotis.contrib.layout.views import (
+    DefaultBaseView,
+)
 
 from knotis.contrib.admintools.views import (
     AdminAJAXView,
@@ -10,6 +20,9 @@ from knotis.contrib.admintools.views import (
 )
 from knotis.contrib.admintools.forms import (
     AdminQueryForm,
+)
+from knotis.contrib.admintools.utils import (
+    validate_is_admin,
 )
 
 from knotis.contrib.identity.views import get_current_identity
@@ -26,6 +39,96 @@ from models import (
 from forms import (
     AdminCreateUserForm,
 )
+
+
+###### USER ADMIN API ######
+class AdminUserAPI(object):
+    """
+    WARNING: These methods do not ensure the usual formatting requirements
+    for the fields they update. They're meant for special, expert use only.
+    """
+    @staticmethod
+    def update_username_by_id(user_id, newname):
+        user = None
+        name = None
+        user = KnotisUser.objects.get(id=user_id)
+        name = str(newname) #<--- I would like better guarding.
+        if user is not None and name is not None:
+            user.email = name
+            user.username = name
+            user.save()
+        
+    @staticmethod
+    def update_password_by_id(user_id, newpass):
+        user = None
+        password = None
+        user = KnotisUser.objects.get(id=user_id)
+        password = str(newpass) #<--- I would like better guarding.
+        if user is not None and password is not None:
+            user.set_password(password)
+            user.save()
+
+
+### API VIEWS
+class UserUpdateAdminAJAXView(AdminAJAXView):
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        current_identity = get_current_identity(self.request)
+        if (
+            current_identity and
+            current_identity.identity_type == IdentityTypes.SUPERUSER
+        ):
+            user_id = str(kwargs.get('user_id'))
+            if (user_id):
+                data = request.POST
+                new_email = data.get('username')
+                new_password = data.get('password')
+                if(new_email):
+                    AdminUserAPI.update_username_by_id(user_id, new_email)
+                if(new_password):
+                    AdminUserAPI.update_password_by_id(user_id, new_password)
+                status = 'good'
+            else:
+                status = 'fail'
+            return self.generate_ajax_response({
+                'status': status,
+            })
+        else:
+            return self.generate_ajax_response({
+                'status': 'fail',
+            })
+
+class EditUserModal(ModalView):
+    view_name = 'edit_user_view'
+    template_name = 'knotis/auth/admin_edit_user.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r''.join([
+            '^admin/utils/edit_user/(?P<target_user_pk>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+    ]
+    post_scripts = [
+        'knotis/auth/js/admin_edit_user.js',
+    ]
+    
+    def process_context(self):
+        request = self.context.get('request')
+        validate_is_admin(request)
+        target_user_id = self.context.get('target_user_pk')
+        target_user = KnotisUser.objects.get(id=target_user_id)
+        
+        local_context = copy.copy(self.context)
+        local_context.update({
+            'target_user': target_user,
+        })
+        return local_context
 
 ###### LIST EDIT APP ######
 def format_user_filter(self, filter_string):
@@ -146,44 +249,3 @@ class UserQueryAdminAJAXView(AdminListQueryAJAXView):
 class UserAdminView(AdminListEditView):
     url_patterns = [ r'^admin/user/$' ]
     create_form = AdminCreateUserForm()
-
-
-###### USER ADMIN API ######
-class UserUpdateAdminAJAXView(AdminAJAXView):
-
-    def post(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        current_identity = get_current_identity(self.request)
-        if (
-            current_identity and
-            current_identity.identity_type == IdentityTypes.SUPERUSER
-        ):
-            user_id = str(kwargs.get('user_id'))
-            if (user_id):
-                user = KnotisUser.objects.get(id=user_id)
-                data = request.POST
-                new_email = data.get('username')
-                new_password = data.get('password')
-                if(user):
-                    if(new_email):
-                        user.email = new_email
-                        user.username = new_email
-                        user.save()
-                    if(new_password):
-                        user.set_password(new_password)
-                        user.save()
-                status = 'good'
-            else:
-                status = 'fail'
-            return self.generate_ajax_response({
-                'status': status,
-            })
-        else:
-            return self.generate_ajax_response({
-                'status': 'fail',
-            })
-

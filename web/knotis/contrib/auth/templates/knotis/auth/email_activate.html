@@ -1,25 +1,25 @@
-
 {% extends 'knotis/layout/master_email.html' %}
 {% load render_template_fragment %}
+
 {% if email_type == 'html' %}
-{% block subject %}Welcome to Knotis!{% endblock subject %}
-{% block browser_link %}{{ browser_link }}{% endblock browser_link %}
-{% block content %}
-<h1>Welcome to Knotis!<br />We're glad you are here.</h1>
-<p>Click the button below to activate your account</p>
-<br />
-<br />
-<a class="button" href="{{ activation_link }}">Activate My Account</a>
-<br />
-<br />
-<br />
-{% endblock content %}
+    {% block subject %}Welcome to Knotis!{% endblock subject %}
+    {% block browser_link %}{{ browser_link }}{% endblock browser_link %}
+    {% block content %}
+        <h1>Welcome to Knotis!<br />We're glad you are here.</h1>
+        <p>Click the button below to activate your account</p>
+        <br />
+        <br />
+        <a class="button" href="{{ activation_link }}">Activate My Account</a>
+        <br />
+        <br />
+        <br />
+    {% endblock content %}
 {% endif %}
 
 {% if email_type == 'text' %}
-{% block text_content %}
-Welcome to Knotis! We're glad you are here.
-Follow the url below to activate your account:
-{{ activation_link }}
-{% endblock text_content %}
+    {% block text_content %}
+        Welcome to Knotis! We're glad you are here.
+        Follow the url below to activate your account:
+        {{ activation_link }}
+    {% endblock text_content %}
 {% endif %}
