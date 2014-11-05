@@ -9,6 +9,14 @@ from knotis.views import (
 )
 RenderTemplateFragmentMixin.register_template_fragment_views()
 
+
+def log(*args, **kwargs):
+    import logging
+    logging.exception('Unhandled Exception!')
+
+from django.core.signals import got_request_exception
+got_request_exception.connect(log)
+
 admin.autodiscover()
 
 urlpatterns = patterns(

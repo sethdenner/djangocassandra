@@ -397,6 +397,15 @@ class ResetPasswordView(EmbeddedView):
                             pk=user_information.default_identity_id
                         )
 
+                    # Fuck validation.
+                    for endpoint in Endpoint.objects.filter(
+                        validated=False,
+                        identity=identity,
+                        endpoint_type=EndpointTypes.EMAIL,
+                    ):
+                        endpoint.validated = True
+                        endpoint.save()
+
                     if IdentityTypes.BUSINESS == identity.identity_type:
                         establishments = (
                             IdentityEstablishment.objects.get_establishments(
