@@ -161,20 +161,14 @@ class RedeemOfferView(EmbeddedView, GetCurrentIdentityMixin):
             'transaction_id'
         )
 
-        logged_in = request.user.is_authenticated()
-        if logged_in:
-            current_identity = self.get_current_identity(request)
-            identity_type = current_identity.identity_type
-
-        else:
-            identity_type = -1
+        current_identity = self.get_current_identity(request)
+        identity_type = current_identity.identity_type
 
         self.context.update({
             'redeem_url': '^/purchases/redeem/%s/' % transaction_collection_id,
             'random_pin': random.randint(1000, 9999),
             'identity_type': identity_type,
             'IdentityTypes': IdentityTypes,
-            'logged_in': logged_in,
         })
 
         return self.context
