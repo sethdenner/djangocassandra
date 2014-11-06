@@ -13,7 +13,8 @@ from views import (
     MyRelationsView,
     MyPurchasesGrid,
     PrintedVoucher,
-    DownloadPrintedVoucher
+    DownloadPrintedVoucher,
+    RedeemOfferView,
 )
 
 urlpatterns = patterns(
@@ -55,3 +56,4 @@ urlpatterns = patterns(
     ),
 )
 urlpatterns += MyPurchasesView.urls(require_login=True)
+urlpatterns += RedeemOfferView.urls(require_login=True)

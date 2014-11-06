@@ -499,7 +499,9 @@ class OfferDetailView(ModalView):
         local_context.update({
             'current_identity': current_identity,
             'IdentityTypes': IdentityTypes,
+            'OfferTypes': OfferTypes,
             'offer': offer,
+            'STATIC_URL': settings.STATIC_URL,
             'offer_items': offer_items,
             'business_badge_image': business_badge_image,
             'offer_banner_image': offer_banner_image

@@ -1,4 +1,5 @@
 import copy
+import random
 
 from weasyprint import HTML
 
@@ -32,6 +33,9 @@ from knotis.contrib.layout.views import (
     GridSmallView,
     DefaultBaseView
 )
+from knotis.contrib.transaction.api import (
+    TransactionApi
+)
 
 from knotis.contrib.identity.models import (
     IdentityTypes
@@ -40,6 +44,7 @@ from knotis.contrib.transaction.models import (
     Transaction,
     TransactionTypes
 )
+from knotis.utils.regex import REGEX_UUID
 from knotis.contrib.identity.views import (
     get_current_identity,
     get_identity_profile_banner,
@@ -91,10 +96,11 @@ class MyPurchasesGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
                 redemption_tile = TransactionTileView()
                 tile_context = RequestContext(
                     request, {
-                        'redeem': False,
+                        'redeem': unused,
                         'show_offer_info': True,
                         'transaction': purchase,
                         'identity': merchant,
+                        'current_identity': current_identity,
                         'IdentityTypes': IdentityTypes,
                         'offer': purchase.offer,
                         'TransactionTypes': TransactionTypes
@@ -133,6 +139,119 @@ class MyPurchasesView(EmbeddedView):
         })
 
         return local_context
+
+
+class RedeemOfferView(EmbeddedView, GetCurrentIdentityMixin):
+    template_name = 'knotis/consumer/redeem_offer.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r''.join([
+            '^purchases/redeem/(?P<transaction_id>',
+            REGEX_UUID,
+            ')/$'
+        ]),
+    ]
+    post_scripts = [
+        'knotis/consumer/js/redeem.js'
+    ]
+
+    def process_context(self):
+        request = self.request
+        transaction_collection_id = self.context.get(
+            'transaction_id'
+        )
+
+        logged_in = request.user.is_authenticated()
+        if logged_in:
+            current_identity = self.get_current_identity(request)
+            identity_type = current_identity.identity_type
+
+        else:
+            identity_type = -1
+
+        self.context.update({
+            'redeem_url': '^/purchases/redeem/%s/' % transaction_collection_id,
+            'random_pin': random.randint(1000, 9999),
+            'identity_type': identity_type,
+            'IdentityTypes': IdentityTypes,
+            'logged_in': logged_in,
+        })
+
+        return self.context
+
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+
+        errors = {}
+        data = {}
+
+        transaction_id = kwargs.get('transaction_id')
+        pin = request.POST.get('pin')
+        pin_check = request.POST.get('pin_check')
+        if pin != pin_check:
+                errors['no-field'] = (
+                    'Wrong PIN!'
+                )
+                return self.render_to_response(
+                    errors=errors
+                )
+
+        current_identity = self.get_current_identity(self.request)
+        if current_identity.identity_type == IdentityTypes.INDIVIDUAL:
+            my_transactions = TransactionApi.get_transaction_for_identity(
+                transaction_id,
+                current_identity
+            )
+            if len(my_transactions) == 0:
+                errors['no-field'] = (
+                    'This does not belong to you.',
+                    'Did you connect your passport book yet?'
+                )
+                return self.render_to_response(
+                    errors=errors
+                )
+            transaction = my_transactions[0]
+
+        else:
+            transaction = get_object_or_404(Transaction, pk=transaction_id)
+
+        try:
+            TransactionApi.create_redemption(
+                request,
+                transaction,
+                current_identity,
+            )
+
+        except TransactionApi.AlreadyRedeemedException:
+            errors['no-field'] = 'This has already been redeemed.'
+            return self.render_to_response(
+                errors=errors
+            )
+
+        except TransactionApi.WrongOwnerException:
+            errors['no-field'] = ''.join([
+                'This does not belong to you.'
+            ])
+            return self.render_to_response(
+                errors=errors
+            )
+
+        except Exception, e:
+            logger.exception(e.message)
+
+        data['next'] = '/my/purchases/used/'
+        if not request.is_ajax():
+            self.response_format = self.RESPONSE_FORMATS.REDIRECT
+
+        return self.render_to_response(
+            data=data,
+            errors=errors,
+            render_template=False
+        )
 
 
 class MyRelationsView(ContextView):
