@@ -5,8 +5,8 @@
         method="post"
         id="user-edit-form"
     >{% csrf_token %}
-        <input type="text" name="username" value="{{ target_user.username }}">
-        <input type="text" name="password" placeholder="******">
+        Username: <input type="text" name="username" value="{{ target_user.username }}"> <br>
+        Password: <input type="text" name="password" placeholder="******"> <br>
         <input type="submit" name="Update">
     </form>
 {% endblock body %}
