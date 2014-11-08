@@ -10,6 +10,8 @@ from views import (
     ManageQRCodeView,
     CouponRedemptionView,
     OfferCollectionConnectView,
+    ConnectionSuccessView,
+    RedeemSuccessView,
 )
 
 urlpatterns = patterns(
@@ -27,3 +29,5 @@ urlpatterns = patterns(
 urlpatterns += ManageQRCodeView.urls()
 urlpatterns += CouponRedemptionView.urls()
 urlpatterns += OfferCollectionConnectView.urls()
+urlpatterns += ConnectionSuccessView.urls()
+urlpatterns += RedeemSuccessView.urls()
