@@ -23,10 +23,10 @@ from django.http import (
 from django.views.generic import View
 
 from knotis.views import (
-    FragmentView,
     ContextView,
     EmbeddedView,
     PaginationMixin,
+    ModalView
 )
 
 from knotis.contrib.layout.views import (
@@ -237,7 +237,12 @@ class RedeemOfferView(EmbeddedView, GetCurrentIdentityMixin):
         except Exception, e:
             logger.exception(e.message)
 
-        data['next'] = '/my/purchases/used/'
+        data['next'] = ''.join([
+            '/my/purchases/',
+            transaction.pk,
+            '/printable/'
+        ])
+
         if not request.is_ajax():
             self.response_format = self.RESPONSE_FORMATS.REDIRECT
 
@@ -255,9 +260,19 @@ class MyRelationsView(ContextView):
         return self.context
 
 
-class PrintedVoucher(FragmentView):
+class PrintedVoucher(ModalView):
     template_name = 'knotis/consumer/printable_voucher.html'
     view_name = 'printed_voucher'
+    url_patterns = [
+        r''.join([
+            '^purchases/',
+            '(?P<transaction_id>',
+            REGEX_UUID,
+            ')/printable/$'
+        ]),
+    ],
+    default_parent_view_class = MyPurchasesView
+    styles = ['knotis/consumer/css/printed_voucher_screen.css']
 
     def process_context(self):
         request = self.context.get('request')
@@ -275,10 +290,6 @@ class PrintedVoucher(FragmentView):
             logger.error(message)
             raise PermissionDenied(message)
 
-        static_files = self.context.get('static_files')
-        if not static_files:
-            static_files = settings.STATIC_URL_ABSOLUTE
-
         business_cover = get_identity_profile_banner(transaction.offer.owner)
         business_logo = get_identity_profile_badge(transaction.offer.owner)
 
@@ -286,8 +297,8 @@ class PrintedVoucher(FragmentView):
             'transaction': transaction,
             'business_cover': business_cover,
             'business_logo': business_logo,
-            'static_files': static_files,
-            'BASE_URL': settings.BASE_URL
+            'BASE_URL': settings.BASE_URL,
+            'STATIC_URL_ABSOLUTE': settings.STATIC_URL_ABSOLUTE
         })
 
         return self.context
