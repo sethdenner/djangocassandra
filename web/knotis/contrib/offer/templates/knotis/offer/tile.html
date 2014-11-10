@@ -22,7 +22,7 @@
                 </a>
             </div>
         </div>
-	{% if offer_action == None %}
+	{% if offer.offer_type == OfferTypes.DARK and offer.restrictions %}
 	    <div class='row'>
 		<div class='col-xs-12 visible-xs'>
 		    <p class='minimumSpend'>{{ offer.restrictions }}</p>
@@ -32,6 +32,7 @@
         <div class="row tileSpacing">
             <div class="col-lg-12 col-xs-12">
                 <h1>{{ offer.title }}</h1>
+		<p>@<a href='/id/{{ offer.owner.pk }}/'>{{ offer.owner.name }}</a></p>
             </div>
         </div>
 	{% if offer_action == None %}

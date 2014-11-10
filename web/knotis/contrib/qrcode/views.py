@@ -4,6 +4,9 @@ import random
 from django.utils import log
 logger = log.getLogger(__name__)
 
+from django.utils import log
+logger = log.getLogger(__name__)
+
 from django.shortcuts import redirect, get_object_or_404
 from django.conf import settings
 from django.views.generic import View
@@ -234,7 +237,6 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
         *args,
         **kwargs
     ):
-
         errors = {}
         data = {}
 
