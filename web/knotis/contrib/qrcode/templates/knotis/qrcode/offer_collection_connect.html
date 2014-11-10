@@ -1,23 +1,29 @@
-
+{% load render_template_fragment %}
 <div class="mainContent">
     <div class='col-xs-12 text-center qrcodePath'>
-	{% if logged_in %}
-	    <div class='connect-passport'>
-		<h1>Congratulations! Connect your passport book!<h1>
-		<form action="{{connect_url}}" method="POST">
-		    {% csrf_token %}
-		    <input class='btn btn-offers btn-lg' type="submit" />
-		</form>
-		<a href='/' class='cancel'> Cancel </a>
-	    </div>
+    {% if logged_in %}
+        {% if is_individual %}
+            <div class='connect-passport'>
+                <h1>Press confirm<br> to connect</h1>
+                <form action="{{connect_url}}" method="POST">
+                    {% csrf_token %}
+                    <input class='btn btn-offers btn-lg btn-connect' type="submit" value="Confirm" />
+                </form>
+            </div>
+
+        {% else %}
+            <h1> Oops! You're the wrong identity type for this! </h1>
+            {% render_fragment identity_switcher %}
+        {% endif %}
+
 	{% else %}
 	    <h1>
-		<a href="/signup/?next={{connect_url}}"> Sign up </a>
-		or
-		<a href="/login/?next={{connect_url}}"> Login </a>
-		<br />
-		to connect your passport.
-	    <h1>
+            <a href="/signup/?next={{connect_url}}"> Sign up </a>
+            or
+            <a href="/login/?next={{connect_url}}"> Login </a>
+            <br />
+            to connect your passport.
+	    </h1>
 	{% endif %}
     </div>
 </div>

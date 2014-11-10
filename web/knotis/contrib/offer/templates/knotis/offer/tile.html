@@ -35,8 +35,11 @@
 		<p>@<a href='/id/{{ offer.owner.pk }}/'>{{ offer.owner.name }}</a></p>
             </div>
         </div>
-
-        <div class="row hidden-small">
+	{% if offer_action == None %}
+        <div class="row hidden-small">	
+	{% else %}
+	<div class="row">
+	{% endif %}
             <div class="col-lg-12 col-xs-12">
 		{% if offer_action == None %}
 		    <p>{{ offer.restrictions }}</p>

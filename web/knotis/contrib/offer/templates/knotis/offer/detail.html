@@ -34,7 +34,7 @@
             </ul>
         </div>
 
-        {% if IdentityTypes.INDIVIDUAL == current_identity.identity_type %}
+        {% if IdentityTypes.INDIVIDUAL == current_identity.identity_type  and offer.offer_type != OfferTypes.DARK %}
         <a class="btn buyBtn modal-link no-deep" href="/offer/{{ offer.pk}}/buy/">Purchase Offer</a>
         {% endif %}
 
@@ -56,6 +56,6 @@
                 <h2>{{ offer.owner.name }}</h2>
             </div>
         </div>
-    </div> 
+    </div>
 
     {% endblock body %}
