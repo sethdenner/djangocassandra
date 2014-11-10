@@ -2953,7 +2953,6 @@ section.welcomeModal h1 {
         display: inline-block;
         text-transform: uppercase;
         letter-spacing: 2px;
-        margin-top: 0;
     }
     .supportModal .support-forms {
         left: 0;
