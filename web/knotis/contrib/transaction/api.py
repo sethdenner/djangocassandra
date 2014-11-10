@@ -321,6 +321,18 @@ class TransactionApi(object):
     class TransactionCollectionAlreadyTransfered(Exception):
         pass
 
+    @staticmethod
+    def get_transaction_for_identity(
+        transaction_id,
+        identity,
+    ):
+        transaction = Transaction.objects.get(pk=transaction_id)
+        return Transaction.objects.filter(
+            owner=identity,
+            transaction_context=transaction.transaction_context,
+            transaction_type=transaction.transaction_type
+        )
+
 
 class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
     api_path = 'transaction/purchase'

@@ -2649,12 +2649,67 @@ section.welcomeModal h1 {
 .qrcodePath .connect-passport a.cancel {
     font-size: 20px;
 }
+
+.qrcodePath .btn-connect {
+    font-size: 22px;
+    padding: 10px 70px;
+}
+.qrcodePath.qrcode-success h1,
+.qrcodePath.qrcode-success p {
+    font-size: 33px;
+    line-height: 45px;
+} 
+.qrcodePath.qrcode-success h1 {
+    font-family: latoReg;
+    margin-bottom: 0;
+}
+.qrcodePath.qrcode-success p {
+    font-family: latoLight;
+    color: #959595;
+} 
+
 /* End QRcode Process */
 
 
 /* Responsive Magic */
 
 @media (max-width: 767px) {
+    
+    .qrcodePath.qrcode-success h1,
+    .qrcodePath.qrcode-success p {
+	font-size: 28px;
+	line-height: 36px;
+    } 
+
+    .offerItem {
+	margin: 0 5% 10px 0;
+	max-width: 45%;
+    }
+
+    .offerItem.social-connect {
+	height: 300px;
+    }
+
+    .offerItem.social-connect .tile-title {
+	margin-bottom: 0;
+    }
+ 
+    .btn-spacer {
+	min-height: 215px;
+    }
+    
+    .forgotPassword p {
+	padding: 20px 0;
+    }
+
+    .forgotPassword input {
+	width: 80%;
+    }
+
+    .redemption-search {
+	float: none;
+	margin-bottom: 25px;
+    }
 
     .offerItem {
 	margin: 0 5% 10px 0;
@@ -2741,7 +2796,7 @@ section.welcomeModal h1 {
     }
 
     .qrcodePath .connect-passport h1 {
-	font-size: 20px;
+	font-size: 26px;
     }
 
     .redemptionCode,
@@ -2760,6 +2815,9 @@ section.welcomeModal h1 {
     .minimumSpend {
 	display: block;
 	top: -185px;
+    }
+    .passportTile .passport-label {
+	font-size: 30px;
     }
 }
 
@@ -2800,10 +2858,6 @@ section.welcomeModal h1 {
 	padding-top: 30px;
     }
 
-    .passportTile .passport-label {
-	font-size: 35px;
-    }
-    
     .passportTile .offer-link h4 {
 	margin-top: 10px
     }
@@ -2842,8 +2896,11 @@ section.welcomeModal h1 {
     }
     .offerItem {
         width: 45%;
-        height: 255px;
+	height: 285px;
         margin: 7px;
+    }
+    .offerItem .tileSpacing {
+	height: 100px;
     }
     .mainContent {
         padding: 30px 0;

@@ -1,4 +1,8 @@
 import copy
+import random
+
+from django.utils import log
+logger = log.getLogger(__name__)
 
 from django.utils import log
 logger = log.getLogger(__name__)
@@ -7,7 +11,9 @@ from django.shortcuts import redirect, get_object_or_404
 from django.conf import settings
 from django.views.generic import View
 
-from knotis.views import EmbeddedView
+from knotis.views import (
+    EmbeddedView,
+)
 from knotis.contrib.layout.views import DefaultBaseView
 
 from knotis.contrib.offer.models import (
@@ -17,7 +23,6 @@ from knotis.contrib.offer.models import (
 from knotis.contrib.transaction.models import (
     Transaction,
     TransactionCollection,
-    TransactionCollectionItem
 )
 from knotis.contrib.transaction.api import TransactionApi
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
@@ -190,80 +195,122 @@ class ManageQRCodeView(EmbeddedView):
 
 
 class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
-    template_name = 'knotis/qrcode/redeem_offer.html'
+    template_name = 'knotis/qrcode/redeem_qrcode_offer.html'
     default_parent_view_class = DefaultBaseView
     url_patterns = [
         r''.join([
-            '^qrcode/coupon/(?P<transaction_collection_id>',
-            REGEX_UUID,
-            ')/(?P<page_numb>\d+)/$'
-        ]),
-        r''.join([
-            '^qrcode/coupon/(?P<transaction_id>',
+            '^qrcode/redeem/(?P<transaction_id>',
             REGEX_UUID,
             ')/$'
         ]),
-
+    ]
+    post_scripts = [
+        'knotis/qrcode/js/redeem.js'
     ]
 
-    def redeem_hack(
-        self,
-        request,
-        transaction_collection_id=None,
-        page_numb=None,
-    ):
-
-        transaction_collection = get_object_or_404(
-            TransactionCollection,
-            pk=transaction_collection_id
+    def process_context(self):
+        request = self.request
+        transaction_collection_id = self.context.get(
+            'transaction_id'
         )
+        logged_in = request.user.is_authenticated()
+        if logged_in:
+            current_identity = self.get_current_identity(request)
+            identity_type = current_identity.identity_type
 
-        transaction_collection_item = get_object_or_404(
-            TransactionCollectionItem,
-            transaction_collection=transaction_collection,
-            page=page_numb
-        )
+        else:
+            identity_type = -1
 
-        transaction = transaction_collection_item.transaction
-        self.redeem(request, transaction_id=transaction.id)
+        self.context.update({
+            'redeem_url': '/qrcode/redeem/%s/' % transaction_collection_id,
+            'random_pin': random.randint(1000, 9999),
+            'identity_type': identity_type,
+            'IdentityTypes': IdentityTypes,
+            'logged_in': logged_in,
+        })
 
-    def redeem(
-        self,
-        request,
-        transaction_id
-    ):
-        current_identity = self.get_current_identity(self.request)
-        transaction = get_object_or_404(Transaction, transaction_id)
-        TransactionApi.create_redemption(
-            request,
-            transaction,
-            current_identity
-        )
+        return self.context
 
-    def get(
+    def post(
         self,
         request,
         *args,
         **kwargs
     ):
+        errors = {}
+        data = {}
 
-        if 'transaction_collection_id' in kwargs and 'page_numb' in kwargs:
-            self.redeem_hack(
-                request,
-                transaction_collection_id=kwargs['transaction_collection_id'],
-                page_numb=kwargs['page_numb']
+        transaction_id = kwargs.get('transaction_id')
+        pin = request.POST.get('pin')
+        pin_check = request.POST.get('pin_check')
+        if pin != pin_check:
+                errors['no-field'] = (
+                    'Wrong PIN!'
+                )
+                return self.render_to_response(
+                    errors=errors
+                )
+
+        current_identity = self.get_current_identity(self.request)
+        if current_identity.identity_type == IdentityTypes.INDIVIDUAL:
+            my_transactions = TransactionApi.get_transaction_for_identity(
+                transaction_id,
+                current_identity
             )
-        elif 'transaction_id' in kwargs:
-            self.redeem(
+            if len(my_transactions) == 0:
+                errors['no-field'] = (
+                    'This does not belong to you.',
+                    'Did you connect your passport book yet?'
+                )
+                return self.render_to_response(
+                    errors=errors
+                )
+            transaction = my_transactions[0]
+
+        else:
+            transaction = get_object_or_404(Transaction, pk=transaction_id)
+
+        try:
+            TransactionApi.create_redemption(
                 request,
-                transaction_id=kwargs['transaction_id']
+                transaction,
+                current_identity,
             )
 
-        return super(CouponRedemptionView, self).get(
-            request,
-            *args,
-            **kwargs
+        except TransactionApi.AlreadyRedeemedException:
+            errors['no-field'] = 'This has already been redeemed.'
+            return self.render_to_response(
+                errors=errors
+            )
+
+        except TransactionApi.WrongOwnerException:
+            errors['no-field'] = ''.join([
+                'This does not belong to you.'
+            ])
+            return self.render_to_response(
+                errors=errors
+            )
+
+        except Exception, e:
+            logger.exception(e.message)
+
+        data['next'] = '/qrcode/redeem/success/'
+        if not request.is_ajax():
+            self.response_format = self.RESPONSE_FORMATS.REDIRECT
+
+        return self.render_to_response(
+            data=data,
+            errors=errors,
+            render_template=False
         )
+
+
+class RedeemSuccessView(EmbeddedView):
+    template_name = 'knotis/qrcode/redeem_success.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r'^qrcode/redeem/success/$'
+    ]
 
 
 class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
@@ -283,8 +330,18 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
             'transaction_collection_id'
         )
         logged_in = request.user.is_authenticated()
+        if logged_in:
+            current_identity = self.get_current_identity(request)
+            is_individual = (
+                current_identity.identity_type == IdentityTypes.INDIVIDUAL
+            )
+
+        else:
+            is_individual = False
+
         self.context.update({
             'connect_url': '/qrcode/connect/%s/' % transaction_collection_id,
+            'is_individual': is_individual,
             'logged_in': logged_in,
         })
 
@@ -350,7 +407,7 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
                     current_identity,
                     transaction_collection,
                 )
-                data['next_url'] = '/my/purchases/'
+                data['next'] = '/qrcode/connect/success/'
 
             except Exception, e:
                 logger.exception(e.message)
@@ -361,3 +418,11 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
             errors=errors,
             render_template=False
         )
+
+
+class ConnectionSuccessView(EmbeddedView):
+    template_name = 'knotis/qrcode/connect_success.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r'^qrcode/connect/success/$'
+    ]
