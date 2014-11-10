@@ -1,0 +1,34 @@
+{% load render_template_fragment %}
+<div class="mainContent">
+    <div class='col-xs-12 text-center qrcodePath'>
+    {% if logged_in %}
+        {% if identity_type == IdentityTypes.ESTABLISHMENT or identity_type == IdentityTypes.INDIVIDUAL %}
+            <div class='connect-passport'>
+                <h1>Enter {{random_pin}}<br> to redeem</h1>
+                <form action="{{redeem_url}}" data-id="id-redeem-pin" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="pin" placeholder="PIN" />
+                    <input type="hidden" name="pin_check" value="{{random_pin}}" />
+                    <input class='btn btn-offers btn-lg btn-connect' type="submit" value="Redeem" />
+                </form>
+                <div class="error-row">
+                    <p id="error-text">&nbsp</p>
+                </div>
+            </div>
+
+        {% else %}
+            <h1> Oops! You're the wrong identity type for this! </h1>
+            {% render_fragment identity_switcher %}
+        {% endif %}
+
+	{% else %}
+	    <h1>
+            <a href="/signup/?next={{redeem_url}}"> Sign up </a>
+            or
+            <a href="/login/?next={{redeem_url}}"> Login </a>
+            <br />
+            to redeem this offer.
+	    </h1>
+	{% endif %}
+    </div>
+</div>

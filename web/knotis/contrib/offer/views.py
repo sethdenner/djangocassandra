@@ -422,7 +422,8 @@ class OfferTile(FragmentView):
             'offer_banner_image': offer_banner_image,
             'business_badge_image': business_badge_image,
             'STATIC_URL': settings.STATIC_URL,
-            'offer_action': self.get_offer_action()
+            'offer_action': self.get_offer_action(),
+            'OfferTypes': OfferTypes
         })
         return self.context
 
@@ -499,7 +500,9 @@ class OfferDetailView(ModalView):
         local_context.update({
             'current_identity': current_identity,
             'IdentityTypes': IdentityTypes,
+            'OfferTypes': OfferTypes,
             'offer': offer,
+            'STATIC_URL': settings.STATIC_URL,
             'offer_items': offer_items,
             'business_badge_image': business_badge_image,
             'offer_banner_image': offer_banner_image

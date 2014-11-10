@@ -2649,6 +2649,7 @@ section.welcomeModal h1 {
 .qrcodePath .connect-passport a.cancel {
     font-size: 20px;
 }
+
 .qrcodePath .btn-connect {
     font-size: 22px;
     padding: 10px 70px;
@@ -2666,6 +2667,7 @@ section.welcomeModal h1 {
     font-family: latoLight;
     color: #959595;
 } 
+
 /* End QRcode Process */
 
 
@@ -2678,6 +2680,36 @@ section.welcomeModal h1 {
 	font-size: 28px;
 	line-height: 36px;
     } 
+
+    .offerItem {
+	margin: 0 5% 10px 0;
+	max-width: 45%;
+    }
+
+    .offerItem.social-connect {
+	height: 300px;
+    }
+
+    .offerItem.social-connect .tile-title {
+	margin-bottom: 0;
+    }
+ 
+    .btn-spacer {
+	min-height: 215px;
+    }
+    
+    .forgotPassword p {
+	padding: 20px 0;
+    }
+
+    .forgotPassword input {
+	width: 80%;
+    }
+
+    .redemption-search {
+	float: none;
+	margin-bottom: 25px;
+    }
 
     .offerItem {
 	margin: 0 5% 10px 0;
@@ -2784,7 +2816,6 @@ section.welcomeModal h1 {
 	display: block;
 	top: -185px;
     }
-
     .passportTile .passport-label {
 	font-size: 30px;
     }
