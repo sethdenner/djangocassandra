@@ -2,18 +2,32 @@
 {% load render_template_fragment %}
 
 {% if email_type == 'html' %}
-    {% block subject %}Welcome to Knotis!{% endblock subject %}
+    {% block header %}
+	<h1 style="text-align: center;">
+	    <span style="color:#696969">
+		<span style="font-size:24px">Welcome! Please activate your account.</span>
+	    </span>
+	</h1>
+    {% endblock %}    
+
     {% block browser_link %}{{ browser_link }}{% endblock browser_link %}
+
     {% block content %}
-        <h1>Welcome to Knotis!<br />We're glad you are here.</h1>
-        <p>Click the button below to activate your account</p>
-        <br />
-        <br />
-        <a class="button" href="{{ activation_link }}">Activate My Account</a>
-        <br />
-        <br />
-        <br />
+	<div style="text-align: center;">
+	    <span style="font-size:18px">
+		<span style="color:#808080">Click the button below to activate your account.</span>
+	    </span>
+	</div>
     {% endblock content %}
+
+    {% block action %}
+	<a class="mcnButton " title="Activate my account" href="{{ activation_link }}" target="_self" style="font-weight: normal;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">Activate my account</a>
+    {% endblock %}
+
+    {% block help_text %}
+	<em><a href="http://www.knotis.com/support">Help!</a> I didn't request this.</em>
+    {% endblock %}
+
 {% endif %}
 
 {% if email_type == 'text' %}

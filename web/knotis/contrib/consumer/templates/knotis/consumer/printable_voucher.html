@@ -3,14 +3,27 @@
 {% load render_static_file %}
 <!-- Custom Styles -->
 <link href="{{ STATIC_URL_ABSOLUTE }}" rel="stylesheet" type="text/css">
+
+{% block header %} 
+{% endblock %}
+
 {% block body %} 
-{% if format == 'json' %}
-{% if styles %}
-{% for style in styles %}
-<style>{% render_static_file style %}</style>
-{% endfor %}
-{% endif %}
-{% endif %}
+    {% if format == 'json' %}
+	{% if styles %}
+	    {% for style in styles %}
+		<style>{% render_static_file style %}</style>
+	    {% endfor %}
+	{% endif %}
+    {% endif %}
+
+<div class="modal-header voucher-cta">
+    <a class="btn close" href="/my/purchases">
+	<span aria-hidden="true">X</span>
+	<span class="sr-only">Close</span>
+    </a>
+    <h4 class="modal-title" id="myModalLabel">Present to Merchant</h4>
+</div>
+
 <div class="voucher">
     <div class="row">
         {% thumbnail business_cover.image.image 'x312' crop=business_cover.crop as img %}
@@ -18,7 +31,9 @@
         {% endthumbnail %}
         <div class="col-xs-12">
             {% thumbnail business_logo.image.image 'x130' crop=business_logo.crop as img %}
-            <a target="_blank" href="{{ BASE_URL }}/id/{{ transaction.offer.owner.pk }}/"><img class="busLogo" src="{{ img.url }}"/></a>
+		<a target="_blank" href="{{ BASE_URL }}/id/{{ transaction.offer.owner.pk }}/">
+		    <img class="busLogo" src="{{ img.url }}"/>
+		</a>
             {% endthumbnail %}
         </div>
     </div>
@@ -36,83 +51,41 @@
     </div>
 
     {% if qrcode %}
-    <div class="row">
-        <div class="col-xs-12">
-            <img class="qrCode" src="{{ STATIC_URL_ABSOLUTE }}knotis/consumer/img/img_qrCode.png"/>
-        </div>
-    </div>
+	<div class="row">
+	    <div class="col-xs-12">
+		<img class="qrCode" src="{{ STATIC_URL_ABSOLUTE }}knotis/consumer/img/img_qrCode.png"/>
+	    </div>
+	</div>
     {% endif %}
 
-    <div class="row dataPoint">
-        <div class="col-xs-12">
-            <h4>Voucher Number</h4>
+    <div class="row">
+        <div class="col-xs-12 voucher-info">
+            <h4>Transaction ID:</h4>
             <p>{{ transaction.redemption_code }}</p>
         </div>
-    </div>                    
+    </div>
 
-
-    <div class="row dataPoint">
-        <div class="col-xs-12">
-            <h4>Owner Of Voucher</h4>
-            <p>{{ transaction.owner.name }}</p>
-        </div>
-    </div>                    
-
+    <div class='row'>
+	<div class='col-xs-12 voucher-info'>
+	    <h4>Restrictions:</h4>
+	    <p>{{ transaction.offer.restrictions }}</p>
+	</div>
+    </div>
 
     {% if transaction.offer.end_time %}
-    <div class="row dataPoint">
-        <div class="col-xs-12">
-            <h4>Valid Through</h4>
-            <p>{{ transaction.offer.end_time|date:'F, j Y'|default:'Forever' }}</p>
-        </div>
-    </div>                    
+	<div class="row voucher-info">
+	    <div class="col-xs-12">
+		<h4>Valid Through</h4>
+		<p>{{ transaction.offer.end_time|date:'F, j Y'|default:'Forever' }}</p>
+	    </div>
+	</div>                    
     {% endif %}
 
-
-    <div class="row">
-        <div class="col-xs-12">
-            <h2>Instructions</h2>
-            <ol>
-                <li>1) Pull up voucher on mobile phone (or print it out).</li>
-                <li>2) Present this voucher to the merchant upon arrival</li>
-                <li><b>Enjoy!</b></li>
-            </ol>
-        </div>                   
-    </div>                     
-
-    <div class="row">
-        <div class="col-xs-12">
-            <h4>The Fine Print</h4>
-            <ol>
-                <li>{{ transaction.offer.restrictions|default:'No restrictions.' }}</li>
-            </ol>
-        </div>                   
+    <div class='row modal-cta'>
+	<a class='btn btn-primary' href='/my/purchases'>
+	    <span aria-hidden='true'>Close</span>
+	</a>
     </div>
 
-    <div class="row">
-        <div class="col-xs-12">
-            <h4>Except where noted in the Fine Print:</h4>
-            <ol>
-                <li>No cash value back</li>
-                <li>Tax and gratuity are not included</li>
-                <li>Entire value must be used in one visit</li>
-                <li>Cannot be combined with any other promotion</li>
-            </ol>
-            <a target="_blank" href="{{ BASE_URL }}/terms-and-conditions/">Knotis Terms and Conditions</a>
-
-            {% if transaction.offer.end_time %}
-            <p>Promotional value <b>EXPIRES {{ transaction.offer.end_time|date:'F, j Y' }}</b></p>
-            <p>You can always use this voucher for the amount paid (${{ transaction.offer.price_discount_formatted }}) which will never expire.</p>
-            {% endif %}
-        </div>                   
-    </div>                      
-
-    <div class="row">
-        <div class="col-xs-12">
-            <h2>Need Assistance?</h2>
-            <a target="_blank" href="tel:206-429-5049">Call: 206-429-5049</a>
-            <a target="_blank" href="mailto:support@knotis.com">E-mail: support@knotis.com</a>
-        </div>
-    </div>
 </div>
 {% endblock body %}
