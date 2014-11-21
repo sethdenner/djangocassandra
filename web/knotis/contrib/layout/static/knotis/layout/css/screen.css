@@ -2726,6 +2726,11 @@ section.welcomeModal h1 {
 
 @media (max-width: 767px) {
     
+    /* twitter-bootstrap label fix */
+    .form-horizontal .control-label {
+	margin-bottom: 5px;
+    }
+   
     .voucher .offerTitle h1 {
 	width: 80%;
     }
