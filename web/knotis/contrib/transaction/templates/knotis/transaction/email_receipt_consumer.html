@@ -4,90 +4,57 @@
 {% block browser_link %}{{ browser_link }}{% endblock browser_link %}
 {% if email_type == 'html' %}
 
-{% block subject %}Here's your receipt from {{ business_name }}{% endblock subject %}
-
-{% block additional_css %}
-div.center {
-width: 100%;
-padding: 0;
-margin: 0;
-overflow: hidden;
-}
-
-.cover {
-color: white;
-}
-
-img.logo {
-margin-top: 50px;
-width: 170px;
-height: 170px;
-vertical-align: middle;
-border: 0;
--webkit-border-radius: 500px;
--mox-border-radius: 500px;
-border-radius: 500px;
-}
-{% endblock additional_css %}
+{% block header %}
+    <h1 style="text-align: center;">
+	<span style="color:#696969">
+	    <span style="font-size:24px">Purchase confirmed!</span>
+	</span>
+    </h1>
+{% endblock %}
 
 {% block content %}
-<h1>Here's your receipt from {{ business_name }}</h1>
-
-{% thumbnail business_banner.image.image '500' crop=business_banner.crop as image %}
-<div class="cover center" style="background: url('{{ BASE_URL }}{{ image.url }}'); max-width: 500px;">
-  {% empty %}
-  <div class="cover center" style="background: url('{{ STATIC_URL_ABSOLUTE }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:'darkgrey' }}.png'); max-width: 500px;">
+    {% thumbnail offer_image.image.image '563x246' crop=offer_image.crop as image %}
+	<img align="center" alt="" src="{{ BASE_URL }}{{ image.url }}" width="563" style="max-width:563px; padding-bottom: 0; display: inline !important; vertical-align: bottom; border-radius: 4px;" class="mcnImage">
     {% endthumbnail %}
-    {% thumbnail business_badge.image.image '170x170' crop=business_badge.crop as image %}
-    <img class="logo" src="{{ BASE_URL }}{{ image.url }}" />
-    {% endthumbnail %}
-  </div>
-  <p>Hi {{ transaction.owner.name }}!<br />
-    Congratulations on your purchase from {{ business_name }}.<br /><br />
-    Your redemption code is {{ redemption_code }}.
-  </p>
-  <hr />
-  <h2>Order Details</h2>
-  <hr />
-  <p>
-    <strong>Payment Method</strong><br />
-    {{ payment_method }}
-  </p>
-  <p>
-    <em>Paid on {{ payment_date }}</em>
-  </p>
-  <hr />
-  <br />
-  {% thumbnail offer_image.image.image '240x240' crop=offer_image.crop as image %}
-  <img src="{{ BASE_URL }}{{ image.url }}"><br />
-  {% endthumbnail %}
-  <a href="{{ offer_link }}/">{{ transaction.offer.title }}</a><br />
-  <br />
-  Shop: <a href="{{ business_url }}">@{{ business_name }}</a><br />
-  Transaction ID: {{ transaction_id }}<br />
-  Price: ${{ price }}<br />
-  <br />
-  <hr />
-  <h2>Questions?</h2>
-  <hr />
-  <strong>If you have questions about this order,<br />
-    please contact the seller directly.</strong>
-  <br />
-  <br />
-  <br />
-  <hr />
-  <p>If you were not involved in this transaction, please<br />
-    forward this email to support@knotis.com.<br />
-    <br />
-    Thanks,<br /><br />
-    The Knotis Team
     <br />
     <br />
 
-    {% endblock content %}
-    {% endif %}
+    <div style="text-align: center;">
+	<span style="font-size:18px;color:#808080">
+	    <span style='color:#808080'>You bought <strong>{{ transaction.offer.title }}</strong> from <strong>{{ transaction.business.name }}</strong></span> 
+            <br>
+            <br>
+            <strong style='color:#808080'>Transaction ID</strong>
+            <br>{{ redemption_code }}
+            <br>
+            <br>
+            <strong>Date Purchased</strong>
+            <br><span style='color:#808080'>{{ payment_date }}</span>
+            <br>
+            <br>
+            <strong style='color:#808080'>Expiration Date</strong>
+            <br><span style='color:#808080'>09/14/16</span>
+            <br>
+            <br>
+            <strong style='color:#808080'>Total Spent</strong>
+            <br><span style='color:#808080'>${{ price }}</span>
+        </span>
+    </div>
 
-    {% if email_type == 'text' %}
+{% endblock content %}
+
+{% block action %}
+    <a class="mcnButton " title="View my purchase" href="https://knotis.com/my/purchases/" target="_self" style="font-weight: normal;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">View my purchase</a>
+{% endblock %}
+
+{% block help_text %}
+    <em><a href="https:w
+://www.knotis.com/support">Help!</a> I didn't order this.</em>
+{% endblock %}
+
+{% endif %}
+
+{% if email_type == 'text' %}
     {% block text_content %}
     Here's your receipt from {{ business_name }}
     To view this email in a browser click {{ browser_link }} .
@@ -120,4 +87,4 @@ border-radius: 500px;
     The Knotis Team
 
     {% endblock text_content %}
-    {% endif %}
+{% endif %}

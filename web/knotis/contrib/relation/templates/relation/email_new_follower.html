@@ -1,36 +1,23 @@
 {% extends 'knotis/layout/master_email.html' %}
 {% load render_template_fragment %}
 {% block subject %}High-five, you have a new follower.{% endblock subject %}
-{% block browser_link %}{{ browser_link }}{% endblock browser_link %}
 
-{% block additional_css %}
-div.center {
-  
-}
-img {
-  margin-top: 50px;
-  width: 170px;
-  height: 170px;
-  vertical-align: middle;
-  border: 0;
-  -webkit-border-radius: 500px;
-  -mox-border-radius: 500px;
-  border-radius: 500px;
-}
+{% block header %}
+    <h1 style="text-align: center;">
+	<span style="color:#696969">
+	    <span style="font-size:24px">You have a new follower on Knotis.</span>
+	</span>
+    </h1>
 {% endblock %}
 
 {% block content %}
-<div style="background: url('{{ business_cover_url }}');" class="center">
-    <img src="{{ business_logo_url }}" />
-    <div>
-      <h2>{{ business_name }}</h2>
+    <div style="text-align: center;">
+	<span style="font-size:18px">
+	    <span style="color:#808080">@<strong>{{ username }}</strong> is now following you.</span>
+	</span>
     </div>
-</div>
-<p>{{ username }} is now following you.</p>
-<br />
-<br />
-<a class="button" href="{{ view_profile_link }}">View Profile</a>
-<br />
-<br />
-<br />
-{% endblock content %}
+{% endblock %}
+
+{% block action %}
+    <a class="mcnButton " title="View profile" href="{{ view_profile_link }}" target="_self" style="font-weight: normal;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">View profile</a>
+{% endblock %}
