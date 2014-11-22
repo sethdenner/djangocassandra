@@ -2,7 +2,6 @@
 (function($) {
     $.paginator = function(user_options){
         var options = {
-            namespace:'scroll',
             url:'',
             dataId:'',
             onDone: function() {}
@@ -15,18 +14,18 @@
         var fetching_results = false;
         var load_more_markup =  '<div class="row-fluid load-more">' +
         '<button class="btn btn-knotis-action btn-load-more">Load More Results</button>' +
-        '</div>'
+        '</div>';
         var no_more_markup = '<div class="row-fluid load-more">' +
         '<button disabled class="btn btn-knotis-action btn-load-more">No More Results</button>' +
-        '</div>'
-
-        $(window).on(options.namespace, function(event) {
+        '</div>';
+        var scroll_space = 'scroll'
+        $(window).off(scroll_space).on(scroll_space, function(event) {
 
             var $this = $(this);
 
 
             if (!results_left) {
-                $this.off(options.namespace);
+                $this.off(scroll_space);
                 return;
             }
 

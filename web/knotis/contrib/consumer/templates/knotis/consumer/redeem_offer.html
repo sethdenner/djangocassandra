@@ -4,14 +4,16 @@
         {% if identity_type == IdentityTypes.ESTABLISHMENT or identity_type == IdentityTypes.INDIVIDUAL %}
             <div class='connect-passport'>
                 <h1>Enter {{random_pin}}<br> to redeem</h1>
-                <form action="" data-id="id-redeem-pin" method="POST">
+                <form action="" class='form-inline' data-id="id-redeem-pin" method="POST">
                     {% csrf_token %}
-                    <input type="text" name="pin" placeholder="PIN" />
+                    <input class='form-control' type="text" name="pin" placeholder="PIN" />
+		    <br>
+		    <br>
                     <input type="hidden" name="pin_check" value="{{random_pin}}" />
                     <input class='btn btn-offers btn-lg btn-connect' type="submit" value="Redeem" />
                 </form>
                 <div class="error-row">
-                    <p id="error-text">&nbsp</p>
+                    <p id="error-text">&nbsp;</p>
                 </div>
             </div>
 
