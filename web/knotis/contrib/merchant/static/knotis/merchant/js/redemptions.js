@@ -39,7 +39,6 @@
 
         if(!window.location.getParameterByName('redeem_query')) {
             $.paginator({
-                namespace:'scroll.redemptions',
                 url:window.location.pathname + 'grid',
                 dataId:'id-redemptions',
                 onDone: $.initializeRedemptionGrid

@@ -2669,11 +2669,71 @@ section.welcomeModal h1 {
 } 
 
 /* End QRcode Process */
+/* Start Redemption Styles */
+.voucher {
+    margin-top: -31px;
+}
+.voucher .row:first-child {
+    padding-top: 0;
+}
+.voucher-cta {
+    position: absolute;
+    z-index: 10;
+    width: 101%;
+    margin-left: -1px;
+    background-color: rgba(255,255,255,0.5);
+    padding: 0px;
+}
+.voucher-cta a {
+    opacity: 1;
+    text-shadow: none;
+    color: #fff;
+}
+.voucher-cta h4 {
+    font-size: 20px;
+    color: #555;
+    line-height: 33px;
+}
+.voucher-info p {
+    font-family: LatoLight;
+}
+/* End Redemption Styles */
+
+/* Start General Styles */
+.modal-cta,
+.voucher .row.modal-cta {
+    padding-bottom: 0;
+    margin-bottom: -2px;
+}
+.modal-cta a.btn {
+    width: 100%;
+    font-size: 22px;
+    color: #fff;
+    border: none;
+    font-family: LatoLight;
+    padding: 10px;
+}
+.modal-cta a.btn:hover {
+    background-color: #06ad9c;
+}
+#error-text {
+    padding: 10px;
+}
+/* End of General Styles */
 
 
 /* Responsive Magic */
 
 @media (max-width: 767px) {
+    
+    /* twitter-bootstrap label fix */
+    .form-horizontal .control-label {
+	margin-bottom: 5px;
+    }
+   
+    .voucher .offerTitle h1 {
+	width: 80%;
+    }
     
     .qrcodePath.qrcode-success h1,
     .qrcodePath.qrcode-success p {
@@ -2953,7 +3013,6 @@ section.welcomeModal h1 {
         display: inline-block;
         text-transform: uppercase;
         letter-spacing: 2px;
-        margin-top: 0;
     }
     .supportModal .support-forms {
         left: 0;
