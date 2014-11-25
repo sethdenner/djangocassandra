@@ -53,6 +53,8 @@ from knotis.contrib.identity.views import (
 )
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 
+from knotis.contrib.offer.models import OfferTypes
+
 
 class MyPurchasesGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
     view_name = 'my_purchases_grid'
@@ -103,7 +105,8 @@ class MyPurchasesGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
                         'current_identity': current_identity,
                         'IdentityTypes': IdentityTypes,
                         'offer': purchase.offer,
-                        'TransactionTypes': TransactionTypes
+                        'TransactionTypes': TransactionTypes,
+                        'OfferTypes': OfferTypes
                     }
                 )
                 tiles.append(

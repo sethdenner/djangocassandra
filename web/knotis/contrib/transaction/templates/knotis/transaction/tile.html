@@ -27,11 +27,13 @@
 
             <div class="row btn-push">
                 <div class="col-lg-12 col-xs-12">
+                    {% if current_identity.identity_type == IdentityTypes.INDIVIDUAL %}
                     <div class="redemptionCode">
-                        {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
-                        {{ transaction.redemption_code|default:'' }}
+                        {% if transaction.transaction_type == TransactionTypes.PURCHASE and offer.offer_type == OfferTypes.DARK %}
+                        {{ offer.restrictions|default:'' }}
                         {% else %}{% endif %}
                     </div>
+                    {% endif %}
                 </div>
                 <div class="col-lg-12 col-xs-12">
                     {% if show_offer_info %}
