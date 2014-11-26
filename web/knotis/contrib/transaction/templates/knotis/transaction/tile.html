@@ -27,13 +27,17 @@
 
             <div class="row btn-push">
                 <div class="col-lg-12 col-xs-12">
-                    {% if current_identity.identity_type == IdentityTypes.INDIVIDUAL %}
                     <div class="redemptionCode">
-                        {% if transaction.transaction_type == TransactionTypes.PURCHASE and offer.offer_type == OfferTypes.DARK %}
-                        {{ offer.restrictions|default:'' }}
-                        {% else %}{% endif %}
-                    </div>
+                    {% if current_identity.identity_type == IdentityTypes.INDIVIDUAL %}
+                        {% if transaction.transaction_type == TransactionTypes.PURCHASE %}
+                            {% if  offer.offer_type == OfferTypes.DARK %}
+                                {{ offer.restrictions|default:'' }}
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        {{ transaction.redemption_code|default:'' }}
                     {% endif %}
+                    </div>
                 </div>
                 <div class="col-lg-12 col-xs-12">
                     {% if show_offer_info %}
