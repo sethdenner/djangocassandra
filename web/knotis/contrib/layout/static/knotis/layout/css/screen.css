@@ -2570,10 +2570,12 @@ section.welcomeModal h1 {
     max-width: 20%;
     margin-right: 10px;
 }
-
+.social-fit {
+    max-width: 230px;
+    box-sizing: content-box;
+}
 .offerItem.social-connect {
     padding: 30px 15px 0 15px;
-    max-width: none;
     width: auto;
 }
 .btn-spacer {
@@ -2626,6 +2628,10 @@ section.welcomeModal h1 {
 
 .btn-push {
     min-height: 130px;
+}
+.img-circle.tile-badge.busLogo {
+    max-height: 86px;
+max-width: 86px;
 }
 /* End Redemption Page */
 
@@ -2724,6 +2730,17 @@ section.welcomeModal h1 {
 
 /* Responsive Magic */
 
+@media (max-width: 800px) {
+
+    .logIn, .signUp {
+	display: none;
+    }
+
+    .signUpMobile {
+	display: inline-block;
+    }
+}
+
 @media (max-width: 767px) {
     
     /* twitter-bootstrap label fix */
@@ -2733,6 +2750,7 @@ section.welcomeModal h1 {
    
     .voucher .offerTitle h1 {
 	width: 80%;
+	margin: 0 auto;
     }
     
     .qrcodePath.qrcode-success h1,
@@ -2748,6 +2766,7 @@ section.welcomeModal h1 {
 
     .offerItem.social-connect {
 	height: 300px;
+	max-width: 100%;
     }
 
     .offerItem.social-connect .tile-title {
@@ -2884,7 +2903,7 @@ section.welcomeModal h1 {
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
 @media (max-width: 400px) {
      .btn-push {
-	min-height: 65px;
+	min-height: 95px;
     }
 
     .offerItem .btn-push h1 {
