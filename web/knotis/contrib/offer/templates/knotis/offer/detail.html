@@ -25,12 +25,20 @@
 
         <div class="col-sm-6 col-xs-12 offerDetails">
             <h1>{{ offer.title }}</h1>
+            {% if offer.description %}
             <p>{{ offer.description }}</p>
+            {% endif %}
 
             <ul>
+                {% if offer.offer_type == OfferTypes.DARK %}
+                
+                <li><span>Expires:</span> 09/01/2015</li>
+                <li><span>{{ offer.restrictions }}</span></li>
+                {% else %}
                 <li><span>Expires:</span> {{ offer.end_time }}</li>
                 <li><span>{{ offer.savings_percent}}%</span> Savings</li>
                 <li><span>{{ offer.purchased }}</span> Purchased</li>
+                {% endif %}
             </ul>
         </div>
 
