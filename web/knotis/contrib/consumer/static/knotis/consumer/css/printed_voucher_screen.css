@@ -43,6 +43,7 @@
 .voucher h1 {
   font-weight: 300;
   font-size: 1.9em;
+  margin-top: 15px;
 }
 
 .voucher h2 {
@@ -55,13 +56,14 @@
 }
 
 .voucher .coverPhoto {
-  width: 100%;
+    width: auto;
+    height: 200px;
 }
 
 .voucher .busLogo {
   max-width: 130px;
   position: relative;
-  top: -70px;
+  top: -50px;
   box-shadow: 0 1px 0 #c0c0c0;
   border-radius: 50%;
   margin-bottom: -70px;
