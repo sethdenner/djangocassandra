@@ -4,12 +4,13 @@
         var options = {
             url:'',
             dataId:'',
-            onDone: function() {}
+            onDone: function() {},
+            count_increment: 24
         }
         $.extend(options, user_options)
 
         var page = 1;
-        var count = 24;
+        var count = options.count_increment;
         var results_left = true;
         var fetching_results = false;
         var load_more_markup =  '<div class="row-fluid load-more">' +
