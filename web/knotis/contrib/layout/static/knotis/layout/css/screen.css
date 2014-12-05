@@ -595,7 +595,6 @@ nav button.signUp {
 
 /* line 50, ../sass/_sideBar.scss */
 .sidebar-label {
-    display: none;
     position: absolute;
     left: 75px;
     top: 29px;
@@ -2936,7 +2935,24 @@ section.welcomeModal h1 {
 	font-size: 30px;
     }
 }
+@media (max-width: 815px) {
+    .signUpMobile {
+        display: inline-block;
+    }
+    .logIn, .signUp {
+        display: none;
+    }
+    .authBtns {
+        position: relative;
+        left: 15px;
+        top: 4px;
+    }
+    #auth-controls a.signUpMobile {
+        padding: 7px 10px;
+        font-size: 11px;
+    }
 
+}
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
 @media (max-width: 400px) {
      .btn-push {
@@ -2986,7 +3002,7 @@ section.welcomeModal h1 {
 	top: -144px;
     }
 
-    #id-current-identity-name, .searchForm, .sideBar, .search {
+    #id-current-identity-name, .searchForm, .search {
         display: none;
     }
     .navBtn {
@@ -3108,21 +3124,6 @@ section.welcomeModal h1 {
     .actionTile a {
         font-size: 20px;
         line-height: 20px;
-    }
-    .logIn, .signUp {
-        display: none;
-    }
-    .signUpMobile {
-        display: inline-block;
-    }
-    .authBtns {
-        position: relative;
-        left: 15px;
-        top: 4px;
-    }
-    #auth-controls a.signUpMobile {
-        padding: 7px 10px;
-        font-size: 11px;
     }
     .purchaseCover, .busCover, .defaultImg {
         height: 95px;

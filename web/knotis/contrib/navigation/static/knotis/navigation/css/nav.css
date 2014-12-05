@@ -1,0 +1,198 @@
+/* THEMING*/
+#sideBarNav .mainNavOverlay{
+    background-color: black;
+}
+.mobileMenuToggle{
+    color:white;
+}
+.navList{
+    background-color:white;
+}
+.navList li, .navList li a{
+    color:#808080 !important;
+}
+.navList li:hover{
+    background-color: #888888;
+    color:#FFF;
+}
+.navList:after{
+    background-color:black;
+}
+/* END THEMING*/
+
+/* The Checkbox */
+#mainNavMobileToggle{
+    display:none;
+}
+
+/* Contains menu & overlay, should never be wider than needed otherwise
+ * risk capturing mouse events on unsophisticated browsers;
+ */
+#sideBarNav{
+    bottom:0px;
+    height:100%;
+    left:0px;
+    overflow:hidden;
+    pointer-events:  none;
+    position:fixed;
+    top:55px;
+    z-index: 100000;
+}
+#sideBarNav *{
+    pointer-events:auto;
+}
+
+/*  This is the Hamburger/Hotdog menu icon */
+.mobileMenuToggle{
+    border-radius: 4px;
+    border: 1px solid #24AA83;
+    color:white;
+    display:inline-block;
+    font-size:30px;
+    height:40px;
+    margin-right:10px;
+    margin-left:-40px;
+    padding:0px;
+    position:relative;
+    width:40px;
+    transition: padding .5s, margin-left .5s;
+ }
+.mobileMenuToggle:before{
+    cursor: pointer;
+    height:40px;
+    left:0px;
+    padding-top:4px;
+    position:absolute;
+    text-align:center;
+    top:0px;
+    width:40px;
+}
+.mobileMenuToggle:hover{
+    background-color:#24AA83;
+}
+.mobileMenuToggle:before{
+    color:white;
+    content:"\f05e";
+    font-family:'iconFont';
+}
+#sideBarNav .mainNavOverlay{
+    bottom:0px;
+    display:none;
+    left:0px;
+    opacity: .4;
+    position:absolute;
+    right:0px;
+    top:0px;
+    transition:  display .1s .3s;
+    z-index: 1; /* Lowest within its parent */
+}
+.navList{
+    border-right:1px solid black;
+    bottom:0px;
+    max-width:47px;
+    position:absolute;
+    overflow-y:scroll;
+    top:0px;
+    transition: left .2s, max-width .5s .5s;
+    z-index:2;
+}
+#sideBarNav .navList li:before{
+    font-size:35px;
+}
+.navList li{
+    font-size: 24px;
+}
+.navList{
+    margin:0px;
+    overflow:hidden;
+    padding:0px;
+}
+.navList li{
+    list-style:none;
+    padding:10px;
+    white-space:nowrap;
+}
+.navList li span.circle{
+    font-size:24px;
+}
+.navList:after{
+    background-color:black;
+    bottom:0px;
+    display:none;
+    left:0px;
+    opacity:.4;
+    position:fixed;
+    right:0px;
+    top:0px;
+    z-index:100;
+}
+#sideBarNav{
+    max-width:243px;
+}
+#sideBarNav .navList{
+    bottom:0;
+    left:0;
+    position:absolute;
+    top:0;
+    transition: left .2s, max-width .3s .2s, max-height .2s .2s;
+}
+.mobileMenuToggle{
+    margin-left:10px;
+    visibility:visible;
+}
+#sideBarNav .navList{
+    max-width: 250px;
+}
+#sideBarNav .navList{
+    color:#888;
+    left:-250px;
+    max-width:250px;
+    transition: left .2s, max-width .1s;
+}
+#sideBarNav.navVisible,
+#mainNavMobileToggle:checked + #sideBarNav{
+    bottom:0px;
+    display:block;
+    height: 100%;
+    max-width:100vw;
+    width:100%;
+}
+#sideBarNav.navVisible .navList,
+#mainNavMobileToggle:checked + #sideBarNav .navList{
+    left:0px;
+    transition: left .4s, width .1s;
+    z-index:2;
+    overflow-y:auto;
+}
+#sideBarNav.navVisible .mainNavOverlay,
+#mainNavMobileToggle:checked + #sideBarNav .mainNavOverlay{
+    bottom:0px;
+    display:block;
+    transition: display .1s;
+    z-index:1;
+}
+.unselectable, .navList *{
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    /* No support for these yet, use at own risk */
+    -o-user-select: none;
+    user-select: none;
+}
+body{
+    padding-left:0px !important;
+    transition: margin-left .2s;
+}
+@media all and (min-width: 768px) {
+    #sideBarNav.navVisible .mainNavOverlay,
+    #mainNavMobileToggle:checked + #sideBarNav .mainNavOverlay{
+        display:none !important;
+    }
+    body.navOn{
+        margin-left:240px !important;
+        transition: margin-left .3s;
+    }
+    #sideBarNav{
+        max-width:auto;
+    }
+}
