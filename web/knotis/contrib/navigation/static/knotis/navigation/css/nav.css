@@ -87,7 +87,6 @@
     z-index: 1; /* Lowest within its parent */
 }
 .navList{
-    border-right:1px solid black;
     bottom:0px;
     max-width:47px;
     position:absolute;
