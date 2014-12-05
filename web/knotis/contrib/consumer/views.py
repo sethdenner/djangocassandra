@@ -58,6 +58,7 @@ from knotis.contrib.offer.models import OfferTypes
 
 class MyPurchasesGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
     view_name = 'my_purchases_grid'
+    default_count = 50
 
     def get_queryset(self):
         current_identity = self.get_current_identity(self.request)
