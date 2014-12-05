@@ -4,8 +4,8 @@
     <div class="row">
         <div class="col-lg-12">
             <ul>
-                <li><a href="/my/redemptions/unredeemed/">Unredeemed</a></li>
-                <li><a href="/my/redemptions/redeemed/">Redeemed</a></li>
+                <li><a {% if redemption_filter == 'unredeemed' %} class="active" {% endif %} href="/my/redemptions/unredeemed/">Unredeemed</a></li>
+                <li><a {% if redemption_filter == 'redeemed' %} class="active" {% endif %} href="/my/redemptions/redeemed/">Redeemed</a></li>
             </ul>
         </div>
     </div>
