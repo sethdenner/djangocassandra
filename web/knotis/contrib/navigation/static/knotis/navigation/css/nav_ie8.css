@@ -1,0 +1,21 @@
+.menuContainer .navList{
+    max-width:52px;
+}
+div#sideBarNav{
+    top:65px;
+}
+.mobileMenuToggle{
+    transition: max-width .5s, margin-left .9s;
+}
+label.mainNavOverlay{
+    background-color:yellow;
+    background-color:transparent !important;
+    background-image:url('/static/knotis/navigation/img/transpBlack25.png');
+    z-index: 2;
+}
+div.navVisible label.mainNavOverlay{
+    display:block !important;
+}
+div.searchForm input{
+    border-bottom:1px solid white;
+}

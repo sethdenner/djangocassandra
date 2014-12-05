@@ -1,13 +1,19 @@
 ;
 
+
 (function($) {
     "use strict";
-
+    
     var first_change = true;
     var closing_modal = false;
     var $clicked_anchor = null;
     var last_non_modal = null;
-
+    $(document).ready(function() {
+        $('.navList a').on('click', function(){
+            $('#mainNavMobileToggle').prop('checked', false);
+            $('#mainNavMobileToggle').trigger("change");
+        });
+    });
     var modal_onclose = function () {
         var $modal = $(this);
         var $close = $modal.find('a[data-dismiss-modal]');
