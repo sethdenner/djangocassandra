@@ -141,6 +141,43 @@ a:focus {
     box-shadow: 0 0;
 }
 
+/* CSS for Static Legal Pages */
+.mainContent.privacy-terms {
+    text-align: left;
+    line-height: 21px;
+}
+
+.mainContent.privacy-terms a {
+    color: #2CC397;
+}
+
+.mainContent.privacy-terms h2{
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.mainContent.privacy-terms h3{
+    font-size: 20px;
+    margin-top: 24px;
+}
+
+.mainContent.privacy-terms p{
+    margin-top: 5px;
+}
+
+.mainContent.privacy-terms strong{
+    font-weight: 600;
+}
+
+.mainContent.privacy-terms ol {
+    padding: 5px 0px 5px 0px;
+}
+
+.mainContent.privacy-terms ul {
+    list-style-type: initial;
+    padding: 5px 0px 5px 16px;
+}
+
 /* line 38, ../sass/_custom.scss */
 #offer-modal.modal {
     left: 0;
