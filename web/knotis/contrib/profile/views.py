@@ -275,6 +275,9 @@ class EstablishmentProfileView(ProfileView):
     view_name = 'establishment_profile'
     template_name = 'knotis/profile/establishment.html'
     default_parent_view_class = DefaultBaseView
+    styles = [
+        'knotis/profile/css/establishment.css',
+    ]
     post_scripts = [
         'jcrop/js/jquery.Jcrop.js',
         'knotis/layout/js/action_button.js',
@@ -498,7 +501,7 @@ class EstablishmentProfileView(ProfileView):
             content_plexer = 'establishments'
             profile_content = 'establishments'
 
-        action_context = Context({
+        action_context = RequestContext(request, {
             'current_identity': current_identity,
             'identity': self.profile_identity
         })

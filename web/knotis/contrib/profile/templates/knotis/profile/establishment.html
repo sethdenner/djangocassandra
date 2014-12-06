@@ -10,7 +10,7 @@
             {% endthumbnail %}
 
                     <div class="col-lg-12 col-xs-12 columns">
-                        <div class="heroInfo">
+                        <div class="establishmentHeader">
                             {% thumbnail profile_badge.image.image '120x120' crop=profile_badge.crop as img %}
                             <img src="{{ img.url }}" data-id='id-data-profile-badge' class="{% if is_manager %}change-profile-badge-link{% endif %}"/>
                             {% empty %}
@@ -21,7 +21,7 @@
                             <h2>{{ address }}</h2>
                             {% endif %}
                             <div class="profileActionButton">
-                                {{ action_button }}
+                                {% if action_button %}{{ action_button }}{% endif %}
                             </div>
                         </div>
                     </div>
