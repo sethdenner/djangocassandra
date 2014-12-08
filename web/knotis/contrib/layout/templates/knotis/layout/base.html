@@ -1,5 +1,13 @@
 {% load render_template_fragment %}<!DOCTYPE html>
-<html lang="en">
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8">
+<![endif]-->
+<!--[if IE 8]>
+<html class="lt-ie9">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="" lang=en itemscope itemtype="http://schema.org/Product">
+<!--<![endif]-->
     {% spaceless %}
     <head>
         <meta charset="utf-8">
@@ -8,8 +16,8 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <!-- <link rel="shortcut icon" href=""> --!>
-<title>{% block title %}Knotis - Be in the kno!{% endblock title %}</title>
-<!-- Bootstrap Core CSS -->
+        <title>{% block title %}Knotis - Be in the kno!{% endblock title %}</title>
+        <!-- Bootstrap Core CSS -->
         <link href="{{ STATIC_URL }}knotis/css/bootstrap.min.css" rel="stylesheet">
         <!-- Bootstrap Modal CSS -->
         <link href="{{ STATIC_URL }}bootstrap-modal/css/bootstrap-modal.css" rel="stylesheet">
@@ -17,6 +25,7 @@
         <link href="{{ STATIC_URL }}bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
         <!-- Generated SASS -->
         <link href="{{ STATIC_URL }}knotis/layout/css/screen.css" rel="stylesheet">
+        <link href="{{ STATIC_URL }}knotis/navigation/css/nav.css" rel="stylesheet">
         <link href="{{ STATIC_URL }}jcrop/css/jquery.Jcrop.min.css" rel="stylesheet">
         {% for style in styles %}
         <link href="{{ STATIC_URL }}{{ style }}" rel="stylesheet" />
@@ -26,10 +35,10 @@
         <script src="{{ STATIC_URL }}{{ script }}"></script>
         {% endfor %}
 
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-<script src="{{ STATIC_URL }}knotis/js/html5shiv.js"></script>
-<script src="{{ STATIC_URL }}knotis/js/respond.min.js"></script>
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if IE 8]>
+    <script src="{{ STATIC_URL }}knotis/js/html5shiv.js"></script>
+    <script src="{{ STATIC_URL }}knotis/js/respond.min.js"></script>
 <![endif]-->
         {% block head %}{% endblock head %}
     </head>
@@ -61,6 +70,10 @@
         <script src="{{ STATIC_URL }}knotis/navigation/js/navigation.js"></script>
         <script src="{{ STATIC_URL }}scripts/jquery/jquery_ui.js"></script>
         <script src="{{ STATIC_URL }}geocomplete/jquery.geocomplete.min.js"></script>
+        <!--[if IE 8]>
+            <script src="{{ STATIC_URL }}knotis/js/ie_nav.js"></script>
+            <link href="{{ STATIC_URL }}knotis/navigation/css/nav_ie8.css" rel="stylesheet">
+        <![endif]-->
         {% for script in post_scripts %}
         <script src="{{ STATIC_URL }}{{ script }}?8374873485"></script>
         {% endfor %}

@@ -224,7 +224,15 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
     ]
 
     def process_context(self):
+        redemption_filter = self.context.get('redemption_filter')
+        if None is redemption_filter:
+            redemption_filter = 'unredeemed'
+
+        redemption_filter = redemption_filter.lower()
+        redemption_filter == 'redeemed'
+
         self.context.update({
+            'redemption_filter': redemption_filter,
             'redeem_query': self.request.GET.get('redeem_query')
         })
         return self.context
