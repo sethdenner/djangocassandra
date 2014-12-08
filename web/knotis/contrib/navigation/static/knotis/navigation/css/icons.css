@@ -1,0 +1,14 @@
+@font-face {
+	font-family: 'icomoon';
+	src:url('fonts/icomoon-nav.eot?68jk5h');
+	src:url('fonts/icomoon-nav.eot?xyz#iefix68jk5h') format('embedded-opentype'),
+		url('fonts/icomoon-nav.woff?68jk5h') format('woff'),
+		url('fonts/icomoon-nav.ttf?68jk5h') format('truetype'),
+		url('fonts/icomoon-nav.svg?68jk5h#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.mobileMenuToggle{
+	font-family:iconFont;
+}
