@@ -188,7 +188,6 @@ a:focus {
     margin: 0 auto;
     background-color: transparent;
     border: 0;
-    border: 0;
     border-radius: 3px;
     -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0);
     box-shadow: 0 3px 9px rgba(0, 0, 0, 0);
@@ -301,6 +300,105 @@ nav .dropdown {
     top: -2px;
     transition: all 0.2s ease;
     border: 1px solid #2cc397;
+}
+.searchButton{
+    display:none;
+    position:absolute;
+    right:0px;
+    top:0px;
+
+}
+.nav div .searchButton:after{
+    font-family:'iconFont';
+    content: "\f110";
+    font-size:24px;
+    position:absolute;
+    right:0px;
+    top:3px;
+    color:white;
+    padding:5px;
+}
+.nav div.identitySwitcher{
+    display:block;
+    float:right;
+}
+div.searchForm{
+    position:relative;
+    height: 30px;
+}
+
+@media (max-width: 440px){
+    .nav div .dropdown {
+        padding:2px;
+    }
+    .nav div .identitySwitcher{
+        display:block;
+        height:40px !important;
+    }
+    .nav div.searchForm{
+        width:42px;
+        top:0px;
+    }
+    .nav div.expanded{
+        background-color:white;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+        display:block;
+        height:40px;
+        left:4px;
+        position:absolute;
+        max-width:100%;
+        width:98%;
+        transition: width .5s, position .1s, left .2s;
+        top:8px;
+        z-index:10000;
+    }
+    .nav div.expanded input{
+        position:absolute;
+        top:0px;
+        left:0px;
+        z-index:2;
+        width:90%;
+        bottom:0px;
+        font-size:20px;
+        transition: width .2s, position .2s, left .2s, font-size .2s;
+        z-index:10;
+        background-color:white;
+        color:black;
+        border:none;
+    }
+
+    .nav div.searchForm .search{
+        display:none;
+    }
+    .nav div.expanded .search{
+        display:block;
+    }
+    .nav div.expanded .searchButton{
+        position:absolute;
+        right:0px !important;
+    }
+    .nav .container-fluid{
+        min-width:290px;
+    }
+    .nav div.searchForm .searchButton{
+        display:block;
+        height:40px;
+        position:absolute;
+        background-color:#2cc397;
+        z-index:30;
+        color:white !important;
+        cursor:pointer;
+        max-width:40px;
+        right:0px;
+        top:0px;
+        left:auto;
+        width:45px;
+        transition: max-width .2s, right .2s;
+    }
+    .nav #auth-controls{
+        float:right;
+    }
 }
 /* line 95, ../sass/_nav.scss */
 nav .dropdown a {
@@ -1173,8 +1271,8 @@ offerSteps ul {
 
 @font-face {
     font-family: 'iconFont';
-    src: url("/static/knotis/layout/fonts/iconFont.eot?rz2jyh");
-    src: url("/static/knotis/layout/fonts/iconFont.eot?#iefixrz2jyh") format("embedded-opentype"), url("/static/knotis/layout/fonts/iconFont.woff?rz2jyh") format("woff"), url("/static/knotis/layout/fonts/iconFont.ttf?rz2jyh") format("truetype"), url("/static/knotis/layout/fonts/iconFont.svg?rz2jyh#icomoon") format("svg");
+    src: url("/static/knotis/layout/fonts/iconFont.eot?rz2jyxh");
+    src: url("/static/knotis/layout/fonts/iconFont.eot?#iefixrz2jywh") format("embedded-opentype"), url("/static/knotis/layout/fonts/iconFont.woff?rez2jyh") format("woff"), url("/static/knotis/layout/fonts/iconFont.ttf?raz2jyh") format("truetype"), url("/static/knotis/layout/fonts/iconFont.svg?rz2jyah#icomoon") format("svg");
     font-weight: normal;
     font-style: normal;
 }
@@ -2550,21 +2648,21 @@ section.welcomeModal h1 {
     color: #fff;
 }
 .btn-offers {
-	padding: 15px 70px;
-	font-size: 16px;
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	letter-spacing: 2px;
-	font-family: latolight;
-	color: #fff;
-	background-color: #2cc397;
-	border: 1px solid #2cc397;
+    padding: 15px 70px;
+    font-size: 16px;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    letter-spacing: 2px;
+    font-family: latolight;
+    color: #fff;
+    background-color: #2cc397;
+    border: 1px solid #2cc397;
 }
 .btn-offers:hover {
-	border-color: #fff;
-	color: #fff;
-	background-color: #2cc397;
+    border-color: #fff;
+    color: #fff;
+    background-color: #2cc397;
 }
 .offers-hero {
     height: 360px;
@@ -2769,11 +2867,11 @@ section.welcomeModal h1 {
 @media (max-width: 800px) {
 
     .logIn, .signUp {
-	display: none;
+        display: none;
     }
 
     .signUpMobile {
-	display: inline-block;
+        display: inline-block;
     }
 }
 
@@ -2781,116 +2879,116 @@ section.welcomeModal h1 {
     
     /* twitter-bootstrap label fix */
     .form-horizontal .control-label {
-	margin-bottom: 5px;
+        margin-bottom: 5px;
     }
    
     .voucher .offerTitle h1 {
-	width: 80%;
-	margin: 0 auto;
+        width: 80%;
+        margin: 0 auto;
     }
     
     .qrcodePath.qrcode-success h1,
     .qrcodePath.qrcode-success p {
-	font-size: 28px;
-	line-height: 36px;
+        font-size: 28px;
+        line-height: 36px;
     } 
 
     .offerItem {
-	margin: 0 5% 10px 0;
-	max-width: 45%;
+        margin: 0 5% 10px 0;
+        max-width: 45%;
     }
 
     .offerItem.social-connect {
-	height: 300px;
-	max-width: 100%;
+        height: 300px;
+        max-width: 100%;
     }
 
     .offerItem.social-connect .tile-title {
-	margin-bottom: 0;
+        margin-bottom: 0;
     }
  
     .btn-spacer {
-	min-height: 215px;
+    min-height: 215px;
     }
     
     .forgotPassword p {
-	padding: 20px 0;
+        padding: 20px 0;
     }
 
     .forgotPassword input {
-	width: 80%;
+        width: 80%;
     }
 
     .redemption-search {
-	float: none;
-	margin-bottom: 25px;
+        float: none;
+        margin-bottom: 25px;
     }
 
     .offerItem {
-	margin: 0 5% 10px 0;
-	max-width: 45%;
+        margin: 0 5% 10px 0;
+        max-width: 45%;
     }
 
     .offerItem.social-connect {
-	height: 300px;
+        height: 300px;
     }
 
     .offerItem.social-connect .tile-title {
-	margin-bottom: 0;
+        margin-bottom: 0;
     }
  
     .btn-spacer {
-	min-height: 215px;
+        min-height: 215px;
     }
     
     .forgotPassword p {
-	padding: 20px 0;
+        padding: 20px 0;
     }
 
     .forgotPassword input {
-	width: 80%;
+        width: 80%;
     }
 
     .redemption-search {
-	float: none;
-	margin-bottom: 25px;
+        float: none;
+        margin-bottom: 25px;
     }
 
     .offerHero {
-	margin-bottom: 0;
-	overflow: hidden;
+        margin-bottom: 0;
+        overflow: hidden;
     }
     
     .offerDetails {
-	top: 0;
-	margin-bottom: 0;
-	height: auto;
-	padding: 0 35px 25px;
+        top: 0;
+        margin-bottom: 0;
+        height: auto;
+        padding: 0 35px 25px;
     }
     
     .offerDetails h1 {
-	margin-top: 0;
+        margin-top: 0;
     }
 
     #offer-modal .buyBtn {
-	position: relative;
-	width: 100%;
+        position: relative;
+        width: 100%;
     }
 
     .offerHero {
-	height: 250px;
+        height: 250px;
     }
 
     .offerHero h1,
     .offerHero h2 {
-	left: 0;
-	margin-right: 10px;
-	margin-left: 135px;
-	white-space: normal;
+        left: 0;
+        margin-right: 10px;
+        margin-left: 135px;
+        white-space: normal;
     }
 
     .offerHero img {
-	margin: 15px 25px;
+        margin: 15px 25px;
     }
 }
 
@@ -2901,17 +2999,17 @@ section.welcomeModal h1 {
 @media (max-width: 550px) {
     
     .hidden-small {
-	display: none
+        display: none
     }
 
     .qrcodePath h1 {
-	font-size: 25px;
-	width: auto;
-	line-height: 35px;
+        font-size: 25px;
+        width: auto;
+        line-height: 35px;
     }
 
     .qrcodePath .connect-passport h1 {
-	font-size: 26px;
+        font-size: 26px;
     }
 
     .redemptionCode,
@@ -2923,16 +3021,16 @@ section.welcomeModal h1 {
         background: rgba(255, 255, 255, 0.82);
         width: 100%;
         padding: 10px;
-	border-right: none;
-	text-align: center;
+        border-right: none;
+        text-align: center;
     }
 
     .minimumSpend {
-	display: block;
-	top: -185px;
+        display: block;
+        top: -185px;
     }
     .passportTile .passport-label {
-	font-size: 30px;
+        font-size: 30px;
     }
 }
 @media (max-width: 815px) {
@@ -2955,54 +3053,54 @@ section.welcomeModal h1 {
 }
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
 @media (max-width: 400px) {
-     .btn-push {
-	min-height: 95px;
+    .btn-push {
+        min-height: 95px;
     }
 
     .offerItem .btn-push h1 {
-	margin-bottom: 0;
+        margin-bottom: 0;
     }   
     .offerHero {
-	/* model style */
-	height: 200px;
+        /* model style */
+        height: 200px;
     }
 
     .offers-hero {
-	margin-left: -15px;
-	width: calc(100% + 30px);
-	padding: 0 20px;
+        margin-left: -15px;
+        width: calc(100% + 30px);
+        padding: 0 20px;
     }
 
     .offers-hero h1 {
-	width: auto;
+        width: auto;
     }
 
     .offerHero h2 {
-	top: 60px;
+        top: 60px;
     }
 
     .passportTile .passport-buy {
-	margin-top: -48px;
-	padding: 0;
+        margin-top: -48px;
+        padding: 0;
     }
 
     .passportTile .passport-title {
-	padding-top: 30px;
+        padding-top: 30px;
     }
 
     .passportTile .offer-link h4 {
-	margin-top: 10px
+        margin-top: 10px
     }
     
     .redemptionCode {
-	top: -154px;
+        top: -154px;
     }
     
     .minimumSpend {
-	top: -144px;
+        top: -144px;
     }
 
-    #id-current-identity-name, .searchForm, .search {
+    #id-current-identity-name {
         display: none;
     }
     .navBtn {
@@ -3028,23 +3126,23 @@ section.welcomeModal h1 {
     }
     .offerItem {
         width: 45%;
-	height: 285px;
+        height: 285px;
         margin: 7px;
     }
     .offerItem .tileSpacing {
-	height: 100px;
+       height: 100px;
     }
     .mainContent {
         padding: 30px 0;
     }
     .offerItem h1 {
-	font-size: 16px;
+        font-size: 16px;
         border: 0;
         height: 48px;
-	margin-top: 5px;
-	margin-bottom: 16px;
-	-webkit-line-clamp: 3;
-	-webkit-box-orient: vertical;
+        margin-top: 5px;
+        margin-bottom: 16px;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
     }
     nav .search {
         position: relative;
