@@ -1503,56 +1503,6 @@ h1.sectionHeader {
     z-index: -1;
 }
 
-/* line 43, ../sass/_profile.scss */
-.heroInfo {
-    border-right: 1px solid #353434;
-    width: 40%;
-    background: rgba(29, 29, 29, 0.67);
-    position: absolute;
-    top: 50px;
-    left: 0;
-    padding: 30px 30px 80px;
-    overflow: hidden;
-    height: 400px;
-}
-/* line 51, ../sass/_profile.scss */
-.heroInfo img {
-    border-radius: 50%;
-    border: 4px solid white;
-}
-/* line 55, ../sass/_profile.scss */
-.heroInfo h1 {
-    font-size: 35px;
-    color: white;
-    margin: 20px 0 0;
-    display: inline-block;
-    overflow: hidden;
-    width: 100%;
-    text-overflow: ellipsis;
-}
-/* line 60, ../sass/_profile.scss */
-.heroInfo h2 {
-    display: inline-block;
-    width: 100%;
-    padding: 8px 0;
-    font-size: 17px;
-    font-family: "LatoLight", sans-serif;
-    letter-spacing: 1px;
-    margin-bottom: 15px;
-    color: white;
-}
-/* line 69, ../sass/_profile.scss */
-.heroInfo a {
-    background: #2cc397;
-    padding: 17px 70px;
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 13px;
-    border-radius: 2px;
-    display: inline-block;
-    margin-top: 15px;
-}
 
 /* line 85, ../sass/_profile.scss */
 section .profileInfo a.mapLink {
@@ -2605,7 +2555,7 @@ section.welcomeModal h1 {
     margin-top: 50px;
     font-family: latoLight;
     font-size: 20px;
-} 
+}
 .passportTile .passport-buy {
      margin-top: -53px;
 }
@@ -2664,7 +2614,7 @@ section.welcomeModal h1 {
 .qrcodePath.qrcode-success p {
     font-size: 33px;
     line-height: 45px;
-} 
+}
 .qrcodePath.qrcode-success h1 {
     font-family: latoReg;
     margin-bottom: 0;
@@ -2672,7 +2622,7 @@ section.welcomeModal h1 {
 .qrcodePath.qrcode-success p {
     font-family: latoLight;
     color: #959595;
-} 
+}
 
 /* End QRcode Process */
 /* Start Redemption Styles */
@@ -2742,22 +2692,22 @@ section.welcomeModal h1 {
 }
 
 @media (max-width: 767px) {
-    
+
     /* twitter-bootstrap label fix */
     .form-horizontal .control-label {
 	margin-bottom: 5px;
     }
-   
+
     .voucher .offerTitle h1 {
 	width: 80%;
 	margin: 0 auto;
     }
-    
+
     .qrcodePath.qrcode-success h1,
     .qrcodePath.qrcode-success p {
 	font-size: 28px;
 	line-height: 36px;
-    } 
+    }
 
     .offerItem {
 	margin: 0 5% 10px 0;
@@ -2772,11 +2722,11 @@ section.welcomeModal h1 {
     .offerItem.social-connect .tile-title {
 	margin-bottom: 0;
     }
- 
+
     .btn-spacer {
 	min-height: 215px;
     }
-    
+
     .forgotPassword p {
 	padding: 20px 0;
     }
@@ -2802,11 +2752,11 @@ section.welcomeModal h1 {
     .offerItem.social-connect .tile-title {
 	margin-bottom: 0;
     }
- 
+
     .btn-spacer {
 	min-height: 215px;
     }
-    
+
     .forgotPassword p {
 	padding: 20px 0;
     }
@@ -2824,14 +2774,14 @@ section.welcomeModal h1 {
 	margin-bottom: 0;
 	overflow: hidden;
     }
-    
+
     .offerDetails {
 	top: 0;
 	margin-bottom: 0;
 	height: auto;
 	padding: 0 35px 25px;
     }
-    
+
     .offerDetails h1 {
 	margin-top: 0;
     }
@@ -2863,7 +2813,7 @@ section.welcomeModal h1 {
 }
 
 @media (max-width: 550px) {
-    
+
     .hidden-small {
 	display: none
     }
@@ -2908,7 +2858,7 @@ section.welcomeModal h1 {
 
     .offerItem .btn-push h1 {
 	margin-bottom: 0;
-    }   
+    }
     .offerHero {
 	/* model style */
 	height: 200px;
@@ -2940,11 +2890,11 @@ section.welcomeModal h1 {
     .passportTile .offer-link h4 {
 	margin-top: 10px
     }
-    
+
     .redemptionCode {
 	top: -154px;
     }
-    
+
     .minimumSpend {
 	top: -144px;
     }
@@ -2964,7 +2914,7 @@ section.welcomeModal h1 {
     .profileBusiness .hero {
         text-align: center;
     }
-    .heroInfo {
+    .establishmentProfile {
         width: 100%;
     }
     .profileContent {
