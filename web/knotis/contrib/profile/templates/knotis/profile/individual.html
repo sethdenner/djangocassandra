@@ -1,9 +1,9 @@
 {% load thumbnail %}
 {% load render_template_fragment %}
-<div class="profileBusiness">
+<div class="profileIndividual">
     <div class="container-fluid mainContent">
         {% thumbnail profile_banner.image.image '1920x500' crop=profile_banner.crop as header %}
-        <div class="hero" data-id='id-data-profile-cover' style="background-image: url('{{ header.url }}');background-size: cover;">
+        <div class="hero" data-id='id-data-profile-cover' style="background-image: url('{{ header.url }}');background-size: 100% 100%;">
         {% empty %}
         <div class="hero" data-id='id-data-profile-cover'>
         {% endthumbnail %}
@@ -27,23 +27,45 @@
                 </div>
             {% endif %}
             <div class="profileContent">
-                {% if is_owner %}
-                    <form class="aboutMeForm" action="/id/update_individual/" method="post">
-                        {% csrf_token %}
-                        <label for="individual-name">Name:</label>
-                        <input name="individual_name"
-                               type="text"
-                               placeholder="Enter your name here..."
-                               value="{{ identity.name }}" />
+                <section>
+                    <div id="about-me">
+                        {% if is_owner %}
+                        <a class="edit_about">Edit</a>
+                        <a class="close_edit_about" style="display: none;">Close without Saving</a>
+                        {% endif %}
+                        
+                        {% if is_owner %}
+                        Username:
+                        <form 
+                            class="aboutMeForm"
+                            action="/id/update_individual/"
+                            method="post">
+                            {% csrf_token %}
+                            <label for="individual-name">Name:</label>
+                            <input name="individual_name"
+                                   type="text"
+                                   placeholder="Enter your name here..."
+                                   value="{{ identity.name }}" />
 
-                        <input type="hidden" name="identity_id" value="{{ identity.id }}"/>
-                        <input type="submit" value="Save" />
+                            <input type="hidden" name="identity_id" value="{{ identity.id }}"/>
+                            <input id="submit-business-info" type="submit" value="Save" />
+                        </form>
+                        {% endif %}
 
-                    </form>
+                        <div class="viewable toggleable">
+                            <div class="about-me">
+                            Username: {{ identity.name }} <a class="edit_about">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            
+                {% if tiles %}
+                    <div id="">Tracking Business</div>
+                    {% for tile in tiles %}
+                        {{ tile }}
+                    {% endfor %}
                 {% endif %}
-                {% for tile in tiles %}
-                    {{ tile }}
-                {% endfor %}
             </div>
         </div>
     </div>
