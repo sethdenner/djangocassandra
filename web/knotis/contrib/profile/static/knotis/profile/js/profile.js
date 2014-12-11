@@ -1,18 +1,5 @@
 (function($) {
     $(function () {
-
-        $('a.edit_about').click(function(event){
-            $('#about-me .toggleable').toggle();
-            $('.edit_about').hide();
-            $('.close_edit_about').show();
-        });
-
-        $('.close_edit_about').click(function(){
-            $('#about-me .toggleable').hide();
-            $('.close_edit_about').hide();
-            $('.edit_about').show();
-        });
-
         var upload_logo = function(event) {
             event.preventDefault();
 
@@ -88,6 +75,16 @@
                     });
                 }
             });
+        });
+
+        $('button.edit_about').click(function(event){
+            $('#about-me .viewUser').hide();
+            $('#about-me .editUser').show();
+        });
+        
+        $('button.close_edit_about').click(function(){
+            $('#about-me .viewUser').show();
+            $('#about-me .editUser').hide();
         });
     });
 })(jQuery);

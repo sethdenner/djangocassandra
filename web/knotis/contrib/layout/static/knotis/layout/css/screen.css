@@ -1786,17 +1786,7 @@ a.adminLink:hover {
     list-style: none;
     margin-bottom: 12px;
 }
-.edit_about {
-    right: 0;
-    top: 40px;
-    padding: 8px 30px;
-    border-radius: 2px;
-    border: 1px solid #2cc397;
-    color: #2cc397;
-    font-size: 14px;
-    cursor: pointer;
-    margin-right: 17px;
-}
+
 .modal-footer {
     border: 0;
 }

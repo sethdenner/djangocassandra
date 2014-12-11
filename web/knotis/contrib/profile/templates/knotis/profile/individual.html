@@ -18,7 +18,6 @@
                 </div>
             </div>
         </div>
-
             {% if is_owner %}
                 <div class="adminBtns">
                     <div class="col-lg-3 col-xs-4">
@@ -27,41 +26,37 @@
                 </div>
             {% endif %}
             <div class="profileContent">
+                {% if is_owner %}
+                <div class="profileHeading">About Me</div>
                 <section>
-                    <div id="about-me">
-                        {% if is_owner %}
-                        <a class="edit_about">Edit</a>
-                        <a class="close_edit_about" style="display: none;">Close without Saving</a>
-                        {% endif %}
-                        
-                        {% if is_owner %}
-                        Username:
-                        <form 
-                            class="aboutMeForm"
-                            action="/id/update_individual/"
-                            method="post">
-                            {% csrf_token %}
-                            <label for="individual-name">Name:</label>
-                            <input name="individual_name"
-                                   type="text"
-                                   placeholder="Enter your name here..."
-                                   value="{{ identity.name }}" />
-
-                            <input type="hidden" name="identity_id" value="{{ identity.id }}"/>
-                            <input id="submit-business-info" type="submit" value="Save" />
-                        </form>
-                        {% endif %}
-
-                        <div class="viewable toggleable">
-                            <div class="about-me">
-                            Username: {{ identity.name }} <a class="edit_about">Edit</a>
-                            </div>
+                    <div id="about-me">                        
+                        <div class="viewUser">                                                
+                            Username: {{ identity.name }}
+                            <br />
+                            <button class="edit_about">Edit</button> 
+                        </div>
+                        <div class="editUser" style="display: none;">                           
+                            <form 
+                                action="/id/update_individual/"
+                                method="post">
+                                {% csrf_token %}
+                                <label for="individual-name">Username:</label>
+                                <input name="individual_name"
+                                       type="text"
+                                       placeholder="Enter your name here..."
+                                       value="{{ identity.name }}" />
+                                <input type="hidden" name="identity_id" value="{{ identity.id }}"/>
+                                <br />
+                                <input id="about-me-submit" type="submit" value="Save" />
+                            </form>
+                            <button class="close_edit_about">Cancel</button> 
                         </div>
                     </div>
                 </section>
-            
+                {% endif %}
+
                 {% if tiles %}
-                    <div id="">Tracking Business</div>
+                    <div class="profileHeading">Following</div>
                     {% for tile in tiles %}
                         {{ tile }}
                     {% endfor %}
