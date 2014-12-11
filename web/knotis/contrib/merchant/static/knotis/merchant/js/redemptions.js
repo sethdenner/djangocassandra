@@ -25,6 +25,7 @@
             );
         });
     }
+
     $(function(){
 
         $.initializeRedemptionGrid();
@@ -45,5 +46,26 @@
                 count_increment: 50
             });
         }
+
+        $('[data-id=redeem-query]').keyup(function(event) {
+            key_press = String.fromCharCode(event.keyCode)
+            var query = $.trim($(this).val());
+            var regx = /^[A-Za-z0-9]+$/;
+            if (regx.test(key_press) && regx.test(query) && query.length >= 3) {
+                $.ajax({
+                    url: window.location.pathname + 'grid/' + '?redeem_query=' + query,
+                    success: function(data, status, request) {
+                        data = data.replace(/(\r\n|\n|\r)/gm,"");
+                        var $markup = $(data);
+
+                        $('div[data-id=id-redemptions]').replaceWith($markup);
+
+                        $.initializeRedemptionGrid();
+                        $.navigation.reinitialize();
+                        $(window).off('scroll');
+                    }
+                });
+            }
+        });
     });
 })(jQuery);
