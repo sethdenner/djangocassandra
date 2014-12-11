@@ -1,0 +1,200 @@
+#about-us-form input {
+    border: 1px solid #E6E6E6;
+    background: white;
+    padding: 12px;
+    border-radius: 3px;
+    width: 50%;
+    display: inline-block;
+    margin: 10px 0;
+}
+
+#about-us-form label {
+    font-family: 'LatoReg', sans-serif;
+    font-size: 14px;
+    display: inline-block;
+    padding: 10px 20px;
+    width: 50%;
+}
+
+#about-us-form a {
+    width: 50%;
+    display: inline-block;
+    margin: 15px 0;
+}
+
+#about-map {
+    height: 300px;
+    width: 100%;
+}
+
+.about-carousel-image {
+    width: 100%;
+    height: 300px;
+    display: inline-block;
+    margin: 3px;
+    padding: 10px;
+}
+
+.about-us {
+    line-height: 23px;
+    font-size: 14px;
+    padding: 0 10px;
+}
+
+.about-carousel section {
+    padding-bottom: 90px;
+}
+
+.edit_about {
+    position: absolute;
+    right: 0;
+    top: 40px;
+    padding: 8px 30px;
+    border-radius: 2px;
+    border: 1px solid #2cc397;
+    color: #2cc397;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 17px;
+}
+
+.establishmentHeader {
+    border-right: 1px solid #353434;
+    width: 40%;
+    background: rgba(29, 29, 29, 0.67);
+    position: absolute;
+    top: 50px;
+    left: 0;
+    padding: 30px 30px 80px;
+    overflow: hidden;
+    height: 400px;
+}
+
+.establishmentHeader img {
+    border-radius: 50%;
+    border: 4px solid white;
+}
+
+.establishmentHeader h1 {
+    font-size: 35px;
+    color: white;
+    margin: 20px 0 0;
+    display: inline-block;
+    overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
+}
+
+.establishmentHeader h2 {
+    display: inline-block;
+    width: 100%;
+    padding: 8px 0;
+    font-size: 17px;
+    font-family: "LatoLight", sans-serif;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.establishmentHeader .btnFollow {
+    background: #2cc397;
+    border-radius: 3px;
+    border: 1px solid #2cc397;
+    padding: 17px 70px;
+    color: white;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+    width: 45%;
+    display: inline-block;    
+}
+
+.profileBusiness .hero {
+    width: 100%;
+    height: 448px;
+    position: absolute;
+    top: 0;
+    left: 70px;
+    background-size: cover;
+}
+
+.profileBusiness section {
+    min-height: 415px;
+    padding: 15px;
+    border-radius: 2px;
+    color: #888;
+    background: white;
+    font-family: "LatoLight", sans-serif;
+    overflow-y: auto;
+    margin-bottom: 30px;
+}
+
+.profileBusiness .subNav {
+    position: absolute;
+    top: 448px;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid #dedede;
+    padding: 14px;
+    font-family: 'LatoReg';
+    text-align: center;
+    height: 40px;
+}
+
+.profileContent {
+    position: relative;
+    top: 310px;
+    padding: 70px;
+    left: 30px;
+    margin: 0;
+    padding-bottom: 300px;
+}
+
+section .profileInfo a.mapLink {
+    background: #2cc397;
+    padding: 13px 20px;
+    border-radius: 2px;
+    display: inline-block;
+    color: white;
+    width: 100%;
+    text-align: center;
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+section .profileInfo:nth-child(5) {
+    background: #c0c0c0;
+}
+
+/* Small devices (Phones, Tablets, 400px, 768px and up) */
+@media (max-width: 400px) {
+    .establishmentHeader {
+        width: 100%;
+    }
+
+    .profileContent {
+        position: relative;
+        top: 380px;
+        padding: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    .profileBusiness .hero {
+        text-align: center;
+        left: 0;
+    }
+}
+
+@media (min-width: 768px) {
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+}
