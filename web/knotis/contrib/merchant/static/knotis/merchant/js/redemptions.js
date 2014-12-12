@@ -41,7 +41,8 @@
             $.paginator({
                 url:window.location.pathname + 'grid',
                 dataId:'id-redemptions',
-                onDone: $.initializeRedemptionGrid
+                onDone: $.initializeRedemptionGrid,
+                count_increment: 50
             });
         }
     });

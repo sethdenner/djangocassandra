@@ -122,6 +122,7 @@ from .forms import (
 
 class RedemptionsGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
     view_name = 'redemptions_grid'
+    default_count = 50
 
     def get_queryset(self):
         current_identity = self.get_current_identity(self.request)
@@ -223,7 +224,15 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
     ]
 
     def process_context(self):
+        redemption_filter = self.context.get('redemption_filter')
+        if None is redemption_filter:
+            redemption_filter = 'unredeemed'
+
+        redemption_filter = redemption_filter.lower()
+        redemption_filter == 'redeemed'
+
         self.context.update({
+            'redemption_filter': redemption_filter,
             'redeem_query': self.request.GET.get('redeem_query')
         })
         return self.context

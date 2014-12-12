@@ -58,6 +58,7 @@ from knotis.contrib.offer.models import OfferTypes
 
 class MyPurchasesGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
     view_name = 'my_purchases_grid'
+    default_count = 50
 
     def get_queryset(self):
         current_identity = self.get_current_identity(self.request)
@@ -135,8 +136,15 @@ class MyPurchasesView(EmbeddedView):
 
     def process_context(self):
 
+        purchase_filter = self.context.get('purchase_filter', None)
+        if None is purchase_filter:
+            purchase_filter = 'unused'
+
+        purchase_filter = purchase_filter.lower()
+
         local_context = copy.copy(self.context)
         local_context.update({
+            'purchase_filter': purchase_filter,
             'top_menu_name': 'my_purchases',
             'fixed_side_nav': True
         })
