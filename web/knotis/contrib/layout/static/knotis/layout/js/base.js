@@ -18,6 +18,7 @@
             };
         });
         $('#mainNavMobileToggle').trigger("change");
+	$('[data-toggle="popover"]').popover();
     });
 
 })(jQuery);

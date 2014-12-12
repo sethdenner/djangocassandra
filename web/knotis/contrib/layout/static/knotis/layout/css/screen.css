@@ -2761,6 +2761,21 @@ section.welcomeModal h1 {
 #error-text {
     padding: 10px;
 }
+.uni-restrict-toggle {
+    cursor: pointer;
+}
+ul.uni-restrict {
+    margin: 0;
+    margin-left: 15px;
+    list-style: initial;
+}
+ul.uni-restrict li {
+    margin: 0;
+    padding: 5px;
+    text-transform: none;
+    line-height: 15px;
+    border: none;
+}
 /* End of General Styles */
 
 
