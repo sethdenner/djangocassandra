@@ -1271,8 +1271,8 @@ offerSteps ul {
 
 @font-face {
     font-family: 'iconFont';
-    src: url("/static/knotis/layout/fonts/iconFont.eot?rz2jyxh");
-    src: url("/static/knotis/layout/fonts/iconFont.eot?#iefixrz2jywh") format("embedded-opentype"), url("/static/knotis/layout/fonts/iconFont.woff?rez2jyh") format("woff"), url("/static/knotis/layout/fonts/iconFont.ttf?raz2jyh") format("truetype"), url("/static/knotis/layout/fonts/iconFont.svg?rz2jyah#icomoon") format("svg");
+    src: url("/static/knotis/layout/fonts/iconFont.eot?201412104");
+    src: url("/static/knotis/layout/fonts/iconFont.eot?#iefix201412104") format("embedded-opentype"), url("/static/knotis/layout/fonts/iconFont.woff?201412104") format("woff"), url("/static/knotis/layout/fonts/iconFont.ttf?201412104") format("truetype"), url("/static/knotis/layout/fonts/iconFont.svg?#icomoon201412104") format("svg");
     font-weight: normal;
     font-style: normal;
 }
@@ -1341,6 +1341,12 @@ offerSteps ul {
 }
 .icon-location:before {
     content: "\e60b";
+}
+.icon-hyperlink:before {
+    content: "\f123";
+}
+.icon-phone:before {
+    content: "\f125";
 }
 .icon-arrow-left-med:before {
     content: "\e611";

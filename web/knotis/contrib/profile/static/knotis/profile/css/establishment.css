@@ -78,23 +78,10 @@
 .establishmentHeader h1 {
     font-size: 35px;
     color: white;
-    margin: 20px 0 0;
-    display: inline-block;
-    overflow: hidden;
-    width: 100%;
-    text-overflow: ellipsis;
-}
-
-.establishmentHeader h2 {
+    margin: 10px 0;    
     display: inline-block;
     width: 100%;
-    padding: 8px 0;
-    font-size: 17px;
-    font-family: "LatoLight", sans-serif;
-    letter-spacing: 1px;
-    margin-bottom: 15px;
-    color: white;
-}
+} 
 
 .establishmentHeader .btnFollow {
     background: #2cc397;
@@ -107,7 +94,49 @@
     letter-spacing: 2px;
     text-align: center;
     width: 45%;
-    display: inline-block;    
+    display: inline-block;
+}
+
+.establishmentHeader-credentials {
+    margin-bottom: 30px;
+}
+
+.establishmentHeader-credentials .establishmentHeader-credentials-list {       
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.establishmentHeader-credentials .circle {
+    border-radius: 50%;
+    border: 2px solid white;
+    background: transparent;
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    position: absolute;
+    color: white;
+}
+
+.establishmentHeader-credentials .icon-location, .icon-phone, .icon-hyperlink {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    font-size: 14px;
+}
+
+.establishmentHeader-label {
+    position: relative;
+    top: 4px;
+    left: 30px;
+    text-transform: capitalize;
+    letter-spacing: 1px;
+    font-size: 12px;
+    color: white;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    width: 88%;
+    white-space: nowrap;
 }
 
 .profileBusiness .hero {
@@ -170,8 +199,50 @@ section .profileInfo:nth-child(5) {
 
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
 @media (max-width: 400px) {
+    .establishmentHeader-credentials {
+        width: 100%;
+        display: table;
+        margin-bottom: 20px;
+    }
+
+    .establishmentHeader-credentials .establishmentHeader-credentials-list {       
+        display: table-cell;
+    }
+
+    .establishmentHeader-credentials .circle {
+        border-radius: 50%;
+        border: 3px solid white;
+        background: transparent;
+        width: 62px;
+        height: 62px;
+        display: inline-block;
+        position: relative;
+        color: white;
+    }
+
+    .establishmentHeader-credentials .icon-location, .icon-phone, .icon-hyperlink {
+        position: relative;
+        top: 13px;
+        left: 1px;
+        font-size: 30px;
+    }
+
+    .establishmentHeader-label {
+        display: none;
+    }
+}
+
+/* Bootstrap Medium Devices */
+@media (max-width: 768px) {
     .establishmentHeader {
         width: 100%;
+    }
+    .establishmentHeader-label {
+        width: auto;
+    }
+
+    .establishmentHeader-credentials .establishmentHeader-credentials-list {       
+        text-align: center;
     }
 
     .profileContent {
@@ -186,9 +257,6 @@ section .profileInfo:nth-child(5) {
         text-align: center;
         left: 0;
     }
-}
-
-@media (min-width: 768px) {
 }
 
 /* Medium devices (desktops, 992px and up) */
