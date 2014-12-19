@@ -152,6 +152,10 @@
     padding-bottom: 300px;
 }
 
+.yelp, .facebook, .twitter {
+    margin-left: 10px;
+}
+
 section .profileInfo a.mapLink {
     background: #2cc397;
     padding: 13px 20px;
