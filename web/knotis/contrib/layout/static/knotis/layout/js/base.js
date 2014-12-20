@@ -18,6 +18,16 @@
             };
         });
         $('#mainNavMobileToggle').trigger("change");
+        $('.searchButton').on("click", function(){
+            var $inputBox;
+            if(($inputBox = $(this).parent().find('input:visible')).length){
+                if($inputBox.val().length){
+                    $(this).parent().find("form").submit();
+                    return;
+                }
+            }
+            $(this).parent('div.searchForm').toggleClass('expanded');
+        });
     });
 
 })(jQuery);
