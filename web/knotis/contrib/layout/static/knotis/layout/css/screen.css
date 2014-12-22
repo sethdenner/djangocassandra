@@ -2728,7 +2728,7 @@ section.welcomeModal h1 {
     .qrcodePath.qrcode-success p {
         font-size: 28px;
         line-height: 36px;
-    } 
+    }
 
     .offerItem {
         margin: 0 5% 10px 0;
@@ -2896,7 +2896,8 @@ section.welcomeModal h1 {
 
     .offerItem .btn-push h1 {
         margin-bottom: 0;
-    }   
+    }
+}
     .offerHero {
         /* model style */
         height: 200px;

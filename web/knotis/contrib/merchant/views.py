@@ -128,19 +128,20 @@ class RedemptionsGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
         redemption_filter = redemption_filter.lower()
         redeemed = redemption_filter == 'redeemed'
 
-        redeem_query = self.context.get('redeem_query', '')
+        redeem_query = request.GET.get('redeem_query', '')
 
         if not redeem_query:
             purchases = self.get_page(self.context)
 
         else:
-            purchases = [x.object for x in SearchQuerySet().models(
-                Transaction).filter(
-                    redemption_code__startswith=redeem_query,
-                    owner=current_identity,
-                    transaction_type=TransactionTypes.PURCHASE,
-                )
-            ]
+            purchases = filter(
+                lambda x: x.owner == current_identity,
+                [x.object for x in SearchQuerySet().models(
+                    Transaction).filter(
+                        redemption_code__startswith=redeem_query,
+                        transaction_type=TransactionTypes.PURCHASE,
+                    )]
+            )
 
         for purchase in purchases:
             if purchase.reverted:
