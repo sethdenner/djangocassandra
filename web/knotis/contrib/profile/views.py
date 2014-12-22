@@ -449,6 +449,13 @@ class EstablishmentProfileView(ProfileView):
             if EndpointTypes.WEBSITE == endpoint.endpoint_type:
                 website = {
                     'value': endpoint.value,
+                    'base': endpoint.value.lower().replace(
+                        'www.',''
+                    ).replace(
+                        'http://www.',''
+                    ).replace(
+                        'https://www.',''
+                    ),
                     'uri': endpoint.get_uri(),
                     'display': endpoint.get_display()
                 }

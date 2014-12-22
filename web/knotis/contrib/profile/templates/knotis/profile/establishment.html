@@ -18,29 +18,33 @@
                             {% endthumbnail %}
                             <h1>{{ establishment.name }}</h1>
                             <div class="establishmentHeader-credentials">
+                            <ul>
+
                                 {% if address %}
-                                <div class="establishmentHeader-credentials-list">
+                                <li>
                                     <a class="mapLink no-deep" target="_blank" href="http://maps.google.com/maps?daddr={{ address|iriencode }}">
                                         <span class="circle"><i class="icon-location"></i></span>
                                         <span class="establishmentHeader-label">{{ address }}</span></a>
-                                </div>
+                                </li>
                                 {% endif %}
 
                                 {% if phone %}
-                                <div class="establishmentHeader-credentials-list">
+                                <li>
                                     <a class="no-deep" href="{{ phone.uri }}">
                                         <span class="circle"><i class="icon-phone"></i></span>
                                         <span class="establishmentHeader-label">{{ phone.value }}</span></a>
-                                </div>
+                                </li>
                                 {% endif %}
                                 
                                 {% if website %}
-                                <div class="establishmentHeader-credentials-list">
+                                <li>
                                     <a class="no-deep" href="{{ website.uri }}" target="_blank">
                                         <span class="circle"><i class="icon-hyperlink"></i></span>
-                                        <span class="establishmentHeader-label" style="text-transform: lowercase;">{{ website.value }}</span></a>
-                                </div>
+                                        <span class="establishmentHeader-label" style="text-transform: lowercase;">{{ website.base }}</span></a>
+                                </li>
                                 {% endif %}
+
+                            </ul>
                             </div>
                             {% if action_button %}
                             <div class="profileActionButton">
