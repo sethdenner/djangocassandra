@@ -1506,28 +1506,6 @@ h1.sectionHeader {
     margin: 40px 0 20px;
 }
 
-/* line 7, ../sass/_profile.scss */
-.profileBusiness .hero {
-    width: 100%;
-    height: 448px;
-    position: absolute;
-    top: 0;
-    left: 70px;
-    background-size: cover;
-}
-
-/* line 23, ../sass/_profile.scss */
-.profileBusiness section {
-    min-height: 415px;
-    padding: 15px;
-    border-radius: 2px;
-    color: #888;
-    background: white;
-    font-family: "LatoLight", sans-serif;
-    overflow-y: auto;
-    margin-bottom: 30px;
-}
-
 /* line 33, ../sass/_profile.scss */
 .heroOverlay {
     background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.26));
@@ -1537,75 +1515,6 @@ h1.sectionHeader {
     height: 485px;
     width: 100%;
     z-index: -1;
-}
-
-/* line 43, ../sass/_profile.scss */
-.heroInfo {
-    border-right: 1px solid #353434;
-    width: 40%;
-    background: rgba(29, 29, 29, 0.67);
-    position: absolute;
-    top: 50px;
-    left: 0;
-    padding: 30px 30px 80px;
-    overflow: hidden;
-    height: 400px;
-}
-/* line 51, ../sass/_profile.scss */
-.heroInfo img {
-    border-radius: 50%;
-    border: 4px solid white;
-}
-/* line 55, ../sass/_profile.scss */
-.heroInfo h1 {
-    font-size: 35px;
-    color: white;
-    margin: 20px 0 0;
-    display: inline-block;
-    overflow: hidden;
-    width: 100%;
-    text-overflow: ellipsis;
-}
-/* line 60, ../sass/_profile.scss */
-.heroInfo h2 {
-    display: inline-block;
-    width: 100%;
-    padding: 8px 0;
-    font-size: 17px;
-    font-family: "LatoLight", sans-serif;
-    letter-spacing: 1px;
-    margin-bottom: 15px;
-    color: white;
-}
-/* line 69, ../sass/_profile.scss */
-.heroInfo a {
-    background: #2cc397;
-    padding: 17px 70px;
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 13px;
-    border-radius: 2px;
-    display: inline-block;
-    margin-top: 15px;
-}
-
-/* line 85, ../sass/_profile.scss */
-section .profileInfo a.mapLink {
-    background: #2cc397;
-    padding: 13px 20px;
-    border-radius: 2px;
-    display: inline-block;
-    color: white;
-    width: 100%;
-    text-align: center;
-    margin: 5px 0;
-    font-size: 14px;
-}
-
-/* line 97, ../sass/_profile.scss */
-section .profileInfo:nth-child(5) {
-    background: #c0c0c0;
 }
 
 .loadState {
@@ -1674,30 +1583,6 @@ span.help-inline {
     margin: 0 auto 20px;
 }
 
-#about-us-form input {
-    border: 1px solid #E6E6E6;
-    background: white;
-    padding: 12px;
-    border-radius: 3px;
-    width: 50%;
-    display: inline-block;
-    margin: 10px 0;
-}
-
-#about-us-form label {
-    font-family: 'LatoReg', sans-serif;
-    font-size: 14px;
-    display: inline-block;
-    padding: 10px 20px;
-    width: 50%;
-}
-
-#about-us-form a {
-    width: 50%;
-    display: inline-block;
-    margin: 15px 0;
-}
-
 #modal-box {
     text-align: center;
 }
@@ -1716,34 +1601,12 @@ span.help-inline {
     color: white;
 }
 
-.profileBusiness .subNav {
-    position: absolute;
-    top: 448px;
-    left: 0;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.9);
-    border-bottom: 1px solid #dedede;
-    padding: 14px;
-    font-family: 'LatoReg';
-    text-align: center;
-    height: 40px;
-}
-
 .identityContent .icon-knotis {
     position: absolute;
     left: 39px;
     top: 15px;
     font-size: 50px;
     color: rgb(207, 207, 207);
-}
-
-.profileContent {
-    position: relative;
-    top: 310px;
-    padding: 70px;
-    left: 30px;
-    margin: 0;
-    padding-bottom: 300px;
 }
 
 .line-clamp {
@@ -1845,11 +1708,6 @@ label.label-unlimited {
     width: 300px;
 }
 
-#about-map {
-    height: 300px;
-    width: 100%;
-}
-
 .offerPreview .offerItem {
     margin: 0 45px 0 15px;
     border: 1px solid rgb(209, 209, 209);
@@ -1940,18 +1798,6 @@ a.adminLink:hover {
     color: #2cc397;
 }
 
-.about-carousel-image {
-    width: 100%;
-    height: 300px;
-    display: inline-block;
-    margin: 3px;
-    padding: 10px;
-}
-
-.about-carousel section {
-    padding-bottom: 90px;
-}
-
 .upload-photo {
     padding: 11px;
     border-radius: 3px;
@@ -1975,19 +1821,6 @@ a.adminLink:hover {
     padding-left: 10px;
     list-style: none;
     margin-bottom: 12px;
-}
-
-.edit_about {
-    position: absolute;
-    right: 0;
-    top: 40px;
-    padding: 8px 30px;
-    border-radius: 2px;
-    border: 1px solid #2cc397;
-    color: #2cc397;
-    font-size: 14px;
-    cursor: pointer;
-    margin-right: 17px;
 }
 
 .modal-footer {
@@ -2495,11 +2328,6 @@ section.welcomeModal h1 {
     position: relative;
     float: right;
 }
-.about-us {
-    line-height: 23px;
-    font-size: 14px;
-    padding: 0 10px;
-}
 
 .tweet img,
 .yelp-review img {
@@ -2641,7 +2469,7 @@ section.welcomeModal h1 {
     margin-top: 50px;
     font-family: latoLight;
     font-size: 20px;
-} 
+}
 .passportTile .passport-buy {
      margin-top: -53px;
 }
@@ -2700,7 +2528,7 @@ section.welcomeModal h1 {
 .qrcodePath.qrcode-success p {
     font-size: 33px;
     line-height: 45px;
-} 
+}
 .qrcodePath.qrcode-success h1 {
     font-family: latoReg;
     margin-bottom: 0;
@@ -2708,7 +2536,7 @@ section.welcomeModal h1 {
 .qrcodePath.qrcode-success p {
     font-family: latoLight;
     color: #959595;
-} 
+}
 
 /* End QRcode Process */
 /* Start Redemption Styles */
@@ -2778,22 +2606,22 @@ section.welcomeModal h1 {
 }
 
 @media (max-width: 767px) {
-    
+
     /* twitter-bootstrap label fix */
     .form-horizontal .control-label {
 	margin-bottom: 5px;
     }
-   
+
     .voucher .offerTitle h1 {
 	width: 80%;
 	margin: 0 auto;
     }
-    
+
     .qrcodePath.qrcode-success h1,
     .qrcodePath.qrcode-success p {
 	font-size: 28px;
 	line-height: 36px;
-    } 
+    }
 
     .offerItem {
 	margin: 0 5% 10px 0;
@@ -2808,11 +2636,11 @@ section.welcomeModal h1 {
     .offerItem.social-connect .tile-title {
 	margin-bottom: 0;
     }
- 
+
     .btn-spacer {
 	min-height: 215px;
     }
-    
+
     .forgotPassword p {
 	padding: 20px 0;
     }
@@ -2838,11 +2666,11 @@ section.welcomeModal h1 {
     .offerItem.social-connect .tile-title {
 	margin-bottom: 0;
     }
- 
+
     .btn-spacer {
 	min-height: 215px;
     }
-    
+
     .forgotPassword p {
 	padding: 20px 0;
     }
@@ -2860,14 +2688,14 @@ section.welcomeModal h1 {
 	margin-bottom: 0;
 	overflow: hidden;
     }
-    
+
     .offerDetails {
 	top: 0;
 	margin-bottom: 0;
 	height: auto;
 	padding: 0 35px 25px;
     }
-    
+
     .offerDetails h1 {
 	margin-top: 0;
     }
@@ -2899,7 +2727,7 @@ section.welcomeModal h1 {
 }
 
 @media (max-width: 550px) {
-    
+
     .hidden-small {
 	display: none
     }
@@ -2961,7 +2789,7 @@ section.welcomeModal h1 {
 
     .offerItem .btn-push h1 {
 	margin-bottom: 0;
-    }   
+    }
     .offerHero {
 	/* model style */
 	height: 200px;
@@ -2993,11 +2821,11 @@ section.welcomeModal h1 {
     .passportTile .offer-link h4 {
 	margin-top: 10px
     }
-    
+
     .redemptionCode {
 	top: -154px;
     }
-    
+
     .minimumSpend {
 	top: -144px;
     }
@@ -3014,18 +2842,7 @@ section.welcomeModal h1 {
         margin: 0 auto 20px;
         padding-bottom: 7px;
     }
-    .profileBusiness .hero {
-        text-align: center;
-    }
-    .heroInfo {
-        width: 100%;
-    }
-    .profileContent {
-        position: relative;
-        top: 380px;
-        padding: 0;
-        left: 0;
-    }
+
     .offerItem {
         width: 45%;
 	height: 285px;
@@ -3058,12 +2875,6 @@ section.welcomeModal h1 {
         border: 1px solid #2cc397;
     }
     .supportModal select {
-        width: 100%;
-    }
-    .profileBusiness .hero {
-        left: 0;
-    }
-    .profileContent {
         width: 100%;
     }
     .tileContent {
