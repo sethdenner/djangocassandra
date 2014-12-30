@@ -4,10 +4,13 @@
 
 FROM ubuntu:12.04
 
-RUN apt-get update && apt-get install -y libboost-dev libboost-test-dev libboost-program-options-dev libevent-dev libtool flex bison pkg-config g++ libssl-dev python python-dev python-setuptools python-software-properties python-support python-twisted make automake autoconf acl gcc git mercurial libmysqlclient-dev python-pip libjpeg8 libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev python-virtualenv
+ENV install_location /srv/knotis
+ENV setup_dir ${install_location}/setup
+RUN mkdir ${install_location}
+WORKDIR ${install_location}
+#USER knotis
 
-RUN mkdir /knotis.com
-WORKDIR /knotis.com
+RUN apt-get update && apt-get install -y libboost-dev libboost-test-dev libboost-program-options-dev libevent-dev libtool flex bison pkg-config g++ libssl-dev python python-dev python-setuptools python-software-properties python-support python-twisted make automake autoconf acl gcc git mercurial libmysqlclient-dev python-pip libjpeg8 libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev python-virtualenv
 
 RUN virtualenv venv
 
@@ -18,8 +21,6 @@ RUN . venv/bin/activate && \
     pip install --upgrade distribute && \
     pip install MySQL-python
 
-RUN . venv/bin/activate && \
-    pip install PIL
 
 RUN . venv/bin/activate && \
     pip install git+https://github.com/Knotis/sorl-thumbnail.git@fix_cropping
@@ -44,15 +45,13 @@ RUN apt-get update && \
     pip install ipython
 
 
-COPY setup /knotis.com/setup
+COPY setup ${install_location}/setup
 
-ENV setup_dir /knotis.com/setup
-ENV install_location /knotis.com
+
 ENV CASSANDRA_THRIFT_INTERFACE ${setup_dir}/static/cassandra.thrift
 ENV MODWSGI_SCRIPT ${setup_dir}/config/modwsgi/knotis.wsgi
-ENV APACHE2_CONFIG ${setup_dir}/config/apache2/docker.knotis.com
+ENV APACHE2_CONFIG ${setup_dir}/config/apache2/dev.knotis.com
 
-RUN mkdir /knotis.com/logs /knotis.com/app /knotis.com/static
 
 RUN . venv/bin/activate && \
     pip install ${setup_dir}/static/django-nonrel-1.3.tar.gz && \
@@ -91,6 +90,13 @@ RUN . venv/bin/activate && \
 
 RUN ${setup_dir}/installers/install_apache.sh
 
-EXPOSE 8000
+# This replaces PIL and is much better.
+RUN . venv/bin/activate && pip install pillow
 
-#ENTRYPOINT /knotis.com/venv/bin/python /knotis.com/web/manage.py runserver 0.0.0.0:8000
+EXPOSE 8000
+EXPOSE 80
+
+VOLUME ${install_location}/logs ${install_location}/app ${install_location}static ${install_location}/web
+
+RUN echo source ${install_location}/venv/bin/activate >> ~/.bashrc && \
+    echo source ${install_location}/venv/bin/activate >> ~/.bash_profile

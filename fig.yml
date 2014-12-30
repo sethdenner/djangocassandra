@@ -3,7 +3,7 @@ search:
 db:
     image: spotify/cassandra
 
-abmassador:
+ambassador:
     image: svendowideit/ambassador
     links:
         - web
@@ -11,10 +11,10 @@ abmassador:
         - "8000:8000"
 
 web:
-    image: simlay/knotis_web
+    image: knotis/web
     volumes:
-        - web:/knotis.com/web
+        - ./web:/srv/knotis/web
     links:
         - db
         - search
-    command: "/knotis.com/venv/bin/python /knotis.com/web/manage.py runserver 0.0.0.0:8000"
+    command: '/srv/knotis/venv/bin/python /srv/knotis/web/manage.py runserver 0.0.0.0:8000'
