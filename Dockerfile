@@ -96,7 +96,7 @@ RUN . venv/bin/activate && pip install pillow
 EXPOSE 8000
 EXPOSE 80
 
-VOLUME ${install_location}/logs ${install_location}/app ${install_location}static ${install_location}/web
+VOLUME ${install_location}/logs ${install_location}/app ${install_location}/static ${install_location}/web
 
 RUN echo source ${install_location}/venv/bin/activate >> ~/.bashrc && \
     echo source ${install_location}/venv/bin/activate >> ~/.bash_profile
