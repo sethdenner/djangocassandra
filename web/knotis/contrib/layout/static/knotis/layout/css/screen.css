@@ -2783,6 +2783,10 @@ section.welcomeModal h1 {
 }
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
 @media (max-width: 400px) {
+    h1.sectionHeader {
+        width: 100%;
+    }
+
      .btn-push {
 	min-height: 95px;
     }
