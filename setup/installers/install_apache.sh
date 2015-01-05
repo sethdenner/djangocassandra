@@ -19,7 +19,7 @@ tar xvf ${modwsgi_tarball} -C ${temp_dir}
         (
             cd ${bootstrap_script%/*}
             ./${bootstrap_script##*/}
-            
+
         )
     fi
     configure_script=$(find . -maxdepth 2 -name configure)
@@ -38,10 +38,8 @@ a2enmod wsgi
 mkdir -p ${install_location}/app/conf/apache
 mkdir -p ${install_location}/app/media
 
-cp ${MODWSGI_SCRIPT} /srv/knotis/app/conf/apache/
+cp ${MODWSGI_SCRIPT} ${install_location}/app/conf/apache/
 cp ${APACHE2_CONFIG} /etc/apache2/sites-available/
 
 a2dissite default
 a2ensite $(basename ${APACHE2_CONFIG})
-
-service apache2 restart

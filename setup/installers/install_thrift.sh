@@ -16,7 +16,7 @@ tar xvf ${thrift_tarball} -C ${temp_dir}
         (
             cd ${bootstrap_script%/*}
             ./${bootstrap_script##*/}
-            
+
         )
     fi
     configure_script=$(find . -maxdepth 2 -name configure)
@@ -30,6 +30,6 @@ tar xvf ${thrift_tarball} -C ${temp_dir}
     fi
 )
 thrift -gen py ${CASSANDRA_THRIFT_INTERFACE}
-cp -af ./gen-py/cassandra /srv/knotis/venv/lib/python2.7/site-packages/
+cp -af ./gen-py/cassandra ${install_location}/venv/lib/python2.7/site-packages/
 rm -rf ./gen-py
 rm -rf ${temp_dir}
