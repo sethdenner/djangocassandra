@@ -288,6 +288,7 @@ class EstablishmentProfileView(ProfileView):
         'knotis/profile/js/profile.js',
         'knotis/profile/js/establishment.js',
         'knotis/profile/js/update_establishment.js',
+        'knotis/admintools/js/admin_toggle_manager.js',
     ]
 
     def set_profile_identity(self):
