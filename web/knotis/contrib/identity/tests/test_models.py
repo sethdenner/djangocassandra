@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from knotis.contrib.auth.tests import UserCreationTests
-from models import (
+from knotis.contrib.auth.tests.utils import UserCreationTestUtils
+from knotis.contrib.identity.models import (
     IdentityIndividual,
     IdentityBusiness,
     IdentityEstablishment
@@ -9,53 +9,12 @@ from models import (
 
 
 class IdentityModelTests(TestCase):
-    @staticmethod
-    def create_test_individual(**kwargs):
-        if not kwargs.get('name'):
-            kwargs['name'] = 'Test Individual'
-
-        if not kwargs.get('description'):
-            kwargs['description'] = 'Test Individual description.'
-
-        return IdentityIndividual.objects.create(**kwargs)
-
-    @staticmethod
-    def create_test_business(
-        manager,
-        **kwargs
-    ):
-        if not kwargs.get('name'):
-            kwargs['name'] = 'Test Business'
-
-        if not kwargs.get('description'):
-            kwargs['description'] = 'Test Business description.'
-
-        return IdentityBusiness.objects.create(
-            manager,
-            **kwargs
-        )
-
-    @staticmethod
-    def create_test_establishment(
-        business,
-        **kwargs
-    ):
-        if not kwargs.get('name'):
-            kwargs['name'] = 'Test Establishment'
-
-        if not kwargs.get('description'):
-            kwargs['description'] = 'Test Establishment description.'
-
-        return IdentityEstablishment.objects.create(
-            business,
-            **kwargs
-        )
 
     def setUp(self):
         (
             self.user_consumer,
             self.identity_consumer
-        ) = UserCreationTests.create_test_user(
+        ) = UserCreationTestUtils.create_test_user(
             first_name='Test',
             last_name='Consumer',
             email='testconsumer@example.com'
@@ -64,7 +23,7 @@ class IdentityModelTests(TestCase):
         (
             self.user_merchant,
             self.identity_merchant
-        ) = UserCreationTests.create_test_user(
+        ) = UserCreationTestUtils.create_test_user(
             first_name='Test',
             last_name='Merchant',
             email='testmerchant@example.com'
@@ -120,10 +79,6 @@ class IdentityModelTests(TestCase):
 
         self.assertEqual(
             1,
-            len(establishments_by_manager)
-        )
-        self.assertEqual(
-            1,
             len(establishments_by_business)
         )
         self.assertEqual(
@@ -139,7 +94,7 @@ class IdentityModelTests(TestCase):
 class IdentityViewTests(TestCase):
     def setUp(self):
         self.user_password = 'test_password'
-        self.user, self.user_identity = UserCreationTests.create_test_user(
+        self.user, self.user_identity = UserCreationTestUtils.create_test_user(
             password=self.user_password
         )
 
@@ -150,6 +105,3 @@ class IdentityViewTests(TestCase):
         )
         response = self.client.get('/identity/switcher/')
         self.assertEqual(response.status_code, 200)
-
-    def test_identity_switcher_fragment(self):
-        pass
