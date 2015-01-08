@@ -1,7 +1,7 @@
 <!-- Sidebar -->
 <div class="sideBar" id="sideBar">
     <input name="mainNavMobileToggle" id="mainNavMobileToggle" type="checkbox">
-    <div id="sideBarNav" class="menuContainer unselectable">        
+    <div id="sideBarNav" class="menuContainer unselectable">
         <ul class="navList sidebar-nav unselectable">
                 <li><a href="/businesses/" data-target-id="main-content" >
                     <label for="mainNaveMobileToggle">
@@ -10,6 +10,7 @@
                 </li>
                 <li><a href="/offers/" data-target-id="main-content" ><span class="circle"><i class="icon-offers"></i></span><span class="sidebar-label">Offers</span></a></li>
                 {% if current_identity.identity_type == IdentityTypes.INDIVIDUAL %}
+                <li><a a href="/id/{{ current_identity.pk }}/" data-target-id="main-content" ><span class="circle"><i class="icon-profile-male"></i></span><span class="sidebar-label">Profile</span></a></li>
                 <li><a href="/my/followers/" data-target-id="main-content"><span class="circle"><i class="icon-followers"></i></span><span class="sidebar-label">Following</span></a></li>
                 <li><a href="/my/purchases/" data-target-id="main-content"><span class="circle"><i class="icon-promotions"></i></span><span class="sidebar-label">Purchases</span></a></li>
                 {% endif %}

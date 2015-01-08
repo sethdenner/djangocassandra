@@ -72,7 +72,7 @@
 }
 .mobileMenuToggle:before{
     color:white;
-    content:"\f05e";
+    content:"\f100";
     font-family:'iconFont';
 }
 #sideBarNav .mainNavOverlay{

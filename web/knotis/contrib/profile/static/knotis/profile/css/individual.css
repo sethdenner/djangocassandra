@@ -1,0 +1,120 @@
+#about-me {
+    font-size: 14px;
+}
+
+.edit_about,
+.close_edit_about, 
+#about-me-submit {
+    float: right;
+    width: 80px;
+    padding: 4px 20px;
+    border: 1px solid rgb(248, 248, 248);
+    border-radius: 3px;    
+    background: rgb(248, 248, 248);
+    color: rgb(122, 122, 122);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.edit_about:hover, 
+.close_edit_about:hover, 
+#about-me-submit:hover {
+    background: transparent;
+    border: 1px solid #2cc397;
+    color: #2cc397;
+}
+
+.individualHeader {
+    border-right: 1px solid #353434;
+    width: 40%;
+    background: rgba(29, 29, 29, 0.67);
+    position: absolute;
+    top: 50px;
+    left: 0;
+    padding: 30px 30px 80px;
+    overflow: hidden;
+    height: 400px;
+}
+
+.individualHeader img {
+    border-radius: 50%;
+    border: 4px solid white;
+}
+
+.individualHeader h1 {
+    font-size: 35px;
+    color: white;
+    margin: 20px 0 0;
+    display: inline-block;
+    overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
+}
+
+.profileIndividual .hero {
+    width: 100%;
+    height: 448px;
+    position: absolute;
+    top: 0;
+    left: 70px;
+    background-size: cover;
+}
+
+.profileIndividual section {
+    min-height: 80px;
+    padding: 15px;
+    border-radius: 2px;
+    color: #888;
+    background: white;
+    font-family: "LatoLight", sans-serif;
+    overflow-y: auto;
+    margin-bottom: 30px;
+}
+
+.profileContent {
+    position: relative;
+    top: 310px;
+    padding: 70px;
+    left: 30px;
+    margin: 0;
+    padding-bottom: 300px;
+}
+
+.profileHeading {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    font-family: "LatoLight", sans-serif; 
+}
+
+/* Small devices (Phones, Tablets, 400px, 768px and up) */
+@media (max-width: 768px) {
+    .individualHeader {
+        width: 100%;
+    }
+
+    .profileContent {
+        position: relative;
+        top: 380px;
+        padding: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    .profileIndividual .hero {
+        text-align: center;
+        left: 0;
+    }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+}
