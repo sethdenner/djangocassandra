@@ -9,8 +9,7 @@
     width: 80px;
     padding: 4px 20px;
     border: 1px solid rgb(248, 248, 248);
-    border-radius: 3px;
-    
+    border-radius: 3px;    
     background: rgb(248, 248, 248);
     color: rgb(122, 122, 122);
     font-size: 12px;
@@ -93,7 +92,7 @@
 }
 
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
-@media (max-width: 400px) {
+@media (max-width: 768px) {
     .individualHeader {
         width: 100%;
     }
@@ -110,9 +109,6 @@
         text-align: center;
         left: 0;
     }
-}
-
-@media (min-width: 768px) {
 }
 
 /* Medium devices (desktops, 992px and up) */

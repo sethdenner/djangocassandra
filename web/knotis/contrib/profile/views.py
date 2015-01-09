@@ -288,6 +288,7 @@ class EstablishmentProfileView(ProfileView):
         'knotis/profile/js/profile.js',
         'knotis/profile/js/establishment.js',
         'knotis/profile/js/update_establishment.js',
+        'knotis/admintools/js/admin_toggle_manager.js',
     ]
 
     def set_profile_identity(self):
@@ -792,6 +793,8 @@ class EstablishmentAboutFeeds(FragmentView):
             'twitter_markup': twitter.render_template_fragment(local_context),
             'twitter_has_feed': twitter.has_feed,
             'twitter': twitter.endpoint,
+
+            'facebook': filter(lambda x: x['endpoint_type_name'] == 'facebook',self.context.get("endpoints"))[0],
         })
 
         return local_context
@@ -868,6 +871,7 @@ class EstablishmentProfileAbout(FragmentView):
         local_context.update({
             'sections': sections,
         })
+
         return local_context
 
 
