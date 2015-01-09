@@ -318,7 +318,8 @@ nav .dropdown {
     color:white;
     padding:5px;
 }
-.nav div.identitySwitcher{
+.nav div.identitySwitcher,
+.nav div#auth-controls{
     display:block;
     float:right;
 }
