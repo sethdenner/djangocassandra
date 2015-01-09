@@ -18,11 +18,17 @@
         </div>
 	<div class='col-sm-3 redemption-search'>
 	    <form name="redeem_query" method="get">
-		{% if redeem_query %}
-		    <input type="/search" name="redeem_query" class="form-control" value="{{ redeem_query }}">
-		{% else %}
-		    <input type="/search" name="redeem_query" class="form-control" placeholder="SEARCH VOUCHER #">
-		{% endif %}
+            <input
+                type="/search"
+                data-id="redeem-query"
+                name="redeem_query"
+                class="form-control"
+            {% if redeem_query %}
+                value="{{ redeem_query }}"
+            {% else %}
+                placeholder="SEARCH VOUCHER #"
+            {% endif %}
+            />
 	    </form>
 	</div>
 	<div class='clearfix'></div>

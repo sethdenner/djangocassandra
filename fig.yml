@@ -1,0 +1,20 @@
+search:
+    image: dockerfile/elasticsearch
+db:
+    image: spotify/cassandra
+
+ambassador:
+    image: svendowideit/ambassador
+    links:
+        - web
+    ports:
+        - "8000:8000"
+
+web:
+    image: knotis/web
+    volumes:
+        - ./web:/srv/knotis/web
+    links:
+        - db
+        - search
+    command: '/srv/knotis/venv/bin/python /srv/knotis/web/manage.py runserver 0.0.0.0:8000'

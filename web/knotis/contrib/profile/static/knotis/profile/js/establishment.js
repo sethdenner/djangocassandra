@@ -1,81 +1,6 @@
+
 (function($) {
     $(function () {
-        var upload_logo = function(event) {
-            event.preventDefault();
-
-            var identity_id = $('div#id-identity-id').attr('data-establishment-id');
-
-            $.ajaxmodal({
-                href: '/image/upload/',
-                modal_settings: {
-                            backdrop: 'static'
-                },
-                on_open: function(data, status, request) {
-                    $('#file-uploader').sickle({
-                        do_upload: true,
-                        params: {
-                            type: 'image',
-                        },
-                        aspect: 1,
-                        primary: true,
-                        done: function(data) {
-                            if (data.status == 'success') {
-                                $img = $('[data-id=id-data-profile-badge]')
-                                $img.attr('src', data.image_url);
-                            } else if (data.status == 'failure') {
-
-                            } else {
-                            // Invalid Status
-                            }
-                        },
-                        related_object_id: identity_id,
-                        context: 'profile_badge',
-                        jcrop_box_width: 560,
-                        image_max_height: 400,
-                        image_max_width: 500,
-                    });
-                }
-            });
-
-        };
-
-        $('.change-profile-badge-link').click(upload_logo);
-
-        // BANNER EDITING
-
-        $('a.change-profile-cover-link').click(function(event){
-            event.preventDefault();
-            var identity_id = $('#id-identity-id').attr('data-establishment-id');
-
-            $.ajaxmodal({
-                href: '/image/upload',
-                modal_settings: {
-                    backdrop: 'static'
-                },
-                on_open: function(data, status, request){
-
-                    $('#file-uploader').sickle({
-                        do_upload: true,
-                        params: {
-                            type: 'image'
-                        },
-                        aspect: 5.12,
-                        related_object_id: identity_id,
-                        context: 'profile_banner',
-                        image_max_height: 400,
-                        image_max_width: 500,
-                        primary: true,
-                        done: function(data){
-                            $('modal-box').modal('hide');
-                            $('[data-id=id-data-profile-cover]').css(
-                                'background-image',
-                                'url("' + data.image_url + '")');
-                        },
-                        jcrop_box_width: 560
-                    });
-                }
-            });
-        });
 
         // carousel
         $('#about_carousel').carousel({
@@ -96,16 +21,16 @@
 
                     $('#file-uploader').sickle({
                         do_upload: true,
-			params: {
+            params: {
                             type: 'image'
-			},
-			aspect: 1.25,
-			related_object_id: identity_id,
-			context: 'business_profile_carousel',
-			primary: false,
-			image_max_height: 400,
-			image_max_width: 500,
-			done: function(data){
+            },
+            aspect: 1.25,
+            related_object_id: identity_id,
+            context: 'business_profile_carousel',
+            primary: false,
+            image_max_height: 400,
+            image_max_width: 500,
+            done: function(data){
 
                             // stop the carousel
                             $('#about_carousel').carousel('pause').removeData();
@@ -128,7 +53,7 @@
 
                             // finally, hide the modal box
                             $('modal-box').modal('hide');
-			}
+            }
                     });
                 }
             });
@@ -143,7 +68,7 @@
                 $this.attr('data-href'), {
                     type: $this.attr('data-method'),
                     data: {
-			pk: $this.attr('data-pk')
+            pk: $this.attr('data-pk')
                     }
                 }
             ).done(function(data, status, jqxhr){
@@ -198,20 +123,20 @@
             var map;
             var marker;
             var initialize = function(){
-		var address = $('#establishment-contact-loc-details').attr('data-address');
-		var latitude = parseFloat($('#establishment-contact-loc-details').attr('data-latitude'));
-		var longitude = parseFloat($('#establishment-contact-loc-details').attr('data-longitude'));
-		// Coordinates for Seattle.
-		if((!latitude && longitude)) {
-		    latitude = 47.6038321;
-		    longitude = -122.3300624;
-		}
-		var latLng = new google.maps.LatLng(latitude,longitude);
+        var address = $('#establishment-contact-loc-details').attr('data-address');
+        var latitude = parseFloat($('#establishment-contact-loc-details').attr('data-latitude'));
+        var longitude = parseFloat($('#establishment-contact-loc-details').attr('data-longitude'));
+        // Coordinates for Seattle.
+        if((!latitude && longitude)) {
+            latitude = 47.6038321;
+            longitude = -122.3300624;
+        }
+        var latLng = new google.maps.LatLng(latitude,longitude);
 
-		if (!latLng) {
-		    return null;
+        if (!latLng) {
+            return null;
 
-		}
+        }
 
                 var mapOptions = {
                     center: latLng,
@@ -224,17 +149,17 @@
                     zoom: 16
                 };
 
-		var mapDom = document.getElementById('about-map');
-		if (!mapDom) {
-		    return null;
+        var mapDom = document.getElementById('about-map');
+        if (!mapDom) {
+            return null;
 
-		}
+        }
 
                 map = new google.maps.Map(document.getElementById('about-map'), mapOptions);
-		if (!map) {
-		    return null;
+        if (!map) {
+            return null;
 
-		}
+        }
 
                 var markerOptions = {
                     position: latLng,

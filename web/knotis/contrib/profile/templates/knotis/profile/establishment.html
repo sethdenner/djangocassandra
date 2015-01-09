@@ -4,25 +4,53 @@
     <div class="container-fluid mainContent">
         <div class="row">
             {% thumbnail profile_banner.image.image '1920x500' crop=profile_banner.crop as header %}
-                <div class="hero" data-id='id-data-profile-cover' style="background-image: url('{{ header.url }}');background-size: cover;">
+                <div class="hero" data-id='id-data-profile-cover' style="background-image: url('{{ header.url }}');background-size: 100% 100%;">
             {% empty %}
                 <div class="hero" data-id='id-data-profile-cover'>
             {% endthumbnail %}
 
                     <div class="col-lg-12 col-xs-12 columns">
-                        <div class="heroInfo">
-                            {% thumbnail profile_badge.image.image '120x120' crop=profile_badge.crop as img %}
+                        <div class="establishmentHeader">
+                            {% thumbnail profile_badge.image.image '80x80' crop=profile_badge.crop as img %}
                             <img src="{{ img.url }}" data-id='id-data-profile-badge' class="{% if is_manager %}change-profile-badge-link{% endif %}"/>
                             {% empty %}
-                            <img width="120" height="120" data-id='id-data-profile-badge' src="{{ default_profile_logo_uri }}" class="{% if is_manager %}change-profile-badge-link{% endif %}" />
+                            <img width="80" height="80" data-id='id-data-profile-badge' src="{{ default_profile_logo_uri }}" class="{% if is_manager %}change-profile-badge-link{% endif %}" />
                             {% endthumbnail %}
                             <h1>{{ establishment.name }}</h1>
-                            {% if address %}
-                            <h2>{{ address }}</h2>
-                            {% endif %}
+                            <div class="establishmentHeader-credentials">
+                            <ul>
+
+                                {% if address %}
+                                <li>
+                                    <a class="mapLink no-deep" target="_blank" href="http://maps.google.com/maps?daddr={{ address|iriencode }}">
+                                        <span class="circle"><i class="icon-location"></i></span>
+                                        <span class="establishmentHeader-label">{{ address }}</span></a>
+                                </li>
+                                {% endif %}
+
+                                {% if phone %}
+                                <li>
+                                    <a class="no-deep" href="{{ phone.uri }}">
+                                        <span class="circle"><i class="icon-phone"></i></span>
+                                        <span class="establishmentHeader-label">{{ phone.value }}</span></a>
+                                </li>
+                                {% endif %}
+                                
+                                {% if website %}
+                                <li>
+                                    <a class="no-deep" href="{{ website.uri }}" target="_blank">
+                                        <span class="circle"><i class="icon-hyperlink"></i></span>
+                                        <span class="establishmentHeader-label" style="text-transform: lowercase;">{{ website.value }}</span></a>
+                                </li>
+                                {% endif %}
+
+                            </ul>
+                            </div>
+                            {% if action_button %}
                             <div class="profileActionButton">
                                 {{ action_button }}
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -52,7 +80,7 @@
 
         <div class="subNav">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-12 col-xs-12">
                     <ul>
                         <li>
                             <a {% if view_name == 'about' %} class="active" {% endif %} href="/id/{{establishment.id}}/about/">About</a>
@@ -74,10 +102,5 @@
             </div>
         </div>
     </div>
-    {% if format == 'json' %}
-    {% for script in post_scripts %}
-    <script src="{{STATIC_URL}}{{script}}"></script>
-    {% endfor %}
-    {% endif %}
-    <div id="id-identity-id" data-establishment-id="{{ establishment.id }}" data-business-id="{{ business.id }}" ></div>
+    <div id="id-identity-id" data-identity-id="{{ establishment.id }}" data-business-id="{{ business.id }}" ></div>
 </div>
