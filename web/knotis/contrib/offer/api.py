@@ -306,20 +306,22 @@ class OfferApi(object):
         **kwargs
     ):
         business_name = kwargs.get('business_name')
-        try:
-            owner_identities = Identity.objects.filter(
-                name=business_name,
-                identity_type=IdentityTypes.ESTABLISHMENT
-            ).order_by('pub_date')
-            if len(owner_identities) == 0:
-                raise Exception(
-                    'Failed to find establishment %s' % business_name
-                )
-            else:
-                owner_identity = owner_identities[0]
-        except:
-            logger.exception('Cannot find owner %s' % business_name)
-            raise
+        owner = kwargs.get('owner', None)
+        if owner is None:
+            try:
+                owner_identities = Identity.objects.filter(
+                    name=business_name,
+                    identity_type=IdentityTypes.ESTABLISHMENT
+                ).order_by('pub_date')
+                if len(owner_identities) == 0:
+                    raise Exception(
+                        'Failed to find establishment %s' % business_name
+                    )
+                else:
+                    owner = owner_identities[0]
+            except:
+                logger.exception('Cannot find owner %s' % business_name)
+                raise
 
         price = kwargs.get('price', 0.0)
         value = kwargs.get('value', 0.0)
@@ -345,7 +347,7 @@ class OfferApi(object):
             raise
 
         inventory = Inventory.objects.create_stack_from_product(
-            owner_identity,
+            owner,
             product,
             price=value,
             unlimited=True,  # This will probably change.
@@ -354,7 +356,7 @@ class OfferApi(object):
 
         split_inventory = Inventory.objects.split(
             inventory,
-            owner_identity,
+            owner,
             1
         )
 
@@ -364,7 +366,7 @@ class OfferApi(object):
             discount_factor = 1
 
         offer = Offer.objects.create(
-            owner=owner_identity,
+            owner=owner,
             title=title,
             restrictions=restrictions,
             description=description,
@@ -381,7 +383,7 @@ class OfferApi(object):
         if offer_type == OfferTypes.NORMAL:
             endpoint_current_identity = Endpoint.objects.get(
                 endpoint_type=EndpointTypes.IDENTITY,
-                identity=owner_identity
+                identity=owner
             )
             OfferPublish.objects.create(
                 endpoint=endpoint_current_identity,

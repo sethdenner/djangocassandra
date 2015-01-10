@@ -1,26 +1,19 @@
 from knotis.contrib.identity.models import (
-    IdentityIndividual,
     IdentityBusiness,
     IdentityEstablishment
 )
+from knotis.contrib.auth.tests.utils import UserCreationTestUtils
 
 
 class IdentityModelTestUtils(object):
     @staticmethod
-    def create_test_individual(**kwargs):
-        if not kwargs.get('name'):
-            kwargs['name'] = 'Test Individual'
-
-        if not kwargs.get('description'):
-            kwargs['description'] = 'Test Individual description.'
-
-        return IdentityIndividual.objects.create(**kwargs)
-
-    @staticmethod
     def create_test_business(
-        manager,
+        manager=None,
         **kwargs
     ):
+        if manager is None:
+            _, manager = UserCreationTestUtils.create_test_user()
+
         if not kwargs.get('name'):
             kwargs['name'] = 'Test Business'
 
@@ -34,9 +27,12 @@ class IdentityModelTestUtils(object):
 
     @staticmethod
     def create_test_establishment(
-        business,
+        business=None,
         **kwargs
     ):
+        if business is None:
+            business = IdentityModelTestUtils.create_test_business()
+
         if not kwargs.get('name'):
             kwargs['name'] = 'Test Establishment'
 

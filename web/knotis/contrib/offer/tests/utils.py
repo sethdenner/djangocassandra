@@ -1,15 +1,21 @@
+import datetime
+from knotis.contrib.identity.tests.utils import IdentityModelTestUtils
+from knotis.contrib.media.tests.utils import MediaTestUtils
+from knotis.contrib.offer.api import (
+    OfferApi,
+    OfferTypes
+)
 
-from unittest import TestCase
 
-
-class OfferTests(TestCase):
-    """
+class OfferTestUtils(object):
     @staticmethod
     def create_test_offer(
         **kwargs
     ):
         if not kwargs.get('owner'):
-            kwargs['owner'] = IdentityModelTests.create_test_establishment()
+            kwargs[
+                'owner'
+            ] = IdentityModelTestUtils.create_test_establishment()
 
         if not kwargs.get('offer_type'):
             kwargs['offer_type'] = OfferTypes.NORMAL
@@ -21,7 +27,7 @@ class OfferTests(TestCase):
             kwargs['description'] = 'Test offer description'
 
         if not kwargs.get('default_image'):
-            kwargs['default_image'] = MediaTests.create_test_image(
+            kwargs['default_image'] = MediaTestUtils.create_test_image(
                 owner=kwargs['owner']
             )
 
@@ -48,20 +54,9 @@ class OfferTests(TestCase):
                 days=7
             )
 
-        offer = Offer.objects.create(**kwargs)
+        offer = OfferApi.create_offer(**kwargs)
 
-        offer.default_image.related_object_id = offer.id
-        offer.default_image.save()
+        #offer.default_image.related_object_id = offer.id
+        #offer.default_image.save()
 
         return offer
-
-    def test_create(self):
-        offer = OfferTests.create_test_offer()
-        self.assertIsNotNone(offer)
-    """
-
-    def test_pass_this_test(self):
-        self.assertEqual(1, 1)
-
-    def test_fail_this_test(self):
-        self.assertEqual(0, 1)

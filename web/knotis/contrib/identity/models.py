@@ -144,10 +144,6 @@ class IdentityBusinessManager(IdentityManager):
         *args,
         **kwargs
     ):
-        # Saves the backend name at creation but then redirects to /backend_name
-        #backend_name = Identity._clean_backend_name(kwargs.get('name'))
-        #if backend_name:
-        #    kwargs['backend_name'] = backend_name
 
         business = super(IdentityBusinessManager, self).create(
             identity_type=IdentityTypes.BUSINESS,
@@ -211,10 +207,6 @@ class IdentityEstablishmentManager(IdentityManager):
         *args,
         **kwargs
     ):
-        # Saves the backend name at creation but then redirects to /backend_name
-        #backend_name = Identity._clean_backend_name(kwargs.get('name'))
-        #if backend_name:
-        #    kwargs['backend_name'] = backend_name
 
         establishment = super(IdentityEstablishmentManager, self).create(
             identity_type=IdentityTypes.ESTABLISHMENT,
@@ -359,7 +351,9 @@ class Identity(QuickModel):
         managed_relations = Relation.objects.get_managed(self)
 
         if identity.identity_type == IdentityTypes.ESTABLISHMENT:
-            business = IdentityBusiness.objects.get_establishment_parent(identity)
+            business = IdentityBusiness.objects.get_establishment_parent(
+                identity
+            )
 
         for rel in managed_relations:
             if (

@@ -11,10 +11,10 @@ class UserCreationTestUtils(object):
     def create_test_user(**kwargs):
         unique = str(random.randint(0, 100000))
         if not kwargs.get('first_name'):
-            kwargs['first_name'] = 'Test' + unique
+            kwargs['first_name'] = 'John ' + unique
 
         if not kwargs.get('last_name'):
-            kwargs['last_name'] = 'User' + unique
+            kwargs['last_name'] = 'Doe' + unique
 
         if not kwargs.get('email'):
             kwargs['email'] = 'test_user' + unique + '@example.com'
@@ -26,4 +26,5 @@ class UserCreationTestUtils(object):
             send_validation=False,
             **kwargs
         )
+        identity.name = kwargs['first_name'] + ' ' + kwargs['last_name']
         return user, identity

@@ -4,6 +4,7 @@ from knotis.contrib.offer.models import (
     OfferCollection,
     OfferCollectionItem,
 )
+from optparse import make_option
 
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
@@ -12,6 +13,24 @@ from csv import DictReader
 
 
 class Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
+        make_option(
+            '--value',
+            default='150',
+            help='The total value for the offer collection'
+        ),
+        make_option(
+            '--description',
+            default='Passport book!',
+            help='The description for the '
+        ),
+        make_option(
+            '--description',
+            default='Passport book!',
+            help='The description for the '
+        ),
+    )
+
     def handle(
         self,
         *args,
@@ -56,3 +75,10 @@ class Command(BaseCommand):
 
                 except:
                     logger.exception('Failed at creating offer')
+
+            OfferApi.create_offer(
+                title=neighborhood,
+                description=offer_collection.pk,
+                value=options['value'],
+                is_physical=False,
+            )
