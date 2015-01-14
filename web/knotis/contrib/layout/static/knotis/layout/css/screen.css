@@ -355,7 +355,6 @@ div.searchForm{
         z-index:10000;
     }
     .nav div.expanded input{
-        position:absolute;
         top:0px;
         left:0px;
         z-index:2;
