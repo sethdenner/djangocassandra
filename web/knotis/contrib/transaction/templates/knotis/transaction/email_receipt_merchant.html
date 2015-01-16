@@ -23,10 +23,10 @@
 	<div style="text-align: center;">
 	    <span style="font-size:18px">
 		<span style="color:#808080!important">
-		    <span style='color:#808080'>You sold <strong>{{ transaction.offer.title }}</strong> to <strong>{{ username }}</strong></span> 
+		    <span style='color:#808080'>You sold <strong>{{ offer_title }}</strong> to <strong>{{ customer_name }}</strong></span>
 		    <br>
 		    <br>
-		    <strong style='color:#808080'>Transaction ID</strong>
+		    <strong style='color:#808080'>Redemption Code</strong>
 		    <br>{{ redemption_code }}
 		    <br>
 		    <br>
@@ -35,7 +35,7 @@
 		    <br>
 		    <br>
 		    <strong style='color:#808080'>Total Sale</strong>
-		    <br><span style='color:#808080'>${{ price }}</span>
+		    <br><span style='color:#808080'>${{ price|floatformat:2 }}</span>
 		</span>
 	    </span>
 	</div>
