@@ -8,14 +8,15 @@
     {% block header %}
 	<h1 style="text-align: center;">
 	    <span style="color:#696969">
-		<span style="font-size:24px">Congratulations! You just made a sale on Knotis.</span>
+		<span style="font-size:24px;line-height:30px;">Congratulations! You just made a sale on Knotis.</span>
 	    </span>
 	</h1>
     {% endblock %}
 
     {% block content %}
-
-	<img align="center" alt="" src="{{ BASE_URL }}{{ business_cover_url }}" width="563" style="max-width:563px; padding-bottom: 0; display: inline !important; vertical-align: bottom; border-radius: 4px;" class="mcnImage">
+	{% thumbnail offer_image.image.image '563x300' crop=offer_image.crop as image %}
+	    <img align="center" alt="" src="{{ BASE_URL }}{{ image.url }}" width="563" style="max-width:563px; padding-bottom: 0; display: inline !important; vertical-align: bottom; border-radius: 4px;" class="mcnImage">
+	{% endthumbnail %}
 	<br>
 	<br>
 
