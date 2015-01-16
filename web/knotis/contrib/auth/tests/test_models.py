@@ -1,4 +1,7 @@
-from django.test import TestCase
+import random
+
+# from django.test import TestCase
+from unittest import TestCase
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
@@ -17,8 +20,6 @@ from knotis.contrib.relation.models import (
 )
 
 from .utils import UserCreationTestUtils
-
-import random
 
 
 class UserCreationTests(TestCase):
@@ -50,31 +51,6 @@ class UserCreationTests(TestCase):
             self.identity.id,
             user_information.default_identity.id
         )
-
-    # Commenting this because I want to get it working but not now.
-    # def test_primary_image(self):
-    #     result = urllib.urlretrieve('http://placehold.it/1x1')
-
-    #     image = Image.objects.create(
-    #         owner=self.identity,
-    #         image=File(open(result[0])),
-    #     )
-
-    #     self.identity_primary_image = ImageInstance.objects.create(
-    #         owner=self.identity,
-    #         image=image,
-    #         related_object_id=self.identity.id
-    #     )
-
-    #     self.identity.primary_image = self.identity_primary_image
-    #     self.identity.save()
-    #     user_information = UserInformation.objects.get(user=self.user)
-    #     user_information.default_identity_image = self.identity_primary_image
-
-    #     self.assertEqual(
-    #         self.identity.primary_image.image.url,
-    #         user_information.default_identity_image.url
-    #     )
 
     def test_relations(self):
         user_type = ContentType.objects.get_for_model(self.user)
