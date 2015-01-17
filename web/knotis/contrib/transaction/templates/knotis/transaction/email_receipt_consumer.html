@@ -4,52 +4,46 @@
 {% block browser_link %}{{ browser_link }}{% endblock browser_link %}
 {% if email_type == 'html' %}
 
-{% block header %}
-    <h1 style="text-align: center;">
-	<span style="color:#696969">
-	    <span style="font-size:24px;line-height:30px;">Purchase confirmed!</span>
-	</span>
-    </h1>
-{% endblock %}
+    {% block header %}
+        <h1 style="text-align: center;">
+            <span style="color:#696969;font-size:24px;line-height:30px;">Purchase confirmed!</span>
+        </h1>
+    {% endblock %}
 
-{% block content %}
-    {% thumbnail offer_image.image.image '563x246' crop=offer_image.crop as image %}
-	<img align="center" alt="" src="{{ BASE_URL }}{{ image.url }}" width="563" style="max-width:563px; padding-bottom: 0; display: inline !important; vertical-align: bottom; border-radius: 4px;" class="mcnImage">
-    {% endthumbnail %}
-    <br />
-    <br />
+    {% block content %}
+        {% thumbnail offer_image.image.image '563x246' crop=offer_image.crop as image %}
+        <img align="center" alt="" src="{{ BASE_URL }}{{ image.url }}" width="563" style="max-width:563px; padding-bottom: 0; display: inline !important; vertical-align: bottom; border-radius: 4px;" class="mcnImage">
+        {% endthumbnail %}
+        <br />
+        <br />
 
-    <div style="text-align: center;">
-	<span style="font-size:18px;color:#808080">
-	    <span style='color:#808080'>You bought <strong>{{ offer_title }}</strong> from <strong>{{ business_name }}</strong></span>
-            <br>
-            <br>
-            <strong style='color:#808080'>Redemption Code</strong>
-            <br>{{ redemption_code }}
-            <br>
-            <br>
-            <strong>Date Purchased</strong>
-            <br><span style='color:#808080'>{{ payment_date }}</span>
-            <br>
-            <br>
-            <strong style='color:#808080'>Expiration Date</strong>
-            <br><span style='color:#808080'>09/14/16</span>
-            <br>
-            <br>
-            <strong style='color:#808080'>Total Spent</strong>
-            <br><span style='color:#808080'>${{ price|floatformat:2 }}</span>
-        </span>
-    </div>
+        <div style="text-align: center;">
+            <span style="font-size:18px;color:#808080">
+                <span style='color:#808080'>You bought <strong>{{ offer_title }}</strong> from <strong>{{ business_name }}</strong></span>
+                    <br /><br />
+                    <strong style='color:#808080'>Redemption Code</strong>
+                    <br />{{ redemption_code }}
+                    <br /><br />
+                    <strong>Date Purchased</strong>
+                    <br /><span style='color:#808080'>{{ payment_date }}</span>
+                    <br /><br />
+                    <strong style='color:#808080'>Expiration Date</strong>
+                    <br /><span style='color:#808080'>09/14/16</span>
+                    <br /><br />
+                    <strong style='color:#808080'>Total Spent</strong>
+                    <br /><span style='color:#808080'>${{ price|floatformat:2 }}</span>
+                </span>
+        </div>
 
-{% endblock content %}
+    {% endblock content %}
 
-{% block action %}
-    <a class="mcnButton " title="View my purchase" href="https://knotis.com/my/purchases/" target="_self" style="font-weight: normal;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">View my purchase</a>
-{% endblock %}
+    {% block action %}
+        <a class="mcnButton " title="View my purchase" href="{{ BASE_URL }}/my/purchases/" target="_self" style="font-weight: normal;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">View my purchase</a>
+    {% endblock %}
 
-{% block help_text %}
-    <em><a href="https://www.knotis.com/support">Help!</a> I didn't order this.</em>
-{% endblock %}
+    {% block help_text %}
+        <em><a href="{{ BASE_URL }}/support">Help!</a> I didn't order this.</em>
+    {% endblock %}
 
 {% endif %}
 
@@ -74,7 +68,7 @@
     Product Name: {{ product_name }}
     Shop: {{ business_name }}@ {{ business_url }}
     Transaction ID: {{ transaction_id }}
-    Price: ${{ price }}
+    Price: ${{ price|floatformat:2 }}
 
     -----------------------------------------------------------
 
