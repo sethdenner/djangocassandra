@@ -31,7 +31,9 @@ class PromoCodeManager(QuickManager):
             *args,
             **kwargs
         )
-        promo_code.value = promo_code.id[:8]
+        if kwargs.get('value', None) is None:
+            promo_code.value = promo_code.id[:8]
+            promo_code.save()
         return promo_code
 
 
@@ -45,7 +47,16 @@ class PromoCode(QuickModel):
         default=PromoCodeTypes.UNDEFINED,
         blank=False
     )
-    value = QuickCharField()
+    value = QuickCharField(
+        null=True,
+        default=None,
+        max_length=64,
+    )
+    context = QuickCharField(
+        null=True,
+        default=None,
+        max_length=1024
+    )
 
     objects = PromoCodeManager()
 
@@ -62,24 +73,10 @@ class ConnectPromoCode(PromoCode):
 
     def execute(
         self,
-        request=None,
-        current_identity=None
+        current_identity
     ):
-
-        promo_activities = Activity.objects.filter(
-            context=self.value,
-            identity=current_identity,
-            activity_type=ActivityTypes.PROMO_CODE
-        )
-        if len(promo_activities):
-            raise AlreadyUsedException
-
         Activity.objects.create(
             identity=current_identity,
             context=self.value,
             activity_type=ActivityTypes.PROMO_CODE
         )
-
-
-class AlreadyUsedException(Exception):
-    pass

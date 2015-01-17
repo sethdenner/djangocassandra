@@ -4,3 +4,7 @@
     margin-right: auto;
     margin-top: 10px;
 }
+
+.promo-code-form input{
+    text-transform: uppercase;
+}

@@ -30,6 +30,14 @@ from knotis.contrib.product.models import (
     CurrencyCodes
 )
 from knotis.contrib.inventory.models import Inventory
+from knotis.contrib.promocode.models import (
+    PromoCodeTypes,
+    ConnectPromoCode
+)
+from knotis.contrib.offer.models import (
+    OfferCollection,
+    OfferCollectionItem
+)
 
 from knotis.contrib.paypal.views import IPNCallbackView
 
@@ -39,6 +47,7 @@ from .models import (
     Transaction,
     TransactionItem,
     TransactionTypes,
+    TransactionCollection,
     TransactionCollectionItem
 )
 from .views import (
@@ -241,7 +250,7 @@ class TransactionApi(object):
     ):
         if new_owner.identity_type != IdentityTypes.INDIVIDUAL:
             raise TransactionApi.WrongIdentityTypeException(
-                'Idenity %s is not an individual.' % new_owner
+                'Identity %s is not an individual.' % new_owner
             )
 
         transaction_collection_items = (
@@ -311,6 +320,60 @@ class TransactionApi(object):
         Activity.redeem(request)
 
         return transactions
+
+    @staticmethod
+    def create_transaction_collection(
+        neighborhood,
+        provision_identity
+    ):
+
+        offer_collection = OfferCollection.objects.filter(
+            neighborhood=neighborhood
+        ).order_by('-pub_date')[0]
+
+        offer_collection_items = sorted(
+            OfferCollectionItem.objects.filter(
+                offer_collection=offer_collection
+            ),
+            key=lambda x: x.page
+        )
+
+        usd = Product.currency.get(CurrencyCodes.USD)
+        buyer_usd = Inventory.objects.get_stack(
+            provision_identity,
+            usd,
+            create_empty=True
+        )
+
+        transaction_collection = TransactionCollection.objects.create(
+            neighborhood=neighborhood
+        )
+        promo_code = ConnectPromoCode.objects.create(
+            promo_code_type=PromoCodeTypes.OFFER_COLLECTION,
+            context=transaction_collection.pk
+        )
+
+        for i in offer_collection_items:
+            transactions = TransactionApi.create_purchase(
+                request=None,
+                offer=i.offer,
+                buyer=provision_identity,
+                currency=buyer_usd,
+                mode=PurchaseMode.FREE,
+                send_email=False,
+            )
+
+            seller = filter(
+                lambda x: x.owner != provision_identity,
+                transactions)[0]
+
+            TransactionCollectionItem.objects.create(
+                transaction_collection=transaction_collection,
+                transaction=seller,
+                page=i.page,
+            )
+
+            yield (transaction_collection, seller, i.page, promo_code)
 
     class WrongIdentityTypeException(Exception):
         pass

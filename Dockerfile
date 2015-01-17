@@ -102,15 +102,14 @@ RUN . venv/bin/activate && pip install pillow
 EXPOSE 8000
 EXPOSE 80
 
-VOLUME \
-           ${install_location}/logs \
-           ${install_location}/app \
-           ${install_location}/static \
-           ${install_location}/web \
-           ${install_location}/run/eggs
+VOLUME ${install_location}/logs
+VOLUME ${install_location}/app
+VOLUME ${install_location}/static
+VOLUME ${install_location}/web
+VOLUME ${install_location}/run/eggs
 
-COPY ${setup_dir}/docker/start_apache.sh ${install_location}/start_apache.sh
-COPY ${setup_dir}/docker/start.sh ${install_location}/start.sh
+COPY setup/docker/start_apache.sh ${install_location}/start_apache.sh
+COPY setup/docker/start.sh ${install_location}/start.sh
 
 RUN chown -R ${ADMIN_USER}:${ADMIN_GROUP} ${install_location} && \
     chmod -R 755 ${install_location} && \

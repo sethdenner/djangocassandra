@@ -411,7 +411,7 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
 
             except Exception, e:
                 logger.exception(e.message)
-                data['next_url'] = '/'
+                data['next'] = '/'
 
         return self.render_to_response(
             data=data,
