@@ -6,8 +6,6 @@ from knotis.contrib.media.api import (
     ImageApi,
     ImageInstanceApi
 )
-import random
-import time
 
 
 class MediaTestUtils(object):
@@ -26,21 +24,23 @@ class MediaTestUtils(object):
             kwargs['context'] = 'offer_banner'
 
         if not kwargs.get('image'):
-            # response = urllib.urlretrieve('http://placehold.it/350x150')
-            for x in xrange(3):
-                size_x = str(random.randint(200, 600))
-                size_y = str(random.randint(200, 600))
-                url = 'http://placekitten.com/g/' + size_x + '/' + size_y
-                response = urllib.urlretrieve(url)
-                image_path = response[0]
-                image_has_data = open(image_path).read() != ''
 
-            if not image_has_data:
-                time.sleep(3)
-                url = 'http://placehold.it/350x150'
-                # url = 'http://placekitten.com/g/200/300'
-                response = urllib.urlretrieve(url)
-                image_path = response[0]
+            if kwargs['context'] == 'profile_badge':
+                size_y = size_x = 80
+
+            if kwargs['context'] == 'offer_banner':
+                size_x = 339
+                size_y = 199
+
+            if kwargs['context'] == 'profile_banner':
+                size_x = 2555
+                size_y = 500
+
+            url = 'http://placehold.it/' + size_x + 'x' + size_y
+
+            # url = 'http://placehold.it/350/150'
+            # url = 'http://placekitten.com/g/200/300'
+            response = urllib.urlretrieve(url)
 
             kwargs['image'] = response[0]
 
