@@ -32,7 +32,7 @@ from knotis.contrib.product.models import (
 from knotis.contrib.inventory.models import Inventory
 from knotis.contrib.promocode.models import (
     PromoCodeTypes,
-    ConnectPromoCode
+    PromoCode
 )
 from knotis.contrib.offer.models import (
     OfferCollection,
@@ -348,7 +348,7 @@ class TransactionApi(object):
         transaction_collection = TransactionCollection.objects.create(
             neighborhood=neighborhood
         )
-        promo_code = ConnectPromoCode.objects.create(
+        promo_code = PromoCode.objects.create(
             promo_code_type=PromoCodeTypes.OFFER_COLLECTION,
             context=transaction_collection.pk
         )

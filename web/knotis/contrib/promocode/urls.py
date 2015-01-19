@@ -1,5 +1,7 @@
 from .views import (
-    PromoCodeView
+    PromoCodeView,
+    PromoCodeRedirectView
 )
 
 urlpatterns = PromoCodeView.urls()
+urlpatterns += PromoCodeRedirectView.urls()

@@ -6,10 +6,6 @@ from knotis.contrib.quick.fields import (
     QuickCharField,
     QuickIntegerField,
 )
-from knotis.contrib.activity.models import (
-    Activity,
-    ActivityTypes
-)
 
 
 class PromoCodeTypes(object):
@@ -34,6 +30,7 @@ class PromoCodeManager(QuickManager):
         if kwargs.get('value', None) is None:
             promo_code.value = promo_code.id[:8]
             promo_code.save()
+
         return promo_code
 
 
@@ -59,24 +56,3 @@ class PromoCode(QuickModel):
     )
 
     objects = PromoCodeManager()
-
-    def execute(self, request=None, current_identity=None):
-        raise NotImplemented(
-            'This needs to be implemented for derived classes.'
-        )
-
-
-class ConnectPromoCode(PromoCode):
-
-    class Meta:
-        proxy = True
-
-    def execute(
-        self,
-        current_identity
-    ):
-        Activity.objects.create(
-            identity=current_identity,
-            context=self.value,
-            activity_type=ActivityTypes.PROMO_CODE
-        )

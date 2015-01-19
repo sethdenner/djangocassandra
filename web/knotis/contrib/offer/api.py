@@ -343,7 +343,7 @@ class OfferApi(object):
                     value,
                 )
         except:
-            logger.exception('Couldnot create product.')
+            logger.exception('Could not create product.')
             raise
 
         inventory = Inventory.objects.create_stack_from_product(

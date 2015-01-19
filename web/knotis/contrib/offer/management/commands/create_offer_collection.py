@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from knotis.contrib.offer.api import OfferApi
 from knotis.contrib.offer.models import (
+    OfferTypes,
     OfferCollection,
     OfferCollectionItem,
 )
@@ -16,18 +17,18 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option(
             '--value',
-            default='150',
+            default=450,
             help='The total value for the offer collection'
         ),
         make_option(
             '--description',
             default='Passport book!',
-            help='The description for the '
+            help='The description for the passport book'
         ),
         make_option(
-            '--description',
-            default='Passport book!',
-            help='The description for the '
+            '--price',
+            default=15,
+            help='The price for the passport book.'
         ),
     )
 
@@ -37,7 +38,7 @@ class Command(BaseCommand):
         **options
     ):
         if len(args) < 2:
-            raise Exception("Not enough arguements")
+            raise Exception("Not enough arguments")
 
         input_file = args[0]
         neighborhood = args[1]
@@ -59,7 +60,7 @@ class Command(BaseCommand):
                 try:
                     new_offer = OfferApi.create_offer(
                         value=float(value),
-                        description=row.get('catagory'),
+                        description=row.get('category'),
                         restrictions=restrictions,
                         title=title,
                         is_physical=False,
@@ -76,9 +77,15 @@ class Command(BaseCommand):
                 except:
                     logger.exception('Failed at creating offer')
 
-            OfferApi.create_offer(
+            passport_offer = OfferApi.create_offer(
                 title=neighborhood,
+                business_name='Knotis INC',
                 description=offer_collection.pk,
-                value=options['value'],
+                offer_type=OfferTypes.DIGITAL_OFFER_COLLECTION,
+                value=float(options['value']),
+                price=float(options['price']),
                 is_physical=False,
             )
+            passport_offer.active = True
+            passport_offer.published = True
+            passport_offer.save()

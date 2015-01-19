@@ -17,17 +17,14 @@ from knotis.contrib.layout.views import (
 
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 from knotis.contrib.promocode.api import PromoCodeApi
-from knotis.contrib.promocode.models import ConnectPromoCode
+from knotis.contrib.promocode.models import PromoCode
 
 
 class PromoCodeView(EmbeddedView, GetCurrentIdentityMixin):
     template_name = 'knotis/promo_code/form.html'
     url_patterns = [
         r''.join([
-            '^promo'
-            '(/(?P<promo_code>',
-            REGEX_PROMO,
-            '))?/$'
+            '^promo/$'
         ]),
     ]
     default_parent_view_class = DefaultBaseView
@@ -48,26 +45,6 @@ class PromoCodeView(EmbeddedView, GetCurrentIdentityMixin):
             **kwargs
         )
 
-    def get(
-        self,
-        request,
-        promo_code,
-        *args,
-        **kwargs
-    ):
-
-        promo_code_value = promo_code.lower()
-        promo_code = get_object_or_404(
-            ConnectPromoCode,
-            value=promo_code_value
-        )
-
-        transaction_collection = TransactionCollection.objects.get(
-            pk=promo_code.context
-        )
-
-        return redirect('/qrcode/connect/%s/' % transaction_collection.pk)
-
     def post(
         self,
         request,
@@ -78,16 +55,17 @@ class PromoCodeView(EmbeddedView, GetCurrentIdentityMixin):
         promo_code_value = request.POST.get('promo_code').lower()
 
         promo_code = get_object_or_404(
-            ConnectPromoCode,
+            PromoCode,
             value=promo_code_value
         )
         current_identity = self.get_current_identity(request)
 
-        PromoCodeApi.connect_offer_collection(
+        _, exec_func = PromoCodeApi.execute_promo_code(
             request,
             current_identity,
             promo_code
         )
+        exec_func()
 
         data = {
             'next': '/my/purchases/'
@@ -99,3 +77,37 @@ class PromoCodeView(EmbeddedView, GetCurrentIdentityMixin):
             errors=errors,
             render_template=False
         )
+
+
+class PromoCodeRedirectView(PromoCodeView):
+    url_patterns = [
+        r''.join([
+            '^promo'
+            '/(?P<promo_code>',
+            REGEX_PROMO,
+            ')/$'
+        ]),
+    ]
+
+    def get(
+        self,
+        request,
+        promo_code,
+        *args,
+        **kwargs
+    ):
+
+        promo_code_value = promo_code.lower()
+        promo_code = get_object_or_404(
+            PromoCode,
+            value=promo_code_value
+        )
+        current_identity = self.get_current_identity(request)
+
+        url, _  = PromoCodeApi.execute_promo_code(
+            request,
+            current_identity,
+            promo_code
+        )
+
+        return redirect(url)
