@@ -259,7 +259,8 @@ INSTALLED_APPS = (
     'knotis.contrib.settings',
     'knotis.contrib.mobile',
     'knotis.contrib.passport',
-    'knotis.contrib.profile'
+    'knotis.contrib.profile',
+    'knotis.contrib.promocode',
 )
 
 CORS_ORIGIN_ALLOW_ALL = True

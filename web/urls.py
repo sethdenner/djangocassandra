@@ -133,4 +133,8 @@ urlpatterns = patterns(
         r'',
         include('knotis.contrib.profile.urls')
     ),
+    url(
+        r'',
+        include('knotis.contrib.promocode.urls')
+    ),
 )

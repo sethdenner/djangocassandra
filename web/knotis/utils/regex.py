@@ -2,6 +2,10 @@ REGEX_UUID = (
     '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
 )
 
+REGEX_PROMO = (
+    '[a-fA-Z0-9]{8}'
+)
+
 
 REGEX_BACKEND_NAME = (
     '[a-zA-Z]+[a-zA-Z0-9-_]*'

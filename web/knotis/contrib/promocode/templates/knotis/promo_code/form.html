@@ -1,0 +1,7 @@
+<div class="mainContent">
+    <form method="POST" action='/promo/' class='promo-code-form'>
+        {% csrf_token %}
+        <input type="text" class='centered-block' name="promo_code" placeholder="PROMO CODE" />
+        <input class='btn centered-block' type="submit" value="SUBMIT" />
+    </form>
+</div>

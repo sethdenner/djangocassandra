@@ -1,7 +1,7 @@
-from django_nose import NoseTestSuiteRunner
+from django_nose import BasicNoseRunner
 
 
-class KnotisTestSuiteRunner(NoseTestSuiteRunner):
+class KnotisTestSuiteRunner(BasicNoseRunner):
     """
     The knotis test suite runner - because we run cassandra.
 

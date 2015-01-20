@@ -12,6 +12,7 @@ from knotis.contrib.quick.fields import (
 )
 
 from knotis.contrib.auth.models import KnotisUser
+from knotis.contrib.identity.models import Identity
 from knotis.utils.regex import REGEX_CC_ANY
 import re
 
@@ -34,6 +35,7 @@ class ActivityTypes:
     SIGN_UP = 3
     PURCHASE = 4
     REDEEM = 5
+    PROMO_CODE = 6
 
     CHOICES = (
         (REQUEST, 'Request'),
@@ -42,6 +44,7 @@ class ActivityTypes:
         (SIGN_UP, 'Sign_up'),
         (PURCHASE, 'Purchase'),
         (REDEEM, 'Redeem'),
+        (PROMO_CODE, 'Promo Code'),
     )
 
 
@@ -53,6 +56,12 @@ class Activity(QuickModel):
     )
     authenticated_user = QuickForeignKey(
         KnotisUser,
+        null=True,
+        default=None
+    )
+
+    identity = QuickForeignKey(
+        Identity,
         null=True,
         default=None
     )

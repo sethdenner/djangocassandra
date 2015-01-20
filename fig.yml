@@ -1,7 +1,37 @@
 search:
     image: dockerfile/elasticsearch
+    volumes:
+        - ./data/elasticsearch:/data
 db:
     image: spotify/cassandra
+    # This is broken on some systems.
+    #volumes:
+    #    - ./data/cassandra:/var/lib/cassandra
+
+web:
+    image: knotis/web
+    volumes:
+        - web:/srv/knotis/web
+    links:
+        - db
+        - search
+    command: sh -c 'sleep 3 && ./start.sh && ./venv/bin/python web/manage.py runserver 0.0.0.0:8000'
+
+apache:
+    image: knotis/web
+    volumes_from:
+        - web
+    links:
+        - db
+        - search
+    command: sh -c './start_apache.sh && tail -f /var/log/apache2/access.log'
+
+ambassadorApache:
+    image: svendowideit/ambassador
+    links:
+        - apache
+    ports:
+        - "80:80"
 
 ambassador:
     image: svendowideit/ambassador
@@ -9,12 +39,3 @@ ambassador:
         - web
     ports:
         - "8000:8000"
-
-web:
-    image: knotis/web
-    volumes:
-        - ./web:/srv/knotis/web
-    links:
-        - db
-        - search
-    command: '/srv/knotis/venv/bin/python /srv/knotis/web/manage.py runserver 0.0.0.0:8000'
