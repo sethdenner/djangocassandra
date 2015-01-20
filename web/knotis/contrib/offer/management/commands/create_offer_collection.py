@@ -30,6 +30,11 @@ class Command(BaseCommand):
             default=15,
             help='The price for the passport book.'
         ),
+        make_option(
+            '--owner',
+            default='Knotis',
+            help='The owner of the new passport book.'
+        ),
     )
 
     def handle(
@@ -79,7 +84,7 @@ class Command(BaseCommand):
 
             passport_offer = OfferApi.create_offer(
                 title=neighborhood,
-                business_name='Knotis INC',
+                business_name=options['owner'],
                 description=offer_collection.pk,
                 offer_type=OfferTypes.DIGITAL_OFFER_COLLECTION,
                 value=float(options['value']),
