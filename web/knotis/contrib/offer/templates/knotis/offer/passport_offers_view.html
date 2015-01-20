@@ -24,8 +24,9 @@
 </div>
 <div class="offers">
     <div class="mainContent">
-
-        {% render_fragment passport_offers_grid %}
+        <div class="row" data-id="id-offers">
+            {% render_fragment passport_offers_grid %}
+        </div>
     </div>
 </div>
 {% if format == 'json' %}

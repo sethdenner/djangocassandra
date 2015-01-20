@@ -2600,10 +2600,7 @@ section.welcomeModal h1 {
 .btn-push {
     min-height: 130px;
 }
-.img-circle.tile-badge.busLogo {
-    max-height: 86px;
-    max-width: 86px;
-}
+
 /* End Redemption Page */
 
 /* Start Modal Fixes */
@@ -2829,10 +2826,6 @@ section.welcomeModal h1 {
     }
 }
 
-.minimumSpend {
-    display: none;
-}
-
 @media (max-width: 550px) {
 
     .hidden-small {
@@ -2864,7 +2857,7 @@ section.welcomeModal h1 {
 
     .minimumSpend {
         display: block;
-        top: -185px;
+        top: 5px;
     }
     .passportTile .passport-label {
         font-size: 30px;
@@ -2938,10 +2931,6 @@ section.welcomeModal h1 {
         top: -154px;
     }
 
-    .minimumSpend {
-        top: -144px;
-    }
-
     #id-current-identity-name {
         display: none;
     }
@@ -2954,7 +2943,12 @@ section.welcomeModal h1 {
         margin: 0 auto 20px;
         padding-bottom: 7px;
     }
-
+    .busLogo {
+        max-width: 60px;
+        max-height: 60px;
+        border: 2px solid white;
+        margin: 15px 0px;
+    }
     .offerItem {
         width: 45%;
         height: 285px;
