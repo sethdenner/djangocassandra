@@ -3,7 +3,7 @@ REGEX_UUID = (
 )
 
 REGEX_PROMO = (
-    '[a-f0-9]{8}'
+    '[a-fA-Z0-9]{8}'
 )
 
 
