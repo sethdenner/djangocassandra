@@ -247,7 +247,9 @@ section .profileInfo:nth-child(5) {
 @media (max-width: 768px) {
     .establishmentHeader {
         width: 100%;
+        background: rgba(29, 29, 29, 0.96);
     }
+
     .establishmentHeader-label {
         width: auto;
     }
