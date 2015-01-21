@@ -20,11 +20,10 @@
     <select class="span2 hidden" name="quantity_1" id="selectquantity" data-money="{{ offer.price_discount }}" >
         <option value="1" >1</option>
     </select>
-
 </div>
 <div class="offers">
     <div class="mainContent">
-        <div class="row" data-id="id-offers">
+        <div class="row">
             {% render_fragment passport_offers_grid %}
         </div>
     </div>
