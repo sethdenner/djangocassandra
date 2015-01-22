@@ -87,7 +87,7 @@
     background: #2cc397;
     border-radius: 3px;
     border: 1px solid #2cc397;
-    padding: 17px;
+    padding: 17px 0px;
     color: white;
     font-size: 11px;
     text-transform: uppercase;
@@ -203,9 +203,6 @@ section .profileInfo:nth-child(5) {
 
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
 @media (max-width: 400px) {
-    .establishmentHeader .btnFollow {
-        width: 70%;
-    }
     .establishmentHeader-credentials {
         width: 100%;
         margin-bottom: 20px;
@@ -244,6 +241,7 @@ section .profileInfo:nth-child(5) {
     .establishmentHeader {
         width: 100%;
         background: rgba(29, 29, 29, 0.96);
+        padding: 30px 30px 80px;
     }
 
     .establishmentHeader-label {
@@ -251,7 +249,7 @@ section .profileInfo:nth-child(5) {
     }
 
     .establishmentHeader .btnFollow {
-        width: 40%;
+        width: 60%;
     }
 
     .establishmentHeader-credentials li {       
