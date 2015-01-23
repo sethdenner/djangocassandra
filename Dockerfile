@@ -48,7 +48,8 @@ RUN apt-get update && \
     pip install facebook-sdk==0.4.0 && \
     pip install stripe==1.14.0 && \
     pip install ipdb && \
-    pip install ipython
+    pip install ipython && \
+    pip install cqlsh
 
 
 COPY setup ${install_location}/setup
