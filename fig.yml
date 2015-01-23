@@ -1,17 +1,18 @@
 search:
     image: dockerfile/elasticsearch
     volumes:
-        - ./data/elasticsearch:/data
+        - data/elasticsearch:/data/elasticsearch
 db:
     image: spotify/cassandra
     # This is broken on some systems.
-    #volumes:
-    #    - ./data/cassandra:/var/lib/cassandra
+    volumes:
+        - data/cassandra:/var/lib/cassandra
 
 web:
     image: knotis/web
     volumes:
         - web:/srv/knotis/web
+        - data/media:/srv/knotis/app/media
     links:
         - db
         - search
@@ -19,6 +20,8 @@ web:
 
 apache:
     image: knotis/web
+    volumes:
+        - data/apache_logs:/srv/knotis/logs
     volumes_from:
         - web
     links:
