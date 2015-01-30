@@ -15,7 +15,9 @@ def import_images(directory, output_directory, neighborhood):
     passport_images = os.listdir(directory)
     sorted_files = {int(x.strip('.jpg')): x for x in passport_images}
 
-    offer_collection = OfferCollection.objects.get(neighborhood=neighborhood)
+    offer_collection = OfferCollection.objects.filter(
+        neighborhood=neighborhood
+    ).order_by('-pub_date')[0]
     offer_collection_items = sorted(
         OfferCollectionItem.objects.filter(
             offer_collection=offer_collection

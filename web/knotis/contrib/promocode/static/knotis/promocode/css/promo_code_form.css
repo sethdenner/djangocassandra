@@ -1,0 +1,10 @@
+.promo-code-form .centered-block {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+
+.promo-code-form input{
+    text-transform: uppercase;
+}

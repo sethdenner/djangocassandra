@@ -176,7 +176,7 @@ class RedeemOfferView(EmbeddedView, GetCurrentIdentityMixin):
         identity_type = current_identity.identity_type
 
         self.context.update({
-            'redeem_url': '^/purchases/redeem/%s/' % transaction_collection_id,
+            'redeem_url': '/my/purchases/redeem/%s/' % transaction_collection_id,
             'random_pin': random.randint(1000, 9999),
             'identity_type': identity_type,
             'IdentityTypes': IdentityTypes,

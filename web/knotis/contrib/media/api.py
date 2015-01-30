@@ -18,10 +18,19 @@ from django.core.files.base import ContentFile
 class ImageApi(object):
     @staticmethod
     def import_offer_image(src, offer):
+        # Only left this function because there's a srcipt that uses it.
+        return ImageApi.import_image(src, offer.owner)
 
+    @staticmethod
+    def import_image(src, owner):
+        '''
+        Imports an image from a file directory. It's pretty hacky.
+
+        I'm not really sure that the save location does anything.
+        '''
         image_source = open(src).read()
         image = Image(
-            owner=offer.owner,
+            owner=owner,
         )
         image.image.save(
             os.path.join('images', os.path.basename(src)),
@@ -52,11 +61,28 @@ class ImageInstanceApi(object):
 
     @staticmethod
     def create_offer_image_instance(image, offer):
-        ImageInstance.objects.create(
+        return ImageInstance.objects.create(
             owner=offer.owner,
             image=image,
             related_object_id=offer.id,
             context='offer_banner',
+            primary=True
+        )
+
+    @staticmethod
+    def create_image_instance(
+        image,
+        owner,
+        related_object_id=None,
+        context='offer_banner'
+    ):
+        return ImageInstance.objects.create(
+            owner=owner,
+            image=image,
+            related_object_id=(
+                owner.id if related_object_id is None else related_object_id
+            ),
+            context=context,
             primary=True
         )
 
