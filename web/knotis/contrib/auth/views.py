@@ -72,7 +72,11 @@ class LoginView(ModalView):
     ]
 
     def process_context(self):
-        next_url = self.request.GET.get('next')
+        refer_url = self.request.META.get('HTTP_REFERER', '/')
+        next_url = self.request.GET.get(
+            'next',
+            refer_url if refer_url.startswith(settings.BASE_URL) else '/',
+        )
         params = {
             'login_form': LoginForm(
                 request=self.request,
@@ -184,7 +188,11 @@ class SignUpView(ModalView):
     ]
 
     def process_context(self):
-        next_url = self.request.GET.get('next')
+        refer_url = self.request.META.get('HTTP_REFERER', '/')
+        next_url = self.request.GET.get(
+            'next',
+            refer_url if refer_url.startswith(settings.BASE_URL) else '/',
+        )
         self.context.update({
             'signup_form': CreateUserForm(
                 request=self.request,
