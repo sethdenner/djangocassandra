@@ -67,6 +67,60 @@
 {% endif %}
 {% endblock content %}
 
+{% block footer %}
+<div class="footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 col-sm-2 footer-col">
+                <ul>
+                    <div class="footer-col-header-ln">Merchants</div>
+                    <li><a class="no-deep" target="_blank" href="http://about.knotis.com/merchants">About for Merchants</a></li>
+                    <li><a class="no-deep" target="_blank" href="http://maps.knotis.com">Neighborhood Maps</a></li>
+                    <li><a class="no-deep" target="_blank" href="http://passports.knotis.com">Passports</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2 col-sm-2 footer-col">
+                <ul>
+                    <div class="footer-col-header-ln">Consumers</div>
+                    <li><a class="no-deep" target="_blank" href="http://about.knotis.com/consumers">About for Consumers</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2 col-sm-2 footer-col">
+                <ul>
+                    <div class="footer-col-header-ln">Affiliates</div>
+                    <li><a class="no-deep" target="_blank" href="http://affiliates.knotis.com">Affiliate Program</a></li>
+                    <li><a class="no-deep" target="_blank" href="http://retail-partners.knotis.com">Retail Partners</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2 col-sm-2 footer-col">
+                <ul>
+                    <div class="footer-col-header-ln">Knotis</div>
+                    <li><a class="no-deep" target="_blank" href="http://about.knotis.com">About Knotis</a></li>
+                    <li><a class="no-deep" target="_blank" href="http://blog.knotis.com">Blog</a></li>
+                    <li><a class="no-deep" target="_blank" href="http://knotis.freshdesk.com">Support</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 col-sm-4 footer-col text-layout">
+                <a class="no-deep spaced" target="_blank" href="https://itunes.apple.com/us/app/knotis/id931574480?mt=8">
+                    <img src="{{ STATIC_URL }}/images/badge.appstore.us-uk.135x40.png" title="App Store" alt="App Store"/></a>
+                <a class="no-deep spaced" target="_blank" href="https://play.google.com/store/apps/details?id=com.knotis.mobile">
+                    <img src="{{ STATIC_URL }}/images/badge.google-play.en.115x40.png" title="Google Play" alt="Google Play"/></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-sm-4 footer-col"><div class="footer-col-header"><span class="copyr">&copy; {% now "Y" %} Knotis, Inc.  All Rights Reserved</span></div></div>
+            <div class="col-md-2 col-sm-2 footer-col"><a href="/terms-and-conditions/"><div class="footer-col-header">Terms of Service</div></a></div>
+            <div class="col-md-2 col-sm-2 footer-col"><a href="/privacy/"><div class="footer-col-header">Privacy Policy</div></a></div>
+            <div class="col-md-4 col-sm-4 footer-col text-layout">
+                <a class="no-deep spaced" target="_blank" href="https://www.facebook.com/knotis"><i class="icon-social-facebook"></i></a>
+                <a class="no-deep spaced" target="_blank" href="https://twitter.com/knotis"><i class="icon-social-twitter"></i></a>
+                <a class="no-deep spaced" target="_blank" href="https://www.pinterest.com/knotis"><i class="icon-social-pinterest"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock footer %}
+
 {% block modal %}
 {% if modal_content %}
 {{ modal_content }}
