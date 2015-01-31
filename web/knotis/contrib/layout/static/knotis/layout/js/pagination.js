@@ -6,7 +6,6 @@
             dataId:'',
             onDone: function() {},
             count_increment: 24,
-            infinite_scroll: false
         };
         $.extend(options, user_options);
 
@@ -45,9 +44,17 @@
                 }
             });
         };
-        if (options.infinite_scroll) {
-            $(window).off(scroll_space).on(scroll_space, function(event) {
+           
+        $(window).off(scroll_space).on(scroll_space, function(event) {
+            if (page == 1) {
 
+                $('#load_more_button').click(function(event) {
+                    $('#knotis_footer').hide();
+                    $('#load_more_button').hide();
+                    get_results(page++);
+                });
+
+            } else {
                 var $this = $(this);
 
                 if (!results_left) {
@@ -58,15 +65,8 @@
                 if (!fetching_results && $this.scrollTop() + $this.innerHeight() >= $(document).innerHeight() - 1000) {
                     get_results(page++);
                 }
-            });
-        } else {
+            }
 
-            $('#load_more_button').click(function(event) {
-                options.infinite_scroll = true;
-                $('#knotis_footer').hide();
-                $('#load_more_button').hide();
-                get_results(page++);
-            });
-        }
+        });       
     };    
 })(jQuery);
