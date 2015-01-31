@@ -829,11 +829,24 @@ nav button.signUp {
     font-size: 25px;
 }
 
+#load_more_button {
+    text-align: center;
+    padding: 20px;
+    border-radius: 3px;
+    background: rgb(255, 255, 255);
+    color: rgb(122, 122, 122);
+    font-size: 11px;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 25px;
+}
+
 .footer {
     width: 100%;
     background-color: #ffffff;
     margin-top: 60px;
-    padding: 20px 2px 60px 10px;
+    padding: 20px 30px 60px 50px;
     font-family: 'LatoReg', sans-serif;
     font-size: 10pt;
 }
@@ -3015,6 +3028,10 @@ section.welcomeModal h1 {
     .footer, .footer .text-layout {
         text-align: center;
         font-size: 16px;
+    }
+
+    .footer {
+        padding: 20px 2px 60px 10px;
     }
 
     .footer i {
