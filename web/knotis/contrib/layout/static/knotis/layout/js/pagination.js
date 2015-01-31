@@ -14,8 +14,6 @@
         var count = options.count_increment;
         var results_left = true;
         var fetching_results = false;
-        var load_more_markup =  'Load More Results';
-        var no_more_markup = 'No More Results';
         var scroll_space = 'scroll';
 
         var get_results = function (page_number) {
@@ -34,7 +32,7 @@
                     data = data.replace(/(\r\n|\n|\r)/gm,"");
                     if (!data) {
                         results_left = false;
-                        $('#load_more_button').html(no_more_markup);
+                        
                         return;
                     }
 
@@ -47,7 +45,6 @@
                 }
             });
         };
-        
         if (options.infinite_scroll) {
             $(window).off(scroll_space).on(scroll_space, function(event) {
 
@@ -62,10 +59,12 @@
                     get_results(page++);
                 }
             });
-
         } else {
 
             $('#load_more_button').click(function(event) {
+                options.infinite_scroll = true;
+                $('#knotis_footer').hide();
+                $('#load_more_button').hide();
                 get_results(page++);
             });
         }
