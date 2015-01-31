@@ -1,10 +1,4 @@
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, redirect
-
-from knotis.contrib.transaction.models import (
-    TransactionCollection
-)
 
 from knotis.views import (
     EmbeddedView,
@@ -32,19 +26,6 @@ class PromoCodeView(EmbeddedView, GetCurrentIdentityMixin):
         'knotis/promocode/css/promo_code_form.css',
     ]
 
-    @method_decorator(login_required)
-    def dispatch(
-        self,
-        request,
-        *args,
-        **kwargs
-    ):
-        return super(PromoCodeView, self).dispatch(
-            request,
-            *args,
-            **kwargs
-        )
-
     def post(
         self,
         request,
@@ -58,25 +39,35 @@ class PromoCodeView(EmbeddedView, GetCurrentIdentityMixin):
             PromoCode,
             value=promo_code_value
         )
-        current_identity = self.get_current_identity(request)
 
-        _, exec_func = PromoCodeApi.execute_promo_code(
+        if request.user.is_authenticated():
+            current_identity = self.get_current_identity(request)
+        else:
+            current_identity = None
+
+        url, _ = PromoCodeApi.execute_promo_code(
             request,
             current_identity,
             promo_code
         )
-        exec_func()
 
-        data = {
-            'next': '/my/purchases/'
-        }
-        errors = {}
+        return redirect(url)
 
-        return self.render_to_response(
-            data=data,
-            errors=errors,
-            render_template=False
-        )
+
+class ActivateFuckupView(PromoCodeView):
+    url_patterns = [
+        r''.join([
+            '^activate/$'
+        ]),
+    ]
+
+    def get(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        return redirect('/promo/')
 
 
 class PromoCodeRedirectView(PromoCodeView):
@@ -104,7 +95,7 @@ class PromoCodeRedirectView(PromoCodeView):
         )
         current_identity = self.get_current_identity(request)
 
-        url, _  = PromoCodeApi.execute_promo_code(
+        url, _ = PromoCodeApi.execute_promo_code(
             request,
             current_identity,
             promo_code

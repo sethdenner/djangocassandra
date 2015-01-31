@@ -44,6 +44,13 @@ class PromoCodeApi(object):
         current_identity=None,
         promo_code=None,
     ):
+        transaction_collection = TransactionCollection.objects.get(
+            pk=promo_code.context
+        )
+        if current_identity is None:
+            url = '/qrcode/connect/%s/' % transaction_collection.pk
+            return url, None
+
         promo_activities = Activity.objects.filter(
             context=promo_code.value,
             identity=current_identity,
@@ -51,10 +58,6 @@ class PromoCodeApi(object):
         )
         if len(promo_activities) > 0:
             raise AlreadyUsedException
-
-        transaction_collection = TransactionCollection.objects.get(
-            pk=promo_code.context
-        )
 
         exec_func = partial(
             TransactionApi.transfer_transaction_collection,
