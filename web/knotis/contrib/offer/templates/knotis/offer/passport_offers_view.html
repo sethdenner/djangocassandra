@@ -20,12 +20,12 @@
     <select class="span2 hidden" name="quantity_1" id="selectquantity" data-money="{{ offer.price_discount }}" >
         <option value="1" >1</option>
     </select>
-
 </div>
 <div class="offers">
-    <div class="mainContent">
-
-        {% render_fragment passport_offers_grid %}
+    <div class="container-fluid mainContent">
+        <div class="row">
+            {% render_fragment passport_offers_grid %}
+        </div>
     </div>
 </div>
 {% if format == 'json' %}

@@ -5,7 +5,9 @@
 
 <div id="offer-modal">
     <div class="row">
-	{% thumbnail offer_banner_image.image.image '339x400' crop=offer_banner_image.crop as image %}
+    {{ offer }}
+
+    {% thumbnail offer_banner_image.image.image '339x400' crop=offer_banner_image.crop as image %}
         <div class="col-lg-6 col-xs-12 visible-xs offerHero" style="background-image: url('{{ image.url }}');background-size: cover;">
         {% empty %}
         <div class="col-lg-6 col-xs-12 visible-xs offerHero" style="background-image: url('{{ STATIC_URL }}knotis/img/default-offer-banner.png');background-size: cover;">
@@ -31,11 +33,10 @@
 
             <ul>
                 {% if offer.offer_type == OfferTypes.DARK %}
-                
-                <li><span>Expires:</span> 09/01/2015</li>
+                <li><span>Expires:</span> {{ offer.end_time|date:"m/d/Y"|default:"09/01/2015" }}</li>
                 <li><span>{{ offer.restrictions }}</span></li>
                 {% else %}
-                <li><span>Expires:</span> {{ offer.end_time }}</li>
+                <li><span>Expires:</span> {{ offer.end_time|date:"m/d/Y" }}</li>
                 <li><span>{{ offer.savings_percent}}%</span> Savings</li>
                 <li><span>{{ offer.purchased }}</span> Purchased</li>
                 {% endif %}
@@ -56,7 +57,7 @@
                     {% thumbnail business_badge_image.image.image '72x72' crop=business_badge_image.crop as image %}
                     <img src="{{ image.url }}" />
                     {% empty %}
-                    <img class="profile-badge" src="{{ STATIC_URL }}/knotis/offer/img/default-offer-badge.png" />
+                    <img class="profile-badge" src="{{ STATIC_URL }}knotis/img/default_profile_badge.png" />
                     {% endthumbnail %}
                 </a>
 		<button class="btn close" type='button' data-dismiss='modal'><span aria-hidden="true">x</span><span class="sr-only">Close</span></button>

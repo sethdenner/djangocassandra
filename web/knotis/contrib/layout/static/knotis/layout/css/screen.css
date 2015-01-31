@@ -2638,9 +2638,10 @@ section.welcomeModal h1 {
 .offers-hero {
     height: 360px;
     margin-top: -35px;
-    margin-left: 15px;
     margin-bottom: 20px;
-    padding: 0 43px;
+    margin-left: -15px;
+    padding: 0 20px;
+    width: calc(100% + 30px);
     background-color: #00add6;
     background-image: url(/static/knotis/offer/img/passport_hero_background.png);
     background-repeat: no-repeat;
@@ -2734,10 +2735,7 @@ section.welcomeModal h1 {
 .btn-push {
     min-height: 130px;
 }
-.img-circle.tile-badge.busLogo {
-    max-height: 86px;
-    max-width: 86px;
-}
+
 /* End Redemption Page */
 
 /* Start Modal Fixes */
@@ -2963,10 +2961,6 @@ section.welcomeModal h1 {
     }
 }
 
-.minimumSpend {
-    display: none;
-}
-
 @media (max-width: 550px) {
 
     .hidden-small {
@@ -2998,7 +2992,7 @@ section.welcomeModal h1 {
 
     .minimumSpend {
         display: block;
-        top: -185px;
+        top: 5px;
     }
     .passportTile .passport-label {
         font-size: 30px;
@@ -3066,16 +3060,9 @@ section.welcomeModal h1 {
     .offerItem .btn-push h1 {
         margin-bottom: 0;
     }
-
     .offerHero {
         /* model style */
         height: 200px;
-    }
-
-    .offers-hero {
-        margin-left: -15px;
-        width: calc(100% + 30px);
-        padding: 0 20px;
     }
 
     .offers-hero h1 {
@@ -3103,10 +3090,6 @@ section.welcomeModal h1 {
         top: -154px;
     }
 
-    .minimumSpend {
-        top: -144px;
-    }
-
     #id-current-identity-name {
         display: none;
     }
@@ -3119,7 +3102,12 @@ section.welcomeModal h1 {
         margin: 0 auto 20px;
         padding-bottom: 7px;
     }
-
+    .busLogo {
+        max-width: 60px;
+        max-height: 60px;
+        border: 2px solid white;
+        margin: 15px 0px;
+    }
     .offerItem {
         width: 45%;
         height: 285px;

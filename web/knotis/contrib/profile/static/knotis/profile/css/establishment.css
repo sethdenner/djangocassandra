@@ -60,12 +60,12 @@
 
 .establishmentHeader {
     border-right: 1px solid #353434;
-    width: 40%;
+    width: 50%;
     background: rgba(29, 29, 29, 0.67);
     position: absolute;
     top: 50px;
-    left: 0;
-    padding: 30px 30px 80px;
+    left: 0px;
+    padding: 30px 90px 80px;
     overflow: hidden;
     height: 400px;
 }
@@ -87,13 +87,13 @@
     background: #2cc397;
     border-radius: 3px;
     border: 1px solid #2cc397;
-    padding: 17px 70px;
+    padding: 17px 0px;
     color: white;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 2px;
     text-align: center;
-    width: 60%;
+    width: 30%;
     display: inline-block;
 }
 
@@ -143,8 +143,8 @@
     width: 100%;
     height: 448px;
     position: absolute;
-    top: 0;
-    left: 70px;
+    top: 0px;
+    left: 0px;
     background-size: cover;
 }
 
@@ -215,7 +215,6 @@ section .profileInfo:nth-child(5) {
         display: -ms-inline-flexbox;
         padding: 0px 10px;
     }
-
     .establishmentHeader-credentials .circle {
         border-radius: 50%;
         border: 3px solid white;
@@ -226,20 +225,14 @@ section .profileInfo:nth-child(5) {
         position: relative;
         color: white;
     }
-
     .establishmentHeader-credentials .icon-location, .icon-phone, .icon-hyperlink {
         position: relative;
         top: 13px;
         left: 1px;
         font-size: 30px;
     }
-
     .establishmentHeader-label {
         display: none;
-    }
-
-    .establishmentHeader .btnFollow {
-        width: 75%;
     }
 }
 
@@ -247,9 +240,16 @@ section .profileInfo:nth-child(5) {
 @media (max-width: 768px) {
     .establishmentHeader {
         width: 100%;
+        background: rgba(29, 29, 29, 0.96);
+        padding: 30px 30px 80px;
     }
+
     .establishmentHeader-label {
         width: auto;
+    }
+
+    .establishmentHeader .btnFollow {
+        width: 60%;
     }
 
     .establishmentHeader-credentials li {       
@@ -266,7 +266,6 @@ section .profileInfo:nth-child(5) {
 
     .profileBusiness .hero {
         text-align: center;
-        left: 0;
     }
 }
 
