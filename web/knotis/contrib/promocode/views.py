@@ -54,7 +54,7 @@ class PromoCodeView(EmbeddedView, GetCurrentIdentityMixin):
         return redirect(url)
 
 
-class ActivateFuckupView(PromoCodeView):
+class ActivateView(PromoCodeView):
     url_patterns = [
         r''.join([
             '^activate/$'

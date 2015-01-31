@@ -1,9 +1,9 @@
 from .views import (
     PromoCodeView,
-    ActivateFuckupView,
+    ActivateView,
     PromoCodeRedirectView
 )
 
 urlpatterns = PromoCodeView.urls()
-urlpatterns += ActivateFuckupView.urls()
+urlpatterns += ActivateView.urls()
 urlpatterns += PromoCodeRedirectView.urls()
