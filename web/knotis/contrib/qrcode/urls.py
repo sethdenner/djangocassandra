@@ -12,6 +12,7 @@ from views import (
     OfferCollectionConnectView,
     ConnectionSuccessView,
     RedeemSuccessView,
+    ConnectLoginView,
 )
 
 urlpatterns = patterns(
@@ -31,3 +32,4 @@ urlpatterns += CouponRedemptionView.urls()
 urlpatterns += OfferCollectionConnectView.urls()
 urlpatterns += ConnectionSuccessView.urls()
 urlpatterns += RedeemSuccessView.urls()
+urlpatterns += ConnectLoginView.urls()

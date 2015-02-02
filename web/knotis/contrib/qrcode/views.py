@@ -213,20 +213,14 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
         transaction_collection_id = self.context.get(
             'transaction_id'
         )
-        logged_in = request.user.is_authenticated()
-        if logged_in:
-            current_identity = self.get_current_identity(request)
-            identity_type = current_identity.identity_type
-
-        else:
-            identity_type = -1
+        current_identity = self.get_current_identity(request)
+        identity_type = current_identity.identity_type
 
         self.context.update({
             'redeem_url': '/qrcode/redeem/%s/' % transaction_collection_id,
             'random_pin': random.randint(1000, 9999),
             'identity_type': identity_type,
             'IdentityTypes': IdentityTypes,
-            'logged_in': logged_in,
         })
 
         return self.context
@@ -329,13 +323,13 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
         transaction_collection_id = self.context.get(
             'transaction_collection_id'
         )
+
         logged_in = request.user.is_authenticated()
         if logged_in:
             current_identity = self.get_current_identity(request)
             is_individual = (
                 current_identity.identity_type == IdentityTypes.INDIVIDUAL
             )
-
         else:
             is_individual = False
 
@@ -346,6 +340,25 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
         })
 
         return self.context
+
+    def get(
+        self,
+        request,
+        transaction_collection_id=None,
+        *args,
+        **kwargs
+    ):
+        if not request.user.is_authenticated():
+            return redirect(
+                '/qrcode/connect/login/%s/' % transaction_collection_id
+            )
+        else:
+            return super(OfferCollectionConnectView, self).get(
+                request,
+                transaction_collection_id=None,
+                *args,
+                **kwargs
+            )
 
     def post(
         self,
@@ -418,6 +431,27 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
             errors=errors,
             render_template=False
         )
+
+
+class ConnectLoginView(EmbeddedView):
+    template_name = 'knotis/qrcode/login.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r''.join([
+            '^qrcode/connect/login/(?P<transaction_collection_id>',
+            REGEX_UUID,
+            ')/$'
+        ])
+    ]
+
+    def process_context(self):
+        transaction_collection_id = self.context.get(
+            'transaction_collection_id'
+        )
+        self.context.update({
+            'connect_url': '/qrcode/connect/%s/' % transaction_collection_id,
+        })
+        return self.context
 
 
 class ConnectionSuccessView(EmbeddedView):
