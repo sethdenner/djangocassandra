@@ -209,6 +209,8 @@ class PassportBookView(EmbeddedView):
     ]
     template_name = 'knotis/offer/passport_offers_view.html'
 
+    styles = ['knotis/offer/css/passport_distribution.css']
+
     def process_context(self):
         offer_id = self.context.get('offer_id')
         offer = get_object_or_404(Offer, pk=offer_id)
@@ -509,3 +511,19 @@ class OfferDetailView(ModalView):
         })
 
         return local_context
+
+
+class PassportDistributionView(ModalView):
+    view_name = 'passport-distribution'
+    template_name = 'knotis/offer/passport_distribution.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r''.join([
+            '/passport'
+            '/((?P<offer_id>',
+            REGEX_UUID,
+            ')/passport-distribution/)$'
+        ])
+    ]
+
+    styles = ['knotis/offer/css/passport_distribution.css']
