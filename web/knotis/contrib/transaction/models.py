@@ -60,7 +60,7 @@ class TransactionManager(QuickManager):
         if not offer.available():
             raise Exception(
                 'Could not purchase offer {%s}. Offer is not available' % (
-                    self.id,
+                    offer.id,
                 )
             )
 
