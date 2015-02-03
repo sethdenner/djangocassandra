@@ -32,15 +32,11 @@ class IdentityModelTests(TestCase):
             email='testmerchant@example.com'
         )
 
-        self.business = IdentityModelTestUtils.create_test_business(
-            self.identity_merchant,
-            name='Test Business'
-        )
-
-        self.establishment = IdentityModelTestUtils.create_test_establishment(
-            self.business,
-            name='Test Establishment'
-        )
+        self.business, self.establishment = \
+            IdentityModelTestUtils.create_test_business(
+                self.identity_merchant,
+                name='Test Business'
+            )
 
     def test_individual(self):
         individual = IdentityIndividual.objects.get_individual(

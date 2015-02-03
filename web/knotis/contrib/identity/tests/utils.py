@@ -38,7 +38,7 @@ class IdentityModelTestUtils(object):
                 context='profile_banner'
             )
 
-        return business
+        return business, establishment
 
     @staticmethod
     def create_test_establishment(
@@ -46,8 +46,6 @@ class IdentityModelTestUtils(object):
         **kwargs
     ):
         unique = str(random.randint(0, 100000))
-        if business is None:
-            business = IdentityModelTestUtils.create_test_business()
 
         if not kwargs.get('name'):
             kwargs['name'] = 'Test Establishment' + unique
@@ -55,10 +53,14 @@ class IdentityModelTestUtils(object):
         if not kwargs.get('description'):
             kwargs['description'] = 'Test Establishment description.' + unique
 
-        establishment = IdentityApi.create_establishment(
-            business_id=business.id,
-            **kwargs
-        )
+        if business is None:
+            business, establishment = \
+                IdentityModelTestUtils.create_test_business(**kwargs)
+        else:
+            establishment = IdentityApi.create_establishment(
+                business_id=business.id,
+                **kwargs
+            )
 
         if not kwargs.get('no_profile_badge'):
             MediaTestUtils.create_test_image(
