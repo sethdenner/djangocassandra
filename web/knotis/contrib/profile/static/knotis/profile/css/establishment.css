@@ -117,7 +117,7 @@
     color: white;
 }
 
-.establishmentHeader-credentials .icon-location, .icon-phone, .icon-hyperlink {
+.establishmentHeader-credentials .icon-location, .icon-phone, .icon-external-link {
     position: absolute;
     top: 3px;
     left: 3px;
@@ -225,7 +225,9 @@ section .profileInfo:nth-child(5) {
         position: relative;
         color: white;
     }
-    .establishmentHeader-credentials .icon-location, .icon-phone, .icon-hyperlink {
+    .establishmentHeader-credentials .icon-location,
+    .establishmentHeader-credentials .icon-phone,
+    .establishmentHeader-credentials .icon-external-link {
         position: relative;
         top: 13px;
         left: 1px;
