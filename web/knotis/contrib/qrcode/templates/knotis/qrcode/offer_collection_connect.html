@@ -1,8 +1,7 @@
 {% load render_template_fragment %}
 <div class="mainContent">
     <div class='col-xs-12 text-center qrcodePath'>
-    {% if logged_in %}
-        {% if is_individual %}
+        {% if identity_type == IdentityTypes.INDIVIDUAL %}
             <div class='connect-passport'>
                 <h1>Press confirm<br> to connect</h1>
                 <form action="{{connect_url}}" method="POST">
@@ -16,14 +15,5 @@
             {% render_fragment identity_switcher %}
         {% endif %}
 
-	{% else %}
-	    <h1>
-            <a href="/signup/?next={{connect_url}}"> Sign up </a>
-            or
-            <a href="/login/?next={{connect_url}}"> Login </a>
-            <br />
-            to connect your passport.
-	    </h1>
-	{% endif %}
     </div>
 </div>
