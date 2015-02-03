@@ -375,6 +375,53 @@ class TransactionApi(object):
 
             yield (transaction_collection, seller, i.page, promo_code)
 
+    @staticmethod
+    def purchase_random_collection(
+        request,
+        offer_id,
+        identity,
+        sample_size=10
+    ):
+        offer = Offer.objects.get(pk=offer_id)
+        usd = Product.currency.get(CurrencyCodes.USD)
+
+        buyer_usd = Inventory.objects.get_stack(
+            identity,
+            usd,
+            create_empty=True
+        )
+
+        transactions = []
+        transactions.extend(TransactionApi.create_purchase(
+            request=request,
+            offer=offer,
+            buyer=identity,
+            currency=buyer_usd,
+            mode=PurchaseMode.FREE,
+            send_email=False,
+        ))
+
+        offer_collection = OfferCollection.objects.get(
+            pk=offer.description
+        )
+        offers = [x.offer for x in OfferCollectionItem.objects.filter(
+            offer_collection=offer_collection,
+        )]
+
+        random_offers = random.sample(offers, sample_size)
+
+        for random_offer in random_offers:
+            transactions.extend(TransactionApi.create_purchase(
+                request=None,
+                offer=random_offer,
+                buyer=identity,
+                currency=buyer_usd,
+                mode=PurchaseMode.FREE,
+                send_email=False,
+            ))
+
+        return transactions
+
     class WrongIdentityTypeException(Exception):
         pass
 

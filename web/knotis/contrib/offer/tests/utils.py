@@ -117,7 +117,8 @@ class OfferTestUtils(object):
         kwargs.update({
             'description': offer_collection.pk,
             'is_physical': False,
-            'offer_type': OfferTypes.DIGITAL_OFFER_COLLECTION
+            'offer_type': OfferTypes.DIGITAL_OFFER_COLLECTION,
+            'title': kwargs['neighborhood'],
         })
 
         offer_collection_offer = OfferTestUtils.create_test_offer(

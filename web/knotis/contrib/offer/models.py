@@ -61,12 +61,14 @@ class OfferTypes:
     PREMIUM = 1
     DARK = 2
     DIGITAL_OFFER_COLLECTION = 3
+    RANDOM_OFFER_COLLECTION = 4
 
     CHOICES = (
         (NORMAL, 'Normal'),
         (PREMIUM, 'Premium'),
         (DARK, 'Dark'),
         (DIGITAL_OFFER_COLLECTION, 'Digital Offer Collection'),
+        (RANDOM_OFFER_COLLECTION, 'Random Offer Collection'),
     )
 
 
@@ -434,7 +436,9 @@ class Offer(QuickModel):
             (self.end_time is None or self.end_time > now) and
             (self.unlimited or self.purchased < self.stock) and
             not self.completed
-        ) or self.offer_type == OfferTypes.DARK
+        ) or self.offer_type in [
+            OfferTypes.DARK, OfferTypes.RANDOM_OFFER_COLLECTION
+        ]
 
     def description_formatted_html(self):
         if not self.description:
