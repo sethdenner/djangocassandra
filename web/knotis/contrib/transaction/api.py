@@ -408,7 +408,7 @@ class TransactionApi(object):
             offer_collection=offer_collection,
         )]
 
-        random_offers = random.sample(offers, sample_size)
+        random_offers = random.sample(offers, min(sample_size, len(offers)))
 
         for random_offer in random_offers:
             transactions.extend(TransactionApi.create_purchase(
@@ -423,6 +423,9 @@ class TransactionApi(object):
         return transactions
 
     class WrongIdentityTypeException(Exception):
+        pass
+
+    class OfferAlreadyPurchased(Exception):
         pass
 
     class NoTransactionCollectionItemsException(Exception):

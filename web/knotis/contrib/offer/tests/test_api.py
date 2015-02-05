@@ -92,7 +92,8 @@ class RandomOfferTests(TestCase):
         )
         self.random_offer = OfferApi.create_random_offer_collection(
             [offer_collection_1, offer_collection_2],
-            owner=owner
+            owner=owner,
+            use_once=True
         )
 
     def test_offer_count(self):
@@ -116,3 +117,25 @@ class RandomOfferTests(TestCase):
             sample_size=samples
         )
         self.assertEqual(len(connect_transactions), (1 + samples)*2)
+
+    def test_random_offer_connect_twice(self):
+        user, identity = UserCreationTestUtils.create_test_user()
+
+        samples = 3
+
+        TransactionApi.purchase_random_collection(
+            None,
+            self.random_offer.id,
+            identity,
+            sample_size=samples
+        )
+
+        self.assertRaises(
+            Exception,
+            TransactionApi.purchase_random_collection,
+            None,
+            self.random_offer.id,
+            identity,
+            sample_size=samples
+        )
+

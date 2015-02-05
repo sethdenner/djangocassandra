@@ -336,6 +336,8 @@ class OfferApi(object):
         title = kwargs.get('title')
         description = kwargs.get('description')
         restrictions = kwargs.get('restrictions')
+        stock = kwargs.get('stock', None)
+        unlimited = kwargs.get('unlimited', True)
 
         if title is None:
             title = '$%s credit toward any purchase' % value
@@ -356,7 +358,7 @@ class OfferApi(object):
             owner,
             product,
             price=value,
-            unlimited=True,  # This will probably change.
+            unlimited=True,
             get_existing=True,
         )
 
@@ -378,8 +380,9 @@ class OfferApi(object):
             description=description,
             discount_factor=discount_factor,
             start_time=kwargs.get('start_time', datetime.datetime.utcnow()),
-            end_time=kwargs.get('end_time'),
-            unlimited=True,
+            end_time=kwargs.get('end_time', None),
+            unlimited=unlimited,
+            stock=stock,
             inventory=[split_inventory],
             offer_type=offer_type
         )
@@ -430,11 +433,14 @@ class OfferApi(object):
         }
         if use_once:
             offer_options.update({
-                'stock': 1
+                'stock': 1,
+                'unlimited': False
             })
+
         else:
             offer_options.update({
-                'unlimited': True
+                'unlimited': True,
+                'stock': None,
             })
 
         offer = OfferApi.create_offer(
