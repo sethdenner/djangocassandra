@@ -176,8 +176,19 @@ class EstablishmentsGrid(
         tiles = []
 
         if establishments:
-            for establishment in establishments:
+            if (
+                hasattr(self, 'current_identity') and
+                None is not self.current_identity
+            ):
+                following_relations = Relation.objects.filter(
+                    relation_type=RelationTypes.FOLLOWING,
+                    subject_object_id=self.current_identity.pk
+                )
 
+            else:
+                following_relations = Relation.objects.none()
+
+            for establishment in establishments:
                 location_items = LocationItem.objects.filter(
                     related_object_id=establishment.pk
                 )
@@ -190,6 +201,7 @@ class EstablishmentsGrid(
                 establishment_context = Context({
                     'identity': establishment,
                     'request': self.request,
+                    'following_relations': following_relations
                 })
 
                 if address:
@@ -230,9 +242,27 @@ class IdentityActionButton(ActionButton):
                 )
             ]
 
-        following = Relation.objects.follows(current_identity, tile_identity)
-        is_following = len(following) == 0
-        action_text = 'Follow' if is_following else 'Unfollow'
+        following_relations = self.context.get(
+            'following_relations'
+        )
+
+        if None is not following_relations:
+            following = tile_identity.pk in [
+                x.related_object_id for x in following_relations
+            ]
+
+        else:
+            try:
+                following = len(Relation.objects.follows(
+                    current_identity,
+                    tile_identity
+                )) == 1
+
+            except Exception, e:
+                logger.exception(e.message)
+                following = False
+
+        action_text = 'Unfollow' if following else 'Follow'
         return [
             ButtonAction(
                 action_text,
@@ -242,7 +272,7 @@ class IdentityActionButton(ActionButton):
                     'subject_id': current_identity.pk,
                     'related_id': tile_identity.pk,
                 },
-                'post' if is_following else 'delete'
+                'delete' if following else 'post'
             )
         ]
 
@@ -271,8 +301,13 @@ class IdentityTile(FragmentView):
         )
         identity_tile_context = RequestContext(request, {
             'current_identity': current_identity,
-            'identity': identity
+            'identity': identity,
         })
+
+        if 'following_relations' in self.context:
+            identity_tile_context.update({
+                'following_relations': self.context.get('following_relations')
+            })
 
         if ((current_identity and
                 current_identity.identity_type == IdentityTypes.INDIVIDUAL) or

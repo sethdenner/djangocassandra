@@ -2,51 +2,46 @@
 {% load render_template_fragment %}
 {% load thumbnail %}
 {% block browser_link %}{{ browser_link }}{% endblock browser_link %}
-
 {% if email_type == 'html' %}
 
     {% block header %}
-	<h1 style="text-align: center;">
-	    <span style="color:#696969">
-		<span style="font-size:24px">Congratulations! You just made a sale on Knotis.</span>
-	    </span>
-	</h1>
+        <h1 style="text-align: center;">
+            <span style="color:#696969;font-size:24px;line-height:30px;">Congratulations! You just made a sale on Knotis.</span>
+        </h1>
     {% endblock %}
 
     {% block content %}
+        {% thumbnail offer_image.image.image '563x300' crop=offer_image.crop as image %}
+        <img align="center" alt="" src="{{ BASE_URL }}{{ image.url }}" width="563" style="max-width:563px; padding-bottom: 0; display: inline !important; vertical-align: bottom; border-radius: 4px;" class="mcnImage">
+        {% endthumbnail %}
+        <br />
+        <br />
 
-	<img align="center" alt="" src="{{ BASE_URL }}{{ business_cover_url }}" width="563" style="max-width:563px; padding-bottom: 0; display: inline !important; vertical-align: bottom; border-radius: 4px;" class="mcnImage">
-	<br>
-	<br>
-
-	<div style="text-align: center;">
-	    <span style="font-size:18px">
-		<span style="color:#808080!important">
-		    <span style='color:#808080'>You sold <strong>{{ transaction.offer.title }}</strong> to <strong>{{ username }}</strong></span> 
-		    <br>
-		    <br>
-		    <strong style='color:#808080'>Transaction ID</strong>
-		    <br>{{ redemption_code }}
-		    <br>
-		    <br>
-		    <strong style='color:#808080'>Date Sold</strong>
-		    <br><span style='color:#808080'>{{ payment_date }}</span>
-		    <br>
-		    <br>
-		    <strong style='color:#808080'>Total Sale</strong>
-		    <br><span style='color:#808080'>${{ price }}</span>
-		</span>
-	    </span>
-	</div>
+        <div style="text-align: center;">
+            <span style="font-size:18px">
+                <span style="color:#808080!important">
+                    <span style='color:#808080'>You sold <strong>{{ offer_title }}</strong> to <strong>{{ customer_name }}</strong></span>
+                    <br /><br />
+                    <strong style='color:#808080'>Redemption Code</strong>
+                    <br />{{ redemption_code }}
+                    <br /><br />
+                    <strong style='color:#808080'>Date Sold</strong>
+                    <br /><span style='color:#808080'>{{ payment_date }}</span>
+                    <br /><br />
+                    <strong style='color:#808080'>Total Sale</strong>
+                    <br /><span style='color:#808080'>${{ price|floatformat:2 }}</span>
+                </span>
+            </span>
+        </div>
 
     {% endblock content %}
-    
+
     {% block action %}
-	<a class="mcnButton " title="View details" href="{{ offer_link }}" target="_self" style="font-weight: normal;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">View details</a>
+        <a class="mcnButton " title="View details" href="{{ offer_link }}" target="_self" style="font-weight: normal;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">View details</a>
     {% endblock %}
 
     {% block help_text %}
-	<em><a href="https://www.knotis.com/support">Help!</a> I didn't sell anything.</em>
+        <em><a href="{{ BASE_URL }}/support">Help!</a> I didn't sell anything.</em>
     {% endblock %}
 
 {% endif %}
@@ -74,7 +69,7 @@
     Shop: {{ business_name }}@ {{ business_url }}
     Transaction ID: {{ transaction_id }}
     Quantity: {{ quantity }}
-    Price: ${{ price }}
+    Price: ${{ price|floatformat:2 }}
 
     -----------------------------------------------------------
 
