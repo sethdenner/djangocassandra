@@ -35,6 +35,10 @@ class PromoCodeApi(object):
                 promo_code
             )
 
+        elif promo_code.promo_code_type ==\
+                PromoCodeTypes.RANDOM_OFFER_COLLECTION:
+            return '/qrcode/random/%s/' % promo_code.context, None
+
         else:
             raise PromoCodeTypeNotFound
 

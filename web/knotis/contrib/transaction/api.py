@@ -23,7 +23,10 @@ from knotis.contrib.identity.models import (
     IdentityTypes,
 )
 from knotis.contrib.relation.models import Relation
-from knotis.contrib.activity.models import Activity
+from knotis.contrib.activity.models import (
+    Activity,
+    ActivityTypes
+)
 from knotis.contrib.offer.models import Offer
 from knotis.contrib.product.models import (
     Product,
@@ -391,15 +394,26 @@ class TransactionApi(object):
             create_empty=True
         )
 
+        offer_activities = Activity.objects.filter(
+            context=offer_id,
+            identity=identity,
+            activity_type=ActivityTypes.PROMO_CODE
+        )
+
+        if len(offer_activities) > 0 or not offer.available():
+            raise TransactionApi.OfferAlreadyPurchased
+
         transactions = []
-        transactions.extend(TransactionApi.create_purchase(
-            request=request,
-            offer=offer,
-            buyer=identity,
-            currency=buyer_usd,
-            mode=PurchaseMode.FREE,
-            send_email=False,
-        ))
+        offer.purchase()
+
+        # transactions.extend(TransactionApi.create_purchase(
+        #     request=request,
+        #     offer=offer,
+        #     buyer=identity,
+        #     currency=buyer_usd,
+        #     mode=PurchaseMode.FREE,
+        #     send_email=False,
+        # ))
 
         offer_collection = OfferCollection.objects.get(
             pk=offer.description

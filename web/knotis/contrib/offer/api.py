@@ -27,6 +27,10 @@ from knotis.contrib.identity.models import (
 from knotis.contrib.product.models import (
     Product,
 )
+from knotis.contrib.promocode.models import (
+    PromoCode,
+    PromoCodeTypes
+)
 from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
@@ -446,5 +450,9 @@ class OfferApi(object):
         offer = OfferApi.create_offer(
             **offer_options
         )
+        promo_code = PromoCode.objects.create(
+            promo_code_type=PromoCodeTypes.RANDOM_OFFER_COLLECTION,
+            context=offer.pk
+        )
 
-        return offer
+        return offer, promo_code
