@@ -1,0 +1,8 @@
+{% load render_static_file %}
+
+{% if format == 'json' %}
+    {% for style in styles %}
+        <style> {% render_static_file style %}</style>
+    {% endfor %}
+{% endif %}
+
