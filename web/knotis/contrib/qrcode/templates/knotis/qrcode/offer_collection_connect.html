@@ -3,7 +3,7 @@
     <div class='col-xs-12 text-center qrcodePath'>
         {% if identity_type == IdentityTypes.INDIVIDUAL %}
             <div class='connect-passport'>
-                <h1>Press confirm<br> to recieve awesome discounts at local businesses!</h1>
+                <h1>Press confirm<br> to connect your passport book</h1>
                 <form action="{{connect_url}}" method="POST">
                     {% csrf_token %}
                     <input class='btn btn-offers btn-lg btn-connect' type="submit" value="Confirm" />
