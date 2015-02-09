@@ -7,6 +7,7 @@ logger = log.getLogger(__name__)
 from django.utils import log
 logger = log.getLogger(__name__)
 
+
 from django.shortcuts import redirect, get_object_or_404
 from django.conf import settings
 from django.views.generic import View
@@ -355,7 +356,7 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
         else:
             return super(OfferCollectionConnectView, self).get(
                 request,
-                transaction_collection_id=None,
+                transaction_collection_id,
                 *args,
                 **kwargs
             )
@@ -434,7 +435,7 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
 
 
 class ConnectLoginView(EmbeddedView):
-    template_name = 'knotis/qrcode/login.html'
+    template_name = 'knotis/qrcode/connect_login.html'
     default_parent_view_class = DefaultBaseView
     url_patterns = [
         r''.join([
@@ -459,4 +460,154 @@ class ConnectionSuccessView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
     url_patterns = [
         r'^qrcode/connect/success/$'
+    ]
+
+
+class RandomPassportLoginView(EmbeddedView):
+    template_name = 'knotis/qrcode/random_pass_login.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r''.join([
+            '^qrcode/random/login/(?P<offer_id>',
+            REGEX_UUID,
+            ')/$'
+        ])
+    ]
+
+    def process_context(self):
+        offer_id = self.context.get(
+            'offer_id'
+        )
+        self.context.update({
+            'connect_url': '/qrcode/random/%s/' % offer_id,
+        })
+        return self.context
+
+
+class RandomPassportView(EmbeddedView, GetCurrentIdentityMixin):
+    template_name = 'knotis/qrcode/random_pass_connect.html'
+    url_patterns = [
+        r''.join([
+            '^qrcode/random/(?P<offer_id>',
+            REGEX_UUID,
+            ')/$'
+        ])
+    ]
+    default_parent_view_class = DefaultBaseView
+
+    def process_context(self):
+        request = self.request
+        offer_id = self.context.get(
+            'offer_id'
+        )
+
+        current_identity = self.get_current_identity(request)
+        is_individual = (
+            current_identity.identity_type == IdentityTypes.INDIVIDUAL
+        )
+
+        self.context.update({
+            'connect_url': '/qrcode/random/%s/' % offer_id,
+            'is_individual': is_individual,
+        })
+
+    def get(
+        self,
+        request,
+        offer_id=None,
+        *args,
+        **kwargs
+    ):
+        if not request.user.is_authenticated():
+            return redirect(
+                '/qrcode/random/login/%s/' % offer_id
+            )
+        else:
+            return super(RandomPassportView, self).get(
+                request,
+                offer_id,
+                *args,
+                **kwargs
+            )
+
+    def post(
+        self,
+        request,
+        offer_id=None,
+        *args,
+        **kwargs
+    ):
+
+        errors = {}
+        data = {}
+        self.response_format = self.RESPONSE_FORMATS.REDIRECT
+
+        if not request.user.is_authenticated():
+            message = ''.join([
+                'An error occurred while attempting to recieve offers. ',
+                'User is not logged in.'
+            ])
+            logger.exception(message)
+            errors['no-field'] = message
+            data['next'] = '/signup/?next=/qrcode/random/%s/' % (
+                offer_id,
+            )
+            return self.render_to_response(
+                data=data,
+                errors=errors,
+                render_template=False
+            )
+
+        current_identity = self.get_current_identity(request)
+
+        if current_identity.identity_type != IdentityTypes.INDIVIDUAL:
+            message = ''.join([
+                'An error occurred while attempting to recieve offers. ',
+                'Wrong identity type'
+            ])
+
+            logger.exception(message)
+            errors['no-field'] = message
+
+            data['next'] = '/' % (
+                offer_id,
+            )
+            return self.render_to_response(
+                data=data,
+                errors=errors,
+                render_template=False
+            )
+
+        try:
+            connect_transactions = TransactionApi.purchase_random_collection(
+                request,
+                offer_id,
+                current_identity,
+            )
+            data['next'] = '/qrcode/random/success/'
+            data['transactions'] = connect_transactions
+
+        except:
+            message = ''.join([
+                'An error occurred while attempting to recieve offers. ',
+                'Already Redeemed'
+            ])
+
+            logger.exception(message)
+            errors['no-field'] = message
+
+            data['next'] = '/'
+
+        return self.render_to_response(
+            data=data,
+            errors=errors,
+            render_template=False
+        )
+
+
+class RandomPassportSuccessView(EmbeddedView):
+    template_name = 'knotis/qrcode/random_pass_success.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r'^qrcode/random/success/$'
     ]

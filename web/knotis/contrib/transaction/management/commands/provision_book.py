@@ -20,7 +20,15 @@ class Command(BaseCommand):
         **options
     ):
         if len(args) < 3:
-            raise Exception("Not enough arguements")
+            raise Exception(
+                ' '.join([
+                    'Not enough arguements.',
+                    'Usage: <neighborhood>',
+                    '<provisioner email>',
+                    '<number books>',
+                    '<output csv>'
+                ])
+            )
 
         neighborhood = args[0]
         provision_email = args[1]

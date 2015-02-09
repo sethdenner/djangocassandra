@@ -12,7 +12,6 @@ from .views import (
     MyEstablishmentsView,
     MyOffersView,
     MyCustomersView,
-    MyAnalyticsView,
     MyRedemptionsView,
     RedemptionsGrid,
     OfferRedemptionView,
@@ -41,10 +40,6 @@ urlpatterns = patterns(
     url(
         r'^my/offers(/(?P<offer_filter>\w*))?/$',
         login_required(MyOffersView.as_view())
-    ),
-    url(
-        r'^my/analytics(/(?P<graph_type>\w*))?/$',
-        login_required(MyAnalyticsView.as_view())
     ),
     url(
         r'^offer/create/product/$',

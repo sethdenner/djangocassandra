@@ -13,6 +13,9 @@ from views import (
     ConnectionSuccessView,
     RedeemSuccessView,
     ConnectLoginView,
+    RandomPassportView,
+    RandomPassportLoginView,
+    RandomPassportSuccessView,
 )
 
 urlpatterns = patterns(
@@ -33,3 +36,7 @@ urlpatterns += OfferCollectionConnectView.urls()
 urlpatterns += ConnectionSuccessView.urls()
 urlpatterns += RedeemSuccessView.urls()
 urlpatterns += ConnectLoginView.urls()
+
+urlpatterns += RandomPassportView.urls()
+urlpatterns += RandomPassportLoginView.urls()
+urlpatterns += RandomPassportSuccessView.urls()

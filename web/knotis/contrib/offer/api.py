@@ -1,14 +1,15 @@
+import datetime
+
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
+
+from rest_framework.exceptions import APIException
+from rest_framework.response import Response
 
 from knotis.views import (
     ApiView,
     ApiModelViewSet
 )
-
-from rest_framework.exceptions import APIException
-from rest_framework.response import Response
-import datetime
 
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 
@@ -16,18 +17,6 @@ from knotis.contrib.inventory.models import Inventory
 from knotis.contrib.merchant.forms import (
     OfferPublishForm,
     OfferWithInventoryForm
-)
-
-from .models import (
-    Offer,
-    OfferTypes,
-    OfferPublish,
-    OfferAvailability,
-)
-from .forms import OfferForm
-from .serializers import (
-    OfferSerializer,
-    OfferAvailabilitySerializer
 )
 
 from knotis.contrib.identity.models import (
@@ -38,7 +27,28 @@ from knotis.contrib.identity.models import (
 from knotis.contrib.product.models import (
     Product,
 )
-from knotis.contrib.endpoint.models import Endpoint, EndpointTypes
+from knotis.contrib.promocode.models import (
+    PromoCode,
+    PromoCodeTypes
+)
+from knotis.contrib.endpoint.models import (
+    Endpoint,
+    EndpointTypes
+)
+
+from .models import (
+    Offer,
+    OfferTypes,
+    OfferPublish,
+    OfferAvailability,
+    OfferCollection,
+    OfferCollectionItem,
+)
+from .forms import OfferForm
+from .serializers import (
+    OfferSerializer,
+    OfferAvailabilitySerializer
+)
 
 
 class OfferPublishApiView(ApiView):
@@ -330,6 +340,8 @@ class OfferApi(object):
         title = kwargs.get('title')
         description = kwargs.get('description')
         restrictions = kwargs.get('restrictions')
+        stock = kwargs.get('stock', None)
+        unlimited = kwargs.get('unlimited', True)
 
         if title is None:
             title = '$%s credit toward any purchase' % value
@@ -350,7 +362,7 @@ class OfferApi(object):
             owner,
             product,
             price=value,
-            unlimited=True,  # This will probably change.
+            unlimited=True,
             get_existing=True,
         )
 
@@ -372,8 +384,9 @@ class OfferApi(object):
             description=description,
             discount_factor=discount_factor,
             start_time=kwargs.get('start_time', datetime.datetime.utcnow()),
-            end_time=kwargs.get('end_time'),
-            unlimited=True,
+            end_time=kwargs.get('end_time', None),
+            unlimited=unlimited,
+            stock=stock,
             inventory=[split_inventory],
             offer_type=offer_type
         )
@@ -392,3 +405,54 @@ class OfferApi(object):
             )
 
         return offer
+
+    @staticmethod
+    def create_random_offer_collection(
+        offer_collection_list=[],
+        use_once=True,
+        *args,
+        **kwargs
+    ):
+
+        offer_list = [
+            x.offer for offer_collection in offer_collection_list
+            for x in OfferCollectionItem.objects.filter(
+                offer_collection=offer_collection
+            )
+        ]
+
+        offer_collection = OfferCollection.objects.create()
+        for page, offer in enumerate(offer_list):
+            OfferCollectionItem.objects.create(
+                offer_collection=offer_collection,
+                page=page,
+                offer=offer
+            )
+
+        offer_options = {
+            'offer_type': OfferTypes.RANDOM_OFFER_COLLECTION,
+            'description': offer_collection.pk,
+            'owner': kwargs.get('owner'),
+            'is_physical': False,
+        }
+        if use_once:
+            offer_options.update({
+                'stock': 1,
+                'unlimited': False
+            })
+
+        else:
+            offer_options.update({
+                'unlimited': True,
+                'stock': None,
+            })
+
+        offer = OfferApi.create_offer(
+            **offer_options
+        )
+        promo_code = PromoCode.objects.create(
+            promo_code_type=PromoCodeTypes.RANDOM_OFFER_COLLECTION,
+            context=offer.pk
+        )
+
+        return offer, promo_code

@@ -36,6 +36,7 @@ class ActivityTypes:
     PURCHASE = 4
     REDEEM = 5
     PROMO_CODE = 6
+    CONNECT_RANDOM_COLLECTION = 7
 
     CHOICES = (
         (REQUEST, 'Request'),
@@ -45,6 +46,7 @@ class ActivityTypes:
         (PURCHASE, 'Purchase'),
         (REDEEM, 'Redeem'),
         (PROMO_CODE, 'Promo Code'),
+        (CONNECT_RANDOM_COLLECTION, 'Connect a Random Offer Collection'),
     )
 
 

@@ -23,7 +23,10 @@ from knotis.contrib.identity.models import (
     IdentityTypes,
 )
 from knotis.contrib.relation.models import Relation
-from knotis.contrib.activity.models import Activity
+from knotis.contrib.activity.models import (
+    Activity,
+    ActivityTypes
+)
 from knotis.contrib.offer.models import Offer
 from knotis.contrib.product.models import (
     Product,
@@ -375,7 +378,74 @@ class TransactionApi(object):
 
             yield (transaction_collection, seller, i.page, promo_code)
 
+    @staticmethod
+    def purchase_random_collection(
+        request,
+        offer_id,
+        identity,
+        sample_size=10
+    ):
+        offer = Offer.objects.get(pk=offer_id)
+        usd = Product.currency.get(CurrencyCodes.USD)
+
+        buyer_usd = Inventory.objects.get_stack(
+            identity,
+            usd,
+            create_empty=True
+        )
+
+        offer_activities = Activity.objects.filter(
+            context=offer_id,
+            identity=identity,
+            activity_type=ActivityTypes.CONNECT_RANDOM_COLLECTION
+        )
+
+        if len(offer_activities) > 0 or not offer.available():
+            raise TransactionApi.OfferAlreadyPurchased
+
+        transactions = []
+        offer.purchase()
+
+        # transactions.extend(TransactionApi.create_purchase(
+        #     request=request,
+        #     offer=offer,
+        #     buyer=identity,
+        #     currency=buyer_usd,
+        #     mode=PurchaseMode.FREE,
+        #     send_email=False,
+        # ))
+
+        offer_collection = OfferCollection.objects.get(
+            pk=offer.description
+        )
+        offers = [x.offer for x in OfferCollectionItem.objects.filter(
+            offer_collection=offer_collection,
+        )]
+
+        random_offers = random.sample(offers, min(sample_size, len(offers)))
+
+        for random_offer in random_offers:
+            transactions.extend(TransactionApi.create_purchase(
+                request=None,
+                offer=random_offer,
+                buyer=identity,
+                currency=buyer_usd,
+                mode=PurchaseMode.FREE,
+                send_email=False,
+            ))
+
+        Activity.objects.create(
+            context=offer_id,
+            identity=identity,
+            activity_type=ActivityTypes.CONNECT_RANDOM_COLLECTION
+        )
+
+        return transactions
+
     class WrongIdentityTypeException(Exception):
+        pass
+
+    class OfferAlreadyPurchased(Exception):
         pass
 
     class NoTransactionCollectionItemsException(Exception):

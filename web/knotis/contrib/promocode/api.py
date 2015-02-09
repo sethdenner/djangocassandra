@@ -5,10 +5,7 @@ from knotis.contrib.transaction.models import (
 from knotis.contrib.promocode.models import (
     PromoCodeTypes
 )
-from knotis.contrib.activity.models import (
-    Activity,
-    ActivityTypes
-)
+
 from functools import partial
 
 
@@ -35,6 +32,10 @@ class PromoCodeApi(object):
                 promo_code
             )
 
+        elif promo_code.promo_code_type ==\
+                PromoCodeTypes.RANDOM_OFFER_COLLECTION:
+            return '/qrcode/random/%s/' % promo_code.context, None
+
         else:
             raise PromoCodeTypeNotFound
 
@@ -51,14 +52,6 @@ class PromoCodeApi(object):
             url = '/qrcode/connect/%s/' % transaction_collection.pk
             return url, None
 
-        promo_activities = Activity.objects.filter(
-            context=promo_code.value,
-            identity=current_identity,
-            activity_type=ActivityTypes.PROMO_CODE
-        )
-        if len(promo_activities) > 0:
-            raise AlreadyUsedException
-
         exec_func = partial(
             TransactionApi.transfer_transaction_collection,
             request,
@@ -66,11 +59,6 @@ class PromoCodeApi(object):
             transaction_collection,
         )
 
-        Activity.objects.create(
-            identity=current_identity,
-            context=promo_code.value,
-            activity_type=ActivityTypes.PROMO_CODE
-        )
         url = '/qrcode/connect/%s/' % transaction_collection.pk
 
         return url, exec_func
