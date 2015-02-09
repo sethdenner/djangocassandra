@@ -116,7 +116,7 @@ class RandomOfferTests(TestCase):
             identity,
             sample_size=samples
         )
-        self.assertEqual(len(connect_transactions), (1 + samples)*2)
+        self.assertEqual(len(connect_transactions), samples*2)
 
     def test_random_offer_connect_twice(self):
         user, identity = UserCreationTestUtils.create_test_user()

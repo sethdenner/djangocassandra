@@ -24,7 +24,8 @@ class Command(BaseCommand):
         ),
         make_option(
             '--use_once',
-            default=True,
+            default=False,
+            action="store_true",
             help='One time random offers.'
         ),
         make_option(
@@ -75,7 +76,7 @@ class Command(BaseCommand):
                 offer, promo_code = OfferApi.create_random_offer_collection(
                     offer_collection_list,
                     owner=owner,
-                    use_once=False
+                    use_once=options.get('use_once')
                 )
                 qrcode_url = settings.BASE_URL + (
                     '/qrcode/random/%s/' % offer.pk

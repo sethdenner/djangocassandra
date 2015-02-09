@@ -569,7 +569,7 @@ class RandomPassportView(EmbeddedView, GetCurrentIdentityMixin):
             logger.exception(message)
             errors['no-field'] = message
 
-            data['next'] = '/signup/?next=/qrcode/random/%s/' % (
+            data['next'] = '/' % (
                 offer_id,
             )
             return self.render_to_response(
@@ -578,13 +578,25 @@ class RandomPassportView(EmbeddedView, GetCurrentIdentityMixin):
                 render_template=False
             )
 
-        connect_transactions = TransactionApi.purchase_random_collection(
-            request,
-            offer_id,
-            current_identity,
-        )
-        data['next'] = '/qrcode/random/success/'
-        data['transactions'] = connect_transactions
+        try:
+            connect_transactions = TransactionApi.purchase_random_collection(
+                request,
+                offer_id,
+                current_identity,
+            )
+            data['next'] = '/qrcode/random/success/'
+            data['transactions'] = connect_transactions
+
+        except:
+            message = ''.join([
+                'An error occurred while attempting to recieve offers. ',
+                'Already Redeemed'
+            ])
+
+            logger.exception(message)
+            errors['no-field'] = message
+
+            data['next'] = '/'
 
         return self.render_to_response(
             data=data,
