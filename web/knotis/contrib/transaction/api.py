@@ -397,7 +397,7 @@ class TransactionApi(object):
         offer_activities = Activity.objects.filter(
             context=offer_id,
             identity=identity,
-            activity_type=ActivityTypes.PROMO_CODE
+            activity_type=ActivityTypes.CONNECT_RANDOM_COLLECTION
         )
 
         if len(offer_activities) > 0 or not offer.available():
@@ -433,6 +433,12 @@ class TransactionApi(object):
                 mode=PurchaseMode.FREE,
                 send_email=False,
             ))
+
+        Activity.objects.create(
+            context=offer_id,
+            identity=identity,
+            activity_type=ActivityTypes.CONNECT_RANDOM_COLLECTION
+        )
 
         return transactions
 
