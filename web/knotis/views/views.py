@@ -329,7 +329,21 @@ class EmbeddedView(
 
             if render_template:
                 data['html'] = render_to_string(
+                    'knotis/layout/styles.html',
+                    context_instance=context
+                )
+
+                data['html'] += render_to_string(
+                    'knotis/layout/pre_scripts.html',
+                    context_instance=context
+                )
+
+                data['html'] += render_to_string(
                     self.get_template_names()[0],
+                    context_instance=context
+                )
+                data['html'] += render_to_string(
+                    'knotis/layout/post_scripts.html',
                     context_instance=context
                 )
                 data['targetid'] = self.target_element_id
@@ -354,7 +368,7 @@ class EmbeddedView(
 
             else:
                 if (
-                    not self.parent_template_placeholder in
+                    self.parent_template_placeholder not in
                     self.parent_view_class.template_placeholders
                 ):
                     warnings.warn(''.join([

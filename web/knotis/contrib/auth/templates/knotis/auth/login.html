@@ -3,7 +3,4 @@
 {{ login_form.as_template }}
 {% endblock body %}
 {% block last %}
-{% if format == 'json' %}
-<script type="application/javascript" src="{{ STATIC_URL }}knotis/auth/js/login.js"></script>
-{% endif %}
 {% endblock last %}
