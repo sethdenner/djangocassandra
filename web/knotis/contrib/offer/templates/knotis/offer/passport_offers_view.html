@@ -2,6 +2,7 @@
 {% load replace %}
 <script src="https://checkout.stripe.com/checkout.js" ></script>
 <div class="col-lg-12 col-xs-12 text-center offers-hero">
+
     <h1 class='text-white'>{{offer.title|replace:"/Passport/" }}</h1>
 	<h2 class='text-white'>Passport</h2>
     <p class='text-center text-white'>Pay ${{offer_price_discount}} and receive all the offers below - a savings of over ${{offer_price_retail}}.</p>
@@ -20,6 +21,7 @@
     <select class="span2 hidden" name="quantity_1" id="selectquantity" data-money="{{ offer.price_discount }}" >
         <option value="1" >1</option>
     </select>
+    <div class="wtb-button"><a href="/offers/passport/{{offer_id}}/passport-distribution/">Wanna buy a paper copy?</a></div>
 </div>
 <div class="offers">
     <div class="container-fluid mainContent">
