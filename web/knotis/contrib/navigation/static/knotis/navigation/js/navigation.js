@@ -142,7 +142,21 @@
                     if (typeof undefined !== typeof data.modal) {
                         var $existing_modal = $('#' + $html.attr('id'));
                         if ($existing_modal.length) {
-                            $existing_modal.html($html.html());
+                            var $wrappedHtml = $('<div></div>');
+                            $wrappedHtml.html($html);
+                            
+                            var $newModal = $wrappedHtml
+                                .find('div.modal.modalContainer');
+
+                            var $unwrappedModal = $newModal
+                                .children()
+                                .unwrap();
+
+                            $wrappedHtml
+                                .find('div.modal.modalContainer')
+                                .replaceWith($unwrappedModal);
+                            
+                            $existing_modal.html($wrappedHtml.html());
                             $html = $existing_modal;
 
                         } else {
