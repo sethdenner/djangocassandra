@@ -128,20 +128,6 @@ class ManageQRCodeView(EmbeddedView):
         self.context['BASE_URL'] = settings.BASE_URL
         self.context['fixed_side_nav'] = True
 
-        self.context['styles'] = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'navigation/css/nav_top.css',
-            'navigation/css/nav_side.css',
-        ]
-
-        self.context['post_scripts'] = [
-            'knotis/layout/js/layout.js',
-            'knotis/layout/js/forms.js',
-            'knotis/layout/js/header.js',
-            'navigation/js/navigation.js',
-        ]
-
         return self.context
 
     def post(
