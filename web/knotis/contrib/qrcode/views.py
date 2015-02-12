@@ -411,7 +411,7 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
 
             except Exception, e:
                 logger.exception(e.message)
-                data['next'] = '/'
+                data['next'] = '/qrcode/random/fail/'
 
         return self.render_to_response(
             data=data,
@@ -446,6 +446,14 @@ class ConnectionSuccessView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
     url_patterns = [
         r'^qrcode/connect/success/$'
+    ]
+
+
+class ConnectionFailView(EmbeddedView):
+    template_name = 'knotis/qrcode/connect_fail.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r'^qrcode/connect/fail/$'
     ]
 
 
@@ -582,7 +590,7 @@ class RandomPassportView(EmbeddedView, GetCurrentIdentityMixin):
             logger.exception(message)
             errors['no-field'] = message
 
-            data['next'] = '/'
+            data['next'] = '/qrcode/random/fail/'
 
         return self.render_to_response(
             data=data,
@@ -596,4 +604,12 @@ class RandomPassportSuccessView(EmbeddedView):
     default_parent_view_class = DefaultBaseView
     url_patterns = [
         r'^qrcode/random/success/$'
+    ]
+
+
+class RandomPassportFailView(EmbeddedView):
+    template_name = 'knotis/qrcode/random_pass_fail.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r'^qrcode/random/fail/$'
     ]
