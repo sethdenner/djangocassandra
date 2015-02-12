@@ -62,6 +62,7 @@ class OfferTypes:
     DARK = 2
     DIGITAL_OFFER_COLLECTION = 3
     RANDOM_OFFER_COLLECTION = 4
+    RANDOM_OFFER_COLLECTION_ONCE = 5
 
     CHOICES = (
         (NORMAL, 'Normal'),
@@ -69,6 +70,7 @@ class OfferTypes:
         (DARK, 'Dark'),
         (DIGITAL_OFFER_COLLECTION, 'Digital Offer Collection'),
         (RANDOM_OFFER_COLLECTION, 'Random Offer Collection'),
+        (RANDOM_OFFER_COLLECTION_ONCE, 'One Random Offer Collection'),
     )
 
 
@@ -446,7 +448,10 @@ class Offer(QuickModel):
             not self.expired() and
             not self.completed
         ) or self.offer_type == OfferTypes.DARK or (
-            self.offer_type == OfferTypes.RANDOM_OFFER_COLLECTION and
+            self.offer_type in [
+                OfferTypes.RANDOM_OFFER_COLLECTION,
+                OfferTypes.RANDOM_OFFER_COLLECTION_ONCE
+            ] and
             not (self.expired() or self.completed)
         )
 

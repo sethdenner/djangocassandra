@@ -15,7 +15,6 @@ from knotis.contrib.transaction.api import (
 from knotis.contrib.offer.models import (
     Offer,
     OfferTypes,
-    OfferCollectionItem,
     OfferCollection,
     OfferCollectionItem,
 )
@@ -139,6 +138,7 @@ class RandomOfferTests(TestCase):
             sample_size=samples
         )
 
+
 class UnlimitedRandomOfferTest(TestCase):
     def setUp(self):
 
@@ -159,22 +159,6 @@ class UnlimitedRandomOfferTest(TestCase):
             use_once=False
         )
 
-    def test_random_offer_connect_twice(self):
-        _, identity = UserCreationTestUtils.create_test_user()
-        _, identity_2 = UserCreationTestUtils.create_test_user()
-
-        TransactionApi.purchase_random_collection(
-            None,
-            self.random_offer.id,
-            identity,
-        )
-
-        TransactionApi.purchase_random_collection(
-            None,
-            self.random_offer.id,
-            identity_2,
-        )
-
     def test_random_offer_connect_twice_exception(self):
         _, identity = UserCreationTestUtils.create_test_user()
         _, identity_2 = UserCreationTestUtils.create_test_user()
@@ -191,5 +175,26 @@ class UnlimitedRandomOfferTest(TestCase):
             None,
             self.random_offer.id,
             identity_2,
+            sample_size=samples
+        )
+
+    def test_random_offer_connect_twice(self):
+        user, identity = UserCreationTestUtils.create_test_user()
+
+        samples = 3
+
+        TransactionApi.purchase_random_collection(
+            None,
+            self.random_offer.id,
+            identity,
+            sample_size=samples
+        )
+
+        self.assertRaises(
+            Exception,
+            TransactionApi.purchase_random_collection,
+            None,
+            self.random_offer.id,
+            identity,
             sample_size=samples
         )

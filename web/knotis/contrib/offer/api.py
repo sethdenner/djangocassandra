@@ -430,7 +430,6 @@ class OfferApi(object):
             )
 
         offer_options = {
-            'offer_type': OfferTypes.RANDOM_OFFER_COLLECTION,
             'description': offer_collection.pk,
             'owner': kwargs.get('owner'),
             'is_physical': False,
@@ -438,13 +437,15 @@ class OfferApi(object):
         if use_once:
             offer_options.update({
                 'stock': 1,
-                'unlimited': False
+                'unlimited': False,
+                'offer_type': OfferTypes.RANDOM_OFFER_COLLECTION_ONCE,
             })
 
         else:
             offer_options.update({
                 'unlimited': True,
                 'stock': None,
+                'offer_type': OfferTypes.RANDOM_OFFER_COLLECTION,
             })
 
         offer = OfferApi.create_offer(
