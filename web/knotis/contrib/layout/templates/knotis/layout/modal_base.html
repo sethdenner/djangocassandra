@@ -1,5 +1,18 @@
+{% load render_static_file %}
 
 <div class="modal fade modalContainer in" id="{{ modal_id }}" tabindex="-1" role="dialog">
+    {% if format == 'json' %}
+        {% for style in styles %}
+            <style> {% render_static_file style %}</style>
+        {% endfor %}
+    {% endif %}
+
+    {% if format == 'json' %}
+        {% for script in pre_scripts %}
+            <script src="{{ STATIC_URL }}{{ script }}"></script>
+        {% endfor %}
+    {% endif %}
+
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -14,6 +27,11 @@
             </div>
         </div>
     </div>
+    {% if format == 'json' %}
+        {% for script in post_scripts %}
+            <script src="{{ STATIC_URL }}{{ script }}"></script>
+        {% endfor %}
+    {% endif %}
     {% block last %}
     {% endblock last %}
 </div>
