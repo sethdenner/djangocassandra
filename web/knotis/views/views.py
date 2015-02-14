@@ -296,6 +296,12 @@ class EmbeddedView(
         self,
         context
     ):
+        '''
+        Render the template to string because this is an AJAX request/response.
+        EmbeddedView prepends/appends the styles/{pre,post}_scripts.
+        ModalView doesn't include them in the response because it's in the
+        template.
+        '''
 
         html = render_to_string(
             'knotis/layout/styles.html',
