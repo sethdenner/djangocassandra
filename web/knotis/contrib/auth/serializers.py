@@ -1,22 +1,21 @@
-from rest_framework.fields import (
-    CharField,
-    IntegerField
-)
-
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 
 from .models import (
-    KnotisUser,
     UserInformation
 )
 
 
-class UserSerializer(ModelSerializer):
-    class Meta:
-        model = KnotisUser
+class UserSerializer(serializers.Serializer):
+    email = serializers.EmailField(
+        required=True
+    )
+
+    password = serializers.CharField(
+        required=True
+    )
 
 
-class UserInformationSerializer(ModelSerializer):
+class UserInformationSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserInformation
         exclude = (
@@ -27,7 +26,9 @@ class UserInformationSerializer(ModelSerializer):
             '_denormalized_auth_KnotisUser_username_pk'
         )
 
-    username = CharField(source='_denormalized_auth_KnotisUser_username')
-    default_identity_type = IntegerField(
+    username = serializers.CharField(
+        source='_denormalized_auth_KnotisUser_username'
+    )
+    default_identity_type = serializers.IntegerField(
         source='default_identity.identity_type'
     )
