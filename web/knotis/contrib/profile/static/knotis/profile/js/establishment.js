@@ -10,7 +10,7 @@
         $('a.upload-photo').click(function(event){
             event.stopPropagation();
             event.preventDefault();
-            var identity_id = $('#id-identity-id').attr('data-establishment-id');
+            var establishment_id = $('#establishment-id').val();
 
             $.ajaxmodal({
                 href: '/image/upload',
@@ -21,16 +21,16 @@
 
                     $('#file-uploader').sickle({
                         do_upload: true,
-            params: {
+                        params: {
                             type: 'image'
-            },
-            aspect: 1.25,
-            related_object_id: identity_id,
-            context: 'business_profile_carousel',
-            primary: false,
-            image_max_height: 400,
-            image_max_width: 500,
-            done: function(data){
+                        },
+                        aspect: 1.25,
+                        related_object_id: establishment_id,
+                        context: 'business_profile_carousel',
+                        primary: false,
+                        image_max_height: 400,
+                        image_max_width: 500,
+                        done: function(data){
 
                             // stop the carousel
                             $('#about_carousel').carousel('pause').removeData();
@@ -38,6 +38,8 @@
                             // populate carousel-inner
                             var uploaded_url = data.image_url;
                             //$('.about-carousel-image').attr('style')
+                            //
+                            var numb_images = $('#about_carousel>.carousel-indicators').children().size();
 
                             var $img = $('<div class="about-carousel-image" style="background:url(' + uploaded_url + ')"></div>');
                             var $item = $('<div class="item"></div>');
@@ -49,11 +51,16 @@
                             $('#about_carousel>.carousel-indicators').append($indicator);
 
                             // resume the carousel
-                            $('#about_carousel').carousel('next');
+                            if(numb_images == 0) {
+                                $item.addClass('active')
+                                $indicator.addClass('active');
+                            } else {
+                                $('#about_carousel').carousel('next');
+                            }
 
                             // finally, hide the modal box
                             $('modal-box').modal('hide');
-            }
+                        }
                     });
                 }
             });
@@ -68,7 +75,7 @@
                 $this.attr('data-href'), {
                     type: $this.attr('data-method'),
                     data: {
-            pk: $this.attr('data-pk')
+                        pk: $this.attr('data-pk')
                     }
                 }
             ).done(function(data, status, jqxhr){
@@ -80,7 +87,7 @@
                     alert(message);
                 } else {
                     $('#about_carousel').carousel('next');
-                    $this.parent().parent().remove();
+                    $this.parent().remove();
 
                 }
             });
@@ -123,20 +130,20 @@
             var map;
             var marker;
             var initialize = function(){
-        var address = $('#establishment-contact-loc-details').attr('data-address');
-        var latitude = parseFloat($('#establishment-contact-loc-details').attr('data-latitude'));
-        var longitude = parseFloat($('#establishment-contact-loc-details').attr('data-longitude'));
-        // Coordinates for Seattle.
-        if((!latitude && longitude)) {
-            latitude = 47.6038321;
-            longitude = -122.3300624;
-        }
-        var latLng = new google.maps.LatLng(latitude,longitude);
+                var address = $('#establishment-contact-loc-details').attr('data-address');
+                var latitude = parseFloat($('#establishment-contact-loc-details').attr('data-latitude'));
+                var longitude = parseFloat($('#establishment-contact-loc-details').attr('data-longitude'));
+                // Coordinates for Seattle.
+                if((!latitude && longitude)) {
+                    latitude = 47.6038321;
+                    longitude = -122.3300624;
+                }
+                var latLng = new google.maps.LatLng(latitude,longitude);
 
-        if (!latLng) {
-            return null;
+                if (!latLng) {
+                    return null;
 
-        }
+                }
 
                 var mapOptions = {
                     center: latLng,
@@ -149,17 +156,17 @@
                     zoom: 16
                 };
 
-        var mapDom = document.getElementById('about-map');
-        if (!mapDom) {
-            return null;
+                var mapDom = document.getElementById('about-map');
+                if (!mapDom) {
+                    return null;
 
-        }
+                }
 
                 map = new google.maps.Map(document.getElementById('about-map'), mapOptions);
-        if (!map) {
-            return null;
+                if (!map) {
+                    return null;
 
-        }
+                }
 
                 var markerOptions = {
                     position: latLng,
