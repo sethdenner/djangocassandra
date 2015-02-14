@@ -278,6 +278,7 @@ class ForgotPasswordView(ModalView):
     ):
         try:
             AuthenticationApi.reset_password(
+                request,
                 *args,
                 **kwargs
             )
