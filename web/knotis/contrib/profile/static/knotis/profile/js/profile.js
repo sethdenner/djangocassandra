@@ -8,7 +8,7 @@
             $.ajaxmodal({
                 href: '/image/upload/',
                 modal_settings: {
-                            backdrop: 'static'
+                    backdrop: 'static'
                 },
                 on_open: function(data, status, request) {
                     $('#file-uploader').sickle({
@@ -81,7 +81,7 @@
             $('#about-me .viewUser').hide();
             $('#about-me .editUser').show();
         });
-        
+
         $('button.close_edit_about').click(function(){
             $('#about-me .viewUser').show();
             $('#about-me .editUser').hide();
