@@ -292,6 +292,32 @@ class EmbeddedView(
             **kwargs
         )
 
+    def render_ajax_template(
+        self,
+        context
+    ):
+
+        html = render_to_string(
+            'knotis/layout/styles.html',
+            context_instance=context
+        )
+
+        html += render_to_string(
+            'knotis/layout/pre_scripts.html',
+            context_instance=context
+        )
+
+        html += render_to_string(
+            self.get_template_names()[0],
+            context_instance=context
+        )
+
+        html += render_to_string(
+            'knotis/layout/post_scripts.html',
+            context_instance=context
+        )
+        return html
+
     def render_to_response(
         self,
         context=None,
@@ -328,24 +354,7 @@ class EmbeddedView(
                 data['errors'] = errors
 
             if render_template:
-                data['html'] = render_to_string(
-                    'knotis/layout/styles.html',
-                    context_instance=context
-                )
-
-                data['html'] += render_to_string(
-                    'knotis/layout/pre_scripts.html',
-                    context_instance=context
-                )
-
-                data['html'] += render_to_string(
-                    self.get_template_names()[0],
-                    context_instance=context
-                )
-                data['html'] += render_to_string(
-                    'knotis/layout/post_scripts.html',
-                    context_instance=context
-                )
+                data['html'] = self.render_ajax_template(context)
                 data['targetid'] = self.target_element_id
 
             return self.generate_ajax_response(
@@ -480,6 +489,18 @@ class ModalView(EmbeddedView):
         })
 
         return self.context
+
+    def render_ajax_template(
+        self,
+        context
+    ):
+
+        html = render_to_string(
+            self.get_template_names()[0],
+            context_instance=context
+        )
+
+        return html
 
     def render_to_response(
         self,
