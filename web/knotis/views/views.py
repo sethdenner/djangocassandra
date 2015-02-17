@@ -480,10 +480,12 @@ class ModalView(EmbeddedView):
     parent_template_placeholder = 'modal_content'
 
     def process_context(self):
+        refer_url = self.request.META.get('HTTP_REFERER', '/')
         close_href_dict = self.url_path_to_dict(
             self.request.GET.get(
                 'close',
-                self.default_close_href
+                refer_url if refer_url.startswith(
+                    settings.BASE_URL) else self.default_close_href
             )
         )
 
