@@ -5,6 +5,12 @@ from .models import (
 )
 
 
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(
+        required=True
+    )
+
+
 class UserSerializer(serializers.Serializer):
     email = serializers.EmailField(
         required=True

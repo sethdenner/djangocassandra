@@ -1,6 +1,3 @@
-from django.utils.log import logging
-logger = logging.getLogger(__name__)
-
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -28,8 +25,48 @@ from .models import (
 
 from .serializers import (
     UserSerializer,
-    UserInformationSerializer
+    UserInformationSerializer,
+    ResetPasswordSerializer
 )
+
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
+
+
+class ResetPasswordApiViewSet(ApiViewSet):
+    api_path = 'auth/resetpassword'
+    resource_name = 'resetpassword'
+
+    serializer_class = ResetPasswordSerializer
+    authentication_classes = (
+        SessionAuthentication,
+        DoacAuthentication,
+        ClientOnlyAuthentication,
+    )
+    permission_classes = (AllowAny,)
+
+    allowed_methods = ['POST']
+
+    def create(
+        self,
+        request
+    ):
+        resetpassword_serializer = ResetPasswordSerializer(
+            data=dict(request.DATA.iteritems())
+        )
+
+        if resetpassword_serializer.errors:
+            raise APIException(detail=resetpassword_serializer.errors)
+
+        try:
+            AuthenticationApi.reset_password(
+                request
+            )
+
+        except Exception, e:
+            logger.exception(e.message)
+
+        return Response(data={'status': 'OK'})
 
 
 class NewUserApiViewSet(ApiViewSet):
