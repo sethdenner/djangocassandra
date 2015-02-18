@@ -1,7 +1,6 @@
 import itertools
 from collections import OrderedDict
 from django.apps import apps
-from django.db import router
 
 from django.core.management.commands.migrate import (
     Command as DjangoMigrate
@@ -20,7 +19,8 @@ class Command(DjangoMigrate):
 
         all_models = [
             (app_config.label,
-                router.get_migratable_models(app_config, connection.alias, include_auto_created=True))
+                #router.get_migratable_models(app_config, connection.alias, include_auto_created=True))
+                app_config.get_models(include_auto_created=True))
             for app_config in apps.get_app_configs()
             if app_config.models_module is not None and app_config.label in app_labels
         ]
