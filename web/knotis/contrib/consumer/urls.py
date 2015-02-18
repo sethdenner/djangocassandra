@@ -4,7 +4,6 @@ from django.conf.urls import (
     patterns,
     url
 )
-from django.views.generic.simple import redirect_to
 
 from knotis.utils.regex import REGEX_UUID
 
@@ -19,11 +18,6 @@ from views import (
 
 urlpatterns = patterns(
     '',
-    url(
-        '^following/$',
-        redirect_to,
-        {'url': '../relations/'}
-    ),
     url(
         '^relations/following(/(?P<filter>)\w*)?/$',
         MyRelationsView
