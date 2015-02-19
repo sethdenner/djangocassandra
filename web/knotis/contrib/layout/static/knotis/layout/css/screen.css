@@ -3062,17 +3062,20 @@ section.welcomeModal h1 {
     }
     .offerHero {
         /* model style */
-        height: 200px;
+        height: 275px;
     }
-
     .offers-hero h1 {
+        margin-top: 30px;
         width: auto;
+        font-size: 24pt;
     }
-
     .offerHero h2 {
-        top: 60px;
+        font-size: 42px;        
     }
-
+    .offers-hero p {
+        font-size: 18px;
+        line-height: 20px;
+    }
     .passportTile .passport-buy {
         margin-top: -48px;
         padding: 0;

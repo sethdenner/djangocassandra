@@ -4,17 +4,10 @@
 <!-- Custom Styles -->
 <link href="{{ STATIC_URL_ABSOLUTE }}" rel="stylesheet" type="text/css">
 
-{% block header %} 
+{% block header %}
 {% endblock %}
 
-{% block body %} 
-    {% if format == 'json' %}
-	{% if styles %}
-	    {% for style in styles %}
-		<style>{% render_static_file style %}</style>
-	    {% endfor %}
-	{% endif %}
-    {% endif %}
+{% block body %}
 
 <div class="modal-header voucher-cta">
     <a class="btn close" href="/my/purchases">
@@ -78,7 +71,7 @@
 		<h4>Valid Through</h4>
 		<p>{{ transaction.offer.end_time|date:'F, j Y'|default:'Forever' }}</p>
 	    </div>
-	</div>                    
+	</div>
     {% endif %}
 
     <div class='row modal-cta'>

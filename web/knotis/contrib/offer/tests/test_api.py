@@ -2,9 +2,21 @@
 from unittest import TestCase
 
 from .utils import OfferTestUtils
+from knotis.contrib.identity.tests.utils import IdentityModelTestUtils
+from knotis.contrib.auth.tests.utils import UserCreationTestUtils
+from knotis.contrib.offer.api import (
+    OfferApi
+)
+
+from knotis.contrib.transaction.api import (
+    TransactionApi
+)
+
 from knotis.contrib.offer.models import (
     Offer,
     OfferTypes,
+    OfferCollectionItem,
+    OfferCollection,
     OfferCollectionItem,
 )
 
@@ -62,3 +74,122 @@ class OfferCollectionTests(TestCase):
             offer_collection=self.offer_collection
         )
         self.assertEqual(len(offer_collection_items), 3)
+
+
+class RandomOfferTests(TestCase):
+    def setUp(self):
+
+        owner = IdentityModelTestUtils.create_test_establishment()
+        offer_collection_1 = OfferTestUtils.create_test_offer_collection(
+            title='Foobar',
+            owner=owner,
+            numb_offers=3
+        )
+        offer_collection_2 = OfferTestUtils.create_test_offer_collection(
+            title='baz',
+            owner=owner,
+            numb_offers=3
+        )
+        self.random_offer, _ = OfferApi.create_random_offer_collection(
+            [offer_collection_1, offer_collection_2],
+            owner=owner,
+            use_once=True
+        )
+
+    def test_offer_count(self):
+        offer_collection = OfferCollection.objects.get(
+            pk=self.random_offer.description
+        )
+        offer_collection_items = OfferCollectionItem.objects.filter(
+            offer_collection=offer_collection
+        )
+        self.assertEqual(len(offer_collection_items), 6)
+
+    def test_random_offer_connect(self):
+        user, identity = UserCreationTestUtils.create_test_user()
+
+        samples = 3
+
+        connect_transactions = TransactionApi.purchase_random_collection(
+            None,
+            self.random_offer.id,
+            identity,
+            sample_size=samples
+        )
+        self.assertEqual(len(connect_transactions), samples*2)
+
+    def test_random_offer_connect_twice(self):
+        user, identity = UserCreationTestUtils.create_test_user()
+
+        samples = 3
+
+        TransactionApi.purchase_random_collection(
+            None,
+            self.random_offer.id,
+            identity,
+            sample_size=samples
+        )
+
+        self.assertRaises(
+            Exception,
+            TransactionApi.purchase_random_collection,
+            None,
+            self.random_offer.id,
+            identity,
+            sample_size=samples
+        )
+
+class UnlimitedRandomOfferTest(TestCase):
+    def setUp(self):
+
+        owner = IdentityModelTestUtils.create_test_establishment()
+        offer_collection_1 = OfferTestUtils.create_test_offer_collection(
+            title='Foobar',
+            owner=owner,
+            numb_offers=3
+        )
+        offer_collection_2 = OfferTestUtils.create_test_offer_collection(
+            title='baz',
+            owner=owner,
+            numb_offers=3
+        )
+        self.random_offer, _ = OfferApi.create_random_offer_collection(
+            [offer_collection_1, offer_collection_2],
+            owner=owner,
+            use_once=False
+        )
+
+    def test_random_offer_connect_twice(self):
+        _, identity = UserCreationTestUtils.create_test_user()
+        _, identity_2 = UserCreationTestUtils.create_test_user()
+
+        TransactionApi.purchase_random_collection(
+            None,
+            self.random_offer.id,
+            identity,
+        )
+
+        TransactionApi.purchase_random_collection(
+            None,
+            self.random_offer.id,
+            identity_2,
+        )
+
+    def test_random_offer_connect_twice_exception(self):
+        _, identity = UserCreationTestUtils.create_test_user()
+        _, identity_2 = UserCreationTestUtils.create_test_user()
+
+        samples = 3
+
+        TransactionApi.purchase_random_collection(
+            None,
+            self.random_offer.id,
+            identity,
+        )
+
+        TransactionApi.purchase_random_collection(
+            None,
+            self.random_offer.id,
+            identity_2,
+            sample_size=samples
+        )

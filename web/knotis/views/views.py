@@ -292,6 +292,38 @@ class EmbeddedView(
             **kwargs
         )
 
+    def render_ajax_template(
+        self,
+        context
+    ):
+        '''
+        Render the template to string because this is an AJAX request/response.
+        EmbeddedView prepends/appends the styles/{pre,post}_scripts.
+        ModalView doesn't include them in the response because it's in the
+        template.
+        '''
+
+        html = render_to_string(
+            'knotis/layout/styles.html',
+            context_instance=context
+        )
+
+        html += render_to_string(
+            'knotis/layout/pre_scripts.html',
+            context_instance=context
+        )
+
+        html += render_to_string(
+            self.get_template_names()[0],
+            context_instance=context
+        )
+
+        html += render_to_string(
+            'knotis/layout/post_scripts.html',
+            context_instance=context
+        )
+        return html
+
     def render_to_response(
         self,
         context=None,
@@ -328,10 +360,7 @@ class EmbeddedView(
                 data['errors'] = errors
 
             if render_template:
-                data['html'] = render_to_string(
-                    self.get_template_names()[0],
-                    context_instance=context
-                )
+                data['html'] = self.render_ajax_template(context)
                 data['targetid'] = self.target_element_id
 
             return self.generate_ajax_response(
@@ -354,7 +383,7 @@ class EmbeddedView(
 
             else:
                 if (
-                    not self.parent_template_placeholder in
+                    self.parent_template_placeholder not in
                     self.parent_view_class.template_placeholders
                 ):
                     warnings.warn(''.join([
@@ -466,6 +495,18 @@ class ModalView(EmbeddedView):
         })
 
         return self.context
+
+    def render_ajax_template(
+        self,
+        context
+    ):
+
+        html = render_to_string(
+            self.get_template_names()[0],
+            context_instance=context
+        )
+
+        return html
 
     def render_to_response(
         self,

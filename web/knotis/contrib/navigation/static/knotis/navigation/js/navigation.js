@@ -3,7 +3,7 @@
 
 (function($) {
     "use strict";
-    
+
     var first_change = true;
     var closing_modal = false;
     var $clicked_anchor = null;

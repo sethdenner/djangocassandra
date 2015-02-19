@@ -9,7 +9,7 @@
                 <li><a href="/my/offers/completed">Completed</a></li>
             </ul>
         </div>
-    </div>    
+    </div>
 </div>
 <!-- // End SubNav -->
 <div class="offers">
@@ -24,8 +24,3 @@
         </div>
     </div>
 </div>
-{% if format == 'json' %}
-{% for script in post_scripts %}
-<script src="{{ STATIC_URL}}{{ script }}" ></script>
-{% endfor %}
-{% endif %}

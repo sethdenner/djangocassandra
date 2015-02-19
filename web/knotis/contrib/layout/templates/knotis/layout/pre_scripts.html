@@ -1,0 +1,6 @@
+{% if format == 'json' %}
+    {% for script in pre_scripts %}
+        <script src="{{ STATIC_URL }}{{ script }}"></script>
+    {% endfor %}
+{% endif %}
+

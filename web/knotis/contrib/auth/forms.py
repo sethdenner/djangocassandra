@@ -101,6 +101,7 @@ class LoginForm(TemplateFormMixin, AuthenticationForm):
 class ResetPasswordForm(TemplateFormMixin, SetPasswordForm):
     template_name = 'knotis/auth/reset_form.html'
 
+
 class CreateUserForm(TemplateModelForm):
     template_name = 'knotis/auth/sign_up_form.html'
 

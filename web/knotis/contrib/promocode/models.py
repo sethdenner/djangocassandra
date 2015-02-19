@@ -11,8 +11,10 @@ from knotis.contrib.quick.fields import (
 class PromoCodeTypes(object):
     UNDEFINED = -1
     OFFER_COLLECTION = 0
+    RANDOM_OFFER_COLLECTION = 1
     CHOICES = (
-        (OFFER_COLLECTION, 'Offer Collection'),
+        (OFFER_COLLECTION, 'Random Offer Collection'),
+        (RANDOM_OFFER_COLLECTION, 'Offer Collection'),
         (UNDEFINED, 'Undefined'),
     )
 

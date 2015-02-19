@@ -270,6 +270,28 @@ class ForgotPasswordView(ModalView):
             'modal_id': 'auth-modal'
         })
 
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+        try:
+            AuthenticationApi.reset_password(
+                request,
+                *args,
+                **kwargs
+            )
+
+        except Exception, e:
+            logger.exception(e.message)
+
+        response_data = {
+            'status': 'OK'
+        }
+
+        return self.generate_ajax_response(response_data)
+
 
 class ForgotPasswordSuccessView(ModalView):
     url_patterns = [r'auth/forgot/success/$']

@@ -61,12 +61,14 @@ class OfferTypes:
     PREMIUM = 1
     DARK = 2
     DIGITAL_OFFER_COLLECTION = 3
+    RANDOM_OFFER_COLLECTION = 4
 
     CHOICES = (
         (NORMAL, 'Normal'),
         (PREMIUM, 'Premium'),
         (DARK, 'Dark'),
         (DIGITAL_OFFER_COLLECTION, 'Digital Offer Collection'),
+        (RANDOM_OFFER_COLLECTION, 'Random Offer Collection'),
     )
 
 
@@ -424,17 +426,29 @@ class Offer(QuickModel):
         self.completed = True
         self.save()
 
-    def available(self):
+    def in_stock(self):
+            return self.unlimited or self.purchased < self.stock
+
+    def expired(self):
         now = datetime.datetime.utcnow()
+        return self.start_time > now or\
+            (self.end_time is not None and self.end_time > now)
+
+    def available(self):
+        '''
+        This function is horrible.
+        '''
 
         return (
             self.active and
             self.published and
-            self.start_time <= now and
-            (self.end_time is None or self.end_time > now) and
-            (self.unlimited or self.purchased < self.stock) and
+            self.in_stock() and
+            not self.expired() and
             not self.completed
-        ) or self.offer_type == OfferTypes.DARK
+        ) or self.offer_type == OfferTypes.DARK or (
+            self.offer_type == OfferTypes.RANDOM_OFFER_COLLECTION and
+            not (self.expired() or self.completed)
+        )
 
     def description_formatted_html(self):
         if not self.description:

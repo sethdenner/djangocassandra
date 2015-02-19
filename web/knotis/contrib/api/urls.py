@@ -2,11 +2,10 @@ from django.conf.urls.defaults import (
     patterns
 )
 
-from knotis.contrib.auth.api import (
-    AuthUserApiView,
-    AuthenticationApiView,
-    AuthForgotPasswordApiView,
-    UserInformationApiModelViewSet
+from knotis.contrib.auth.xapi import (
+    NewUserApiViewSet,
+    UserApiModelViewSet,
+    ResetPasswordApiViewSet
 )
 from knotis.contrib.identity.api import (
     IdentityApiView,
@@ -62,10 +61,9 @@ from knotis.contrib.passport.api import (
 )
 
 urlpatterns = patterns('')
-urlpatterns += AuthUserApiView.urls()
-urlpatterns += AuthenticationApiView.urls()
-urlpatterns += AuthForgotPasswordApiView.urls()
-urlpatterns += UserInformationApiModelViewSet.urls()
+urlpatterns += NewUserApiViewSet.urls()
+urlpatterns += UserApiModelViewSet.urls()
+urlpatterns += ResetPasswordApiViewSet.urls()
 urlpatterns += IndividualApiModelViewSet.urls()
 urlpatterns += EstablishmentApiModelViewSet.urls()
 urlpatterns += BusinessApiModelViewSet.urls()

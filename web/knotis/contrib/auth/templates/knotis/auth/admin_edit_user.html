@@ -1,6 +1,6 @@
 {% extends 'knotis/layout/modal_base.html' %}
 {% block body %}
-    <form 
+    <form
         action="/admin/user/interact/update-{{ target_user.id }}/"
         method="post"
         id="user-edit-form"
@@ -11,8 +11,5 @@
     </form>
 {% endblock body %}
 {% block last %}
-{% if format == 'json' %}
-<script type="application/javascript" src="{{ STATIC_URL }}knotis/auth/js/admin_edit_user.js"></script>
-{% endif %}
 {% endblock last %}
 

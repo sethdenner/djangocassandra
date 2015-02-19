@@ -36,7 +36,7 @@ class MediaTestUtils(object):
                 size_x = 2555
                 size_y = 500
 
-            url = 'http://placehold.it/' + size_x + 'x' + size_y
+            url = 'http://placehold.it/' + str(size_x) + 'x' + str(size_y)
 
             # url = 'http://placehold.it/350/150'
             # url = 'http://placekitten.com/g/200/300'

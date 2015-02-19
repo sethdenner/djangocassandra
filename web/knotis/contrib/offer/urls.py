@@ -12,7 +12,8 @@ from .views import (
     OffersGridView,
     PassportBookView,
     OfferPurchaseSuccessView,
-    OfferPurchaseButton
+    OfferPurchaseButton,
+    PassportDistributionView
 )
 
 from .emails import (
@@ -40,3 +41,4 @@ urlpatterns += OffersView.urls()
 urlpatterns += PassportBookView.urls()
 urlpatterns += OfferPurchaseView.urls(require_login=True)
 urlpatterns += OfferPurchaseSuccessView.urls(require_login=True)
+urlpatterns += PassportDistributionView.urls()

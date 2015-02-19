@@ -393,13 +393,7 @@ class MyEstablishmentsView(ContextView):
 
     def process_context(self):
 
-        styles = [
-            'knotis/layout/css/global.css',
-            'knotis/layout/css/header.css',
-            'knotis/layout/css/grid.css',
-            'knotis/layout/css/tile.css',
-            'styles/default/fileuploader.css'
-        ]
+        styles = []
 
         pre_scripts = []
 
@@ -612,13 +606,6 @@ class OfferRedemptionView(FragmentView):
             'offer_tile_markup': offer_tile_markup
         })
 
-        return self.context
-
-
-class MyAnalyticsView(ContextView):
-    template_name = 'knotis/merchant/my_analytics_view.html'
-
-    def process_context(self):
         return self.context
 
 
