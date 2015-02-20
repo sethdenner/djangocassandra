@@ -23,7 +23,7 @@
                 count,
                 ''
             ].join('/');
-    
+
             $.ajax({
                 url: fetch_url,
                 global: false,
@@ -31,7 +31,7 @@
                     data = data.replace(/(\r\n|\n|\r)/gm,"");
                     if (!data) {
                         results_left = false;
-                        
+
                         return;
                     }
 
@@ -44,14 +44,16 @@
                 }
             });
         };
-           
+
         $(window).off(scroll_space).on(scroll_space, function(event) {
             if (page == 1) {
 
                 $('#load_more_button').click(function(event) {
                     $('#knotis_footer').hide();
                     $('#load_more_button').hide();
-                    get_results(page++);
+                    if (!fetching_results) {
+                        get_results(page++);
+                    }
                 });
 
             } else {
@@ -67,6 +69,6 @@
                 }
             }
 
-        });       
-    };    
+        });
+    };
 })(jQuery);
