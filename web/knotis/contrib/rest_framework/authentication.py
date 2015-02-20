@@ -15,9 +15,10 @@ class ClientOnlyAuthentication(BaseAuthentication):
         request
     ):
         client_id = request.DATA.get('client_id')
-        raise AuthenticationFailed(
-            'No credentials provided.'
-        )
+        if None is client_id:
+            raise AuthenticationFailed(
+                'No credentials provided.'
+            )
 
         try:
             client = Client.objects.get(pk=client_id)
