@@ -27,7 +27,6 @@ from knotis.contrib.activity.models import (
     Activity,
     ActivityTypes
 )
-from knotis.contrib.offer.models import Offer
 from knotis.contrib.product.models import (
     Product,
     CurrencyCodes
@@ -38,6 +37,8 @@ from knotis.contrib.promocode.models import (
     PromoCode
 )
 from knotis.contrib.offer.models import (
+    Offer,
+    OfferTypes,
     OfferCollection,
     OfferCollectionItem
 )
@@ -394,8 +395,12 @@ class TransactionApi(object):
             create_empty=True
         )
 
+        activity_context = [offer.id, offer.description][
+            offer.offer_type == OfferTypes.RANDOM_OFFER_COLLECTION
+        ]
+
         offer_activities = Activity.objects.filter(
-            context=offer_id,
+            context=activity_context,
             identity=identity,
             activity_type=ActivityTypes.CONNECT_RANDOM_COLLECTION
         )
@@ -404,16 +409,10 @@ class TransactionApi(object):
             raise TransactionApi.OfferAlreadyPurchased
 
         transactions = []
-        offer.purchase()
 
-        # transactions.extend(TransactionApi.create_purchase(
-        #     request=request,
-        #     offer=offer,
-        #     buyer=identity,
-        #     currency=buyer_usd,
-        #     mode=PurchaseMode.FREE,
-        #     send_email=False,
-        # ))
+        # There should probably be an event for the messaging system someplace
+        # in here
+        offer.purchase()
 
         offer_collection = OfferCollection.objects.get(
             pk=offer.description
@@ -435,7 +434,7 @@ class TransactionApi(object):
             ))
 
         Activity.objects.create(
-            context=offer_id,
+            context=activity_context,
             identity=identity,
             activity_type=ActivityTypes.CONNECT_RANDOM_COLLECTION
         )

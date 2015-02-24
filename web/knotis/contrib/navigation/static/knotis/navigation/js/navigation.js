@@ -14,16 +14,22 @@
             $('#mainNavMobileToggle').trigger("change");
         });
     });
+
+    var modal_initialize = function($modal) {
+
+        $modal.modal();
+        $modal.off('hidden.bs.modal.navigation')
+            .on(
+                'hidden.bs.modal.navigation',
+                modal_onclose
+            );
+    }
     var modal_onclose = function () {
         var $modal = $(this);
-        var $close = $modal.find('a[data-dismiss-modal]');
         var href = '/';
 
         if (null !== last_non_modal) {
             href = last_non_modal;
-
-        } else if ($close.length) {
-            href = $close.attr('href');
 
         }
 
@@ -48,18 +54,11 @@
 
         var $modals = $('div.modal');
         $modals.each(function () {
-            var $modal = $(this);
-            $modal.modal();
-            $modal.off('hidden.bs.modal.navigation')
-                .on(
-                    'hidden.bs.modal.navigation',
-                    modal_onclose
-                );
-
+            modal_initialize($(this));
         });
 
         if (0 === $('div.modal:visible').length) {
-            last_non_modal = $.address.value();
+            last_non_modal = window.location.pathname;
 
         }
     };
@@ -149,10 +148,7 @@
                             $('body').append($html);
 
                         }
-
-                        $html.modal();
-                        $html.off('hidden.bs.modal.navigation')
-                            .on('hidden.bs.modal.navigation', modal_onclose);
+                        modal_initialize($html);
 
                     } else {
                         last_non_modal = address;
