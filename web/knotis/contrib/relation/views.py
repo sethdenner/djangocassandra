@@ -64,6 +64,7 @@ class MyFollowingView(EmbeddedView):
     post_scripts = [
         'knotis/layout/js/action_button.js',
         'knotis/identity/js/identity-action.js',
+        'knotis/layout/js/pagination.js',
         'knotis/identity/js/businesses.js',
         'knotis/identity/js/business-tile.js',
     ]
@@ -145,7 +146,7 @@ class ChangeFollowingView(AJAXView):
         **kwargs
     ):
         self.get_needed_identities(request)
-        
+
         errors = {}
 
         try:
