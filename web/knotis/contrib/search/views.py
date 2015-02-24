@@ -9,12 +9,19 @@ logger = logging.getLogger(__name__)
 
 
 from knotis.contrib.identity.views import IdentityTile, get_current_identity
-from knotis.contrib.offer.views import OfferTile
+from knotis.contrib.offer.views import (
+    OfferTile,
+    CollectionTile
+)
 from knotis.contrib.layout.views import GridSmallView, DefaultBaseView
 from knotis.contrib.search.api import SearchApi
 from knotis.views import (
     EmbeddedView,
     FragmentView,
+)
+
+from knotis.contrib.offer.models import (
+    OfferTypes
 )
 
 
@@ -89,12 +96,23 @@ class SearchResultsGrid(GridSmallView):
                         )
                     )
                 elif result.content_type.name == 'offer':
-                    offer_tile = OfferTile()
-                    result_context = Context({
-                        'offer': result,
-                        'request': self.request,
-                        'current_identity': current_identity
-                    })
+                    offer = result
+
+                    if offer.offer_type == OfferTypes.DIGITAL_OFFER_COLLECTION:
+                        offer_tile = CollectionTile()
+                        result_context = Context({
+                            'offer': offer,
+                            'offer_price': offer.price_discount_formatted(),
+                            'current_identity': current_identity,
+                        })
+
+                    else:
+                        offer_tile = OfferTile()
+                        result_context = Context({
+                            'offer': offer,
+                            'current_identity': current_identity,
+                        })
+
                     tiles.append(
                         offer_tile.render_template_fragment(
                             result_context
