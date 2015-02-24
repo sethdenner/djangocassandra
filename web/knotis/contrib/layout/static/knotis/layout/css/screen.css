@@ -840,6 +840,7 @@ nav button.signUp {
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-top: 25px;
+    cursor: pointer;
 }
 
 .footer {
@@ -855,7 +856,7 @@ nav button.signUp {
     text-align: right;
 }
 
-.footer a, 
+.footer a,
 .footer a:active,
 .footer a:link,
 .footer a:visited,
@@ -865,7 +866,7 @@ nav button.signUp {
 }
 
 .footer i {
-    font-size: 20pt;    
+    font-size: 20pt;
 }
 
 .footer .spaced {
@@ -3029,7 +3030,7 @@ section.welcomeModal h1 {
     }
 
     .footer i {
-        font-size: 38pt;    
+        font-size: 38pt;
     }
 
     .footer .spaced {
@@ -3070,7 +3071,7 @@ section.welcomeModal h1 {
         font-size: 24pt;
     }
     .offerHero h2 {
-        font-size: 42px;        
+        font-size: 42px;
     }
     .offers-hero p {
         font-size: 18px;
