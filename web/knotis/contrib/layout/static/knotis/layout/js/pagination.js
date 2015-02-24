@@ -6,6 +6,7 @@
             dataId:'',
             onDone: function() {},
             count_increment: 24,
+            page_load_count: 3
         };
         $.extend(options, user_options);
 
@@ -45,18 +46,19 @@
             });
         };
 
+        $('#load_more_button').click(function(event) {
+            $('#load_more_button').hide();
+            if (!fetching_results) {
+                get_results(page++);
+            }
+        });
+
         $(window).off(scroll_space).on(scroll_space, function(event) {
-            if (page == 1) {
 
-                $('#load_more_button').click(function(event) {
-                    $('#knotis_footer').hide();
-                    $('#load_more_button').hide();
-                    if (!fetching_results) {
-                        get_results(page++);
-                    }
-                });
 
-            } else {
+            // For the initial load button, it's defaulting to page 1.
+            if (page % options.page_load_count != 1) {
+
                 var $this = $(this);
 
                 if (!results_left) {
@@ -66,6 +68,9 @@
 
                 if (!fetching_results && $this.scrollTop() + $this.innerHeight() >= $(document).innerHeight() - 1000) {
                     get_results(page++);
+
+                    if (page % options.page_load_count == 1)
+                        $('#load_more_button').show();
                 }
             }
 
