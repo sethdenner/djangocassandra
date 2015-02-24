@@ -69,11 +69,11 @@
                 if (!fetching_results && $this.scrollTop() + $this.innerHeight() >= $(document).innerHeight() - 1000) {
                     get_results(page++);
 
-                    if (page % options.page_load_count == 1)
-                        $('#load_more_button').show();
                 }
             }
-
+            if (!fetching_results && page % options.page_load_count == 1) {
+                $('#load_more_button').show();
+            }
         });
     };
 })(jQuery);
