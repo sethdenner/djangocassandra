@@ -829,6 +829,74 @@ nav button.signUp {
     font-size: 25px;
 }
 
+#load_more_button {
+    text-align: center;
+    padding: 20px;
+    border-radius: 3px;
+    background: rgb(255, 255, 255);
+    color: rgb(122, 122, 122);
+    font-size: 11px;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 25px;
+    cursor: pointer;
+}
+
+.footer {
+    width: 100%;
+    background-color: #ffffff;
+    margin-top: 60px;
+    padding: 20px 30px 60px 50px;
+    font-family: 'LatoReg', sans-serif;
+    font-size: 10pt;
+}
+
+.footer .text-layout {
+    text-align: right;
+}
+
+.footer a,
+.footer a:active,
+.footer a:link,
+.footer a:visited,
+.footer a:hover {
+    color: #A3A3A3;
+    text-decoration: none;
+}
+
+.footer i {
+    font-size: 20pt;
+}
+
+.footer .spaced {
+    margin: 0 8px;
+}
+
+.footer .footer-col {
+    color: #A3A3A3;
+    margin-top: 40px;
+}
+
+.footer .footer-col li {
+    margin-top: 20px;
+}
+
+.footer .footer-col-header,
+.footer .footer-col-header-ln {
+    font-size: 8pt;
+    color: #2cc397;
+}
+
+.footer .footer-col-header .copyr{
+    color: #A3A3A3;
+}
+
+.footer .footer-col-header-ln {
+    font-size: 12pt;
+    font-weight: bold;
+}
+
 /* line 3, ../sass/_offerCreate.scss */
 offerSteps ul {
     margin: 0;
@@ -1274,13 +1342,12 @@ offerSteps ul {
 
 @font-face {
     font-family: 'iconFont';
-    src: url("/static/knotis/layout/fonts/iconFont.eot?201412104");
-    src: url("/static/knotis/layout/fonts/iconFont.eot?#iefix201412104") format("embedded-opentype"), url("/static/knotis/layout/fonts/iconFont.woff?201412104") format("woff"), url("/static/knotis/layout/fonts/iconFont.ttf?201412104") format("truetype"), url("/static/knotis/layout/fonts/iconFont.svg?#icomoon201412104") format("svg");
+    src:url('/static/knotis/layout/fonts/iconFont.eot?-201401291');
+    src:url('/static/knotis/layout/fonts/iconFont.eot?#iefix-201401291') format('embedded-opentype'), url('/static/knotis/layout/fonts/iconFont.woff?-201401291') format('woff'), url('/static/knotis/layout/fonts/iconFont.ttf?-201401291') format('truetype'), url('/static/knotis/layout/fonts/iconFont.svg?-201401291#iconFont') format('svg');
     font-weight: normal;
     font-style: normal;
 }
 
-/* line 12, ../sass/_iconFont.scss */
 [class^="icon-"], [class*=" icon-"] {
     font-family: 'iconFont';
     speak: none;
@@ -1289,104 +1356,172 @@ offerSteps ul {
     font-variant: normal;
     text-transform: none;
     line-height: 1;
+
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-support:before {
-    content: "\e600";
+.icon-social-twitter:before {
+    content: "\e90a";
 }
-.icon-redeem:before {
-    content: "\e601";
+
+.icon-social-facebook:before {
+    content: "\e90b";
 }
-.icon-profile-male:before {
-    content: "\e602";
+
+.icon-social-pinterest:before {
+    content: "\e90c";
 }
-.icon-profile-female:before {
-    content: "\e603";
-}
-.icon-settings:before {
-    content: "\e604";
-}
-.icon-reports:before {
-    content: "\e605";
-}
-.icon-cart:before {
-    content: "\e606";
-}
-.icon-promotions:before {
-    content: "\e607";
-}
-.icon-offers:before {
-    content: "\e608";
-}
-.icon-message:before {
-    content: "\e609";
-}
-.icon-followers:before {
-    content: "\e60a";
-}
-.icon-dashboard:before {
-    content: "\e60c";
-}
-.icon-customers:before {
-    content: "\e60d";
-}
-.icon-business:before {
-    content: "\e60e";
-}
-.icon-feed:before {
-    content: "\e60f";
-}
-.icon-banking:before {
-    content: "\e610";
-}
-.icon-location:before {
-    content: "\e60b";
-}
-.icon-hyperlink:before {
-    content: "\f123";
-}
+
 .icon-phone:before {
     content: "\f125";
 }
+
+.icon-play:before {
+    content: "\f121";
+}
+
+.icon-play2:before {
+    content: "\f120";
+}
+
+.icon-bar-chart:before {
+    content: "\f117";
+}
+
+.icon-external-link:before {
+    content: "\f123";
+}
+
+.icon-search:before {
+    content: "\f110";
+}
+
+.icon-dashboard:before {
+    content: "\f115";
+}
+
+.icon-support:before {
+    content: "\e600";
+}
+
+.icon-qrcode:before {
+    content: "\e601";
+}
+
+.icon-profile-male:before {
+    content: "\e602";
+}
+
+.icon-profile-female:before {
+    content: "\e603";
+}
+
+.icon-settings:before {
+    content: "\e604";
+}
+
+.icon-reports:before {
+    content: "\e605";
+}
+
+.icon-cart:before {
+    content: "\e606";
+}
+
+.icon-promotions:before {
+    content: "\e607";
+}
+
+.icon-offers:before {
+    content: "\e608";
+}
+
+.icon-message:before {
+    content: "\e609";
+}
+
+.icon-followers:before {
+    content: "\e60a";
+}
+
+.icon-location:before {
+    content: "\e60b";
+}
+
+.icon-dashboard2:before {
+    content: "\e60c";
+}
+
+.icon-customers:before {
+    content: "\e60d";
+}
+
+.icon-business:before {
+    content: "\e60e";
+}
+
+.icon-feed:before {
+    content: "\e60f";
+}
+
+.icon-banking:before {
+    content: "\e610";
+}
+
 .icon-arrow-left-med:before {
     content: "\e611";
 }
+
 .icon-arrow-down-med:before {
     content: "\e612";
 }
+
 .icon-arrow-up-med:before {
     content: "\e613";
 }
+
 .icon-arrow-right-med:before {
     content: "\e614";
 }
-.icon-arrow-left-thin-xs:before {
+
+.icon-arrow-left-sm:before {
     content: "\e615";
 }
-.icon-arrow-down-thin-xs:before {
+
+.icon-arrow-down-sm:before {
     content: "\e616";
 }
-.icon-arrow-up-thin-xs:before {
+
+.icon-arrow-up-sm:before {
     content: "\e617";
 }
-.icon-arrow-right-thin-xs:before {
+
+.icon-arrow-right-sm:before {
     content: "\e618";
 }
-.icon-arrow-left-thin-lg:before {
+
+.icon-arrow-left-lg:before {
     content: "\e619";
 }
-.icon-arrow-down-thin-lg:before {
+
+.icon-arrow-down-lg:before {
     content: "\e61a";
 }
-.icon-arrow-up-thin-lg:before {
+
+.icon-arrow-up-lg:before {
     content: "\e61b";
 }
-.icon-arrow-right-thin-lg:before {
+
+.icon-arrow-right-lg:before {
     content: "\e61c";
 }
+
+.icon-menu:before {
+    content: "\f100";
+}
+
 
 /* line 63, ../sass/_modals.scss */
 .tos-text a {
@@ -2884,6 +3019,37 @@ section.welcomeModal h1 {
 }
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
 @media (max-width: 400px) {
+
+    .footer, .footer .text-layout {
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .footer {
+        padding: 20px 2px 60px 10px;
+    }
+
+    .footer i {
+        font-size: 38pt;
+    }
+
+    .footer .spaced {
+        margin: 0 14px;
+    }
+
+    .footer .footer-col-header,
+    .footer .footer-col-header-ln {
+        font-size: 14pt;
+    }
+
+    .footer .footer-col-header .copyr{
+        font-size: 10pt;
+    }
+
+    .footer .footer-col-header-ln {
+        font-size: 16pt;
+    }
+
     h1.sectionHeader {
         width: 100%;
     }
@@ -2905,7 +3071,7 @@ section.welcomeModal h1 {
         font-size: 24pt;
     }
     .offerHero h2 {
-        font-size: 42px;        
+        font-size: 42px;
     }
     .offers-hero p {
         font-size: 18px;
