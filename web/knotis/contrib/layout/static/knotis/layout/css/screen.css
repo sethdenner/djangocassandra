@@ -199,6 +199,9 @@ a:focus {
 .navbar {
     background: #2cc397;
     border: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 90px;
 }
 
 nav {
@@ -323,6 +326,21 @@ nav .dropdown {
     display:block;
     float:right;
 }
+
+a.invisible-floater-left {
+    position: absolute;
+    width: 50px;
+    height: 36px;
+    right: 50%
+}
+
+a.invisible-floater-right {
+    position: absolute;
+    width: 50px;
+    height: 36px;
+    left: 50%
+}
+
 div.searchForm{
     position:relative;
     height: 30px;

@@ -4,8 +4,11 @@
 {% block header %}
 <!-- Primary Navigation -->
 
-<nav class="nav navbar navbar-default navbar-fixed-top" role="navigation">
+<nav class="nav navbar navbar-default navbar-fixed-top"
+     style="background-image: url('{{STATIC_URL}}knotis/img/knotis_logo_nav.png');" role="navigation">
     <div class="container-fluid">
+        <a href="/" class="invisible-floater-left"></a>
+        <a href="/" class="invisible-floater-right"></a>
 
         <div class="row">
             <label for="mainNavMobileToggle" class="col-xs-1 button icon-menu2 unselectable clickable mobileMenuToggle"></label>
@@ -16,31 +19,25 @@
             </div>
             <!-- // End Search Form -->
 
-            <div class="col-lg-3 col-xs-2 logo">
-                <div class="logo">
-                    <a href="/" data-target-id="main-content" ><img src="{{ STATIC_URL }}knotis/img/knotis_logo_nav.png" alt="Knotis"/></a>
-                </div>
-            </div>
-
             {% if user.is_authenticated %}
-            <div class="col-lg-4 col-xs-4 identitySwitcher">
-                {% render_fragment identity_switcher %}
-            </div>
+                <div class="col-lg-4 col-xs-4 identitySwitcher">
+                    {% render_fragment identity_switcher %}
+                </div>
             {% else %}
 
-            <div id="auth-controls" class="col-lg-4 col-xs-4">
-                <div class="authBtns">
-                    <a href="/login/" class="btn btn-primary btn-lg logIn modal-link" data-modal-id="auth-modal">
-                        Log In
-                    </a>
-                    <a href="/signup/" class="btn btn-primary btn-lg signUp modal-link" data-modal-id="auth-modal">
-                        Sign Up
-                    </a>
-                    <a href="/signup/" class="btn btn-primary btn-lg signUpMobile modal-link" data-modal-id="auth-modal">
-                        Sign Up/In
-                    </a>
+                <div class="col-lg-4 col-xs-4" id="auth-controls">
+                    <div class="authBtns">
+                        <a href="/login/" class="btn btn-primary btn-lg logIn modal-link" data-modal-id="auth-modal">
+                            Log In
+                        </a>
+                        <a href="/signup/" class="btn btn-primary btn-lg signUp modal-link" data-modal-id="auth-modal">
+                            Sign Up
+                        </a>
+                        <a href="/signup/" class="btn btn-primary btn-lg signUpMobile modal-link" data-modal-id="auth-modal">
+                            Sign Up/In
+                        </a>
+                    </div>
                 </div>
-            </div>
             {% endif %}
         </div>
     </div>
