@@ -19,14 +19,6 @@
             </div>
             <!-- // End Search Form -->
 
-            <!--
-            <div class="col-lg-4 col-xs-4 logo">
-                <div class="logo">
-                    <a href="/" data-target-id="main-content" ><img src="{{ STATIC_URL }}knotis/img/knotis_logo_nav.png" alt="Knotis"/></a>
-                </div>
-            </div>
-            --!>
-
             {% if user.is_authenticated %}
                 <div class="col-lg-4 col-xs-4 identitySwitcher">
                     {% render_fragment identity_switcher %}
