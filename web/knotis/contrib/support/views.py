@@ -1,8 +1,9 @@
-from knotis.views import ModalView, FragmentView
+from knotis.views import ModalView
 from knotis.contrib.layout.views import DefaultBaseView
 from forms import SupportForm
 from django.core.mail import send_mail
 import settings
+
 
 class SupportView(ModalView):
     url_patterns = [
@@ -13,6 +14,16 @@ class SupportView(ModalView):
     post_scripts = [
         'knotis/support/js/support.js'
     ]
+    styles = [
+        'knotis/support/css/support.css'
+    ]
+
+    def process_context(self):
+        self.context.update({
+            'header_title': 'Need Help?',
+            'modal_id': 'auth-modal',
+        })
+        return self.context
 
     def post(
         self,
@@ -30,7 +41,6 @@ class SupportView(ModalView):
                 'message': 'the data entered is invalid',
                 'errors': errors
             })
-
 
         subject = form.cleaned_data['subject']
         email = form.cleaned_data['email']
@@ -57,6 +67,7 @@ class SupportView(ModalView):
         return self.generate_ajax_response({
             'status': 'OK'
         })
+
 
 class SupportSuccessView(ModalView):
     template_name = 'knotis/support/support_success.html'
