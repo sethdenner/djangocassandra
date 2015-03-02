@@ -5,6 +5,14 @@ logger = logging.getLogger(__name__)
 
 from rest_framework.exceptions import APIException
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication
+
+from doac.contrib.rest_framework.authentication import DoacAuthentication
+
+
+from knotis.contrib.rest_framework.authentication import (
+    ClientOnlyAuthentication
+)
 
 from knotis.views import (
     ApiView,
@@ -304,6 +312,11 @@ class OfferAvailabilityModelViewSet(ApiModelViewSet):
     model = OfferAvailability
     queryset = OfferAvailability.objects.filter(available=True)
     serializer_class = OfferAvailabilitySerializer
+    authentication_classes = (
+        SessionAuthentication,
+        DoacAuthentication,
+        ClientOnlyAuthentication
+    )
 
     http_method_names = ['get', 'options']
 
