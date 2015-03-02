@@ -73,8 +73,14 @@ class OfferAvailabilitySerializer(ModelSerializer):
             'banner_image',
             'badge_image',
             'price',
+            'price_retail',
             'business_name'
         )
+
+    price_retail = FloatField(
+        read_only=True,
+        source='offer.price_retail'
+    )
 
     banner_image = CroppedImageUrlSerializer(
         source='default_image',
