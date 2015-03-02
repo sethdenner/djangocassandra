@@ -228,8 +228,13 @@ class OfferApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
     paginate_by = 20
     paginate_by_param = 'count'
     max_paginate_by = 200
+    authentication_classes = (
+        SessionAuthentication,
+        DoacAuthentication,
+        ClientOnlyAuthentication
+    )
 
-    http_method_names = ['get', 'put', 'options']
+    http_method_names = ['get', 'options']
 
     def initial(
         self,
