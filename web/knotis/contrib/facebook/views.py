@@ -8,7 +8,6 @@ from django.template import Context
 
 from knotis.views import (
     FragmentView,
-    AJAXView,
     AJAXFragmentView
 )
 

@@ -1,5 +1,7 @@
 import hashlib
 
+from doac.models import Client as DoacClient
+
 from django.utils import log
 logger = log.getLogger(__name__)
 
@@ -18,8 +20,6 @@ from knotis.contrib.quick.fields import (
     QuickForeignKey
 )
 from knotis.contrib.denormalize.models import DenormalizedField
-from knotis.contrib.facebook.views import get_facebook_avatar
-from knotis.contrib.gravatar.views import avatar as get_gravatar_avatar
 from knotis.contrib.identity.models import Identity
 from knotis.contrib.relation.models import (
     Relation,
@@ -102,22 +102,6 @@ class KnotisUser(DjangoUser):
             '...'
         ])
 
-    def avatar(
-        self,
-        facebook_id=None
-    ):
-        if facebook_id:
-            return get_facebook_avatar(facebook_id)
-        else:
-            return get_gravatar_avatar(
-                self.username,
-                32,
-                'mm',
-                'g',
-                False,
-                {}
-            )
-
 
 class UserInformationManager(QuickManager):
     pass
@@ -141,3 +125,8 @@ class PasswordReset(QuickModel):
         db_index=True
     )
     expires = QuickDateTimeField()
+
+
+class UserXapiClientMap(QuickModel):
+    user = QuickForeignKey(KnotisUser)
+    client = QuickForeignKey(DoacClient)

@@ -13,6 +13,14 @@ from rest_framework.exceptions import (
     MethodNotAllowed
 )
 
+from rest_framework.authentication import SessionAuthentication
+
+from doac.contrib.rest_framework.authentication import DoacAuthentication
+
+
+from knotis.contrib.rest_framework.authentication import (
+    ClientOnlyAuthentication
+)
 
 from knotis.views import (
     ApiView,
@@ -773,11 +781,18 @@ class EstablishmentApiModelViewSet(IdentityApiModelViewSet):
         available=True
     )
     serializer_class = EstablishmentSerializer
+    authentication_classes = (
+        SessionAuthentication,
+        DoacAuthentication,
+        ClientOnlyAuthentication
+    )
     paginate_by = 20
     paginate_by_param = 'count'
     max_paginate_by = 200
 
     allow_listing = True
+
+    http_method_names = ['get', 'options']
 
 
 class IdentitySwitcherApiViewSet(ApiViewSet):

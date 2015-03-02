@@ -45,7 +45,7 @@ class ResetPasswordApiViewSet(ApiViewSet):
     )
     permission_classes = (AllowAny,)
 
-    allowed_methods = ['POST']
+    allowed_methods = ['POST', 'options']
 
     def create(
         self,
@@ -81,7 +81,7 @@ class NewUserApiViewSet(ApiViewSet):
     )
     permission_classes = (AllowAny,)
 
-    allowed_methods = ['POST']
+    allowed_methods = ['POST', 'options']
 
     def create(
         self,
