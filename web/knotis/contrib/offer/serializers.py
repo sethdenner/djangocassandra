@@ -37,6 +37,7 @@ class OfferSerializer(ModelSerializer):
             'completed',
             'last_purchase',
             'price',
+            'price_retail',
             'banner_image',
             'badge_image'
         )
@@ -44,6 +45,10 @@ class OfferSerializer(ModelSerializer):
     owner = IdentitySerializer()
     price = FloatField(
         source='price_discount',
+        read_only=True
+    )
+    price_retail = FloatField(
+        source='price_retail',
         read_only=True
     )
     banner_image = CroppedImageUrlSerializer(
