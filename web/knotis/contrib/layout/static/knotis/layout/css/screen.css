@@ -847,6 +847,14 @@ nav button.signUp {
     font-size: 25px;
 }
 
+/* line 157, ../sass/_sideBar.scss */
+.sidebar-nav .icon-qrcode {
+    position: relative;
+    top: 6px;
+    left: 1px;
+    font-size: 24px;
+}
+
 #load_more_button {
     text-align: center;
     padding: 20px;
