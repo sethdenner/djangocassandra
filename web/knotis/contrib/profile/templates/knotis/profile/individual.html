@@ -2,41 +2,43 @@
 {% load render_template_fragment %}
 <div class="profileIndividual">
     <div class="container-fluid mainContent">
-        {% thumbnail profile_banner.image.image '1920x500' crop=profile_banner.crop as header %}
-        <div class="hero" data-id='id-data-profile-cover' style="background-image: url('{{ header.url }}');background-size: 100% 100%;">
-        {% empty %}
-        <div class="hero" data-id='id-data-profile-cover'>
-        {% endthumbnail %}
-            <div class="col-lg-12 col-xs-12 columns">
-                <div class="individualHeader">
-                    {% thumbnail profile_badge.image.image '120x120' crop=profile_badge.crop as img %}
-                    <img src="{{ img.url }}" data-id='id-data-profile-badge' class="{% if is_owner %}change-profile-badge-link{% endif %}"/>
-                    {% empty %}
-                    <img width="120" height="120" data-id='id-data-profile-badge' src="{{ default_profile_logo_uri }}" class="{% if is_owner %}change-profile-badge-link{% endif %}" />
-                    {% endthumbnail %}
-                    <h1>{{ identity.name }}</h1>
-                </div>
-            </div>
-        </div>
-            {% if is_owner %}
-                <div class="adminBtns">
-                    <div class="col-lg-3 col-xs-4">
-                        <a class="change-profile-cover-link">Upload Cover</a>
+        <div class="row">
+            {% thumbnail profile_banner.image.image '1920x500' crop=profile_banner.crop as header %}
+            <div class="hero" data-id='id-data-profile-cover' style="background-image: url('{{ header.url }}');background-size: 100% 100%;">
+            {% empty %}
+            <div class="hero" data-id='id-data-profile-cover'>
+            {% endthumbnail %}
+                <div class="col-lg-12 col-xs-12 columns">
+                    <div class="individualHeader">
+                        {% thumbnail profile_badge.image.image '120x120' crop=profile_badge.crop as img %}
+                        <img src="{{ img.url }}" data-id='id-data-profile-badge' class="{% if is_owner %}change-profile-badge-link{% endif %}"/>
+                        {% empty %}
+                        <img width="120" height="120" data-id='id-data-profile-badge' src="{{ default_profile_logo_uri }}" class="{% if is_owner %}change-profile-badge-link{% endif %}" />
+                        {% endthumbnail %}
+                        <h1>{{ identity.name }}</h1>
                     </div>
                 </div>
+            </div>
+            {% if is_owner %}
+            <div class="adminBtns">
+                <div class="col-lg-3 col-xs-4">
+                    <a class="change-profile-cover-link">Upload Cover</a>
+                </div>
+            </div>
             {% endif %}
-            <div class="profileContent">
-                {% if is_owner %}
-                <div class="profileHeading">About Me</div>
+        </div>
+
+        <div class="row profileContent">
+            {% if is_owner %}
+            <div class="profileHeading">About Me</div>
                 <section>
-                    <div id="about-me">                        
-                        <div class="viewUser">                                                
-                            Username: {{ identity.name }}
-                            <br />
-                            <button class="edit_about">Edit</button> 
+                    <div id="about-me">
+                        <div class="viewUser">
+                            Username: {{ identity.name }}<br />
+                            <button class="edit_about">Edit</button>
                         </div>
-                        <div class="editUser" style="display: none;">                           
-                            <form 
+                        <div class="editUser" style="display: none;">
+                            <form
                                 action="/id/update_individual/"
                                 method="post">
                                 {% csrf_token %}
@@ -49,19 +51,19 @@
                                 <br />
                                 <input id="about-me-submit" type="submit" value="Save" />
                             </form>
-                            <button class="close_edit_about">Cancel</button> 
+                            <button class="close_edit_about">Cancel</button>
                         </div>
                     </div>
                 </section>
-                {% endif %}
-
-                {% if tiles %}
-                    <div class="profileHeading">Following</div>
-                    {% for tile in tiles %}
-                        {{ tile }}
-                    {% endfor %}
-                {% endif %}
             </div>
+            {% endif %}
+
+            {% if tiles %}
+                <div class="profileHeading">Following</div>
+                {% for tile in tiles %}
+                    {{ tile }}
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
     <div id="id-identity-id" data-identity-id="{{ identity.id }}"></div>
