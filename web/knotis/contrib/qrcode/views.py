@@ -197,17 +197,19 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
 
     def process_context(self):
         request = self.request
-        transaction_collection_id = self.context.get(
+        transaction_id = self.context.get(
             'transaction_id'
         )
+        logged_in = request.user.is_authenticated()
         current_identity = self.get_current_identity(request)
         identity_type = current_identity.identity_type
 
         self.context.update({
-            'redeem_url': '/qrcode/redeem/%s/' % transaction_collection_id,
+            'redeem_url': '/qrcode/redeem/%s/' % transaction_id,
             'random_pin': random.randint(1000, 9999),
             'identity_type': identity_type,
             'IdentityTypes': IdentityTypes,
+            'logged_in': logged_in,
         })
 
         return self.context
