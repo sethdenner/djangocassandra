@@ -2,7 +2,7 @@
 set -e
 my_dir="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-apt-get -y install apache2-mpm-worker apache2-dev
+apt-get -y install apache2-mpm-worker apache2-dev apache2-utils
 
 rand=$(date | md5sum)
 rand=(${rand})
