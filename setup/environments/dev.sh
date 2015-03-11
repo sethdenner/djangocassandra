@@ -31,7 +31,7 @@ export INSTALLERS=(
     install_crispy_forms.sh
     install_polymodels.sh
     install_piston.sh
-    install_pil.sh
+    install_pillow.sh
     install_sorlthumbnail.sh
     install_beautiful_soup.sh
     install_timezones.sh
