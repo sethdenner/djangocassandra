@@ -34,13 +34,17 @@ tar xvf ${modwsgi_tarball} -C ${temp_dir}
 )
 
 echo "LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so" > /etc/apache2/mods-available/wsgi.load
+set +e
 a2enmod wsgi
 a2enmod ssl
 mkdir -p ${install_location}/app/conf/apache
 mkdir -p ${install_location}/app/media
+set -e
 
 cp ${MODWSGI_SCRIPT} ${install_location}/app/conf/apache/
 cp ${APACHE2_CONFIG} /etc/apache2/sites-available/
 
+set +e
 a2dissite default
 a2ensite $(basename ${APACHE2_CONFIG})
+set -e
