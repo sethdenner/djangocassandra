@@ -13,6 +13,8 @@ from views import (
     ConnectionSuccessView,
     ConnectionFailView,
     RedeemSuccessView,
+    RedeemLoginView,
+    RedeemUnauthorizedView,
     ConnectLoginView,
     RandomPassportView,
     RandomPassportLoginView,
@@ -36,9 +38,12 @@ urlpatterns += ManageQRCodeView.urls()
 urlpatterns += CouponRedemptionView.urls()
 urlpatterns += OfferCollectionConnectView.urls()
 urlpatterns += ConnectionSuccessView.urls()
-urlpatterns += RedeemSuccessView.urls()
 urlpatterns += ConnectLoginView.urls()
 urlpatterns += ConnectionFailView.urls()
+
+urlpatterns += RedeemSuccessView.urls()
+urlpatterns += RedeemLoginView.urls()
+urlpatterns += RedeemUnauthorizedView.urls()
 
 urlpatterns += RandomPassportView.urls()
 urlpatterns += RandomPassportLoginView.urls()

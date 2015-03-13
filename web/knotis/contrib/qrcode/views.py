@@ -195,12 +195,39 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
         'knotis/qrcode/js/redeem.js'
     ]
 
+    def get(
+        self,
+        request,
+        transaction_id=None,
+        *args,
+        **kwargs
+    ):
+        if not request.user.is_authenticated():
+            return redirect(
+                '/qrcode/redeem/login/%s/' % transaction_id
+            )
+
+        current_identity = self.get_current_identity(request)
+        if current_identity.identity_type == IdentityTypes.INDIVIDUAL:
+            my_transactions = TransactionApi.get_transaction_for_identity(
+                transaction_id,
+                current_identity
+            )
+            if len(my_transactions) == 0:
+                return redirect('/qrcode/redeem/unauthorized/')
+
+        return super(CouponRedemptionView, self).get(
+            request,
+            transaction_id,
+            *args,
+            **kwargs
+        )
+
     def process_context(self):
         request = self.request
         transaction_id = self.context.get(
             'transaction_id'
         )
-        logged_in = request.user.is_authenticated()
         current_identity = self.get_current_identity(request)
         identity_type = current_identity.identity_type
 
@@ -209,7 +236,6 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
             'random_pin': random.randint(1000, 9999),
             'identity_type': identity_type,
             'IdentityTypes': IdentityTypes,
-            'logged_in': logged_in,
         })
 
         return self.context
@@ -242,7 +268,7 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
             )
             if len(my_transactions) == 0:
                 errors['no-field'] = (
-                    'This does not belong to you.',
+                    'This does not belong to you. ',
                     'Did you connect your passport book yet?'
                 )
                 return self.render_to_response(
@@ -286,6 +312,35 @@ class CouponRedemptionView(EmbeddedView, GetCurrentIdentityMixin):
             errors=errors,
             render_template=False
         )
+
+
+class RedeemUnauthorizedView(EmbeddedView):
+    template_name = 'knotis/qrcode/redeem_unauthorized.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r'^qrcode/redeem/unauthorized/$'
+    ]
+
+
+class RedeemLoginView(EmbeddedView):
+    template_name = 'knotis/qrcode/redeem_login.html'
+    default_parent_view_class = DefaultBaseView
+    url_patterns = [
+        r''.join([
+            '^qrcode/redeem/login/(?P<transaction_id>',
+            REGEX_UUID,
+            ')/$'
+        ])
+    ]
+
+    def process_context(self):
+        transaction_id = self.context.get(
+            'transaction_id'
+        )
+        self.context.update({
+            'redeem_url': '/qrcode/redeem/%s/' % transaction_id,
+        })
+        return self.context
 
 
 class RedeemSuccessView(EmbeddedView):
@@ -413,7 +468,7 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
 
             except Exception, e:
                 logger.exception(e.message)
-                data['next'] = '/qrcode/random/fail/'
+                data['next'] = '/qrcode/connect/fail/'
 
         return self.render_to_response(
             data=data,
