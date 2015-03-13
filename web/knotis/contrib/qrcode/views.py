@@ -35,6 +35,7 @@ from knotis.contrib.qrcode.models import (
 from knotis.contrib.identity.models import (
     IdentityTypes,
     IdentityEstablishment,
+    IdentityIndividual,
 )
 from knotis.utils.regex import REGEX_UUID
 
@@ -362,29 +363,6 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
     ]
     default_parent_view_class = DefaultBaseView
 
-    def process_context(self):
-        request = self.request
-        transaction_collection_id = self.context.get(
-            'transaction_collection_id'
-        )
-
-        logged_in = request.user.is_authenticated()
-        if logged_in:
-            current_identity = self.get_current_identity(request)
-            is_individual = (
-                current_identity.identity_type == IdentityTypes.INDIVIDUAL
-            )
-        else:
-            is_individual = False
-
-        self.context.update({
-            'connect_url': '/qrcode/connect/%s/' % transaction_collection_id,
-            'is_individual': is_individual,
-            'logged_in': logged_in,
-        })
-
-        return self.context
-
     def get(
         self,
         request,
@@ -403,6 +381,31 @@ class OfferCollectionConnectView(EmbeddedView, GetCurrentIdentityMixin):
                 *args,
                 **kwargs
             )
+
+    def process_context(self):
+        request = self.request
+        transaction_collection_id = self.context.get(
+            'transaction_collection_id'
+        )
+
+        current_identity = self.get_current_identity(request)
+        is_individual = (
+            current_identity.identity_type == IdentityTypes.INDIVIDUAL
+        )
+        if not is_individual:
+            individual_identity = IdentityIndividual.objects.get_individual(
+                request.user
+            )
+        else:
+            individual_identity = None
+
+        self.context.update({
+            'connect_url': '/qrcode/connect/%s/' % transaction_collection_id,
+            'is_individual': is_individual,
+            'individual_identity': individual_identity,
+        })
+
+        return self.context
 
     def post(
         self,
@@ -556,10 +559,17 @@ class RandomPassportView(EmbeddedView, GetCurrentIdentityMixin):
         is_individual = (
             current_identity.identity_type == IdentityTypes.INDIVIDUAL
         )
+        if not is_individual:
+            individual_identity = IdentityIndividual.objects.get_individual(
+                request.user
+            )
+        else:
+            individual_identity = None
 
         self.context.update({
             'connect_url': '/qrcode/random/%s/' % offer_id,
             'is_individual': is_individual,
+            'individual_identity': individual_identity,
         })
 
     def get(

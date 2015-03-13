@@ -1,7 +1,7 @@
 {% load render_template_fragment %}
 <div class="mainContent">
     <div class='col-xs-12 text-center qrcodePath'>
-        {% if identity_type == IdentityTypes.INDIVIDUAL %}
+        {% if is_individual %}
             <div class='connect-passport'>
                 <h1>Press confirm<br> to connect your passport book</h1>
                 <form action="{{connect_url}}" method="POST">
@@ -11,8 +11,9 @@
             </div>
 
         {% else %}
-            <h1> Oops! You're the wrong identity type for this! </h1>
-            {% render_fragment identity_switcher %}
+            <h1> Opps! </h1>
+            <p>Switch from your business account to your consumer account to connnect. </p>
+            <a class='no-deep' href='/identity/switcher/{{individual_identity.pk}}/'>Click Here to fix that.</a>
         {% endif %}
 
     </div>
