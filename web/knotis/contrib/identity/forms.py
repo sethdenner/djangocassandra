@@ -27,7 +27,7 @@ from models import (
 class IdentityForm(ModelForm):
     class Meta:
         model = Identity
-        exclude = ('content_type')
+        exclude = ('content_type', )
 
 
 class IdentityIndividualForm(IdentityForm):

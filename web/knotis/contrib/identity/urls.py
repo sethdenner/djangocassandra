@@ -1,9 +1,9 @@
-from django.conf.urls.defaults import (
+from django.conf.urls import (
     patterns,
     url
 
 )
-from django.views.generic.simple import redirect_to
+# from django.views.generic.simple import redirect_to
 
 from knotis.utils.regex import REGEX_UUID
 
@@ -21,15 +21,15 @@ urlpatterns = patterns(
         r'^businesses/grid/(?P<page>\d+)/(?P<count>\d+)/$',
         EstablishmentsGrid.as_view()
     ),
-    url(
-        r''.join([
-            '^business/(?P<business_id>',
-            REGEX_UUID,
-            ')/$'
-        ]),
-        redirect_to,
-        {'url': '/id/%(business_id)s/'}
-    ),
+    # url(
+    #     r''.join([
+    #         '^business/(?P<business_id>',
+    #         REGEX_UUID,
+    #         ')/$'
+    #     ]),
+    #     redirect_to,
+    #     {'url': '/id/%(business_id)s/'}
+    # ),
     url(
         r''.join([
             '^identity/switcher(/(?P<identity_id>',

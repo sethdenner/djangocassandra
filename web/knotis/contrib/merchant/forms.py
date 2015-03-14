@@ -400,7 +400,7 @@ class OfferPublishForm(ModelForm):
     class Meta:
         model = OfferPublish
         exclude = (
-            'content_type'
+            'content_type',
         )
 
 

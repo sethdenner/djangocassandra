@@ -6,4 +6,4 @@ from models import Location
 class LocationForm(ModelForm):
     class Meta:
         model = Location
-        exclude = ('content_type')
+        exclude = ('content_type',)

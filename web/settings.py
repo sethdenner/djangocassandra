@@ -179,7 +179,6 @@ TEMPLATE_DIRS = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'permission_backend_nonrel.backends.NonrelPermissionBackend',
     'knotis.contrib.auth.authentication.backends.CaseInsensitiveUsernameAuthenticationBackend',
     'knotis.contrib.endpoint.authentication.backends.EndpointValidationAuthenticationBackend',
     'knotis.contrib.legacy.authentication.backends.LegacyAuthenticationBackend',
@@ -206,14 +205,12 @@ INSTALLED_APPS = (
     'dbindexer',
     'djangotoolbox',
     'django_extensions',
-    'permission_backend_nonrel',
     'timezones',
     'sorl.thumbnail',
     'crispy_forms',
     'haystack',
     'corsheaders',
     'rest_framework',
-    'doac',
     'test_utils',
     # Django standard apps.
     'django.contrib.auth',
