@@ -1,7 +1,8 @@
 import hashlib
 
+''' Needs to be replaced with django 1.7 compatable alternative.
 from doac.models import Client as DoacClient
-
+'''
 from django.utils import log
 logger = log.getLogger(__name__)
 
@@ -129,4 +130,4 @@ class PasswordReset(QuickModel):
 
 class UserXapiClientMap(QuickModel):
     user = QuickForeignKey(KnotisUser)
-    client = QuickForeignKey(DoacClient)
+    client = QuickCharField(max_length=64)
