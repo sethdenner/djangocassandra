@@ -1,6 +1,5 @@
 import os
 
-
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 SERVICE_NAME = 'Knotis'
@@ -10,6 +9,8 @@ PRICE_MERCHANT_MONTHLY = 14.
 EMAIL_COMPLETED_OFFERS_INTERVAL_DAYS = 7
 
 PASSWORD_RESET_EXPIRE_MINUTES = 10080
+
+CUSTOM_AUTOFIELD_CLASS = 'djangocassandra.db.fields.AutoFieldUUID'
 
 FORMAT_MODULE_PATH = 'formats'
 DATE_FORMAT = 'm/d/Y'        # '10/25/06'
@@ -310,7 +311,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
-            'filename': '/srv/knotis/logs/django.log',
+            'filename': './logs/django.log',
             'maxBytes': 1048576,
             'backupCount': 10
         }
@@ -321,23 +322,23 @@ LOGGING = {
 
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'prod'
 
-
-# You can key the configurations off of anything - I use project path.
-configs = {
-    'dev': 'dev',
-    'int': 'int',
-    'prod': 'prod',
-    'stage': 'stage',
-}
+"""
+If you are using a non-standard environment module
+make sure you have it in knotis/web/config and modify
+this variable to match the name of your module.
+"""
+ENVIRONMENT_NAME = os.environ.get(
+    'KNOTIS_ENVIRONMENT_MODULE',
+    'knotis_env'
+)
 
 """
 Import the configuration settings file
 REPLACE projectname with your project
 """
 config_module = __import__(
-    'config.%s' % configs[ENVIRONMENT_NAME],
+    'config.%s' % ENVIRONMENT_NAME,
     globals(),
     locals(),
     'web'
