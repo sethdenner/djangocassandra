@@ -13,7 +13,7 @@ DATABASES = {
         'USER': '',  # Not used with sqlite3.
         'PASSWORD': '',  # Not used with sqlite3.
         'HOST': 'db',  # Set to empty string for localhost. Not used with sqlite3.
-        'CONTACT_POINTS': ('db',),  # Set to empty string for localhost. Not used with sqlite3.
+        'CONTACT_POINTS': ('vboxhost',),  # Set to empty string for localhost. Not used with sqlite3.
         'PORT': 9042,  # Set to empty string for default. Not used with sqlite3.
         'DEFAULT_KEYSPACE': 'knotis',
         'KEYSPACES': {
