@@ -1766,25 +1766,6 @@ offerSteps ul {
     border: 2px solid #25AD86;
 }
 
-/* line 1, ../sass/_profile.scss */
-h1.sectionHeader {
-    font-size: 26px;
-    color: #797979;
-    text-align: left;
-    margin: 40px 0 20px;
-}
-
-/* line 33, ../sass/_profile.scss */
-.heroOverlay {
-    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.26));
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 485px;
-    width: 100%;
-    z-index: -1;
-}
-
 .loadState {
     position: fixed;
     top: 0;
@@ -2051,8 +2032,8 @@ label.label-unlimited {
 .offerHero, .offerDetails {
     height: 500px;
     position: relative;
-    top: -35px;
-    margin-bottom: -40px;
+    top: -46px;
+    margin-bottom: -46px;
     display: inline-block;
 }
 
@@ -3023,10 +3004,6 @@ section.welcomeModal h1 {
         font-size: 16pt;
     }
 
-    h1.sectionHeader {
-        width: 100%;
-    }
-
     .btn-push {
         min-height: 95px;
     }
@@ -3044,7 +3021,7 @@ section.welcomeModal h1 {
         font-size: 24pt;
     }
     .offerHero h2 {
-        font-size: 42px;
+        font-size: 24px;
     }
     .offers-hero p {
         font-size: 18px;
