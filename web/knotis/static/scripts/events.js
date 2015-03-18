@@ -16,9 +16,9 @@ $(function() {
 
     //set up validaty
     $.validity.setup({
-        scrollTo: true    
+        scrollTo: true
     });
-   
+
     // Ajax loading
     $("#ajaxBusy").ajaxStart(function() {
         $(this).show();
@@ -26,7 +26,7 @@ $(function() {
     $("#ajaxBusy").ajaxStop(function() {
         $(this).hide();
     });
-    $(document).ajaxSend(         
+    $(document).ajaxSend(
         function(event, xhr, settings){
             function getCookie(name) {
                 var cookieValue = null;
@@ -152,7 +152,7 @@ $(function() {
                 });
         return false;
     });
-    
+
     auto_login = $('#auto_login');
     if (auto_login.length != 0) {
         $('.log_in').click();
@@ -191,7 +191,7 @@ $(function() {
             window.location = "offers/?query=" + string;
         }
     });
-    
+
     $('.link-search').click(function(event) {
        window.location = [
            '/?query=',
@@ -199,9 +199,9 @@ $(function() {
        ].join('');
        event.stopPropagation();
        return false;
-       
+
     });
-    
+
     $('#search_form').submit(function(event){
        window.location = [
            '/?query=',
@@ -209,7 +209,7 @@ $(function() {
        ].join('');
        event.stopPropagation();
        return false;
-        
+
     });
 
     // count characters
@@ -258,7 +258,7 @@ $(function() {
     });
 
 //    $("input:text").placeholder();
-    
+
     $("#enddate").datetimepicker({
         timeFormat: 'hh:mm:ss',
         separator: '  ',
@@ -273,11 +273,11 @@ $(function() {
     $('.categories-filter').live('click', function(evt) {
         var $this = $(this),
             $content = $('.offer-content');
-            
+
         if (!$content.length) {
             return true;
         }
-        
+
         var href = $content.attr('data-href'),
             query = $content.attr('data-query'),
             business = $content.attr('data-business'),
@@ -289,11 +289,11 @@ $(function() {
 
         $content.load_offers();
         $content.load_offers(
-            'load', 
+            'load',
             function(
                 data,
                 jqxhr,
-                status 
+                status
             ) {
                 if (!category) {
                     category = 'All';
@@ -303,7 +303,7 @@ $(function() {
                 $('.' + category + ' a').addClass('active');
                 $('.' + category).append('<div class="arrow arrow-' + category + '"></div>');
                 $('.offer-content').html(data);
-            }, 
+            },
             href,
             business,
             city,
@@ -314,7 +314,7 @@ $(function() {
             query
         );
         $(document).load_offers(
-            'load_scroll', 
+            'load_scroll',
             '.offer-content'
         );
 
@@ -349,7 +349,7 @@ $(function() {
                 $(document).load_offers('stop_scroll');
                 $('.offer-content').html(data);
                 $('.mode-map a').addClass('active');
-                $('.mode-list a').removeClass('active');                
+                $('.mode-list a').removeClass('active');
             },
             href,
             business,
@@ -360,7 +360,7 @@ $(function() {
             page,
             query
         )
-        
+
         return false;
 
     });
@@ -390,25 +390,25 @@ $(function() {
         var value_new = $("#price_offer_input").val();
 
         var discount = value - value_new;
-        
+
         if (0 >= discount) {
             $('.discount_val').addClass('discount_error')
                 .html('Discount price must be less than retail price!');
             return;
         }
-        
+
         var percent = (discount * 100) / value;
 
         $('.discount_val').removeClass('discount_error')
-            .html('Customers will recieve a discount of <strong>$' + 
-                discount + 
+            .html('Customers will receive a discount of <strong>$' +
+                discount +
                 '</strong> on a purchase of <strong>$' +
                 value +
                 '</strong>. (customers save %' +
                 percent.toFixed() +
                 ')');
     };
-    
+
     $('#price_offer_input').change(updateDiscount).keyup(updateDiscount);
     $('#old_offer_input').change(updateDiscount).keyup(updateDiscount);
     updateDiscount();
@@ -421,7 +421,7 @@ $(function() {
 
         $('#title_offer_radio3_input').click();
     }).keydown(function () {
-        $('#title_offer_radio3_input').click();        
+        $('#title_offer_radio3_input').click();
     });
 
     $('.offer-mode-list').live('click', function(evt) {
@@ -435,19 +435,19 @@ $(function() {
             category = $content.attr('data-category'),
             premium = $content.attr('data-premium'),
             page = $content.attr('data-page');
-        
+
         $content.load_offers();
         $content.load_offers(
-            'load', 
+            'load',
             function(
                 data,
                 jqxhr,
-                status 
+                status
             ) {
                 $('.mode-list a').addClass('active');
                 $('.mode-map a').removeClass('active');
                 $('.offer-content').html(data);
-            }, 
+            },
             href,
             business,
             city,
@@ -458,7 +458,7 @@ $(function() {
             query
         );
         $(document).load_offers(
-            'load_scroll', 
+            'load_scroll',
             '.offer-content'
         );
 
@@ -470,34 +470,34 @@ $(function() {
         evt.stopPropagation()
         return false;
     }
-    
+
 
     var searchOffers = function(query){
         var $content = $('.offer-content');
-        
+
         if (!$content.length) {
             window.location = '/offers/?query=' + query;
             return false;
         }
-        
-        var href = $content.attr('data-href'), 
+
+        var href = $content.attr('data-href'),
             business = $content.attr('data-business'),
             city = $content.attr('data-city'),
             neighborhood = $content.attr('data-neighborhood'),
             category = $content.attr('data-category'),
             premium = $content.attr('data-premium'),
             page = $content.attr('data-page');
-        
+
         $content.load_offers();
         $content.load_offers(
-            'load', 
+            'load',
             function(
                 data,
                 jqxhr,
-                status 
+                status
             ) {
                 $content.html(data);
-            }, 
+            },
             href,
             business,
             city,
@@ -508,7 +508,7 @@ $(function() {
             query
         );
         $(document).load_offers(
-            'load_scroll', 
+            'load_scroll',
             '.offer-content'
         );
     }
@@ -516,14 +516,14 @@ $(function() {
     $search_ajax = $('#search_ajax');
 
     $('.search-offers').live('click', function(evt){
-        searchOffers($search_ajax.val());        
+        searchOffers($search_ajax.val());
         return cancelEvent(evt);
 
     });
-    
+
     $('#search_ajax').live('keyup', function(evt) {
         if (evt.keyCode == 13) {
-            searchOffers($search_ajax.val());        
+            searchOffers($search_ajax.val());
             return cancelEvent(evt);
 
         }
@@ -568,8 +568,8 @@ $(function() {
     $('.offerlist_backend li a').live('click', function() {
         var $this = $(this),
                 filter = $this.attr('data-filter');
-            
-        var url;    
+
+        var url;
         if (filter == 'redeemed' || filter == 'purchased'){
             url = '/offers/get_user_offers';
         } else {
@@ -577,11 +577,11 @@ $(function() {
         }
 
         $.get([
-                url, 
-                filter, 
+                url,
+                filter,
                 ''
-            ].join('/'), 
-            {}, 
+            ].join('/'),
+            {},
             function(data) {
                 $('.offer_list_backend').html(data);
                 $('.offerlist_backend li a').removeClass('active');
@@ -604,7 +604,7 @@ $(function() {
             category = $content.attr('data-category'),
             premium = $content.attr('data-premium');
 
-        var href; 
+        var href;
         if (filter == 'popular'){
             href = '/offers/get_popular_offers/';
         } else if (filter == 'expiring'){
@@ -612,22 +612,22 @@ $(function() {
         } else {
             href = '/offers/get_newest_offers/';
         }
-                
+
         $content.load_offers();
         $content.load_offers(
-            'load', 
+            'load',
             function(
                 data,
                 jqxhr,
-                status 
+                status
             ) {
                 $('.offer-content').html(data);
                 $('.filtering-bar li a').removeClass('active');
                 $('.mode-list a').addClass('active');
                 $('.mode-map a').removeClass('active');
                 $this.addClass('active');
-                
-            }, 
+
+            },
             href,
             business,
             city,
@@ -638,7 +638,7 @@ $(function() {
             query
         );
         $(document).load_offers(
-            'load_scroll', 
+            'load_scroll',
             '.offer-content'
         );
 
@@ -655,22 +655,22 @@ $(function() {
                 '/offer/delete',
                 id,
                 ''
-            ].join('/'), 
-            {}          
+            ].join('/'),
+            {}
         ).done(function(data){
             $('#completedOffersA').click();
-            
+
         });
-            
+
        return false;
-    }); 
-    
+    });
+
     $('.playstop').live('click', function() {
         var $this = $(this);
         var active = $this.attr('data-active');
         var cont = $this.attr('data-cont');
         var id = $this.attr('data-id');
-  
+
         active = active.toLowerCase() == 'true' ? false : true;
         $.post(
             '/offer/activate/', {
@@ -715,7 +715,7 @@ $(function() {
         $.post([
             '/image/delete',
             image_id,
-            ''].join('/'), 
+            ''].join('/'),
             {},
             function(data) {
                 if (data != 'OK') { return; }
@@ -885,7 +885,7 @@ $(function() {
         number = number - 1;
 
         $.post('/business/unfollow/', {
-                business_id: id, 
+                business_id: id,
             }, function(data){
                 $this.fadeOut();
                 $('.follow-' + id_user).hide();
@@ -906,11 +906,11 @@ $(function() {
             '/business/profile/set_primary_image',
             business_id,
             image_id,
-            ''].join('/'), 
+            ''].join('/'),
             {},
             function(data) {
                 if (data != 'OK') { return; }
-                
+
                 if ($this.hasClass('noheadimage')) {
                     $this.removeClass('noheadimage')
                         .addClass('active');
@@ -937,11 +937,11 @@ $(function() {
          if ( 0 == $summaryCounter.length ) return;
          var summaryCount = $summary.val().length;
          $summaryCounter.html(maxText + ' (' + summaryCount + '/' + maxSummary + ')');
-         if (maxSummary <= summaryCount && 
-                 event.which != 8 && 
-                 event.which != 37 && 
+         if (maxSummary <= summaryCount &&
+                 event.which != 8 &&
+                 event.which != 37 &&
                  event.which != 38 &&
-                 event.which != 39 && 
+                 event.which != 39 &&
                  event.which != 40 &&
                  event.which != 46){
              event.preventDefault();
@@ -962,10 +962,10 @@ $(function() {
     $('.btn-unfollow').live('click', function() {
         var $this = $(this);
         var cont = $this.attr('data-cont');
-        var id = $this.attr('data-id');        
+        var id = $this.attr('data-id');
 
         $.post('/business/unfollow/', {
-                business_id: id, 
+                business_id: id,
             }, function(data){
                 $('.follow-' + cont).fadeOut();
             }
@@ -1027,7 +1027,7 @@ $(function() {
         if( results == null )
             return "";
         else
-            return results[1];        
+            return results[1];
     };
 
     // For the login form
@@ -1060,9 +1060,9 @@ $(function() {
 
                     } else {
                         window.location = data.redirect;
-                        
+
                     }
-                
+
                 }
 
                 if (data.success == 'no') {
@@ -1071,21 +1071,21 @@ $(function() {
                         $.ajax({
                             dataType: 'html',
                             url: $(this).attr('href')
-                            
+
                         }).done(function(data) {
                             $('#message-log').replaceWith(
                                 '<p id="message-log" class="message-confirm radius-general txt-size">Check your email!</p>'
                             );
-                            
+
                         }).fail(function(jqxhr, status) {
                             $('#message-log').replaceWith(
                                 '<p id="message-log" class="message-confirm message-error radius-general txt-size">There was an error sending your validation email.</p>'
                             );
-                            
+
                         });
-                        
+
                         event.stopPropagation()
-                        return false; 
+                        return false;
                     });
                 }
 
@@ -1290,13 +1290,13 @@ $(function() {
             url: [
                 '/charts/revenue',
                 type,
-                ''    
-            ].join('/'), 
+                ''
+            ].join('/'),
             success: function(data) {
                 $('#graphic-offers').html(data);
             }
         });
-        
+
         $(".graphic-buttom").removeClass('active');
         $(this).addClass('active');
         return false;
@@ -1314,19 +1314,19 @@ $(function() {
             url: [
                 '/charts/scans',
                 type,
-                ''    
-            ].join('/'), 
+                ''
+            ].join('/'),
             success: function(data) {
                 $('#graphic-offers').html(data);
             }
         });
-        
+
         $(".qrcode-buttom").removeClass('active');
         $(this).addClass('active');
         return false;
-    
+
     });
-    
+
 });
 
 function showImg() {

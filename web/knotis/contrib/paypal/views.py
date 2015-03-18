@@ -148,7 +148,7 @@ class IPNCallbackView(View):
         *args,
         **kwargs
     ):
-        logger.debug('ipn request recieved')
+        logger.debug('ipn request received')
 
         if request.method.lower() != 'post':
             logger.debug('method must be post')
