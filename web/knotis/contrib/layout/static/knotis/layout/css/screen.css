@@ -2384,7 +2384,6 @@ section.welcomeModal h1 {
     margin-bottom: 0;
     height: 81px;
 }
-
 .offerItem h2 {
     font-size: 0.9em;
     font-weight: normal;
@@ -2393,7 +2392,10 @@ section.welcomeModal h1 {
     line-height: 1.3em;
 }
 
-.offerItem h2 a:link, .offerItem h2 a:visited, .offerItem h2 a:hover, .offerItem h2 a:active {
+.offerItem h2 a:link,
+.offerItem h2 a:visited,
+.offerItem h2 a:hover,
+.offerItem h2 a:active {
     color: #2cc397;
 }
 
@@ -3097,10 +3099,7 @@ section.welcomeModal h1 {
     -webkit-box-orient: vertical;
     }
     .offerItem h2 {
-        margin-top: 5px;
-        margin-bottom: 0px;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+        margin: 5px 10px;
     }
     nav .search {
         position: relative;
