@@ -2388,9 +2388,13 @@ section.welcomeModal h1 {
 .offerItem h2 {
     font-size: 0.9em;
     font-weight: normal;
-    color: #2cc397;
     overflow: hidden;
     margin-top: 10px;
+    line-height: 1.3em;
+}
+
+.offerItem h2 a:link, .offerItem h2 a:visited, .offerItem h2 a:hover, .offerItem h2 a:active {
+    color: #2cc397;
 }
 
 .offers .offerItem h1 {
