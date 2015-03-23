@@ -2381,8 +2381,16 @@ section.welcomeModal h1 {
     -webkit-box-orient: vertical;
     overflow: hidden;
     margin-top: 15px;
-    margin-bottom: 8px;
+    margin-bottom: 0;
     height: 81px;
+}
+
+.offerItem h2 {
+    font-size: 0.9em;
+    font-weight: normal;
+    color: #2cc397;
+    overflow: hidden;
+    margin-top: 10px;
 }
 
 .offers .offerItem h1 {
@@ -3080,7 +3088,13 @@ section.welcomeModal h1 {
         border: 0;
         height: 48px;
         margin-top: 5px;
-        margin-bottom: 16px;
+        margin-bottom: 0px;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    }
+    .offerItem h2 {
+        margin-top: 5px;
+        margin-bottom: 0px;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     }
