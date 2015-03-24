@@ -2382,8 +2382,15 @@ section.welcomeModal h1 {
     overflow: hidden;
     margin-top: 15px;
     margin-bottom: 0;
-    height: 81px;
 }
+
+.offerItem h1 a:link,
+.offerItem h1 a:visited,
+.offerItem h1 a:hover,
+.offerItem h1 a:active {
+    color: #919191;
+}
+
 .offerItem h2 {
     font-size: 0.9em;
     font-weight: normal;
@@ -2420,7 +2427,6 @@ section.welcomeModal h1 {
     display: inline-block;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-top: 25px;
 }
 
 .offerItem .busLink:hover,
@@ -2430,8 +2436,9 @@ section.welcomeModal h1 {
     color: #2cc397;
 }
 
-.offerItem .busLink {
-    margin-top: -5px;
+.offerItem .busLink,
+.offerItem .btnFollow {
+    margin-top: -10px;
 }
 
 .offerItem .location {
