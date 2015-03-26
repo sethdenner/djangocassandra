@@ -2382,8 +2382,15 @@ section.welcomeModal h1 {
     overflow: hidden;
     margin-top: 15px;
     margin-bottom: 0;
-    height: 81px;
 }
+
+.offerItem h1 a:link,
+.offerItem h1 a:visited,
+.offerItem h1 a:hover,
+.offerItem h1 a:active {
+    color: #919191;
+}
+
 .offerItem h2 {
     font-size: 0.9em;
     font-weight: normal;
