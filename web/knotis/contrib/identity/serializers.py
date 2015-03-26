@@ -1,6 +1,7 @@
 from rest_framework.serializers import (
     ModelSerializer,
-    SerializerMethodField
+    SerializerMethodField,
+    URLField
 )
 from rest_framework.pagination import PaginationSerializer
 
@@ -42,7 +43,9 @@ class IdentitySerializer(ModelSerializer):
             'payment_mode',
             'available_identities',
             'badge_image',
-            'banner_image'
+            'banner_image',
+            'tile_image_large',
+            'tile_image_small'
         )
 
     payment_mode = SerializerMethodField('get_payment_mode')
@@ -54,6 +57,16 @@ class IdentitySerializer(ModelSerializer):
     banner_image = CroppedImageUrlSerializer(
         source='banner_image',
         read_only=True
+    )
+    tile_image_small = URLField(
+        source='tile_image_small',
+        read_only=True,
+        max_length=1024
+    )
+    tile_image_large = URLField(
+        source='tile_image_large',
+        read_only=True,
+        max_length=1024
     )
     location = SerializerMethodField('get_location')
 
@@ -107,7 +120,9 @@ class IndividualSerializer(IdentitySerializer):
             'backend_name',
             'description',
             'badge_image',
-            'banner_image'
+            'banner_image',
+            'tile_image_large',
+            'tile_image_small'
         )
 
 
@@ -121,6 +136,8 @@ class EstablishmentSerializer(IdentitySerializer):
             'description',
             'badge_image',
             'banner_image',
+            'tile_image_large',
+            'tile_image_small',
             'location'
         )
 
@@ -140,5 +157,7 @@ class BusinessSerializer(IdentitySerializer):
             'description',
             'badge_image',
             'banner_image',
+            'tile_image_large',
+            'tile_image_small',
             'location'
         )

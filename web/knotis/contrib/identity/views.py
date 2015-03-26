@@ -170,7 +170,6 @@ class EstablishmentsGrid(
         return establishments
 
     def process_context(self):
-
         establishments = self.get_page(self.context)
 
         tiles = []
