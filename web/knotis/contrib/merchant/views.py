@@ -109,7 +109,7 @@ class RedemptionsGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
 
         return Transaction.objects.filter(
             owner=current_identity,
-            transaction_type=TransactionTypes.PURCHASE
+            transaction_type=self.transaction_type
         )
 
     def process_context(self):
@@ -127,6 +127,11 @@ class RedemptionsGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
 
         redemption_filter = redemption_filter.lower()
         redeemed = redemption_filter == 'redeemed'
+        if redeemed:
+            self.transaction_type = TransactionTypes.REDEMPTION
+
+        else:
+            self.transaction_type = TransactionTypes.PURCHASE
 
         redeem_query = request.GET.get('redeem_query', '')
 
@@ -139,7 +144,7 @@ class RedemptionsGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
                 [x.object for x in SearchQuerySet().models(
                     Transaction).filter(
                         redemption_code__startswith=redeem_query,
-                        transaction_type=TransactionTypes.PURCHASE,
+                        transaction_type=self.transaction_type,
                     )]
             )
 
@@ -161,6 +166,16 @@ class RedemptionsGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
 
                     consumer = recipient
                     break
+
+                if consumer is None:
+                    consumers = filter(
+                        lambda x: x != current_identity,
+                        [x.owner for x in Transaction.objects.filter(
+                            transaction_context=purchase.transaction_context,
+                            transaction_type=self.transaction_type,
+                        )]
+                    )
+                    consumer = consumers[0] if len(consumers) > 0 else None
 
                 redemption_tile = TransactionTileView()
                 tile_context = RequestContext(
