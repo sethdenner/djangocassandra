@@ -164,8 +164,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # 'knotis.contrib.mobile.middleware.MobileDetectionMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
     'knotis.contrib.activity.middleware.ActivityMiddleware',
+    'knotis.contrib.mobile.middleware.MobileAppRedirectMiddleware'
 )
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
@@ -215,6 +216,8 @@ INSTALLED_APPS = (
     'rest_framework',
     'doac',
     'test_utils',
+    'django_nose',
+    'django_user_agents',
     # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -224,7 +227,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'django_nose',
     # knotis apps
     'knotis.contrib.layout',
     'knotis.contrib.search',
