@@ -2438,7 +2438,7 @@ section.welcomeModal h1 {
 
 .offerItem .busLink,
 .offerItem .btnFollow {
-    margin-top: -10px;
+    margin-top: -8px;
 }
 
 .offerItem .location {
@@ -3097,16 +3097,17 @@ section.welcomeModal h1 {
         padding: 30px 0;
     }
     .offerItem h1 {
-        font-size: 16px;
+        font-size: 14px;
         border: 0;
-        height: 48px;
+        /*height: 48px;*/
         margin-top: 5px;
         margin-bottom: 0px;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     }
     .offerItem h2 {
-        margin: 5px 10px;
+        font-size: 0.8em;
+        margin: 5px 8px;
     }
     nav .search {
         position: relative;
