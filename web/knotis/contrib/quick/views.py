@@ -36,7 +36,7 @@ Same as before except:
 """
 
 class QuickView(View):
-    #_allowed_methods = ['get', 'post', 'put', 'delete'] #, 'head', 'options', 'trace'] 
+    #_allowed_methods = ['get', 'post', 'put', 'delete'] #, 'head', 'options', 'trace']
     def get_filters(self):
         self.pk = self.dispatch_kwargs.get('pk',None)
         self.queryset = self.model._default_manager.all()
@@ -56,14 +56,14 @@ class QuickView(View):
 
             # check that filter_field is on the model.
             # check that the filter_type is in the supported list.
-            filter_list = [ 'exact', 'iexact', 'contains', 'startswith', 'endswith', 'isnull', 'gt', 'lt','in' ]
+            filter_list = [ 'exact', 'contains', 'startswith', 'endswith', 'isnull', 'gt', 'lt','in' ]
             if filter_field in model.get_filterable_fields() and (filter_type in filter_list):
                 self.queryset = self.queryset.filter( **{potential_filter : filter_value} )
             else:
                 raise quick.errors.ExceptionFilterInvalid()
 
     def get_context(self):
-        self.context = { 
+        self.context = {
                 'ModelName': self.model.__name__,
                 'layout': self.layout,
                 'request': self.request,
@@ -87,9 +87,9 @@ class QuickView(View):
         """
         view_name = self.request.GET.get('view', default_name)
         template_names = map(lambda x: x + '/' + view_name + '.html', self.template_roots)
-        
+
         #added so models inheriting only from QuickBase work - ugly
-        
+
         print "FIXME: validate view_name before just using it."
         return template_names
 
@@ -116,13 +116,13 @@ class QuickView(View):
 
     def get(self):
         if (self.pk):
-            self.context.update( { 
+            self.context.update( {
                 'object': self.queryset.get(),
                 'ViewName': 'DetailView',
                 } )
             self.templates = self.get_templates('DetailView')
         else:
-            self.context.update( { 
+            self.context.update( {
                 'object_list': self.queryset.all(),
                 'ViewName': 'ListView',
                 } )
@@ -133,7 +133,7 @@ class QuickView(View):
             return self.model.Quick.form_class(self.model, extra)
 
         #from quick.forms import quick_modelform_factory
-        #from django.forms.models import model_to_dict 
+        #from django.forms.models import model_to_dict
         #from django.forms.models import modelformset_factory, inlineformset_factory
         #from django.forms.models import formset_factory
 
@@ -155,8 +155,8 @@ class QuickView(View):
         else:
             extra = 0
         extra += int(self.request.GET.get('extra',0))
-        
-        
+
+
         FormClass = self.get_form_class(extra)
 
         obj = None
@@ -175,8 +175,8 @@ class QuickView(View):
             form.save()
         else:
             form = FormClass(queryset=self.queryset)
-        
-        self.context.update( { 
+
+        self.context.update( {
                 'object': obj,
                 'form': form,
                 'ViewName': 'EditView',
@@ -203,11 +203,11 @@ class QuickView(View):
         self.get_method()
 
         self.get_input_format()
-        
+
         self.get_layout()
 
         self.get_filters()
-        
+
         self.get_template_roots()
 
         self.get_context()

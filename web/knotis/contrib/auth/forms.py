@@ -12,7 +12,6 @@ from django.contrib.auth.forms import (
 )
 from django.template import Context
 from django.forms import (
-    IntegerField,
     CharField,
     EmailField,
     BooleanField,
@@ -145,7 +144,7 @@ class CreateUserForm(TemplateModelForm):
         site.
         """
         email = self.cleaned_data['email'].lower()
-        if KnotisUser.objects.filter(email__iexact=email):
+        if KnotisUser.objects.filter(email=email):
             raise ValidationError(
                 'Email address is already in use.'
             )
@@ -217,7 +216,6 @@ class CreateUserForm(TemplateModelForm):
         return user, identity
 
 
-
 class CreateSuperUserForm(CreateUserForm):
     def save(
         self,
@@ -233,7 +231,6 @@ class CreateSuperUserForm(CreateUserForm):
 
 class AdminCreateUserForm(CreateUserForm):
     template_name = 'knotis/auth/user_create_form.html'
-
 
 
 class ForgotPasswordForm(TemplateForm):
@@ -328,6 +325,3 @@ class ForgotPasswordForm(TemplateForm):
         except:
             logger.exception('failed to initiate password reset')
             return False
-
-
-
