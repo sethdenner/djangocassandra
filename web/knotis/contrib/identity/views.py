@@ -19,6 +19,7 @@ from knotis.views import (
 )
 
 
+from knotis.contrib.search.api import SearchApi
 from knotis.contrib.auth.models import UserInformation
 from knotis.contrib.media.models import (
     ImageInstance
@@ -36,7 +37,6 @@ from models import (
     Identity,
     IdentityIndividual,
     IdentityBusiness,
-    IdentityEstablishment
 )
 
 
@@ -156,25 +156,30 @@ class EstablishmentsGrid(
     view_name = 'establishments_grid'
 
     def get_queryset(self):
-        current_identity = self.get_current_identity(self.request)
 
-        establishments = IdentityEstablishment.objects.all()
-        if (
-            not current_identity or
-            not current_identity.identity_type == IdentityTypes.SUPERUSER
-        ):
-            establishments = establishments.filter(
-                available=True
-            )
+        current_identity = self.get_current_identity(self.request)
+        search_filters = {
+            'lat': self.latitude,
+            'lon': self.longitude,
+            't': 'identity',
+        }
+
+        establishments = SearchApi.search(
+            identity=current_identity,
+            **search_filters
+        )
 
         return establishments
 
     def process_context(self):
-        establishments = self.get_page(self.context)
+        self.latitude = self.request.COOKIES.get('latitude', None)
+        self.longitude = self.request.COOKIES.get('longitude', None)
+
+        establishment_query_set = self.get_page(self.context)
 
         tiles = []
 
-        if establishments:
+        if establishment_query_set:
             if (
                 hasattr(self, 'current_identity') and
                 None is not self.current_identity
@@ -187,30 +192,34 @@ class EstablishmentsGrid(
             else:
                 following_relations = Relation.objects.none()
 
-            for establishment in establishments:
-                location_items = LocationItem.objects.filter(
-                    related_object_id=establishment.pk
-                )
-                if len(location_items) > 0:
-                    address = location_items[0].location.address
-                else:
-                    address = ''
-
-                establishment_tile = IdentityTile()
-                establishment_context = Context({
-                    'identity': establishment,
-                    'request': self.request,
-                    'following_relations': following_relations
-                })
-
-                if address:
-                    establishment_context.update({'address': address})
-
-                tiles.append(
-                    establishment_tile.render_template_fragment(
-                        establishment_context
+            for result in establishment_query_set:
+                try:
+                    establishment = result.object
+                    location_items = LocationItem.objects.filter(
+                        related_object_id=establishment.pk
                     )
-                )
+                    if len(location_items) > 0:
+                        address = location_items[0].location.address
+                    else:
+                        address = ''
+
+                    establishment_tile = IdentityTile()
+                    establishment_context = Context({
+                        'identity': establishment,
+                        'request': self.request,
+                        'following_relations': following_relations
+                    })
+
+                    if address:
+                        establishment_context.update({'address': address})
+
+                    tiles.append(
+                        establishment_tile.render_template_fragment(
+                            establishment_context
+                        )
+                    )
+                except Exception, e:
+                    logger.exception(e.message)
 
         local_context = copy.copy(self.context)
         local_context.update({

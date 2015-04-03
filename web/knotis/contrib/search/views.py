@@ -64,6 +64,8 @@ class SearchResultsGrid(GridSmallView):
         end_range = start_range + count
 
         query = self.request.GET.get('q', None)
+        latitude = self.request.COOKIES.get('latitude', None)
+        longitude = self.request.COOKIES.get('longitude', None)
 
         try:
             current_identity = get_current_identity(self.request)
@@ -71,9 +73,15 @@ class SearchResultsGrid(GridSmallView):
         except:
             current_identity = None
 
+        search_filters = {
+            'content': query,
+            'lat': latitude,
+            'lon': longitude,
+        }
+
         search_results = SearchApi.search(
-            query,
-            identity=current_identity
+            identity=current_identity,
+            **search_filters
         )
 
         if search_results is not None:
