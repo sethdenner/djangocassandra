@@ -109,7 +109,7 @@ class RangePredicate(object):
                     self.end = value
                     self.end_inclusive = True
                     return True
-            elif op == 'exact':
+            elif op == 'exact' or op == 'eq':
                 if self._matches_value(value):
                     self.start = self.end = value
                     self.start_inclusive = self.end_inclusive = True
@@ -148,7 +148,7 @@ class RangePredicate(object):
                     self.end = value
                     self.end_inclusive = True
                     return True
-            elif op == 'exact':
+            elif op == 'exact' or op == 'eq':
                 if self._matches_value(value):
                     return True
             elif op == 'startswith':
@@ -314,15 +314,15 @@ class CompoundPredicate(object):
         return False
     
     def add_filter(self, column, op, value):
-        if op in ('lt', 'lte', 'gt', 'gte', 'exact', 'startswith'):
+        if op in ('lt', 'lte', 'gt', 'gte', 'eq', 'exact', 'startswith'):
             for child in self.children:
                 if child.incorporate_range_op(column, op, value, self.op):
                     return
-            else:
-                child = RangePredicate(column)
-                incorporated = child.incorporate_range_op(column, op, value, COMPOUND_OP_AND)
-                assert incorporated
-                self.children.append(child)
+                else:
+                    child = RangePredicate(column)
+                    incorporated = child.incorporate_range_op(column, op, value, COMPOUND_OP_AND)
+                    assert incorporated
+                    self.children.append(child)
         else:
             child = OperationPredicate(column, op, value)
             self.children.append(child)

@@ -73,6 +73,7 @@ class CassandraQuery(NonrelQuery):
         self.where = None
         self.cache = None
         self.allows_inefficient = True  # TODO: Make this a config setting
+        self.ordering = []
         self.inefficient_filtering = []
         self.inefficient_ordering = []
 
@@ -235,7 +236,7 @@ class CassandraQuery(NonrelQuery):
             clustering_key_fields = []
             if hasattr(self.query.model, 'CassandraMeta'):
                 clustering_key_fields = (
-                    self.query.model.CassandraMeta.clustering_key
+                    self.query.model.CassandraMeta.clustering_keys
                 )
 
             valid_order_field_index = len(self.ordering) + 1
@@ -260,7 +261,7 @@ class CassandraQuery(NonrelQuery):
                 field_name = order
                 reversed = False
 
-        self.ordering_spec.append((field_name, reversed))
+        self.inefficient_ordering.append((field_name, reversed))
             
     def init_predicate(self, parent_predicate, node):
         if isinstance(node, WhereNode):
@@ -276,10 +277,9 @@ class CassandraQuery(NonrelQuery):
             if parent_predicate:
                 parent_predicate.add_child(predicate)
         else:
-            column, lookup_type, db_type, value = self._decode_child(node)
-            db_value = self.convert_value_for_db(db_type, value)
+            column, lookup_type, value = self._decode_child(node)
             assert parent_predicate
-            parent_predicate.add_filter(column, lookup_type, db_value)
+            parent_predicate.add_filter(column, lookup_type, value)
             predicate = None
             
         return predicate
