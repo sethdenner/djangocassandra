@@ -11,7 +11,9 @@ def generate_sorl_crop_string(
         left is not None and
         top is not None and
         width is not None and
-        height is not None
+        height is not None and
+        width != 0 and
+        height != 0
     ):
         return ''.join([
             str(int(math.floor(left))),
