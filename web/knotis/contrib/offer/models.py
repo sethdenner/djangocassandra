@@ -1,8 +1,11 @@
 import re
+import math
 import datetime
 
 import twitter
 from facebook import GraphAPI
+
+from sorl.thumbnail.shortcuts import get_thumbnail
 
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
@@ -33,6 +36,10 @@ from knotis.utils.view import (
     sanitize_input_html
 )
 from knotis.contrib.media.models import ImageInstance
+from knotis.contrib.sickle.util import (
+    generate_sorl_crop_string,
+    transform_crop_aspect_ratio
+)
 from knotis.contrib.identity.models import (
     Identity,
     IdentityBusiness,
@@ -596,6 +603,64 @@ class Offer(QuickModel):
             banner_image = None
 
         return banner_image
+
+    def tile_image_small(self):
+        try:
+            banner_image = ImageInstance.objects.get(
+                related_object_id=self.pk,
+                context='offer_banner',
+                primary=True
+            )
+
+        except:
+            logger.exception('failed to get offer banner image')
+            return None
+            
+        aspect = 300./180
+        thumb = get_thumbnail(
+            banner_image.image.image,
+            '300x180',
+            crop=generate_sorl_crop_string(
+                *transform_crop_aspect_ratio(
+                    aspect,
+                    banner_image.crop_left,
+                    banner_image.crop_top,
+                    banner_image.crop_width,
+                    banner_image.crop_height
+                )
+            )
+        )
+
+        return settings.BASE_URL + thumb.url
+
+    def tile_image_large(self):
+        try:
+            banner_image = ImageInstance.objects.get(
+                related_object_id=self.pk,
+                context='offer_banner',
+                primary=True
+            )
+
+        except:
+            logger.exception('failed to get offer banner image')
+            return None
+
+        aspect = 360./450
+        thumb = get_thumbnail(
+            banner_image.image.image,
+            '360x450',
+            crop=generate_sorl_crop_string(
+                *transform_crop_aspect_ratio(
+                    aspect,
+                    banner_image.crop_left,
+                    banner_image.crop_top,
+                    banner_image.crop_width,
+                    banner_image.crop_height
+                )
+            )
+        )
+
+        return settings.BASE_URL + thumb.url
 
     def badge_image(self):
         try:

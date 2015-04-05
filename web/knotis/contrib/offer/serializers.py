@@ -1,7 +1,8 @@
 from rest_framework.serializers import (
     ModelSerializer,
     FloatField,
-    CharField
+    CharField,
+    URLField
 )
 from rest_framework.pagination import PaginationSerializer
 
@@ -39,7 +40,9 @@ class OfferSerializer(ModelSerializer):
             'price',
             'price_retail',
             'banner_image',
-            'badge_image'
+            'badge_image',
+            'tile_image_large',
+            'tile_image_small'
         )
 
     owner = IdentitySerializer()
@@ -54,6 +57,16 @@ class OfferSerializer(ModelSerializer):
     banner_image = CroppedImageUrlSerializer(
         source='banner_image',
         read_only=True
+    )
+    tile_image_small = URLField(
+        source='tile_image_small',
+        read_only=True,
+        max_length=1024
+    )
+    tile_image_large = URLField(
+        source='tile_image_large',
+        read_only=True,
+        max_length=1024
     )
     badge_image = CroppedImageUrlSerializer(
         source='badge_image',

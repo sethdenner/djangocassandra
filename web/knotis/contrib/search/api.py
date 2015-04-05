@@ -4,6 +4,9 @@ logger = logging.getLogger(__name__)
 
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.exceptions import APIException
+
+from haystack.utils.geo import Point
 from haystack.query import SearchQuerySet
 
 from knotis.views import ApiViewSet
@@ -17,15 +20,11 @@ from knotis.contrib.offer.models import Offer
 from knotis.contrib.transaction.models import TransactionTypes
 
 from .serializers import SearchSerializer
-from haystack.utils.geo import Point
-
-from rest_framework.exceptions import APIException
 
 
 class SearchApi(object):
     @staticmethod
     def search(
-        search_query,
         identity=None,
         **filters
     ):
@@ -50,7 +49,7 @@ class SearchApi(object):
         filters.pop('format', None)
 
         latitude = filters.pop('lat', None)
-        longitude = filters.pop('long', None)
+        longitude = filters.pop('lon', None)
 
         if None is not model:
             query_set = query_set.models(model)
@@ -58,20 +57,20 @@ class SearchApi(object):
         else:  # This will most definitely have to change.
             query_set = query_set.models(Offer, IdentityEstablishment)
 
-        if latitude and longitude:
+        query_set = query_set.filter(**filters)
+
+        if latitude is not None and longitude is not None:
             current_location = Point(
                 float(longitude),
                 float(latitude)
             )
 
-            query_set.distance(
-                'get_location',
+            query_set = query_set.distance(
+                'location',
                 current_location
             ).order_by('distance')
 
-        results = query_set.filter(content=search_query, **filters)
-
-        return results
+        return query_set
 
     @staticmethod
     def search_offers(
@@ -205,9 +204,9 @@ class SearchApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
         filters = {
             key: value for (key, value) in parameters.iteritems()
         }
+        filters['content'] = search_query
 
         results = SearchApi.search(
-            search_query,
             identity=self.current_identity,
             **filters
         )

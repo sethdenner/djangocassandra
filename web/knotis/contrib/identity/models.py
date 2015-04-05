@@ -1,5 +1,9 @@
 import re
 
+from sorl.thumbnail.shortcuts import get_thumbnail
+
+from django.conf import settings
+
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
@@ -28,6 +32,11 @@ from knotis.contrib.relation.models import (
 )
 
 from knotis.contrib.location.models import LocationItem
+
+from knotis.contrib.sickle.util import (
+    generate_sorl_crop_string,
+    transform_crop_aspect_ratio
+)
 
 __models__ = (
     'Identity',
@@ -448,6 +457,50 @@ class Identity(QuickModel):
 
     def banner_image(self):
         return self.get_image('profile_banner')
+
+    def tile_image_small(self):
+        profile_banner = self.get_image('profile_banner')
+        if not profile_banner:
+            return None
+
+        aspect = 300./180
+        thumb = get_thumbnail(
+            profile_banner.image.image,
+            '300x180',
+            crop=generate_sorl_crop_string(
+                *transform_crop_aspect_ratio(
+                    aspect,
+                    profile_banner.crop_left,
+                    profile_banner.crop_top,
+                    profile_banner.crop_width,
+                    profile_banner.crop_height
+                )
+            )
+        )
+
+        return settings.BASE_URL + thumb.url
+
+    def tile_image_large(self):
+        profile_banner = self.get_image('profile_banner')
+        if not profile_banner:
+            return None
+
+        aspect = 360./450
+        thumb = get_thumbnail(
+            profile_banner.image.image,
+            '360x450',
+            crop=generate_sorl_crop_string(
+                *transform_crop_aspect_ratio(
+                    aspect,
+                    profile_banner.crop_left,
+                    profile_banner.crop_top,
+                    profile_banner.crop_width,
+                    profile_banner.crop_height
+                )
+            )
+        )
+
+        return settings.BASE_URL + thumb.url
 
 
 class IdentityIndividual(Identity):
