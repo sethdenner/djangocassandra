@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('identity', '0001_initial'),
-        ('auth', '0002_auto_20150312_1932'),
+        ('auth', '0001_initial'),
         ('contenttypes', '0001_initial'),
     ]
 

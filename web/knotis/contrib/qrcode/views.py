@@ -595,7 +595,7 @@ class RandomPassportView(EmbeddedView, GetCurrentIdentityMixin):
 
         if not request.user.is_authenticated():
             message = ''.join([
-                'An error occurred while attempting to recieve offers. ',
+                'An error occurred while attempting to receive offers. ',
                 'User is not logged in.'
             ])
             logger.exception(message)
@@ -613,7 +613,7 @@ class RandomPassportView(EmbeddedView, GetCurrentIdentityMixin):
 
         if current_identity.identity_type != IdentityTypes.INDIVIDUAL:
             message = ''.join([
-                'An error occurred while attempting to recieve offers. ',
+                'An error occurred while attempting to receive offers. ',
                 'Wrong identity type'
             ])
 
@@ -640,7 +640,7 @@ class RandomPassportView(EmbeddedView, GetCurrentIdentityMixin):
 
         except:
             message = ''.join([
-                'An error occurred while attempting to recieve offers. ',
+                'An error occurred while attempting to receive offers. ',
                 'Already Redeemed'
             ])
 

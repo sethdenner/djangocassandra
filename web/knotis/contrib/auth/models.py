@@ -17,6 +17,7 @@ from knotis.contrib.quick.models import (
 )
 from knotis.contrib.quick.fields import (
     QuickCharField,
+    QuickBooleanField,
     QuickDateTimeField,
     QuickForeignKey
 )
@@ -115,6 +116,7 @@ class UserInformation(QuickModel):
         'username'
     )
     default_identity = QuickForeignKey(Identity)
+    mobile_app_installed = QuickBooleanField(default=False)
 
     objects = UserInformationManager()
 

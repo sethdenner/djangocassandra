@@ -25,10 +25,11 @@
         <div class="row tileSpacing">
             <div class="col-lg-12 col-xs-12">
                 <h1>{{ offer.title }}</h1>
+                <h2><a href="/id/{{ offer.owner.pk }}/">{{ offer.owner.name }}</a></h2>
             </div>
         </div>
 	    {% if offer_action == None %}
-        <div class="row">	
+        <div class="row">
 	        {% else %}
 	        <div class="row">
 	            {% endif %}

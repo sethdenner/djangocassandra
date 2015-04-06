@@ -45,11 +45,10 @@ class Location(QuickModel):
 
     def update_geocode(self):
         if not self.latitude or not self.longitude:
-            geocoder = Nominatim()
+            geocoder = Nominatim(domain=settings.NOMINATIM_API)
             # This is how one changes the api server.  Found by looking at
             # geopy source:
             # https://github.com/geopy/geopy/blob/master/geopy/geocoders/osm.py#L48
-            geocoder.api = settings.NOMINATIM_API
             location = geocoder.geocode(
                 self.address,
                 exactly_one=True

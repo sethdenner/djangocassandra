@@ -2,7 +2,7 @@
 #
 #
 
-FROM ubuntu:12.04
+FROM ubuntu:14.04
 
 ENV install_location /srv/knotis
 ENV setup_dir ${install_location}/setup
@@ -29,11 +29,12 @@ RUN . venv/bin/activate && \
 
 
 RUN . venv/bin/activate && \
-    pip install git+https://github.com/Knotis/sorl-thumbnail.git@fix_cropping
+    pip install sorl-thumbnail
+#pip install git+https://github.com/simlay/sorl-thumbnail.git@fix_cropping_django_1.3
 
 RUN . venv/bin/activate && \
     pip install --no-deps 'django-haystack>=2.0,<2.1' && \
-    apt-get update && apt-get install -y libgeos-c1 libgeos-3.2.2 && \
+    apt-get update && apt-get install -y libgeos-c1 libgeos-3.4.2 && \
     pip install 'geopy'
 
 RUN apt-get update && \
@@ -57,26 +58,7 @@ COPY setup ${install_location}/setup
 
 ENV CASSANDRA_THRIFT_INTERFACE ${setup_dir}/static/cassandra.thrift
 ENV MODWSGI_SCRIPT ${setup_dir}/config/modwsgi/knotis.wsgi
-ENV APACHE2_CONFIG ${setup_dir}/config/apache2/dev.knotis.com
-
-
-RUN . venv/bin/activate && \
-    pip install ${setup_dir}/static/django-nonrel-1.3.tar.gz && \
-    pip install ${setup_dir}/static/djangotoolbox.tar.gz && \
-    pip install git+https://github.com/django-nonrel/django-permission-backend-nonrel.git@master && \
-    pip install git+https://github.com/django-nonrel/django-dbindexer.git@dbindexer-1.3 && \
-    pip install git+https://github.com/brosner/django-timezones.git && \
-    pip install git+https://github.com/maraujop/django-crispy-forms.git@master && \
-    pip install ${setup_dir}/static/django-extensions-1.3-support.tar.gz && \
-    pip install --no-deps django-cors-headers && \
-    pip install djangorestframework==2.3.13 && \
-    pip install django-filter && \
-    pip install django-oauth-plus && \
-    pip install django-guardian && \
-    pip install -U --no-deps git+https://github.com/Knotis/doac@knotis && \
-    pip install django-test-utils && \
-    pip install --no-deps django_nose && \
-    pip install pyelasticsearch
+ENV APACHE2_CONFIG ${setup_dir}/config/apache2/dev.knotis.com.conf
 
 
 RUN . venv/bin/activate && \
@@ -92,15 +74,39 @@ RUN . venv/bin/activate && \
 RUN . venv/bin/activate && \
     apt-get update && ${setup_dir}/installers/install_thrift.sh
 
-RUN . venv/bin/activate && \
-    ${setup_dir}/installers/install_django_cassandra.sh
 
 RUN ${setup_dir}/installers/install_apache.sh
+
+# Django Stuff.
+#pip install git+https://github.com/django-nonrel/django-permission-backend-nonrel.git@master && \
 
 # This replaces PIL and is much better.
 RUN . venv/bin/activate && pip install pillow
 
+
+RUN ${setup_dir}/installers/install_django.sh && \
+    ${setup_dir}/installers/install_timezones.sh && \
+    ${setup_dir}/installers/install_django_extensions.sh && \
+    ${setup_dir}/installers/install_crispy_forms.sh && \
+    ${setup_dir}/installers/install_django_dbindexer.sh
+
+RUN . venv/bin/activate && \
+    pip install blist && \
+    pip install --no-deps django-cors-headers && \
+    pip install djangorestframework==2.3.13 && \
+    pip install django-filter && \
+    pip install django-oauth-plus && \
+    pip install django-guardian && \
+    pip install -U --no-deps git+https://github.com/Knotis/doac@knotis && \
+    pip install django-test-utils && \
+    pip install --no-deps django_nose && \
+    pip install pyyaml ua-parser user-agents && \
+    pip install django-user-agents && \
+    pip install pyelasticsearch
+
+
 EXPOSE 8000
+EXPOSE 443
 EXPOSE 80
 
 VOLUME ${install_location}/logs
@@ -109,12 +115,11 @@ VOLUME ${install_location}/static
 VOLUME ${install_location}/web
 VOLUME ${install_location}/run/eggs
 
-COPY setup/docker/start_apache.sh ${install_location}/start_apache.sh
 COPY setup/docker/start.sh ${install_location}/start.sh
 
 RUN chown -R ${ADMIN_USER}:${ADMIN_GROUP} ${install_location} && \
-    chmod -R 755 ${install_location} && \
-    usermod -m -d ${install_location} ${ADMIN_USER}
+    chmod -R 755 ${install_location}
+#usermod -m -d ${install_location} ${ADMIN_USER}
 
 RUN echo source ${install_location}/venv/bin/activate >> ~/.bashrc && \
     echo source ${install_location}/venv/bin/activate >> ~/.bash_profile
