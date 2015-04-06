@@ -64,7 +64,7 @@
     background: rgba(29, 29, 29, 0.67);
     position: absolute;
     top: 50px;
-    left: 0px;
+    left: 0;
     padding: 30px 90px 80px;
     overflow: hidden;
     height: 400px;
@@ -143,8 +143,8 @@
     width: 100%;
     height: 448px;
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     background-size: cover;
 }
 
@@ -222,7 +222,7 @@ h1.sectionHeader {
         display: -webkit-inline-flex;
         display: -moz-inline-box;
         display: -ms-inline-flexbox;
-        padding: 0px 10px;
+        padding: 0 10px;
     }
     .establishmentHeader-credentials .circle {
         border-radius: 50%;
@@ -277,6 +277,7 @@ h1.sectionHeader {
         padding: 0;
         left: 0;
         width: 100%;
+        padding-bottom: 300px;
     }
 
     .profileBusiness .hero {

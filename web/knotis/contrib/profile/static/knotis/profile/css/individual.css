@@ -3,13 +3,13 @@
 }
 
 .edit_about,
-.close_edit_about, 
+.close_edit_about,
 #about-me-submit {
     float: right;
     width: 80px;
     padding: 4px 20px;
     border: 1px solid rgb(248, 248, 248);
-    border-radius: 3px;    
+    border-radius: 3px;
     background: rgb(248, 248, 248);
     color: rgb(122, 122, 122);
     font-size: 12px;
@@ -20,8 +20,8 @@
     margin-right: 10px;
 }
 
-.edit_about:hover, 
-.close_edit_about:hover, 
+.edit_about:hover,
+.close_edit_about:hover,
 #about-me-submit:hover {
     background: transparent;
     border: 1px solid #2cc397;
@@ -30,12 +30,12 @@
 
 .individualHeader {
     border-right: 1px solid #353434;
-    width: 40%;
+    width: 50%;
     background: rgba(29, 29, 29, 0.67);
     position: absolute;
     top: 50px;
     left: 0;
-    padding: 30px 30px 80px;
+    padding: 30px 80px 80px;
     overflow: hidden;
     height: 400px;
 }
@@ -50,9 +50,7 @@
     color: white;
     margin: 20px 0 0;
     display: inline-block;
-    overflow: hidden;
     width: 100%;
-    text-overflow: ellipsis;
 }
 
 .profileIndividual .hero {
@@ -60,7 +58,7 @@
     height: 448px;
     position: absolute;
     top: 0;
-    left: 70px;
+    left: 0;
     background-size: cover;
 }
 
@@ -78,9 +76,10 @@
 .profileContent {
     position: relative;
     top: 310px;
+    left: 0;
     padding: 70px;
-    left: 30px;
     margin: 0;
+    width: 100%;
     padding-bottom: 300px;
 }
 
@@ -88,7 +87,7 @@
     font-size: 17px;
     font-weight: 700;
     margin-bottom: 5px;
-    font-family: "LatoLight", sans-serif; 
+    font-family: "LatoLight", sans-serif;
 }
 
 /* Small devices (Phones, Tablets, 400px, 768px and up) */
@@ -103,6 +102,7 @@
         padding: 0;
         left: 0;
         width: 100%;
+        padding-bottom: 300px;
     }
 
     .profileIndividual .hero {
