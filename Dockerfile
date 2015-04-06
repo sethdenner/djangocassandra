@@ -29,7 +29,8 @@ RUN . venv/bin/activate && \
 
 
 RUN . venv/bin/activate && \
-    pip install git+https://github.com/simlay/sorl-thumbnail.git@fix_cropping_django_1.3
+    pip install sorl-thumbnail
+#pip install git+https://github.com/simlay/sorl-thumbnail.git@fix_cropping_django_1.3
 
 RUN . venv/bin/activate && \
     pip install --no-deps 'django-haystack>=2.0,<2.1' && \
