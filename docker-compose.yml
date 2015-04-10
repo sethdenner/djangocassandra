@@ -1,0 +1,27 @@
+search:
+    image: dockerfile/elasticsearch
+    volumes:
+        - data/elasticsearch:/data/elasticsearch
+db:
+    image: spotify/cassandra
+    # This is broken on some systems.
+    volumes:
+        - data/cassandra:/var/lib/cassandra
+
+web:
+    image: knotis/web
+    volumes:
+        - web:/srv/knotis/web
+        - data/media:/srv/knotis/app/media
+    links:
+        - db
+        - search
+    command: sh -c './start.sh'
+
+ambassador:
+    image: svendowideit/ambassador
+    links:
+        - web
+    ports:
+        - "8000:8000"
+        - "80:80"
