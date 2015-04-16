@@ -23,7 +23,8 @@ from knotis.contrib.offer.api import (
     OfferApiView,
     OfferPublishApiView,
     OfferApiModelViewSet,
-    OfferAvailabilityModelViewSet
+    OfferAvailabilityModelViewSet,
+    OfferCollectionApiModelViewSet,
 )
 from knotis.contrib.location.api import LocationApiView
 from knotis.contrib.relation.api import (
@@ -77,6 +78,7 @@ urlpatterns += OfferApiModelViewSet.urls()
 urlpatterns += OfferApiView.urls()
 urlpatterns += OfferPublishApiView.urls()
 urlpatterns += OfferAvailabilityModelViewSet.urls()
+urlpatterns += OfferCollectionApiModelViewSet.urls()
 urlpatterns += LocationApiView.urls()
 urlpatterns += RelationApiView.urls()
 urlpatterns += FollowApiView.urls()
