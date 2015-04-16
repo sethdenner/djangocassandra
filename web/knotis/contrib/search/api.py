@@ -12,20 +12,12 @@ from haystack.query import SearchQuerySet
 from knotis.views import ApiViewSet
 
 from knotis.contrib.identity.models import (
-    Identity,
-    IdentityTypes,
-    IdentityBusiness,
     IdentityEstablishment,
+    IdentityTypes
 )
 from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
-from knotis.contrib.offer.models import (
-    Offer,
-    OfferCollectionItem
-)
-from knotis.contrib.transaction.models import (
-    Transaction,
-    TransactionTypes
-)
+from knotis.contrib.offer.models import Offer
+from knotis.contrib.transaction.models import TransactionTypes
 
 from .serializers import SearchSerializer
 
@@ -36,16 +28,30 @@ class SearchApi(object):
         identity=None,
         **filters
     ):
+        search_type = filters.pop('t', None)
         query_set = SearchQuerySet()
 
-        model = filters.pop('t', None)
+        if search_type == 'offer':
+            model = Offer
+
+        elif search_type == 'identity':
+            model = IdentityEstablishment
+
+        else:
+            model = None
+
+        if (
+            identity is None or
+            identity.identity_type != IdentityTypes.SUPERUSER
+        ):
+            filters['available'] = True
 
         filters.pop('format', None)
 
         latitude = filters.pop('lat', None)
         longitude = filters.pop('lon', None)
 
-        if model is not None:
+        if None is not model:
             query_set = query_set.models(model)
 
         else:  # This will most definitely have to change.
@@ -69,135 +75,86 @@ class SearchApi(object):
     @staticmethod
     def search_offers(
         identity=None,
-        *args,
-        **filters
+        filters={}
     ):
-        if (
-            identity is None or
-            identity.identity_type != IdentityTypes.SUPERUSER
-        ):
-            filters['available'] = True
-
-        filters['t'] = Offer
+        filters['t'] = 'offer'
         return SearchApi.search(
             identity,
-            **filters
-        )
-
-    @staticmethod
-    def search_offers_and_estblishments(
-        identity=None,
-        *args,
-        **filters
-    ):
-        if (
-            identity is None or
-            identity.identity_type != IdentityTypes.SUPERUSER
-        ):
-            filters['available'] = True
-
-        return SearchApi.search(
-            identity,
-            **filters
-        )
-
-    @staticmethod
-    def search_offer_collection_items(
-        identity,
-        **filters
-    ):
-        filters['t'] = OfferCollectionItem
-        return SearchApi.search(
-            identity,
-            **filters
+            filters
         )
 
     @staticmethod
     def search_identities(
         identity=None,
-        *args,
-        **filters
+        filters={}
     ):
-
-        filters['t'] = Identity
+        filters['t'] = 'identity'
         return SearchApi.search(
             identity,
-            **filters
+            filters
         )
 
     @staticmethod
     def search_businesses(
         identity=None,
-        *args,
-        **filters
+        filters={}
     ):
-        filters['t'] = IdentityBusiness
-        return SearchApi.search(
+        filters['idtype'] = IdentityTypes.BUSINESS
+        return SearchApi.search_identities(
             identity,
-            **filters
+            filters
         )
 
     @staticmethod
     def search_establishments(
         identity=None,
-        *args,
-        **filters
+        filters={}
     ):
-        if (
-            identity is None or
-            identity.identity_type != IdentityTypes.SUPERUSER
-        ):
-            filters['available'] = True
-
-        filters['t'] = IdentityEstablishment
-        return SearchApi.search(
+        filters['idtype'] = IdentityTypes.ESTABLISHMENT
+        return SearchApi.search_identities(
             identity,
-            **filters
+            filters
         )
 
     @staticmethod
     def search_individuals(
         identity=None,
-        *args,
-        **filters
+        filters={}
     ):
-        filters['identity_type'] = IdentityTypes.INDIVIDUAL
+        filters['idtype'] = IdentityTypes.INDIVIDUAL
         return SearchApi.search_identities(
             identity,
-            **filters
+            filters
         )
 
     @staticmethod
     def search_transactions(
         identity=None,
-        *args,
-        **filters
+        filters={}
     ):
-        filters['t'] = Transaction
+        filters['t'] = 'transaction'
         return SearchApi.search(
             identity,
-            **filters
+            filters
         )
 
     @staticmethod
     def search_purchases(
         identity=None,
-        *args,
-        **filters
+        filters={}
     ):
-        filters['transaction_type'] = TransactionTypes.PURCHASE
+        filters['ttype'] = TransactionTypes.PURCHASE
         return SearchApi.search_transactions(
             identity,
-            **filters
+            filters
         )
 
     @staticmethod
     def search_redemptions(
         identity=None,
-        *args,
-        **filters
+        filters={}
     ):
-        filters['transaction_type'] = TransactionTypes.REDEMPTION
+        filters['ttype'] = TransactionTypes.REDEMPTION
         return SearchApi.search_transactions(
             identity,
             filters

@@ -1,3 +1,5 @@
+import re
+import math
 import datetime
 
 import twitter
@@ -119,6 +121,175 @@ class OfferManager(QuickManager):
             image.save()
 
         return offer
+
+    def _page_results(
+        self,
+        results,
+        page
+    ):
+        if None == page:
+            return results
+
+        if isinstance(page, basestring):
+            try:
+                page = int(page)
+            except:
+                page = 1
+
+        page_size = 20
+        slice_start = (page - 1) * page_size
+        slice_end = slice_start + page_size
+
+        return results[slice_start:slice_end]
+
+    def get_offers(
+        self,
+        filters={},
+        page=None,
+        query=None,
+        sort_by=OfferSort.NEWEST,
+    ):
+        try:
+            filters['deleted'] = False
+            results = self.filter(filters)
+
+            if not len(results):
+                return results
+
+            if query:
+                query_words = query.split(' ')
+
+                query_results = []
+                for offer in results:
+                    for word in query_words:
+                        if not word:
+                            continue
+
+                        regex = re.compile(
+                            word.strip(),
+                            re.IGNORECASE
+                        )
+                        if regex.search(offer.title.value):
+                            query_results.append(offer)
+
+                results = query_results
+
+            if OfferSort.NEWEST == sort_by:
+                def get_newest_sort_key(offer):
+                    return offer.pub_time
+
+                results = sorted(
+                    results,
+                    key=get_newest_sort_key
+                )
+                results.reverse()
+
+            elif OfferSort.POPULAR == sort_by:
+                def get_popularity_sort_key(offer):
+                    return offer.last_purchase
+
+                results = sorted(
+                    results,
+                    key=get_popularity_sort_key
+                )
+                results.reverse()
+
+            elif OfferSort.EXPIRING == sort_by:
+                def get_expiring_sort_key(offer):
+                    return offer.end_time
+
+                results = sorted(
+                    results,
+                    key=get_expiring_sort_key
+                )
+
+            return self._page_results(
+                results,
+                page
+            )
+
+        except Exception:
+            return None
+
+    def get_available_offers(
+        self,
+        filters={},
+        page=None,
+        query=None,
+        sort_by=OfferSort.NEWEST
+    ):
+        filters['active'] = True
+        filters['published'] = True
+
+        return self.get_offers(
+            filters=filters,
+            page=page,
+            query=query,
+            sort_by=sort_by
+        )
+
+    def get_active_offer_count(self):
+        offers = None
+        try:
+            offers = self.get_available_offers()
+        except:
+            pass
+
+        if not offers:
+            return 0
+        else:
+            return len(offers)
+
+    def search_offers(
+        self,
+        query,
+        business=None,
+        city=None,
+        neighborhood=None,
+        category=None,
+        premium=None,
+        page=None,
+        sort_by=OfferSort.NEWEST
+    ):
+        offers = None
+        try:
+            offers = self.get_available_offers(
+                business,
+                city,
+                neighborhood,
+                category,
+                premium,
+                None,
+                sort_by
+            )
+        except:
+            pass
+
+        if not offers:
+            return None
+
+        if not query:
+            return offers
+
+        query_words = query.split(' ')
+
+        results = []
+        for offer in offers:
+            for word in query_words:
+                if not word:
+                    continue
+
+                regex = re.compile(
+                    word.strip(),
+                    re.IGNORECASE
+                )
+                if regex.search(offer.title.value):
+                    results.append(offer)
+
+        return self._page_results(
+            results,
+            page
+        )
 
 
 class Offer(QuickModel):
@@ -444,7 +615,7 @@ class Offer(QuickModel):
         except:
             logger.exception('failed to get offer banner image')
             return None
-
+            
         aspect = 300./180
         thumb = get_thumbnail(
             banner_image.image.image,
@@ -924,6 +1095,3 @@ class OfferCollectionItem(QuickModel):
     offer = QuickForeignKey(Offer)
     page = QuickIntegerField()
     objects = QuickManager()
-
-    def get_location(self):
-        return self.offer.get_location()
