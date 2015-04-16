@@ -2,7 +2,7 @@
 
 echo 'installing djangorestframework ...'
 
-${install_location}/venv/bin/pip install djangorestframework
+${install_location}/venv/bin/pip install djangorestframework==2.3.13
 ${install_location}/venv/bin/pip install markdown
 ${install_location}/venv/bin/pip install django-filter
 ${install_location}/venv/bin/pip install defusedxml
