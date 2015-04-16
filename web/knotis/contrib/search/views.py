@@ -79,7 +79,7 @@ class SearchResultsGrid(GridSmallView):
             'lon': longitude,
         }
 
-        search_results = SearchApi.search(
+        search_results = SearchApi.search_offers_and_estblishments(
             identity=current_identity,
             **search_filters
         )

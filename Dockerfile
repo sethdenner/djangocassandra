@@ -100,6 +100,8 @@ RUN ${setup_dir}/installers/install_apache.sh
 # This replaces PIL and is much better.
 RUN . venv/bin/activate && pip install pillow
 
+RUN ${setup_dir}/installers/install_django_user_agent.sh
+
 EXPOSE 8000
 EXPOSE 80
 
@@ -109,7 +111,6 @@ VOLUME ${install_location}/static
 VOLUME ${install_location}/web
 VOLUME ${install_location}/run/eggs
 
-COPY setup/docker/start_apache.sh ${install_location}/start_apache.sh
 COPY setup/docker/start.sh ${install_location}/start.sh
 
 RUN chown -R ${ADMIN_USER}:${ADMIN_GROUP} ${install_location} && \

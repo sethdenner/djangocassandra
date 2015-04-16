@@ -161,10 +161,9 @@ class EstablishmentsGrid(
         search_filters = {
             'lat': self.latitude,
             'lon': self.longitude,
-            't': 'identity',
         }
 
-        establishments = SearchApi.search(
+        establishments = SearchApi.search_establishments(
             identity=current_identity,
             **search_filters
         )

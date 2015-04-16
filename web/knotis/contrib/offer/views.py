@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 from knotis.utils.regex import REGEX_UUID
 
+from knotis.contrib.search.api import SearchApi
 from knotis.contrib.offer.models import (
     Offer,
     OfferItem,
@@ -150,28 +151,38 @@ class OffersGridView(
     view_name = 'offers_grid'
 
     def get_queryset(self):
-        offer_filter_dict = {
+        search_filters = {
+            'lat': self.latitude,
+            'lon': self.longitude,
             'published': True,
-            'active': True,
-            'completed': False
+            'available': True,
         }
 
         try:
-            offers = Offer.objects.filter(
-                **offer_filter_dict
+            offers = SearchApi.search_offers(
+                identity=self.current_identity,
+                **search_filters
             )
-        except Exception:
+
+        except Exception, e:
             logger.exception(''.join([
-                'failed to get offers.'
+                'Failed to get offers.',
+                e.message,
             ]))
+            offers = []
+
         return offers
 
     def process_context(self):
         current_identity = self.get_current_identity(self.request)
 
-        offers = self.get_page(self.context)
+        self.latitude = self.request.COOKIES.get('latitude', None)
+        self.longitude = self.request.COOKIES.get('longitude', None)
+
+        offer_results = self.get_page(self.context)
         tiles = []
-        for offer in offers:
+        for result in offer_results:
+            offer = result.object
             if offer.offer_type == OfferTypes.DIGITAL_OFFER_COLLECTION:
                 tile = CollectionTile()
                 tiles.append(tile.render_template_fragment(Context({
@@ -231,22 +242,48 @@ class PassportBookView(EmbeddedView):
         return self.context
 
 
-class PassportBookOffersGrid(GridSmallView):
+class PassportBookOffersGrid(GridSmallView, GetCurrentIdentityMixin):
     view_name = 'passport_offers_grid'
 
+    def get_queryset(self):
+        search_filters = {
+            'lat': self.latitude,
+            'lon': self.longitude,
+            'offer_collection': self.offer_collection
+        }
+
+        try:
+            offer_collection_items = SearchApi.search_offer_collection_items(
+                identity=self.current_identity,
+                **search_filters
+            )
+
+        except Exception, e:
+            logger.exception(''.join([
+                'Failed to get offers.',
+                e.message,
+            ]))
+            offer_collection_items = []
+
+        return offer_collection_items
+
     def process_context(self):
+        self.latitude = self.request.COOKIES.get('latitude', None)
+        self.longitude = self.request.COOKIES.get('longitude', None)
+        self.current_identity = self.get_current_identity(self.request)
+
         offer_id = self.context.get('offer_id')
 
         offer = get_object_or_404(Offer, pk=offer_id)
-        offer_collection_id = offer.description
-        offer_collection = OfferCollection.objects.get(
-            id=offer_collection_id
-        )
-        offer_collection_items = OfferCollectionItem.objects.filter(
-            offer_collection=offer_collection
+        self.offer_collection = get_object_or_404(
+            OfferCollection,
+            pk=offer.description
         )
 
-        offers = [x.offer for x in offer_collection_items]
+        offer_collection_items = self.get_queryset()
+
+        offers = [x.object.offer for x in offer_collection_items]
+
         tiles = []
         for offer in offers:
                 tile = OfferTile()
