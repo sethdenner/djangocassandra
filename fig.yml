@@ -16,7 +16,25 @@ web:
     links:
         - db
         - search
-    command: sh -c './start.sh'
+    command: sh -c 'sleep 3 && ./start.sh && ./venv/bin/python web/manage.py runserver 0.0.0.0:8000'
+
+apache:
+    image: knotis/web
+    volumes:
+        - data/apache_logs:/srv/knotis/logs
+    volumes_from:
+        - web
+    links:
+        - db
+        - search
+    command: sh -c './start_apache.sh && tail -f /var/log/apache2/access.log'
+
+ambassadorApache:
+    image: svendowideit/ambassador
+    links:
+        - apache
+    ports:
+        - "80:80"
 
 ambassador:
     image: svendowideit/ambassador
@@ -24,4 +42,3 @@ ambassador:
         - web
     ports:
         - "8000:8000"
-        - "80:80"

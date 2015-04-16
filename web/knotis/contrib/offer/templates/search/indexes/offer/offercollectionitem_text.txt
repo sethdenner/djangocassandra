@@ -1,1 +1,0 @@
-{{ object.offer.owner }} {{ object.offer.title }}
