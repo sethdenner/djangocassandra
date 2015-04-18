@@ -114,87 +114,111 @@ class TransactionApi(object):
             force_free=(mode == PurchaseMode.FREE)
         )
 
+        if offer.offer_type == OfferTypes.DIGITAL_OFFER_COLLECTION:
+            offer_collection = OfferCollection.objects.get(
+                pk=offer.description
+            )
+            for page in OfferCollectionItem.objects.filter(
+                offer_collection=offer_collection
+            ):
+
+                TransactionApi.create_purchase(
+                    request=request,
+                    offer=page.offer,
+                    buyer=buyer,
+                    currency=currency,
+                    mode=PurchaseMode.FREE,
+                    send_email=False,
+                )
+
         if send_email:
-            for t in transactions:
-                if offer.owner != t.owner:
-                    try:
-                        user_customer = (
-                            KnotisUser.objects.get_identity_user(
-                                t.owner
-                            )
-                        )
-                        customer_receipt = (
-                            CustomerReceiptBody().generate_email(
-                                'Knotis - Offer Receipt',
-                                settings.EMAIL_HOST_USER,
-                                [user_customer.username], RequestContext(
-                                    request, {
-                                        'transaction_id': t.pk
-                                    }
-                                )
-                            )
-                        )
-                        customer_receipt.send()
-
-                    except Exception, e:
-                        # shouldn't fail if emails fail to send.
-                        logger.exception(e.message)
-
-                else:
-                    try:
-                        manager_email_list = []
-                        if t.owner.identity_type == IdentityTypes.BUSINESS:
-                            manager_rels = Relation.objects.get_managers(
-                                t.owner
-                            )
-                        elif t.owner.identity_type == IdentityTypes.ESTABLISHMENT:
-                            establishment_partent = IdentityBusiness.objects.get_establishment_parent(
-                                t.owner
-                            )
-                            establishment_managers = Relation.objects.get_managers(
-                                t.owner
-                            )
-                            business_managers = Relation.objects.get_managers(
-                                establishment_partent
-                            )
-
-                            manager_rels = [
-                                x for x in establishment_managers
-                            ] + [
-                                x for x in business_managers
-                            ]
-
-                        for rel in manager_rels:
-                            manager_user = (
-                                KnotisUser.objects.get_identity_user(
-                                    rel.subject
-                                )
-                            )
-                            manager_email_list.append(
-                                manager_user.username
-                            )
-
-                        merchant_receipt = (
-                            MerchantReceiptBody().generate_email(
-                                'Knotis - Offer Receipt',
-                                settings.EMAIL_HOST_USER,
-                                manager_email_list, RequestContext(
-                                    request, {
-                                        'transaction_id': t.pk
-                                    }
-                                )
-                            )
-                        )
-                        merchant_receipt.send()
-
-                    except Exception, e:
-                        # shouldn't fail if emails fail to send.
-                        logger.exception(e.message)
-
+            TransactionApi.send_purchase_emails(
+                request,
+                offer,
+                transactions
+            )
         if request is not None:
             Activity.purchase(request)
 
         return transactions
+
+    @staticmethod
+    def send_purchase_emails(
+        request=None,
+        offer=None,
+        transactions=None,
+    ):
+        for t in transactions:
+            try:
+                if offer.owner != t.owner:
+                    user_customer = (
+                        KnotisUser.objects.get_identity_user(
+                            t.owner
+                        )
+                    )
+                    customer_receipt = (
+                        CustomerReceiptBody().generate_email(
+                            'Knotis - Offer Receipt',
+                            settings.EMAIL_HOST_USER,
+                            [user_customer.username], RequestContext(
+                                request, {
+                                    'transaction_id': t.pk
+                                }
+                            )
+                        )
+                    )
+                    customer_receipt.send()
+
+                else:
+                    manager_email_list = []
+                    if t.owner.identity_type == IdentityTypes.BUSINESS:
+                        manager_rels = Relation.objects.get_managers(
+                            t.owner
+                        )
+                    elif t.owner.identity_type == IdentityTypes.ESTABLISHMENT:
+                        establishment_partent = \
+                            IdentityBusiness.objects.get_establishment_parent(
+                                t.owner
+                            )
+                        establishment_managers = Relation.objects.get_managers(
+                            t.owner
+                        )
+                        business_managers = Relation.objects.get_managers(
+                            establishment_partent
+                        )
+
+                        manager_rels = [
+                            x for x in establishment_managers
+                        ] + [
+                            x for x in business_managers
+                        ]
+
+                    for rel in manager_rels:
+                        manager_user = (
+                            KnotisUser.objects.get_identity_user(
+                                rel.subject
+                            )
+                        )
+                        manager_email_list.append(
+                            manager_user.username
+                        )
+
+                    merchant_receipt = (
+                        MerchantReceiptBody().generate_email(
+                            'Knotis - Offer Receipt',
+                            settings.EMAIL_HOST_USER,
+                            manager_email_list, RequestContext(
+                                request, {
+                                    'transaction_id': t.pk
+                                }
+                            )
+                        )
+                    )
+                    merchant_receipt.send()
+
+            except Exception, e:
+                # shouldn't fail if emails fail to send.
+                logger.exception(e.message)
 
     @staticmethod
     def create_redemption(
@@ -571,7 +595,8 @@ class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
                         except Exception, e:
                             # THIS IS BAD NEED TO MANUALLY REFUND USER
                             logger.exception(''.join([
-                                'THIS IS SUPER BAD! NEED TO MANUALLY REFUND USER ',
+                                'THIS IS SUPER BAD! ',
+                                'NEED TO MANUALLY REFUND USER ',
                                 self.current_identity.name,
                                 ' (',
                                 self.current_identity.pk,
