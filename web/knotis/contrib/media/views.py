@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.template import (
     Context,
-    RequestContext
 )
 from django.template.loader import get_template
 from django.utils.log import logging
@@ -26,14 +25,12 @@ from django.http import (
     HttpResponseBadRequest,
     HttpResponseServerError
 )
-from django.core.files.base import ContentFile
 
 from knotis.views import FragmentView
 
-from knotis.contrib.media.models import Image
+from .models import Image
+from .api import ImageApi
 from knotis.contrib.identity.models import Identity
-
-from sorl.thumbnail import get_thumbnail
 
 
 class ImageUploadView(FragmentView):
@@ -130,10 +127,6 @@ class ImageModelForm(ModelForm):
             )
 
 
-def _get(request):
-    return HttpResponse()
-
-
 def _upload(request):
     image_source = request.raw_post_data
     name = request.GET.get('qqfile')
@@ -142,22 +135,17 @@ def _upload(request):
         identity = Identity.objects.get(
             pk=request.session['current_identity']
         )
-        image = Image(
-            owner=identity,
+        image = ImageApi.import_image(
+            image_source,
+            identity,
+            name
         )
-        path = '/'.join(['images', name])
-
-        image.image.save(
-            path,
-            ContentFile(image_source)
-        )
-        image.save()
 
         response['success'] = 'true'
         response['image_id'] = image.id
 
-    except Exception:
-        logger.exception('File upload failed.')
+    except Exception, e:
+        logger.exception('File upload failed. %s' % e.message)
 
         response['success'] = 'false'
         response['message'] = 'File upload failed.'
@@ -172,7 +160,7 @@ def ajax(request):
     if request.method.lower() == 'post':
         return _upload(request)
     else:
-        return _get(request)
+        return HttpResponse()
 
 
 USE_XSENDFILE = getattr(settings, 'USE_XSENDFILE', False)
@@ -180,7 +168,7 @@ USE_XSENDFILE = getattr(settings, 'USE_XSENDFILE', False)
 
 def xsendfileserve(request, path, document_root=None):
     """
-    Serve static files using X-Sendfile below a given point 
+    Serve static files using X-Sendfile below a given point
     in the directory structure.
 
     This is a thin wrapper around Django's built-in django.views.static,
@@ -190,7 +178,7 @@ def xsendfileserve(request, path, document_root=None):
 
     To use, put a URL pattern such as::
 
-        (r'^(?P<path>.*)$', login_required(xsendfileserve), 
+        (r'^(?P<path>.*)$', login_required(xsendfileserve),
                             {'document_root' : '/path/to/my/files/'})
 
     in your URLconf. You must provide the ``document_root`` param. You may

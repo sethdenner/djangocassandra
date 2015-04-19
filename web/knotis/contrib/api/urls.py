@@ -33,7 +33,6 @@ from knotis.contrib.relation.api import (
 )
 
 from knotis.contrib.media.api import (
-    ImageApiView,
     ImageInstanceApiView
 )
 
@@ -82,7 +81,6 @@ urlpatterns += OfferCollectionApiModelViewSet.urls()
 urlpatterns += LocationApiView.urls()
 urlpatterns += RelationApiView.urls()
 urlpatterns += FollowApiView.urls()
-urlpatterns += ImageApiView.urls()
 urlpatterns += ImageInstanceApiView.urls()
 urlpatterns += SearchApiViewSet.urls()
 urlpatterns += EndpointApi.urls()
