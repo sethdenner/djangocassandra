@@ -14,44 +14,7 @@ ENV ADMIN_GROUP knotis
 
 RUN id -g ${ADMIN_GROUP} > /dev/null 2>&1 || groupadd --system ${ADMIN_GROUP}
 RUN id -u ${ADMIN_USER} > /dev/null 2>&1 || useradd --system -N ${ADMIN_USER}
-RUN chown -R ${ADMIN_USER}:${ADMIN_GROUP} ${install_location}
-
-RUN apt-get update && apt-get install -y libboost-dev libboost-test-dev libboost-program-options-dev libevent-dev libtool flex bison pkg-config g++ libssl-dev python python-dev python-setuptools python-software-properties python-support python-twisted make automake autoconf acl gcc git mercurial libmysqlclient-dev python-pip libjpeg8 libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev python-virtualenv
-
-RUN virtualenv venv
-
-RUN . venv/bin/activate && \
-    pip install BeautifulSoup && \
-    pip install httplib2 && \
-    pip install oauth2 && \
-    pip install --upgrade distribute && \
-    pip install MySQL-python
-
-
-RUN . venv/bin/activate && \
-    pip install sorl-thumbnail
-#pip install git+https://github.com/simlay/sorl-thumbnail.git@fix_cropping_django_1.3
-
-RUN . venv/bin/activate && \
-    pip install --no-deps 'django-haystack>=2.0,<2.1' && \
-    apt-get update && apt-get install -y libgeos-c1 libgeos-3.4.2 && \
-    pip install 'geopy'
-
-RUN apt-get update && \
-    apt-get -y install python-lxml libcairo2 libpango1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info libxslt-dev && \
-    . venv/bin/activate && \
-    pip install WeasyPrint && \
-    pip install markdown && \
-    pip install defusedxml && \
-    pip install PyYAML && \
-    pip install nose && \
-    pip install twitter==1.14.3 && \
-    pip install facebook-sdk==0.4.0 && \
-    pip install stripe==1.14.0 && \
-    pip install ipdb && \
-    pip install ipython && \
-    pip install cqlsh
-
+RUN chmod o+rw ${install_location}
 
 COPY setup ${install_location}/setup
 
@@ -60,49 +23,72 @@ ENV CASSANDRA_THRIFT_INTERFACE ${setup_dir}/static/cassandra.thrift
 ENV MODWSGI_SCRIPT ${setup_dir}/config/modwsgi/knotis.wsgi
 ENV APACHE2_CONFIG ${setup_dir}/config/apache2/dev.knotis.com.conf
 
+RUN apt-get update && ${setup_dir}/installers/install_dependencies.sh
+
+RUN virtualenv venv
+
+RUN ${setup_dir}/installers/install_django.sh
+RUN ${setup_dir}/installers/install_beautiful_soup.sh && \
+    ${setup_dir}/installers/install_httplib2.sh && \
+    ${setup_dir}/installers/install_oauth2.sh && \
+    ${setup_dir}/installers/install_mysql_python.sh
+
+
 
 RUN . venv/bin/activate && \
-    pip install hg+https://bitbucket.org/twanschik/django-autoload && \
-    pip install git+https://github.com/maraujop/django-crispy-forms.git@master && \
-    pip install ${setup_dir}/static/django-polymodels-1.3-support.tar.gz && \
-    pip install hg+https://bitbucket.org/jespern/django-piston-oauth2
+    pip install sorl-thumbnail
+#pip install git+https://github.com/simlay/sorl-thumbnail.git@fix_cropping_django_1.3
 
-# Because numpy is huge.
-# This shit ain't used.
-# RUN pip install numpy
+RUN apt-get update && apt-get install -y libgeos-c1 libgeos-3.4.2 && \
+    ${setup_dir}/installers/install_django_haystack.sh
 
-RUN . venv/bin/activate && \
-    apt-get update && ${setup_dir}/installers/install_thrift.sh
 
+RUN apt-get update && \
+    ${setup_dir}/installers/install_weasyprint.sh
+
+
+RUN ${setup_dir}/installers/install_polymodels.sh
+RUN ${setup_dir}/installers/install_piston.sh
+RUN ${setup_dir}/installers/install_django_autoload.sh
+
+RUN ${setup_dir}/installers/install_thrift.sh
 
 RUN ${setup_dir}/installers/install_apache.sh
 
 # Django Stuff.
 #pip install git+https://github.com/django-nonrel/django-permission-backend-nonrel.git@master && \
 
-# This replaces PIL and is much better.
-RUN . venv/bin/activate && pip install pillow
 
 
-RUN ${setup_dir}/installers/install_django.sh && \
-    ${setup_dir}/installers/install_timezones.sh && \
+RUN ${setup_dir}/installers/install_timezones.sh && \
     ${setup_dir}/installers/install_django_extensions.sh && \
     ${setup_dir}/installers/install_crispy_forms.sh && \
-    ${setup_dir}/installers/install_django_dbindexer.sh
+    ${setup_dir}/installers/install_django_dbindexer.sh && \
+    ${setup_dir}/installers/install_pillow.sh
+
+
+RUN ${setup_dir}/installers/install_djangorestframework.sh
+
 
 RUN . venv/bin/activate && \
-    pip install blist && \
-    pip install --no-deps django-cors-headers && \
-    pip install djangorestframework==2.3.13 && \
-    pip install django-filter && \
-    pip install django-oauth-plus && \
-    pip install django-guardian && \
-    pip install -U --no-deps git+https://github.com/Knotis/doac@knotis && \
-    pip install django-test-utils && \
-    pip install --no-deps django_nose && \
-    pip install pyyaml ua-parser user-agents && \
-    pip install django-user-agents && \
-    pip install pyelasticsearch
+    ${setup_dir}/installers/install_django_corsheaders.sh && \
+    ${setup_dir}/installers/install_django_test_utils.sh && \
+    ${setup_dir}/installers/install_django_nose.sh && \
+    ${setup_dir}/installers/install_django_user_agent.sh
+
+
+# For Elasticsearch
+RUN . venv/bin/activate &&  pip install pyelasticsearch
+
+RUN ${setup_dir}/installers/install_debug_tools.sh
+RUN ${setup_dir}/installers/install_facebook.sh
+RUN ${setup_dir}/installers/install_twitter.sh
+RUN ${setup_dir}/installers/install_stripe.sh
+
+RUN . venv/bin/activate && \
+    pip uninstall -y cassandra-driver && \
+    pip install cassandra-driver
+
 
 
 EXPOSE 8000
