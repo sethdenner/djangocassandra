@@ -438,9 +438,9 @@ class Offer(QuickModel):
             return self.unlimited or self.purchased < self.stock
 
     def expired(self):
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now()
         return self.start_time > now or\
-            (self.end_time is not None and self.end_time > now)
+            (self.end_time is not None and self.end_time < now)
 
     def available(self):
         '''
