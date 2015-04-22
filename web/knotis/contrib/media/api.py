@@ -1,4 +1,5 @@
 import os
+import base64
 
 from django.utils import log
 logger = log.getLogger(__name__)
@@ -71,14 +72,10 @@ class ImageInstanceApi(object):
         also be deleted.
         '''
         if not isinstance(instance, ImageInstance):
-            instance = ImageInstanceApi.get(instance)
+            instance = ImageInstance.objects.get(pk=instance)
 
         instance.delete()
         return instance
-
-    @staticmethod
-    def get(pk):
-        return ImageInstance.objects.get(pk=pk)
 
     @staticmethod
     def create_offer_image_instance(image, offer):
@@ -120,9 +117,16 @@ class ImageInstanceApiView(ImageInstanceApi, ApiView, GetCurrentIdentityMixin):
 
         image_upload = request.FILES.get('image', None)
         if image_upload is None:
-            raise self.NoImageIncludedException()
-
-        image_source = image_upload.read()
+            image_upload = request.DATA.get('image', None)
+            try:
+                image_source = base64.standard_b64decode(image_upload)
+            except Exception, e:
+                logger.exception(e.message)
+                raise self.Base64DecodeException()
+            if image_source is None:
+                raise self.NoImageIncludedException()
+        else:
+            image_source = image_upload.read()
 
         name = request.DATA.get('name', None)
         current_identity = self.get_current_identity(request)
@@ -178,6 +182,12 @@ class ImageInstanceApiView(ImageInstanceApi, ApiView, GetCurrentIdentityMixin):
             'Failed to import image.'
         )
 
+    class Base64DecodeException(APIException):
+        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        default_detail = (
+            'Failed to import image.'
+        )
+
     class ImageInstanceCreationFailedException(APIException):
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         default_detail = (
@@ -185,7 +195,7 @@ class ImageInstanceApiView(ImageInstanceApi, ApiView, GetCurrentIdentityMixin):
         )
 
     class PermissionDeniedException(APIException):
-        status_code = 500
+        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         default_detail = (
             'You do not have permission to access or modify this resource.'
         )
@@ -208,7 +218,7 @@ class ImageInstanceApiView(ImageInstanceApi, ApiView, GetCurrentIdentityMixin):
             })
 
         try:
-            instance = ImageInstanceApi.get(pk)
+            instance = ImageInstance.objects.get(pk=pk)
 
         except Exception, e:
             logger.exception(''.join([
