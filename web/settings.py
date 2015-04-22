@@ -184,7 +184,8 @@ AUTHENTICATION_BACKENDS = (
     'knotis.contrib.auth.authentication.backends.CaseInsensitiveUsernameAuthenticationBackend',
     'knotis.contrib.endpoint.authentication.backends.EndpointValidationAuthenticationBackend',
     'knotis.contrib.legacy.authentication.backends.LegacyAuthenticationBackend',
-    'knotis.contrib.legacy.authentication.backends.HamburgertimeAuthenticationBackend'
+    'knotis.contrib.legacy.authentication.backends.HamburgertimeAuthenticationBackend',
+    'permission_backend_nonrel.backends.NonrelPermissionBackend'
 )
 
 REST_FRAMEWORK = {
@@ -206,6 +207,7 @@ INSTALLED_APPS = (
     'autoload',
     'dbindexer',
     'djangotoolbox',
+    'permission_backend_nonrel',
     'django_extensions',
     'timezones',
     'sorl.thumbnail',
@@ -313,7 +315,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
-            'filename': './logs/django.log',
+            'filename': '/srv/knotis/logs/django.log',
             'maxBytes': 1048576,
             'backupCount': 10
         }

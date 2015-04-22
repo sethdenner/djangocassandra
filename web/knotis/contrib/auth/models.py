@@ -110,9 +110,9 @@ class UserInformationManager(QuickManager):
 
 
 class UserInformation(QuickModel):
-    user = QuickForeignKey(KnotisUser)
+    user = QuickForeignKey(DjangoUser)
     username = DenormalizedField(
-        KnotisUser,
+        DjangoUser,
         'username'
     )
     default_identity = QuickForeignKey(Identity)
@@ -122,7 +122,7 @@ class UserInformation(QuickModel):
 
 
 class PasswordReset(QuickModel):
-    user = QuickForeignKey(KnotisUser)
+    user = QuickForeignKey(DjangoUser)
     password_reset_key = QuickCharField(
         max_length=36,
         db_index=True
@@ -131,5 +131,5 @@ class PasswordReset(QuickModel):
 
 
 class UserXapiClientMap(QuickModel):
-    user = QuickForeignKey(KnotisUser)
+    user = QuickForeignKey(DjangoUser)
     client = QuickCharField(max_length=64)

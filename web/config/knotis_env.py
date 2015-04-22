@@ -2,10 +2,6 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 THUMBNAIL_DEBUG = DEBUG
 
-from cassandra.metadata import (
-    SimpleStrategy
-)
-
 DATABASES = {
     'default': {
         'ENGINE': 'djangocassandra.db.backends.cassandra',  # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -13,13 +9,13 @@ DATABASES = {
         'USER': '',  # Not used with sqlite3.
         'PASSWORD': '',  # Not used with sqlite3.
         'HOST': 'db',  # Set to empty string for localhost. Not used with sqlite3.
-        'CONTACT_POINTS': ('vboxhost',),  # Set to empty string for localhost. Not used with sqlite3.
+        'CONTACT_POINTS': ('db',),  # Set to empty string for localhost. Not used with sqlite3.
         'PORT': 9042,  # Set to empty string for default. Not used with sqlite3.
         'DEFAULT_KEYSPACE': 'knotis',
         'KEYSPACES': {
             'knotis':{
                 'durable_writes': True,
-                'strategy_class': SimpleStrategy.name,
+                'strategy_class': 'SimpleStrategy',
                 'replication_factor': 3
             }
         }
@@ -29,7 +25,7 @@ DATABASES = {
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://127.0.0.1:9200/',
+        'URL': 'http://search:9200/',
         'INDEX_NAME': 'haystack',
     },
 }
