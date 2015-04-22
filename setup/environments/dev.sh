@@ -43,4 +43,9 @@ export INSTALLERS=(
     install_django_test_utils.sh
     install_geopy.sh
     install_django_nose.sh
+    install_django_user_agent.sh
+    install_twitter.sh
+    install_facebook.sh
+    install_debug_tools.sh
+    install_stripe.sh
 )
