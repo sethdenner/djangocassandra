@@ -17,6 +17,8 @@ web:
         - db
         - search
     command: sh -c './start.sh'
+    environment:
+        - KNOTIS_ENVIRONMENT_MODULE=knotis_env_test
 
 ambassador:
     image: svendowideit/ambassador
