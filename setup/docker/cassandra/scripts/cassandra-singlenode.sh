@@ -31,6 +31,6 @@ if [ ! -z "$CASSANDRA_DC" ]; then
 fi
 
 #sed -i -e "s/Test Cluster/Local Cluster/" $CASSANDRA_CONFIG/cassandra.yaml
-sed -i -e "s/\#num_tokens: 256/num_tokens: 256/" $CASSANDRA_CONFIG/cassandra.yaml
+#sed -i -e "s/\#num_tokens: 256/num_tokens: 256/" $CASSANDRA_CONFIG/cassandra.yaml
 
 cassandra -f
