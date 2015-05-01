@@ -3,6 +3,7 @@
 venv_bin=/srv/knotis/venv/bin
 
 echo 'installing django-haystack ...'
-$venv_bin/pip install 'django-haystack>=2.0,<2.1'
+apt-get install -y libgeos-c1 libgeos-3.2.2
+$venv_bin/pip install --no-deps 'django-haystack>=2.0,<2.1'
 #$venv_bin/pip install 'pysolr'
 $venv_bin/pip install 'geopy'

@@ -464,19 +464,23 @@ class Identity(QuickModel):
             return None
 
         aspect = 300./180
-        thumb = get_thumbnail(
-            profile_banner.image.image,
-            '300x180',
-            crop=generate_sorl_crop_string(
-                *transform_crop_aspect_ratio(
-                    aspect,
-                    profile_banner.crop_left,
-                    profile_banner.crop_top,
-                    profile_banner.crop_width,
-                    profile_banner.crop_height
+        try:
+            thumb = get_thumbnail(
+                profile_banner.image.image,
+                '300x180',
+                crop=generate_sorl_crop_string(
+                    *transform_crop_aspect_ratio(
+                        aspect,
+                        profile_banner.crop_left,
+                        profile_banner.crop_top,
+                        profile_banner.crop_width,
+                        profile_banner.crop_height
+                    )
                 )
             )
-        )
+        except Exception, e:
+            logger.exception('Failed to get thumbnail: %s' % e.message)
+            return None
 
         return settings.BASE_URL + thumb.url
 
@@ -486,19 +490,23 @@ class Identity(QuickModel):
             return None
 
         aspect = 360./450
-        thumb = get_thumbnail(
-            profile_banner.image.image,
-            '360x450',
-            crop=generate_sorl_crop_string(
-                *transform_crop_aspect_ratio(
-                    aspect,
-                    profile_banner.crop_left,
-                    profile_banner.crop_top,
-                    profile_banner.crop_width,
-                    profile_banner.crop_height
+        try:
+            thumb = get_thumbnail(
+                profile_banner.image.image,
+                '360x450',
+                crop=generate_sorl_crop_string(
+                    *transform_crop_aspect_ratio(
+                        aspect,
+                        profile_banner.crop_left,
+                        profile_banner.crop_top,
+                        profile_banner.crop_width,
+                        profile_banner.crop_height
+                    )
                 )
             )
-        )
+        except Exception, e:
+            logger.exception('Failed to get thumbnail: %s' % e.message)
+            return None
 
         return settings.BASE_URL + thumb.url
 

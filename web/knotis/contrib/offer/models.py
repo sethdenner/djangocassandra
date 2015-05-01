@@ -1,5 +1,4 @@
 import re
-import math
 import datetime
 
 import twitter
@@ -439,9 +438,9 @@ class Offer(QuickModel):
             return self.unlimited or self.purchased < self.stock
 
     def expired(self):
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now()
         return self.start_time > now or\
-            (self.end_time is not None and self.end_time > now)
+            (self.end_time is not None and self.end_time < now)
 
     def available(self):
         '''
@@ -615,21 +614,25 @@ class Offer(QuickModel):
         except:
             logger.exception('failed to get offer banner image')
             return None
-            
+
         aspect = 300./180
-        thumb = get_thumbnail(
-            banner_image.image.image,
-            '300x180',
-            crop=generate_sorl_crop_string(
-                *transform_crop_aspect_ratio(
-                    aspect,
-                    banner_image.crop_left,
-                    banner_image.crop_top,
-                    banner_image.crop_width,
-                    banner_image.crop_height
+        try:
+            thumb = get_thumbnail(
+                banner_image.image.image,
+                '300x180',
+                crop=generate_sorl_crop_string(
+                    *transform_crop_aspect_ratio(
+                        aspect,
+                        banner_image.crop_left,
+                        banner_image.crop_top,
+                        banner_image.crop_width,
+                        banner_image.crop_height
+                    )
                 )
             )
-        )
+        except Exception, e:
+            logger.exception('Failed to get thumbnail: %s' % e.message)
+            return None
 
         return settings.BASE_URL + thumb.url
 
@@ -646,19 +649,23 @@ class Offer(QuickModel):
             return None
 
         aspect = 360./450
-        thumb = get_thumbnail(
-            banner_image.image.image,
-            '360x450',
-            crop=generate_sorl_crop_string(
-                *transform_crop_aspect_ratio(
-                    aspect,
-                    banner_image.crop_left,
-                    banner_image.crop_top,
-                    banner_image.crop_width,
-                    banner_image.crop_height
+        try:
+            thumb = get_thumbnail(
+                banner_image.image.image,
+                '360x450',
+                crop=generate_sorl_crop_string(
+                    *transform_crop_aspect_ratio(
+                        aspect,
+                        banner_image.crop_left,
+                        banner_image.crop_top,
+                        banner_image.crop_width,
+                        banner_image.crop_height
+                    )
                 )
             )
-        )
+        except Exception, e:
+            logger.exception('Failed to get thumbnail: %s' % e.message)
+            return None
 
         return settings.BASE_URL + thumb.url
 
@@ -1088,6 +1095,11 @@ class OfferPublish(Publish):
 class OfferCollection(QuickModel):
     neighborhood = QuickCharField(max_length=255, db_index=True)
     objects = QuickManager()
+
+    def get_offers(self):
+        return [x.offer for x in OfferCollectionItem.objects.filter(
+            offer_collection=self
+        )]
 
 
 class OfferCollectionItem(QuickModel):

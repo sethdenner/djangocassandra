@@ -44,7 +44,10 @@ class MediaTestUtils(object):
 
             kwargs['image'] = response[0]
 
-        image = ImageApi.import_image(kwargs['image'], kwargs['owner'])
+        image = ImageApi.import_image_from_path(
+            kwargs['image'],
+            kwargs['owner'],
+        )
 
         image_instance = ImageInstanceApi.create_image_instance(
             image=image,

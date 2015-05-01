@@ -13,7 +13,8 @@ from knotis.contrib.media.serializers import (
 
 from .models import (
     Offer,
-    OfferAvailability
+    OfferAvailability,
+    OfferCollection,
 )
 
 
@@ -71,6 +72,19 @@ class OfferSerializer(ModelSerializer):
     badge_image = CroppedImageUrlSerializer(
         source='badge_image',
         read_only=True
+    )
+
+
+class OfferCollectionSerializer(ModelSerializer):
+    class Meta:
+        model = OfferCollection
+        fields = (
+            'offers',
+        )
+
+    offers = OfferSerializer(
+        source='get_offers',
+        many=True
     )
 
 

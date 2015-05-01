@@ -11,6 +11,10 @@ RUN mkdir ${install_location}
 WORKDIR ${install_location}
 ENV ADMIN_USER knotis
 ENV ADMIN_GROUP knotis
+ENV CASSANDRA_THRIFT_INTERFACE ${setup_dir}/static/cassandra.thrift
+ENV MODWSGI_SCRIPT ${setup_dir}/config/modwsgi/knotis.wsgi
+ENV APACHE2_CONFIG ${setup_dir}/config/apache2/dev.knotis.com
+
 
 RUN id -g ${ADMIN_GROUP} > /dev/null 2>&1 || groupadd --system ${ADMIN_GROUP}
 RUN id -u ${ADMIN_USER} > /dev/null 2>&1 || useradd --system -N ${ADMIN_USER}
