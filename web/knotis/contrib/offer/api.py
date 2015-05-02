@@ -55,7 +55,8 @@ from .models import (
 from .forms import OfferForm
 from .serializers import (
     OfferSerializer,
-    OfferAvailabilitySerializer
+    OfferAvailabilitySerializer,
+    OfferCollectionSerializer,
 )
 
 
@@ -475,3 +476,21 @@ class OfferApi(object):
         )
 
         return offer, promo_code
+
+
+class OfferCollectionApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
+    api_path = 'offer/collection'
+    resource_name = 'collection'
+
+    model = OfferCollection
+    serializer_class = OfferCollectionSerializer
+    paginate_by = 20
+    paginate_by_param = 'count'
+    max_paginate_by = 200
+    authentication_classes = (
+        SessionAuthentication,
+        DoacAuthentication,
+        ClientOnlyAuthentication
+    )
+
+    http_method_names = ['get', 'options']

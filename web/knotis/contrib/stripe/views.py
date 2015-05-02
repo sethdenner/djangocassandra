@@ -21,11 +21,6 @@ from knotis.contrib.transaction.api import (
     TransactionApi,
     PurchaseMode
 )
-from knotis.contrib.offer.models import (
-    OfferTypes,
-    OfferCollection,
-    OfferCollectionItem,
-)
 
 
 from models import StripeCustomer
@@ -144,40 +139,13 @@ class StripeCharge(AJAXView):
 
             mode = PurchaseMode.STRIPE
             for i in range(int(quantity)):
-                if offer.offer_type == OfferTypes.NORMAL:
-                    TransactionApi.create_purchase(
-                        request=request,
-                        offer=offer,
-                        buyer=current_identity,
-                        currency=buyer_usd,
-                        mode=mode
-                    )
-
-                elif offer.offer_type == OfferTypes.DIGITAL_OFFER_COLLECTION:
-                    TransactionApi.create_purchase(
-                        request=request,
-                        offer=offer,
-                        buyer=current_identity,
-                        currency=buyer_usd,
-                        mode=PurchaseMode.STRIPE,
-                        send_email=True,
-                    )
-
-                    offer_collection = OfferCollection.objects.get(
-                        pk=offer.description
-                    )
-                    for page in OfferCollectionItem.objects.filter(
-                        offer_collection=offer_collection
-                    ):
-
-                        TransactionApi.create_purchase(
-                            request=request,
-                            offer=page.offer,
-                            buyer=current_identity,
-                            currency=buyer_usd,
-                            mode=PurchaseMode.FREE,
-                            send_email=False,
-                        )
+                TransactionApi.create_purchase(
+                    request=request,
+                    offer=offer,
+                    buyer=current_identity,
+                    currency=buyer_usd,
+                    mode=mode
+                )
 
         except Exception, e:
             logger.exception(e.message)

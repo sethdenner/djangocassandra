@@ -1,7 +1,7 @@
 {% load thumbnail %}
 {% load render_template_fragment %}
 <div class="profileIndividual">
-    <div class="container-fluid mainContent">
+    <div class="container mainContent">
         <div class="row">
             {% thumbnail profile_banner.image.image '1920x500' crop=profile_banner.crop as header %}
             <div class="hero" data-id='id-data-profile-cover' style="background-image: url('{{ header.url }}');background-size: 100% 100%;">
@@ -31,31 +31,31 @@
         <div class="row profileContent">
             {% if is_owner %}
             <div class="profileHeading">About Me</div>
-                <section>
-                    <div id="about-me">
-                        <div class="viewUser">
-                            Username: {{ identity.name }}<br />
-                            <button class="edit_about">Edit</button>
-                        </div>
-                        <div class="editUser" style="display: none;">
-                            <form
-                                action="/id/update_individual/"
-                                method="post">
-                                {% csrf_token %}
-                                <label for="individual-name">Username:</label>
-                                <input name="individual_name"
-                                       type="text"
-                                       placeholder="Enter your name here..."
-                                       value="{{ identity.name }}" />
-                                <input type="hidden" name="identity_id" value="{{ identity.id }}"/>
-                                <br />
-                                <input id="about-me-submit" type="submit" value="Save" />
-                            </form>
-                            <button class="close_edit_about">Cancel</button>
-                        </div>
+            <section>
+                <div id="about-me">
+                    <div class="viewUser">
+                        Username: {{ identity.name }}<br />
+                        <button class="edit_about">Edit</button>
                     </div>
-                </section>
-            </div>
+                    <div class="editUser" style="display: none;">
+                        <form
+                            action="/id/update_individual/"
+                            method="post">
+                            {% csrf_token %}
+                            <label for="individual-name">Username:</label>
+                            <input name="individual_name"
+                                   type="text"
+                                   placeholder="Enter your name here..."
+                                   value="{{ identity.name }}" />
+                            <input type="hidden" name="identity_id" value="{{ identity.id }}"/>
+                            <br />
+                            <input id="about-me-submit" type="submit" value="Save" />
+                        </form>
+                        <button class="close_edit_about">Cancel</button>
+                    </div>
+                </div>
+            </section>
+
             {% endif %}
 
             {% if tiles %}
