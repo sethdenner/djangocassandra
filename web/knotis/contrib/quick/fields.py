@@ -142,9 +142,6 @@ class QuickForeignKey(QuickField, QuickFieldDefaultMixin, models.ForeignKey):
             **kwargs
         )
 
-    def db_type(self, connection):
-        return 'ForeignKeyNonRel'
-
     def get_internal_type(self):
         return 'ForeignKey'
 

@@ -16,6 +16,7 @@ from django.db.models import (
     IntegerField,
     DateTimeField
 )
+from django.db.models.signals import post_save
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib.contenttypes.models import ContentType
 
@@ -237,12 +238,12 @@ class Endpoint(QuickModel):
     value = CharField(
         max_length=256,
         db_index=True,
-        blank=False
+        blank=True
     )
     context = CharField(
         max_length=256,
         db_index=True,
-        blank=False
+        blank=True
     )
 
     primary = BooleanField(
@@ -264,25 +265,6 @@ class Endpoint(QuickModel):
     disabled = BooleanField(default=False)
 
     objects = EndpointManager()
-
-    def save(
-        self,
-        *args,
-        **kwargs
-    ):
-        super(Endpoint, self).save(*args, **kwargs)
-
-        endpoints = Endpoint.objects.filter(
-            identity=self.identity,
-            endpoint_type=self.endpoint_type,
-            primary=True
-        )
-
-        if self.primary:
-            for endpoint in endpoints:
-                if endpoint.id != self.id:
-                    endpoint.primary = False
-                    endpoint.save()
 
     def validate(
         self,
@@ -308,6 +290,31 @@ class Endpoint(QuickModel):
             return string
         else:
             return 'http://' + self.value.strip()
+
+    @staticmethod
+    def ensure_one_primary(
+        sender,
+        instance,
+        **kwargs
+    ):
+        if not instance.primary:
+            return
+
+        endpoints = Endpoint.objects.filter(
+            identity=instance.identity,
+            endpoint_type=instance.endpoint_type,
+            primary=True
+        )
+        for endpoint in endpoints:
+            if endpoint.id != instance.id:
+                endpoint.primary = False
+                endpoint.save()
+
+post_save.connect(
+    Endpoint.ensure_one_primary,
+    sender=Endpoint,
+    dispatch_uid='ensure_one_primary'
+)
 
 
 class EndpointPhone(Endpoint):

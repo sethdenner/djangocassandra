@@ -140,14 +140,24 @@ class GenerateHtmlResponseMixin(object):
 
 
 class GenerateAjaxResponseMixin(object):
+    def clean(
+        self,
+        data
+    ):
+        return {
+            key: str(value)
+            for (key, value) in data.iteritems()
+        }
+
     def generate_ajax_response(
         self,
         data,
         format='json'
     ):
         if format == 'json':
+            cleaned_data = self.clean(data)
             return HttpResponse(
-                json.dumps(data),
+                json.dumps(cleaned_data),
                 content_type='application/json'
             )
 

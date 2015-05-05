@@ -327,7 +327,7 @@ class Identity(QuickModel):
     name = QuickCharField(
         max_length=80,
         verbose_name=_('Identity Name'),
-        blank=False
+        blank=True
     )
     backend_name = QuickCharField(
         max_length=80,
