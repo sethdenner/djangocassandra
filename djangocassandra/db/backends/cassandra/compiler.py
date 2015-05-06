@@ -91,12 +91,12 @@ class CassandraQuery(NonrelQuery):
         ]
 
         if hasattr(self.cassandra_meta, 'clustering_keys'):
-            self.clustering_keys = (
+            self.clustering_columns = (
                 self.query.model.CassandraMeta.clustering_keys
             )
 
         else:
-            self.clustering_keys = []
+            self.clustering_columns = []
 
         self.cql_query = self.column_family_class.objects.values_list(
             *self.column_names
@@ -106,7 +106,7 @@ class CassandraQuery(NonrelQuery):
     def filterable_columns(self):
         return itertools.chain(
             [self.pk_column],
-            self.clustering_keys,
+            self.clustering_columns,
             self.indexed_columns
         )
 
@@ -122,7 +122,7 @@ class CassandraQuery(NonrelQuery):
                 predicates_by_column[self.pk_column]
             )
 
-        for column in self.clustering_keys:
+        for column in self.clustering_columns:
             if column in predicates_by_column:
                 sorted_predicates.append(
                     predicates_by_column[column]
@@ -291,14 +291,14 @@ class CassandraQuery(NonrelQuery):
             )
 
             if (
-                not partition_key_filtered or
-                field_name not in self.clustering_keys or
-                self.inefficient_ordering
+                partition_key_filtered
+                and field_name in self.clustering_columns 
+                and not self.inefficient_ordering
             ):
-                self.add_inefficient_order_by(order_string)
+                self.ordering.append(order_string)
 
             else:
-                self.ordering.append(order_string)
+                self.add_inefficient_order_by(order_string)
 
     @safe_call
     def add_inefficient_order_by(self, ordering):
