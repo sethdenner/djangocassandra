@@ -315,7 +315,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
-            'filename': '/srv/knotis/logs/django.log',
+            'filename': './logs/django.log',
             'maxBytes': 1048576,
             'backupCount': 10
         }
@@ -326,23 +326,23 @@ LOGGING = {
 
 
 # Import additional settings.
-ENVIRONMENT_NAME = 'prod'
 
-
-# You can key the configurations off of anything - I use project path.
-configs = {
-    'dev': 'dev',
-    'int': 'int',
-    'prod': 'prod',
-    'stage': 'stage',
-}
+"""
+If you are using a non-standard environment module
+make sure you have it in knotis/web/config and modify
+this variable to match the name of your module.
+"""
+ENVIRONMENT_NAME = os.environ.get(
+    'KNOTIS_ENVIRONMENT_MODULE',
+    'knotis_env'
+)
 
 """
 Import the configuration settings file
 REPLACE projectname with your project
 """
 config_module = __import__(
-    'config.%s' % configs[ENVIRONMENT_NAME],
+    'config.%s' % ENVIRONMENT_NAME,
     globals(),
     locals(),
     'web'
