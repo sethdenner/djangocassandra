@@ -30,7 +30,7 @@ class PromoCodeManager(QuickManager):
             **kwargs
         )
         if kwargs.get('value', None) is None:
-            promo_code.value = promo_code.id[:8]
+            promo_code.value = str(promo_code.id)[:8]
             promo_code.save()
 
         return promo_code

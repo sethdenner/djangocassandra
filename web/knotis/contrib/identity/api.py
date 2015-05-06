@@ -14,8 +14,7 @@ from rest_framework.exceptions import (
 )
 
 from rest_framework.authentication import SessionAuthentication
-
-from doac.contrib.rest_framework.authentication import DoacAuthentication
+from oauth2_provider.ext.rest_framework import OAuth2Authentication
 
 
 from knotis.contrib.rest_framework.authentication import (
@@ -204,10 +203,11 @@ class IdentityApi(object):
                 **kwargs
             )
 
-        except:
+        except Exception, e:
+            logger.exception(e)
             business.delete(hard=True)
             relation_manager.delete(hard=True)
-            raise
+            raise e
 
         try:
             Qrcode.objects.create(
@@ -215,17 +215,18 @@ class IdentityApi(object):
                 uri='/'.join([
                     settings.BASE_URL,
                     'id',
-                    business.id,
+                    str(business.pk),
                     ''
                 ]),
                 qrcode_type=QrcodeTypes.PROFILE
             )
 
-        except:
+        except Exception, e:
+            logger.exception(e)
             establishment.delete(hard=True)
             business.delete(hard=True)
             relation_manager.delete(hard=True)
-            raise
+            raise e
 
         try:
             user_information = UserInformation.objects.get(
@@ -333,7 +334,7 @@ class IdentityApiView(ApiView):
                 '.'
             ])
             logger.exception(message)
-            errors['no-field']  = e.message
+            errors['no-field'] = e.message
 
             return self.generate_ajax_response({
                 'message': message,
@@ -350,7 +351,7 @@ class IdentityApiView(ApiView):
                 '.'
             ])
             logger.exception(message)
-            errors['no-field']  = e.message
+            errors['no-field'] = e.message
 
             return self.generate_ajax_response({
                 'message': message,
@@ -651,7 +652,7 @@ class IdentityApiModelViewSet(ApiModelViewSet):
                 '.'
             ])
             logger.exception(message)
-            errors['no-field']  = e.message
+            errors['no-field'] = e.message
             raise self.IdentityUpdatingException(message)
 
         try:
@@ -664,7 +665,7 @@ class IdentityApiModelViewSet(ApiModelViewSet):
                 '.'
             ])
             logger.exception(message)
-            errors['no-field']  = e.message
+            errors['no-field'] = e.message
             raise self.EndpointUpdateException(message)
 
         data['data'] = {
@@ -783,7 +784,7 @@ class EstablishmentApiModelViewSet(IdentityApiModelViewSet):
     serializer_class = EstablishmentSerializer
     authentication_classes = (
         SessionAuthentication,
-        DoacAuthentication,
+        OAuth2Authentication,
         ClientOnlyAuthentication
     )
     paginate_by = 20
@@ -798,6 +799,7 @@ class EstablishmentApiModelViewSet(IdentityApiModelViewSet):
 class IdentitySwitcherApiViewSet(ApiViewSet):
     api_path = 'identity/switcher'
     resource_name = 'switcher'
+    serializer_class = IdentitySwitcherSerializer
 
     def retrieve(
         self,
@@ -833,7 +835,7 @@ class IdentitySwitcherApiViewSet(ApiViewSet):
             )
             identity = None
             for i in available_identities:
-                if i.id == pk:
+                if str(i.id) == pk:
                     identity = i
                     break
 
@@ -842,7 +844,7 @@ class IdentitySwitcherApiViewSet(ApiViewSet):
                     'identity {',
                     pk,
                     '} is not available to user {',
-                    request.user.id,
+                    str(request.user.id),
                     '}'
                 ])
                 logger.warning(msg)

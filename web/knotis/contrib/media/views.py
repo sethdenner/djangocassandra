@@ -128,10 +128,11 @@ class ImageModelForm(ModelForm):
 
 
 def _upload(request):
-    image_source = request.raw_post_data
+    image_source = request.body
     name = request.GET.get('qqfile')
     response = {}
     try:
+
         identity = Identity.objects.get(
             pk=request.session['current_identity']
         )
@@ -142,7 +143,7 @@ def _upload(request):
         )
 
         response['success'] = 'true'
-        response['image_id'] = image.id
+        response['image_id'] = str(image.id)
 
     except Exception, e:
         logger.exception('File upload failed. %s' % e.message)

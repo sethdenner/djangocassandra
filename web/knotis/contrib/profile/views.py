@@ -271,7 +271,7 @@ class IndividualProfileView(ProfileView):
         )
 
 
-class EstablishmentProfileView(ProfileView):
+class EstablishmentProfileView(ProfileView, GetCurrentIdentityMixin):
     view_name = 'establishment_profile'
     template_name = 'knotis/profile/establishment.html'
     default_parent_view_class = DefaultBaseView
@@ -327,10 +327,7 @@ class EstablishmentProfileView(ProfileView):
         request = self.request
         self.is_manager = False
         if request.user.is_authenticated():
-            current_identity_id = request.session.get('current_identity')
-            current_identity = Identity.objects.get(
-                pk=current_identity_id
-            )
+            current_identity = self.get_current_identity(request)
 
             self.is_manager = (
                 current_identity.is_manager(self.profile_identity) or
@@ -360,8 +357,7 @@ class EstablishmentProfileView(ProfileView):
         is_superuser = False
         request = self.request
         if request.user.is_authenticated():
-            current_identity_id = request.session.get('current_identity')
-            current_identity = Identity.objects.get(pk=current_identity_id)
+            current_identity = self.get_current_identity(request)
 
             if (
                 current_identity and
@@ -794,7 +790,10 @@ class EstablishmentAboutFeeds(FragmentView):
             'twitter_has_feed': twitter.has_feed,
             'twitter': twitter.endpoint,
 
-            'facebook': filter(lambda x: x['endpoint_type_name'] == 'facebook',self.context.get("endpoints"))[0],
+            'facebook': filter(
+                lambda x: x[
+                    'endpoint_type_name'
+                ] == 'facebook', self.context.get("endpoints"))[0],
         })
 
         return local_context

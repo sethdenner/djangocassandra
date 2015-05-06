@@ -6,7 +6,7 @@ from rest_framework.exceptions import (
     MethodNotAllowed
 )
 
-from doac.contrib.rest_framework.authentication import DoacAuthentication
+from oauth2_provider.ext.rest_framework import OAuth2Authentication
 
 from knotis.views import (
     ApiViewSet,
@@ -40,7 +40,7 @@ class ResetPasswordApiViewSet(ApiViewSet):
     serializer_class = ResetPasswordSerializer
     authentication_classes = (
         SessionAuthentication,
-        DoacAuthentication,
+        OAuth2Authentication,
         ClientOnlyAuthentication,
     )
     permission_classes = (AllowAny,)
@@ -76,7 +76,7 @@ class NewUserApiViewSet(ApiViewSet):
     serializer_class = UserSerializer
     authentication_classes = (
         SessionAuthentication,
-        DoacAuthentication,
+        OAuth2Authentication,
         ClientOnlyAuthentication,
     )
     permission_classes = (AllowAny,)
@@ -99,11 +99,14 @@ class NewUserApiViewSet(ApiViewSet):
         )
 
         if errors:
-            raise APIException(detail=errors)
+            raise self.UserCreationError(detail=errors)
 
         user_info = UserInformation.objects.get(user=user)
         info_serializer = UserInformationSerializer(user_info)
         return Response(info_serializer.data)
+
+    class UserCreationError(APIException):
+        status_code = 400
 
 
 class UserApiModelViewSet(ApiModelViewSet):

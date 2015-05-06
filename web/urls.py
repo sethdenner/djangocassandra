@@ -4,7 +4,7 @@ from django.contrib import admin
 
 # This code is required for template fragments
 # to find the corresponding views
-from knotis.views import (
+from knotis.views.mixins import (
     RenderTemplateFragmentMixin
 )
 RenderTemplateFragmentMixin.register_template_fragment_views()
@@ -107,7 +107,7 @@ urlpatterns = patterns(
     ),
     url(
         r'^oauth2/',
-        include('doac.urls')
+        include('oauth2_provider.urls', namespace='oauth2_provider')
     ),
     url(
         r'',

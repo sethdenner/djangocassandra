@@ -13,8 +13,8 @@ class CaseInsensitiveUsernameAuthenticationBackend(object):
         try:
             user = KnotisUser.objects.get(username=username.lower())
 
-        except:
-            logger.exception('failed to retrive user')
+        except Exception, e:
+            logger.exception('failed to retrieve user: %s' % e.message)
             return None
 
         if not user.check_password(password):
@@ -29,6 +29,6 @@ class CaseInsensitiveUsernameAuthenticationBackend(object):
         try:
             return KnotisUser.objects.get(pk=user_id)
 
-        except:
-            logger.exception('failed to retrieve user')
+        except Exception, e:
+            logger.exception('failed to retrieve user: %s' % e.message)
             return None

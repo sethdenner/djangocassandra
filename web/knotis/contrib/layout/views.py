@@ -7,6 +7,7 @@ from knotis.views import (
 )
 from django.conf import settings
 from knotis.contrib.maps.views import GoogleMap
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 
 
 class HeaderView(FragmentView):
@@ -66,15 +67,19 @@ class ActionButton(FragmentView):
         return []
 
 
-class DefaultBaseView(EmbeddedView):
+class DefaultBaseView(EmbeddedView, GetCurrentIdentityMixin):
     template_name = 'knotis/layout/default_base.html'
     template_placeholders = ['content', 'modal_content']
 
     def process_context(self):
         current_identity_pk = self.context.get('current_identity_pk')
         if not current_identity_pk:
-            current_identity_pk = self.request.session.get('current_identity')
+            current_identity = self.get_current_identity(self.request)
+            current_identity_pk = current_identity.pk\
+                if current_identity is not None else None
+
             self.context['current_identity_pk'] = current_identity_pk
+
         maps = GoogleMap(settings.GOOGLE_MAPS_API_KEY)
         maps_scripts = maps.render_api_js()
 

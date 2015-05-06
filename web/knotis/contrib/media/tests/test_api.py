@@ -15,7 +15,12 @@ class MediaTests(TestCase):
             password='aoeu'
         )
         self.client = APIClient()
-        self.client.login(username=self.user.username, password='aoeu')
+        login_args = {
+            'username': self.user.username,
+            'password': 'aoeu'
+        }
+        self.client.post('/login/', login_args)
+
         self.image_name = 'test_image.png'
         image_path = os.path.join(
             os.getenv('install_location'),

@@ -4,6 +4,7 @@ from knotis.contrib.activity.models import (
     Activity,
     ActivityTypes,
 )
+import settings
 
 
 class ActivityMiddleware(object):
@@ -20,9 +21,13 @@ class ActivityMiddleware(object):
         self,
         request
     ):
-        Activity.create_activity(
-            request,
-            ActivityTypes.REQUEST,
-        )
+        if not (
+            request.path.startswith(settings.MEDIA_URL) or
+            request.path.startswith(settings.STATIC_URL)
+        ):
+            Activity.create_activity(
+                request,
+                ActivityTypes.REQUEST,
+            )
 
         return None

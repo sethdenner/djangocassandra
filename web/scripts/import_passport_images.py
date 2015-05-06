@@ -30,7 +30,7 @@ def import_images(directory, output_directory, neighborhood):
         sorted_files.values()
     ):
         src = os.path.join(directory, image)
-        image = ImageApi.import_offer_image(src, offer_collection_item.offer)
+        image = ImageApi.import_offer_image_from_path(src, offer_collection_item.offer)
         ImageInstanceApi.create_offer_image_instance(
             image,
             offer_collection_item.offer

@@ -82,3 +82,9 @@ class IdentityModelTests(TestCase):
             len(establishments_by_manager),
             1
         )
+
+    def test_no_manager_status(self):
+        self.assertFalse(self.identity_consumer.is_manager(self.establishment))
+
+    def test_is_manager_status(self):
+        self.assertFalse(self.identity_merchant.is_manager(self.establishment))

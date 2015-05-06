@@ -1,8 +1,13 @@
 from django.utils.unittest import TestCase
 
 from django.conf import settings
+from django.test import Client
 
 from .api import StripeApi
+
+from knotis.contrib.auth.tests.utils import UserCreationTestUtils
+from knotis.contrib.offer.tests.utils import OfferTestUtils
+from knotis.contrib.offer.models import Offer
 
 
 class StripeApiTestCase(TestCase):
@@ -43,3 +48,30 @@ class StripeApiTestCase(TestCase):
             purchase_parameters['quantity']
         )
         self.assertEqual(len(purchase_parameters), 4)
+
+
+class StripeViewTestCase(TestCase):
+    def setUp(self):
+        self.user_password = 'test_password'
+        self.user, self.user_identity = UserCreationTestUtils.create_test_user(
+            password=self.user_password
+        )
+        offer_collection = OfferTestUtils.create_test_offer_collection()
+        self.offer = Offer.objects.get(description=offer_collection.pk)
+        self.client = Client()
+        login_args = {
+            'username': self.user.username,
+            'password': self.user_password
+        }
+
+        self.client.login(**login_args)
+
+    def test_purchase(self):
+        data = {
+            'stripeToken': 'faketoken',
+            'chargeAmount': '20.0',
+            'offerId': str(self.offer.pk),
+            'quantity': '1',
+        }
+        response = self.client.post('/stripe/charge/', data)
+        self.assertEqual(response.status_code, 200)

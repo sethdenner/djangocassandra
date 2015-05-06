@@ -1,11 +1,6 @@
 from django.forms import ModelForm
 
 from crispy_forms.helper import FormHelper
-from crispy_froms.layout import (
-    Layout,
-    Div,
-    Field
-)
 
 from models import Product
 
@@ -44,15 +39,3 @@ class ProductSimpleForm(ProductForm):
         self.helper.form_action = '/api/v1/product/'
         self.helper.form_method = 'post'
         self.helper.form_tag = form_tag
-        self.helper.layout = Layout(
-            Div(
-                Field(
-                    'product_type',
-                    id='product-type-input'
-                ),
-                Field(
-                    'title',
-                    id='title-input'
-                )
-            )
-        )

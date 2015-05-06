@@ -4,8 +4,7 @@ logger = logging.getLogger(__name__)
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
-from doac.models import Client
-from knotis.contrib.auth.models import UserXapiClientMap
+from oauth2_provider.models import Application
 
 
 class ClientOnlyAuthentication(BaseAuthentication):
@@ -24,7 +23,7 @@ class ClientOnlyAuthentication(BaseAuthentication):
             )
 
         try:
-            client = Client.objects.get(pk=client_id)
+            client = Application.objects.get(client_id=client_id)
 
         except Exception, e:
             logger.exception(e.message)
@@ -33,7 +32,7 @@ class ClientOnlyAuthentication(BaseAuthentication):
             )
 
         try:
-            user = UserXapiClientMap.objects.get(client=client).user
+            user = client.user
 
         except Exception, e:
             logger.exception(e.message)

@@ -1,0 +1,18 @@
+[{
+    "fields": {
+        "sku": "usd",
+        "product_type": "currency",
+        "description": null,
+        "title": null,
+        "deleted": false,
+        "content_type": [
+            "product",
+            "product"
+        ],
+        "pub_date": "2015-05-09T20:11:38.057",
+        "public": true,
+        "primary_image": null
+    },
+    "model": "product.product",
+    "pk": "1b458242-4fd8-4669-adac-9dcd5a8f6093"
+}]

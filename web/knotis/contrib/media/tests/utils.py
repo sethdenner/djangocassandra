@@ -6,6 +6,9 @@ from knotis.contrib.media.api import (
     ImageApi,
     ImageInstanceApi
 )
+import logging
+logger = logging.getLogger(__name__)
+logging.getLogger('urllib3').setLevel(logging.ERROR)
 
 
 class MediaTestUtils(object):

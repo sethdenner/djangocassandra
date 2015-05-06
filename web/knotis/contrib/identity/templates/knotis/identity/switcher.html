@@ -3,34 +3,34 @@
     <div class="dropdown">
         <a class="no-deep currentId" data-toggle="dropdown" href="#">
             {% for identity in available_identities %}
-            {% if identity.id == request.session.current_identity %}
-            <span id="id-current-identity-name">{{ identity.name }}{% if identity.identity_type == IdentityTypes.SUPERUSER %} (su){% endif %}</span>
-            {% thumbnail identity.badge_image.image.image '28x28' crop=identity.badge_image.crop as img %}
-            <img class="userImg" src="{{ img.url }}"/>
-            {% empty %}
-            <img class="userImg" src="{{ STATIC_URL }}/knotis/img/default_profile_badge.png"/>
-            {% endthumbnail %}
-            {% endif %}
+                {% if identity.id == current_identity.id %}
+                    <span id="id-current-identity-name">{{ identity.name }}{% if identity.identity_type == IdentityTypes.SUPERUSER %} (su){% endif %}</span>
+                    {% thumbnail identity.badge_image.image.image '28x28' crop=identity.badge_image.crop as img %}
+                        <img class="userImg" src="{{ img.url }}"/>
+                    {% empty %}
+                        <img class="userImg" src="{{ STATIC_URL }}/knotis/img/default_profile_badge.png"/>
+                    {% endthumbnail %}
+                {% endif %}
             {% endfor %}
         </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
             {% for identity in available_identities %}
-            {% if identity.id != request.session.current_identity %}
-            <li><a class="no-deep" href="/identity/switcher/{{ identity.id }}/">
-                    {{ identity.name }}{% if identity.identity_type == IdentityTypes.SUPERUSER %} (su){% endif %}
-                    {% thumbnail identity.badge_image.image.image '28x28' crop=identity.badge_image.crop as img %}
-                    <img class="img-circle" src="{{ img.url }}" />
-                    {% empty %}
-                    <img class="img-circle" src="{{ STATIC_URL }}/knotis/img/default_profile_badge.png" />
-                    {% endthumbnail %}
-                </a>
-            </li>
-            {% endif%}
+                {% if identity != current_identity %}
+                    <li><a class="no-deep" href="/identity/switcher/{{ identity.id }}/">
+                            {{ identity.name }}{% if identity.identity_type == IdentityTypes.SUPERUSER %} (su){% endif %}
+                            {% thumbnail identity.badge_image.image.image '28x28' crop=identity.badge_image.crop as img %}
+                                <img class="img-circle" src="{{ img.url }}" />
+                            {% empty %}
+                                <img class="img-circle" src="{{ STATIC_URL }}/knotis/img/default_profile_badge.png" />
+                            {% endthumbnail %}
+                        </a>
+                    </li>
+                {% endif%}
             {% endfor %}
             {% if not has_business %}
-            <li>
-                <a class="addLink" href="/identity/business/create/">&plus; Add A Business</a>
-            </li>            
+                <li>
+                    <a class="addLink" href="/identity/business/create/">&plus; Add A Business</a>
+                </li>
             {% endif %}
             <li>
                 <a class="no-deep addLink" href="/auth/logout/">Logout</a>

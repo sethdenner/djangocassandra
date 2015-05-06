@@ -7,8 +7,7 @@ from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
 
-from doac.contrib.rest_framework.authentication import DoacAuthentication
-
+from oauth2_provider.ext.rest_framework import OAuth2Authentication
 
 from knotis.contrib.rest_framework.authentication import (
     ClientOnlyAuthentication
@@ -231,7 +230,7 @@ class OfferApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
     max_paginate_by = 200
     authentication_classes = (
         SessionAuthentication,
-        DoacAuthentication,
+        OAuth2Authentication,
         ClientOnlyAuthentication
     )
 
@@ -320,7 +319,7 @@ class OfferAvailabilityModelViewSet(ApiModelViewSet):
     serializer_class = OfferAvailabilitySerializer
     authentication_classes = (
         SessionAuthentication,
-        DoacAuthentication,
+        OAuth2Authentication,
         ClientOnlyAuthentication
     )
 
@@ -402,7 +401,7 @@ class OfferApi(object):
             restrictions=restrictions,
             description=description,
             discount_factor=discount_factor,
-            start_time=kwargs.get('start_time', datetime.datetime.utcnow()),
+            start_time=kwargs.get('start_time', datetime.datetime.now()),
             end_time=kwargs.get('end_time', None),
             unlimited=unlimited,
             stock=stock,
@@ -489,8 +488,9 @@ class OfferCollectionApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
     max_paginate_by = 200
     authentication_classes = (
         SessionAuthentication,
-        DoacAuthentication,
+        OAuth2Authentication,
         ClientOnlyAuthentication
     )
+    queryset = OfferCollection.objects
 
     http_method_names = ['get', 'options']

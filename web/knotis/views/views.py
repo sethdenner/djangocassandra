@@ -574,8 +574,8 @@ class AJAXView(
             query_dict = QueryDict(query_string)
             request.DATA.update(query_dict)
 
-        if request._raw_post_data:
-            post_dict = QueryDict(request._raw_post_data)
+        if request.body:
+            post_dict = QueryDict(request.body)
             request.DATA.update(post_dict)
 
         method = request.DATA.get('method')

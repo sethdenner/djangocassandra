@@ -526,7 +526,7 @@ class IdentityIndividual(Identity):
     objects = IdentityIndividualManager()
 
     def clean(self):
-        print ("Cleaning IdentityIndividual")
+        logger.info("Cleaning IdentityIndividual")
         self.identity_type = IdentityTypes.INDIVIDUAL
 
         return super(IdentityIndividual, self).clean()
@@ -550,7 +550,7 @@ class IdentityBusiness(Identity):
     objects = IdentityBusinessManager()
 
     def clean(self):
-        print ("Cleaning IdentityBusiness")
+        logger.info("Cleaning IdentityBusiness")
         self.identity_type = IdentityTypes.BUSINESS
 
         return super(IdentityBusiness, self).clean()
@@ -568,7 +568,7 @@ class IdentityEstablishment(Identity):
     objects = IdentityEstablishmentManager()
 
     def clean(self):
-        print ("Cleaning IdentityEstablishment")
+        logger.info("Cleaning IdentityEstablishment")
         self.identity_type = IdentityTypes.ESTABLISHMENT
 
         return super(IdentityEstablishment, self).clean()
@@ -586,7 +586,7 @@ class IdentitySuperUser(Identity):
     objects = IdentitySuperUserManager()
 
     def clean(self):
-        print ("Cleaning IdentitySuperUser")
+        logger.info("Cleaning IdentitySuperUser")
         self.identity_type = IdentityTypes.SUPERUSER
 
         return super(IdentityEstablishment, self).clean()

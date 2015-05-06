@@ -1,8 +1,11 @@
 
 from unittest import TestCase
+from django.test import Client
 
 
 from knotis.contrib.auth.tests.utils import UserCreationTestUtils
+from knotis.contrib.identity.models import Identity
+from knotis.contrib.auth.emails import get_validation_url
 
 
 class IdentityViewTests(TestCase):
@@ -11,15 +14,17 @@ class IdentityViewTests(TestCase):
         self.user, self.user_identity = UserCreationTestUtils.create_test_user(
             password=self.user_password
         )
+        self.client = Client()
+        login_args = {
+            'username': self.user.username,
+            'password': self.user_password
+        }
+        self.client.post('/login/', login_args)
 
     def test_identity_switcher_view(self):
-        self.client.login(
-            username=self.user.username,
-            password=self.user_password
+        available_identities = Identity.objects.get_available(
+            user=self.user
         )
-        response = self.client.get('/identity/switcher/')
-        self.assertEqual(response.status_code, 200)
-
-    # Commenting this because I want to get it working but not now.
-    def test_primary_image(self):
-        pass
+        for x in available_identities:
+            response = self.client.get('/identity/switcher/%s/' % x.id)
+            self.assertEqual(response.status_code, 302)

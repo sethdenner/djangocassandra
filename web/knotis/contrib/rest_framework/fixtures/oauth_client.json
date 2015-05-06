@@ -1,0 +1,16 @@
+[{
+    "fields": {
+        "redirect_uris": "",
+        "name": "",
+        "client_type": "public",
+        "user": [
+            "sebastian@knotis.com"
+        ],
+        "client_id": "c93a7e38-4e8f-481d-8bc6-e231c03169d3",
+        "skip_authorization": false,
+        "client_secret": "MvhnWiHTAtpjoP2gW8GmkyXESjcLFDYwZkBME2JIAVr6iZH0rDpohivrDUKn1ji4vI4I7s65pL7Sn3oVYpLWePQEhTI2LstgNEAUFz4i4GWdHdwuMO3sQG8l81NJP8Bu",
+        "authorization_grant_type": "password"
+    },
+    "model": "oauth2_provider.application",
+    "pk": "ebe0a050-b0f9-4f15-903a-daa2ec81c291"
+}]

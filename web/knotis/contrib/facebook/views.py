@@ -1,6 +1,5 @@
 from django.shortcuts import (
     render,
-    get_object_or_404
 )
 
 from django.conf import settings
@@ -11,7 +10,6 @@ from knotis.views import (
     AJAXFragmentView
 )
 
-from knotis.contrib.identity.models import Identity
 from knotis.contrib.endpoint.forms import (
     EndpointForm,
     CredentialsForm
@@ -47,10 +45,7 @@ class FacebookAccountChoiceFragment(AJAXFragmentView):
         ).process_context()
 
     def post(self, request):
-        current_identity = get_object_or_404(
-            Identity,
-            pk=request.session['current_identity']
-        )
+        current_identity = self.get_current_identity(request)
         endpoint_form = EndpointForm(
             data={
                 'endpoint_type': EndpointTypes.FACEBOOK,

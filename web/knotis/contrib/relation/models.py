@@ -151,6 +151,9 @@ class RelationManager(QuickManager):
             establishment_relations = self.get_establishments(manager)
             managed_pks = [rel.pk for rel in establishment_relations]
 
+        if len(managed_pks) == 0:
+            return []
+
         return self.filter(pk__in=managed_pks)
 
     def create_establishment(

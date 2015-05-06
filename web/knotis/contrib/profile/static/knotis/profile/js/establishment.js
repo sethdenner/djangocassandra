@@ -13,7 +13,7 @@
             var establishment_id = $('#establishment-id').val();
 
             $.ajaxmodal({
-                href: '/image/upload',
+                href: '/image/upload/',
                 modal_settings: {
                     backdrop: 'static'
                 },

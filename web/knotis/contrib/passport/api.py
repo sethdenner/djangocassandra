@@ -1,7 +1,6 @@
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-from rest_framework.decorators import action
 from rest_framework.routers import DefaultRouter
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
@@ -89,7 +88,6 @@ class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
 
         self.get_current_identity(request)
 
-    @action(methods=['put'])
     def connect(
         self,
         request,
@@ -178,7 +176,6 @@ class PassportCouponApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
 
         self.get_current_identity(request)
 
-    @action(methods=['put'])
     def redeem(
         self,
         request,

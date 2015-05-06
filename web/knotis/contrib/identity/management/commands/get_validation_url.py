@@ -1,9 +1,10 @@
 from django.core.management.base import BaseCommand
 
 from knotis.contrib.auth.models import KnotisUser
+from knotis.contrib.auth.emails import get_validation_url
 from knotis.contrib.identity.models import IdentityIndividual
 from knotis.contrib.endpoint.models import Endpoint, EndpointTypes
-import settings
+
 
 class Command(BaseCommand):
     def handle(
@@ -20,11 +21,5 @@ class Command(BaseCommand):
             primary=True,
         )
 
-        activation_link = '/'.join([
-            settings.BASE_URL,
-            'auth/validate',
-            knotis_user.id,
-            endpoint.validation_key,
-            ''
-        ])
+        activation_link = get_validation_url(knotis_user, endpoint)
         print activation_link

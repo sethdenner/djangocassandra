@@ -95,7 +95,7 @@ class StripeCharge(AJAXView):
                     description=''.join([
                         current_identity.name,
                         ' (',
-                        current_identity.pk,
+                        str(current_identity.pk),
                         ')'
                     ])
                 )

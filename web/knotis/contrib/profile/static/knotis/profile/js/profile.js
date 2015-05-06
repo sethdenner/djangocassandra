@@ -48,7 +48,7 @@
             var identity_id = $('#id-identity-id').attr('data-identity-id');
 
             $.ajaxmodal({
-                href: '/image/upload',
+                href: '/image/upload/',
                 modal_settings: {
                     backdrop: 'static'
                 },

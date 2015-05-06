@@ -100,8 +100,8 @@ class TransactionApi(object):
             )
 
             transaction_context = '|'.join([
-                buyer.pk,
-                IPNCallbackView.generate_ipn_hash(buyer.pk),
+                str(buyer.pk),
+                IPNCallbackView.generate_ipn_hash(str(buyer.pk)),
                 redemption_code,
                 mode
             ])
@@ -429,8 +429,11 @@ class TransactionApi(object):
             activity_type=ActivityTypes.CONNECT_RANDOM_COLLECTION
         )
 
-        if len(offer_activities) > 0 or not offer.available():
+        if len(offer_activities) > 0:
             raise TransactionApi.OfferAlreadyPurchased
+
+        if not offer.available():
+            raise TransactionApi.OfferNotAvailable
 
         transactions = []
 
@@ -469,6 +472,9 @@ class TransactionApi(object):
         pass
 
     class OfferAlreadyPurchased(Exception):
+        pass
+
+    class OfferNotAvailable(Exception):
         pass
 
     class NoTransactionCollectionItemsException(Exception):
@@ -544,8 +550,8 @@ class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
             ) for _ in range(10)
         )
         transaction_context = '|'.join([
-            self.current_identity.pk,
-            IPNCallbackView.generate_ipn_hash(self.current_identity.pk),
+            str(self.current_identity.pk),
+            IPNCallbackView.generate_ipn_hash(str(self.current_identity.pk)),
             redemption_code,
             mode
         ])
@@ -599,7 +605,7 @@ class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
                                 'NEED TO MANUALLY REFUND USER ',
                                 self.current_identity.name,
                                 ' (',
-                                self.current_identity.pk,
+                                str(self.current_identity.pk),
                                 ' ) in the amount of $',
                                 amount
                             ]))
@@ -632,7 +638,7 @@ class PurchaseApiModelViewSet(ApiModelViewSet, GetCurrentIdentityMixin):
                             'THIS IS SUPER BAD! NEED TO MANUALLY REFUND USER ',
                             self.current_identity.name,
                             ' (',
-                            self.current_identity.pk,
+                            str(self.current_identity.pk),
                             ' ) in the ammount of $',
                             amount
                         ]))

@@ -21,7 +21,7 @@ from knotis.contrib.quick.fields import (
     QuickDateTimeField,
     QuickForeignKey
 )
-from knotis.contrib.denormalize.models import DenormalizedField
+from knotis.contrib.denormalize.fields import DenormalizedField
 from knotis.contrib.identity.models import Identity
 from knotis.contrib.relation.models import (
     Relation,

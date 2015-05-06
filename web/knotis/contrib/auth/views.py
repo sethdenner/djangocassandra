@@ -156,7 +156,7 @@ class LoginView(ModalView):
             errors['no-field'] = e.message
             return self.render_to_response(errors=errors)
 
-        request.session['current_identity'] = identity.id
+        request.session['current_identity'] = str(identity.id)
 
         if self.response_format == self.RESPONSE_FORMATS.HTML:
             self.response_fromat = self.RESPONSE_FORMATS.REDIRECT
@@ -453,7 +453,7 @@ class ResetPasswordView(EmbeddedView):
                     errors['no-field'] = e.message
                     return self.render_to_response(errors=errors)
 
-                request.session['current_identity'] = identity.id
+                request.session['current_identity'] = str(identity.id)
 
             else:
                 errors['no-field'] = (
@@ -633,7 +633,7 @@ def validate(
                     pk=user_information.default_identity_id
                 )
 
-            request.session['current_identity'] = identity.id
+            request.session['current_identity'] = str(identity.id)
 
         except Exception, e:
             logout(authenticated_user)
