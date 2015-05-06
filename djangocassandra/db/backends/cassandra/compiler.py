@@ -65,7 +65,11 @@ class CassandraQuery(NonrelQuery):
         else:
             self.cassandra_meta = None
 
-        self.pk_column = self.meta.pk.column
+        self.pk_column = (
+            self.meta.pk.db_column
+            if self.meta.pk.db_column
+            else self.meta.pk.column
+        )
         self.column_family = self.meta.db_table
         self.columns = self.meta.fields
         self.where = None
@@ -180,20 +184,19 @@ class CassandraQuery(NonrelQuery):
                         end_op: predicate.end
                     })
         
-        query = self.cql_query
         for predicate in sorted_predicates:
-            query = filter_range(
-                query,
+            self.cql_query = filter_range(
+                self.cql_query,
                 predicate
             )
 
         for predicate in indexed_predicates:
-            query = filter_range(
-                query,
+            self.cql_query = filter_range(
+                self.cql_query,
                 predicate
             )
                 
-        return query
+        return self.cql_query
     
     def get_row_range(self, range_predicates):
         '''
@@ -242,13 +245,30 @@ class CassandraQuery(NonrelQuery):
         self,
         limit=None
     ):
-        return self.cql_query.count()
+        return len(
+            self.root_predicate.get_matching_rows(self)
+        )
+            
 
     def delete(
         self,
         columns=set()
     ):
-        return self.cql_query.delete()
+        if self.root_predicate.can_evaluate_efficiently(
+            self.pk_column,
+            self.clustering_columns,
+            self.indexed_columns
+        ):
+            self.root_predicate.get_matching_rows(self)
+            for r in self.cql_query:
+                r.delete()
+
+        else:
+            rows = self.root_predicate.get_matching_rows(self)
+            for row in rows:
+                self.column_family_class.get(**{
+                    self.pk_column: row[self.pk_column]
+                }).delete()
 
     def order_by(
         self,
