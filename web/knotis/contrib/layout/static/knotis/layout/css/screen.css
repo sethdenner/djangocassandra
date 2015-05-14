@@ -2211,7 +2211,7 @@ section.welcomeModal input {
     border-radius: 2px;
     border: 1px solid #DADADA;
     display: inline-block;
-    width: 50%;
+    width: 80%;
     text-align: center;
     margin: 20px;
     outline: 0;
@@ -2219,7 +2219,7 @@ section.welcomeModal input {
 
 section.welcomeModal p {
     font-size: 20px;
-    padding: 20px 80px;
+    padding: 20px 30px;
     font-family: 'LatoLight', sans-serif;
 }
 
@@ -2229,8 +2229,9 @@ section.welcomeModal {
 }
 
 section.welcomeModal h1 {
-    font-size: 35px;
+    font-size: 32px;
     color: #3c3c3c;
+    width: 100%;
     text-align: center;
     margin: 0;
 }

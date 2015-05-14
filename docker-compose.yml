@@ -1,9 +1,11 @@
 search:
-    image: dockerfile/elasticsearch
+    image: elasticsearch
+    #build: setup/docker/elasticsearch
     volumes:
         - data/elasticsearch:/data/elasticsearch
 db:
-    image: spotify/cassandra
+    #image: spotify/cassandra
+    build: setup/docker/cassandra/
     # This is broken on some systems.
     volumes:
         - data/cassandra:/var/lib/cassandra

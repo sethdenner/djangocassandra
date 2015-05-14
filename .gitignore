@@ -20,3 +20,4 @@ lib64
 *#*#
 *.#*
 web/config/knotis_env*
+venv/

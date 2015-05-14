@@ -5,7 +5,6 @@ logger = log.getLogger(__name__)
 
 from django.http import (
     HttpResponseRedirect,
-    QueryDict,
 )
 from django.template import Context
 from django.shortcuts import get_object_or_404
@@ -125,6 +124,7 @@ class MyFollowingView(EmbeddedView):
 
         return local_context
 
+
 class ChangeFollowingView(AJAXView):
     subject_id = None
     subject = None
@@ -160,9 +160,9 @@ class ChangeFollowingView(AJAXView):
             return self.generate_ajax_response({
                 'errors': errors,
                 'relation': {
-                    'pk': relation.pk,
-                    'subject_id': relation.subject_object_id,
-                    'related_id': relation.related_object_id,
+                    'pk': str(relation.pk),
+                    'subject_id': str(relation.subject_object_id),
+                    'related_id': str(relation.related_object_id),
                     'description': relation.description
                 }
             })

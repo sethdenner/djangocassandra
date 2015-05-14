@@ -2,9 +2,9 @@ from rest_framework.serializers import (
     ModelSerializer,
     FloatField,
     CharField,
-    URLField
+    URLField,
+    UUIDField,
 )
-from rest_framework.pagination import PaginationSerializer
 
 from knotis.contrib.identity.serializers import IdentitySerializer
 from knotis.contrib.media.serializers import (
@@ -45,6 +45,7 @@ class OfferSerializer(ModelSerializer):
             'tile_image_large',
             'tile_image_small'
         )
+    id = UUIDField()
 
     owner = IdentitySerializer()
     price = FloatField(
@@ -52,25 +53,20 @@ class OfferSerializer(ModelSerializer):
         read_only=True
     )
     price_retail = FloatField(
-        source='price_retail',
         read_only=True
     )
     banner_image = CroppedImageUrlSerializer(
-        source='banner_image',
         read_only=True
     )
     tile_image_small = URLField(
-        source='tile_image_small',
         read_only=True,
         max_length=1024
     )
     tile_image_large = URLField(
-        source='tile_image_large',
         read_only=True,
         max_length=1024
     )
     badge_image = CroppedImageUrlSerializer(
-        source='badge_image',
         read_only=True
     )
 
@@ -86,11 +82,6 @@ class OfferCollectionSerializer(ModelSerializer):
         source='get_offers',
         many=True
     )
-
-
-class PaginatedOfferSerializer(PaginationSerializer):
-    class Meta:
-        object_serializer_class = OfferSerializer
 
 
 class OfferAvailabilitySerializer(ModelSerializer):

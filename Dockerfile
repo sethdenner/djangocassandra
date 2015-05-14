@@ -60,8 +60,7 @@ RUN ${setup_dir}/installers/install_thrift.sh
 RUN ${setup_dir}/installers/install_apache.sh
 
 # Django Stuff.
-#pip install git+https://github.com/django-nonrel/django-permission-backend-nonrel.git@master && \
-
+RUN ${setup_dir}/installers/install_django_permission_backend_nonrel.sh
 
 
 RUN ${setup_dir}/installers/install_timezones.sh && \

@@ -59,6 +59,7 @@ from knotis.contrib.wizard.views import (
     WizardStepView
 )
 
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 from knotis.contrib.identity.models import (
     Identity,
     IdentityTypes,
@@ -69,7 +70,6 @@ from knotis.contrib.identity.views import (
     IdentityTile,
     TransactionTileView,
 )
-from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 from knotis.contrib.identity.api import IdentityApi
 
 
@@ -207,7 +207,11 @@ class RedemptionsGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
         return self.context
 
 
-class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
+class MyRedemptionsView(
+    EmbeddedView,
+    GenerateAjaxResponseMixin,
+    GetCurrentIdentityMixin
+):
     url_patterns = [
         r'^my/redemptions(/(?P<redemption_filter>\w*))?/$',
     ]
@@ -239,15 +243,12 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
         *args,
         **kwargs
     ):
-        current_identity_id = request.session.get('current_identity')
+        current_identity = self.get_current_identity(request)
 
-        try:
-            current_identity = Identity.objects.get(pk=current_identity_id)
-
-        except Exception, e:
+        if current_identity is None:
             return self.generate_ajax_response({
                 'errors': {
-                    'no-field': e.message
+                    'no-field': 'No current identity'
                 },
                 'status': 'ERROR'
             })
@@ -296,23 +297,17 @@ class MyRedemptionsView(EmbeddedView, GenerateAjaxResponseMixin):
         })
 
 
-class MyCustomersGrid(GridSmallView):
+class MyCustomersGrid(GridSmallView, GetCurrentIdentityMixin):
     view_name = 'my_customers_grid'
 
     def process_context(self):
         tiles = []
 
         request = self.request
-        session = request.session
-
-        current_identity_id = session.get('current_identity')
-
-        try:
-            current_identity = Identity.objects.get(pk=current_identity_id)
-
-        except:
+        current_identity = self.get_current_identity(request)
+        if current_identity is None:
             logger.exception('Failed to get current identity')
-            raise
+            raise Http404
 
         redemptions = Transaction.objects.filter(
             owner=current_identity,

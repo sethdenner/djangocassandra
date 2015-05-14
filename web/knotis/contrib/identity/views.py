@@ -126,7 +126,7 @@ def get_identity_default_profile_banner_color(identity):
         'darkblue',
         'turquoise'
     ]
-    profile_banner_color_index = int(identity.pk[24:], 16) % 3
+    profile_banner_color_index = int(str(identity.pk)[24:], 16) % 3
     profile_banner_color = profile_banner_colors[
         profile_banner_color_index
     ]
@@ -255,7 +255,7 @@ class IdentityActionButton(ActionButton):
         )
 
         if None is not following_relations:
-            following = tile_identity.pk in [
+            following = str(tile_identity.pk) in [
                 x.related_object_id for x in following_relations
             ]
 
@@ -453,7 +453,7 @@ class FirstIdentityView(ModalView):
         )
 
 
-class IdentitySwitcherView(EmbeddedView):
+class IdentitySwitcherView(EmbeddedView, GetCurrentIdentityMixin):
     url_patterns = [
         r''.join([
             '^identity/switcher(/(?P<identity_id>',
@@ -491,7 +491,7 @@ class IdentitySwitcherView(EmbeddedView):
             )
             identity = None
             for i in available_identities:
-                if i.id == identity_id:
+                if str(i.id) == identity_id:
                     identity = i
 
             if not identity:
@@ -505,7 +505,7 @@ class IdentitySwitcherView(EmbeddedView):
                 logger.warning(msg)
                 return http.HttpResponseServerError(msg)
 
-            request.session['current_identity'] = identity.pk
+            request.session['current_identity'] = str(identity.pk)
             try:
                 user_information = UserInformation.objects.get(
                     user=request.user
@@ -560,9 +560,7 @@ class IdentitySwitcherView(EmbeddedView):
             return ''
 
         local_context = copy.copy(self.context)
-        local_context['IdentityTypes'] = IdentityTypes
 
-        key_available = 'available_identities'
         try:
             available_identities = Identity.objects.get_available(
                 user=request.user
@@ -572,9 +570,10 @@ class IdentitySwitcherView(EmbeddedView):
             logger.exception('failed to get available identities.')
             raise
 
+        has_business = False
         for i in available_identities:
             if IdentityTypes.ESTABLISHMENT == i.identity_type:
-                local_context['has_business'] = True
+                has_business = True
 
             try:
                 badge_image = ImageInstance.objects.get(
@@ -587,10 +586,8 @@ class IdentitySwitcherView(EmbeddedView):
             except ImageInstance.DoesNotExist:
                 continue
 
-        local_context[key_available] = available_identities
-
-        current_identity_id = request.session.get('current_identity')
-        if not current_identity_id:
+        current_identity = self.get_current_identity(request)
+        if current_identity is None:
             try:
                 user_information = UserInformation.objects.get(
                     user=request.user
@@ -598,9 +595,17 @@ class IdentitySwitcherView(EmbeddedView):
                 request.session[
                     'current_identity'
                 ] = user_information.default_identity_id
+                current_identity = user_information.default_identity
 
             except:
                 logger.exception('failed to get current identity')
+
+        local_context.update({
+            'available_identities': available_identities,
+            'IdentityTypes': IdentityTypes,
+            'has_business': has_business,
+            'current_identity': current_identity,
+        })
 
         return local_context
 

@@ -6,7 +6,7 @@ from django.template import Context
 from knotis.views import EmailView
 
 
-def send_validation_email(
+def get_validation_url(
     user,
     endpoint,
     next_url=None,
@@ -18,6 +18,15 @@ def send_validation_email(
         str(endpoint.validation_key),
         '?next=%s' % next_url if next_url is not None else ''
     ])
+    return activation_link
+
+
+def send_validation_email(
+    user,
+    endpoint,
+    next_url=None,
+):
+    activation_link = get_validation_url(user, endpoint, next_url)
 
     message = ActivationEmailBody()
     message.generate_email(

@@ -182,8 +182,11 @@ def crop(
         if saved:
 
             im = get_thumbnail(
-                saved_instance.image.image, 
-                'x'.join([str(int(saved_instance.crop_width)), str(int(saved_instance.crop_height))]), 
+                saved_instance.image.image,
+                'x'.join([
+                    str(int(saved_instance.crop_width)),
+                    str(int(saved_instance.crop_height))
+                ]),
                 crop=saved_instance.crop()
             )
 
@@ -246,8 +249,8 @@ def crop(
                 'button_text': 'Crop Image',
                 'post_url': '/'.join([
                     '/image/crop',
-                    image.id,
-                    related_object_id,
+                    str(image.id),
+                    str(related_object_id),
                     ''
                 ]),
                 'image_dimension': 'x'.join([

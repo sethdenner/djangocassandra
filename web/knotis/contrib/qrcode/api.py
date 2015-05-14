@@ -81,11 +81,11 @@ class RedemptionScanApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
         return Response(serializer.data)
 
     class NoPurchasePkProvidedException(APIException):
-        status_code = '500'
+        status_code = 500
         default_detail = 'Redemption scans must include a purchase id.'
 
     class PurchaseCouldNotBeRetrievedException(APIException):
-        status_code = '500'
+        status_code = 500
         default_detail = 'No purchase matched the provided id.'
 
     class FailedToRetrieveCurrentIdentityException(APIException):

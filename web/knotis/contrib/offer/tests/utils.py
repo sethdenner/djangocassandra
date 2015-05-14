@@ -47,7 +47,7 @@ class OfferTestUtils(object):
             kwargs['stock'] = 10
 
         if not kwargs.get('start_date'):
-            kwargs['start_date'] = datetime.datetime.utcnow()
+            kwargs['start_date'] = datetime.datetime.now()
 
         if not kwargs.get('end_date'):
             kwargs['end_date'] = kwargs['start_date'] + datetime.timedelta(

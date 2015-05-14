@@ -17,74 +17,6 @@ DATE_FORMAT = 'm/d/Y'        # '10/25/06'
 TIME_FORMAT = 'h:i:s A'      # '02:30:59 PM'
 DATETIME_FORMAT = ' '.join([DATE_FORMAT, TIME_FORMAT])
 
-BUSINESS_NAME_BLACKLIST = (
-    'facebook',
-    'login',
-    'plans',
-    'contact',
-    'about',
-    'howitworks',
-    'story',
-    'inquire',
-    'support',
-    'terms',
-    'privacy',
-    'events',
-    'happyhours',
-    'dashboard',
-    'offer',
-    'offers',
-    'business',
-    'update',
-    'get_expiring_offers',
-    'get_newest_offers',
-    'get_popular_offers',
-    'get_offer_by_status',
-    'profile',
-    'subscriptions',
-    'qrcode',
-    'media',
-    'auth',
-    'signup',
-    'forgotpassword',
-    'passwordreset',
-    'admin',
-    'api',
-    'paypal',
-    'neighborhood',
-)
-
-PRIORITY_BUSINESS_NAMES = [
-    'cupcake-royale-captiol-hill',
-    'brooks-brothers',
-    'via-tribunali---capitol-hill',
-    'caffe-vita-capitol-hill',
-    'paramount-theatre',
-    'teatro-zinzanni',
-    'lunch-box-laboratory-south-lake-union',
-    'elysian-brewing-co.-capitol-hill',
-    'macrina-bakery',
-    'paseo-caribbean-restaurant',
-    'easy-street-records',
-    'verbovski-photography',
-    'zpizza',
-    'mountain-to-sound-outfitters',
-    'calico-healthy-skin-and-waxing',
-    'blue-highway-games',
-    'throwbacks-northwest',
-    'lab5-fitness',
-    'sugarpill',
-    'homestreet-bank',
-    'cactus-madison-park',
-    'pirkko',
-    'umi-sake-house',
-    'scraps-dog-bakery-and-boutique',
-    'cherry-consignment',
-    'dr.-peter-h.-yi-dds-ps',
-    'green-leaf-belltown',
-    'ipic-theaters'
-]
-
 CRISPY_TEMPLATE_PACK = 'bootstrap'
 
 ADMINS = (
@@ -162,6 +94,7 @@ MIDDLEWARE_CLASSES = (
     'autoload.middleware.AutoloadMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'knotis.contrib.hack.middleware.SessionMiddlewareFixAuthUserId',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -183,15 +116,22 @@ TEMPLATE_DIRS = (
 AUTHENTICATION_BACKENDS = (
     'knotis.contrib.auth.authentication.backends.CaseInsensitiveUsernameAuthenticationBackend',
     'knotis.contrib.endpoint.authentication.backends.EndpointValidationAuthenticationBackend',
-    'knotis.contrib.legacy.authentication.backends.LegacyAuthenticationBackend',
-    'knotis.contrib.legacy.authentication.backends.HamburgertimeAuthenticationBackend',
     'permission_backend_nonrel.backends.NonrelPermissionBackend'
 )
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    'SCOPES': {
+        'read': 'Read scope',
+        'write': 'Write scope',
+        'groups': 'Access to your groups'
+    }
+}
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
-        'doac.contrib.rest_framework.authentication.DoacAuthentication'
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -200,6 +140,9 @@ REST_FRAMEWORK = {
 }
 
 AUTOLOAD_SITECONF = 'dbindexer'
+
+# This is needed for the oauth library `makemigrations` command.
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
 
 INSTALLED_APPS = (
     'knotis',
@@ -218,6 +161,7 @@ INSTALLED_APPS = (
     'test_utils',
     'django_nose',
     'django_user_agents',
+    'oauth2_provider',
     # Django standard apps.
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -315,7 +259,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
-            'filename': '/srv/knotis/logs/django.log',
+            'filename': './logs/django.log',
             'maxBytes': 1048576,
             'backupCount': 10
         }

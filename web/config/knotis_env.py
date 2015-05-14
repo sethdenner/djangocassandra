@@ -30,6 +30,11 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+import logging
+logging.getLogger('elasticsearch').setLevel(logging.ERROR)
+logging.getLogger('cassandra').setLevel(logging.ERROR)
+
+
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 EMAIL_BILLING_USER = 'knotis.dev+billing@gmail.com'

@@ -1,9 +1,9 @@
 from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
-    URLField
+    URLField,
+    UUIDField,
 )
-from rest_framework.pagination import PaginationSerializer
 
 from knotis.contrib.stripe.api import StripeApi
 from knotis.contrib.transaction.api import PurchaseMode
@@ -25,9 +25,9 @@ class IdentitySwitcherSerializer(ModelSerializer):
         )
 
     badge_image = CroppedImageUrlSerializer(
-        source='badge_image',
         read_only=True
     )
+    id = UUIDField()
 
 
 class IdentitySerializer(ModelSerializer):
@@ -45,30 +45,27 @@ class IdentitySerializer(ModelSerializer):
             'badge_image',
             'banner_image',
             'tile_image_large',
-            'tile_image_small'
+            'tile_image_small',
+            'location'
         )
-
-    payment_mode = SerializerMethodField('get_payment_mode')
-    available_identities = SerializerMethodField('get_available_identities')
+    id = UUIDField()
+    payment_mode = SerializerMethodField()
+    available_identities = SerializerMethodField()
     badge_image = CroppedImageUrlSerializer(
-        source='badge_image',
         read_only=True
     )
     banner_image = CroppedImageUrlSerializer(
-        source='banner_image',
         read_only=True
     )
     tile_image_small = URLField(
-        source='tile_image_small',
         read_only=True,
         max_length=1024
     )
     tile_image_large = URLField(
-        source='tile_image_large',
         read_only=True,
         max_length=1024
     )
-    location = SerializerMethodField('get_location')
+    location = SerializerMethodField()
 
     def get_payment_mode(
         self,
@@ -140,11 +137,6 @@ class EstablishmentSerializer(IdentitySerializer):
             'tile_image_small',
             'location'
         )
-
-
-class PaginatedEstablishmentSerializer(PaginationSerializer):
-    class Meta:
-        object_serializer_class = EstablishmentSerializer
 
 
 class BusinessSerializer(IdentitySerializer):

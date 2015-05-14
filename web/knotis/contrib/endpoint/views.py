@@ -2,7 +2,6 @@ import copy
 
 from django.conf import settings
 from django.template import Context
-from django.shortcuts import get_object_or_404
 from knotis.utils.email import (
     generate_email
 )
@@ -12,7 +11,7 @@ from knotis.contrib.endpoint.models import (
     EndpointTypes,
     Credentials
 )
-from knotis.contrib.identity.models import Identity
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 from knotis.views import (
     AJAXView,
     FragmentView,
@@ -69,15 +68,12 @@ class SocialIntegrationTile(FragmentView):
         return self.context
 
 
-class SocialIntegrationsGridView(GridSmallView):
+class SocialIntegrationsGridView(GridSmallView, GetCurrentIdentityMixin):
     view_name = 'social_integrations_grid'
 
     def process_context(self):
         request = self.context.get('request')
-        current_identity = get_object_or_404(
-            Identity,
-            pk=request.session['current_identity']
-        )
+        current_identity = self.get_current_identity(request)
 
         facebook_tile = SocialIntegrationTile(service='facebook')
         twitter_tile = SocialIntegrationTile(service='twitter')
@@ -141,15 +137,12 @@ class SocialMediaSettingsView(EmbeddedView):
         return local_context
 
 
-class DeleteEndpointView(AJAXView):
+class DeleteEndpointView(AJAXView, GetCurrentIdentityMixin):
     def post(
         self,
         request
     ):
-        current_identity = get_object_or_404(
-            Identity,
-            pk=request.session['current_identity']
-        )
+        current_identity = self.get_current_identity(request)
 
         endpoint_pk = request.POST.get('endpoint_pk')
 

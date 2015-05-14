@@ -24,7 +24,7 @@ class RelationApi(object):
             subject,
             related
         )
-#       relation.save()
+
         return relation
 
     @staticmethod
@@ -32,7 +32,7 @@ class RelationApi(object):
         relations = Relation.objects.follows(subject, related)
         for relation in relations:
             relation.delete()
- 
+
 
 
 class FollowApiView(ApiView):
@@ -56,9 +56,10 @@ class FollowApiView(ApiView):
         errors = {}
 
         try:
-            RelationApi.create_following(self.subject, self.related)
+            relation = RelationApi.create_following(self.subject, self.related)
 
         except Exception, e:
+            relation = None
             logger.exception('failed to follow')
             errors['no-field'] = e.message
 

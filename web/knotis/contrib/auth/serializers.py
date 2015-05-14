@@ -25,15 +25,14 @@ class UserInformationSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserInformation
         exclude = (
-            '_denormalized_auth_KnotisUser_username',
             'content_type',
             'deleted',
             'pub_date',
-            '_denormalized_auth_KnotisUser_username_pk'
+            'username'
         )
 
     username = serializers.CharField(
-        source='_denormalized_auth_KnotisUser_username'
+        source='user.username'
     )
     default_identity_type = serializers.IntegerField(
         source='default_identity.identity_type'

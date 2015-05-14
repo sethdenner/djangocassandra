@@ -23,6 +23,9 @@ from django.http import (
 
 from django.views.decorators.csrf import csrf_exempt
 
+from django.utils import log
+logger = log.getLogger(__name__)
+
 
 class RenderTemplateFragmentMixin(object):
     registered_fragments = {}
@@ -74,9 +77,21 @@ class RenderTemplateFragmentMixin(object):
                             break
 
                 except ImportError:
+                    logger.exception(
+                        'Failed to load module for: %s' % view_module_name
+                    )
                     continue
 
                 try:
+                    f_suffix, f_mode, f_type = description
+                    if f_type == imp.PKG_DIRECTORY:
+                        logger.info(
+                            'VIEW MODULE IS PACKAGE DIRECTORY: %s' % (
+                                view_module_name
+                            )
+                        )
+                        continue
+
                     view_module = imp.load_module(
                         view_module_name,
                         file,
@@ -85,9 +100,13 @@ class RenderTemplateFragmentMixin(object):
                     )
 
                 except ImportError:
+                    logger.exception(
+                        'Failed to load module for: %s' % view_module_name
+                    )
                     continue
 
             if not view_module:
+                logger.info('No view module found for %s' % view_module_name)
                 continue
 
             class_members = inspect.getmembers(
@@ -146,7 +165,7 @@ class GenerateAjaxResponseMixin(object):
     ):
         return {
             key: str(value)
-            for (key, value) in data.iteritems()
+            for (key, value) in data.iteritems() if value
         }
 
     def generate_ajax_response(

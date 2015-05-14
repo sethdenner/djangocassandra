@@ -2,8 +2,6 @@ from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
 from knotis.views import ApiView
-from knotis.contrib.product.models import Product
-from knotis.contrib.product.forms import ProductSimpleForm
 
 from models import Inventory
 from forms import (
@@ -24,7 +22,6 @@ class InventoryApi(ApiView):
     ):
         errors = {}
 
-        product_form = ProductSimpleForm(data=request.POST)
         inventory_form = InventoryStackFromProductForm(data=request.POST)
 
         if inventory_form.is_valid():

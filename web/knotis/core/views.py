@@ -1,26 +1,18 @@
 from knotis.contrib.identity.views import EstablishmentsView
+from knotis.contrib.identity.mixins import GetCurrentIdentityMixin
 from knotis.contrib.identity.models import (
-    Identity,
     IdentityIndividual,
     IdentityTypes
 )
 
 
-class IndexView(EstablishmentsView):
+class IndexView(EstablishmentsView, GetCurrentIdentityMixin):
     url_patterns = [
         r'^[/]?$'
     ]
 
     def process_context(self):
-        current_identity_id = self.request.session.get('current_identity')
-        if not current_identity_id:
-            return self.context
-
-        try:
-            current_identity = Identity.objects.get(pk=current_identity_id)
-
-        except:
-            current_identity = None
+        current_identity = self.get_current_identity(self.request)
 
         if not current_identity:
             return self.context

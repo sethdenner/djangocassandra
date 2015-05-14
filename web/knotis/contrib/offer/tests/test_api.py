@@ -1,5 +1,7 @@
 
 from unittest import TestCase
+from rest_framework.test import APIClient
+from oauth2_provider.models import Application
 
 from .utils import OfferTestUtils
 from knotis.contrib.identity.tests.utils import IdentityModelTestUtils
@@ -198,3 +200,25 @@ class UnlimitedRandomOfferTest(TestCase):
             identity,
             sample_size=samples
         )
+
+
+class OfferXApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user_password = 'test_password'
+        self.user, self.user_identity = UserCreationTestUtils.create_test_user(
+            password=self.user_password
+        )
+        self.client_id = Application.objects.filter(
+            client_type=Application.CLIENT_PUBLIC,
+            authorization_grant_type=Application.GRANT_PASSWORD
+        )[0]
+
+    def test_establishment_api(self):
+
+        response = self.client.get(
+            '/api/v0/offer/?page=1&client_id=%s' % (
+                self.client_id
+            )
+        )
+        self.assertEqual(response.status_code, 200)

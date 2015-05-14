@@ -6,7 +6,7 @@
             always: function() {},
             default_method: 'post'
         }, options);
-        
+
         return this.each(function(){
             $(this).unbind('submit').submit(function(event) {
                 event.preventDefault();
@@ -23,10 +23,10 @@
                 data += 'format=json';
 
                 $form.find('input, button').prop('disabled', true);
-                
-                var method = $form.attr('method')
+
+                var method = $form.attr('method');
                 if (!method) {
-                    method = settings.default_method
+                    method = settings.default_method;
                 }
                 $.ajax({
                     type: method,
@@ -43,7 +43,9 @@
                         if (errors) {
                             $.each(errors, function(field, message) {
                                 var $input = $('input[name=' + field + ']');
-                                if (!$input.length) return true;
+                                if (!$input.length){
+                                    return true;
+                                  }
 
                                 $input.after(
                                     '<span class="help-inline">' + message + '</span>'
@@ -51,7 +53,7 @@
                                 $input.parent().parent().addClass('error');
 
                             });
-                            
+
                             if (errors['no-field']) {
                                 $form.find('.modal-body').prepend(
                                     '<p class="text-error">' + errors['no-field'] + '</p>'
@@ -59,7 +61,7 @@
 
                             }
 
-                        } 
+                        }
 
                     },
                     dataType: 'json'
