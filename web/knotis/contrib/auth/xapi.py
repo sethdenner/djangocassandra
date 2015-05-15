@@ -91,7 +91,7 @@ class NewUserApiViewSet(ApiViewSet):
             data=dict(request.DATA.iteritems())
         )
 
-        if user_serializer.errors:
+        if not user_serializer.is_valid():
             raise APIException(detail=user_serializer.errors)
 
         user, identity, errors = AuthenticationApi.create_user(
