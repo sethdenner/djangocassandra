@@ -468,7 +468,7 @@ class Identity(QuickModel):
             thumb = get_thumbnail(
                 profile_banner.image.image,
                 '300x180',
-                crop=generate_sorl_crop_string(
+                cropbox=generate_sorl_crop_string(
                     *transform_crop_aspect_ratio(
                         aspect,
                         profile_banner.crop_left,
@@ -494,7 +494,7 @@ class Identity(QuickModel):
             thumb = get_thumbnail(
                 profile_banner.image.image,
                 '360x450',
-                crop=generate_sorl_crop_string(
+                cropbox=generate_sorl_crop_string(
                     *transform_crop_aspect_ratio(
                         aspect,
                         profile_banner.crop_left,

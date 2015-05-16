@@ -11,7 +11,7 @@
     {% endblock %}
 
     {% block content %}
-        {% thumbnail offer_image.image.image '563x246' crop=offer_image.crop as image %}
+        {% thumbnail offer_image.image.image '563x246' cropbox=offer_image.crop as image %}
         <img align="center" alt="" src="{{ BASE_URL }}{{ image.url }}" width="563" style="max-width:563px; padding-bottom: 0; display: inline !important; vertical-align: bottom; border-radius: 4px;" class="mcnImage">
         {% endthumbnail %}
         <br />

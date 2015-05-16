@@ -3,7 +3,7 @@
   {% for i in image %}
   <input type="radio" class="galleryInput" name="image" value="{{ i.id }}" />
   <img
-     {% thumbnail i.image dimensions crop=image.crop as img %}
+     {% thumbnail i.image dimensions cropbox=image.crop as img %}
      src="{{ img.url }}"
      {% endthumbnail %}
   />

@@ -10,7 +10,7 @@
                 <a class="clear-fix  txt-size "
                    href="/offer/{{ offer.id }}/">
                     <img alt=""
-                         {% thumbnail offer.image.image '72x72' crop=image.crop as image %}
+                         {% thumbnail offer.image.image '72x72' cropbox=image.crop as image %}
                          src="{{ image.url }}"
                          {% empty %}
                          src="{{ STATIC_URL }}images/layouts/knotis-offer-image.jpg"

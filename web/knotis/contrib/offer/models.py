@@ -620,7 +620,7 @@ class Offer(QuickModel):
             thumb = get_thumbnail(
                 banner_image.image.image,
                 '300x180',
-                crop=generate_sorl_crop_string(
+                cropbox=generate_sorl_crop_string(
                     *transform_crop_aspect_ratio(
                         aspect,
                         banner_image.crop_left,
@@ -653,7 +653,7 @@ class Offer(QuickModel):
             thumb = get_thumbnail(
                 banner_image.image.image,
                 '360x450',
-                crop=generate_sorl_crop_string(
+                cropbox=generate_sorl_crop_string(
                     *transform_crop_aspect_ratio(
                         aspect,
                         banner_image.crop_left,

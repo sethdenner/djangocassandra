@@ -7,7 +7,7 @@
                 <div class="span5">
                     <div class="media" >
                         <a class="pull-left" href="#">
-                            {% thumbnail offer.owner.badge_image.image.image '64x64' crop=offer.owner.badge_image.crop as img %}
+                            {% thumbnail offer.owner.badge_image.image.image '64x64' cropbox=offer.owner.badge_image.crop as img %}
                             <img src="{{ img.url }}" class="img-circle" />
                             {% empty %}
                             <img data-add-image src="{{ default_profile_logo_uri }}" class="img-circle" />

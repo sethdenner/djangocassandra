@@ -111,7 +111,7 @@ class ImageInstance(QuickModel):
 
         thumb = get_thumbnail(
             *args,
-            crop=crop
+            cropbox=crop
         )
         return settings.BASE_URL + thumb.url
 

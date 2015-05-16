@@ -2,7 +2,7 @@
 <div class="col-lg-3 col-xs-6 offerItem">
     <a href="/offer/detail/{{ offer.pk }}/" class="modal-link">
         <div>
-            {% thumbnail offer_banner_image.image.image 'x140' crop=offer_banner_image.crop as image %}
+            {% thumbnail offer_banner_image.image.image 'x140' cropbox=offer_banner_image.crop as image %}
             <div class="busCover" style="background: url('{{ image.url }}') no-repeat;background-color: #2cc397;background-size: cover;background-position:50%;" alt="{{ offer.title }}"></div>
             {% empty %}
             <img class="defaultImg" alt="{{ offer.title }}" src="{{ STATIC_URL }}knotis/offer/img/default-offer-image.png" />
@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <a href="/id/{{ offer.owner.pk }}/">
-                    {% thumbnail business_badge_image.image.image '92x92' crop=business_badge_image.crop as image %}
+                    {% thumbnail business_badge_image.image.image '92x92' cropbox=business_badge_image.crop as image %}
                     <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
                     {% empty %}
                     <img class="busLogo" src="{{ STATIC_URL }}knotis/img/default_profile_badge.png" />

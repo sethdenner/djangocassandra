@@ -6,7 +6,7 @@
         <li class="radius-general active clear-fix">
             <img
                 alt="{{ alt_text }}"
-                {% thumbnail image.image dimensions crop=image.crop as img %}
+                {% thumbnail image.image dimensions cropbox=image.crop as img %}
                 src="{{ img.url }}"
                 {% endthumbnail %}
                 class="{{ image_class }}" />
