@@ -15,19 +15,15 @@ def generate_sorl_crop_string(
         width != 0 and
         height != 0
     ):
-        return ''.join([
+        return unicode(', '.join([
             str(int(math.floor(left))),
-            'px ',
             str(int(math.floor(top))),
-            'px ',
-            str(int(math.floor(width))),
-            'px ',
-            str(int(math.floor(height))),
-            'px'
-        ])
+            str(int(math.floor(left + width))),
+            str(int(math.floor(top + height))),
+        ]))
 
     else:
-        return 'noop'
+        return unicode('')  # sorl-thumbnail checks "if not" for noop.
 
 
 def transform_crop_aspect_ratio(

@@ -46,7 +46,7 @@
                             <div class="offers-image radius-general left relative">
                                 <div class="category{% if offer.category %} cat-{{ offer.category.short_name|title }}{% endif %}"></div>
                                 <img alt=""
-                                    {% thumbnail offer.image.image '72x72' crop=offer.image.crop as image %}
+                                    {% thumbnail offer.image.image '72x72' cropbox=offer.image.crop as image %}
                                     src="{{ image.url }}"
                                     {% empty %}
                                     src="{{ STATIC_URL }}images/layouts/knotis-offer-image.jpg" width="72" height="72"

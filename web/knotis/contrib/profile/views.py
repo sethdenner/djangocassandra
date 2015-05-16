@@ -261,6 +261,7 @@ class IndividualProfileView(ProfileView):
             '/id/%s/' % profile_identity_id
         ])
 
+
         if not request.is_ajax():
             self.response_format = self.RESPONSE_FORMATS.REDIRECT
 

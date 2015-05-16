@@ -187,7 +187,7 @@ def crop(
                     str(int(saved_instance.crop_width)),
                     str(int(saved_instance.crop_height))
                 ]),
-                crop=saved_instance.crop()
+                cropbox=saved_instance.crop()
             )
 
             return HttpResponse(
@@ -196,13 +196,13 @@ def crop(
                     'image_id': saved_instance.id,
                     'image_url': im.url
                 }),
-                mimetype='application/json'
+                content_type='application/json'
             )
 
         else:
             return HttpResponse(
                 json.dumps({'status': 'failure'}),
-                mimetype='application/json'
+                content_type='application/json'
             )
 
     else:

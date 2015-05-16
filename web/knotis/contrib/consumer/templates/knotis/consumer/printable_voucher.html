@@ -19,11 +19,11 @@
 
 <div class="voucher">
     <div class="row">
-        {% thumbnail business_cover.image.image 'x312' crop=business_cover.crop as img %}
+        {% thumbnail business_cover.image.image 'x312' cropbox=business_cover.crop as img %}
         <img class="coverPhoto" src="{{ img.url }}"/>
         {% endthumbnail %}
         <div class="col-xs-12">
-            {% thumbnail business_logo.image.image 'x130' crop=business_logo.crop as img %}
+            {% thumbnail business_logo.image.image 'x130' cropbox=business_logo.crop as img %}
 		<a target="_blank" href="{{ BASE_URL }}/id/{{ transaction.offer.owner.pk }}/">
 		    <img class="busLogo" src="{{ img.url }}"/>
 		</a>
