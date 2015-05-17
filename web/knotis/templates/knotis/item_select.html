@@ -4,7 +4,7 @@
     <div class="control-group">
         {% if render_images %}
         <img
-             {% thumbnail r.image.image.image image_dimensions crop=r.image.crop as img %}
+             {% thumbnail r.image.image.image image_dimensions cropbox=r.image.crop as img %}
              src="{{ img.url }}"
              {% endthumbnail %}
              />

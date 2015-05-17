@@ -9,6 +9,6 @@
 <input type="hidden" name="business_name" value="{{ business_name }}" />
 <input type="hidden" name="description" value="{{ offer_title }}" />
 <input type="hidden" name="offer_price" value="{{ offer_price }}" />
-{% thumbnail business_badge.image.image '128x128' crop=business_badge.crop as image %}
+{% thumbnail business_badge.image.image '128x128' cropbox=business_badge.crop as image %}
 <input type="hidden" name="business_badge" value="{{ BASE_URL }}{{ image.url }}" />
 {% endthumbnail %}

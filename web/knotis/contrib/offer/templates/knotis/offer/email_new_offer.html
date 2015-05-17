@@ -13,7 +13,7 @@
 
     {% block content %}
 
-	{% thumbnail offer.banner_image.image.image '500' crop=offer.banner_image.crop as image %}
+	{% thumbnail offer.banner_image.image.image '500' cropbox=offer.banner_image.crop as image %}
 	    <img align="center" alt="" src="{{ settings.BASE_URL }}{{ image.url }}" width="563" style="max-width:563px; padding-bottom: 0; display: inline !important; vertical-align: bottom; border-radius: 4px;" class="mcnImage">
 	{% endthumbnail %}
 

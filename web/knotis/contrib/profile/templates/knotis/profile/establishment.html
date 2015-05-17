@@ -3,7 +3,7 @@
 <div class="profileBusiness">
     <div class="container-fluid mainContent">
         <div class="row">
-            {% thumbnail profile_banner.image.image '1920x500' crop=profile_banner.crop as header %}
+            {% thumbnail profile_banner.image.image '1920x500' cropbox=profile_banner.crop as header %}
                 <div class="hero" data-id='id-data-profile-cover' style="background-image: url('{{ header.url }}');background-size: 100% 100%;">
             {% empty %}
                 <div class="hero" data-id='id-data-profile-cover'>
@@ -11,7 +11,7 @@
 
                     <div class="col-lg-12 col-xs-12">
                         <div class="establishmentHeader">
-                            {% thumbnail profile_badge.image.image '80x80' crop=profile_badge.crop as img %}
+                            {% thumbnail profile_badge.image.image '80x80' cropbox=profile_badge.crop as img %}
                             <img src="{{ img.url }}" data-id='id-data-profile-badge' class="{% if is_manager %}change-profile-badge-link{% endif %}"/>
                             {% empty %}
                             <img width="80" height="80" data-id='id-data-profile-badge' src="{{ default_profile_logo_uri }}" class="{% if is_manager %}change-profile-badge-link{% endif %}" />

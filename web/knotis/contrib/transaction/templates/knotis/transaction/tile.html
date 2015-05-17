@@ -1,7 +1,7 @@
 {% load thumbnail %}
 <div class="col-lg-3 col-xs-6 offerItem" data-redemption-tile-id="{{transaction.pk}}">
     <a href="/offer/detail/{{ offer.pk }}/" class="modal-link">
-            {% thumbnail banner_image.image.image '240x161' crop=banner_image.crop as image %}
+            {% thumbnail banner_image.image.image '240x161' cropbox=banner_image.crop as image %}
             <div class="purchaseCover" style="background: url('{{ image.url }}') no-repeat;background-color: #2cc397;background-size: cover;background-position: 0;" alt="{{ identity.name }}"></div>
             {% empty %}
             <img class="tile-image"  alt="{{ identity.name }}" src="{{ STATIC_URL }}knotis/identity/img/default_profile_banner_{{ profile_banner_color|default:"darkgrey" }}.png" />
@@ -16,7 +16,7 @@
                     {% else %}
                     <a href= "/id/{{ identity.pk }}/">
                         {% endif %}
-                        {% thumbnail badge_image.image.image '80x80' crop=badge_image.crop as image %}
+                        {% thumbnail badge_image.image.image '80x80' cropbox=badge_image.crop as image %}
                         <img class="busLogo" src="{{ image.url }}" alt="{{ offer.title }}"/>
                         {% empty %}
                         <img class="img-circle tile-badge defaultImg busLogo" src="{{ STATIC_URL }}/knotis/img/default_profile_badge.png" />

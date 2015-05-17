@@ -15,7 +15,7 @@
                 <!-- Wrapper for slides -->
                 <div class="carousel-inner">
                     {% for index, image in images %}
-                    {% thumbnail image.image.image '500x400' crop=image.crop as img %}
+                    {% thumbnail image.image.image '500x400' cropbox=image.crop as img %}
                     <div class="item {% if index == 0 %}active{% endif %}">
                         <div class="about-carousel-image" style="background:url('{{ img.url }}');background-size:cover;">
                             {% if is_manager %}
