@@ -14,7 +14,7 @@ class TransactionSerializer(ModelSerializer):
         fields = (
             'id',
             'owner',
-            'owner_name',
+            'offer_owner_name',
             'redemption_code',
             'transaction_type',
             'offer',
@@ -25,8 +25,8 @@ class TransactionSerializer(ModelSerializer):
             'offer_title'
         )
 
-    owner_name = CharField(
-        source='owner.name',
+    offer_owner_name = CharField(
+        source='offer.owner.name',
         read_only=True
     )
 
