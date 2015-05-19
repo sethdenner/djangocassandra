@@ -24,8 +24,10 @@ from knotis.contrib.identity.api import (
     IdentityApi,
 )
 from knotis.contrib.endpoint.models import (
-    Endpoint,
-    EndpointTypes
+    EndpointEmail,
+    EndpointPhone,
+    EndpointAddress,
+    EndpointWebsite
 )
 from knotis.contrib.qrcode.models import Qrcode
 
@@ -219,8 +221,7 @@ class Command(BaseCommand):
                 continue
 
             try:
-                endpoint_email = Endpoint.objects.create(
-                    endpoint_type=EndpointTypes.EMAIL,
+                endpoint_email = EndpointEmail.objects.create(
                     identity=establishment,
                     value=manager_email,
                     context='establishment_email',
@@ -252,8 +253,7 @@ class Command(BaseCommand):
                 )
 
                 try:
-                    endpoint_phone = Endpoint.objects.create(
-                        endpoint_type=EndpointTypes.PHONE,
+                    endpoint_phone = EndpointPhone.objects.create(
                         identity=establishment,
                         value=manager_phone,
                         context='establishment_phone',
@@ -269,8 +269,7 @@ class Command(BaseCommand):
 
             if business_website:
                 try:
-                    endpoint_website = Endpoint.objects.create(
-                        endpoint_type=EndpointTypes.WEBSITE,
+                    endpoint_website = EndpointWebsite.objects.create(
                         identity=establishment,
                         value=business_website,
                         context='establishment_website',
@@ -286,8 +285,7 @@ class Command(BaseCommand):
 
             if business_address:
                 try:
-                    endpoint_address = Endpoint.objects.create(
-                        endpoint_type=EndpointTypes.ADDRESS,
+                    endpoint_address = EndpointAddress.objects.create(
                         identity=establishment,
                         value=business_address,
                         context='establishment_address',

@@ -34,7 +34,7 @@ from knotis.contrib.transaction.models import (
     TransactionTypes
 )
 from knotis.contrib.endpoint.models import (
-    Endpoint,
+    EndpointEmail,
     EndpointTypes
 )
 from knotis.contrib.media.models import Image
@@ -132,11 +132,10 @@ def import_user(cursor):
             user_profile.save()
             user.save()
 
-            Endpoint.objects.create_endpoint(
-                EndpointTypes.EMAIL,
-                email,
-                user,
-                True
+            EndpointEmail.objects.create(
+                value=email,
+                identity=user,
+                primary=True
             )
 
         except Exception as e:

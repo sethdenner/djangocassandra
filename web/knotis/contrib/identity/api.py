@@ -34,8 +34,8 @@ from knotis.contrib.auth.models import (
 )
 from knotis.contrib.relation.models import Relation
 from knotis.contrib.endpoint.models import (
-    Endpoint,
     EndpointIdentity,
+    EndpointFollowers,
     EndpointTypes
 )
 
@@ -82,15 +82,13 @@ class IdentityApi(object):
             instance = form.save()
 
             # create identity endpoint
-            Endpoint.objects.create(
-                endpoint_type=EndpointTypes.IDENTITY,
+            EndpointIdentity.objects.create(
                 value=instance.name,
                 identity=instance
             )
 
             # create followers endpoint
-            Endpoint.objects.create(
-                endpoint_type=EndpointTypes.FOLLOWERS,
+            EndpointFollowers.objects.create(
                 value=' '.join([
                     instance.name,
                     'Followers'

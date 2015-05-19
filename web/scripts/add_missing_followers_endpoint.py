@@ -1,23 +1,20 @@
 from django.utils.log import logging
 logger = logging.getLogger(__name__)
 
-
 def add_missing_followers_endpoint_to_identity(identity):
     from knotis.contrib.endpoint.models import (
-        Endpoint,
+        EndpointFollowers,
         EndpointTypes
     )
 
-    existing = Endpoint.objects.filter(
-        endpoint_type=EndpointTypes.FOLLOWERS,
+    existing = EndpointFollowers.objects.filter(
         identity=identity
     )
 
     if len(existing):
         return existing[0]
 
-    followers = Endpoint.objects.create(
-        endpoint_type=EndpointTypes.FOLLOWERS,
+    followers = EndpointFollowers.objects.create(
         value=' '.join([
             identity.name,
             'Followers'

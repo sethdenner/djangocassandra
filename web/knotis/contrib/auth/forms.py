@@ -28,6 +28,7 @@ from knotis.forms import (
 
 from knotis.contrib.endpoint.models import (
     Endpoint,
+    EndpointEmail,
     EndpointTypes
 )
 from knotis.contrib.identity.models import (
@@ -192,8 +193,7 @@ class CreateUserForm(TemplateModelForm):
             user_info.default_identity_id = identity.id
             user_info.save()
 
-            email = Endpoint.objects.create(
-                endpoint_type=EndpointTypes.EMAIL,
+            email = EndpointEmail.objects.create(
                 value=user.email,
                 identity=identity,
                 primary=True
