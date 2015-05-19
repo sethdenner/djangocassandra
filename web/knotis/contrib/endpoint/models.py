@@ -32,51 +32,63 @@ def normalize_arguments(*args, **kwargs):
             del kwargs[key]
 
 
+class EndpointTypes:
+    UNDEFINED = -1
+    EMAIL = 0
+    PHONE = 1
+    ADDRESS = 2
+    TWITTER = 3
+    FACEBOOK = 4
+    YELP = 5
+    IDENTITY = 6
+    WIDGET = 7
+    FOLLOWERS = 8
+    WEBSITE = 9
+    LINK = 10
+
+    CHOICES = (
+        (UNDEFINED, 'Undefined'),
+        (EMAIL, 'Email'),
+        (PHONE, 'Phone'),
+        (ADDRESS, 'Address'),
+        (TWITTER, 'Twitter'),
+        (FACEBOOK, 'Facebook'),
+        (YELP, 'Yelp'),
+        (IDENTITY, 'Identity'),
+        (WIDGET, 'Widget'),
+        (FOLLOWERS, 'Followers'),
+        (WEBSITE, 'Website'),
+        (LINK, 'Link')
+    )
+
+    SubTypes = {}
+
+    def register(endpoint_class):
+        EndpointTypes.SubTypes[endpoint_class.EndpointType] = endpoint_class
+
+
+EndpointTypeNames = {key: value for key, value in EndpointTypes.CHOICES}
+
+
 class EndpointManager(QuickManager):
+    __default_endpoint_type__ = EndpointTypes.UNDEFINED
+
     def create(
         self,
         *args,
         **kwargs
     ):
-        if 'endpoint_type' in kwargs:
-            endpoint_type = kwargs.get('endpoint_type')
+        if (
+            'endpoint_type' not in kwargs
+            and self.__default_endpoint_type__ != EndpointTypes.UNDEFINED
+        ):
+            kwargs['endpoint_type'] = self.__default_endpoint_type__
 
-        elif len(args):
-            endpoint_type = args[0]
-
-        else:
-            endpoint_type = EndpointTypes.UNDEFINED
-
-        class_type = Endpoint
-        if EndpointTypes.EMAIL == endpoint_type:
-            class_type = EndpointEmail
-
-        elif EndpointTypes.ADDRESS == endpoint_type:
-            class_type = EndpointAddress
-
-        elif EndpointTypes.PHONE == endpoint_type:
-            class_type = EndpointPhone
-
-        elif EndpointTypes.FACEBOOK == endpoint_type:
-            class_type = EndpointFacebook
-
-        elif EndpointTypes.TWITTER == endpoint_type:
-            class_type = EndpointTwitter
-
-        elif EndpointTypes.YELP == endpoint_type:
-            class_type = EndpointYelp
-
-        elif EndpointTypes.WEBSITE == endpoint_type:
-            class_type = EndpointWebsite
-
-        else:
-            class_type = Endpoint
-
-        endpoint = class_type(**kwargs)
-        endpoint.clean()
-        endpoint.save()
-
-        return endpoint
+        return super(EndpointManager, self).create(
+            *args,
+            **kwargs
+        )
+        
 
     def validate_endpoints(
         self,
@@ -185,48 +197,23 @@ class EndpointManager(QuickManager):
 
         return endpoint
 
+    def get_queryset(self):
+        if self.__default_endpoint_type__ != EndpointTypes.UNDEFINED:
+            return super(
+                EndpointManger,
+                self
+            ).get_queryset().filter(
+                endpoint_type=self.__default_endpoint_type__
+            )
 
-class EndpointTypes:
-    UNDEFINED = -1
-    EMAIL = 0
-    PHONE = 1
-    ADDRESS = 2
-    TWITTER = 3
-    FACEBOOK = 4
-    YELP = 5
-    IDENTITY = 6
-    WIDGET = 7
-    FOLLOWERS = 8
-    WEBSITE = 9
-    LINK = 10
-
-    CHOICES = (
-        (UNDEFINED, 'Undefined'),
-        (EMAIL, 'Email'),
-        (PHONE, 'Phone'),
-        (ADDRESS, 'Address'),
-        (TWITTER, 'Twitter'),
-        (FACEBOOK, 'Facebook'),
-        (YELP, 'Yelp'),
-        (IDENTITY, 'Identity'),
-        (WIDGET, 'Widget'),
-        (FOLLOWERS, 'Followers'),
-        (WEBSITE, 'Website'),
-        (LINK, 'Link')
-    )
-
-    SubTypes = {}
-
-    def register(endpoint_class):
-        EndpointTypes.SubTypes[endpoint_class.EndpointType] = endpoint_class
-
-
-EndpointTypeNames = {key: value for key, value in EndpointTypes.CHOICES}
+        else:
+            return super(
+                EndpointManager,
+                self
+            ).get_queryset()
 
 
 class Endpoint(QuickModel):
-    EndpointType = EndpointTypes.UNDEFINED
-
     endpoint_type = IntegerField(
         choices=EndpointTypes.CHOICES,
         default=EndpointTypes.UNDEFINED,
@@ -317,35 +304,40 @@ post_save.connect(
 )
 
 
-class EndpointPhone(Endpoint):
-    EndpointType = EndpointTypes.PHONE
+class EndpointPhoneManager(EndpointManager):
+    __default_endpoint_type__ = EndpointTypes.PHONE
 
+
+class EndpointPhone(Endpoint):
     class Meta:
         proxy = True
-
-    def __init__(self, *args, **kwargs):
-        kwargs['endpoint_type'] = EndpointTypes.PHONE
-
-        super(EndpointPhone, self).__init__(*args, **kwargs)
 
     def get_uri(self):
         return "callto:" + self.value
 
+    objects = EndpointPhoneManager()
 
-class EndpointEmail(Endpoint):
-    EndpointType = EndpointTypes.EMAIL
 
-    class Meta:
-        proxy = True
+class EndpointEmailManager(EndpointManager):
+    __default_endpoint_type__ = EndpointTypes.EMAIL
 
-    def __init__(self, *args, **kwargs):
-        # Always override the type to email (0).
-        kwargs['endpoint_type'] = EndpointTypes.EMAIL
-
+    def create(
+        self,
+        *args,
+        **kwargs
+    ):
         if kwargs.get('validation_key') is None:
             kwargs['validation_key'] = generate_validation_key()
 
-        super(EndpointEmail, self).__init__(*args, **kwargs)
+        return super(EndpointEmailManager, self).create(
+            *args,
+            **kwargs
+        )
+
+
+class EndpointEmail(Endpoint):
+    class Meta:
+        proxy = True
 
     def send_message(self, **kwargs):
         try:
@@ -370,17 +362,16 @@ class EndpointEmail(Endpoint):
     def get_uri(self):
         return "mailto:" + self.value
 
+    objects = EndpointEmailManager()
+
+
+class EndpointTwitterManager(EndpointManager):
+    __default_endpoint_type__ = EndpointTypes.TWITTER
+
 
 class EndpointTwitter(Endpoint):
-    EndpointType = EndpointTypes.TWITTER
-
     class Meta:
         proxy = True
-
-    def __init__(self, *args, **kwargs):
-        kwargs['endpoint_type'] = EndpointTypes.TWITTER
-
-        super(EndpointTwitter, self).__init__(*args, **kwargs)
 
     def clean(self):
         """
@@ -407,17 +398,16 @@ class EndpointTwitter(Endpoint):
     def get_uri(self):
         return "http://twitter.com/" + self.value
 
+    objects = EndpointTwitterManager()
+
+
+class EndpointFacebookManager(EndpointManager):
+    __default_endpoint_type__ = EndpointTypes.FACEBOOK
+
 
 class EndpointFacebook(Endpoint):
-    EndpointType = EndpointTypes.FACEBOOK
-
     class Meta:
         proxy = True
-
-    def __init__(self, *args, **kwargs):
-        kwargs['endpoint_type'] = EndpointTypes.FACEBOOK
-
-        super(EndpointFacebook, self).__init__(*args, **kwargs)
 
     def clean(self):
         """
@@ -449,17 +439,16 @@ class EndpointFacebook(Endpoint):
     def get_uri(self):
         return "https://facebook.com/" + self.value
 
+    objects = EndpointFacebookManager()
+
+
+class EndpointYelpManager(EndpointManager):
+    __default_endpoint_type__ = EndpointTypes.YELP
+
 
 class EndpointYelp(Endpoint):
-    EndpointType = EndpointTypes.YELP
-
     class Meta:
         proxy = True
-
-    def __init__(self, *args, **kwargs):
-        kwargs['endpoint_type'] = EndpointTypes.YELP
-
-        super(EndpointYelp, self).__init__(*args, **kwargs)
 
     def clean(self):
         """
@@ -486,22 +475,25 @@ class EndpointYelp(Endpoint):
     def get_uri(self):
         return "http://yelp.com/biz/" + self.value
 
+    objects = EndpointYelpManager()
+
+
+class EndpointAddressManager(EndpointManager):
+    __default_endpoint_type__ = EndpointTypes.ADDRESS
+
 
 class EndpointAddress(Endpoint):
-    EndpointType = EndpointTypes.ADDRESS
-
     class Meta:
         proxy = True
 
-    def __init__(self, *args, **kwargs):
-        kwargs['endpoint_type'] = EndpointTypes.ADDRESS
+    objects = EndpointAddressManager()
 
-        super(EndpointAddress, self).__init__(*args, **kwargs)
+
+class EndpointLinkManager(EndpointManager):
+    __default_endpoint_type__ = EndpointTypes.LINK
 
 
 class EndpointLink(Endpoint):
-    EndpointType = EndpointTypes.LINK
-
     class Meta:
         proxy = True
 
@@ -533,23 +525,26 @@ class EndpointLink(Endpoint):
             return self.value[len(prefix):]
         return self.value
 
+    objects = EndpointLinkManager()
+
+
+class EndpointWebsiteManager(EndpointManager):
+    __default_endpoint_type__ = EndpointTypes.WEBSITE
+
 
 class EndpointWebsite(EndpointLink):
-    EndpointType = EndpointTypes.WEBSITE
-
     class Meta:
         proxy = True
-
-    def __init__(self, *args, **kwargs):
-        kwargs['endpoint_type'] = EndpointTypes.WEBSITE
-
-        super(EndpointWebsite, self).__init__(*args, **kwargs)
 
     def get_uri(self):
         return self.prepend_http(self.value)
 
+    objects = EndpointWebsiteManager()
+
 
 class EndpointIdentityManager(EndpointManager):
+    __default_endpoint_type__ = EndpointTypes.IDENTITY
+
     def update_identity_endpoints(
         self,
         identity
@@ -567,17 +562,10 @@ class EndpointIdentityManager(EndpointManager):
 
 
 class EndpointIdentity(Endpoint):
-    EndpointType = EndpointTypes.IDENTITY
-
     class Meta:
         proxy = True
 
     objects = EndpointIdentityManager()
-
-    def __init__(self, *args, **kwargs):
-        kwargs['endpoint_type'] = EndpointTypes.IDENTITY
-
-        super(EndpointIdentity, self).__init__(*args, **kwargs)
 
     def update_value(self):
         self.value = self.identity.name
@@ -585,12 +573,10 @@ class EndpointIdentity(Endpoint):
 
 
 class EndpointFollowersManager(EndpointManager):
-    pass
+    __default_endpoint_type__ = EndpointTypes.FOLLOWERS
 
 
 class EndpointFollowers(Endpoint):
-    EndpointType = EndpointTypes.FOLLOWERS
-
     class Meta:
         proxy = True
 
