@@ -366,7 +366,18 @@ class Command(BaseCommand):
                         if key.endswith('_id'):
                             key = key[:-3]
 
-                        value = ContentType.objects.get_for_model(model)
+                        content_type_column_family = ColumnFamily(
+                            self.connection,
+                            ContentType._meta.db_table
+                        )
+                        contenttype_instance = content_type_column_family.get(
+                            value
+                        )
+
+                        value = ContentType.objects.get_by_natural_key(
+                            contenttype_instance['app_label'],
+                            contenttype_instance['model']
+                        )
 
                 elif isinstance(field, BooleanField):
                     if value.lower() in [
