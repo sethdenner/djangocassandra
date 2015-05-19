@@ -112,23 +112,15 @@ class EndpointManager(QuickManager):
 
         return False
 
-    def _get_endpoint_class(self, endpoint_type):
-        class_names = dict(
-            (key, 'Endpoint' + name) for (key, name) in EndpointTypes.CHOICES
-        )
-        return globals()[class_names[endpoint_type]]
-
     def get_primary_endpoint(
         self,
         identity,
         endpoint_type
     ):
-
-        EndpointClass = self._get_endpoint_class(endpoint_type)
-
-        endpoints = EndpointClass.objects.filter(
+        endpoints = Endpoint.objects.filter(
             endpoint_type=endpoint_type,
-            identity=identity
+            identity=identity,
+            primary=True
         )
 
         for endpoint in endpoints:
@@ -200,7 +192,7 @@ class EndpointManager(QuickManager):
     def get_queryset(self):
         if self.__default_endpoint_type__ != EndpointTypes.UNDEFINED:
             return super(
-                EndpointManger,
+                EndpointManager,
                 self
             ).get_queryset().filter(
                 endpoint_type=self.__default_endpoint_type__
