@@ -367,9 +367,10 @@ class Command(BaseCommand):
                             value
                         )
 
-                        value = ContentType.objects.get_by_natural_key(
-                            contenttype_instance['app_label'],
-                            contenttype_instance['model']
+                        value, _ = ContentType.objects.get_or_create(
+                            app_label=contenttype_instance['app_label'],
+                            model=contenttype_instance['model'],
+                            name=contenttype_instance['name']
                         )
 
                 elif isinstance(field, BooleanField):
