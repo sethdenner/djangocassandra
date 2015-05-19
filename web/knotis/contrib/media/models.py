@@ -100,7 +100,7 @@ class ImageInstance(QuickModel):
         args = [self.image.image]
 
         crop = self.crop()
-        if 'noop' != crop:
+        if crop:
             args.append('x'.join([
                 str(int(self.crop_width)),
                 str(int(self.crop_height))
