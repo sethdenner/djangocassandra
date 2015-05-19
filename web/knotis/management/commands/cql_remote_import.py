@@ -143,17 +143,10 @@ class Command(BaseCommand):
             self,
             **options
     ):
-        all_apps = [
-            label.split('.')[-1]
-            for label
-            in settings.INSTALLED_APPS
-            if label != 'contenttypes'
-        ]
         '''
         Don't include content types as they are
         automatically generated if they don't exist.
         '''
-
         all_models = [(
                 app_config.label,
                 app_config.get_models(
@@ -162,7 +155,7 @@ class Command(BaseCommand):
             )
             for app_config in apps.get_app_configs()
             if app_config.models_module is not None
-            and app_config.label in all_apps
+            and app_config.label != 'contenttypes'
         ]
 
         include_options = options['models']
