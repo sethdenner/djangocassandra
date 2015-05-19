@@ -389,20 +389,21 @@ class EstablishmentProfileView(ProfileView, GetCurrentIdentityMixin):
 
         endpoint_dicts = []
         for endpoint_class in (
-                EndpointPhone,
-                EndpointEmail,
-                EndpointFacebook,
-                EndpointYelp,
-                EndpointTwitter,
-                EndpointWebsite
+            EndpointPhone,
+            EndpointEmail,
+            EndpointFacebook,
+            EndpointYelp,
+            EndpointTwitter,
+            EndpointWebsite
         ):
 
             endpoint = None
+            endpoint_class_type = endpoint_class.objects.__default_endpoint_type__
             for ep in endpoints:
-                if ep.endpoint_type == endpoint_class.EndpointType:
+                if ep.endpoint_type == endpoint_class_type:
                     endpoint = ep
 
-            endpoint_type_name = EndpointTypeNames[endpoint_class.EndpointType]
+            endpoint_type_name = EndpointTypeNames[endpoint_class_type]
             endpoint_type_name = endpoint_type_name.lower()
 
             if endpoint and endpoint.value:
@@ -419,7 +420,7 @@ class EstablishmentProfileView(ProfileView, GetCurrentIdentityMixin):
                     'value': endpoint.value,
                     'uri': endpoint.get_uri(),
                     'display': display,
-                    'endpoint_type': endpoint_class.EndpointType
+                    'endpoint_type': endpoint_class_type
                 }
 
                 endpoint_dicts.append(endpoint_dict)
@@ -431,7 +432,7 @@ class EstablishmentProfileView(ProfileView, GetCurrentIdentityMixin):
                     'value': '',
                     'uri': '',
                     'display': '',
-                    'endpoint_type': endpoint_class.EndpointType
+                    'endpoint_type': endpoint_class_type
                 })
 
         # endpoints displayed on the cover

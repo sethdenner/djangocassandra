@@ -61,11 +61,6 @@ class EndpointTypes:
         (LINK, 'Link')
     )
 
-    SubTypes = {}
-
-    def register(endpoint_class):
-        EndpointTypes.SubTypes[endpoint_class.EndpointType] = endpoint_class
-
 
 EndpointTypeNames = {key: value for key, value in EndpointTypes.CHOICES}
 
