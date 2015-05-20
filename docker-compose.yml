@@ -22,8 +22,6 @@ web:
         - db
         - search
         - cache
-    environment:
-        - KNOTIS_ENVIRONMENT_MODULE=docker_env
     command: sh -c './start.sh'
 
 ambassador:

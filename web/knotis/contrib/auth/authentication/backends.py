@@ -16,8 +16,12 @@ class CaseInsensitiveUsernameAuthenticationBackend(object):
         except Exception, e:
             logger.exception('failed to retrieve user: %s' % e.message)
             return None
+        try:
+            if not user.check_password(password):
+                return None
 
-        if not user.check_password(password):
+        except Exception, e:
+            logger.error('Failed to check password! %s' % e.message)
             return None
 
         return user

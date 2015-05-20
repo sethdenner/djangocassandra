@@ -122,13 +122,15 @@ class TransactionApi(object):
                 offer_collection=offer_collection
             ):
 
-                TransactionApi.create_purchase(
-                    request=request,
-                    offer=page.offer,
-                    buyer=buyer,
-                    currency=currency,
-                    mode=PurchaseMode.FREE,
-                    send_email=False,
+                transactions.extend(
+                    TransactionApi.create_purchase(
+                        request=request,
+                        offer=page.offer,
+                        buyer=buyer,
+                        currency=currency,
+                        mode=PurchaseMode.FREE,
+                        send_email=False,
+                    )
                 )
 
         if send_email:
@@ -257,7 +259,11 @@ class TransactionApi(object):
             redemptions = Transaction.objects.create_redemption(transaction)
 
         except Exception, e:
-            logger.exception('failed to create redemption')
+            logger.exception(
+                'Failed to create redemption for %s. %s' % (
+                    transaction, e.message
+                )
+            )
             raise e
 
         Activity.redeem(request)

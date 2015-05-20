@@ -43,6 +43,7 @@ set -e
 
 cp ${MODWSGI_SCRIPT} ${install_location}/app/conf/apache/
 cp ${APACHE2_CONFIG} /etc/apache2/sites-available/
+cp ${setup_dir}/config/apache2/apache2.conf /etc/apache2/
 
 set +e
 a2dissite 000-default

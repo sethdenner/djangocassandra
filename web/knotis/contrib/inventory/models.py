@@ -28,18 +28,18 @@ class InventoryManager(QuickManager):
         slave,
         master
     ):
-        if master.provider_id != master.recipient_id:
+        if master.provider.id != master.recipient.id:
             raise Exception('can not stack onto unstacked inventory')
 
         if (
-            slave.recipient_id != master.recipient_id and
-            slave.provider_id != master.recipient_id
+            slave.recipient.id != master.recipient.id and
+            slave.provider.id != master.recipient.id
         ):
             raise Exception(
                 'can not stack inventory unless participants match'
             )
 
-        if slave.product_id != master.product_id:
+        if slave.product.id != master.product.id:
             raise Exception('can not stack inventory unless products match')
 
         # if slave inventory is perishable don't stack it.
@@ -58,7 +58,7 @@ class InventoryManager(QuickManager):
         quantity,
         force=False
     ):
-        if inventory.provider_id != inventory.recipient_id:
+        if inventory.provider.id != inventory.recipient.id:
             raise Exception('can not split unstacked inventory')
 
         if not force and not inventory.unlimited:
@@ -147,7 +147,7 @@ class InventoryManager(QuickManager):
             if offer_items.count():
                 continue
 
-            if stack.product_id == product.id:
+            if stack.product.id == product.id:
                 if inventory_stack is not None:
                     raise Exception('Found multple unbound stacks')
                 inventory_stack = stack

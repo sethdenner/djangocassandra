@@ -1,6 +1,9 @@
 REGEX_UUID = (
     '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
 )
+REGEX_PASSWORD = (
+    '[\w.@+-]+$'
+)
 
 REGEX_PROMO = (
     '[a-fA-Z0-9]{8}'

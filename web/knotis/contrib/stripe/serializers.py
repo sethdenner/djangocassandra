@@ -2,7 +2,6 @@ from rest_framework.serializers import (
     Serializer,
     CharField,
     IntegerField,
-    DateTimeField,
     BooleanField,
     EmailField
 )
@@ -11,7 +10,7 @@ from rest_framework.serializers import (
 class StripeCustomerSerializer(Serializer):
     pk = CharField(source='id')
     livemode = BooleanField()
-    created = DateTimeField()
+    created = IntegerField()
     account_balance = IntegerField()
     currency = CharField()
     description = CharField()
