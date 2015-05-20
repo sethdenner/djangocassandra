@@ -10,6 +10,9 @@ db:
     volumes:
         - data/cassandra:/var/lib/cassandra
 
+cache:
+    image: memcached:1.4.24
+
 web:
     image: knotis/web:1.7
     volumes:
@@ -18,6 +21,7 @@ web:
     links:
         - db
         - search
+        - cache
     command: sh -c './start.sh'
 
 ambassador:

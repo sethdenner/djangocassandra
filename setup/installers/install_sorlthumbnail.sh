@@ -1,5 +1,5 @@
 #!/bin/bash
 echo 'installing sorl-thumbnail ...'
-sorlthumbnail_git=https://github.com/simlay/sorl-thumbnail.git@test_django-1.7
+#sorlthumbnail_git=https://github.com/simlay/sorl-thumbnail.git@test_django-1.7
 
-${install_location}/venv/bin/pip install git+${sorlthumbnail_git}
+${install_location}/venv/bin/pip install sorl-thumbnail==12.2
