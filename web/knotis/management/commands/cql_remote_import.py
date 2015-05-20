@@ -130,6 +130,18 @@ class Command(BaseCommand):
                 'remote Cassandra database.\n'
                 'Example: myapp.MyModel:my_old_columnfamily.'
             )
+        ),
+        make_option(
+            '--transform-column-name', '-t',
+            action='append',
+            dest='tc-map',
+            default=[],
+            help=(
+                'Force a model to tranform from a specific column family in'
+                'the remote Cassandra database.\n'
+                'Example:'
+                'myapp.MyModel.FieldName:fieldname.'
+            )
         )
     )
 
@@ -251,19 +263,19 @@ class Command(BaseCommand):
 
     def normalize_field_name(
         self,
-        field
+        field,
+        model,
     ):
-        field_name = (
-            field.db_column
-            if field.db_column
-            else field.name
-        )
+        field_name = None
+        if model in self.field_name_map:
+            field_name = self.field_name_map[model].get(field.column)
 
-        if isinstance(field, ForeignKey):
-            field_name = '_'.join([
-                field_name,
-                'id'
-            ])
+        if None is field_name:
+            field_name = (
+                field.db_column
+                if field.db_column
+                else field.column
+            )
 
         return field_name
 
@@ -344,7 +356,7 @@ class Command(BaseCommand):
 
         else:
             db_table = model._meta.db_table
-            
+
         column_family = ColumnFamily(
             self.connection,
             db_table
@@ -354,7 +366,8 @@ class Command(BaseCommand):
 
         fields = {
             self.normalize_field_name(
-                field
+                field,
+                model
             ): field
             for field
             in model._meta.fields
@@ -366,11 +379,12 @@ class Command(BaseCommand):
             row = {
                 pk_field.db_column
                 if pk_field.db_column
-                else pk_field.name: result[0]
+                else pk_field.column: result[0]
             }
 
             for key, value in result[1].iteritems():
                 field = fields[key]
+
                 if isinstance(field, ForeignKey):
                     related_model = field.rel.to
                     if issubclass(related_model, ContentType):
@@ -415,7 +429,16 @@ class Command(BaseCommand):
                 except:
                     pass
 
-                row[key] = value
+                if (
+                    model in self.field_name_map
+                    and self.field_name_map[model].get(field.column)
+                ):
+                    row_column = field.column
+
+                else:
+                    row_column = key
+
+                row[row_column] = value
 
             rows.append(row)
 
@@ -476,6 +499,23 @@ class Command(BaseCommand):
             self.column_family_map[
                 get_model(*model_name.split('.'))
             ] = remote_cf
+
+        field_name_map = options['tc-map']
+
+        self.field_name_map = {}
+        for tcm in field_name_map:
+            model_side, remote_field_name = tcm.split(':')
+            app_name, model_name, field_name = model_side.split('.')
+
+            model = get_model(
+                app_name,
+                model_name
+            )
+            model_field_map = self.field_name_map.get(model)
+            if None is model_field_map:
+                model_field_map = {}
+            model_field_map[field_name] = remote_field_name
+            self.field_name_map[model] = model_field_map
 
         maximum_rows = options['limit']
         for model in import_models:
@@ -551,7 +591,7 @@ class Command(BaseCommand):
                             traceback.format_exc()
                         ))
 
-                        
+
                 new_errors = self.total_row_errors - current_row_errors
                 logger.info(''.join([
                     'Importing Rows for ',
