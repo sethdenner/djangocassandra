@@ -21,6 +21,7 @@ from django.db.models import (
     ForeignKey,
     BooleanField
 )
+from django.db.models.loading import get_model
 
 from django.contrib.contenttypes.models import ContentType
 
@@ -118,6 +119,17 @@ class Command(BaseCommand):
                 'Limit the total number of rows imported. Import will exit '
                 'once this number of total rows has been sucessfully imported.'
             )
+        ),
+        make_option(
+            '--force-column-family', '-f',
+            action='append',
+            dest='cf-map',
+            default=[],
+            help=(
+                'Force a model to pull from a specific column family in the '
+                'remote Cassandra database.\n'
+                'Example: myapp.MyModel:my_old_columnfamily.'
+            )
         )
     )
 
@@ -176,7 +188,7 @@ class Command(BaseCommand):
 
             else:
                 raise Exception('Bad parameter')
-                    
+
         exclude_options = options['exclude']
         exclude_apps = []
         exclude_models = {}
@@ -327,9 +339,15 @@ class Command(BaseCommand):
         self,
         model
     ):
+        if model in self.column_family_map:
+            db_table = self.column_family_map[model]
+
+        else:
+            db_table = model._meta.db_table
+            
         column_family = ColumnFamily(
             self.connection,
-            model._meta.db_table
+            db_table
         )
 
         results = column_family.get_range()
@@ -447,8 +465,17 @@ class Command(BaseCommand):
         else:
             cassandra_log.setLevel(logging.getLevelName('ERROR'))
 
+
         import_models = self.get_import_models(**options)
         connection = self.obtain_connection(**options)
+        column_family_map = options['cf-map']
+
+        self.column_family_map = {}
+        for cfm in column_family_map:
+            model_name, remote_cf = cfm.split(':')
+            self.column_family_map[
+                get_model(*model_name.split('.'))
+            ] = remote_cf
 
         maximum_rows = options['limit']
         for model in import_models:
