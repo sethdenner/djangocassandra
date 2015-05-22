@@ -315,7 +315,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
-            'filename': './logs/django.log',
+            'filename': '/srv/knotis/logs/django.log',
             'maxBytes': 1048576,
             'backupCount': 10
         }
