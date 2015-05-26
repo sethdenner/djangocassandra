@@ -1,0 +1,164 @@
+[
+{
+    "fields": {
+        "model": "offercollectionitem",
+        "name": "offer collection item",
+        "app_label": "offer"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "067f2d17-fcf2-43e0-b9e5-f03d4134d9e8"
+},
+{
+    "fields": {
+        "model": "endpoint",
+        "name": "endpoint",
+        "app_label": "endpoint"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "183f5902-0ccd-4de4-856b-3e0246a7ef8a"
+},
+{
+    "fields": {
+        "model": "identityestablishment",
+        "name": "identity establishment",
+        "app_label": "identity"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "25ce4d91-e12e-47ad-9940-3859b0a3e124"
+},
+{
+    "fields": {
+        "model": "inventory",
+        "name": "inventory",
+        "app_label": "inventory"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "3d34a557-df87-4213-aaf5-a1b3cd78ecdc"
+},
+{
+    "fields": {
+        "model": "user",
+        "name": "user",
+        "app_label": "auth"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "3df2e042-add3-469d-a76a-f7beb72f0428"
+},
+{
+    "fields": {
+        "model": "product",
+        "name": "product",
+        "app_label": "product"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "44796f4c-3aa4-42eb-ba42-ad099752349a"
+},
+{
+    "fields": {
+        "model": "endpointemail",
+        "name": "endpoint email",
+        "app_label": "endpoint"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "4c24c25c-d445-45b3-bd94-567a6125e504"
+},
+{
+    "fields": {
+        "model": "identitybusiness",
+        "name": "identity business",
+        "app_label": "identity"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "5d2da0e7-2bbc-49d1-a49e-18b1220eb189"
+},
+{
+    "fields": {
+        "model": "imageinstance",
+        "name": "image instance",
+        "app_label": "media"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "64b312a4-4209-4b67-a921-b5f0a0ff6f79"
+},
+{
+    "fields": {
+        "model": "qrcode",
+        "name": "qrcode",
+        "app_label": "qrcode"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "731328d5-b42d-40f4-9735-984a5d03c529"
+},
+{
+    "fields": {
+        "model": "identityindividual",
+        "name": "identity individual",
+        "app_label": "identity"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "90e7f81c-bc1d-4e8d-b458-9ded1a58209c"
+},
+{
+    "fields": {
+        "model": "userinformation",
+        "name": "user information",
+        "app_label": "knotis_auth"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "a0d6c372-90e7-4c9f-8152-b9ae03cb5731"
+},
+{
+    "fields": {
+        "model": "offercollection",
+        "name": "offer collection",
+        "app_label": "offer"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "b7dac683-dfe5-4c18-8967-0637df1942d2"
+},
+{
+    "fields": {
+        "model": "image",
+        "name": "image",
+        "app_label": "media"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "e2470e3d-2e15-482b-a3c5-2c1078a34978"
+},
+{
+    "fields": {
+        "model": "identity",
+        "name": "identity",
+        "app_label": "identity"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "ef0bf7c4-616b-4af3-89d1-f729e3cb6974"
+},
+{
+    "fields": {
+        "model": "relation",
+        "name": "relation",
+        "app_label": "relation"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "f3031eca-b4a4-4abc-b500-3ac5754b3be3"
+},
+{
+    "fields": {
+        "model": "offeritem",
+        "name": "offer item",
+        "app_label": "offer"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "f57d34f5-b411-49c4-8c18-ad1142df7d67"
+},
+{
+    "fields": {
+        "model": "offer",
+        "name": "offer",
+        "app_label": "offer"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": "f6a1715c-07e7-4b0f-bec4-a34c30756332"
+}
+]

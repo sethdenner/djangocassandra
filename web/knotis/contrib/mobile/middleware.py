@@ -11,7 +11,7 @@ from knotis.contrib.auth.models import UserInformation
 class MobileAppRedirectMiddleware(object):
     """
     This middleware detects if the user has installed the
-    mobile app or not. If so and they are visiting the 
+    mobile app or not. If so and they are visiting the
     web application with a mobile user agent string then the
     user will be redirected to the mobile app.
     """

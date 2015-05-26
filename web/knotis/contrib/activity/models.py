@@ -13,7 +13,10 @@ from knotis.contrib.quick.fields import (
 
 from knotis.contrib.auth.models import KnotisUser
 from knotis.contrib.identity.models import Identity
-from knotis.utils.regex import REGEX_CC_ANY
+from knotis.utils.regex import (
+    REGEX_CC_ANY,
+    REGEX_PASSWORD
+)
 import re
 
 
@@ -171,11 +174,16 @@ def clean_request_body(request):
     logging.
     """
 
-    body = request.raw_post_data
+    body = request.body
 
     # redact credit card numbers
     body = re.sub(
         ''.join(['/b', REGEX_CC_ANY, '/b']),
+        '<!-- REDACTED -->',
+        body
+    )
+    body = re.sub(
+        'password=%s' % REGEX_PASSWORD,
         '<!-- REDACTED -->',
         body
     )

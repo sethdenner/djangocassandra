@@ -31,6 +31,7 @@ class UserInformationSerializer(serializers.ModelSerializer):
             'username'
         )
 
+    id = serializers.UUIDField()
     username = serializers.CharField(
         source='user.username'
     )

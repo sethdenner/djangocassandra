@@ -164,7 +164,7 @@ class GenerateAjaxResponseMixin(object):
         data
     ):
         return {
-            key: str(value)
+            key: value
             for (key, value) in data.iteritems() if value
         }
 

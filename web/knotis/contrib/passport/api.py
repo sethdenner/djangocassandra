@@ -4,6 +4,7 @@ logger = logging.getLogger(__name__)
 from rest_framework.routers import DefaultRouter
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
+from rest_framework.decorators import api_view
 
 from knotis.views import ApiViewSet
 
@@ -88,6 +89,7 @@ class PassportApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
 
         self.get_current_identity(request)
 
+    @api_view(['put'])
     def connect(
         self,
         request,
@@ -176,6 +178,7 @@ class PassportCouponApiViewSet(ApiViewSet, GetCurrentIdentityMixin):
 
         self.get_current_identity(request)
 
+    @api_view(['put'])
     def redeem(
         self,
         request,

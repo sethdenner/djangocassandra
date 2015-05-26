@@ -1,6 +1,7 @@
 from rest_framework.serializers import (
     ModelSerializer,
-    CharField
+    CharField,
+    UUIDField
 )
 
 from knotis.contrib.media.serializers import CroppedImageUrlSerializer
@@ -14,7 +15,7 @@ class TransactionSerializer(ModelSerializer):
         fields = (
             'id',
             'owner',
-            'owner_name',
+            'offer_owner_name',
             'redemption_code',
             'transaction_type',
             'offer',
@@ -25,13 +26,13 @@ class TransactionSerializer(ModelSerializer):
             'offer_title'
         )
 
-    owner_name = CharField(
-        source='owner.name',
+    id = UUIDField()
+    offer_owner_name = CharField(
+        source='offer.owner.name',
         read_only=True
     )
 
     redemption_code = CharField(
-        source='redemption_code',
         read_only=True
     )
 

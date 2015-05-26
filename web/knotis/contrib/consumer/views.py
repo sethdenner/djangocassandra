@@ -94,27 +94,32 @@ class MyPurchasesGrid(GridSmallView, PaginationMixin, GetCurrentIdentityMixin):
                 continue
 
             if unused != purchase.has_redemptions():
-                merchant = purchase.offer.owner
+                try:
+                    merchant = purchase.offer.owner
 
-                redemption_tile = TransactionTileView()
-                tile_context = RequestContext(
-                    request, {
-                        'redeem': unused,
-                        'show_offer_info': True,
-                        'transaction': purchase,
-                        'identity': merchant,
-                        'current_identity': current_identity,
-                        'IdentityTypes': IdentityTypes,
-                        'offer': purchase.offer,
-                        'TransactionTypes': TransactionTypes,
-                        'OfferTypes': OfferTypes
-                    }
-                )
-                tiles.append(
-                    redemption_tile.render_template_fragment(
-                        tile_context
+                    redemption_tile = TransactionTileView()
+                    tile_context = RequestContext(
+                        request, {
+                            'redeem': unused,
+                            'show_offer_info': True,
+                            'transaction': purchase,
+                            'identity': merchant,
+                            'current_identity': current_identity,
+                            'IdentityTypes': IdentityTypes,
+                            'offer': purchase.offer,
+                            'TransactionTypes': TransactionTypes,
+                            'OfferTypes': OfferTypes
+                        }
                     )
-                )
+                    tiles.append(
+                        redemption_tile.render_template_fragment(
+                            tile_context
+                        )
+                    )
+                except Exception, e:
+                    logger.error(
+                        'Failed to render %s. %s' % (purchase, e.message)
+                    )
 
         self.context.update({
             'tiles': tiles

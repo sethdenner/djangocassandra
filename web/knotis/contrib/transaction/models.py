@@ -241,21 +241,6 @@ class TransactionManager(QuickManager):
             raise
 
         try:
-            transactions = []
-            for participant in participants:
-                transaction = super(TransactionManager, self).create(
-                    owner=participant,
-                    transaction_type=TransactionTypes.REDEMPTION,
-                    offer=purchase.offer,
-                    transaction_context=purchase.transaction_context
-                )
-                transactions.append(transaction)
-
-        except:
-            logger.exception('failed to create transactions')
-            raise
-
-        try:
             mode = purchase.mode()
             for i in inventory_redeem:
                 recipient_stack = Inventory.objects.get_stack(
@@ -290,8 +275,27 @@ class TransactionManager(QuickManager):
                     recipient_stack
                 )
 
-        except:
-            logger.exception('failed to stack inventory')
+        except Exception, e:
+            logger.exception(
+                'Failed to stack inventory for %s. %s' % (self, e.message)
+            )
+            raise
+
+        try:
+            transactions = []
+            for participant in participants:
+                transaction = super(TransactionManager, self).create(
+                    owner=participant,
+                    transaction_type=TransactionTypes.REDEMPTION,
+                    offer=purchase.offer,
+                    transaction_context=purchase.transaction_context
+                )
+                transactions.append(transaction)
+
+        except Exception, e:
+            logger.exception(
+                'failed to create transactions for %s. %s' % (self, e.message)
+            )
             raise
 
         return transactions
@@ -739,10 +743,15 @@ class Transaction(QuickModel):
                 transaction_context=self.transaction_context,
                 transaction_type=TransactionTypes.REDEMPTION
             )
-        except:
+        except Exception, e:
+            logger.error(
+                'Failed to retrieve redemptions for %s. %s' % (
+                    self, e.message
+                )
+            )
             redemptions = None
 
-        return len(redemptions)
+        return len(redemptions) if redemptions is not None else 0
 
     def has_redemptions(self):
         return self.redemptions() != 0
@@ -768,8 +777,11 @@ class Transaction(QuickModel):
         return context_parts[3]
 
     def redemption_code(self):
-        if not self.offer:
-            return None
+        try:
+            if not self.offer:
+                return None
+        except Exception, e:
+            logger.error('Failed to find offer for %s. %s' % (self, e.message))
 
         context_parts = self.transaction_context.split('|')
         if len(context_parts) < 3:

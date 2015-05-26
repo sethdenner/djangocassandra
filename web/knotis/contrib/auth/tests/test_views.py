@@ -8,6 +8,7 @@ from knotis.contrib.endpoint.models import (
     Endpoint,
     EndpointTypes
 )
+import random
 
 
 class AuthValidationView(TestCase):
@@ -39,3 +40,31 @@ class AuthValidationView(TestCase):
 
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
+
+
+class NewUserView(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_double_signup(self):
+        user_password = 'test_password'
+        user_name = 'sebastian+test_%s@knotis.com' % random.random()
+        login_dict = {
+            'email': user_name,
+            'password': user_password,
+            'format': 'json'
+        }
+
+        first_response = self.client.post('/signup/', login_dict)
+        self.assertEqual(first_response.status_code, 200)
+
+        second_response = self.client.post('/signup/', login_dict)
+        self.assertEquals(
+            second_response.content,
+            ''.join([
+                '{',
+                '"message": "An error occurred during account creation", ',
+                '"errors": {"email": ["Email address is already in use."]}, ',
+                '"modal": true}'
+            ])
+        )

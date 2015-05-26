@@ -1,6 +1,8 @@
 from unittest import TestCase
 
-from rest_framework.test import APIClient
+from rest_framework.test import (
+    APIClient,
+)
 from knotis.contrib.auth.tests.utils import UserCreationTestUtils
 
 

@@ -1,4 +1,6 @@
 #!/bin/python
+from django.utils.log import logging
+logger = logging.getLogger(__name__)
 
 def convert_endpoint_contenttype(endpoint):
     from django.contrib.contenttypes.models import ContentType
@@ -38,7 +40,11 @@ def convert_endpoint_contenttype(endpoint):
         ] = content_type
 
     endpoint.content_type = content_type
-    endpoint.save()
+    try:
+        endpoint.save()
+    except Exception, e:
+        logger.error('Failed to convert %s. %s' % (endpoint.pk, e.message))
+        pass
 
 
 def convert_endpoint_contenttypes():

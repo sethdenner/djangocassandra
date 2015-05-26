@@ -11,3 +11,4 @@ $pip install git+https://github.com/sethdenner/djangotoolbox.git@issue-55
 $pip install pycassa
 
 $pip install --upgrade git+https://github.com/Knotis/django@custom-autofield
+$pip install python-memcached
