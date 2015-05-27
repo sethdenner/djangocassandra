@@ -383,7 +383,20 @@ class Command(BaseCommand):
             }
 
             for key, value in result[1].iteritems():
-                field = fields[key]
+                try:
+                    field = fields[key]
+
+                except KeyError:
+                    logger.warning(' '.join([
+                        'Warning: Skipping Column:',
+                        key,
+                        'with value:',
+                        value ,
+                        'for model:',
+                        db_table,
+                        'Field does not exist in target schema.'
+                    ]))
+                    continue
 
                 if isinstance(field, ForeignKey):
                     related_model = field.rel.to

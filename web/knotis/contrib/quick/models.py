@@ -5,9 +5,10 @@ from knotis.contrib.quick.fields import (
     QuickDateTimeField,
     QuickBooleanField
 )
+from django.db import models
 
 
-class QuickManager(polymodels.managers.PolymorphicManager):
+class QuickManager(models.Manager):
     """
     How does this make sense????
     Sometimes you want to view deleted data...
@@ -140,7 +141,7 @@ class QuickModelBase(object):
         return cls._meta.get_all_field_names()
 
 
-class QuickModel(QuickModelBase, polymodels.models.PolymorphicModel ):
+class QuickModel(QuickModelBase, models.Model):
     deleted = QuickBooleanField(
         default=False,
         db_index=True
