@@ -1,8 +1,5 @@
-
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.geos import Point
-
-from polymodels.utils import get_content_type
 
 from knotis.contrib.quick.models import QuickModel
 from knotis.contrib.quick.fields import (
@@ -22,19 +19,6 @@ class Location(QuickModel):
     address = QuickCharField(max_length=256)
     latitude = QuickFloatField()
     longitude = QuickFloatField()
-
-    def save(
-        self,
-        *args,
-        **kwargs
-    ):
-        content_type = get_content_type(self.__class__, self._state.db)
-        setattr(self, self.CONTENT_TYPE_FIELD, content_type)
-
-        super(Location, self).save(
-            *args,
-            **kwargs
-        )
 
     def get_location(self):
         if self.longitude is not None and self.latitude is not None:

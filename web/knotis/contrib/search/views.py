@@ -9,6 +9,9 @@ logger = logging.getLogger(__name__)
 
 
 from knotis.contrib.identity.views import IdentityTile, get_current_identity
+from knotis.contrib.identity.models import (
+    IdentityEstablishment,
+)
 from knotis.contrib.offer.views import (
     OfferTile,
     CollectionTile
@@ -21,7 +24,8 @@ from knotis.views import (
 )
 
 from knotis.contrib.offer.models import (
-    OfferTypes
+    Offer,
+    OfferTypes,
 )
 
 
@@ -92,7 +96,7 @@ class SearchResultsGrid(GridSmallView):
 
         for result in search_results:
             try:
-                if result.content_type.name == 'identity establishment':
+                if type(result) == IdentityEstablishment:
                     business_tile = IdentityTile()
                     result_context = Context({
                         'identity': result,
@@ -103,7 +107,7 @@ class SearchResultsGrid(GridSmallView):
                             result_context
                         )
                     )
-                elif result.content_type.name == 'offer':
+                elif type(result) == Offer:
                     offer = result
 
                     if offer.offer_type == OfferTypes.DIGITAL_OFFER_COLLECTION:
