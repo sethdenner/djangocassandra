@@ -322,7 +322,8 @@ class Identity(QuickModel):
     identity_type = QuickIntegerField(
         choices=IdentityTypes.CHOICES,
         default=IdentityTypes.UNDEFINED,
-        blank=False
+        blank=False,
+        db_index=True
     )
     name = QuickCharField(
         max_length=80,
