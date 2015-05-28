@@ -391,7 +391,7 @@ class Command(BaseCommand):
                         'Warning: Skipping Column:',
                         key,
                         'with value:',
-                        value ,
+                        value,
                         'for model:',
                         db_table,
                         'Field does not exist in target schema.'
