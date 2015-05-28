@@ -387,15 +387,16 @@ class Command(BaseCommand):
                     field = fields[key]
 
                 except KeyError:
-                    logger.warning(' '.join([
-                        'Warning: Skipping Column:',
-                        key,
-                        'with value:',
-                        value,
-                        'for model:',
-                        db_table,
-                        'Field does not exist in target schema.'
-                    ]))
+                    if self.verbosity >= 3:
+                        logger.warning(' '.join([
+                            'Warning: Skipping Column:',
+                            key,
+                            'with value:',
+                            value,
+                            'for model:',
+                            db_table,
+                            'Field does not exist in target schema.'
+                        ]))
                     continue
 
                 if isinstance(field, ForeignKey):
@@ -490,12 +491,12 @@ class Command(BaseCommand):
         *args,
         **options
     ):
-        verbosity = int(options['verbosity'])
+        self.verbosity = int(options['verbosity'])
         cassandra_log = logging.getLogger('cassandra')
-        if verbosity >= 4:
+        if self.verbosity >= 4:
             cassandra_log.setLevel(logging.getLevelName('INFO'))
 
-        elif verbosity >= 3:
+        elif self.verbosity >= 3:
             cassandra_log.setLevel(logging.getLevelName('DEBUG'))
 
         else:
