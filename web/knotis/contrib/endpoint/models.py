@@ -154,7 +154,6 @@ class EndpointManager(QuickManager):
         # see if there are any endpoints under this filter
         # endpoints = endpoint_class.objects.filter(**filter_parameters)
         endpoints = Endpoint.objects.filter(**filter_parameters)
-        endpoints = endpoints.select_subclasses()
 
         if len(endpoints) > 1:
             raise Exception('Too many endpoints match query')

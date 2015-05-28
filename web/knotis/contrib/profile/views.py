@@ -385,34 +385,38 @@ class EstablishmentProfileView(ProfileView, GetCurrentIdentityMixin):
             identity=self.profile_identity,
             primary=True
         )
-        endpoints = endpoints.select_subclasses()
 
+        phone = None
+        website = None
         endpoint_dicts = []
-        for endpoint_class in (
-            EndpointPhone,
-            EndpointEmail,
-            EndpointFacebook,
-            EndpointYelp,
-            EndpointTwitter,
-            EndpointWebsite
-        ):
-
-            endpoint = None
-            endpoint_class_type = endpoint_class.objects.__default_endpoint_type__
-            for ep in endpoints:
-                if ep.endpoint_type == endpoint_class_type:
-                    endpoint = ep
-
-            endpoint_type_name = EndpointTypeNames[endpoint_class_type]
+        for endpoint in endpoints:
+            endpoint_type_name = EndpointTypeNames[endpoint.endpoint_type]
             endpoint_type_name = endpoint_type_name.lower()
 
-            if endpoint and endpoint.value:
+            if EndpointTypes.PHONE == endpoint.endpoint_type:
+                phone = {
+                    'value': endpoint.value,
+                    'uri': endpoint.get_uri()
+                }
+                continue
 
-                display = None
+            if EndpointTypes.WEBSITE == endpoint.endpoint_type:
+                website = {
+                    'value': endpoint.value,
+                    'uri': endpoint.get_uri(),
+                    'display': endpoint.get_display()
+                }
+                continue
+
+            if endpoint and endpoint.value:
                 if endpoint.endpoint_type == EndpointTypes.YELP:
                     display = 'Yelp'
+
                 elif endpoint.endpoint_type == EndpointTypes.FACEBOOK:
                     display = 'Facebook'
+
+                else:
+                    display = None
 
                 endpoint_dict = {
                     'id': endpoint.id,
@@ -420,7 +424,7 @@ class EstablishmentProfileView(ProfileView, GetCurrentIdentityMixin):
                     'value': endpoint.value,
                     'uri': endpoint.get_uri(),
                     'display': display,
-                    'endpoint_type': endpoint_class_type
+                    'endpoint_type': endpoint.endpoint_type
                 }
 
                 endpoint_dicts.append(endpoint_dict)
@@ -432,28 +436,8 @@ class EstablishmentProfileView(ProfileView, GetCurrentIdentityMixin):
                     'value': '',
                     'uri': '',
                     'display': '',
-                    'endpoint_type': endpoint_class_type
+                    'endpoint_type': endpoint.endpoint_type
                 })
-
-        # endpoints displayed on the cover
-        phone = None
-        website = None
-        for endpoint in endpoints:
-            if EndpointTypes.PHONE == endpoint.endpoint_type:
-                phone = {
-                    'value': endpoint.value,
-                    'uri': endpoint.get_uri()
-                }
-
-            if EndpointTypes.WEBSITE == endpoint.endpoint_type:
-                website = {
-                    'value': endpoint.value,
-                    'uri': endpoint.get_uri(),
-                    'display': endpoint.get_display()
-                }
-
-            if phone and website:
-                break
 
         # determine nav view
         request = self.request
