@@ -10,11 +10,12 @@ from knotis.contrib.quick.fields import (
     QuickBooleanField
 )
 
+from django.apps import apps
 from django.db.models import (
     CharField,
     BooleanField,
     IntegerField,
-    DateTimeField
+    DateTimeField,
 )
 from django.db.models.signals import post_save
 from django.core.mail import send_mail, BadHeaderError
@@ -63,6 +64,14 @@ class EndpointTypes:
 
 
 EndpointTypeNames = {key: value for key, value in EndpointTypes.CHOICES}
+
+
+endpoint_models = []
+def populate_endpoint_models():
+    app_config = apps.get_app_config('endpoint')
+    for model in app_config.get_models():
+        if issubclass(model, Endpoint):
+            endpoint_models.append(model)
 
 
 class EndpointManager(QuickManager):
@@ -256,6 +265,23 @@ class Endpoint(QuickModel):
         )
 
     def get_uri(self):
+        for endpoint_model in endpoint_models:
+            if self.endpoint_type == endpoint_model.objects.__default_endpoint_type__:
+                values_dict = {}
+                for field in endpoint_model._meta.concrete_fields:
+                    values_dict[field.name] = getattr(self, field.name)
+                return endpoint_model(**values_dict).get_uri()
+
+        return self.value
+
+    def get_display(self):
+        for endpoint_model in endpoint_models:
+            if self.endpoint_type == endpoint_model.objects.__default_endpoint_type__:
+                values_dict = {}
+                for field in endpoint_model._meta.concrete_fields:
+                    values_dict[field.name] = getattr(self, field.name)
+                return endpoint_model(**values_dict).get_display()
+
         return self.value
 
     def prepend_http(self, string):
@@ -282,6 +308,7 @@ class Endpoint(QuickModel):
             if endpoint.id != instance.id:
                 endpoint.primary = False
                 endpoint.save()
+
 
 post_save.connect(
     Endpoint.ensure_one_primary,
@@ -606,3 +633,6 @@ class Credentials(QuickModel):
     endpoint = QuickForeignKey(Endpoint)
     identifier = QuickCharField(max_length=256)
     key = QuickCharField(max_length=256)
+
+
+populate_endpoint_models()
