@@ -14,8 +14,6 @@ from django.core.management.base import (
 
 from knotis.contrib.identity.models import (
     Identity,
-    IdentityBusiness,
-    IdentityTypes
 )
 from knotis.contrib.qrcode.models import Qrcode
 
@@ -61,25 +59,6 @@ class Command(BaseCommand):
 
                 except Exception, e:
                     logger.exception(e.message)
-                    continue
-
-                if identity.identity_type == IdentityTypes.ESTABLISHMENT:
-                    try:
-                        identity = (
-                            IdentityBusiness.objects.get_establishment_parent(
-                                identity
-                            )
-                        )
-
-                    except Exception, e:
-                        logger.exception(e.message)
-                        continue
-
-                if not identity.identity_type == IdentityTypes.BUSINESS:
-                    logger.error(
-                        'Can only get QRCodes for '
-                        'Establishment and Business IDS'
-                    )
                     continue
 
                 try:
