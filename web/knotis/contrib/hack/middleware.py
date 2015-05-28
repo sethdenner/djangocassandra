@@ -8,6 +8,9 @@ class SessionMiddlewareFixAuthUserId(SessionMiddleware):
         request,
         response
     ):
+        if not hasattr(request, 'session'):
+            return response
+
         auth_user_id_key = '_auth_user_id'
         auth_user_id = request.session.get(auth_user_id_key)
         if isinstance(auth_user_id, uuid.UUID):
