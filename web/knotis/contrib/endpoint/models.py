@@ -71,6 +71,9 @@ def populate_endpoint_models():
     app_config = apps.get_app_config('endpoint')
     for model in app_config.get_models():
         if issubclass(model, Endpoint):
+            if type(model) == type(Endpoint):
+                continue
+
             endpoint_models.append(model)
 
 
@@ -267,6 +270,9 @@ class Endpoint(QuickModel):
     def get_uri(self):
         for endpoint_model in endpoint_models:
             if self.endpoint_type == endpoint_model.objects.__default_endpoint_type__:
+                if not hasattr(endpoint_model, 'get_uri'):
+                    break
+
                 values_dict = {}
                 for field in endpoint_model._meta.concrete_fields:
                     values_dict[field.name] = getattr(self, field.name)
@@ -277,6 +283,9 @@ class Endpoint(QuickModel):
     def get_display(self):
         for endpoint_model in endpoint_models:
             if self.endpoint_type == endpoint_model.objects.__default_endpoint_type__:
+                if not hasattr(endpoint_model, 'get_display'):
+                    break
+
                 values_dict = {}
                 for field in endpoint_model._meta.concrete_fields:
                     values_dict[field.name] = getattr(self, field.name)

@@ -766,6 +766,17 @@ class EstablishmentAboutFeeds(FragmentView):
 
         yelp = EstablishmentAboutYelpFeed()
         twitter = EstablishmentAboutTwitterFeed()
+        facebook_endpoints = filter(
+            lambda x: x[
+                'endpoint_type_name'
+            ] == 'facebook', self.context.get("endpoints", [])
+        )
+
+        if len(facebook_endpoints):
+            facebook_endpoint = facebook_endpoints[0]
+
+        else:
+            facebook_endpoint = None
 
         local_context.update({
             'yelp_markup': yelp.render_template_fragment(local_context),
@@ -776,10 +787,7 @@ class EstablishmentAboutFeeds(FragmentView):
             'twitter_has_feed': twitter.has_feed,
             'twitter': twitter.endpoint,
 
-            'facebook': filter(
-                lambda x: x[
-                    'endpoint_type_name'
-                ] == 'facebook', self.context.get("endpoints"))[0],
+            'facebook': facebook_endpoint,
         })
 
         return local_context
