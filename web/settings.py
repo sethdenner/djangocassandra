@@ -282,7 +282,7 @@ this variable to match the name of your module.
 """
 ENVIRONMENT_NAME = os.environ.get(
     'KNOTIS_ENVIRONMENT_MODULE',
-    'prod'
+    'knotis_env'
 )
 
 """
