@@ -1,4 +1,3 @@
-
 import json
 import copy
 
@@ -679,7 +678,10 @@ class EstablishmentAboutDetails(AJAXFragmentView):
                 updated_endpoint = Endpoint.objects.update_or_create(
                     identity=establishment,
                     pk=endpoint_id,
-                    endpoint_type=int(endpoint['endpoint_type']),
+                    endpoint_type=int(endpoint.get(
+                        'endpoint_type',
+                        0
+                    )),
                     value=endpoint_value,
                     primary=True
                 )
