@@ -191,7 +191,8 @@ class IdentityApi(object):
                 business
             )
 
-        except:
+        except Exception, e:
+            logger.exception(e.message)
             business.delete(hard=True)
             raise
 
@@ -202,7 +203,7 @@ class IdentityApi(object):
             )
 
         except Exception, e:
-            logger.exception(e)
+            logger.exception(e.message)
             business.delete(hard=True)
             relation_manager.delete(hard=True)
             raise e
@@ -213,14 +214,24 @@ class IdentityApi(object):
                 uri='/'.join([
                     settings.BASE_URL,
                     'id',
-                    str(business.pk),
+                    establishment.id,
+                    ''
+                ]),
+                qrcode_type=QrcodeTypes.PROFILE
+            )
+            Qrcode.objects.create(
+                owner=business,
+                uri='/'.join([
+                    settings.BASE_URL,
+                    'id',
+                    business.id,
                     ''
                 ]),
                 qrcode_type=QrcodeTypes.PROFILE
             )
 
         except Exception, e:
-            logger.exception(e)
+            logger.exception(e.message)
             establishment.delete(hard=True)
             business.delete(hard=True)
             relation_manager.delete(hard=True)
