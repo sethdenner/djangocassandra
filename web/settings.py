@@ -25,6 +25,10 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+ALLOWED_HOSTS = [
+    '.knotis.com',  # Allow domain and subdomains
+    '.knotis.com.',  # Also allow FQDN and subdomains
+]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
